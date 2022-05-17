@@ -1,7 +1,7 @@
 import 'package:http/http.dart' as http;
 
 class Http {
-  String baseUrl = 'https://discord.com/api';
+  String baseUrl;
   final Map<String, String> _headers = {};
 
   Http({ required this.baseUrl });
