@@ -1,3 +1,6 @@
+import 'package:mineral/src/api/guild.dart';
+import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/api/role.dart';
 import 'package:mineral/src/api/user.dart';
 
 class GuildMember {
@@ -11,6 +14,8 @@ class GuildMember {
   bool mute;
   bool pending;
   DateTime? timeout;
+  RoleManager roles;
+  late Guild guild;
 
   GuildMember({
     required this.user,
@@ -22,11 +27,19 @@ class GuildMember {
     required this.deaf,
     required this.mute,
     required this.pending,
-    required this.timeout
+    required this.timeout,
+    required this.roles,
   });
 
-  factory GuildMember.from({ required user, dynamic member }) {
-    print(member['premium_since']);
+  factory GuildMember.from({ required user, required RoleManager roles, dynamic member }) {
+    RoleManager roleManager = RoleManager();
+    for (var element in (member['roles'] as List<dynamic>)) {
+      Role? role = roles.cache.get(element);
+      if (role != null) {
+        roleManager.cache.putIfAbsent(role.id, () => role);
+      }
+    }
+
     return GuildMember(
       user: user,
       nickname: member['nick'],
@@ -37,7 +50,8 @@ class GuildMember {
       deaf: member['deaf'] == true,
       mute: member['mute'] == true,
       pending: member['pending'] == true,
-      timeout: member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null
+      timeout: member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
+      roles: roleManager,
     );
   }
 }
