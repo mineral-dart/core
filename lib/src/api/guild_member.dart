@@ -6,6 +6,7 @@ class GuildMember {
   String? avatar;
   DateTime joinedAt;
   DateTime? premiumSince;
+  String? permissions;
   bool deaf;
   bool mute;
   bool pending;
@@ -17,6 +18,7 @@ class GuildMember {
     required this.avatar,
     required this.joinedAt,
     required this.premiumSince,
+    required this.permissions,
     required this.deaf,
     required this.mute,
     required this.pending,
@@ -31,6 +33,7 @@ class GuildMember {
       avatar: member['avatar'],
       joinedAt: DateTime.parse(member['joined_at']),
       premiumSince: member['premium_since'] != null ? DateTime.parse(member['premium_since']) : null,
+      permissions: member['permissions'],
       deaf: member['deaf'] == true,
       mute: member['mute'] == true,
       pending: member['pending'] == true,
