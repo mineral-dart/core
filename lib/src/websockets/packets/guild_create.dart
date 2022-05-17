@@ -1,3 +1,8 @@
+import 'package:mineral/src/api/guild.dart';
+import 'package:mineral/src/api/guild_member.dart';
+import 'package:mineral/src/api/managers/member_manager.dart';
+import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/api/role.dart';
 import 'package:mineral/src/api/user.dart';
 import 'package:mineral/src/constants.dart';
 import 'package:mineral/src/websockets/websocket_packet.dart';
@@ -9,9 +14,34 @@ class GuildCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    for(dynamic member in websocketResponse.payload['members']) {
-      print(User.from(member['user']));
-      print(User.from(member['user']).username);
+    RoleManager roleManager = RoleManager();
+    for (dynamic item in websocketResponse.payload['roles']) {
+      Role role = Role.from(item);
+      roleManager.cache.putIfAbsent(role.id, () => role);
     }
+
+    MemberManager memberManager = MemberManager();
+    for(dynamic member in websocketResponse.payload['members']) {
+      GuildMember guildMember = GuildMember.from(
+        roles: roleManager,
+        user: User.from(member['user']),
+        member: member
+      );
+
+      memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
+    }
+
+    Guild guild = Guild.from(
+      memberManager: memberManager,
+      roleManager: roleManager,
+      payload: websocketResponse.payload
+    );
+
+    guild.members.cache.forEach((Snowflake id, GuildMember member) {
+      member.guild = guild;
+    });
+
+
+    print(guild.owner.user.username);
   }
 }
