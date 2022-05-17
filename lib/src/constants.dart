@@ -14,6 +14,8 @@ class OpCode {
   static const int guildSync = 12;
 }
 
+typedef Snowflake = String;
+
 enum PacketType {
   ready,
   guildCreate,
