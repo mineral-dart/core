@@ -1,5 +1,4 @@
-import 'package:mineral/src/api/channels/text_based_channel.dart';
-import 'package:mineral/src/constants.dart';
+part of api;
 
 class TextChannel extends TextBasedChannel {
   TextChannel({
@@ -13,7 +12,7 @@ class TextChannel extends TextBasedChannel {
     required Snowflake? description,
     required bool nsfw,
     required Snowflake? lastMessageId,
-    required DateTime? lastPin,
+    required DateTime? lastPinTimestamp,
   }) : super(
     id: id,
     guildId: guildId,
@@ -25,6 +24,22 @@ class TextChannel extends TextBasedChannel {
     description: description,
     nsfw: nsfw,
     lastMessageId: lastMessageId,
-    lastPin: lastPin,
+    lastPinTimestamp: lastPinTimestamp,
   );
+
+  factory TextChannel.from(dynamic payload) {
+    return TextChannel(
+      id: payload['id'],
+      guildId: payload['guild_id'],
+      position: payload['position'],
+      label: payload['name'],
+      applicationId: payload['application_id'],
+      parentId: payload['parent_id'],
+      flags: payload['flags'],
+      description: payload['topic'],
+      nsfw: payload['nsfw'] ?? false,
+      lastMessageId: payload['last_message_id'],
+      lastPinTimestamp: payload['last_pin_timestamp'] != null ? DateTime.parse(payload['last_pin_timestamp']) : null,
+    );
+  }
 }

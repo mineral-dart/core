@@ -1,4 +1,4 @@
-import 'package:mineral/src/constants.dart';
+part of api;
 
 class ChannelType {
   static int guildText = 0;
@@ -14,6 +14,21 @@ class ChannelType {
   static int guildDirectory = 14;
   static int guildForum = 15;
 }
+
+Map<int, Channel Function(dynamic payload)> channels = {
+  ChannelType.guildText: (dynamic payload) => TextChannel.from(payload),
+  // 'DM': () => ,
+  ChannelType.guildVoice: (dynamic payload) => VoiceChannel.from(payload),
+  // 'GROUP_DM': () => ,
+  // 'GUILD_CATEGORY': () => ,
+  // 'GUILD_NEWS': () => ,
+  // 'GUILD_NEWS_THREAD': () => ,
+  // 'GUILD_PUBLIC_THREAD': () => ,
+  // 'GUILD_PRIVATE_THREAD': () => ,
+  // 'GUILD_STAGE_VOICE': () => ,
+  // 'GUILD_DIRECTORY': () => ,
+  // 'GUILD_FORUM': () => ,
+};
 
 class Channel {
   Snowflake id;

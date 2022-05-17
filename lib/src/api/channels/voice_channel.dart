@@ -1,5 +1,4 @@
-import 'package:mineral/src/api/channels/channel.dart';
-import 'package:mineral/src/constants.dart';
+part of api;
 
 class VoiceChannel extends Channel {
   int? bitrate;
@@ -31,4 +30,21 @@ class VoiceChannel extends Channel {
     parentId: parentId,
     flags: flags,
   );
+
+  factory VoiceChannel.from(dynamic payload) {
+    return VoiceChannel(
+      id: payload['id'],
+      guildId: payload['guild_id'],
+      position: payload['position'],
+      label: payload['name'],
+      applicationId: payload['application_id'],
+      parentId: payload['parent_id'],
+      flags: payload['flags'],
+      bitrate: payload['bitrate'],
+      userLimit: payload['user_limit'] ?? false,
+      rateLimitPerUser: payload['rate_limit_per_user'],
+      rtcRegion: payload['rtc_region'] ,
+      videoQualityMode: payload['video_quality_mode']
+    );
+  }
 }

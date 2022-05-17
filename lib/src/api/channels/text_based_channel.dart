@@ -1,11 +1,10 @@
-import 'package:mineral/src/api/channels/channel.dart';
-import 'package:mineral/src/constants.dart';
+part of api;
 
 class TextBasedChannel extends Channel {
   String? description;
   bool nsfw;
   Snowflake? lastMessageId;
-  DateTime? lastPin;
+  DateTime? lastPinTimestamp;
 
   TextBasedChannel({
     required Snowflake id,
@@ -18,7 +17,7 @@ class TextBasedChannel extends Channel {
     required this.description,
     required this.nsfw,
     required this.lastMessageId,
-    required this.lastPin,
+    required this.lastPinTimestamp,
   }) : super(
     id: id,
     type: ChannelType.guildText,
