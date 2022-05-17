@@ -20,7 +20,7 @@ Map<int, Channel Function(dynamic payload)> channels = {
   // 'DM': () => ,
   ChannelType.guildVoice: (dynamic payload) => VoiceChannel.from(payload),
   // 'GROUP_DM': () => ,
-  // 'GUILD_CATEGORY': () => ,
+  ChannelType.guildCategory: (dynamic payload) => CategoryChannel.from(payload),
   // 'GUILD_NEWS': () => ,
   // 'GUILD_NEWS_THREAD': () => ,
   // 'GUILD_PUBLIC_THREAD': () => ,
@@ -34,10 +34,12 @@ class Channel {
   Snowflake id;
   int type;
   Snowflake? guildId;
+  late Guild? guild;
   int? position;
   String? label;
   Snowflake? applicationId;
   Snowflake? parentId;
+  late CategoryChannel? parent;
   int? flags;
 
   Channel({
