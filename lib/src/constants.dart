@@ -28,16 +28,5 @@ class Constants {
   static const String baseUri = "/api/v$apiVersion";
 
   /// Version of API
-  static const int apiVersion = 9;
-
-  /// Returns [Uri] to gateway
-  static Uri gatewayUri(String gatewayHost, bool useCompression) {
-    var uriString = "$gatewayHost?v=$apiVersion&encoding=json";
-
-    if (useCompression) {
-      uriString += "&compress=zlib-stream";
-    }
-
-    return Uri.parse(uriString);
-  }
+  static const int apiVersion = 10;
 }
