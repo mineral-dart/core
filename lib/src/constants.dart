@@ -14,19 +14,24 @@ class OpCode {
   static const int guildSync = 12;
 }
 
+enum PacketType {
+  ready,
+  guildCreate,
+}
+
 class Constants {
-  /// Discord CDN host
+  // Discord CDN host
   static const String cdnHost = "discordapp.com";
 
-  /// Url for cdn host
+  // Url for cdn host
   static const String cdnUrl = "https://cdn.${Constants.cdnHost}";
 
-  /// Discord API host
+  // Discord API host
   static const String host = "discord.com";
 
-  /// Base API uri
+  // Base API uri
   static const String baseUri = "/api/v$apiVersion";
 
-  /// Version of API
+  // Version of API
   static const int apiVersion = 10;
 }
