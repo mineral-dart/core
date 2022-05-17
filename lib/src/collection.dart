@@ -40,8 +40,8 @@ class Collection<K, V> implements Map<K, V> {
     _base.clear();
   }
 
-  V? get (K key) {
-    return this[key];
+  T? get<T extends V?> (K? key) {
+    return this[key] as T?;
   }
 
   @override
