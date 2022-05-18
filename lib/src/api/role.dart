@@ -1,5 +1,21 @@
 import 'package:mineral/src/constants.dart';
 
+class Tag {
+  Snowflake? botId;
+  Snowflake? integrationId;
+  bool? premiumSubscriber;
+
+  Tag({ required this.botId, required Snowflake? integrationId, required bool? premiumSubscriber });
+
+  factory Tag.from({ required payload }) {
+    return Tag(
+      botId: payload['bot_id'],
+      integrationId: payload['integration_id'],
+      premiumSubscriber: payload['premium_subscriber']
+    );
+  }
+}
+
 class Role {
   Snowflake id;
   String label;
@@ -11,7 +27,7 @@ class Role {
   int permissions;
   bool managed;
   bool mentionable;
-  // @todo https://discord.com/developers/docs/topics/permissions#role-object-role-tags-structure
+  Tag? tags;
 
   Role({
     required this.id,
@@ -24,6 +40,7 @@ class Role {
     required this.permissions,
     required this.managed,
     required this.mentionable,
+    required this.tags
   });
 
   factory Role.from(dynamic payload) {
@@ -37,7 +54,8 @@ class Role {
       position: payload['position'],
       permissions: payload['permissions'],
       managed: payload['managed'],
-      mentionable: payload['mentionable']
+      mentionable: payload['mentionable'],
+      tags: payload['tags'] != null ? Tag.from(payload: payload['tags']) : null
     );
   }
 }
