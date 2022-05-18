@@ -59,7 +59,7 @@ class GuildCreate implements WebsocketPacket {
     guild.channels.cache.forEach((Snowflake id, Channel channel) {
       channel.guildId = guild.id;
       channel.guild = guild;
-      channel.parent = channel.parentId != null? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
+      channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
     });
   }
 }
