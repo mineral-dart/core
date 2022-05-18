@@ -2,6 +2,7 @@ import 'package:mineral/src/api/guild.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/api/role.dart';
 import 'package:mineral/src/api/user.dart';
+import 'package:mineral/src/constants.dart';
 
 class GuildMember {
   User user;
@@ -31,8 +32,8 @@ class GuildMember {
     required this.roles,
   });
 
-  factory GuildMember.from({ required user, required RoleManager roles, dynamic member }) {
-    RoleManager roleManager = RoleManager();
+  factory GuildMember.from({ required user, required RoleManager roles, dynamic member, required Snowflake guildId }) {
+    RoleManager roleManager = RoleManager(guildId: guildId);
     for (var element in (member['roles'] as List<dynamic>)) {
       Role? role = roles.cache.get(element);
       if (role != null) {

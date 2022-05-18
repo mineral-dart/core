@@ -17,24 +17,25 @@ class GuildCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    RoleManager roleManager = RoleManager();
+    RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(item);
       roleManager.cache.putIfAbsent(role.id, () => role);
     }
 
-    MemberManager memberManager = MemberManager();
+    MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
     for(dynamic member in websocketResponse.payload['members']) {
       GuildMember guildMember = GuildMember.from(
         roles: roleManager,
         user: User.from(member['user']),
-        member: member
+        member: member,
+        guildId: websocketResponse.payload['id']
       );
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
     }
 
-    ChannelManager channelManager = ChannelManager();
+    ChannelManager channelManager = ChannelManager(guildId: websocketResponse.payload['id']);
     for(dynamic payload in websocketResponse.payload['channels']) {
       if (channels.containsKey(payload['type'])) {
         Channel Function(dynamic payload) item = channels[payload['type']] as Channel Function(dynamic payload);
@@ -44,7 +45,7 @@ class GuildCreate implements WebsocketPacket {
       }
     }
 
-    EmojiManager emojiManager = EmojiManager();
+    EmojiManager emojiManager = EmojiManager(guildId: websocketResponse.payload['id']);
     for(dynamic payload in websocketResponse.payload['emojis']) {
       Emoji emoji = Emoji.from(
         memberManager: memberManager,
@@ -69,12 +70,11 @@ class GuildCreate implements WebsocketPacket {
     });
 
     // Assign guild channels
+    channelManager.guild = guild;
     guild.channels.cache.forEach((Snowflake id, Channel channel) {
       channel.guildId = guild.id;
       channel.guild = guild;
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
     });
-
-    print(guild.emojis.cache.length);
   }
 }
