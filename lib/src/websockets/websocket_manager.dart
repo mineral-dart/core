@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mineral/core.dart';
-import 'package:mineral/src/constants.dart';
 import 'package:http/http.dart';
 import 'package:mineral/src/websockets/websocket_dispatcher.dart';
 import 'package:mineral/src/websockets/websocket_response.dart';

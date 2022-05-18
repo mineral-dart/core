@@ -5,6 +5,7 @@ class TextBasedChannel extends Channel {
   bool nsfw;
   Snowflake? lastMessageId;
   DateTime? lastPinTimestamp;
+  MessageManager messages;
 
   TextBasedChannel({
     required Snowflake id,
@@ -18,6 +19,7 @@ class TextBasedChannel extends Channel {
     required this.nsfw,
     required this.lastMessageId,
     required this.lastPinTimestamp,
+    required this.messages,
   }) : super(
     id: id,
     type: ChannelType.guildText,
@@ -30,7 +32,7 @@ class TextBasedChannel extends Channel {
   );
 
   Future<dynamic> setDescription (String description) async {
-    Http http = ioc.singleton('Mineral/Core/Http');
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/channels/$id", { 'topic': description });
 
     if (response.statusCode == 200) {
@@ -41,7 +43,7 @@ class TextBasedChannel extends Channel {
   }
 
   Future<dynamic> setNsfw (bool value) async {
-    Http http = ioc.singleton('Mineral/Core/Http');
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/channels/$id", { 'nsfw': value });
 
     if (response.statusCode == 200) {
@@ -52,7 +54,7 @@ class TextBasedChannel extends Channel {
   }
 
   Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
-    Http http = ioc.singleton('Mineral/Core/Http');
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch("/channels/$id", {
       'name': label ?? this.label,
@@ -76,7 +78,7 @@ class TextBasedChannel extends Channel {
   }
 
   Future<bool> delete () async {
-    Http http = ioc.singleton('Mineral/Core/Http');
+    Http http = ioc.singleton(Service.http);
     Response response = await http.destroy("/channels/$id");
 
     guild?.channels.cache.remove(id);

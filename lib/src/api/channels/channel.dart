@@ -54,7 +54,7 @@ class Channel {
   });
 
   Future<T> setLabel<T extends Channel> (String label) async {
-    Http http = ioc.singleton('Mineral/Core/Http');
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/channels/$id", { 'label': label });
 
     if (response.statusCode == 200) {
@@ -65,7 +65,7 @@ class Channel {
   }
 
   Future<T> setPosition<T extends Channel> (int position) async {
-    Http http = ioc.singleton('Mineral/Core/Http');
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/channels/$id", { 'position': position });
 
     if (response.statusCode == 200) {
@@ -74,9 +74,9 @@ class Channel {
 
     return this as T;
   }
-  
+
   Future<T> setParent<T extends Channel> (CategoryChannel channel) async {
-    Http http = ioc.singleton('Mineral/Core/Http');
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/channels/$id", { 'parent_id': channel.id });
 
     if (response.statusCode == 200) {

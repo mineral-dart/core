@@ -25,6 +25,7 @@ class TextChannel extends TextBasedChannel {
     nsfw: nsfw,
     lastMessageId: lastMessageId,
     lastPinTimestamp: lastPinTimestamp,
+    messages: MessageManager(id, guildId),
   );
 
   @override

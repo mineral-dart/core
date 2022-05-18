@@ -1,4 +1,5 @@
-import 'package:mineral/src/constants.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
 import 'package:mineral/src/websockets/websocket_packet.dart';
 import 'package:mineral/src/websockets/websocket_response.dart';
 
@@ -8,6 +9,8 @@ class Ready implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    print('Ready');
+    MineralClient client = MineralClient.from(payload: websocketResponse.payload);
+
+    ioc.bind(namespace: Service.client, service: client);
   }
 }

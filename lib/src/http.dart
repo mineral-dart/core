@@ -1,6 +1,4 @@
-import 'dart:convert';
-
-import 'package:http/http.dart' as http;
+part of core;
 
 class Http {
   String baseUrl;

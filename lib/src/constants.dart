@@ -1,3 +1,5 @@
+part of core;
+
 class OpCode {
   static const int dispatch = 0;
   static const int heartbeat = 1;
@@ -13,8 +15,6 @@ class OpCode {
   static const int heartbeatAck = 11;
   static const int guildSync = 12;
 }
-
-typedef Snowflake = String;
 
 enum PacketType {
   ready,

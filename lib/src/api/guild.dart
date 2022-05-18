@@ -1,9 +1,4 @@
-import 'package:mineral/src/api/guild_member.dart';
-import 'package:mineral/src/api/managers/channel_manager.dart';
-import 'package:mineral/src/api/managers/emoji_manager.dart';
-import 'package:mineral/src/api/managers/member_manager.dart';
-import 'package:mineral/src/api/managers/role_manager.dart';
-import 'package:mineral/src/constants.dart';
+part of api;
 
 class Guild {
   Snowflake id;

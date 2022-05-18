@@ -1,8 +1,4 @@
-import 'package:mineral/src/api/guild.dart';
-import 'package:mineral/src/api/managers/role_manager.dart';
-import 'package:mineral/src/api/role.dart';
-import 'package:mineral/src/api/user.dart';
-import 'package:mineral/src/constants.dart';
+part of api;
 
 class GuildMember {
   User user;

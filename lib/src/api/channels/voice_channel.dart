@@ -33,7 +33,7 @@ class VoiceChannel extends Channel {
 
 
   Future<VoiceChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
-    Http http = ioc.singleton('Mineral/Core/Http');
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch("/channels/$id", {
       'name': label ?? this.label,

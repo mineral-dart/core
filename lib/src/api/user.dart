@@ -1,4 +1,4 @@
-import 'package:mineral/src/constants.dart';
+part of api;
 
 class User {
   Snowflake id;

@@ -1,4 +1,4 @@
-import 'dart:collection';
+part of core;
 
 class Collection<K, V> implements Map<K, V> {
   final _base = {};
