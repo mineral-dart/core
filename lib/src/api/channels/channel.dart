@@ -52,4 +52,38 @@ class Channel {
     required this.parentId,
     required this.flags,
   });
+
+  Future<T> setLabel<T extends Channel> (String label) async {
+    Http http = ioc.singleton('Mineral/Core/Http');
+    Response response = await http.patch("/channels/$id", { 'label': label });
+
+    if (response.statusCode == 200) {
+      this.label = label;
+    }
+
+    return this as T;
+  }
+
+  Future<T> setPosition<T extends Channel> (int position) async {
+    Http http = ioc.singleton('Mineral/Core/Http');
+    Response response = await http.patch("/channels/$id", { 'position': position });
+
+    if (response.statusCode == 200) {
+      this.position = position;
+    }
+
+    return this as T;
+  }
+  
+  Future<T> setParent<T extends Channel> (CategoryChannel channel) async {
+    Http http = ioc.singleton('Mineral/Core/Http');
+    Response response = await http.patch("/channels/$id", { 'parent_id': channel.id });
+
+    if (response.statusCode == 200) {
+      parentId = channel.id;
+      parent = channel;
+    }
+
+    return this as T;
+  }
 }
