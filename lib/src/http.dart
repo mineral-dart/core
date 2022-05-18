@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart' as http;
 
 class Http {
@@ -15,11 +17,15 @@ class Http {
   }
 
   Future<http.Response> post (String url, dynamic payload) async {
-    return http.post(Uri.parse("$baseUrl$url"), body: payload, headers: _headers);
+    return http.post(Uri.parse("$baseUrl$url"), body: jsonEncode(payload), headers: _headers);
   }
 
   Future<http.Response> put (String url, dynamic payload) async {
     return http.put(Uri.parse("$baseUrl$url"), body: payload, headers: _headers);
+  }
+
+  Future<http.Response> patch (String url, dynamic payload) async {
+    return http.patch(Uri.parse("$baseUrl$url"), body: jsonEncode(payload), headers: _headers);
   }
 
   Future<http.Response> destroy (String url) async {
