@@ -1,6 +1,7 @@
 import 'package:mineral/src/api/guild.dart';
 import 'package:mineral/src/api/guild_member.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
+import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/api/role.dart';
@@ -43,7 +44,19 @@ class GuildCreate implements WebsocketPacket {
       }
     }
 
+    EmojiManager emojiManager = EmojiManager();
+    for(dynamic payload in websocketResponse.payload['emojis']) {
+      Emoji emoji = Emoji.from(
+        memberManager: memberManager,
+        roleManager: roleManager,
+        payload: payload
+      );
+
+      emojiManager.cache.putIfAbsent(emoji.id, () => emoji);
+    }
+
     Guild guild = Guild.from(
+      emojiManager: emojiManager,
       memberManager: memberManager,
       roleManager: roleManager,
       channelManager: channelManager,
@@ -61,5 +74,7 @@ class GuildCreate implements WebsocketPacket {
       channel.guild = guild;
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
     });
+
+    print(guild.emojis.cache.length);
   }
 }
