@@ -44,6 +44,10 @@ class Collection<K, V> implements Map<K, V> {
     return this[key] as T?;
   }
 
+  void set<T extends V> (K key, T value) {
+    this[key] = value;
+  }
+
   @override
   bool containsKey(Object? key) {
     if (!_isValidKey(key)) return false;
