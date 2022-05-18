@@ -1,6 +1,4 @@
-import 'package:core/core.dart';
+import 'package:mineral/core.dart';
 
 void main() {
-  var awesome = Awesome();
-  print('awesome: ${awesome.isAwesome}');
 }
