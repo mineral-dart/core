@@ -19,7 +19,7 @@ class CategoryChannel extends Channel {
     flags: flags
   );
 
-  Future<T?> update<T> ({ String? label, int? position }) async {
+  Future<CategoryChannel?> update ({ String? label, int? position }) async {
     Http http = ioc.singleton('Mineral/Core/Http');
 
     Response response = await http.patch("/channels/$id", {
@@ -37,7 +37,7 @@ class CategoryChannel extends Channel {
     channel.parent = channel.parentId != null ? guild?.channels.cache.get<CategoryChannel>(channel.parentId) : null;
 
     guild?.channels.cache.set(channel.id, channel);
-    return channel as T;
+    return channel;
   }
 
   Future<bool> delete () async {

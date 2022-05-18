@@ -27,7 +27,7 @@ class TextChannel extends TextBasedChannel {
     lastPinTimestamp: lastPinTimestamp,
   );
 
-  Future<T?> update<T> ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
+  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
     Http http = ioc.singleton('Mineral/Core/Http');
 
     Response response = await http.patch("/channels/$id", {
@@ -48,7 +48,7 @@ class TextChannel extends TextBasedChannel {
     channel.parent = channel.parentId != null ? guild?.channels.cache.get<CategoryChannel>(channel.parentId) : null;
 
     guild?.channels.cache.set(channel.id, channel);
-    return channel as T;
+    return channel;
   }
 
   factory TextChannel.from(dynamic payload) {

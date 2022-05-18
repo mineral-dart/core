@@ -28,4 +28,13 @@ class TextBasedChannel extends Channel {
     parentId: parentId,
     flags: flags,
   );
+
+  Future<bool> delete () async {
+    Http http = ioc.singleton('Mineral/Core/Http');
+    Response response = await http.destroy("/channels/$id");
+
+    guild?.channels.cache.remove(id);
+
+    return response.statusCode == 200;
+  }
 }
