@@ -1,5 +1,6 @@
 import 'package:mineral/src/api/guild_member.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
+import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/constants.dart';
@@ -47,6 +48,7 @@ class Guild {
   bool premiumProgressBarEnabled;
   MemberManager members;
   ChannelManager channels;
+  EmojiManager emojis;
 
   Guild({
     required this.id,
@@ -91,9 +93,10 @@ class Guild {
     required this.premiumProgressBarEnabled,
     required this.members,
     required this.channels,
+    required this.emojis,
   });
 
-  factory Guild.from({ required MemberManager memberManager, required RoleManager roleManager, required ChannelManager channelManager, required dynamic payload}) {
+  factory Guild.from({ required EmojiManager emojiManager, required MemberManager memberManager, required RoleManager roleManager, required ChannelManager channelManager, required dynamic payload}) {
     return Guild(
       id: payload['id'],
       name: payload['name'],
@@ -137,6 +140,7 @@ class Guild {
       premiumProgressBarEnabled: payload['premium_progress_bar_enabled'],
       members: memberManager,
       channels: channelManager,
+      emojis: emojiManager,
     );
   }
 }
