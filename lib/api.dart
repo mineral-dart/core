@@ -27,12 +27,13 @@ part 'src/api/channels/voice_channel.dart';
 part 'src/api/channels/text_based_channel.dart';
 part 'src/api/channels/text_channel.dart';
 part 'src/api/channels/category_channel.dart';
+part 'src/api/channels/news_channel.dart';
 
 part 'src/api/message.dart';
 
 part 'src/api/emoji.dart';
 part 'src/api/role.dart';
 
-part 'src/api/utils.dart'
+part 'src/api/utils.dart';
 
 typedef Snowflake = String;
