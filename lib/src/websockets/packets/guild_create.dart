@@ -73,6 +73,11 @@ class GuildCreate implements WebsocketPacket {
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
     });
 
-    await guild.removeIcon();
+    guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
+    guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);
+    guild.rulesChannel = guild.channels.cache.get<TextChannel>(guild.rulesChannelId);
+    guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
+
+    print(guild.welcomeScreen?.fields.length);
   }
 }

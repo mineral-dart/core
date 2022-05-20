@@ -1,6 +1,7 @@
 library api;
 
 import 'dart:convert';
+import 'package:mineral/console.dart';
 import 'package:mineral/helper.dart';
 
 import 'package:http/http.dart';
@@ -11,6 +12,7 @@ import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/api/welcome_screen.dart';
 
 part 'src/api/mineral_client.dart';
 part 'src/api/application.dart';

@@ -8,7 +8,7 @@ class VerificationLevel {
   static int veryHigh = 4;
 }
 
-class NswLevel {
+class NsfwLevel {
   static int initial = 0;
   static int explicit = 1;
   static int medium = 2;
@@ -30,50 +30,41 @@ class SuppressChannelFlag {
   static int joinNotificationReplies = 1 << 3;
 }
 
-enum GuildFeature {
-  animatedBanner,
-  animatedIcon,
-  banner,
-  commerce,
-  community,
-  discoverable,
-  featurable,
-  inviteSplash,
-  memberVerificationGateEnabled,
-  monetizationEnabled,
-  moreStickers,
-  news,
-  partnered,
-  previewEnabled,
-  privateThread,
-  roleIcons,
-  ticketedEventsEnabled,
-  vanityUrl,
-  verified,
-  vipRegions,
-  welcomeScreenEnabled,
-}
+enum Locale {
+  da('da'),
+  de('de'),
+  enGB('en-GB'),
+  enUS('en-US'),
+  esES('es-ES'),
+  fr('fr'),
+  hr('hr'),
+  it('it'),
+  lt('lt'),
+  hu('hu'),
+  nl('nl'),
+  no('no'),
+  pl('pl'),
+  ptBR('pt-BR'),
+  ro('ro'),
+  fi('fi'),
+  svSE('sv-SE'),
+  vi('vi'),
+  tr('tr'),
+  cs('cs'),
+  el('el'),
+  bg('bg'),
+  ru('ru'),
+  uk('uk'),
+  hi('hi'),
+  th('th'),
+  zhCN('zh-CN'),
+  ja('ja'),
+  zhTW('zh-TW'),
+  ko('ko');
 
-Map<GuildFeature, String> serviceWrapper = {
-  GuildFeature.animatedBanner: 'ANIMATED_BANNER',
-  GuildFeature.animatedIcon: 'ANIMATED_ICON',
-  GuildFeature.banner: 'BANNER',
-  GuildFeature.commerce: 'COMMERCE',
-  GuildFeature.community: 'COMMUNITY',
-  GuildFeature.discoverable: 'DISCOVERABLE',
-  GuildFeature.featurable: 'FEATURABLE',
-  GuildFeature.inviteSplash: 'INVITE_SPLASH',
-  GuildFeature.memberVerificationGateEnabled: 'MEMBER_VERIFICATION_GATE_ENABLED',
-  GuildFeature.monetizationEnabled: 'MONETIZATION_ENABLED',
-  GuildFeature.moreStickers: 'MORE_STICKERS',
-  GuildFeature.news: 'NEWS',
-  GuildFeature.partnered: 'PARTNERED',
-  GuildFeature.previewEnabled: 'PREVIEW_ENABLED',
-  GuildFeature.privateThread: 'PRIVATE_THREADS',
-  GuildFeature.roleIcons: 'ROLE_ICONS',
-  GuildFeature.ticketedEventsEnabled: 'TICKETED_EVENTS_ENABLED',
-  GuildFeature.vanityUrl: 'VANITY_URL',
-  GuildFeature.verified: 'VERIFIED',
-  GuildFeature.vipRegions: 'VIP_REGIONS',
-  GuildFeature.welcomeScreenEnabled: 'WELCOME_SCREEN_ENABLED',
-};
+  final String locale;
+  const Locale(this.locale);
+
+  @override
+  String toString() => locale;
+}

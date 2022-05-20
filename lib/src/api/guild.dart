@@ -11,6 +11,7 @@ class Guild {
   Snowflake ownerId;
   int? permissions;
   Snowflake? afkChannelId;
+  late VoiceChannel? afkChannel;
   int afkTimeout;
   bool widgetEnabled;
   Snowflake? widgetChannelId;
@@ -19,12 +20,14 @@ class Guild {
   int explicitContentFilter;
   RoleManager roles;
   // emojis;
-  // features;
+  List<dynamic> features;
   int mfaLevel;
   Snowflake? applicationId;
   Snowflake? systemChannelId;
+  late TextChannel? systemChannel;
   int systemChannelFlags;
   Snowflake? rulesChannelId;
+  late TextChannel? rulesChannel;
   int? maxPresences;
   int maxMembers;
   String? vanityUrlCode;
@@ -34,10 +37,11 @@ class Guild {
   int premiumSubscriptionCount;
   String preferredLocale;
   Snowflake? publicUpdatesChannelId;
+  late TextChannel? publicUpdatesChannel;
   int maxVideoChannelUsers;
   int? approximateMemberCount;
   int? approximatePresenceCount;
-  // welcomeScreen;
+  WelcomeScreen? welcomeScreen;
   int nsfwLevel;
   // stickers;
   bool premiumProgressBarEnabled;
@@ -82,35 +86,79 @@ class Guild {
     required this.maxVideoChannelUsers,
     required this.approximateMemberCount,
     required this.approximatePresenceCount,
-    // required this.welcomeScreen,
+    required this.welcomeScreen,
     required this.nsfwLevel,
     // required this.stickers,
     required this.premiumProgressBarEnabled,
     required this.members,
     required this.channels,
     required this.emojis,
+    required this.features,
   });
 
-  Future<Guild> setName (String name) async {
+  Future<void> setName (String name) async {
     Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/guilds/$id", { 'name': name });
 
     if (response.statusCode == 200) {
       this.name = name;
     }
-
-    return this;
   }
 
-  Future<Guild> setVerificationLevel (int level) async {
+  Future<void> setVerificationLevel (int level) async {
     Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/guilds/$id", { 'verification_level': level });
 
     if (response.statusCode == 200) {
       verificationLevel = level;
     }
+  }
+
+  Future<Guild> setMessageNotification (int level) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'default_message_notifications': level });
+
+    if (response.statusCode == 200) {
+      defaultMessageNotifications = level;
+    }
 
     return this;
+  }
+
+  Future<void> setExplicitContentFilter (int level) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'explicit_content_filter': level });
+
+    if (response.statusCode == 200) {
+      explicitContentFilter = level;
+    }
+  }
+
+  Future<void> setAfkChannel (VoiceChannel channel) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'afk_channel_id': channel.id });
+
+    if (response.statusCode == 200) {
+      afkChannel = channel;
+      afkChannelId = channel.id;
+    }
+  }
+
+  Future<void> setOwner (GuildMember guildMember) async {
+    MineralClient client = ioc.singleton(Service.client);
+    Http http = ioc.singleton(Service.http);
+
+    if (ownerId != client.user.id) {
+      Console.error(message: "You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
+      return;
+    }
+
+    Response response = await http.patch("/guilds/$id", { 'owner_id': guildMember.user.id });
+
+    if (response.statusCode == 200) {
+      owner = guildMember;
+      ownerId = guildMember.user.id;
+    }
   }
 
   Future<void> setSplash (String filename) async {
@@ -193,6 +241,45 @@ class Guild {
     }
   }
 
+  Future<void> setSystemChannel (TextChannel channel) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'system_channel_id': channel.id });
+
+    if (response.statusCode == 200) {
+      systemChannelId = channel.id;
+      systemChannel = channel;
+    }
+  }
+
+  Future<void> setRulesChannel (TextChannel channel) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'rules_channel_id': channel.id });
+
+    if (response.statusCode == 200) {
+      rulesChannelId = channel.id;
+      rulesChannel = channel;
+    }
+  }
+
+  Future<void> setPublicUpdateChannel (TextChannel channel) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'public_updates_channel_id': channel.id });
+
+    if (response.statusCode == 200) {
+      publicUpdatesChannelId = channel.id;
+      publicUpdatesChannel = channel;
+    }
+  }
+
+  Future<void> setPreferredLocale (Locale locale) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'public_updates_channel_id': locale });
+
+    if (response.statusCode == 200) {
+      preferredLocale = locale as String;
+    }
+  }
+
   factory Guild.from({ required EmojiManager emojiManager, required MemberManager memberManager, required RoleManager roleManager, required ChannelManager channelManager, required dynamic payload}) {
     return Guild(
       id: payload['id'],
@@ -212,7 +299,7 @@ class Guild {
       defaultMessageNotifications: payload['default_message_notifications'],
       explicitContentFilter: payload['explicit_content_filter'],
       roles: roleManager,
-      // payload['features'],
+      features: payload['features'],
       mfaLevel: payload['mfa_level'],
       applicationId: payload['application_id'],
       systemChannelId: payload['system_channel_id'],
@@ -237,6 +324,7 @@ class Guild {
       members: memberManager,
       channels: channelManager,
       emojis: emojiManager,
+      welcomeScreen: payload['welcome_screen'] != null ? WelcomeScreen.from(payload['welcome_screen']) : null
     );
   }
 }
