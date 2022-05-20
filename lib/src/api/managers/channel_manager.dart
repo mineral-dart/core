@@ -65,6 +65,18 @@ class ChannelManager implements CacheManager<Channel> {
     });
   }
 
+  Future<NewsChannel?> createNewsChannel ({ required String label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
+    return await _create<NewsChannel>(data: {
+      'name': label,
+      'topic': description,
+      'type': ChannelType.guildNews,
+      'parent_id': categoryChannel?.id,
+      'nsfw': nsfw ?? false,
+      'rate_limit_per_user': delay ?? 0,
+      'permission_overwrites': [],
+    });
+  }
+
   Future<T?> _create<T> ({ required dynamic data }) async {
     Http http = ioc.singleton(Service.http);
 
