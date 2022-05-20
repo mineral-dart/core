@@ -1,10 +1,7 @@
 library api;
 
 import 'dart:convert';
-import 'dart:io';
-import 'dart:typed_data';
 import 'package:mineral/helper.dart';
-import 'package:path/path.dart' as path;
 
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
@@ -33,6 +30,6 @@ part 'src/api/message.dart';
 part 'src/api/emoji.dart';
 part 'src/api/role.dart';
 
-part 'src/api/utils.dart'
+part 'src/api/utils.dart';
 
 typedef Snowflake = String;
