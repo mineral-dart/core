@@ -73,6 +73,7 @@ class GuildCreate implements WebsocketPacket {
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
     });
 
-    await guild.removeIcon();
+    NewsChannel? newsChannel = guild.channels.cache.get<NewsChannel>('977261584382558328');
+    await newsChannel?.follow('977261752976830474');
   }
 }
