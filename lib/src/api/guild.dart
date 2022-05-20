@@ -91,6 +91,33 @@ class Guild {
     required this.emojis,
   });
 
+  Future<Guild> setName (String name) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'name': name });
+
+    if (response.statusCode == 200) {
+      this.name = name;
+    }
+
+    return this;
+  }
+
+  Future<Guild> setIcon (String filename) async {
+    String fileLocation = path.join(Directory.current.path, 'bin', filename);
+    File file = File(fileLocation);
+
+    Uint8List imageBytes = await file.readAsBytes();
+    String icon = Helper.toImageData(imageBytes);
+
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'icon': icon });
+
+    if (response.statusCode == 200) {
+      this.icon = icon;
+    }
+    return this;
+  }
+
   factory Guild.from({ required EmojiManager emojiManager, required MemberManager memberManager, required RoleManager roleManager, required ChannelManager channelManager, required dynamic payload}) {
     return Guild(
       id: payload['id'],
@@ -110,7 +137,6 @@ class Guild {
       defaultMessageNotifications: payload['default_message_notifications'],
       explicitContentFilter: payload['explicit_content_filter'],
       roles: roleManager,
-      // payload['emojis'],
       // payload['features'],
       mfaLevel: payload['mfa_level'],
       applicationId: payload['application_id'],

@@ -72,5 +72,7 @@ class GuildCreate implements WebsocketPacket {
       channel.guild = guild;
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
     });
+
+    await guild.setIcon('images/icon.png');
   }
 }
