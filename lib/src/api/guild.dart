@@ -102,20 +102,95 @@ class Guild {
     return this;
   }
 
-  Future<Guild> setIcon (String filename) async {
-    String fileLocation = path.join(Directory.current.path, 'bin', filename);
-    File file = File(fileLocation);
-
-    Uint8List imageBytes = await file.readAsBytes();
-    String icon = Helper.toImageData(imageBytes);
-
+  Future<Guild> setVerificationLevel (int level) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'icon': icon });
+    Response response = await http.patch("/guilds/$id", { 'verification_level': level });
 
     if (response.statusCode == 200) {
-      this.icon = icon;
+      verificationLevel = level;
     }
+
     return this;
+  }
+
+  Future<void> setSplash (String filename) async {
+    String file = await Helper.getFile(filename);
+
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'splash': file });
+
+    if (response.statusCode == 200) {
+      splash = file;
+    }
+  }
+
+  Future<void> removeSplash () async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'splash': null });
+
+    if (response.statusCode == 200) {
+      splash = null;
+    }
+  }
+
+  Future<void> setDiscoverySplash (String filename) async {
+    String file = await Helper.getFile(filename);
+
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'discovery_splash': file });
+
+    if (response.statusCode == 200) {
+      discoverySplash = file;
+    }
+  }
+
+  Future<void> removeDiscoverySplash () async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'discovery_splash': null });
+
+    if (response.statusCode == 200) {
+      discoverySplash = null;
+    }
+  }
+
+  Future<void> setBanner (String filename) async {
+    String file = await Helper.getFile(filename);
+
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'banner': file });
+
+    if (response.statusCode == 200) {
+      banner = file;
+    }
+  }
+
+  Future<void> removeBanner () async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'banner': null });
+
+    if (response.statusCode == 200) {
+      banner = null;
+    }
+  }
+
+  Future<void> setIcon (String filename) async {
+    String file = await Helper.getFile(filename);
+
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'icon': file });
+
+    if (response.statusCode == 200) {
+      icon = file;
+    }
+  }
+
+  Future<void> removeIcon () async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/$id", { 'icon': null });
+
+    if (response.statusCode == 200) {
+      icon = null;
+    }
   }
 
   factory Guild.from({ required EmojiManager emojiManager, required MemberManager memberManager, required RoleManager roleManager, required ChannelManager channelManager, required dynamic payload}) {

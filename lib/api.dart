@@ -33,4 +33,6 @@ part 'src/api/message.dart';
 part 'src/api/emoji.dart';
 part 'src/api/role.dart';
 
+part 'src/api/utils.dart'
+
 typedef Snowflake = String;
