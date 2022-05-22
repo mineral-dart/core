@@ -159,7 +159,7 @@ class Guild {
   }
 
   Future<void> setSplash (String filename) async {
-    String file = await Helper.getFile(filename);
+    String file = await Helper.getPicture(filename);
 
     Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/guilds/$id", { 'splash': file });
@@ -179,7 +179,7 @@ class Guild {
   }
 
   Future<void> setDiscoverySplash (String filename) async {
-    String file = await Helper.getFile(filename);
+    String file = await Helper.getPicture(filename);
 
     Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/guilds/$id", { 'discovery_splash': file });
@@ -199,7 +199,7 @@ class Guild {
   }
 
   Future<void> setBanner (String filename) async {
-    String file = await Helper.getFile(filename);
+    String file = await Helper.getPicture(filename);
 
     Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/guilds/$id", { 'banner': file });
@@ -219,7 +219,7 @@ class Guild {
   }
 
   Future<void> setIcon (String filename) async {
-    String file = await Helper.getFile(filename);
+    String file = await Helper.getPicture(filename);
 
     Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/guilds/$id", { 'icon': file });

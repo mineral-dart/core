@@ -75,6 +75,7 @@ class GuildCreate implements WebsocketPacket {
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
     });
 
+    guild.stickers.guild = guild;
     guild.stickers.cache.forEach((_, sticker) {
       sticker.guild = guild;
       sticker.guildMember = guild.channels.cache.get(sticker.guildMemberId);
