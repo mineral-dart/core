@@ -16,13 +16,17 @@ class Console {
   }
 
   static error ({ String prefix = 'error', required String message }) {
-    String p = Color.red(prefix);
-    print("[ $p ] $message");
+    print(getErrorMessage(prefix: Color.red(prefix), message: message));
   }
 
   static warn ({ String prefix = 'warn', required String message }) {
     String p = Color.yellow(prefix);
     print("[ $p ] $message");
+  }
+
+  static getErrorMessage ({ String? prefix = 'error', required String message }) {
+    String p = Color.red(prefix!);
+    return "[ $p ] $message";
   }
 }
 
