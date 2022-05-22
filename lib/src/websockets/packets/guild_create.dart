@@ -4,6 +4,7 @@ import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/websockets/websocket_packet.dart';
 import 'package:mineral/src/websockets/websocket_response.dart';
 
@@ -13,6 +14,7 @@ class GuildCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
+    EventManager manager = ioc.singleton(Service.event);
     RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(item);
@@ -78,6 +80,6 @@ class GuildCreate implements WebsocketPacket {
     guild.rulesChannel = guild.channels.cache.get<TextChannel>(guild.rulesChannelId);
     guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
 
-    print(guild.welcomeScreen?.fields.length);
+    manager.emit(EventList.guildCreate, { 'guild': guild });
   }
 }
