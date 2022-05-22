@@ -1,4 +1,7 @@
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
+import 'package:mineral/src/api/managers/sticker_manager.dart';
 
 enum StickerType {
   standard(1),
@@ -38,6 +41,7 @@ class Sticker {
   Snowflake? guildMemberId;
   late GuildMember? guildMember;
   int? sortValue;
+  late StickerManager manager;
 
   Sticker({
     required this.id,
@@ -51,6 +55,42 @@ class Sticker {
     required this.guildMemberId,
     required this.sortValue,
   });
+
+  Future<void> setName (String name) async {
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.patch("/guilds/$guildId/stickers/$id", { 'name': name });
+    if (response.statusCode == 200) {
+      this.name = name;
+    }
+  }
+
+  Future<void> setDescription (String description) async {
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.patch("/guilds/$guildId/stickers/$id", { 'description': description });
+    if (response.statusCode == 200) {
+      this.description = description;
+    }
+  }
+
+  Future<void> setTags (String tags) async {
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.patch("/guilds/$guildId/stickers/$id", { 'tags': tags });
+    if (response.statusCode == 200) {
+      this.tags = tags;
+    }
+  }
+
+  Future<void> delete () async {
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.destroy("/guilds/$guildId/stickers/$id");
+    if (response.statusCode == 200) {
+      manager.cache.remove(id);
+    }
+  }
 
   factory Sticker.from(dynamic payload) {
     dynamic user = payload['user'];

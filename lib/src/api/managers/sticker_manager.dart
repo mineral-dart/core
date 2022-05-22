@@ -27,17 +27,19 @@ class StickerManager implements CacheManager<Sticker> {
         'file': Helper.getPicture(filename)
       });
 
-      print(response.body);
-
       dynamic payload = jsonDecode(response.body);
 
       Sticker sticker = Sticker.from(payload);
+      sticker.manager = this;
       cache.putIfAbsent(sticker.id, () => sticker);
 
       return sticker;
     }
 
-    Console.warn(prefix: 'cancelled', message: "${guild?.name} guild does not have the ${Feature.verified} or ${Feature.partnered} feature.");
+    Console.warn(
+      prefix: 'cancelled',
+      message: "${guild?.name} guild does not have the ${Feature.verified} or ${Feature.partnered} feature."
+    );
     return null;
   }
 
