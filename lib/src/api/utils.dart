@@ -68,3 +68,33 @@ enum Locale {
   @override
   String toString() => locale;
 }
+
+enum Feature {
+  animatedBanner('ANIMATED_BANNER'),
+  animatedIcon('ANIMATED_ICON'),
+  banner('BANNER'),
+  commerce('COMMERCE'),
+  community('COMMUNITY'),
+  discoverable('DISCOVERABLE'),
+  featurable('FEATURABLE'),
+  inviteSplash('INVITE_SPLASH'),
+  memberVerificationGate('MEMBER_VERIFICATION_GATE_ENABLED'),
+  monetizationEnabled('MONETIZATION_ENABLED'),
+  moreSticker('MORE_STICKERS'),
+  news('NEWS'),
+  partnered('PARTNERED'),
+  previewEnabled('PREVIEW_ENABLED'),
+  privateThread('PRIVATE_THREADS'),
+  roleIcons('ROLE_ICONS'),
+  ticketedEventsEnabled('TICKETED_EVENTS_ENABLED'),
+  vanityUrl('VANITY_URL'),
+  verified('VERIFIED'),
+  vipRegions('VIP_REGIONS'),
+  welcomeScreenEnabled('WELCOME_SCREEN_ENABLED');
+
+  final String feature;
+  const Feature(this.feature);
+
+  @override
+  String toString() => feature;
+}
