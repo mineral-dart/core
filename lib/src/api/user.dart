@@ -3,6 +3,7 @@ part of api;
 class User {
   Snowflake id;
   String username;
+  String tag;
   String discriminator;
   bool bot = false;
   int publicFlags;
@@ -11,6 +12,7 @@ class User {
   User({
     required this.id,
     required this.username,
+    required this.tag,
     required this.discriminator,
     required this.bot,
     required this.publicFlags,
@@ -21,6 +23,7 @@ class User {
     return User(
       id: payload['id'],
       username: payload['username'],
+      tag: "${payload['username']}#${payload['discriminator']}",
       discriminator: payload['discriminator'],
       bot: payload['bot'] == true,
       publicFlags: payload['public_flags'] ?? 0,
