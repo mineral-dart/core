@@ -1,8 +1,8 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
-import 'package:mineral/src/websockets/websocket_packet.dart';
-import 'package:mineral/src/websockets/websocket_response.dart';
+import 'package:mineral/src/internal/websockets/websocket_packet.dart';
+import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 class Ready implements WebsocketPacket {
   @override

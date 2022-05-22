@@ -5,8 +5,8 @@ import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
-import 'package:mineral/src/websockets/websocket_packet.dart';
-import 'package:mineral/src/websockets/websocket_response.dart';
+import 'package:mineral/src/internal/websockets/websocket_packet.dart';
+import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 class GuildCreate implements WebsocketPacket {
   @override

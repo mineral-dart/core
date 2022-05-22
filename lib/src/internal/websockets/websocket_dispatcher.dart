@@ -1,7 +1,8 @@
-import 'package:mineral/src/websockets/packets/guild_create.dart';
-import 'package:mineral/src/websockets/packets/ready.dart';
-import 'package:mineral/src/websockets/websocket_packet.dart';
-import 'package:mineral/src/websockets/websocket_response.dart';
+
+import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
+import 'package:mineral/src/internal/websockets/packets/ready.dart';
+import 'package:mineral/src/internal/websockets/websocket_packet.dart';
+import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 class WebsocketDispatcher {
   final Map<String, List<WebsocketPacket>> _packets = {};

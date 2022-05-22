@@ -4,8 +4,8 @@ import 'dart:io';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:http/http.dart';
-import 'package:mineral/src/websockets/websocket_dispatcher.dart';
-import 'package:mineral/src/websockets/websocket_response.dart';
+import 'package:mineral/src/internal/websockets/websocket_dispatcher.dart';
+import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 
 class WebsocketManager {
