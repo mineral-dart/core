@@ -22,7 +22,7 @@ class GuildCreate implements WebsocketPacket {
     }
 
     MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
-    for(dynamic member in websocketResponse.payload['members']) {
+    for (dynamic member in websocketResponse.payload['members']) {
       GuildMember guildMember = GuildMember.from(
         roles: roleManager,
         user: User.from(member['user']),
@@ -73,6 +73,11 @@ class GuildCreate implements WebsocketPacket {
       channel.guildId = guild.id;
       channel.guild = guild;
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
+    });
+
+    guild.stickers.cache.forEach((_, sticker) {
+      sticker.guild = guild;
+      sticker.guildMember = guild.channels.cache.get(sticker.guildMemberId);
     });
 
     guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
