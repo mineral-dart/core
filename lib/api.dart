@@ -12,6 +12,8 @@ import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/api/managers/sticker_manager.dart';
+import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 
 part 'src/api/mineral_client.dart';
