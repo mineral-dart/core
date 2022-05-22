@@ -23,7 +23,6 @@ class RoleManager implements CacheManager<Role> {
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
-      print(element);
       Role role = Role.from(element);
       cache.putIfAbsent(role.id, () => role);
     }
