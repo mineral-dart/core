@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
+import 'package:mineral/exception.dart';
 
 class WebsocketResponse {
   String? type;
@@ -27,6 +28,13 @@ class AuthenticationResponse {
   AuthenticationResponse({ required this.url });
 
   factory AuthenticationResponse.fromResponse (Response response) {
+    if (response.statusCode == 401) {
+      throw TokenException(
+        prefix: 'INVALID TOKEN',
+        cause: 'APP_TOKEN isn\'t valid in your environment'
+      );
+    }
+
     dynamic json = jsonDecode(response.body);
     return AuthenticationResponse(url: json['url']);
   }

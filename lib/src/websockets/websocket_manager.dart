@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:http/http.dart';
 import 'package:mineral/src/websockets/websocket_dispatcher.dart';
@@ -27,24 +28,30 @@ class WebsocketManager {
     AuthenticationResponse authenticationResponse = AuthenticationResponse.fromResponse(response);
 
     websocket = await WebSocket.connect(authenticationResponse.url);
+    Console.info(message: 'Websocket is connected');
 
-    send(OpCode.identify, {
+    _send(OpCode.identify, {
       'token': token,
       'intents': 131071,
       'properties': { '\$os': 'linux' }
     });
 
-    websocket.listen((event) async {
-      WebsocketResponse websocket = WebsocketResponse.from(event);
-      if (websocket.op == OpCode.dispatch) {
-        await websocketDispatcher.dispatch(websocket);
-      }
-    });
-
+    websocket.listen(_listen, onDone: _done);
     return websocket;
   }
 
-  void send (int code, Object payload) {
+  Future<void> _listen (event) async {
+    WebsocketResponse websocket = WebsocketResponse.from(event);
+    if (websocket.op == OpCode.dispatch) {
+      await websocketDispatcher.dispatch(websocket);
+    }
+  }
+
+  void _done () {
+    Console.info(message: 'Websocket channel was closed');
+  }
+
+  void _send (int code, Object payload) {
     websocket.add(jsonEncode({
       'op': code,
       'd': payload
