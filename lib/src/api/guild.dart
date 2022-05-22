@@ -19,7 +19,6 @@ class Guild {
   int defaultMessageNotifications;
   int explicitContentFilter;
   RoleManager roles;
-  // emojis;
   List<dynamic> features;
   int mfaLevel;
   Snowflake? applicationId;
@@ -43,7 +42,7 @@ class Guild {
   int? approximatePresenceCount;
   WelcomeScreen? welcomeScreen;
   int nsfwLevel;
-  // stickers;
+  StickerManager stickers;
   bool premiumProgressBarEnabled;
   MemberManager members;
   ChannelManager channels;
@@ -67,8 +66,6 @@ class Guild {
     required this.defaultMessageNotifications,
     required this.explicitContentFilter,
     required this.roles,
-    // required this.emojis,
-    // required this.features,
     required this.mfaLevel,
     required this.applicationId,
     required this.systemChannelId,
@@ -88,7 +85,7 @@ class Guild {
     required this.approximatePresenceCount,
     required this.welcomeScreen,
     required this.nsfwLevel,
-    // required this.stickers,
+    required this.stickers,
     required this.premiumProgressBarEnabled,
     required this.members,
     required this.channels,
@@ -281,6 +278,12 @@ class Guild {
   }
 
   factory Guild.from({ required EmojiManager emojiManager, required MemberManager memberManager, required RoleManager roleManager, required ChannelManager channelManager, required dynamic payload}) {
+    StickerManager stickerManager = StickerManager(guildId: payload['id']);
+    for (dynamic element in payload['stickers']) {
+      Sticker sticker = Sticker.from(element);
+      stickerManager.cache.putIfAbsent(sticker.id, () => sticker);
+    }
+
     return Guild(
       id: payload['id'],
       name: payload['name'],
@@ -317,9 +320,8 @@ class Guild {
       maxVideoChannelUsers: payload['max_video_channel_users'],
       approximateMemberCount: payload['approximate_member_count'],
       approximatePresenceCount: payload['approximate_presence_count'],
-      // payload['welcome_screen'],
       nsfwLevel: payload['nsfw_level'],
-      // payload['stickers'],
+      stickers: stickerManager,
       premiumProgressBarEnabled: payload['premium_progress_bar_enabled'],
       members: memberManager,
       channels: channelManager,
