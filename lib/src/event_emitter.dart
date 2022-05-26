@@ -20,7 +20,6 @@ class EventEmitter<T> {
       CallbackCollection<T>? collection = _listeners[event];
 
       collection?.forEach((callback) {
-        print(callback);
         callback.call(args as T);
       });
     }

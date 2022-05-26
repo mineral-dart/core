@@ -15,8 +15,8 @@ class Helper {
     return "data:image/png;base64,$encoded";
   }
 
-  static Future<String> getFile(String filename) async {
-    String fileLocation = path.join(Directory.current.path, 'bin', filename);
+  static Future<String> getPicture(String filename) async {
+    String fileLocation = path.join(Directory.current.path, filename);
     File file = File(fileLocation);
 
     Uint8List imageBytes = await file.readAsBytes();

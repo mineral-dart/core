@@ -16,7 +16,6 @@ class MineralClient {
   });
 
   factory MineralClient.from({ required dynamic payload }) {
-    print(payload['application']);
     return MineralClient(
       user: User.from(payload['user']),
       guilds: GuildManager(),

@@ -4,8 +4,9 @@ import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
-import 'package:mineral/src/websockets/websocket_packet.dart';
-import 'package:mineral/src/websockets/websocket_response.dart';
+import 'package:mineral/src/internal/entities/event_manager.dart';
+import 'package:mineral/src/internal/websockets/websocket_packet.dart';
+import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 class GuildCreate implements WebsocketPacket {
   @override
@@ -13,6 +14,7 @@ class GuildCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
+    EventManager manager = ioc.singleton(Service.event);
     RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(item);
@@ -20,7 +22,7 @@ class GuildCreate implements WebsocketPacket {
     }
 
     MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
-    for(dynamic member in websocketResponse.payload['members']) {
+    for (dynamic member in websocketResponse.payload['members']) {
       GuildMember guildMember = GuildMember.from(
         roles: roleManager,
         user: User.from(member['user']),
@@ -73,6 +75,17 @@ class GuildCreate implements WebsocketPacket {
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
     });
 
-    await guild.removeIcon();
+    guild.stickers.guild = guild;
+    guild.stickers.cache.forEach((_, sticker) {
+      sticker.guild = guild;
+      sticker.guildMember = guild.channels.cache.get(sticker.guildMemberId);
+    });
+
+    guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
+    guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);
+    guild.rulesChannel = guild.channels.cache.get<TextChannel>(guild.rulesChannelId);
+    guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
+
+    manager.emit(EventList.guildCreate, { 'guild': guild });
   }
 }
