@@ -16,6 +16,8 @@ import 'package:mineral/src/api/managers/sticker_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 
+import 'exception.dart';
+
 part 'src/api/mineral_client.dart';
 part 'src/api/application.dart';
 part 'src/api/user.dart';

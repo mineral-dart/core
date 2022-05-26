@@ -3,6 +3,7 @@ library helper;
 import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
+import 'package:mineral/api.dart';
 import 'package:path/path.dart' as path;
 
 class Helper {
@@ -21,5 +22,19 @@ class Helper {
 
     Uint8List imageBytes = await file.readAsBytes();
     return Helper.toImageData(imageBytes);
+  }
+
+  static int toRgbColor (Color color) {
+    return int.parse(color.toString().replaceAll('#', ''), radix: 16);
+  }
+
+  static int reduceRolePermissions (List<Permission> permissions) {
+    int _permissions = 0;
+
+    for (Permission permission in permissions) {
+      _permissions += permission.value;
+    }
+
+    return _permissions;
   }
 }
