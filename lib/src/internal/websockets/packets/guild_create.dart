@@ -48,6 +48,7 @@ class GuildCreate implements WebsocketPacket {
       Emoji emoji = Emoji.from(
         memberManager: memberManager,
         roleManager: roleManager,
+        emojiManager: emojiManager,
         payload: payload
       );
 
@@ -85,6 +86,7 @@ class GuildCreate implements WebsocketPacket {
     guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);
     guild.rulesChannel = guild.channels.cache.get<TextChannel>(guild.rulesChannelId);
     guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
+    guild.emojis.guild = guild;
 
     manager.emit(EventList.guildCreate, { 'guild': guild });
   }
