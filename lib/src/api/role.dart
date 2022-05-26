@@ -28,6 +28,7 @@ class Role {
   bool managed;
   bool mentionable;
   Tag? tags;
+  RoleManager manager;
 
   Role({
     required this.id,
@@ -40,10 +41,99 @@ class Role {
     required this.permissions,
     required this.managed,
     required this.mentionable,
-    required this.tags
+    required this.tags,
+    required this.manager,
   });
 
-  factory Role.from(dynamic payload) {
+  Future<void> setLabel (String label) async {
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'name': label });
+    if (response.statusCode == 200) {
+      this.label = label;
+    }
+  }
+
+  Future<void> setPermissions (List<Permission> permissions) async {
+    Http http = ioc.singleton(Service.http);
+
+    int _permissions = Helper.reduceRolePermissions(permissions);
+    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", {
+      'permissions': _permissions,
+    });
+
+    if (response.statusCode == 200) {
+      this.permissions = _permissions;
+    }
+  }
+
+  Future<void> setColor (Color color) async {
+    Http http = ioc.singleton(Service.http);
+
+    int _color = Helper.toRgbColor(color);
+    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'color': _color });
+    if (response.statusCode == 200) {
+      this.color = _color;
+    }
+  }
+
+  Future<void> setHoist (bool hoist) async {
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'hoist': hoist });
+    if (response.statusCode == 200) {
+      this.hoist = hoist;
+    }
+  }
+
+  Future<void> setIcon (String path) async {
+    if (!manager.guild.features.contains('ROLE_ICONS')) {
+      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+    }
+
+    String icon = await Helper.getPicture(path);
+
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'icon': icon });
+    if (response.statusCode == 200) {
+      this.icon = icon;
+    }
+  }
+
+  Future<void> setUnicodeEmoji (String unicode) async {
+    if (!manager.guild.features.contains('ROLE_ICONS')) {
+      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+    }
+
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'unicode_emoji': unicode });
+    if (response.statusCode == 200) {
+      unicodeEmoji = unicode;
+    }
+  }
+
+  Future<void> setMentionable (bool mentionable) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'mentionable': mentionable });
+    if (response.statusCode == 200) {
+      this.mentionable = mentionable;
+    }
+  }
+
+  Future<void> delete () async {
+    if (managed || label == '@everyone') {
+      return;
+    }
+
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.destroy("/guilds/${manager.guildId}/roles/$id");
+
+    if (response.statusCode == 200) {
+      manager.cache.remove(id);
+    }
+  }
+
+  factory Role.from({ required RoleManager roleManager, dynamic payload }) {
     return Role(
       id: payload['id'],
       label: payload['name'],
@@ -55,7 +145,8 @@ class Role {
       permissions: payload['permissions'],
       managed: payload['managed'],
       mentionable: payload['mentionable'],
-      tags: payload['tags'] != null ? Tag.from(payload: payload['tags']) : null
+      tags: payload['tags'] != null ? Tag.from(payload: payload['tags']) : null,
+      manager: roleManager,
     );
   }
 }

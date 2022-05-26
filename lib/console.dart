@@ -20,8 +20,12 @@ class Console {
   }
 
   static warn ({ String prefix = 'warn', required String message }) {
-    String p = ColorList.yellow(prefix);
-    print("[ $p ] $message");
+    print(getWarnMessage(prefix: ColorList.yellow(prefix), message: message));
+  }
+
+  static String getWarnMessage ({ String? prefix = 'warn', required String message }) {
+    String p = ColorList.yellow(prefix!);
+    return "[ $p ] $message";
   }
 
   static String getErrorMessage ({ String? prefix = 'error', required String message }) {
