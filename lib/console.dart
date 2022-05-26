@@ -24,7 +24,7 @@ class Console {
     print("[ $p ] $message");
   }
 
-  static getErrorMessage ({ String? prefix = 'error', required String message }) {
+  static String getErrorMessage ({ String? prefix = 'error', required String message }) {
     String p = ColorList.red(prefix!);
     return "[ $p ] $message";
   }
