@@ -31,6 +31,34 @@ class TextBasedChannel extends Channel {
     flags: flags,
   );
 
+  Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, bool? tts }) async {
+    Http http = ioc.singleton(Service.http);
+    List<dynamic> embedList = [];
+
+    if (embeds != null) {
+      for (MessageEmbed element in embeds) {
+        embedList.add(element.toJson());
+      }
+    }
+
+    Response response = await http.post("/channels/$id/messages", {
+      'tts': tts ?? false,
+      'content': content,
+      'embeds': embeds != null ? embedList : [],
+    });
+
+    if (response.statusCode == 200) {
+      dynamic payload = jsonDecode(response.body);
+
+      Message message = Message.from(channel: this, payload: payload);
+      messages.cache.putIfAbsent(message.id, () => message);
+
+      return message;
+    }
+
+    return null;
+  }
+
   Future<dynamic> setDescription (String description) async {
     Http http = ioc.singleton(Service.http);
     Response response = await http.patch("/channels/$id", { 'topic': description });

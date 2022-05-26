@@ -98,3 +98,18 @@ enum Feature {
   @override
   String toString() => feature;
 }
+
+enum MessageFlag {
+  crossPosted(1 << 0),
+  isCrossPost(1 << 1),
+  suppressEmbeds(1 << 2),
+  sourceMessageDeleted(1 << 3),
+  urgent(1 << 4),
+  hasThread(1 << 5),
+  ephemeral(1 << 6),
+  loading(1 << 7),
+  failedToMentionSomeRolesInThread(1 << 8);
+
+  final int value;
+  const MessageFlag(this.value);
+}

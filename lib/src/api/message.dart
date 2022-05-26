@@ -49,8 +49,8 @@ class Message {
     return Message(
       id: payload['id'],
       content: payload['content'],
-      tts: payload['tts'],
-      allowMentions: payload['allow_mentions'],
+      tts: payload['tts'] ?? false,
+      allowMentions: payload['allow_mentions'] ?? false,
       reference: payload['reference'],
       flags: payload['flags'],
       channelId: channel.id,
