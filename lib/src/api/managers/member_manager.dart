@@ -19,7 +19,7 @@ class MemberManager implements CacheManager<GuildMember> {
     Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get("/guilds/$guildId/members");
+    Response response = await http.get(url: "/guilds/$guildId/members");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {

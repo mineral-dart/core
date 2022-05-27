@@ -95,7 +95,7 @@ class Guild {
 
   Future<void> setName (String name) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'name': name });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'name': name });
 
     if (response.statusCode == 200) {
       this.name = name;
@@ -104,7 +104,7 @@ class Guild {
 
   Future<void> setVerificationLevel (int level) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'verification_level': level });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'verification_level': level });
 
     if (response.statusCode == 200) {
       verificationLevel = level;
@@ -113,7 +113,7 @@ class Guild {
 
   Future<Guild> setMessageNotification (int level) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'default_message_notifications': level });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'default_message_notifications': level });
 
     if (response.statusCode == 200) {
       defaultMessageNotifications = level;
@@ -124,7 +124,7 @@ class Guild {
 
   Future<void> setExplicitContentFilter (int level) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'explicit_content_filter': level });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'explicit_content_filter': level });
 
     if (response.statusCode == 200) {
       explicitContentFilter = level;
@@ -133,7 +133,7 @@ class Guild {
 
   Future<void> setAfkChannel (VoiceChannel channel) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'afk_channel_id': channel.id });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'afk_channel_id': channel.id });
 
     if (response.statusCode == 200) {
       afkChannel = channel;
@@ -150,7 +150,7 @@ class Guild {
       return;
     }
 
-    Response response = await http.patch("/guilds/$id", { 'owner_id': guildMember.user.id });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'owner_id': guildMember.user.id });
 
     if (response.statusCode == 200) {
       owner = guildMember;
@@ -162,7 +162,7 @@ class Guild {
     String file = await Helper.getPicture(filename);
 
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'splash': file });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'splash': file });
 
     if (response.statusCode == 200) {
       splash = file;
@@ -171,7 +171,7 @@ class Guild {
 
   Future<void> removeSplash () async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'splash': null });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'splash': null });
 
     if (response.statusCode == 200) {
       splash = null;
@@ -182,7 +182,7 @@ class Guild {
     String file = await Helper.getPicture(filename);
 
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'discovery_splash': file });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'discovery_splash': file });
 
     if (response.statusCode == 200) {
       discoverySplash = file;
@@ -191,7 +191,7 @@ class Guild {
 
   Future<void> removeDiscoverySplash () async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'discovery_splash': null });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'discovery_splash': null });
 
     if (response.statusCode == 200) {
       discoverySplash = null;
@@ -202,7 +202,7 @@ class Guild {
     String file = await Helper.getPicture(filename);
 
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'banner': file });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'banner': file });
 
     if (response.statusCode == 200) {
       banner = file;
@@ -211,7 +211,7 @@ class Guild {
 
   Future<void> removeBanner () async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'banner': null });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'banner': null });
 
     if (response.statusCode == 200) {
       banner = null;
@@ -222,7 +222,7 @@ class Guild {
     String file = await Helper.getPicture(filename);
 
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'icon': file });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': file });
 
     if (response.statusCode == 200) {
       icon = file;
@@ -231,7 +231,7 @@ class Guild {
 
   Future<void> removeIcon () async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'icon': null });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': null });
 
     if (response.statusCode == 200) {
       icon = null;
@@ -240,7 +240,7 @@ class Guild {
 
   Future<void> setSystemChannel (TextChannel channel) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'system_channel_id': channel.id });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'system_channel_id': channel.id });
 
     if (response.statusCode == 200) {
       systemChannelId = channel.id;
@@ -250,7 +250,7 @@ class Guild {
 
   Future<void> setRulesChannel (TextChannel channel) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'rules_channel_id': channel.id });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'rules_channel_id': channel.id });
 
     if (response.statusCode == 200) {
       rulesChannelId = channel.id;
@@ -260,7 +260,7 @@ class Guild {
 
   Future<void> setPublicUpdateChannel (TextChannel channel) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'public_updates_channel_id': channel.id });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': channel.id });
 
     if (response.statusCode == 200) {
       publicUpdatesChannelId = channel.id;
@@ -270,7 +270,7 @@ class Guild {
 
   Future<void> setPreferredLocale (Locale locale) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/$id", { 'public_updates_channel_id': locale });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': locale });
 
     if (response.statusCode == 200) {
       preferredLocale = locale as String;

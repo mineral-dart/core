@@ -48,7 +48,7 @@ class Role {
   Future<void> setLabel (String label) async {
     Http http = ioc.singleton(Service.http);
 
-    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'name': label });
+    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'name': label });
     if (response.statusCode == 200) {
       this.label = label;
     }
@@ -58,9 +58,7 @@ class Role {
     Http http = ioc.singleton(Service.http);
 
     int _permissions = Helper.reduceRolePermissions(permissions);
-    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", {
-      'permissions': _permissions,
-    });
+    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'permissions': _permissions });
 
     if (response.statusCode == 200) {
       this.permissions = _permissions;
@@ -71,7 +69,7 @@ class Role {
     Http http = ioc.singleton(Service.http);
 
     int _color = Helper.toRgbColor(color);
-    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'color': _color });
+    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'color': _color });
     if (response.statusCode == 200) {
       this.color = _color;
     }
@@ -80,7 +78,7 @@ class Role {
   Future<void> setHoist (bool hoist) async {
     Http http = ioc.singleton(Service.http);
 
-    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'hoist': hoist });
+    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'hoist': hoist });
     if (response.statusCode == 200) {
       this.hoist = hoist;
     }
@@ -94,7 +92,7 @@ class Role {
     String icon = await Helper.getPicture(path);
 
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'icon': icon });
+    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'icon': icon });
     if (response.statusCode == 200) {
       this.icon = icon;
     }
@@ -106,7 +104,7 @@ class Role {
     }
 
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'unicode_emoji': unicode });
+    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'unicode_emoji': unicode });
     if (response.statusCode == 200) {
       unicodeEmoji = unicode;
     }
@@ -114,7 +112,7 @@ class Role {
 
   Future<void> setMentionable (bool mentionable) async {
     Http http = ioc.singleton(Service.http);
-    Response response = await http.patch("/guilds/${manager.guildId}/roles/$id", { 'mentionable': mentionable });
+    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'mentionable': mentionable });
     if (response.statusCode == 200) {
       this.mentionable = mentionable;
     }
@@ -126,7 +124,7 @@ class Role {
     }
 
     Http http = ioc.singleton(Service.http);
-    Response response = await http.destroy("/guilds/${manager.guildId}/roles/$id");
+    Response response = await http.destroy(url: "/guilds/${manager.guildId}/roles/$id");
 
     if (response.statusCode == 200) {
       manager.cache.remove(id);

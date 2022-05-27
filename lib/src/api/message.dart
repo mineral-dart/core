@@ -36,7 +36,7 @@ class Message {
   Future<Message> sync () async {
     Http http = ioc.singleton(Service.http);
 
-    Response response = await http.get("/channels/${channel.id}");
+    Response response = await http.get(url: "/channels/${channel.id}");
     dynamic payload = jsonDecode(response.body);
 
     Message message = Message.from(channel: channel, payload: payload);

@@ -17,7 +17,7 @@ class WebsocketManager {
   WebsocketManager(this.http);
 
   Future<Response> getWebsocketEndpoint (int version) async {
-    return http.get("/v$version/gateway/bot");
+    return http.get(url: "/v$version/gateway/bot");
   }
 
   Future<WebSocket> connect ({ required String token }) async {

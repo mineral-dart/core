@@ -10,23 +10,37 @@ class Http {
     _headers.putIfAbsent(header, () => value);
   }
 
-  Future<http.Response> get (String url) async {
-    return http.get(Uri.parse("$baseUrl$url"), headers: _headers);
+  void removeHeader (String header) {
+    _headers.remove(header);
   }
 
-  Future<http.Response> post (String url, dynamic payload) async {
-    return http.post(Uri.parse("$baseUrl$url"), body: jsonEncode(payload), headers: _headers);
+  Future<http.Response> get ({ required String url, Map<String, String>? headers }) async {
+    return http.get(Uri.parse("$baseUrl$url"), headers: _getHeaders(headers));
   }
 
-  Future<http.Response> put (String url, dynamic payload) async {
-    return http.put(Uri.parse("$baseUrl$url"), body: payload, headers: _headers);
+  Future<http.Response> post ({ required String url, required dynamic payload, Map<String, String>? headers }) async {
+    return http.post(Uri.parse("$baseUrl$url"), body: jsonEncode(payload), headers: _getHeaders(headers));
   }
 
-  Future<http.Response> patch (String url, dynamic payload) async {
-    return http.patch(Uri.parse("$baseUrl$url"), body: jsonEncode(payload), headers: _headers);
+  Future<http.Response> put ({ required String url, required dynamic payload, Map<String, String>? headers }) async {
+    return http.put(Uri.parse("$baseUrl$url"), body: payload, headers: _getHeaders(headers));
   }
 
-  Future<http.Response> destroy (String url) async {
-    return http.delete(Uri.parse("$baseUrl$url"), headers: _headers);
+  Future<http.Response> patch ({ required String url, required dynamic payload, Map<String, String>? headers }) async {
+    return http.patch(Uri.parse("$baseUrl$url"), body: jsonEncode(payload), headers: _getHeaders(headers));
+  }
+
+  Future<http.Response> destroy ({ required String url, Map<String, String>? headers }) async {
+    return http.delete(Uri.parse("$baseUrl$url"), headers: _getHeaders(headers));
+  }
+
+  Map<String, String> _getHeaders (Map<String, String>? headers) {
+    Map<String, String> map = Map.from(_headers);
+
+    if (headers != null) {
+      map.addAll(headers);
+    }
+
+    return map;
   }
 }

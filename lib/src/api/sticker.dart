@@ -59,7 +59,7 @@ class Sticker {
   Future<void> setName (String name) async {
     Http http = ioc.singleton(Service.http);
 
-    Response response = await http.patch("/guilds/$guildId/stickers/$id", { 'name': name });
+    Response response = await http.patch(url: "/guilds/$guildId/stickers/$id", payload: { 'name': name });
     if (response.statusCode == 200) {
       this.name = name;
     }
@@ -68,7 +68,7 @@ class Sticker {
   Future<void> setDescription (String description) async {
     Http http = ioc.singleton(Service.http);
 
-    Response response = await http.patch("/guilds/$guildId/stickers/$id", { 'description': description });
+    Response response = await http.patch(url: "/guilds/$guildId/stickers/$id", payload: { 'description': description });
     if (response.statusCode == 200) {
       this.description = description;
     }
@@ -77,7 +77,7 @@ class Sticker {
   Future<void> setTags (String tags) async {
     Http http = ioc.singleton(Service.http);
 
-    Response response = await http.patch("/guilds/$guildId/stickers/$id", { 'tags': tags });
+    Response response = await http.patch(url: "/guilds/$guildId/stickers/$id", payload: { 'tags': tags });
     if (response.statusCode == 200) {
       this.tags = tags;
     }
@@ -86,7 +86,7 @@ class Sticker {
   Future<void> delete () async {
     Http http = ioc.singleton(Service.http);
 
-    Response response = await http.destroy("/guilds/$guildId/stickers/$id");
+    Response response = await http.destroy(url: "/guilds/$guildId/stickers/$id");
     if (response.statusCode == 200) {
       manager.cache.remove(id);
     }

@@ -19,7 +19,7 @@ class MessageManager implements CacheManager<Message> {
     Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get("/channels/$_channelId/messages");
+    Response response = await http.get(url: "/channels/$_channelId/messages");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {

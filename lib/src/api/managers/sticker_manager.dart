@@ -20,7 +20,7 @@ class StickerManager implements CacheManager<Sticker> {
   Future<Sticker?> create ({ required String name, required String description, required String tags, required String filename }) async {
     if (guild!.features.contains(Feature.verified) || guild!.features.contains(Feature.partnered)) {
       Http http = ioc.singleton(Service.http);
-      Response response = await http.post("/guilds/$guildId/stickers", {
+      Response response = await http.post(url: "/guilds/$guildId/stickers", payload: {
         'name': name,
         'description': description,
         'tags': tags,
@@ -48,7 +48,7 @@ class StickerManager implements CacheManager<Sticker> {
     Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get("/guilds/$guildId/stickers");
+    Response response = await http.get(url: "/guilds/$guildId/stickers");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {

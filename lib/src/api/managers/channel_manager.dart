@@ -19,7 +19,7 @@ class ChannelManager implements CacheManager<Channel> {
     Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get("/guilds/$guildId/channels");
+    Response response = await http.get(url: "/guilds/$guildId/channels");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -68,7 +68,7 @@ class ChannelManager implements CacheManager<Channel> {
   Future<T?> _create<T> ({ required dynamic data }) async {
     Http http = ioc.singleton(Service.http);
 
-    Response response = await http.post("/guilds/$guildId/channels", data);
+    Response response = await http.post(url: "/guilds/$guildId/channels", payload: data);
     dynamic payload = jsonDecode(response.body);
 
     if (channels.containsKey(payload['type'])) {

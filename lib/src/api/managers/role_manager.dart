@@ -21,7 +21,7 @@ class RoleManager implements CacheManager<Role> {
     Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get("/guilds/$guildId/roles");
+    Response response = await http.get(url: "/guilds/$guildId/roles");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -44,7 +44,7 @@ class RoleManager implements CacheManager<Role> {
     int? _permissions = permissions != null ? Helper.reduceRolePermissions(permissions) : null;
 
     Http http = ioc.singleton(Service.http);
-    Response response = await http.post("/guilds/$guildId/roles", {
+    Response response = await http.post(url: "/guilds/$guildId/roles", payload: {
       'name': label,
       'color': color != null ? Helper.toRgbColor(color) : null,
       'hoist': hoist ?? false,

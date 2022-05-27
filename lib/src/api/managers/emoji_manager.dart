@@ -21,7 +21,7 @@ class EmojiManager implements CacheManager<Emoji> {
     Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get("/guilds/$guildId/emojis");
+    Response response = await http.get(url: "/guilds/$guildId/emojis");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -45,7 +45,7 @@ class EmojiManager implements CacheManager<Emoji> {
 
     Http http = ioc.singleton(Service.http);
     String image = await Helper.getPicture(path);
-    Response response = await http.post("/guilds/$guildId/emojis", {
+    Response response = await http.post(url: "/guilds/$guildId/emojis", payload: {
       'name': label,
       'image': image,
       'roles': roles ?? [],
