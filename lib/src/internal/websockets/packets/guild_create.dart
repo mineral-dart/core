@@ -67,6 +67,8 @@ class GuildCreate implements WebsocketPacket {
     // Assign guild members
     guild.members.cache.forEach((Snowflake id, GuildMember member) {
       member.guild = guild;
+      member.voice.member = member;
+      member.voice.channel = guild.channels.cache.get(member.voice.channelId);
     });
 
     // Assign guild channels

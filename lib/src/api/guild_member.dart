@@ -7,11 +7,10 @@ class GuildMember {
   DateTime joinedAt;
   DateTime? premiumSince;
   String? permissions;
-  bool deaf;
-  bool mute;
-  bool pending;
-  DateTime? timeout;
+  bool isPending;
+  DateTime? timeoutDuration;
   RoleManager roles;
+  Voice voice;
   late Guild guild;
 
   GuildMember({
@@ -21,12 +20,62 @@ class GuildMember {
     required this.joinedAt,
     required this.premiumSince,
     required this.permissions,
-    required this.deaf,
-    required this.mute,
-    required this.pending,
-    required this.timeout,
+    required this.isPending,
+    required this.timeoutDuration,
     required this.roles,
+    required this.voice,
   });
+
+  Future<void> setUsername (String name) async {
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.patch("/guilds/${guild.id}/members/${user.id}", { 'nick': name });
+    if (response.statusCode == 200) {
+      nickname = name;
+    }
+  }
+
+  Future<void> timeout (DateTime expiration) async {
+    // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.patch("/guilds/${guild.id}/members/${user.id}", { 'deaf': expiration.toIso8601String() });
+    if (response.statusCode == 200) {
+      timeoutDuration = expiration;
+    }
+  }
+
+  Future<void> removeTimeout () async {
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.patch("/guilds/${guild.id}/members/${user.id}", { 'deaf': null });
+    if (response.statusCode == 200) {
+      timeoutDuration = null;
+    }
+  }
+
+  Future<void> ban ({ int? count, String? reason }) async {
+    Http http = ioc.singleton(Service.http);
+
+    Response response = await http.patch("/guilds/${guild.id}/bans/${user.id}", {
+      'delete_message_days': count,
+      'reason': reason
+    });
+
+    if (response.statusCode == 200) {
+      timeoutDuration = null;
+    }
+  }
+
+  Future<void> kick ({ int? count, String? reason }) async {
+    Http http = ioc.singleton(Service.http);
+    await http.destroy("/guilds/${guild.id}/members/${user.id}");
+  }
+
+  @override
+  String toString () {
+    return "<@${nickname != null ? '!' : ''}${user.id}>";
+  }
 
   factory GuildMember.from({ required user, required RoleManager roles, dynamic member, required Snowflake guildId }) {
     RoleManager roleManager = RoleManager(guildId: guildId);
@@ -44,11 +93,10 @@ class GuildMember {
       joinedAt: DateTime.parse(member['joined_at']),
       premiumSince: member['premium_since'] != null ? DateTime.parse(member['premium_since']) : null,
       permissions: member['permissions'],
-      deaf: member['deaf'] == true,
-      mute: member['mute'] == true,
-      pending: member['pending'] == true,
-      timeout: member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
+      isPending: member['pending'] == true,
+      timeoutDuration: member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
       roles: roleManager,
+      voice: Voice.from(payload: member),
     );
   }
 }

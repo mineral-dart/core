@@ -22,6 +22,7 @@ part 'src/api/mineral_client.dart';
 part 'src/api/application.dart';
 part 'src/api/user.dart';
 part 'src/api/guild_member.dart';
+part 'src/api/voice.dart';
 
 part 'src/api/guild.dart';
 
