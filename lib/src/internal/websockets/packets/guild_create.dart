@@ -15,6 +15,7 @@ class GuildCreate implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventManager manager = ioc.singleton(Service.event);
+    MineralClient client = ioc.singleton(Service.client);
 
     RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
@@ -91,6 +92,8 @@ class GuildCreate implements WebsocketPacket {
     guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
     guild.emojis.guild = guild;
     guild.roles.guild = guild;
+
+    client.guilds.cache.putIfAbsent(guild.id, () => guild);
 
     manager.emit(EventList.guildCreate, { 'guild': guild });
   }

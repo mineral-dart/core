@@ -30,8 +30,8 @@ class Timestamp {
   }
 }
 
-class Presence {
-  String label;
+class ClientPresence {
+  String? label;
   PresenceType type;
   String? url;
   DateTime createdAt;
@@ -45,10 +45,9 @@ class Presence {
   // Secret? secrets;
   // Instance? instance;
   int? flags;
-
   // List<Button> buttons;
 
-  Presence({
+  ClientPresence({
     required this.label,
     required this.type,
     required this.url,
@@ -60,10 +59,10 @@ class Presence {
     required this.flags,
   });
 
-  factory Presence.from({ required dynamic payload }) {
-    return Presence(
+  factory ClientPresence.from({ required dynamic payload }) {
+    return ClientPresence(
       label: payload['name'],
-      type: payload['type'],
+      type: PresenceType.values.firstWhere((type) => type.toString() == payload['type']),
       url: payload['url'],
       createdAt: DateTime.parse(payload['createdAt']),
       timestamps: Timestamp.from(payload: payload['timestamps']),

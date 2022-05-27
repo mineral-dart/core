@@ -9,7 +9,8 @@ class Event {
 
 enum EventList {
   ready('ready'),
-  guildCreate('create::guild');
+  guildCreate('create::guild'),
+  presenceUpdate('update::presence');
 
   final String event;
   const EventList(this.event);

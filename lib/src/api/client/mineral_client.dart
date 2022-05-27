@@ -1,6 +1,6 @@
 part of api;
 
-enum StatusType {
+enum ClientStatus {
   online('online'),
   doNotDisturb('dnd'),
   idle('idle'),
@@ -8,19 +8,19 @@ enum StatusType {
   offline('offline');
 
   final String _value;
-  const StatusType(this._value);
+  const ClientStatus(this._value);
 
   @override
   String toString () => _value;
 }
 
-class Activity {
+class ClientActivity {
  String name;
- int type;
+ PresenceType type;
 
- Activity({ required this.name, required this.type });
+ ClientActivity({ required this.name, required this.type });
 
- dynamic toJson () => { 'name': name, 'type': type };
+ dynamic toJson () => { 'name': name, 'type': type.toString() };
 }
 
 class MineralClient {
@@ -38,12 +38,12 @@ class MineralClient {
     required this.application,
   });
 
-  setPresence ({ Activity? activity, StatusType? status, bool? afk }) {
+  setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
     WebsocketManager manager = ioc.singleton(Service.websocket);
     manager.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
-      'status': status != null ? status.toString() : StatusType.online.toString(),
+      'status': status != null ? status.toString() : ClientStatus.online.toString(),
       'afk': afk ?? false,
     });
   }
