@@ -18,9 +18,12 @@ import 'package:mineral/src/api/welcome_screen.dart';
 
 import 'exception.dart';
 
-part 'src/api/mineral_client.dart';
+part 'src/api/client/mineral_client.dart';
+part 'src/api/client/client_presence.dart';
 part 'src/api/application.dart';
 part 'src/api/user.dart';
+part 'src/api/status.dart';
+part 'src/api/activity.dart';
 part 'src/api/guild_member.dart';
 part 'src/api/voice.dart';
 

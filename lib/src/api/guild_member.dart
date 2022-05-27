@@ -77,6 +77,23 @@ class GuildMember {
     return "<@${nickname != null ? '!' : ''}${user.id}>";
   }
 
+  clone () {
+    return GuildMember(
+      user: user,
+      nickname: nickname,
+      avatar: avatar,
+      joinedAt: joinedAt,
+      premiumSince: premiumSince,
+      permissions: permissions,
+      isPending: isPending,
+      timeoutDuration: timeoutDuration,
+      roles: roles,
+      voice: voice
+    )
+      ..guild = guild
+      ..roles = roles;
+  }
+
   factory GuildMember.from({ required user, required RoleManager roles, dynamic member, required Snowflake guildId }) {
     RoleManager roleManager = RoleManager(guildId: guildId);
     for (var element in (member['roles'] as List<dynamic>)) {

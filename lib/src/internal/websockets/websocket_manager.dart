@@ -30,7 +30,7 @@ class WebsocketManager {
     websocket = await WebSocket.connect(authenticationResponse.url);
     Console.info(message: 'Websocket is connected');
 
-    _send(OpCode.identify, {
+    send(OpCode.identify, {
       'token': token,
       'intents': 131071,
       'properties': { '\$os': 'linux' }
@@ -51,7 +51,7 @@ class WebsocketManager {
     Console.info(message: 'Websocket channel was closed');
   }
 
-  void _send (int code, Object payload) {
+  void send (int code, Object payload) {
     websocket.add(jsonEncode({
       'op': code,
       'd': payload

@@ -8,6 +8,7 @@ class User {
   bool bot = false;
   int publicFlags;
   String? avatar;
+  late Status status;
 
   User({
     required this.id,

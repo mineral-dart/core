@@ -17,8 +17,15 @@ class OpCode {
 }
 
 enum PacketType {
-  ready,
-  guildCreate,
+  ready('READY'),
+  guildCreate('GUILD_CREATE'),
+  presenceUpdate('PRESENCE_UPDATE');
+
+  final String _value;
+  const PacketType(this._value);
+
+  @override
+  String toString () => _value;
 }
 
 class Constants {

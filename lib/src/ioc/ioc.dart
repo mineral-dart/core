@@ -5,6 +5,7 @@ class Service {
   static Symbol client = Symbol('Mineral/Core/Client');
   static Symbol environment = Symbol('Mineral/Core/Environment');
   static Symbol event = Symbol('Mineral/Core/Event');
+  static Symbol websocket = Symbol('Mineral/Core/Websocket');
 }
 
 IocContainer ioc = IocContainer.init();
