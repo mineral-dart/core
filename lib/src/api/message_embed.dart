@@ -129,7 +129,8 @@ class MessageEmbed {
       'footer': footer?.toJson(),
       'timestamp': timestamp?.toIso8601String(),
       'fields': fields,
-      'color': color != null ? int.parse(color.toString().replaceAll('#', ''), radix: 16) : null
+      'color': color != null ? int.parse(color.toString().replaceAll('#', ''), radix: 16) : null,
+      'image': image?.toJson(),
     };
   }
 }
