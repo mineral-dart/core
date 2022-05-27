@@ -12,6 +12,7 @@ class Kernel {
 
     Environment environment = await _loadEnvironment();
     WebsocketManager manager = WebsocketManager(http);
+    ioc.bind(namespace: Service.websocket, service: manager);
 
     String? token = environment.get('APP_TOKEN');
     if (token == null) {

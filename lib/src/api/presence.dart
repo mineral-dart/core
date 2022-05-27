@@ -1,4 +1,4 @@
-import 'package:mineral/api.dart';
+part of api;
 
 enum PresenceType {
   game(0),
