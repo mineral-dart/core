@@ -67,10 +67,22 @@ class MessageEmbed {
   DateTime? timestamp;
   Footer? footer;
   Image? image;
+  // Thumbnail thumbnail;
   Author? author;
-  List<Field> fields = [];
-  Color?
-  color;
+  List<Field>? fields;
+  Color? color;
+
+  MessageEmbed({
+    this.title,
+    this.description,
+    this.url,
+    this.timestamp,
+    this.footer,
+    this.image,
+    this.author,
+    this.fields,
+    this.color,
+  });
 
   MessageEmbed setTitle (String value) {
     title = value;
@@ -113,14 +125,17 @@ class MessageEmbed {
   }
 
   MessageEmbed addField ({ required String name, required String value, bool? inline }) {
-    fields.add(Field(name: name, value: value, inline: inline));
+    fields?.add(Field(name: name, value: value, inline: inline));
     return this;
   }
 
   Object toJson () {
     List<dynamic> fields = [];
-    for (Field field in this.fields) {
-      fields.add(field.toJson());
+
+    if (this.fields != null) {
+      for (Field field in this.fields!) {
+        fields.add(field.toJson());
+      }
     }
 
     return {

@@ -1,6 +1,7 @@
 
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
+import 'package:mineral/src/internal/websockets/packets/message_create.dart';
 import 'package:mineral/src/internal/websockets/packets/presence_update.dart';
 import 'package:mineral/src/internal/websockets/packets/ready.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -13,6 +14,7 @@ class WebsocketDispatcher {
     register(PacketType.ready, Ready());
     register(PacketType.guildCreate, GuildCreate());
     register(PacketType.presenceUpdate, PresenceUpdate());
+    register(PacketType.messageCreate, MessageCreate());
   }
 
   void register (PacketType type, WebsocketPacket packet) {
@@ -25,6 +27,7 @@ class WebsocketDispatcher {
   }
 
   Future<void> dispatch (WebsocketResponse websocketResponse) async {
+    print(websocketResponse.type);
     PacketType? packet = PacketType.values.firstWhere((element) => element.toString() == websocketResponse.type);
 
     if (_packets.containsKey(packet)) {

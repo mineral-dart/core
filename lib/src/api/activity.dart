@@ -45,6 +45,7 @@ class Activity {
 
   factory Activity.from({ required dynamic payload }) {
     print(payload['type']);
+    print(payload);
     return Activity(
       label: payload['name'],
       type: payload['type'] != null ? StatusType.values.firstWhere((status) => status.toString() == payload['type']) : StatusType.offline,

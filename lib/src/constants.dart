@@ -19,7 +19,8 @@ class OpCode {
 enum PacketType {
   ready('READY'),
   guildCreate('GUILD_CREATE'),
-  presenceUpdate('PRESENCE_UPDATE');
+  presenceUpdate('PRESENCE_UPDATE'),
+  messageCreate('MESSAGE_CREATE');
 
   final String _value;
   const PacketType(this._value);
