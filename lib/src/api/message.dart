@@ -9,7 +9,6 @@ class Message {
   Message? reference;
   // List<> components;
   List<MessageStickerItem> stickers;
-  // List<> files;
   dynamic payload;
   List<MessageAttachment> attachments;
   int? flags;
@@ -26,7 +25,6 @@ class Message {
     required this.reference,
     // required this.components,
     required this.stickers,
-    // required this.files,
     required this.payload,
     required this.attachments,
     required this.flags,
