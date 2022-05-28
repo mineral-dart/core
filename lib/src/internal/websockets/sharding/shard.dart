@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:async';
 
-import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/websockets/heartbeat.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_handler.dart';
@@ -26,6 +25,10 @@ class Shard {
   late int? sequence;
   late Heartbeat _heartbeat;
 
+  late String sessionId;
+
+  bool _canResume = false;
+
   Shard(this.id, String gatewayURL, this._token) {
     dispatcher = WebsocketDispatcher();
     _heartbeat = Heartbeat(shard: this);
@@ -39,8 +42,7 @@ class Shard {
       _sendPort = await _stream.first as SendPort;
 
       _sendPort.send(ShardMessage(command: ShardCommand.init, data: {
-        'url': gatewayURL,
-        'token': _token
+        'url': gatewayURL
       }));
       _stream.listen(_handle);
     });
@@ -53,14 +55,21 @@ class Shard {
       case ShardCommand.data:
         if(message.data is! WebsocketResponse) return;
         final WebsocketResponse data = message.data as WebsocketResponse;
+        sequence = data.sequence;
 
         switch(data.op) {
           case OpCode.heartbeat: return _heartbeat.reset();
           case OpCode.hello:
-            _identify();
+            _canResume ? _resume : _identify();
             _heartbeat.start(Duration(milliseconds: data.payload["heartbeat_interval"]));
             break;
-          case OpCode.dispatch: await dispatcher.dispatch(data);
+          case OpCode.dispatch: return await dispatcher.dispatch(data);
+          case OpCode.reconnect:
+            _canResume = true;
+            return _reconnect();
+          case OpCode.invalidSession:
+            _canResume = message.data;
+            _reconnect();
         }
         break;
       default:
@@ -80,6 +89,18 @@ class Shard {
       'token': _token,
       'intents': 131071,
       'properties': { '\$os': Platform.operatingSystem }
+    });
+  }
+
+  void _reconnect() {
+    _sendPort.send(ShardMessage(command: ShardCommand.reconnect));
+  }
+
+  void _resume() {
+    send(OpCode.resume, {
+      'token': _token,
+      'session_id': sessionId,
+      'seq': sequence
     });
   }
 }
