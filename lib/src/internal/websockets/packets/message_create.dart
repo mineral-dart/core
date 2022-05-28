@@ -4,9 +4,9 @@ import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-class PresenceUpdate implements WebsocketPacket {
+class MessageCreate implements WebsocketPacket {
   @override
-  PacketType packetType = PacketType.ready;
+  PacketType packetType = PacketType.messageCreate;
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
@@ -16,13 +16,15 @@ class PresenceUpdate implements WebsocketPacket {
     dynamic payload = websocketResponse.payload;
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
-    String userId = payload['user']['id'];
+    TextBasedChannel? channel = guild?.channels.cache.get(payload['channel_id']);
 
-    GuildMember? beforeMember = guild?.members.cache.get(userId)?.clone();
-    GuildMember? afterMember = guild?.members.cache.get(userId);
+    if (channel == null) {
+      return;
+    }
 
-    afterMember?.user.status = Status.from(guild: guild!, payload: payload);
+    Message message = Message.from(channel: channel, payload: payload);
+    channel.messages.cache.putIfAbsent(message.id, () => message);
 
-    manager.emit(EventList.presenceUpdate, [beforeMember, afterMember]);
+    manager.emit(EventList.createMessage, [message]);
   }
 }

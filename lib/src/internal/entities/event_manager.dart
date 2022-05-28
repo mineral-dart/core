@@ -18,17 +18,12 @@ class EventManager {
     return this;
   }
 
-  emit (EventList event,  Map<String, dynamic> params) {
-    Map<Symbol, dynamic> list = {};
+  emit (EventList event,  [params]) {
     List<Object>? events = _events.get(event);
-
-    params.forEach((key, value) {
-      list.putIfAbsent(Symbol(key), () => value);
-    });
 
     if (events != null) {
       for (Object event in events) {
-        reflect(event).invoke(Symbol('handle'), [], list);
+        reflect(event).invoke(Symbol('handle'), params);
       }
     }
   }
