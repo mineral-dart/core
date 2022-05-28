@@ -86,4 +86,7 @@ class Channel {
 
     return this as T;
   }
+
+  @override
+  String toString () => "<#$id>";
 }

@@ -20,7 +20,8 @@ enum PacketType {
   ready('READY'),
   guildCreate('GUILD_CREATE'),
   presenceUpdate('PRESENCE_UPDATE'),
-  messageCreate('MESSAGE_CREATE');
+  messageCreate('MESSAGE_CREATE'),
+  messageDelete('MESSAGE_DELETE');
 
   final String _value;
   const PacketType(this._value);
