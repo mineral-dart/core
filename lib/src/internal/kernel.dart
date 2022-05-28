@@ -25,7 +25,8 @@ class Kernel {
 
     Environment environment = await _loadEnvironment();
     WebsocketManager manager = WebsocketManager(http);
-    ioc.bind(namespace: ioc.services.websocket, service: manager);
+    ioc.bind(namespace: Service.websocket, service: manager);
+    //WebsocketManager manager = WebsocketManager(http);
 
     String? token = environment.get('APP_TOKEN');
     if (token == null) {
@@ -35,10 +36,8 @@ class Kernel {
       );
     }
 
-    await manager.connect(
-      token: token,
-      intents: intents,
-    );
+    Shard(1, "wss://gateway.discord.gg", token);
+    //await manager.connect(token: token);
   }
 
 
