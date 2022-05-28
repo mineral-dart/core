@@ -1,22 +1,8 @@
 part of api;
 
-enum StatusType {
-  idle('idle'),
-  doNotDisturb('dnd'),
-  invisible('invisible'),
-  online('online'),
-  offline('offline');
-
-  final String _value;
-  const StatusType(this._value);
-
-  @override
-  String toString () => _value;
-}
-
 class Activity {
   String? label;
-  StatusType type;
+  PresenceType type;
   String? url;
   DateTime createdAt;
   Timestamp timestamps;
@@ -48,7 +34,7 @@ class Activity {
     print(payload);
     return Activity(
       label: payload['name'],
-      type: payload['type'] != null ? StatusType.values.firstWhere((status) => status.toString() == payload['type']) : StatusType.offline,
+      type: PresenceType.values.firstWhere((status) => status.value == payload['type']),
       url: payload['url'],
       createdAt: DateTime.parse(payload['createdAt']),
       timestamps: Timestamp.from(payload: payload['timestamps']),

@@ -4,7 +4,7 @@ class Status {
   User user;
   Snowflake guildId;
   Guild guild;
-  StatusType type;
+  PresenceType type;
   List<Activity> activities;
   dynamic platform;
 
@@ -30,7 +30,7 @@ class Status {
     return Status(
       guildId: payload['guild_id'],
       guild: guild,
-      type: StatusType.values.firstWhere((status) => status.toString() == payload['status']),
+      type: PresenceType.values.firstWhere((status) => status.value == payload['status']),
       user: guildMember.user,
       platform: payload['client_status'],
       activities: activities,
