@@ -11,8 +11,9 @@ enum EventList {
   ready('ready'),
   guildCreate('create::guild'),
   presenceUpdate('update::presence'),
-  createMessage('create::message'),
-  deleteMessage('delete::message');
+  messageCreate('create::message'),
+  messageUpdate('update::message'),
+  messageDelete('delete::message');
 
   final String event;
   const EventList(this.event);

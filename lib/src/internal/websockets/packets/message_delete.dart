@@ -17,7 +17,6 @@ class MessageDelete implements WebsocketPacket {
     MineralClient client = ioc.singleton(Service.client);
 
     dynamic payload = websocketResponse.payload;
-    print(payload);
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     TextBasedChannel? channel = guild?.channels.cache.get(payload['channel_id']);
@@ -33,7 +32,7 @@ class MessageDelete implements WebsocketPacket {
       }
     }
 
-    manager.emit(EventList.deleteMessage, [message]);
+    manager.emit(EventList.messageDelete, [message]);
     channel?.messages.cache.remove(payload['id']);
   }
 }
