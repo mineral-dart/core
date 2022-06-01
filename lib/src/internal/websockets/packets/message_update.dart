@@ -23,9 +23,9 @@ class MessageUpdate implements WebsocketPacket {
 
     if (channel != null) {
       Message after = Message.from(channel: channel, payload: payload);
-      channel.messages.cache.set(after.id, after);
-
       manager.emit(EventList.messageUpdate, [before, after]);
+
+      channel.messages.cache.set(after.id, after);
     }
   }
 }
