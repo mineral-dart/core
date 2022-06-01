@@ -26,7 +26,8 @@ enum PacketType {
   messageCreate('MESSAGE_CREATE'),
   messageUpdate('MESSAGE_UPDATE'),
   messageDelete('MESSAGE_DELETE'),
-  channelCreate('CHANNEL_CREATE');
+  channelCreate('CHANNEL_CREATE'),
+  channelDelete('CHANNEL_DELETE');
 
   final String _value;
   const PacketType(this._value);

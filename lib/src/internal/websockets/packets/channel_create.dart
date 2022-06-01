@@ -13,14 +13,18 @@ class ChannelCreate implements WebsocketPacket {
     EventManager manager = ioc.singleton(Service.event);
     MineralClient client = ioc.singleton(Service.client);
 
-    print(websocketResponse.payload);
-
     dynamic payload = websocketResponse.payload;
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
-
     Channel? channel = guild?.channels.cache.get(payload['id']);
-    channel ??= _dispatch(guild, payload);
+
+    if (channel == null) {
+      channel = _dispatch(guild, payload);
+
+      channel?.guildId = guild?.id;
+      channel?.guild = guild;
+      channel?.parent = channel.parentId != null ? guild?.channels.cache.get<CategoryChannel>(channel.parentId) : null;
+    }
 
     manager.emit(EventList.channelCreate, [channel]);
   }
