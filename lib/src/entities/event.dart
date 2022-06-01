@@ -11,9 +11,11 @@ enum EventList {
   ready('ready'),
   guildCreate('create::guild'),
   presenceUpdate('update::presence'),
+
   messageCreate('create::message'),
   messageUpdate('update::message'),
   messageDelete('delete::message'),
+
   channelCreate('create::channel'),
   channelUpdate('update::channel'),
   channelDelete('delete::channel');
