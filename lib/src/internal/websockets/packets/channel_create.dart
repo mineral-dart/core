@@ -24,6 +24,8 @@ class ChannelCreate implements WebsocketPacket {
       channel?.guildId = guild?.id;
       channel?.guild = guild;
       channel?.parent = channel.parentId != null ? guild?.channels.cache.get<CategoryChannel>(channel.parentId) : null;
+
+      guild?.channels.cache.putIfAbsent(channel!.id, () => channel!);
     }
 
     manager.emit(EventList.channelCreate, [channel]);
@@ -32,10 +34,7 @@ class ChannelCreate implements WebsocketPacket {
   Channel? _dispatch (Guild? guild, dynamic payload) {
     if (channels.containsKey(payload['type'])) {
       Channel Function(dynamic payload) item = channels[payload['type']] as Channel Function(dynamic payload);
-      Channel channel = item(payload);
-
-      guild?.channels.cache.putIfAbsent(channel.id, () => channel);
-      return channel;
+      return item(payload);
     }
     return null;
   }

@@ -32,10 +32,7 @@ class ChannelUpdate implements WebsocketPacket {
   Channel? _dispatch (Guild? guild, dynamic payload) {
     if (channels.containsKey(payload['type'])) {
       Channel Function(dynamic payload) item = channels[payload['type']] as Channel Function(dynamic payload);
-      Channel channel = item(payload);
-
-      guild?.channels.cache.putIfAbsent(channel.id, () => channel);
-      return channel;
+      return item(payload);
     }
     return null;
   }
