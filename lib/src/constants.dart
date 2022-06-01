@@ -27,6 +27,7 @@ enum PacketType {
   messageUpdate('MESSAGE_UPDATE'),
   messageDelete('MESSAGE_DELETE'),
   channelCreate('CHANNEL_CREATE'),
+  channelUpdate('CHANNEL_UPDATE'),
   channelDelete('CHANNEL_DELETE');
 
   final String _value;

@@ -13,8 +13,6 @@ class MessageUpdate implements WebsocketPacket {
     EventManager manager = ioc.singleton(Service.event);
     MineralClient client = ioc.singleton(Service.client);
 
-    print(websocketResponse.payload);
-
     dynamic payload = websocketResponse.payload;
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
@@ -25,7 +23,7 @@ class MessageUpdate implements WebsocketPacket {
       Message after = Message.from(channel: channel, payload: payload);
       manager.emit(EventList.messageUpdate, [before, after]);
 
-      channel.messages.cache.set(after.id, after);
+      channel.messages.cache.putIfAbsent(after.id, () => after);
     }
   }
 }

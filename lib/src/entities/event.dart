@@ -15,6 +15,7 @@ enum EventList {
   messageUpdate('update::message'),
   messageDelete('delete::message'),
   channelCreate('create::channel'),
+  channelUpdate('update::channel'),
   channelDelete('delete::channel');
 
   final String event;
