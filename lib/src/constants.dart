@@ -23,12 +23,16 @@ enum PacketType {
   ready('READY'),
   guildCreate('GUILD_CREATE'),
   presenceUpdate('PRESENCE_UPDATE'),
+
   messageCreate('MESSAGE_CREATE'),
   messageUpdate('MESSAGE_UPDATE'),
   messageDelete('MESSAGE_DELETE'),
+
   channelCreate('CHANNEL_CREATE'),
   channelUpdate('CHANNEL_UPDATE'),
-  channelDelete('CHANNEL_DELETE');
+  channelDelete('CHANNEL_DELETE'),
+
+  memberUpdate('GUILD_MEMBER_UPDATE');
 
   final String _value;
   const PacketType(this._value);

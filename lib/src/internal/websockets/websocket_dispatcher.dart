@@ -4,6 +4,7 @@ import 'package:mineral/src/internal/websockets/packets/channel_create.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_member_update.dart';
 import 'package:mineral/src/internal/websockets/packets/message_create.dart';
 import 'package:mineral/src/internal/websockets/packets/message_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/message_update.dart';
@@ -25,6 +26,7 @@ class WebsocketDispatcher {
     register(PacketType.channelCreate, ChannelCreate());
     register(PacketType.channelDelete, ChannelDelete());
     register(PacketType.channelUpdate, ChannelUpdate());
+    register(PacketType.memberUpdate, GuildMemberUpdate());
   }
 
   void register (PacketType type, WebsocketPacket packet) {

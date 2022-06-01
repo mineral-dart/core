@@ -18,7 +18,11 @@ enum EventList {
 
   channelCreate('create::channel'),
   channelUpdate('update::channel'),
-  channelDelete('delete::channel');
+  channelDelete('delete::channel'),
+
+  memberUpdate('update::member'),
+  memberRolesUpdate('update-roles::member'),
+  acceptRules('accept::rules');
 
   final String event;
   const EventList(this.event);
