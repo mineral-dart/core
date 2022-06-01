@@ -13,7 +13,8 @@ enum EventList {
   presenceUpdate('update::presence'),
   messageCreate('create::message'),
   messageUpdate('update::message'),
-  messageDelete('delete::message');
+  messageDelete('delete::message'),
+  channelCreate('create::channel');
 
   final String event;
   const EventList(this.event);

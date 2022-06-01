@@ -1,5 +1,6 @@
 
 import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/websockets/packets/channel_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
 import 'package:mineral/src/internal/websockets/packets/message_create.dart';
 import 'package:mineral/src/internal/websockets/packets/message_delete.dart';
@@ -19,6 +20,7 @@ class WebsocketDispatcher {
     register(PacketType.messageDelete, MessageDelete());
     register(PacketType.messageCreate, MessageCreate());
     register(PacketType.messageUpdate, MessageUpdate());
+    register(PacketType.channelCreate, ChannelCreate());
   }
 
   void register (PacketType type, WebsocketPacket packet) {
