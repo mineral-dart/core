@@ -2,7 +2,9 @@ import 'dart:io';
 import 'dart:isolate';
 import 'dart:async';
 
+import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/src/internal/websockets/heartbeat.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_handler.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_message.dart';
@@ -65,12 +67,37 @@ class Shard {
             break;
           case OpCode.dispatch: return await dispatcher.dispatch(data);
           case OpCode.reconnect:
-            _canResume = true;
-            return _reconnect();
+            return _reconnect(resume: true);
           case OpCode.invalidSession:
-            _canResume = message.data;
-            _reconnect();
+            _reconnect(resume: message.data);
         }
+        break;
+      case ShardCommand.error:
+        final Map<int, Function> errors = {
+          4000: () => _reconnect(resume: true),
+          4001: () => _reconnect(resume: true),
+          4002: () => _reconnect(resume: true),
+          4003: () => _reconnect(resume: false),
+          4004: () => {
+            _terminate(),
+            throw TokenException(cause: "Change the APP_TOKEN", prefix: "WRONG TOKEN")
+          },
+          4005: () => _reconnect(resume: true),
+          4007: () => _reconnect(resume: false),
+          4008: () => {
+            Console.warn(message: 'You\'re ratelimited!'),
+            _reconnect(resume: false)
+          },
+          4009: () => _reconnect(resume: true)
+        };
+
+        final Function? errorCallback = errors[message.data['code']];
+        if(errorCallback != null) {
+          errorCallback();
+        } else {
+          Console.error(message: "Websocket disconnected");
+        }
+
         break;
       default:
     }
@@ -92,8 +119,13 @@ class Shard {
     });
   }
 
-  void _reconnect() {
+  void _reconnect({ bool resume = false }) {
+    _canResume = resume;
     _sendPort.send(ShardMessage(command: ShardCommand.reconnect));
+  }
+  
+  void _terminate() {
+    _sendPort.send(ShardMessage(command: ShardCommand.terminate));
   }
 
   void _resume() {
