@@ -1,4 +1,9 @@
-part of api;
+import 'dart:convert';
+
+import 'package:http/http.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/channel.dart';
 
 class CategoryChannel extends Channel {
   CategoryChannel({

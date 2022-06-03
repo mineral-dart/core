@@ -1,4 +1,5 @@
-part of api;
+import 'package:mineral/api.dart';
+import 'package:mineral/src/api/managers/message_manager.dart';
 
 class TextChannel extends TextBasedChannel {
   TextChannel({

@@ -1,4 +1,5 @@
-part of api;
+import 'package:mineral/api.dart';
+import 'package:mineral/src/api/sticker.dart';
 
 class MessageStickerItem {
   Snowflake id;

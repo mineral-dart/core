@@ -1,4 +1,7 @@
-part of api;
+import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
+import 'package:mineral/src/api/client/client_presence.dart';
+import 'package:mineral/src/api/managers/guild_manager.dart';
 
 enum ClientStatus {
   online('online'),

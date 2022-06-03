@@ -1,4 +1,11 @@
-part of api;
+import 'dart:convert';
+
+import 'package:http/http.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
+import 'package:mineral/src/api/message_attachment.dart';
+import 'package:mineral/src/api/message_embed.dart';
+import 'package:mineral/src/api/message_sticker_item.dart';
 
 class Message {
   Snowflake id;

@@ -1,5 +1,3 @@
-part of api;
-
 enum Color {
   amber_50('#fff7ed'),
   amber_100('#ffedd5'),
