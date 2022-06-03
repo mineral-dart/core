@@ -1,3 +1,4 @@
+import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:async';
@@ -7,11 +8,14 @@ import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/internal/websockets/heartbeat.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_handler.dart';
+import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_message.dart';
 import 'package:mineral/src/internal/websockets/websocket_dispatcher.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 class Shard {
+  final ShardManager manager;
+
   final int id;
   final String _token;
   //final String gatewayURL;
@@ -31,7 +35,8 @@ class Shard {
 
   bool _canResume = false;
 
-  Shard(this.id, String gatewayURL, this._token) {
+  Shard(this.manager, this.id, String gatewayURL, this._token) {
+    Console.info(prefix: "Shard #$id", message: manager.totalShards.toString());
     dispatcher = WebsocketDispatcher();
     _heartbeat = Heartbeat(shard: this);
 
@@ -59,9 +64,12 @@ class Shard {
         final WebsocketResponse data = message.data as WebsocketResponse;
         sequence = data.sequence;
 
+        Console.info(message: message.command.name + " | " + message.data);
+
         switch(data.op) {
           case OpCode.heartbeat: return _heartbeat.reset();
           case OpCode.hello:
+            Console.success(message: "Received Hello code, shard started!", prefix: "Shard #$id");
             _canResume ? _resume : _identify();
             _heartbeat.start(Duration(milliseconds: data.payload["heartbeat_interval"]));
             break;
@@ -73,6 +81,8 @@ class Shard {
         }
         break;
       case ShardCommand.error:
+        Console.error(prefix: "Shard #$id", message: message.data["reason"] + " | " + message.data["code"]);
+
         final Map<int, Function> errors = {
           4000: () => _reconnect(resume: true),
           4001: () => _reconnect(resume: true),
@@ -95,9 +105,8 @@ class Shard {
         if(errorCallback != null) {
           errorCallback();
         } else {
-          Console.error(message: "Websocket disconnected");
+          Console.error(prefix: "Shard #$id", message: "Websocket disconnected");
         }
-
         break;
       default:
     }
@@ -115,6 +124,7 @@ class Shard {
     send(OpCode.identify, {
       'token': _token,
       'intents': 131071,
+      'shard': <int>[id, manager.totalShards],
       'properties': { '\$os': Platform.operatingSystem }
     });
   }

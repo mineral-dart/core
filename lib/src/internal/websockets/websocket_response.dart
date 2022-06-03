@@ -25,7 +25,11 @@ class WebsocketResponse {
 
 class AuthenticationResponse {
   String url;
-  AuthenticationResponse({ required this.url });
+  int shards;
+
+  int maxConcurrency;
+
+  AuthenticationResponse({ required this.url, required this.shards, required this.maxConcurrency });
 
   factory AuthenticationResponse.fromResponse (Response response) {
     if (response.statusCode == 401) {
@@ -36,6 +40,6 @@ class AuthenticationResponse {
     }
 
     dynamic json = jsonDecode(response.body);
-    return AuthenticationResponse(url: json['url']);
+    return AuthenticationResponse(url: json['url'], shards: json['shards'], maxConcurrency: json['session_start_limit']['max_concurrency']);
   }
 }

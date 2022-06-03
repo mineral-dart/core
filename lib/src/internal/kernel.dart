@@ -36,7 +36,8 @@ class Kernel {
       );
     }
 
-    Shard(1, "wss://gateway.discord.gg", token);
+    ShardManager manager = ShardManager(http, token);
+    manager.start(shardsCount: 2);
     //await manager.connect(token: token);
   }
 
