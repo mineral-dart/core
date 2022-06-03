@@ -18,7 +18,7 @@ class ChannelDelete implements WebsocketPacket {
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     Channel? channel = guild?.channels.cache.get(payload['id']);
 
-    manager.emit(EventList.channelDelete, [channel]);
+    manager.emit(Events.channelDelete, [channel]);
     guild?.channels.cache.remove(payload['id']);
   }
 }

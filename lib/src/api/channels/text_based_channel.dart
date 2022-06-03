@@ -1,4 +1,10 @@
-part of api;
+import 'dart:convert';
+
+import 'package:http/http.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/channel.dart';
+import 'package:mineral/src/api/managers/message_manager.dart';
 
 class TextBasedChannel extends Channel {
   String? description;

@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/channel.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
@@ -95,6 +96,6 @@ class GuildCreate implements WebsocketPacket {
 
     client.guilds.cache.putIfAbsent(guild.id, () => guild);
 
-    manager.emit(EventList.guildCreate, [guild]);
+    manager.emit(Events.guildCreate, [guild]);
   }
 }

@@ -1,4 +1,6 @@
-part of api;
+import 'package:http/http.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
 
 class Voice {
   Snowflake? channelId;

@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/channel.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -28,7 +29,7 @@ class ChannelCreate implements WebsocketPacket {
       guild?.channels.cache.putIfAbsent(channel!.id, () => channel!);
     }
 
-    manager.emit(EventList.channelCreate, [channel]);
+    manager.emit(Events.channelCreate, [channel]);
   }
 
   Channel? _dispatch (Guild? guild, dynamic payload) {

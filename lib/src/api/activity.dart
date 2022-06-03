@@ -1,4 +1,5 @@
-part of api;
+import 'package:mineral/api.dart';
+import 'package:mineral/src/api/client/client_presence.dart';
 
 class Activity {
   String? label;

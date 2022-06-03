@@ -1,4 +1,4 @@
-part of exception;
+import 'package:mineral/console.dart';
 
 class TokenException implements Exception {
   String? prefix;

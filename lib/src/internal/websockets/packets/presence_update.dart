@@ -23,6 +23,6 @@ class PresenceUpdate implements WebsocketPacket {
 
     afterMember?.user.status = Status.from(guild: guild!, payload: payload);
 
-    manager.emit(EventList.presenceUpdate, [beforeMember, afterMember]);
+    manager.emit(Events.presenceUpdate, [beforeMember, afterMember]);
   }
 }

@@ -1,4 +1,4 @@
-part of api;
+import 'package:mineral/api.dart';
 
 class MessageAttachment {
   Snowflake id;

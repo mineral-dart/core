@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/channel.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -24,7 +25,7 @@ class ChannelUpdate implements WebsocketPacket {
       after.guild = guild;
       after.parent = after.parentId != null ? guild?.channels.cache.get<CategoryChannel>(after.parentId) : null;
 
-      manager.emit(EventList.channelUpdate, [before, after]);
+      manager.emit(Events.channelUpdate, [before, after]);
       guild?.channels.cache.set(after.id, after);
     }
   }

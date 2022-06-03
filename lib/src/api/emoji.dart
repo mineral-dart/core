@@ -1,4 +1,9 @@
-part of api;
+import 'package:http/http.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
+import 'package:mineral/src/api/managers/emoji_manager.dart';
+import 'package:mineral/src/api/managers/member_manager.dart';
+import 'package:mineral/src/api/managers/role_manager.dart';
 
 class Emoji {
   Snowflake id;
