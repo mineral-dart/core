@@ -15,7 +15,6 @@ class GuildMemberUpdate implements WebsocketPacket {
 
     dynamic payload = websocketResponse.payload;
 
-
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     if (guild != null) {
       GuildMember? before = guild.members.cache.get(payload['user']['id']);
