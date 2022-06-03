@@ -26,14 +26,14 @@ class GuildMemberUpdate implements WebsocketPacket {
       after.voice.member = after;
       after.voice.channel = guild.channels.cache.get(after.voice.channelId);
 
-      manager.emit(EventList.memberUpdate, [before, after]);
+      manager.emit(Events.memberUpdate, [before, after]);
 
       if (before?.isPending != after.isPending) {
-        manager.emit(EventList.acceptRules, [after]);
+        manager.emit(Events.acceptRules, [after]);
       }
 
       if (before?.roles.cache.length != after.roles.cache.length) {
-        manager.emit(EventList.memberRolesUpdate, [before, after]);
+        manager.emit(Events.memberRolesUpdate, [before, after]);
       }
 
       guild.members.cache.set(after.user.id, after);

@@ -25,7 +25,7 @@ class ChannelUpdate implements WebsocketPacket {
       after.guild = guild;
       after.parent = after.parentId != null ? guild?.channels.cache.get<CategoryChannel>(after.parentId) : null;
 
-      manager.emit(EventList.channelUpdate, [before, after]);
+      manager.emit(Events.channelUpdate, [before, after]);
       guild?.channels.cache.set(after.id, after);
     }
   }

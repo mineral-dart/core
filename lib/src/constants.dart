@@ -1,5 +1,3 @@
-part of core;
-
 enum OpCode {
   dispatch(0),
   heartbeat(1),

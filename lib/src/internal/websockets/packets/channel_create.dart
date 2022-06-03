@@ -29,7 +29,7 @@ class ChannelCreate implements WebsocketPacket {
       guild?.channels.cache.putIfAbsent(channel!.id, () => channel!);
     }
 
-    manager.emit(EventList.channelCreate, [channel]);
+    manager.emit(Events.channelCreate, [channel]);
   }
 
   Channel? _dispatch (Guild? guild, dynamic payload) {

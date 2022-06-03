@@ -15,6 +15,6 @@ class Ready implements WebsocketPacket {
     MineralClient client = MineralClient.from(payload: websocketResponse.payload);
     ioc.bind(namespace: Service.client, service: client);
 
-    manager.emit(EventList.ready, [client]);
+    manager.emit(Events.ready, [client]);
   }
 }

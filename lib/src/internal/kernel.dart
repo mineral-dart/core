@@ -1,4 +1,7 @@
-part of core;
+import 'package:mineral/exception.dart';
+import 'package:mineral/src/internal/entities/event_manager.dart';
+import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/websockets/websocket_manager.dart';
 
 class Kernel {
   EventManager events = EventManager();

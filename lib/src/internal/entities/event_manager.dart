@@ -3,10 +3,10 @@ import 'dart:mirrors';
 import 'package:mineral/core.dart';
 
 class EventManager {
-  final Collection<EventList, List<Object>> _events = Collection();
+  final Collection<Events, List<Object>> _events = Collection();
 
   EventManager add (Object object) {
-    EventList event = reflect(object).type.metadata.first.reflectee.event;
+    Events event = reflect(object).type.metadata.first.reflectee.event;
 
     if (_events.containsKey(event)) {
       List<Object>? events = _events.get(event);
@@ -18,7 +18,7 @@ class EventManager {
     return this;
   }
 
-  emit (EventList event,  [params]) {
+  emit (Events event,  [params]) {
     List<Object>? events = _events.get(event);
 
     if (events != null) {
@@ -27,4 +27,35 @@ class EventManager {
       }
     }
   }
+}
+
+class Event {
+  final String type = 'event';
+  final Events event;
+
+  const Event(this.event);
+}
+
+enum Events {
+  ready('ready'),
+  guildCreate('create::guild'),
+  presenceUpdate('update::presence'),
+
+  messageCreate('create::message'),
+  messageUpdate('update::message'),
+  messageDelete('delete::message'),
+
+  channelCreate('create::channel'),
+  channelUpdate('update::channel'),
+  channelDelete('delete::channel'),
+
+  memberUpdate('update::member'),
+  memberRolesUpdate('update-roles::member'),
+  acceptRules('accept::rules');
+
+  final String event;
+  const Events(this.event);
+
+  @override
+  String toString() => event;
 }

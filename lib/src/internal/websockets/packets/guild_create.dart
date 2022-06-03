@@ -96,6 +96,6 @@ class GuildCreate implements WebsocketPacket {
 
     client.guilds.cache.putIfAbsent(guild.id, () => guild);
 
-    manager.emit(EventList.guildCreate, [guild]);
+    manager.emit(Events.guildCreate, [guild]);
   }
 }
