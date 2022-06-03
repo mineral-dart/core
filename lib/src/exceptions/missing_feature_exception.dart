@@ -1,4 +1,4 @@
-part of exception;
+import 'package:mineral/console.dart';
 
 class MissingFeatureException implements Exception {
   String prefix = 'MISSING FEATURE';
