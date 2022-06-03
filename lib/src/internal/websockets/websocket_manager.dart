@@ -42,7 +42,7 @@ class WebsocketManager {
 
   Future<void> _listen (event) async {
     WebsocketResponse websocket = WebsocketResponse.from(event);
-    if (websocket.op == OpCode.dispatch) {
+    if (websocket.op == OpCode.dispatch.value) {
       await websocketDispatcher.dispatch(websocket);
     }
   }
@@ -51,9 +51,9 @@ class WebsocketManager {
     Console.info(message: 'Websocket channel was closed');
   }
 
-  void send (int code, Object payload) {
+  void send (OpCode code, Object payload) {
     websocket.add(jsonEncode({
-      'op': code,
+      'op': code.value,
       'd': payload
     }));
   }

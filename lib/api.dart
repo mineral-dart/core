@@ -38,6 +38,8 @@ part 'src/api/channels/category_channel.dart';
 part 'src/api/message.dart';
 part 'src/api/message_embed.dart';
 part 'src/api/color.dart';
+part 'src/api/message_sticker_item.dart';
+part 'src/api/message_attachment.dart';
 
 part 'src/api/emoji.dart';
 part 'src/api/role.dart';

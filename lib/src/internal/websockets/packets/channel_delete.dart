@@ -4,17 +4,21 @@ import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-class Ready implements WebsocketPacket {
+class ChannelDelete implements WebsocketPacket {
   @override
-  PacketType packetType = PacketType.ready;
+  PacketType packetType = PacketType.channelDelete;
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventManager manager = ioc.singleton(Service.event);
+    MineralClient client = ioc.singleton(Service.client);
 
-    MineralClient client = MineralClient.from(payload: websocketResponse.payload);
-    ioc.bind(namespace: Service.client, service: client);
+    dynamic payload = websocketResponse.payload;
 
-    manager.emit(EventList.ready, [client]);
+    Guild? guild = client.guilds.cache.get(payload['guild_id']);
+    Channel? channel = guild?.channels.cache.get(payload['id']);
+
+    manager.emit(EventList.channelDelete, [channel]);
+    guild?.channels.cache.remove(payload['id']);
   }
 }

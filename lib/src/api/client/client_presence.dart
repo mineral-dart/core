@@ -8,12 +8,12 @@ enum PresenceType {
   custom(4),
   competing(5);
 
-  final int _value;
+  final int value;
 
-  const PresenceType(this._value);
+  const PresenceType(this.value);
 
   @override
-  String toString () => _value.toString();
+  String toString () => value.toString();
 }
 
 class Timestamp {

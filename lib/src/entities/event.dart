@@ -10,7 +10,19 @@ class Event {
 enum EventList {
   ready('ready'),
   guildCreate('create::guild'),
-  presenceUpdate('update::presence');
+  presenceUpdate('update::presence'),
+
+  messageCreate('create::message'),
+  messageUpdate('update::message'),
+  messageDelete('delete::message'),
+
+  channelCreate('create::channel'),
+  channelUpdate('update::channel'),
+  channelDelete('delete::channel'),
+
+  memberUpdate('update::member'),
+  memberRolesUpdate('update-roles::member'),
+  acceptRules('accept::rules');
 
   final String event;
   const EventList(this.event);
