@@ -7,8 +7,8 @@ import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 class Heartbeat {
   final Shard shard;
 
-  late final Duration? _delay;
-  late final Timer _timer;
+  Duration? _delay;
+  Timer? _timer;
 
   Heartbeat({ required this.shard });
 
@@ -18,7 +18,7 @@ class Heartbeat {
   }
 
   void cancel () {
-    _timer.cancel();
+    _timer?.cancel();
   }
 
   void reset() {

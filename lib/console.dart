@@ -5,6 +5,11 @@ class Console {
     print(message);
   }
 
+  static debug ({ String prefix = 'debug', required String message }) {
+    String p = ColorList.white(prefix);
+    print("[ $p ] $message");
+  }
+
   static info ({ String prefix = 'info', required String message }) {
     String p = ColorList.blue(prefix);
     print("[ $p ] $message");

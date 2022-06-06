@@ -34,6 +34,7 @@ class Shard {
   late String sessionId;
 
   bool _canResume = false;
+  bool _pendingReconnect = false;
 
   Shard(this.manager, this.id, String gatewayURL, this._token) {
     Console.info(prefix: "Shard #$id", message: manager.totalShards.toString());
@@ -64,12 +65,13 @@ class Shard {
         final WebsocketResponse data = message.data as WebsocketResponse;
         sequence = data.sequence;
 
-        Console.info(message: message.command.name + " | " + message.data);
+        Console.debug(message: data.op.toString() + " | " + data.payload.toString(), prefix: "Shard #$id");
 
         switch(data.op) {
           case OpCode.heartbeat: return _heartbeat.reset();
           case OpCode.hello:
             Console.success(message: "Received Hello code, shard started!", prefix: "Shard #$id");
+            _pendingReconnect = false;
             _canResume ? _resume : _identify();
             _heartbeat.start(Duration(milliseconds: data.payload["heartbeat_interval"]));
             break;
@@ -77,7 +79,7 @@ class Shard {
           case OpCode.reconnect:
             return _reconnect(resume: true);
           case OpCode.invalidSession:
-            _reconnect(resume: message.data);
+            _reconnect(resume: data.payload);
         }
         break;
       case ShardCommand.error:
@@ -95,10 +97,12 @@ class Shard {
           4005: () => _reconnect(resume: true),
           4007: () => _reconnect(resume: false),
           4008: () => {
-            Console.warn(message: 'You\'re ratelimited!'),
+            Console.warn(prefix: "Shard #$id", message: 'You\'re ratelimited!'),
             _reconnect(resume: false)
           },
-          4009: () => _reconnect(resume: true)
+          4009: () => _reconnect(resume: true),
+          4010: () => throw ShardException(prefix: "Shard #$id", cause: "Invalid shard id sended to gateway"),
+          4011: () => throw ShardException(prefix: "Shard #$id", cause: "Sharding is necessary")
         };
 
         final Function? errorCallback = errors[message.data['code']];
@@ -108,7 +112,11 @@ class Shard {
           Console.error(prefix: "Shard #$id", message: "Websocket disconnected");
         }
         break;
+      case ShardCommand.disconnected:
+        Console.warn(prefix: "Shard #$id", message: "Websocket disconnected");
+        return _reconnect(resume: true);
       default:
+        Console.info(prefix: "Shard #$id", message: "Unhandled error");
     }
   }
 
@@ -130,8 +138,11 @@ class Shard {
   }
 
   void _reconnect({ bool resume = false }) {
-    _canResume = resume;
-    _sendPort.send(ShardMessage(command: ShardCommand.reconnect));
+    if(!_pendingReconnect) {
+      _pendingReconnect = true;
+      _canResume = resume;
+      _sendPort.send(ShardMessage(command: ShardCommand.reconnect));
+    }
   }
   
   void _terminate() {
