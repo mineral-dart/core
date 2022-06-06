@@ -3,7 +3,7 @@ import 'package:mineral/src/api/client/client_presence.dart';
 
 class Activity {
   String? label;
-  PresenceType type;
+  GamePresence type;
   String? url;
   DateTime createdAt;
   Timestamp timestamps;
@@ -35,9 +35,9 @@ class Activity {
     print(payload);
     return Activity(
       label: payload['name'],
-      type: PresenceType.values.firstWhere((status) => status.value == payload['type']),
+      type: GamePresence.values.firstWhere((status) => status.value == payload['type']),
       url: payload['url'],
-      createdAt: DateTime.parse(payload['createdAt']),
+      createdAt: DateTime.parse(payload['created_at']),
       timestamps: Timestamp.from(payload: payload['timestamps']),
       applicationId: payload['application_id'],
       details: payload['details'],

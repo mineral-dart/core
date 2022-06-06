@@ -1,11 +1,22 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/client/client_presence.dart';
+
+enum StatutType {
+  online('online'),
+  idle('idle'),
+  doNotDisturb('dnd');
+
+  final String _value;
+  const StatutType(this._value);
+
+  @override
+  String toString () => _value;
+}
 
 class Status {
   User user;
   Snowflake guildId;
   Guild guild;
-  PresenceType type;
+  StatutType type;
   List<Activity> activities;
   dynamic platform;
 
@@ -31,7 +42,7 @@ class Status {
     return Status(
       guildId: payload['guild_id'],
       guild: guild,
-      type: PresenceType.values.firstWhere((status) => status.value == payload['status']),
+      type: StatutType.values.firstWhere((status) => status.toString() == payload['status']),
       user: guildMember.user,
       platform: payload['client_status'],
       activities: activities,

@@ -1,7 +1,7 @@
 library api;
 
 export 'src/api/client/mineral_client.dart' show MineralClient, ClientActivity, ClientStatus;
-export 'src/api/client/client_presence.dart' show ClientPresence, PresenceType;
+export 'src/api/client/client_presence.dart' show ClientPresence, GamePresence;
 
 export 'src/api/application.dart' show Application;
 export 'src/api/user.dart' show User;

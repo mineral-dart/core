@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 
-enum PresenceType {
+enum GamePresence {
   game(0),
   streaming(1),
   listening(2),
@@ -10,7 +10,7 @@ enum PresenceType {
 
   final int value;
 
-  const PresenceType(this.value);
+  const GamePresence(this.value);
 
   @override
   String toString () => value.toString();
@@ -32,7 +32,7 @@ class Timestamp {
 
 class ClientPresence {
   String? label;
-  PresenceType type;
+  GamePresence type;
   String? url;
   DateTime createdAt;
   Timestamp timestamps;
@@ -62,7 +62,7 @@ class ClientPresence {
   factory ClientPresence.from({ required dynamic payload }) {
     return ClientPresence(
       label: payload['name'],
-      type: PresenceType.values.firstWhere((type) => type.toString() == payload['type']),
+      type: GamePresence.values.firstWhere((type) => type.toString() == payload['type']),
       url: payload['url'],
       createdAt: DateTime.parse(payload['createdAt']),
       timestamps: Timestamp.from(payload: payload['timestamps']),
