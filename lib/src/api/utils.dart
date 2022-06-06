@@ -1,4 +1,38 @@
+enum NotificationLevel {
+  allMessages(0),
+  onlyMentions(1);
 
+  final int _value;
+  const NotificationLevel(this._value);
+
+  @override
+  String toString() => _value.toString();
+}
+
+enum ExplicitContentFilterLevel {
+  disabled(0),
+  membersWithoutRoles(1),
+  allMembers(2);
+
+  final int _value;
+  const ExplicitContentFilterLevel(this._value);
+
+  @override
+  String toString() => _value.toString();
+}
+
+enum SystemChannelFlags {
+  suppressJoinNotifications(1 << 0),
+  suppressPremiumSubscriptions(1 << 1),
+  suppressGuildReminderNotifications(1 << 2),
+  suppressJoinNotificationReplies(1 << 3);
+
+  final int _value;
+  const SystemChannelFlags(this._value);
+
+  @override
+  String toString() => _value.toString();
+}
 
 class VerificationLevel {
   static int none = 0;

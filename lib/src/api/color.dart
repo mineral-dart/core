@@ -1,219 +1,221 @@
-enum Color {
-  amber_50('#fff7ed'),
-  amber_100('#ffedd5'),
-  amber_200('#fed7aa'),
-  amber_300('#fdba74'),
-  amber_400('#fb923c'),
-  amber_500('#f97316'),
-  amber_600('#ea580c'),
-  amber_700('#c2410c'),
-  amber_800('#9a3412'),
-  amber_900('#7c2d12'),
-  blue_50('#eff6ff'),
-  blue_100('#dbeafe'),
-  blue_200('#bfdbfe'),
-  blue_300('#93c5fd'),
-  blue_400('#60a5fa'),
-  blue_500('#3b82f6'),
-  blue_600('#2563eb'),
-  blue_700('#1d4ed8'),
-  blue_800('#1e40af'),
-  blue_900('#1e3a8a'),
-  cyan_50('#ecfeff'),
-  cyan_100('#cffafe'),
-  cyan_200('#a5f3fc'),
-  cyan_300('#67e8f9'),
-  cyan_400('#22d3ee'),
-  cyan_500('#06b6d4'),
-  cyan_600('#0891b2'),
-  cyan_700('#0e7490'),
-  cyan_800('#155e75'),
-  cyan_900('#164e63'),
-  emerald_50('#ecfdf5'),
-  emerald_100('#d1fae5'),
-  emerald_200('#a7f3d0'),
-  emerald_300('#6ee7b7'),
-  emerald_400('#34d399'),
-  emerald_500('#10b981'),
-  emerald_600('#059669'),
-  emerald_700('#047857'),
-  emerald_800('#065f46'),
-  emerald_900('#064e3b'),
-  fuchsia_50('#fdf4ff'),
-  fuchsia_100('#fae8ff'),
-  fuchsia_200('#f5d0fe'),
-  fuchsia_300('#f0abfc'),
-  fuchsia_400('#e879f9'),
-  fuchsia_500('#d946ef'),
-  fuchsia_600('#c026d3'),
-  fuchsia_700('#a21caf'),
-  fuchsia_800('#86198f'),
-  fuchsia_900('#701a75'),
-  gray_50('#f9fafb'),
-  gray_100('#f3f4f6'),
-  gray_200('#e5e7eb'),
-  gray_300('#d1d5db'),
-  gray_400('#9ca3af'),
-  gray_500('#6b7280'),
-  gray_600('#4b5563'),
-  gray_700('#374151'),
-  gray_800('#1f2937'),
-  gray_900('#111827'),
-  green_50('#f0fdf4'),
-  green_100('#dcfce7'),
-  green_200('#bbf7d0'),
-  green_300('#86efac'),
-  green_400('#4ade80'),
-  green_500('#22c55e'),
-  green_600('#16a34a'),
-  green_700('#15803d'),
-  green_800('#166534'),
-  green_900('#14532d'),
-  indigo_50('#eef2ff'),
-  indigo_100('#e0e7ff'),
-  indigo_200('#c7d2fe'),
-  indigo_300('#a5b4fc'),
-  indigo_400('#818cf8'),
-  indigo_500('#6366f1'),
-  indigo_600('#4f46e5'),
-  indigo_700('#4338ca'),
-  indigo_800('#3730a3'),
-  indigo_900('#312e81'),
-  lime_50('#f7fee7'),
-  lime_100('#ecfccb'),
-  lime_200('#d9f99d'),
-  lime_300('#bef264'),
-  lime_400('#a3e635'),
-  lime_500('#84cc16'),
-  lime_600('#65a30d'),
-  lime_700('#4d7c0f'),
-  lime_800('#3f6212'),
-  lime_900('#365314'),
-  neutral_50('#fafafa'),
-  neutral_100('#f5f5f5'),
-  neutral_200('#e5e5e5'),
-  neutral_300('#d4d4d4'),
-  neutral_400('#a3a3a3'),
-  neutral_500('#737373'),
-  neutral_600('#525252'),
-  neutral_700('#404040'),
-  neutral_800('#262626'),
-  neutral_900('#171717'),
-  orange_50('#fff7ed'),
-  orange_100('#ffedd5'),
-  orange_200('#fed7aa'),
-  orange_300('#fdba74'),
-  orange_400('#fb923c'),
-  orange_500('#f97316'),
-  orange_600('#ea580c'),
-  orange_700('#c2410c'),
-  orange_800('#9a3412'),
-  orange_900('#7c2d12'),
-  pink_50('#fdf2f8'),
-  pink_100('#fce7f3'),
-  pink_200('#f9a8d4'),
-  pink_300('#93c5fd'),
-  pink_400('#f472b6'),
-  pink_500('#ec4899'),
-  pink_600('#db2777'),
-  pink_700('#be185d'),
-  pink_800('#9d174d'),
-  pink_900('#831843'),
-  purple_50('#faf5ff'),
-  purple_100('#f3e8ff'),
-  purple_200('#e9d5ff'),
-  purple_300('#d8b4fe'),
-  purple_400('#c084fc'),
-  purple_500('#a855f7'),
-  purple_600('#9333ea'),
-  purple_700('#7e22ce'),
-  purple_800('#6b21a8'),
-  purple_900('#581c87'),
-  red_50('#fef2f2'),
-  red_100('#fee2e2'),
-  red_200('#fecaca'),
-  red_300('#fca5a5'),
-  red_400('#f87171'),
-  red_500('#ef4444'),
-  red_600('#dc2626'),
-  red_700('#b91c1c'),
-  red_800('#991b1b'),
-  red_900('#7f1d1d'),
-  rose_50('#fff1f2'),
-  rose_100('#ffe4e6'),
-  rose_200('#fecdd3'),
-  rose_300('#fda4af'),
-  rose_400('#fb7185'),
-  rose_500('#f43f5e'),
-  rose_600('#e11d48'),
-  rose_700('#be123c'),
-  rose_800('#9f1239'),
-  rose_900('#881337'),
-  sky_50('#f0f9ff'),
-  sky_100('#e0f2fe'),
-  sky_200('#bae6fd'),
-  sky_300('#7dd3fc'),
-  sky_400('#38bdf8'),
-  sky_500('#0ea5e9'),
-  sky_600('#0284c7'),
-  sky_700('#0369a1'),
-  sky_800('#075985'),
-  sky_900('#0c4a6e'),
-  slate_50('#f8fafc'),
-  slate_100('#f1f5f9'),
-  slate_200('#e2e8f0'),
-  slate_300('#cbd5e1'),
-  slate_400('#94a3b8'),
-  slate_500('#64748b'),
-  slate_600('#475569'),
-  slate_700('#334155'),
-  slate_800('#1e293b'),
-  slate_900('#0f172a'),
-  invisible('#2f3136'),
-  stone_50('#fafafa'),
-  stone_100('#f5f5f5'),
-  stone_200('#e5e5e5'),
-  stone_300('#d4d4d4'),
-  stone_400('#a3a3a3'),
-  stone_500('#737373'),
-  stone_600('#525252'),
-  stone_700('#404040'),
-  stone_800('#262626'),
-  stone_900('#171717'),
-  teal_50('#f0fdfa'),
-  teal_100('#ccfbf1'),
-  teal_200('#99f6e4'),
-  teal_300('#5eead4'),
-  teal_400('#2dd4bf'),
-  teal_500('#14b8a6'),
-  teal_600('#0d9488'),
-  teal_700('#0f766e'),
-  teal_800('#115e59'),
-  teal_900('#134e4a'),
-  violet_50('#f5f3ff'),
-  violet_100('#ede9fe'),
-  violet_200('#ddd6fe'),
-  violet_300('#c4b5fd'),
-  violet_400('#a78bfa'),
-  violet_500('#8b5cf6'),
-  violet_600('#7c3aed'),
-  violet_700('#6d28d9'),
-  violet_800('#5b21b6'),
-  violet_900('#4c1d95'),
-  yellow_50('#fefce8'),
-  yellow_100('#fef9c3'),
-  yellow_200('#fef08a'),
-  yellow_300('#fde047'),
-  yellow_400('#facc15'),
-  yellow_500('#eab308'),
-  yellow_600('#ca8a04'),
-  yellow_700('#a16207'),
-  yellow_800('#854d0e'),
-  yellow_900('#713f12');
+class Color {
+  static Color amber_50 = Color.from('#fff7ed');
+  static Color amber_100 = Color.from('#ffedd5');
+  static Color amber_200 = Color.from('#fed7aa');
+  static Color amber_300 = Color.from('#fdba74');
+  static Color amber_400 = Color.from('#fb923c');
+  static Color amber_500 = Color.from('#f97316');
+  static Color amber_600 = Color.from('#ea580c');
+  static Color amber_700 = Color.from('#c2410c');
+  static Color amber_800 = Color.from('#9a3412');
+  static Color amber_900 = Color.from('#7c2d12');
+  static Color blue_50 = Color.from('#eff6ff');
+  static Color blue_100 = Color.from('#dbeafe');
+  static Color blue_200 = Color.from('#bfdbfe');
+  static Color blue_300 = Color.from('#93c5fd');
+  static Color blue_400 = Color.from('#60a5fa');
+  static Color blue_500 = Color.from('#3b82f6');
+  static Color blue_600 = Color.from('#2563eb');
+  static Color blue_700 = Color.from('#1d4ed8');
+  static Color blue_800 = Color.from('#1e40af');
+  static Color blue_900 = Color.from('#1e3a8a');
+  static Color cyan_50 = Color.from('#ecfeff');
+  static Color cyan_100 = Color.from('#cffafe');
+  static Color cyan_200 = Color.from('#a5f3fc');
+  static Color cyan_300 = Color.from('#67e8f9');
+  static Color cyan_400 = Color.from('#22d3ee');
+  static Color cyan_500 = Color.from('#06b6d4');
+  static Color cyan_600 = Color.from('#0891b2');
+  static Color cyan_700 = Color.from('#0e7490');
+  static Color cyan_800 = Color.from('#155e75');
+  static Color cyan_900 = Color.from('#164e63');
+  static Color emerald_50 = Color.from('#ecfdf5');
+  static Color emerald_100 = Color.from('#d1fae5');
+  static Color emerald_200 = Color.from('#a7f3d0');
+  static Color emerald_300 = Color.from('#6ee7b7');
+  static Color emerald_400 = Color.from('#34d399');
+  static Color emerald_500 = Color.from('#10b981');
+  static Color emerald_600 = Color.from('#059669');
+  static Color emerald_700 = Color.from('#047857');
+  static Color emerald_800 = Color.from('#065f46');
+  static Color emerald_900 = Color.from('#064e3b');
+  static Color fuchsia_50 = Color.from('#fdf4ff');
+  static Color fuchsia_100 = Color.from('#fae8ff');
+  static Color fuchsia_200 = Color.from('#f5d0fe');
+  static Color fuchsia_300 = Color.from('#f0abfc');
+  static Color fuchsia_400 = Color.from('#e879f9');
+  static Color fuchsia_500 = Color.from('#d946ef');
+  static Color fuchsia_600 = Color.from('#c026d3');
+  static Color fuchsia_700 = Color.from('#a21caf');
+  static Color fuchsia_800 = Color.from('#86198f');
+  static Color fuchsia_900 = Color.from('#701a75');
+  static Color gray_50 = Color.from('#f9fafb');
+  static Color gray_100 = Color.from('#f3f4f6');
+  static Color gray_200 = Color.from('#e5e7eb');
+  static Color gray_300 = Color.from('#d1d5db');
+  static Color gray_400 = Color.from('#9ca3af');
+  static Color gray_500 = Color.from('#6b7280');
+  static Color gray_600 = Color.from('#4b5563');
+  static Color gray_700 = Color.from('#374151');
+  static Color gray_800 = Color.from('#1f2937');
+  static Color gray_900 = Color.from('#111827');
+  static Color green_50 = Color.from('#f0fdf4');
+  static Color green_100 = Color.from('#dcfce7');
+  static Color green_200 = Color.from('#bbf7d0');
+  static Color green_300 = Color.from('#86efac');
+  static Color green_400 = Color.from('#4ade80');
+  static Color green_500 = Color.from('#22c55e');
+  static Color green_600 = Color.from('#16a34a');
+  static Color green_700 = Color.from('#15803d');
+  static Color green_800 = Color.from('#166534');
+  static Color green_900 = Color.from('#14532d');
+  static Color indigo_50 = Color.from('#eef2ff');
+  static Color indigo_100 = Color.from('#e0e7ff');
+  static Color indigo_200 = Color.from('#c7d2fe');
+  static Color indigo_300 = Color.from('#a5b4fc');
+  static Color indigo_400 = Color.from('#818cf8');
+  static Color indigo_500 = Color.from('#6366f1');
+  static Color indigo_600 = Color.from('#4f46e5');
+  static Color indigo_700 = Color.from('#4338ca');
+  static Color indigo_800 = Color.from('#3730a3');
+  static Color indigo_900 = Color.from('#312e81');
+  static Color lime_50 = Color.from('#f7fee7');
+  static Color lime_100 = Color.from('#ecfccb');
+  static Color lime_200 = Color.from('#d9f99d');
+  static Color lime_300 = Color.from('#bef264');
+  static Color lime_400 = Color.from('#a3e635');
+  static Color lime_500 = Color.from('#84cc16');
+  static Color lime_600 = Color.from('#65a30d');
+  static Color lime_700 = Color.from('#4d7c0f');
+  static Color lime_800 = Color.from('#3f6212');
+  static Color lime_900 = Color.from('#365314');
+  static Color neutral_50 = Color.from('#fafafa');
+  static Color neutral_100 = Color.from('#f5f5f5');
+  static Color neutral_200 = Color.from('#e5e5e5');
+  static Color neutral_300 = Color.from('#d4d4d4');
+  static Color neutral_400 = Color.from('#a3a3a3');
+  static Color neutral_500 = Color.from('#737373');
+  static Color neutral_600 = Color.from('#525252');
+  static Color neutral_700 = Color.from('#404040');
+  static Color neutral_800 = Color.from('#262626');
+  static Color neutral_900 = Color.from('#171717');
+  static Color orange_50 = Color.from('#fff7ed');
+  static Color orange_100 = Color.from('#ffedd5');
+  static Color orange_200 = Color.from('#fed7aa');
+  static Color orange_300 = Color.from('#fdba74');
+  static Color orange_400 = Color.from('#fb923c');
+  static Color orange_500 = Color.from('#f97316');
+  static Color orange_600 = Color.from('#ea580c');
+  static Color orange_700 = Color.from('#c2410c');
+  static Color orange_800 = Color.from('#9a3412');
+  static Color orange_900 = Color.from('#7c2d12');
+  static Color pink_50 = Color.from('#fdf2f8');
+  static Color pink_100 = Color.from('#fce7f3');
+  static Color pink_200 = Color.from('#f9a8d4');
+  static Color pink_300 = Color.from('#93c5fd');
+  static Color pink_400 = Color.from('#f472b6');
+  static Color pink_500 = Color.from('#ec4899');
+  static Color pink_600 = Color.from('#db2777');
+  static Color pink_700 = Color.from('#be185d');
+  static Color pink_800 = Color.from('#9d174d');
+  static Color pink_900 = Color.from('#831843');
+  static Color purple_50 = Color.from('#faf5ff');
+  static Color purple_100 = Color.from('#f3e8ff');
+  static Color purple_200 = Color.from('#e9d5ff');
+  static Color purple_300 = Color.from('#d8b4fe');
+  static Color purple_400 = Color.from('#c084fc');
+  static Color purple_500 = Color.from('#a855f7');
+  static Color purple_600 = Color.from('#9333ea');
+  static Color purple_700 = Color.from('#7e22ce');
+  static Color purple_800 = Color.from('#6b21a8');
+  static Color purple_900 = Color.from('#581c87');
+  static Color red_50 = Color.from('#fef2f2');
+  static Color red_100 = Color.from('#fee2e2');
+  static Color red_200 = Color.from('#fecaca');
+  static Color red_300 = Color.from('#fca5a5');
+  static Color red_400 = Color.from('#f87171');
+  static Color red_500 = Color.from('#ef4444');
+  static Color red_600 = Color.from('#dc2626');
+  static Color red_700 = Color.from('#b91c1c');
+  static Color red_800 = Color.from('#991b1b');
+  static Color red_900 = Color.from('#7f1d1d');
+  static Color rose_50 = Color.from('#fff1f2');
+  static Color rose_100 = Color.from('#ffe4e6');
+  static Color rose_200 = Color.from('#fecdd3');
+  static Color rose_300 = Color.from('#fda4af');
+  static Color rose_400 = Color.from('#fb7185');
+  static Color rose_500 = Color.from('#f43f5e');
+  static Color rose_600 = Color.from('#e11d48');
+  static Color rose_700 = Color.from('#be123c');
+  static Color rose_800 = Color.from('#9f1239');
+  static Color rose_900 = Color.from('#881337');
+  static Color sky_50 = Color.from('#f0f9ff');
+  static Color sky_100 = Color.from('#e0f2fe');
+  static Color sky_200 = Color.from('#bae6fd');
+  static Color sky_300 = Color.from('#7dd3fc');
+  static Color sky_400 = Color.from('#38bdf8');
+  static Color sky_500 = Color.from('#0ea5e9');
+  static Color sky_600 = Color.from('#0284c7');
+  static Color sky_700 = Color.from('#0369a1');
+  static Color sky_800 = Color.from('#075985');
+  static Color sky_900 = Color.from('#0c4a6e');
+  static Color slate_50 = Color.from('#f8fafc');
+  static Color slate_100 = Color.from('#f1f5f9');
+  static Color slate_200 = Color.from('#e2e8f0');
+  static Color slate_300 = Color.from('#cbd5e1');
+  static Color slate_400 = Color.from('#94a3b8');
+  static Color slate_500 = Color.from('#64748b');
+  static Color slate_600 = Color.from('#475569');
+  static Color slate_700 = Color.from('#334155');
+  static Color slate_800 = Color.from('#1e293b');
+  static Color slate_900 = Color.from('#0f172a');
+  static Color invisible = Color.from('#2f3136');
+  static Color stone_50 = Color.from('#fafafa');
+  static Color stone_100 = Color.from('#f5f5f5');
+  static Color stone_200 = Color.from('#e5e5e5');
+  static Color stone_300 = Color.from('#d4d4d4');
+  static Color stone_400 = Color.from('#a3a3a3');
+  static Color stone_500 = Color.from('#737373');
+  static Color stone_600 = Color.from('#525252');
+  static Color stone_700 = Color.from('#404040');
+  static Color stone_800 = Color.from('#262626');
+  static Color stone_900 = Color.from('#171717');
+  static Color teal_50 = Color.from('#f0fdfa');
+  static Color teal_100 = Color.from('#ccfbf1');
+  static Color teal_200 = Color.from('#99f6e4');
+  static Color teal_300 = Color.from('#5eead4');
+  static Color teal_400 = Color.from('#2dd4bf');
+  static Color teal_500 = Color.from('#14b8a6');
+  static Color teal_600 = Color.from('#0d9488');
+  static Color teal_700 = Color.from('#0f766e');
+  static Color teal_800 = Color.from('#115e59');
+  static Color teal_900 = Color.from('#134e4a');
+  static Color violet_50 = Color.from('#f5f3ff');
+  static Color violet_100 = Color.from('#ede9fe');
+  static Color violet_200 = Color.from('#ddd6fe');
+  static Color violet_300 = Color.from('#c4b5fd');
+  static Color violet_400 = Color.from('#a78bfa');
+  static Color violet_500 = Color.from('#8b5cf6');
+  static Color violet_600 = Color.from('#7c3aed');
+  static Color violet_700 = Color.from('#6d28d9');
+  static Color violet_800 = Color.from('#5b21b6');
+  static Color violet_900 = Color.from('#4c1d95');
+  static Color yellow_50 = Color.from('#fefce8');
+  static Color yellow_100 = Color.from('#fef9c3');
+  static Color yellow_200 = Color.from('#fef08a');
+  static Color yellow_300 = Color.from('#fde047');
+  static Color yellow_400 = Color.from('#facc15');
+  static Color yellow_500 = Color.from('#eab308');
+  static Color yellow_600 = Color.from('#ca8a04');
+  static Color yellow_700 = Color.from('#a16207');
+  static Color yellow_800 = Color.from('#854d0e');
+  static Color yellow_900 = Color.from('#713f12');
 
-  final String _color;
-  const Color(this._color);
+  final String color;
+  const Color(this.color);
 
   @override
-  String toString() => _color;
+  String toString () => color;
+
+  factory Color.from(String color) => Color(color);
 }
