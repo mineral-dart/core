@@ -34,8 +34,8 @@ class Modal extends Component {
     );
 
     Row row = Row();
-    row.addComponent(input);
-    components.add(row);
+    // row.addComponent(input);
+    // components.add(row);
   }
 
   @override

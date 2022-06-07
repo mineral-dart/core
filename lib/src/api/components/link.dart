@@ -1,10 +1,9 @@
-import 'package:mineral/src/api/components/button.dart';
 import 'package:mineral/src/api/components/component.dart';
 
 class Link extends Component {
   String label;
   String url;
-  ButtonStyle style = ButtonStyle.link;
+  int style = 5;
 
   Link({ required this.label, required this.url }) : super(type: ComponentType.button);
 
@@ -13,7 +12,7 @@ class Link extends Component {
     return {
       'type': type.value,
       'label': label,
-      'style': style.value,
+      'style': style,
       'url': url,
     };
   }

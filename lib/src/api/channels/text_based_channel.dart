@@ -61,15 +61,6 @@ class TextBasedChannel extends Channel {
       'components': components != null ? componentList : [],
     });
 
-    print(response.body);
-
-    print(jsonEncode({
-      'tts': tts ?? false,
-      'content': content,
-      'embeds': embeds != null ? embedList : [],
-      'components': components != null ? componentList : [],
-    }));
-
     if (response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);
 
