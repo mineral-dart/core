@@ -50,7 +50,7 @@ enum Events {
   channelDelete('delete::channel'),
 
   memberUpdate('update::member'),
-  memberRolesUpdate('update-roles::member'),
+  memberRolesUpdate('update::roles-member'),
   acceptRules('accept::rules');
 
   final String event;
