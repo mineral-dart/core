@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/message_attachment.dart';
 import 'package:mineral/src/api/message_embed.dart';
 import 'package:mineral/src/api/message_sticker_item.dart';
@@ -14,7 +15,7 @@ class Message {
   List<MessageEmbed> embeds;
   bool allowMentions;
   Message? reference;
-  // List<> components;
+  List<Component> components;
   List<MessageStickerItem> stickers;
   dynamic payload;
   List<MessageAttachment> attachments;
@@ -30,7 +31,7 @@ class Message {
     required this.embeds,
     required this.allowMentions,
     required this.reference,
-    // required this.components,
+    required this.components,
     required this.stickers,
     required this.payload,
     required this.attachments,
@@ -109,6 +110,12 @@ class Message {
       }
     }
 
+    List<Component> components = [];
+    for (dynamic payload in payload['components']) {
+      Component component = Component.from(payload: payload);
+      components.add(component);
+    }
+
     return Message(
       id: payload['id'],
       content: payload['content'],
@@ -120,6 +127,7 @@ class Message {
       channel: channel,
       author: guildMember!,
       embeds: embeds,
+      components: components,
       payload: payload['payload'],
       stickers: stickers,
       attachments: messageAttachments,

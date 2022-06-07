@@ -37,13 +37,20 @@ class TextBasedChannel extends Channel {
     flags: flags,
   );
 
-  Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, bool? tts }) async {
+  Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
     Http http = ioc.singleton(Service.http);
-    List<dynamic> embedList = [];
 
+    List<dynamic> embedList = [];
     if (embeds != null) {
       for (MessageEmbed element in embeds) {
         embedList.add(element.toJson());
+      }
+    }
+
+    List<dynamic> componentList = [];
+    if (components != null) {
+      for (Row element in components) {
+        componentList.add(element.toJson());
       }
     }
 
@@ -51,7 +58,17 @@ class TextBasedChannel extends Channel {
       'tts': tts ?? false,
       'content': content,
       'embeds': embeds != null ? embedList : [],
+      'components': components != null ? componentList : [],
     });
+
+    print(response.body);
+
+    print(jsonEncode({
+      'tts': tts ?? false,
+      'content': content,
+      'embeds': embeds != null ? embedList : [],
+      'components': components != null ? componentList : [],
+    }));
 
     if (response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);

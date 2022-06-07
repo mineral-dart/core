@@ -18,7 +18,7 @@ class EventManager {
     return this;
   }
 
-  emit (Events event,  [params]) {
+  void emit (Events event, [params]) {
     List<Object>? events = _events.get(event);
 
     if (events != null) {
