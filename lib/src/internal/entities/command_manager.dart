@@ -18,56 +18,15 @@ class CommandManager {
   CommandManager add (Object object) {
     MineralCommand command = MineralCommand(name: '', description: '', scope: '', options: []);
 
-    reflect(object).type.metadata.forEach((element) {
-      dynamic reflectee = element.reflectee;
+    _registerCommands(
+      command: command,
+      object: object
+    );
 
-      if (reflectee is CommandGroup) {
-        MineralCommand group = MineralCommand(name: '', description: '', scope: '', options: [])
-          ..type = 2
-          ..name = reflectee.name
-          ..description = reflectee.description;
-
-        command.groups.add(group);
-      }
-
-      if (reflectee is Command) {
-        command
-          ..name = reflectee.name
-          ..description = reflectee.description
-          ..scope = reflectee.scope;
-      }
-
-      if (reflectee is Option) {
-        command.options.add(reflectee);
-      }
-    });
-
-    reflect(object).type.declarations.forEach((key, value) {
-      print(value);
-
-      if (value.metadata.isNotEmpty) {
-        MineralCommand subcommand = MineralCommand(name: '', description: '', scope: '', options: []);
-        subcommand.name = value.metadata.first.reflectee.name;
-        subcommand.description = value.metadata.first.reflectee.description;
-
-        for (InstanceMirror metadata in value.metadata) {
-          dynamic reflectee = metadata.reflectee;
-          if (reflectee is Subcommand) {
-            String? groupName = reflectee.group;
-            if (groupName != null) {
-              MineralCommand group = command.groups.firstWhere((group) => group.name == groupName);
-              group.subcommands.add(subcommand);
-            } else {
-              command.subcommands.add(subcommand);
-            }
-          }
-
-          if (reflectee is Option) {
-            subcommand.options.add(metadata.reflectee);
-          }
-        }
-      }
-    });
+    _registerCommandMethods(
+      command: command,
+      object: object
+    );
 
     _commands.set<MineralCommand>(command.name, command);
     return this;
@@ -93,6 +52,63 @@ class CommandManager {
     });
 
     return commands;
+  }
+
+  void _registerCommands ({ required MineralCommand command, required Object object }) {
+    reflect(object).type.metadata.forEach((element) {
+      dynamic reflectee = element.reflectee;
+
+      if (reflectee is CommandGroup) {
+        MineralCommand group = MineralCommand(name: '', description: '', scope: '', options: [])
+          ..type = 2
+          ..name = reflectee.name
+          ..description = reflectee.description;
+
+        command.groups.add(group);
+      }
+
+      if (reflectee is Command) {
+        command
+          ..name = reflectee.name
+          ..description = reflectee.description
+          ..scope = reflectee.scope;
+      }
+
+      if (reflectee is Option) {
+        command.options.add(reflectee);
+      }
+    });
+  }
+
+  void _registerCommandMethods ({ required MineralCommand command, required Object object }) {
+    reflect(object).type.declarations.forEach((key, value) {
+      if (value.metadata.isEmpty) {
+        return;
+      }
+
+      MineralCommand subcommand = MineralCommand(name: '', description: '', scope: '', options: []);
+      subcommand.name = value.metadata.first.reflectee.name;
+      subcommand.description = value.metadata.first.reflectee.description;
+
+      for (InstanceMirror metadata in value.metadata) {
+        dynamic reflectee = metadata.reflectee;
+
+        if (reflectee is Subcommand) {
+          String? groupName = reflectee.group;
+
+          if (groupName != null) {
+            MineralCommand group = command.groups.firstWhere((group) => group.name == groupName);
+            group.subcommands.add(subcommand);
+          } else {
+            command.subcommands.add(subcommand);
+          }
+        }
+
+        if (reflectee is Option) {
+          subcommand.options.add(metadata.reflectee);
+        }
+      }
+    });
   }
 }
 
