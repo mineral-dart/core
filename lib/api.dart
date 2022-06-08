@@ -12,7 +12,7 @@ export 'src/api/voice.dart' show Voice;
 
 export 'src/api/guild.dart' show Guild;
 
-export 'src/api/channels/channel.dart' show Channel;
+export 'src/api/channels/channel.dart' show Channel, ChannelType;
 export 'src/api/channels/voice_channel.dart' show VoiceChannel;
 export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
 export 'src/api/channels/text_channel.dart' show TextChannel;

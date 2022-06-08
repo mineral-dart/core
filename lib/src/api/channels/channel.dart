@@ -2,22 +2,25 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 
-class ChannelType {
-  static int guildText = 0;
-  static int private = 1;
-  static int guildVoice = 2;
-  static int groupDm = 3;
-  static int guildCategory = 4;
-  static int guildNews = 5;
-  static int guildNewsThread = 10;
-  static int guildPublicThread = 11;
-  static int guildPrivateThread = 12;
-  static int guildStageVoice = 13;
-  static int guildDirectory = 14;
-  static int guildForum = 15;
+enum ChannelType {
+  guildText(0),
+  private(1),
+  guildVoice(2),
+  groupDm(3),
+  guildCategory(4),
+  guildNews(5),
+  guildNewsThread(10),
+  guildPublicThread(11),
+  guildPrivateThread(12),
+  guildStageVoice(13),
+  guildDirectory(14),
+  guildForum(15);
+
+  final int value;
+  const ChannelType(this.value);
 }
 
-Map<int, Channel Function(dynamic payload)> channels = {
+Map<ChannelType, Channel Function(dynamic payload)> channels = {
   ChannelType.guildText: (dynamic payload) => TextChannel.from(payload),
   // 'DM': () => ,
   ChannelType.guildVoice: (dynamic payload) => VoiceChannel.from(payload),
@@ -34,7 +37,7 @@ Map<int, Channel Function(dynamic payload)> channels = {
 
 class Channel {
   Snowflake id;
-  int type;
+  ChannelType type;
   Snowflake? guildId;
   late Guild? guild;
   int? position;

@@ -16,15 +16,60 @@ class CommandManager {
   final Collection<String, MineralCommand> _commands = Collection();
 
   CommandManager add (Object object) {
-    dynamic decorator = reflect(object).type.metadata.first.reflectee;
+    MineralCommand command = MineralCommand(name: '', description: '', scope: '', options: []);
 
-    MineralCommand command = MineralCommand(
-      name: decorator.name,
-      description: decorator.description,
-      scope: decorator.scope,
-    );
+    reflect(object).type.metadata.forEach((element) {
+      dynamic reflectee = element.reflectee;
 
-    _commands.set<MineralCommand>(decorator.name, command);
+      if (reflectee is CommandGroup) {
+        MineralCommand group = MineralCommand(name: '', description: '', scope: '', options: [])
+          ..type = 2
+          ..name = reflectee.name
+          ..description = reflectee.description;
+
+        command.groups.add(group);
+      }
+
+      if (reflectee is Command) {
+        command
+          ..name = reflectee.name
+          ..description = reflectee.description
+          ..scope = reflectee.scope;
+      }
+
+      if (reflectee is Option) {
+        command.options.add(reflectee);
+      }
+    });
+
+    reflect(object).type.declarations.forEach((key, value) {
+      print(value);
+
+      if (value.metadata.isNotEmpty) {
+        MineralCommand subcommand = MineralCommand(name: '', description: '', scope: '', options: []);
+        subcommand.name = value.metadata.first.reflectee.name;
+        subcommand.description = value.metadata.first.reflectee.description;
+
+        for (InstanceMirror metadata in value.metadata) {
+          dynamic reflectee = metadata.reflectee;
+          if (reflectee is Subcommand) {
+            String? groupName = reflectee.group;
+            if (groupName != null) {
+              MineralCommand group = command.groups.firstWhere((group) => group.name == groupName);
+              group.subcommands.add(subcommand);
+            } else {
+              command.subcommands.add(subcommand);
+            }
+          }
+
+          if (reflectee is Option) {
+            subcommand.options.add(metadata.reflectee);
+          }
+        }
+      }
+    });
+
+    _commands.set<MineralCommand>(command.name, command);
     return this;
   }
 
@@ -60,18 +105,104 @@ class Command {
   const Command ({ required this.name, required this.description, required this.scope });
 }
 
-class MineralCommand {
-  String name;
-  String description;
-  String scope;
+class CommandGroup {
+  final String name;
+  final String description;
+  final int type = 2;
 
-  MineralCommand({ required this.name, required this.description, required this.scope });
+  const CommandGroup ({ required this.name, required this.description });
+}
+
+class Subcommand {
+  final String name;
+  final String description;
+  final int type = 1;
+  final String? group;
+
+  const Subcommand ({ required this.name, required this.description, this.group });
+}
+
+
+enum OptionType {
+  string(3),
+  integer(4),
+  boolean(5),
+  user(6),
+  channel(7),
+  role(8),
+  mentionable(9),
+  number(10),
+  attachment(11);
+
+  final int value;
+  const OptionType(this.value);
+}
+
+class OptionChoice {
+  final String label;
+  final String value;
+
+  const OptionChoice({ required this.label, required this.value });
+
+  Object toJson () => { 'name': label, 'value': value };
+}
+
+class Option {
+  final String name;
+  final String description;
+  final OptionType type;
+  final bool required;
+  final List<ChannelType>? channels;
+  final int? min;
+  final int? max;
+  final List<OptionChoice>? choices;
+
+  const Option ({
+    required this.name,
+    required this.description,
+    required this.type,
+    required this.required,
+    this.channels,
+    this.min,
+    this.max,
+    this.choices,
+  });
 
   Object toJson () {
     return {
       'name': name,
       'description': description,
-      'type': ApplicationCommandType.chatInput.value,
+      'type': type.value,
+      'required': required,
+      'channel_types': channels?.map((channel) => channel.value).toList(),
+      'choices': choices?.map((choice) => choice.toJson()).toList(),
+      'min_value': min,
+      'max_value': max,
+    };
+  }
+}
+
+class MineralCommand {
+  String name;
+  String description;
+  String scope;
+  int type = 1;
+  List<Option> options = [];
+  List<MineralCommand> groups = [];
+  List<MineralCommand> subcommands = [];
+
+  MineralCommand({ required this.name, required this.description, required this.scope, required this.options });
+
+  Object toJson () {
+    return {
+      'name': name,
+      'description': description,
+      'type': type,
+      'options': groups.isNotEmpty
+         ? [...groups.map((group) => group.toJson()).toList(), ...subcommands.map((subcommand) => subcommand.toJson()).toList()]
+         : subcommands.isNotEmpty
+            ? subcommands.map((subcommand) => subcommand.toJson()).toList()
+            : options.map((option) => option.toJson()).toList(),
     };
   }
 }

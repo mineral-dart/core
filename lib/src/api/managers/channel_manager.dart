@@ -39,7 +39,7 @@ class ChannelManager implements CacheManager<Channel> {
     return await _create<TextChannel>(data: {
       'name': label,
       'topic': description,
-      'type': ChannelType.guildText,
+      'type': ChannelType.guildText.value,
       'parent_id': categoryChannel?.id,
       'nsfw': nsfw ?? false,
       'rate_limit_per_user': delay ?? 0,
@@ -50,7 +50,7 @@ class ChannelManager implements CacheManager<Channel> {
   Future<VoiceChannel?> createVoiceChannel ({ required String label, int? position, CategoryChannel? categoryChannel, int? bitrate, int? maxUsers }) async {
     return await _create<VoiceChannel>(data: {
       'name': label,
-      'type': ChannelType.guildVoice,
+      'type': ChannelType.guildVoice.value,
       'parent_id': categoryChannel?.id,
       'permission_overwrites': [],
       'bitrate': bitrate ?? 64000,
@@ -61,7 +61,7 @@ class ChannelManager implements CacheManager<Channel> {
   Future<CategoryChannel?> createCategoryChannel ({ required String label, int? position }) async {
     return await _create<CategoryChannel>(data: {
       'name': label,
-      'type': ChannelType.guildCategory,
+      'type': ChannelType.guildCategory.value,
       'permission_overwrites': [],
     });
   }

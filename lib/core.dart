@@ -9,4 +9,4 @@ export 'src/constants.dart';
 export 'src/collection.dart';
 export 'src/internal/http.dart';
 export 'src/internal/entities/event_manager.dart' show Event, Events;
-export 'src/internal/entities/command_manager.dart' show Command, MineralCommand, CommandScope;
+export 'src/internal/entities/command_manager.dart' show Command, MineralCommand, Option, OptionType, OptionChoice, Subcommand, CommandGroup;
