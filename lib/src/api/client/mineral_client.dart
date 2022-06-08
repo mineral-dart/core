@@ -1,6 +1,5 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/client/client_presence.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_manager.dart';
 
@@ -50,6 +49,24 @@ class MineralClient {
       'status': status != null ? status.toString() : ClientStatus.online.toString(),
       'afk': afk ?? false,
     });
+  }
+
+  Future<void> registerGlobalCommands ({ required List<MineralCommand> commands }) async {
+    Http http = ioc.singleton(Service.http);
+
+    await http.put(
+      url: "/applications/${application.id}/commands",
+      payload: commands.map((command) => command.toJson()).toList()
+    );
+  }
+
+  Future<void> registerGuildCommands ({ required Guild guild, required List<MineralCommand> commands}) async {
+    Http http = ioc.singleton(Service.http);
+
+    await http.put(
+      url: "/applications/${application.id}/guilds/${guild.id}/commands",
+      payload: commands.map((command) => command.toJson()).toList()
+    );
   }
 
   factory MineralClient.from({ required dynamic payload }) {

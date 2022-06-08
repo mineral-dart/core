@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -10,11 +11,14 @@ class Ready implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
+    CommandManager commandManager = ioc.singleton(Service.command);
 
     MineralClient client = MineralClient.from(payload: websocketResponse.payload);
     ioc.bind(namespace: Service.client, service: client);
 
-    manager.emit(Events.ready, [client]);
+    await client.registerGlobalCommands(commands: commandManager.getGlobals());
+
+    eventManager.emit(Events.ready, [client]);
   }
 }

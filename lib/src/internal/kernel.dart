@@ -1,13 +1,16 @@
 import 'package:mineral/exception.dart';
+import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/websockets/websocket_manager.dart';
 
 class Kernel {
   EventManager events = EventManager();
+  CommandManager commands = CommandManager();
 
   Future<void> init () async {
     ioc.bind(namespace: Service.event, service: events);
+    ioc.bind(namespace: Service.command, service: commands);
 
     Http http = Http(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');

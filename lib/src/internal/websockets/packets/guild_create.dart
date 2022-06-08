@@ -5,6 +5,7 @@ import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -16,6 +17,7 @@ class GuildCreate implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventManager manager = ioc.singleton(Service.event);
+    CommandManager commandManager = ioc.singleton(Service.command);
     MineralClient client = ioc.singleton(Service.client);
 
     RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
@@ -93,6 +95,11 @@ class GuildCreate implements WebsocketPacket {
     guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
     guild.emojis.guild = guild;
     guild.roles.guild = guild;
+
+    await client.registerGuildCommands(
+      guild: guild,
+      commands: commandManager.getFromGuild(guild)
+    );
 
     client.guilds.cache.putIfAbsent(guild.id, () => guild);
 

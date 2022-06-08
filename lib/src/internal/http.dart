@@ -25,7 +25,7 @@ class Http {
   }
 
   Future<http.Response> put ({ required String url, required dynamic payload, Map<String, String>? headers }) async {
-    return http.put(Uri.parse("$baseUrl$url"), body: payload, headers: _getHeaders(headers));
+    return http.put(Uri.parse("$baseUrl$url"), body: jsonEncode(payload), headers: _getHeaders(headers));
   }
 
   Future<http.Response> patch ({ required String url, required dynamic payload, Map<String, String>? headers }) async {

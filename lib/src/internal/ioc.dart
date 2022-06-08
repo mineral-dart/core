@@ -21,6 +21,7 @@ enum Service {
   client('Mineral/Core/Client'),
   environment('Mineral/Core/Environment'),
   event('Mineral/Core/Event'),
+  command('Mineral/Core/Command'),
   websocket('Mineral/Core/Websocket');
 
   final String _symbol;
