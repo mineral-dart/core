@@ -14,6 +14,8 @@ class Heartbeat {
 
   void start (Duration delay) {
     _delay = delay;
+
+    cancel();
     _timer = Timer.periodic(delay, (Timer timer) => _send());
   }
 
