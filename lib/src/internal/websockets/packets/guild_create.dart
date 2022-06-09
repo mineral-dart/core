@@ -40,8 +40,9 @@ class GuildCreate implements WebsocketPacket {
 
     ChannelManager channelManager = ChannelManager(guildId: websocketResponse.payload['id']);
     for(dynamic payload in websocketResponse.payload['channels']) {
-      if (channels.containsKey(payload['type'])) {
-        Channel Function(dynamic payload) item = channels[payload['type']] as Channel Function(dynamic payload);
+      ChannelType channelType = ChannelType.values.firstWhere((type) => type.value == payload['type']);
+      if (channels.containsKey(channelType)) {
+        Channel Function(dynamic payload) item = channels[channelType] as Channel Function(dynamic payload);
         Channel channel = item(payload);
 
         channelManager.cache.putIfAbsent(channel.id, () => channel);

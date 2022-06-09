@@ -51,7 +51,9 @@ enum Events {
 
   memberUpdate('update::member'),
   memberRolesUpdate('update::roles-member'),
-  acceptRules('accept::rules');
+  acceptRules('accept::rules'),
+
+  commandCreate('create::commandInteraction');
 
   final String event;
   const Events(this.event);

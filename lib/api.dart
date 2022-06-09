@@ -31,6 +31,9 @@ export 'src/api/components/modal.dart' show Modal;
 export 'src/api/components/text_input.dart' show TextInputStyle;
 export 'src/api/components/button.dart' show Button, ButtonStyle;
 export 'src/api/components/link.dart' show Link;
+
+export 'src/api/interactions/command_interaction.dart' show CommandInteraction;
+
 export 'src/api/utils.dart';
 
 typedef Snowflake = String;

@@ -1,3 +1,23 @@
+enum InteractionType {
+  ping(1),
+  applicationCommand(2),
+  messageComponent(3),
+  applicationCommandAutocomplete(4),
+  modalSubmit(5);
+
+  final int value;
+  const InteractionType(this.value);
+}
+
+enum ApplicationCommandType {
+  chatInput(1),
+  user(2),
+  message(3);
+
+  final int value;
+  const ApplicationCommandType(this.value);
+}
+
 enum NotificationLevel {
   allMessages(0),
   onlyMentions(1);
