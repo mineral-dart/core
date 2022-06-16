@@ -4,6 +4,8 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_manager.dart';
 
+import '../../internal/entities/command_manager.dart';
+
 enum ClientStatus {
   online('online'),
   doNotDisturb('dnd'),
@@ -52,7 +54,7 @@ class MineralClient {
     });
   }
 
-  Future<void> registerGlobalCommands ({ required List<MineralCommand> commands }) async {
+  Future<void> registerGlobalCommands ({ required List<SlashCommand> commands }) async {
     Http http = ioc.singleton(Service.http);
 
     await http.put(
@@ -61,7 +63,7 @@ class MineralClient {
     );
   }
 
-  Future<void> registerGuildCommands ({ required Guild guild, required List<MineralCommand> commands}) async {
+  Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands}) async {
     Http http = ioc.singleton(Service.http);
 
     Response response = await http.put(

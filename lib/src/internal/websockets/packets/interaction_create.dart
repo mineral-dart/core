@@ -44,20 +44,7 @@ class InteractionCreate implements WebsocketPacket {
       walk(payload['data']['options']);
     }
 
-    dynamic handle = manager.handlers[identifier];
+    dynamic handle = manager.getHandler(identifier);
     reflect(handle['commandClass']).invoke(handle['symbol'], [commandInteraction]);
-
-    // Channel? channel = guild?.channels.cache.get(payload['id']);
-    //
-    // if (channel == null) {
-    //   channel = _dispatch(guild, payload);
-    //
-    //   channel?.guildId = guild?.id;
-    //   channel?.guild = guild;
-    //   channel?.parent = channel.parentId != null ? guild?.channels.cache.get<CategoryChannel>(channel.parentId) : null;
-    //
-    //   guild?.channels.cache.putIfAbsent(channel!.id, () => channel!);
-    // }
-    //
   }
 }

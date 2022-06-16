@@ -19,12 +19,31 @@ class Ready implements WebsocketPacket {
 
     await client.registerGlobalCommands(commands: commandManager.getGlobals());
 
-    eventManager.getRegisteredEvents().forEach((_, events) {
+    infuseClientIntoEvents(
+      manager: eventManager,
+      client: client,
+    );
+
+    infuseClientIntoCommands(
+      manager: commandManager,
+      client: client,
+    );
+
+    eventManager.emit(Events.ready, [client]);
+  }
+
+  void infuseClientIntoEvents ({ required EventManager manager, required MineralClient client }) {
+    manager.getRegisteredEvents().forEach((_, events) {
       for (var event in events) {
         event.client = client;
       }
     });
+  }
 
-    eventManager.emit(Events.ready, [client]);
+  void infuseClientIntoCommands ({ required CommandManager manager, required MineralClient client }) {
+    manager.getHandlers().forEach((_, handler) {
+      MineralCommand command = handler['commandClass'];
+      command.client = ioc.singleton(Service.client);
+    });
   }
 }

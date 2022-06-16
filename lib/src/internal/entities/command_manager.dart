@@ -4,29 +4,35 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 
 class CommandManager {
-  final Collection<String, MineralCommand> commands = Collection();
-  final Map<String, dynamic> handlers = {};
+  final Collection<String, SlashCommand> _commands = Collection();
+  final Map<String, dynamic> _handlers = {};
 
-  CommandManager add (Object object) {
-    MineralCommand command = MineralCommand(name: '', description: '', scope: '', options: []);
+  Collection<String, SlashCommand> getRegisteredCommands () => _commands;
+
+  Map<String, dynamic> getHandlers () => _handlers;
+
+  dynamic getHandler (String handler) => _handlers[handler];
+
+  CommandManager add (MineralCommand mineralCommand) {
+    SlashCommand command = SlashCommand(name: '', description: '', scope: '', options: []);
 
     _registerCommands(
       command: command,
-      object: object
+      mineralCommand: mineralCommand
     );
 
     _registerCommandMethods(
       command: command,
-      object: object
+      mineralCommand: mineralCommand
     );
 
-    commands.set<MineralCommand>(command.name, command);
+    _commands.set<SlashCommand>(command.name, command);
     return this;
   }
 
-  List<MineralCommand> getFromGuild (Guild guild) {
-    List<MineralCommand> commands = [];
-    this.commands.forEach((name, command) {
+  List<SlashCommand> getFromGuild (Guild guild) {
+    List<SlashCommand> commands = [];
+    _commands.forEach((name, command) {
       if (command.scope == guild.id || command.scope == 'GUILD') {
         commands.add(command);
       }
@@ -35,9 +41,9 @@ class CommandManager {
     return commands;
   }
 
-  List<MineralCommand> getGlobals () {
-    List<MineralCommand> commands = [];
-    this.commands.forEach((name, command) {
+  List<SlashCommand> getGlobals () {
+    List<SlashCommand> commands = [];
+    _commands.forEach((name, command) {
       if (command.scope == 'GLOBAL') {
         commands.add(command);
       }
@@ -46,15 +52,15 @@ class CommandManager {
     return commands;
   }
 
-  void _registerCommands ({ required MineralCommand command, required Object object }) {
-    ClassMirror classMirror = reflect(object).type;
-    dynamic classCommand = reflect(object).reflectee;
+  void _registerCommands ({ required SlashCommand command, required MineralCommand mineralCommand }) {
+    ClassMirror classMirror = reflect(mineralCommand).type;
+    MineralCommand classCommand = reflect(mineralCommand).reflectee;
 
     for (InstanceMirror element in classMirror.metadata) {
       dynamic reflectee = element.reflectee;
 
       if (reflectee is CommandGroup) {
-        MineralCommand group = MineralCommand(name: '', description: '', scope: '', options: [])
+        SlashCommand group = SlashCommand(name: '', description: '', scope: '', options: [])
           ..type = 2
           ..name = reflectee.name
           ..description = reflectee.description;
@@ -70,7 +76,7 @@ class CommandManager {
 
         if (classMirror.instanceMembers.values.toList().where((element) => element.simpleName == Symbol('handle')).isNotEmpty) {
           MethodMirror handle = classMirror.instanceMembers.values.toList().firstWhere((element) => element.simpleName == Symbol('handle'));
-          handlers.putIfAbsent(command.name, () => {
+          _handlers.putIfAbsent(command.name, () => {
             'symbol': handle.simpleName,
             'commandClass': classCommand,
           });
@@ -83,14 +89,14 @@ class CommandManager {
     }
   }
 
-  void _registerCommandMethods ({ required MineralCommand command, required Object object }) {
-    dynamic classCommand = reflect(object).reflectee;
-    reflect(object).type.declarations.forEach((key, value) {
+  void _registerCommandMethods ({ required SlashCommand command, required MineralCommand mineralCommand }) {
+    dynamic classCommand = reflect(mineralCommand).reflectee;
+    reflect(mineralCommand).type.declarations.forEach((key, value) {
       if (value.metadata.isEmpty) {
         return;
       }
 
-      MineralCommand subcommand = MineralCommand(name: '', description: '', scope: '', options: []);
+      SlashCommand subcommand = SlashCommand(name: '', description: '', scope: '', options: []);
       subcommand.name = value.metadata.first.reflectee.name;
       subcommand.description = value.metadata.first.reflectee.description;
 
@@ -101,16 +107,16 @@ class CommandManager {
           String? groupName = reflectee.group;
 
           if (groupName != null) {
-            MineralCommand group = command.groups.firstWhere((group) => group.name == groupName);
+            SlashCommand group = command.groups.firstWhere((group) => group.name == groupName);
             group.subcommands.add(subcommand);
 
-            handlers.putIfAbsent("${command.name}.${group.name}.${subcommand.name}", () => {
+            _handlers.putIfAbsent("${command.name}.${group.name}.${subcommand.name}", () => {
               'symbol': Symbol(subcommand.name),
               'commandClass': classCommand,
             });
           } else {
             command.subcommands.add(subcommand);
-            handlers.putIfAbsent("${command.name}.${subcommand.name}", () => {
+            _handlers.putIfAbsent("${command.name}.${subcommand.name}", () => {
               'symbol': Symbol(subcommand.name),
               'commandClass': classCommand,
             });
@@ -124,6 +130,10 @@ class CommandManager {
       }
     });
   }
+}
+
+class MineralCommand {
+  late MineralClient client;
 }
 
 class Command {
@@ -212,16 +222,16 @@ class Option {
   }
 }
 
-class MineralCommand {
+class SlashCommand {
   String name;
   String description;
   String scope;
   int type = 1;
   List<Option> options = [];
-  List<MineralCommand> groups = [];
-  List<MineralCommand> subcommands = [];
+  List<SlashCommand> groups = [];
+  List<SlashCommand> subcommands = [];
 
-  MineralCommand({ required this.name, required this.description, required this.scope, required this.options });
+  SlashCommand({ required this.name, required this.description, required this.scope, required this.options });
 
   Object toJson () {
     return {
