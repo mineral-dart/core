@@ -1,10 +1,13 @@
 import 'dart:mirrors';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
 
 class EventManager {
-  final Collection<Events, List<Object>> _events = Collection();
+  final Collection<Events, List<MineralEvent>> _events = Collection();
+
+  Collection<Events, List<MineralEvent>> getRegisteredEvents () => _events;
 
   EventManager add (MineralEvent mineralEvent) {
     Events event = reflect(mineralEvent).type.metadata.first.reflectee.event;
@@ -12,7 +15,7 @@ class EventManager {
     mineralEvent.stores = ioc.singleton(Service.store);
 
     if (_events.containsKey(event)) {
-      List<Object>? events = _events.get(event);
+      List<MineralEvent>? events = _events.get(event);
       events?.add(mineralEvent);
     } else {
       _events.putIfAbsent(event, () => [mineralEvent]);
@@ -41,6 +44,7 @@ class Event {
 
 abstract class MineralEvent {
   late StoreManager stores;
+  late MineralClient client;
 }
 
 enum Events {

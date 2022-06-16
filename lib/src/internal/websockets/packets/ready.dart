@@ -19,6 +19,12 @@ class Ready implements WebsocketPacket {
 
     await client.registerGlobalCommands(commands: commandManager.getGlobals());
 
+    eventManager.getRegisteredEvents().forEach((_, events) {
+      for (var event in events) {
+        event.client = client;
+      }
+    });
+
     eventManager.emit(Events.ready, [client]);
   }
 }
