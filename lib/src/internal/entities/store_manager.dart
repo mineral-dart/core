@@ -6,13 +6,14 @@ import 'package:mineral/src/exceptions/not_exist.dart';
 class StoreManager {
   final Map<String, dynamic> _stores = {};
 
-  createStore (MineralStore store) {
+  StoreManager add (MineralStore store) {
     String name = reflect(store).type.metadata.first.reflectee.name;
     if (_stores.containsKey(name)) {
       throw AlreadyExist(cause: "A store named $name already exists.");
     }
 
     _stores[name] = store;
+    return this;
   }
 
   T getStore<T> (String store) {
