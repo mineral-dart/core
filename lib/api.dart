@@ -19,7 +19,7 @@ export 'src/api/channels/text_channel.dart' show TextChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
 
 export 'src/api/message.dart' show Message;
-export 'src/api/message_embed.dart' show MessageEmbed;
+export 'src/api/message_embed.dart' show MessageEmbed, Footer, Image, Author, Field;
 export 'src/api/color.dart' show Color;
 
 export 'src/api/emoji.dart' show Emoji;

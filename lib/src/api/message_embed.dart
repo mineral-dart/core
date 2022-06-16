@@ -51,7 +51,7 @@ class Field {
   String value;
   bool? inline;
 
-  Field({ required this.name, required this.value, required this.inline });
+  Field({ required this.name, required this.value, this.inline });
 
   Object toJson () => {
     'name': name,

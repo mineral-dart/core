@@ -75,7 +75,6 @@ class CommandManager {
             'commandClass': classCommand,
           });
         }
-
       }
 
       if (reflectee is Option) {

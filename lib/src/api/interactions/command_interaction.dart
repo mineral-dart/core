@@ -1,4 +1,6 @@
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
 import 'package:mineral/src/api/interactions/interaction.dart';
 
 class CommandInteraction extends Interaction {
@@ -48,9 +50,40 @@ class CommandInteraction extends Interaction {
     return data[optionName]['value'];
   }
 
+  Future<void> reply ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts, bool? private }) async {
+    Http http = ioc.singleton(Service.http);
+
+    List<dynamic> embedList = [];
+    if (embeds != null) {
+      for (MessageEmbed element in embeds) {
+        embedList.add(element.toJson());
+      }
+    }
+
+    List<dynamic> componentList = [];
+    if (components != null) {
+      for (Row element in components) {
+        componentList.add(element.toJson());
+      }
+    }
+
+    Response response = await http.post(url: "/interactions/$id/$token/callback", payload: {
+      'type': InteractionCallbackType.channelMessageWithSource.value,
+      'data': {
+        'tts': tts ?? false,
+        'content': content,
+        'embeds': embeds != null ? embedList : [],
+        'components': components != null ? componentList : [],
+        'flags': private != null && private == true ? 1 << 6 : null,
+      }
+    });
+
+    print(response.body);
+  }
+
   factory CommandInteraction.from({ required User user, required dynamic payload }) {
     return CommandInteraction(
-      id: payload['data']['id'],
+      id: payload['id'],
       applicationId: payload['application_id'],
       type: InteractionType.values.firstWhere((type) => type.value == payload['type']),
       identifier: payload['data']['name'],
