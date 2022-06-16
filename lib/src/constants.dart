@@ -30,6 +30,8 @@ enum PacketType {
   channelUpdate('CHANNEL_UPDATE'),
   channelDelete('CHANNEL_DELETE'),
 
+  interactionCreate('INTERACTION_CREATE'),
+
   memberUpdate('GUILD_MEMBER_UPDATE');
 
   final String _value;

@@ -3,17 +3,9 @@ import 'dart:mirrors';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 
-enum ApplicationCommandType {
-  chatInput(1),
-  user(2),
-  message(3);
-
-  final int value;
-  const ApplicationCommandType(this.value);
-}
-
 class CommandManager {
-  final Collection<String, MineralCommand> _commands = Collection();
+  final Collection<String, MineralCommand> commands = Collection();
+  final Map<String, dynamic> handlers = {};
 
   CommandManager add (Object object) {
     MineralCommand command = MineralCommand(name: '', description: '', scope: '', options: []);
@@ -28,13 +20,13 @@ class CommandManager {
       object: object
     );
 
-    _commands.set<MineralCommand>(command.name, command);
+    commands.set<MineralCommand>(command.name, command);
     return this;
   }
 
   List<MineralCommand> getFromGuild (Guild guild) {
     List<MineralCommand> commands = [];
-    _commands.forEach((name, command) {
+    this.commands.forEach((name, command) {
       if (command.scope == guild.id || command.scope == 'GUILD') {
         commands.add(command);
       }
@@ -45,7 +37,7 @@ class CommandManager {
 
   List<MineralCommand> getGlobals () {
     List<MineralCommand> commands = [];
-    _commands.forEach((name, command) {
+    this.commands.forEach((name, command) {
       if (command.scope == 'GLOBAL') {
         commands.add(command);
       }
@@ -55,7 +47,10 @@ class CommandManager {
   }
 
   void _registerCommands ({ required MineralCommand command, required Object object }) {
-    reflect(object).type.metadata.forEach((element) {
+    ClassMirror classMirror = reflect(object).type;
+    dynamic classCommand = reflect(object).reflectee;
+
+    for (InstanceMirror element in classMirror.metadata) {
       dynamic reflectee = element.reflectee;
 
       if (reflectee is CommandGroup) {
@@ -72,15 +67,24 @@ class CommandManager {
           ..name = reflectee.name
           ..description = reflectee.description
           ..scope = reflectee.scope;
+
+        if (classMirror.instanceMembers.values.toList().where((element) => element.simpleName == Symbol('handle')).isNotEmpty) {
+          MethodMirror handle = classMirror.instanceMembers.values.toList().firstWhere((element) => element.simpleName == Symbol('handle'));
+          handlers.putIfAbsent(command.name, () => {
+            'symbol': handle.simpleName,
+            'commandClass': classCommand,
+          });
+        }
       }
 
       if (reflectee is Option) {
         command.options.add(reflectee);
       }
-    });
+    }
   }
 
   void _registerCommandMethods ({ required MineralCommand command, required Object object }) {
+    dynamic classCommand = reflect(object).reflectee;
     reflect(object).type.declarations.forEach((key, value) {
       if (value.metadata.isEmpty) {
         return;
@@ -99,9 +103,19 @@ class CommandManager {
           if (groupName != null) {
             MineralCommand group = command.groups.firstWhere((group) => group.name == groupName);
             group.subcommands.add(subcommand);
+
+            handlers.putIfAbsent("${command.name}.${group.name}.${subcommand.name}", () => {
+              'symbol': Symbol(subcommand.name),
+              'commandClass': classCommand,
+            });
           } else {
             command.subcommands.add(subcommand);
+            handlers.putIfAbsent("${command.name}.${subcommand.name}", () => {
+              'symbol': Symbol(subcommand.name),
+              'commandClass': classCommand,
+            });
           }
+
         }
 
         if (reflectee is Option) {

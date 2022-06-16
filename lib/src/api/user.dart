@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/constants.dart';
 
 class User {
   Snowflake id;
@@ -19,6 +20,13 @@ class User {
     required this.publicFlags,
     required this.avatar,
   });
+
+  String getDisplayAvatarUrl () {
+    return "${Constants.cdnUrl}/avatars/$id/$avatar";
+  }
+
+  @override
+  String toString () => "<@$id>";
 
   factory User.from(dynamic payload) {
     return User(
