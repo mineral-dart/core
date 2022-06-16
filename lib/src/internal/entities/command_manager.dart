@@ -2,6 +2,7 @@ import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/entities/store_manager.dart';
 
 class CommandManager {
   final Collection<String, SlashCommand> _commands = Collection();
@@ -134,6 +135,7 @@ class CommandManager {
 
 class MineralCommand {
   late MineralClient client;
+  late StoreManager store;
 }
 
 class Command {

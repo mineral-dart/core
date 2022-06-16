@@ -43,7 +43,9 @@ class Ready implements WebsocketPacket {
   void infuseClientIntoCommands ({ required CommandManager manager, required MineralClient client }) {
     manager.getHandlers().forEach((_, handler) {
       MineralCommand command = handler['commandClass'];
+
       command.client = ioc.singleton(Service.client);
+      command.store = ioc.singleton(Service.store);
     });
   }
 }
