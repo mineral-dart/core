@@ -11,9 +11,6 @@ class EventManager {
 
   EventManager add (MineralEvent mineralEvent) {
     Events event = reflect(mineralEvent).type.metadata.first.reflectee.event;
-
-    mineralEvent.stores = ioc.singleton(Service.store);
-
     if (_events.containsKey(event)) {
       List<MineralEvent>? events = _events.get(event);
       events?.add(mineralEvent);
