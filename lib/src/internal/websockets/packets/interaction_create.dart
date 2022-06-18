@@ -13,8 +13,8 @@ class InteractionCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    CommandManager manager = ioc.singleton(Service.command);
-    MineralClient client = ioc.singleton(Service.client);
+    CommandManager manager = ioc.singleton(ioc.services.command);
+    MineralClient client = ioc.singleton(ioc.services.client);
 
     dynamic payload = websocketResponse.payload;
     print(jsonEncode(payload));

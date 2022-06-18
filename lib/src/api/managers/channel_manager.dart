@@ -17,7 +17,7 @@ class ChannelManager implements CacheManager<Channel> {
 
   @override
   Future<Collection<Snowflake, Channel>> sync () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
     Response response = await http.get(url: "/guilds/$guildId/channels");
@@ -67,7 +67,7 @@ class ChannelManager implements CacheManager<Channel> {
   }
 
   Future<T?> _create<T> ({ required dynamic data }) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.post(url: "/guilds/$guildId/channels", payload: data);
     dynamic payload = jsonDecode(response.body);

@@ -13,8 +13,8 @@ class MessageDelete implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
-    MineralClient client = ioc.singleton(Service.client);
+    EventManager manager = ioc.singleton(ioc.services.event);
+    MineralClient client = ioc.singleton(ioc.services.client);
 
     dynamic payload = websocketResponse.payload;
 
@@ -23,7 +23,7 @@ class MessageDelete implements WebsocketPacket {
     Message? message = channel?.messages.cache.get(payload['id']);
 
     if (message == null) {
-      Http http = ioc.singleton(Service.http);
+      Http http = ioc.singleton(ioc.services.http);
       Response response = await http.get(url: "/channels/${channel?.id}/messages/${payload['id']}");
 
       if (response.statusCode == 200) {

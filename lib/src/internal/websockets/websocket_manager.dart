@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:http/http.dart';
+import 'package:mineral/src/api/client/mineral_client.dart';
 import 'package:mineral/src/internal/websockets/websocket_dispatcher.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
@@ -20,7 +21,7 @@ class WebsocketManager {
     return http.get(url: "/v$version/gateway/bot");
   }
 
-  Future<WebSocket> connect ({ required String token }) async {
+  Future<WebSocket> connect ({ required String token, required List<Intent> intents }) async {
     this.token = token;
     http.defineHeader(header: 'Authorization', value: "Bot $token");
 
@@ -30,9 +31,11 @@ class WebsocketManager {
     websocket = await WebSocket.connect(authenticationResponse.url);
     Console.info(message: 'Websocket is connected');
 
+    print(Intent.getIntent(intents));
+
     send(OpCode.identify, {
       'token': token,
-      'intents': 131071,
+      'intents': Intent.getIntent(intents),
       'properties': { '\$os': 'linux' }
     });
 

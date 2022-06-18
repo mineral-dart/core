@@ -16,7 +16,7 @@ class Voice {
   });
 
   Future<void> mute () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${member.guild.id}/members/${member.user.id}", payload: { 'mute': true });
     if (response.statusCode == 200) {
@@ -25,7 +25,7 @@ class Voice {
   }
 
   Future<void> unmute () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${member.guild.id}/members/${member.user.id}", payload: { 'mute': false });
     if (response.statusCode == 200) {
@@ -34,7 +34,7 @@ class Voice {
   }
 
   Future<void> deaf () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${member.guild.id}/members/${member.user.id}", payload: { 'deaf': true });
     if (response.statusCode == 200) {
@@ -43,7 +43,7 @@ class Voice {
   }
 
   Future<void> undeaf () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${member.guild.id}/members/${member.user.id}", payload: { 'deaf': false });
     if (response.statusCode == 200) {
@@ -52,7 +52,7 @@ class Voice {
   }
 
   Future<void> move (VoiceChannel channel) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${member.guild.id}/members/${member.user.id}", payload: { 'channel_id': channel.id });
     if (response.statusCode == 200) {
@@ -62,7 +62,7 @@ class Voice {
   }
 
   Future<void> disconnect () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${member.guild.id}/members/${member.user.id}", payload: { 'channel_id': null });
     if (response.statusCode == 200) {

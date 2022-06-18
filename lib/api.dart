@@ -1,6 +1,6 @@
 library api;
 
-export 'src/api/client/mineral_client.dart' show MineralClient, ClientActivity, ClientStatus;
+export 'src/api/client/mineral_client.dart' show MineralClient, ClientActivity, ClientStatus, Intent;
 export 'src/api/client/client_presence.dart' show ClientPresence, GamePresence;
 
 export 'src/api/application.dart' show Application;
@@ -11,6 +11,7 @@ export 'src/api/guild_member.dart' show GuildMember;
 export 'src/api/voice.dart' show Voice;
 
 export 'src/api/guild.dart' show Guild;
+export 'src/api/moderation_rule.dart' show ModerationEventType, ModerationTriggerType, ModerationPresetType, ModerationActionType, ModerationTriggerMetadata, ModerationActionMetadata, ModerationAction, ModerationRule;
 
 export 'src/api/channels/channel.dart' show Channel, ChannelType;
 export 'src/api/channels/voice_channel.dart' show VoiceChannel;

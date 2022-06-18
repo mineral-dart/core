@@ -1,35 +1,30 @@
+class Service {
+  final http = 'Mineral/Core/Http';
+  final client = 'Mineral/Core/Client';
+  final environment = 'Mineral/Core/Environment';
+  final event = 'Mineral/Core/Event';
+  final command = 'Mineral/Core/Command';
+  final store = 'Mineral/Core/Store';
+  final websocket = 'Mineral/Core/Websocket';
+}
+
 class Ioc {
+  Service services = Service();
   static late Ioc _instance;
-  final Map<Service, dynamic> _services = {};
+  final Map<String, dynamic> _services = {};
 
   static Ioc init () {
     Ioc._instance = Ioc();
     return Ioc._instance;
   }
 
-  void bind<T> ({ required Service namespace, required T service }) {
+  void bind<T> ({ required String namespace, required T service }) {
     _services.putIfAbsent(namespace, () => service);
   }
 
-  singleton (Service namespace) {
+  singleton (String namespace) {
     return Ioc._instance._services[namespace];
   }
-}
-
-enum Service {
-  http('Mineral/Core/Http'),
-  client('Mineral/Core/Client'),
-  environment('Mineral/Core/Environment'),
-  event('Mineral/Core/Event'),
-  command('Mineral/Core/Command'),
-  store('Mineral/Core/Store'),
-  websocket('Mineral/Core/Websocket');
-
-  final String _symbol;
-  const Service(this._symbol);
-
-  @override
-  String toString () => _symbol;
 }
 
 Ioc ioc = Ioc.init();

@@ -16,7 +16,7 @@ class MemberManager implements CacheManager<GuildMember> {
 
   @override
   Future<Collection<Snowflake, GuildMember>> sync () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
     Response response = await http.get(url: "/guilds/$guildId/members");

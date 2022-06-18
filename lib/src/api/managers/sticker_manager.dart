@@ -19,7 +19,7 @@ class StickerManager implements CacheManager<Sticker> {
 
   Future<Sticker?> create ({ required String name, required String description, required String tags, required String filename }) async {
     if (guild!.features.contains(Feature.verified) || guild!.features.contains(Feature.partnered)) {
-      Http http = ioc.singleton(Service.http);
+      Http http = ioc.singleton(ioc.services.http);
       Response response = await http.post(url: "/guilds/$guildId/stickers", payload: {
         'name': name,
         'description': description,
@@ -45,7 +45,7 @@ class StickerManager implements CacheManager<Sticker> {
 
   @override
   Future<Collection<Snowflake, Sticker>> sync () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
     Response response = await http.get(url: "/guilds/$guildId/stickers");

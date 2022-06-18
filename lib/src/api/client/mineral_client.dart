@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
@@ -5,6 +7,46 @@ import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_manager.dart';
 
 import '../../internal/entities/command_manager.dart';
+
+enum Intent {
+  guilds(1 << 0),
+  guildMembers(1 << 1),
+  guildBans(1 << 2),
+  guildEmojisAndStickers(1 << 3),
+  guildIntegrations(1 << 4),
+  guildWebhooks(1 << 5),
+  guildInvites(1 << 6),
+  guildVoiceStates(1 << 7),
+  guildPresences(1 << 8),
+  guildMessages(1 << 9),
+  guildMessageReactions(1 << 10),
+  guildMessageTyping(1 << 11),
+  directMessages(1 << 12),
+  directMessageReaction(1 << 13),
+  directMessageTyping(1 << 14),
+  messageContent(1 << 17),
+  guildScheduledEvents(1 << 16),
+  autoModerationConfiguration(1 << 20),
+  autoModerationExecution(1 << 21),
+  all(0);
+
+  final int value;
+  const Intent(this.value);
+
+  static int getIntent (List<Intent> intents) {
+    List<int> values = [];
+
+    List<Intent> source = intents.contains(Intent.all) ? Intent.values : intents;
+    for (Intent intent in source) {
+      values.add(intent.value);
+    }
+
+    return values.reduce((value, element) => value += element);
+  }
+
+  @override
+  String toString () => value.toString();
+}
 
 enum ClientStatus {
   online('online'),
@@ -45,7 +87,7 @@ class MineralClient {
   });
 
   setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
-    WebsocketManager manager = ioc.singleton(Service.websocket);
+    WebsocketManager manager = ioc.singleton(ioc.services.websocket);
     manager.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
@@ -55,7 +97,7 @@ class MineralClient {
   }
 
   Future<void> registerGlobalCommands ({ required List<SlashCommand> commands }) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     await http.put(
       url: "/applications/${application.id}/commands",
@@ -64,17 +106,16 @@ class MineralClient {
   }
 
   Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands}) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.put(
+    await http.put(
       url: "/applications/${application.id}/guilds/${guild.id}/commands",
       payload: commands.map((command) => command.toJson()).toList()
     );
-
-    print(response.body);
   }
 
   factory MineralClient.from({ required dynamic payload }) {
+    print(jsonEncode(payload));
     return MineralClient(
       user: User.from(payload['user']),
       guilds: GuildManager(),

@@ -11,11 +11,12 @@ class Ready implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager eventManager = ioc.singleton(Service.event);
-    CommandManager commandManager = ioc.singleton(Service.command);
+    EventManager eventManager = ioc.singleton(ioc.services.event);
+    CommandManager commandManager = ioc.singleton(ioc.services.command);
 
     MineralClient client = MineralClient.from(payload: websocketResponse.payload);
-    ioc.bind(namespace: Service.client, service: client);
+
+    ioc.bind(namespace: ioc.services.client, service: client);
 
     await client.registerGlobalCommands(commands: commandManager.getGlobals());
 
@@ -37,7 +38,7 @@ class Ready implements WebsocketPacket {
     events.forEach((_, events) {
       for (MineralEvent event in events) {
         event.client = client;
-        event.stores = ioc.singleton(Service.store);
+        event.stores = ioc.singleton(ioc.services.store);
       }
     });
   }
@@ -48,7 +49,7 @@ class Ready implements WebsocketPacket {
       MineralCommand command = handler['commandClass'];
 
       command.client = client;
-      command.store = ioc.singleton(Service.store);
+      command.stores = ioc.singleton(ioc.services.store);
     });
   }
 }

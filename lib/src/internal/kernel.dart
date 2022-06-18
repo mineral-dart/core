@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
@@ -9,23 +10,22 @@ class Kernel {
   EventManager events = EventManager();
   CommandManager commands = CommandManager();
   StoreManager stores = StoreManager();
+  List<Intent> intents = [];
 
-  Kernel prepare () {
-    ioc.bind(namespace: Service.event, service: events);
-    ioc.bind(namespace: Service.command, service: commands);
-    ioc.bind(namespace: Service.store, service: stores);
-
-    return this;
+  Kernel() {
+    ioc.bind(namespace: ioc.services.event, service: events);
+    ioc.bind(namespace: ioc.services.command, service: commands);
+    ioc.bind(namespace: ioc.services.store, service: stores);
   }
 
   Future<void> init () async {
     Http http = Http(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
-    ioc.bind(namespace: Service.http, service: http);
+    ioc.bind(namespace: ioc.services.http, service: http);
 
     Environment environment = await _loadEnvironment();
     WebsocketManager manager = WebsocketManager(http);
-    ioc.bind(namespace: Service.websocket, service: manager);
+    ioc.bind(namespace: ioc.services.websocket, service: manager);
 
     String? token = environment.get('APP_TOKEN');
     if (token == null) {
@@ -35,13 +35,16 @@ class Kernel {
       );
     }
 
-    await manager.connect(token: token);
+    await manager.connect(
+      token: token,
+      intents: intents,
+    );
   }
 
 
   Future<Environment> _loadEnvironment () async {
     Environment environment = Environment();
-    ioc.bind(namespace: Service.environment, service: environment);
+    ioc.bind(namespace: ioc.services.environment, service: environment);
 
     return await environment.load('.env');
   }

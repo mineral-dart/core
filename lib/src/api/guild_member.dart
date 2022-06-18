@@ -30,7 +30,7 @@ class GuildMember {
   });
 
   Future<void> setUsername (String name) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'nick': name });
     if (response.statusCode == 200) {
@@ -40,7 +40,7 @@ class GuildMember {
 
   Future<void> timeout (DateTime expiration) async {
     // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'deaf': expiration.toIso8601String() });
     if (response.statusCode == 200) {
@@ -49,7 +49,7 @@ class GuildMember {
   }
 
   Future<void> removeTimeout () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'deaf': null });
     if (response.statusCode == 200) {
@@ -58,7 +58,7 @@ class GuildMember {
   }
 
   Future<void> ban ({ int? count, String? reason }) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/guilds/${guild.id}/bans/${user.id}", payload: {
       'delete_message_days': count,
@@ -71,7 +71,7 @@ class GuildMember {
   }
 
   Future<void> kick ({ int? count, String? reason }) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     await http.destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
 

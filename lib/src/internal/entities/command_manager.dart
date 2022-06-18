@@ -135,7 +135,7 @@ class CommandManager {
 
 class MineralCommand {
   late MineralClient client;
-  late StoreManager store;
+  late StoreManager stores;
 }
 
 class Command {

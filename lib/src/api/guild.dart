@@ -6,6 +6,7 @@ import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
+import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/api/managers/sticker_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
@@ -58,6 +59,7 @@ class Guild {
   MemberManager members;
   ChannelManager channels;
   EmojiManager emojis;
+  ModerationRuleManager moderationRules;
 
   Guild({
     required this.id,
@@ -102,10 +104,11 @@ class Guild {
     required this.channels,
     required this.emojis,
     required this.features,
+    required this.moderationRules,
   });
 
   Future<void> setName (String name) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'name': name });
 
     if (response.statusCode == 200) {
@@ -114,7 +117,7 @@ class Guild {
   }
 
   Future<void> setVerificationLevel (int level) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'verification_level': level });
 
     if (response.statusCode == 200) {
@@ -123,7 +126,7 @@ class Guild {
   }
 
   Future<Guild> setMessageNotification (int level) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'default_message_notifications': level });
 
     if (response.statusCode == 200) {
@@ -134,7 +137,7 @@ class Guild {
   }
 
   Future<void> setExplicitContentFilter (int level) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'explicit_content_filter': level });
 
     if (response.statusCode == 200) {
@@ -143,7 +146,7 @@ class Guild {
   }
 
   Future<void> setAfkChannel (VoiceChannel channel) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'afk_channel_id': channel.id });
 
     if (response.statusCode == 200) {
@@ -153,8 +156,8 @@ class Guild {
   }
 
   Future<void> setOwner (GuildMember guildMember) async {
-    MineralClient client = ioc.singleton(Service.client);
-    Http http = ioc.singleton(Service.http);
+    MineralClient client = ioc.singleton(ioc.services.client);
+    Http http = ioc.singleton(ioc.services.http);
 
     if (ownerId != client.user.id) {
       Console.error(message: "You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
@@ -172,7 +175,7 @@ class Guild {
   Future<void> setSplash (String filename) async {
     String file = await Helper.getPicture(filename);
 
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'splash': file });
 
     if (response.statusCode == 200) {
@@ -181,7 +184,7 @@ class Guild {
   }
 
   Future<void> removeSplash () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'splash': null });
 
     if (response.statusCode == 200) {
@@ -192,7 +195,7 @@ class Guild {
   Future<void> setDiscoverySplash (String filename) async {
     String file = await Helper.getPicture(filename);
 
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'discovery_splash': file });
 
     if (response.statusCode == 200) {
@@ -201,7 +204,7 @@ class Guild {
   }
 
   Future<void> removeDiscoverySplash () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'discovery_splash': null });
 
     if (response.statusCode == 200) {
@@ -212,7 +215,7 @@ class Guild {
   Future<void> setBanner (String filename) async {
     String file = await Helper.getPicture(filename);
 
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'banner': file });
 
     if (response.statusCode == 200) {
@@ -221,7 +224,7 @@ class Guild {
   }
 
   Future<void> removeBanner () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'banner': null });
 
     if (response.statusCode == 200) {
@@ -232,7 +235,7 @@ class Guild {
   Future<void> setIcon (String filename) async {
     String file = await Helper.getPicture(filename);
 
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': file });
 
     if (response.statusCode == 200) {
@@ -241,7 +244,7 @@ class Guild {
   }
 
   Future<void> removeIcon () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': null });
 
     if (response.statusCode == 200) {
@@ -250,7 +253,7 @@ class Guild {
   }
 
   Future<void> setSystemChannel (TextChannel channel) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'system_channel_id': channel.id });
 
     if (response.statusCode == 200) {
@@ -260,7 +263,7 @@ class Guild {
   }
 
   Future<void> setRulesChannel (TextChannel channel) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'rules_channel_id': channel.id });
 
     if (response.statusCode == 200) {
@@ -270,7 +273,7 @@ class Guild {
   }
 
   Future<void> setPublicUpdateChannel (TextChannel channel) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': channel.id });
 
     if (response.statusCode == 200) {
@@ -280,7 +283,7 @@ class Guild {
   }
 
   Future<void> setPreferredLocale (Locale locale) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': locale });
 
     if (response.statusCode == 200) {
@@ -288,7 +291,14 @@ class Guild {
     }
   }
 
-  factory Guild.from({ required EmojiManager emojiManager, required MemberManager memberManager, required RoleManager roleManager, required ChannelManager channelManager, required dynamic payload}) {
+  factory Guild.from({
+    required EmojiManager emojiManager,
+    required MemberManager memberManager,
+    required RoleManager roleManager,
+    required ChannelManager channelManager,
+    required ModerationRuleManager moderationRuleManager,
+    required dynamic payload
+  }) {
     StickerManager stickerManager = StickerManager(guildId: payload['id']);
     for (dynamic element in payload['stickers']) {
       Sticker sticker = Sticker.from(element);
@@ -337,7 +347,8 @@ class Guild {
       members: memberManager,
       channels: channelManager,
       emojis: emojiManager,
-      welcomeScreen: payload['welcome_screen'] != null ? WelcomeScreen.from(payload['welcome_screen']) : null
+      welcomeScreen: payload['welcome_screen'] != null ? WelcomeScreen.from(payload['welcome_screen']) : null,
+      moderationRules: moderationRuleManager,
     );
   }
 }

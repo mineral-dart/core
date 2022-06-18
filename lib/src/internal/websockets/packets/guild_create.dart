@@ -4,6 +4,7 @@ import 'package:mineral/src/api/channels/channel.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
+import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
@@ -16,9 +17,9 @@ class GuildCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
-    CommandManager commandManager = ioc.singleton(Service.command);
-    MineralClient client = ioc.singleton(Service.client);
+    EventManager manager = ioc.singleton(ioc.services.event);
+    CommandManager commandManager = ioc.singleton(ioc.services.command);
+    MineralClient client = ioc.singleton(ioc.services.client);
 
     RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
@@ -61,11 +62,14 @@ class GuildCreate implements WebsocketPacket {
       emojiManager.cache.putIfAbsent(emoji.id, () => emoji);
     }
 
+    ModerationRuleManager moderationManager = ModerationRuleManager(guildId: websocketResponse.payload['id']);
+
     Guild guild = Guild.from(
       emojiManager: emojiManager,
       memberManager: memberManager,
       roleManager: roleManager,
       channelManager: channelManager,
+        moderationRuleManager: moderationManager,
       payload: websocketResponse.payload
     );
 
@@ -83,6 +87,8 @@ class GuildCreate implements WebsocketPacket {
       channel.guild = guild;
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
     });
+
+    moderationManager.guild = guild;
 
     guild.stickers.guild = guild;
     guild.stickers.cache.forEach((_, sticker) {

@@ -25,7 +25,7 @@ class CategoryChannel extends Channel {
   );
 
   Future<CategoryChannel?> update ({ String? label, int? position }) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/channels/$id", payload: {
       'name': label,
@@ -46,7 +46,7 @@ class CategoryChannel extends Channel {
   }
 
   Future<bool> delete () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.destroy(url: "/channels/$id");
 
     guild?.channels.cache.remove(id);

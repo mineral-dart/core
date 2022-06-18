@@ -37,7 +37,7 @@ class TextBasedChannel extends Channel {
   );
 
   Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     List<dynamic> embedList = [];
     if (embeds != null) {
@@ -73,7 +73,7 @@ class TextBasedChannel extends Channel {
   }
 
   Future<dynamic> setDescription (String description) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/channels/$id", payload: { 'topic': description });
 
     if (response.statusCode == 200) {
@@ -84,7 +84,7 @@ class TextBasedChannel extends Channel {
   }
 
   Future<dynamic> setNsfw (bool value) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/channels/$id", payload: { 'nsfw': value });
 
     if (response.statusCode == 200) {
@@ -95,7 +95,7 @@ class TextBasedChannel extends Channel {
   }
 
   Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/channels/$id", payload: {
       'name': label ?? this.label,
@@ -119,7 +119,7 @@ class TextBasedChannel extends Channel {
   }
 
   Future<bool> delete () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.destroy(url: "/channels/$id");
 
     guild?.channels.cache.remove(id);

@@ -29,7 +29,7 @@ class Emoji {
   });
 
   Future<void> setLabel (String label) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/${manager.guildId}/emojis/$id", payload: { 'name': label });
 
     if (response.statusCode == 200) {
@@ -38,7 +38,7 @@ class Emoji {
   }
 
   Future<void> setRoles (List<Snowflake> roles) async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/${manager.guildId}/emojis/$id", payload: { 'roles': roles });
 
     if (response.statusCode == 200) {
@@ -55,7 +55,7 @@ class Emoji {
   }
 
   Future<void> delete () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     Response response = await http.destroy(url: "/guilds/${manager.guildId}/emojis/$id");
 
     if (response.statusCode == 200) {

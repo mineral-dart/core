@@ -16,14 +16,14 @@ class MessageManager implements CacheManager<Message> {
 
   @override
   Future<Collection<Snowflake, Message>> sync () async {
-    Http http = ioc.singleton(Service.http);
+    Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
     Response response = await http.get(url: "/channels/$_channelId/messages");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
-      MineralClient client = ioc.singleton(Service.client);
+      MineralClient client = ioc.singleton(ioc.services.client);
       Guild? guild = client.guilds.cache.get(_guildId);
       TextBasedChannel? channel = guild?.channels.cache.get(_channelId);
       // @Todo add DM case (guild not exist)
