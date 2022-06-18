@@ -1,6 +1,3 @@
-import 'dart:convert';
-
-import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
@@ -115,7 +112,6 @@ class MineralClient {
   }
 
   factory MineralClient.from({ required dynamic payload }) {
-    print(jsonEncode(payload));
     return MineralClient(
       user: User.from(payload['user']),
       guilds: GuildManager(),
