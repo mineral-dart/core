@@ -65,14 +65,14 @@ class ModerationTriggerMetadata {
 }
 
 class ModerationActionMetadata {
-  Channel channel;
+  Channel? channel;
   int? duration;
 
   ModerationActionMetadata({ required this.channel, required this.duration });
 
   Object toJson () {
     return {
-      'channel_id': channel.id,
+      'channel_id': channel?.id,
       'duration_seconds': duration,
     };
   }
@@ -80,14 +80,14 @@ class ModerationActionMetadata {
 
 class ModerationAction {
   ModerationActionType type;
-  ModerationActionMetadata metadata;
+  ModerationActionMetadata? metadata;
 
   ModerationAction({ required this.type, required this.metadata });
 
   Object toJson () {
     return {
       'type': type.value,
-      'metadata': metadata.toJson(),
+      'metadata': metadata?.toJson(),
     };
   }
 }
@@ -207,14 +207,17 @@ class ModerationRule {
 
   factory ModerationRule.from ({ required Guild guild, required dynamic payload }) {
     List<ModerationAction> actions = [];
+    print(payload['actions'][0]['metadata']);
     if (payload['actions'] != null) {
       for (dynamic item in payload['actions']) {
         ModerationAction action = ModerationAction(
           type: ModerationActionType.values.firstWhere((element) => element.value == item['type']),
-          metadata: ModerationActionMetadata(
-            channel: guild.channels.cache.get(item['metadata']['channel_id'])!,
-            duration: item['metadata']['duration_seconds']
-          )
+          metadata: item['metadata'].toString() != '{}'
+            ? ModerationActionMetadata(
+              channel: guild.channels.cache.get(item['metadata']['channel_id']!),
+              duration: item['metadata']['duration_seconds']
+            )
+            : null
         );
 
         actions.add(action);

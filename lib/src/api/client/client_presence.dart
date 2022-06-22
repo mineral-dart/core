@@ -23,6 +23,7 @@ class Timestamp {
   Timestamp({ required this.start, required this.end });
 
   factory Timestamp.from ({ required dynamic payload }) {
+    print(payload);
     return Timestamp(
       start: payload['start'] ? DateTime.fromMillisecondsSinceEpoch(payload['start']) : null,
       end: payload['end'] ? DateTime.fromMillisecondsSinceEpoch(payload['start']) : null,

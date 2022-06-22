@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/channel.dart';
@@ -20,6 +23,8 @@ class GuildCreate implements WebsocketPacket {
     EventManager manager = ioc.singleton(ioc.services.event);
     CommandManager commandManager = ioc.singleton(ioc.services.command);
     MineralClient client = ioc.singleton(ioc.services.client);
+
+    print(jsonEncode(websocketResponse.payload));
 
     RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
@@ -103,6 +108,11 @@ class GuildCreate implements WebsocketPacket {
     guild.emojis.guild = guild;
     guild.roles.guild = guild;
 
+    Map<Snowflake, ModerationRule>? autoModerationRules = await getAutoModerationRules(guild);
+    if (autoModerationRules != null) {
+      guild.moderationRules.cache.addAll(autoModerationRules);
+    }
+
     await client.registerGuildCommands(
       guild: guild,
       commands: commandManager.getFromGuild(guild)
@@ -111,5 +121,24 @@ class GuildCreate implements WebsocketPacket {
     client.guilds.cache.putIfAbsent(guild.id, () => guild);
 
     manager.emit(Events.guildCreate, [guild]);
+  }
+
+  Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.get(url: "/guilds/${guild.id}/auto-moderation/rules");
+
+    if (response.statusCode == 200) {
+      dynamic payload = jsonDecode(response.body);
+
+      Map<Snowflake, ModerationRule> rules = {};
+      for (dynamic element in payload) {
+        ModerationRule rule = ModerationRule.from(guild: guild, payload: element);
+        rules.putIfAbsent(rule.id, () => rule);
+      }
+
+      return rules;
+    }
+
+    return null;
   }
 }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/client/client_presence.dart';
 
@@ -32,12 +34,12 @@ class Activity {
 
   factory Activity.from({ required dynamic payload }) {
     print(payload['type']);
-    print(payload);
+    print(jsonEncode(payload));
     return Activity(
       label: payload['name'],
       type: GamePresence.values.firstWhere((status) => status.value == payload['type']),
       url: payload['url'],
-      createdAt: DateTime.parse(payload['created_at']),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(payload['created_at']),
       timestamps: Timestamp.from(payload: payload['timestamps']),
       applicationId: payload['application_id'],
       details: payload['details'],
