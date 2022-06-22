@@ -20,6 +20,7 @@ enum OpCode {
 enum PacketType {
   ready('READY'),
   guildCreate('GUILD_CREATE'),
+  guildUpdate('GUILD_UPDATE'),
   presenceUpdate('PRESENCE_UPDATE'),
 
   autoModerationRuleCreate('AUTO_MODERATION_RULE_CREATE'),

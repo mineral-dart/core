@@ -47,6 +47,7 @@ abstract class MineralEvent {
 enum Events {
   ready('ready'),
   guildCreate('create::guild'),
+  guildUpdate('update::guild'),
   presenceUpdate('update::presence'),
 
   moderationRuleCreate('create::moderation-rule'),
