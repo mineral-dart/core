@@ -51,6 +51,7 @@ enum Events {
   presenceUpdate('update::presence'),
 
   moderationRuleCreate('create::moderation-rule'),
+  moderationRuleDelete('delete::moderation-rule'),
 
   messageCreate('create::message'),
   messageUpdate('update::message'),

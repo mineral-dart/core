@@ -24,6 +24,7 @@ enum PacketType {
   presenceUpdate('PRESENCE_UPDATE'),
 
   autoModerationRuleCreate('AUTO_MODERATION_RULE_CREATE'),
+  autoModerationRuleDelete('AUTO_MODERATION_RULE_DELETE'),
 
   messageCreate('MESSAGE_CREATE'),
   messageUpdate('MESSAGE_UPDATE'),

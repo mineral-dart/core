@@ -1,10 +1,13 @@
 import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/websockets/packets/auto_moderation_rule_create.dart';
+import 'package:mineral/src/internal/websockets/packets/auto_moderation_rule_delete.dart';
 
 import 'package:mineral/src/internal/websockets/packets/channel_create.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_member_update.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_update.dart';
 import 'package:mineral/src/internal/websockets/packets/interaction_create.dart';
 import 'package:mineral/src/internal/websockets/packets/message_create.dart';
 import 'package:mineral/src/internal/websockets/packets/message_delete.dart';
@@ -20,6 +23,7 @@ class WebsocketDispatcher {
   WebsocketDispatcher() {
     register(PacketType.ready, Ready());
     register(PacketType.guildCreate, GuildCreate());
+    register(PacketType.guildUpdate, GuildUpdate());
     register(PacketType.presenceUpdate, PresenceUpdate());
     register(PacketType.messageDelete, MessageDelete());
     register(PacketType.messageCreate, MessageCreate());
@@ -29,6 +33,8 @@ class WebsocketDispatcher {
     register(PacketType.channelUpdate, ChannelUpdate());
     register(PacketType.memberUpdate, GuildMemberUpdate());
     register(PacketType.interactionCreate, InteractionCreate());
+    register(PacketType.autoModerationRuleCreate, AutoModerationRuleCreate());
+    register(PacketType.autoModerationRuleDelete, AutoModerationRuleDelete());
   }
 
   void register (PacketType type, WebsocketPacket packet) {
