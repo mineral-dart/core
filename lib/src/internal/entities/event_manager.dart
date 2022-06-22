@@ -49,6 +49,8 @@ enum Events {
   guildCreate('create::guild'),
   presenceUpdate('update::presence'),
 
+  moderationRuleCreate('create::moderation-rule'),
+
   messageCreate('create::message'),
   messageUpdate('update::message'),
   messageDelete('delete::message'),

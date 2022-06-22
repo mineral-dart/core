@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/exceptions/too_many.dart';
 
 enum ModerationEventType {
   messageSend(1);
@@ -118,8 +121,96 @@ class ModerationRule {
     required this.exemptChannels,
   });
 
+  Future<void> setLabel(String label) async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'label': label });
+
+    if (response.statusCode == 200) {
+      this.label = label;
+    }
+  }
+
+  Future<void> setEventType(ModerationEventType event) async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'event_type': event.value });
+
+    if (response.statusCode == 200) {
+      eventType = event;
+    }
+  }
+
+  Future<void> setTriggerMetadata(ModerationTriggerMetadata triggerMetadata) async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'trigger_metadata': triggerMetadata.toJson() });
+
+    if (response.statusCode == 200) {
+      this.triggerMetadata = triggerMetadata;
+    }
+  }
+
+  Future<void> setActions(List<ModerationAction> actions) async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
+      'actions': actions.map((ModerationAction action) => action.toJson())
+    });
+
+    if (response.statusCode == 200) {
+      this.actions = actions;
+    }
+  }
+
+  Future<void> setEnabled(bool value) async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'value': value });
+
+    if (response.statusCode == 200) {
+      enabled = value;
+    }
+  }
+
+  Future<void> setExemptRoles(List<Role> roles) async {
+    int maxItems = 50;
+    if (roles.length > maxItems) {
+      TooMany(cause: "The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
+    }
+
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
+      'exempt_roles': roles.map((Role role) => role.id)
+    });
+
+    if (response.statusCode == 200) {
+      exemptRoles = roles;
+    }
+  }
+
+  Future<void> setExemptChannels(List<Channel> channels) async {
+    int maxItems = 50;
+    if (channels.length > maxItems) {
+      TooMany(cause: "The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
+    }
+
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
+      'exempt_roles': channels.map((Channel channel) => channel.id)
+    });
+
+    if (response.statusCode == 200) {
+      exemptChannels = channels;
+    }
+  }
+
+  Future<bool> delete() async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.destroy(url: "/guilds/$guildId/auto-moderation/rules/$id");
+
+    return response.statusCode == 204;
+  }
+
   factory ModerationRule.from ({ required Guild guild, required dynamic payload }) {
     List<ModerationAction> actions = [];
+
+    print(jsonEncode(payload));
 
     if (payload['actions'] != null) {
       for (dynamic item in payload['actions']) {
@@ -155,13 +246,5 @@ class ModerationRule {
       exemptRoles: payload['exempt_roles']?.map((Snowflake id) => guild.roles.cache.get(id)).toList(),
       exemptChannels: payload['exempt_channels']?.map((Snowflake id) => guild.channels.cache.get(id)).toList()
     );
-  }
-
-  Future<bool> delete () async {
-    Http http = ioc.singleton(ioc.services.http);
-
-    Response response = await http.destroy(url: "/guilds/$guildId/auto-moderation/rules/$id");
-
-    return response.statusCode == 200;
   }
 }

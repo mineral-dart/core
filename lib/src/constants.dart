@@ -22,6 +22,8 @@ enum PacketType {
   guildCreate('GUILD_CREATE'),
   presenceUpdate('PRESENCE_UPDATE'),
 
+  autoModerationRuleCreate('AUTO_MODERATION_RULE_CREATE'),
+
   messageCreate('MESSAGE_CREATE'),
   messageUpdate('MESSAGE_UPDATE'),
   messageDelete('MESSAGE_DELETE'),
