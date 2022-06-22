@@ -123,9 +123,10 @@ enum Locale {
   String toString() => locale;
 }
 
-enum Feature {
+enum GuildFeature {
   animatedBanner('ANIMATED_BANNER'),
   animatedIcon('ANIMATED_ICON'),
+  autoModeration('AUTO_MODERATION'),
   banner('BANNER'),
   commerce('COMMERCE'),
   community('COMMUNITY'),
@@ -133,24 +134,24 @@ enum Feature {
   featurable('FEATURABLE'),
   inviteSplash('INVITE_SPLASH'),
   memberVerificationGate('MEMBER_VERIFICATION_GATE_ENABLED'),
-  monetizationEnabled('MONETIZATION_ENABLED'),
-  moreSticker('MORE_STICKERS'),
+  monetization('MONETIZATION_ENABLED'),
+  moreStickers('MORE_STICKERS'),
   news('NEWS'),
   partnered('PARTNERED'),
-  previewEnabled('PREVIEW_ENABLED'),
-  privateThread('PRIVATE_THREADS'),
+  preview('PREVIEW_ENABLED'),
+  privateThreads('PRIVATE_THREADS'),
   roleIcons('ROLE_ICONS'),
-  ticketedEventsEnabled('TICKETED_EVENTS_ENABLED'),
+  ticketedEvents('TICKETED_EVENTS_ENABLED'),
   vanityUrl('VANITY_URL'),
   verified('VERIFIED'),
   vipRegions('VIP_REGIONS'),
-  welcomeScreenEnabled('WELCOME_SCREEN_ENABLED');
+  welcomeScreen('WELCOME_SCREEN_ENABLED');
 
-  final String feature;
-  const Feature(this.feature);
+  final String value;
+  const GuildFeature(this.value);
 
   @override
-  String toString() => feature;
+  String toString() => value;
 }
 
 enum MessageFlag {

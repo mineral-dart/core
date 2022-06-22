@@ -18,7 +18,7 @@ class StickerManager implements CacheManager<Sticker> {
   StickerManager({ required this.guildId });
 
   Future<Sticker?> create ({ required String name, required String description, required String tags, required String filename }) async {
-    if (guild!.features.contains(Feature.verified) || guild!.features.contains(Feature.partnered)) {
+    if (guild!.features.contains(GuildFeature.verified) || guild!.features.contains(GuildFeature.partnered)) {
       Http http = ioc.singleton(ioc.services.http);
       Response response = await http.post(url: "/guilds/$guildId/stickers", payload: {
         'name': name,
@@ -38,7 +38,7 @@ class StickerManager implements CacheManager<Sticker> {
 
     Console.warn(
       prefix: 'cancelled',
-      message: "${guild?.name} guild does not have the ${Feature.verified} or ${Feature.partnered} feature."
+      message: "${guild?.name} guild does not have the ${GuildFeature.verified} or ${GuildFeature.partnered} feature."
     );
     return null;
   }

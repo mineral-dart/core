@@ -31,7 +31,7 @@ class Guild {
   int defaultMessageNotifications;
   int explicitContentFilter;
   RoleManager roles;
-  List<dynamic> features;
+  List<GuildFeature> features;
   int mfaLevel;
   Snowflake? applicationId;
   Snowflake? systemChannelId;
@@ -305,6 +305,12 @@ class Guild {
       stickerManager.cache.putIfAbsent(sticker.id, () => sticker);
     }
 
+    List<GuildFeature> features = [];
+    for (String element in payload['features']) {
+      GuildFeature feature = GuildFeature.values.firstWhere((feature) => feature.value == element);
+      features.add(feature);
+    }
+
     return Guild(
       id: payload['id'],
       name: payload['name'],
@@ -323,7 +329,7 @@ class Guild {
       defaultMessageNotifications: payload['default_message_notifications'],
       explicitContentFilter: payload['explicit_content_filter'],
       roles: roleManager,
-      features: payload['features'],
+      features: features,
       mfaLevel: payload['mfa_level'],
       applicationId: payload['application_id'],
       systemChannelId: payload['system_channel_id'],
