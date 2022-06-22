@@ -90,7 +90,7 @@ class Role {
   }
 
   Future<void> setIcon (String path) async {
-    if (!manager.guild.features.contains('ROLE_ICONS')) {
+    if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
@@ -104,7 +104,7 @@ class Role {
   }
 
   Future<void> setUnicodeEmoji (String unicode) async {
-    if (!manager.guild.features.contains('ROLE_ICONS')) {
+    if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
