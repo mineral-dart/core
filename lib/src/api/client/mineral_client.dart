@@ -74,6 +74,7 @@ class MineralClient {
   String sessionId;
   List<Map<String, int>> shards;
   Application application;
+  List<Intent> intents;
 
   MineralClient({
     required this.user,
@@ -81,6 +82,7 @@ class MineralClient {
     required this.sessionId,
     required this.shards,
     required this.application,
+    required this.intents,
   });
 
   setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
@@ -112,12 +114,15 @@ class MineralClient {
   }
 
   factory MineralClient.from({ required dynamic payload }) {
+    WebsocketManager manager = ioc.singleton(ioc.services.websocket);
+
     return MineralClient(
       user: User.from(payload['user']),
       guilds: GuildManager(),
       sessionId: payload['session_id'],
       shards: payload['shards'] ?? [],
       application: Application.from(payload['application']),
+      intents: manager.intents
     );
   }
 }

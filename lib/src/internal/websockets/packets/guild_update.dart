@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
@@ -17,7 +15,6 @@ class GuildUpdate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    print(jsonEncode(websocketResponse.payload));
     EventManager manager = ioc.singleton(ioc.services.event);
     MineralClient client = ioc.singleton(ioc.services.client);
 

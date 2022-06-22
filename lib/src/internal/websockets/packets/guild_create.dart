@@ -24,8 +24,6 @@ class GuildCreate implements WebsocketPacket {
     CommandManager commandManager = ioc.singleton(ioc.services.command);
     MineralClient client = ioc.singleton(ioc.services.client);
 
-    print(jsonEncode(websocketResponse.payload));
-
     RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(roleManager: roleManager, payload: item);

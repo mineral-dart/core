@@ -207,7 +207,6 @@ class ModerationRule {
 
   factory ModerationRule.from ({ required Guild guild, required dynamic payload }) {
     List<ModerationAction> actions = [];
-    print(payload['actions'][0]['metadata']);
     if (payload['actions'] != null) {
       for (dynamic item in payload['actions']) {
         ModerationAction action = ModerationAction(

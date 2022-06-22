@@ -14,6 +14,7 @@ class WebsocketManager {
   late final WebSocket websocket;
   final Http http;
   late String token;
+  late List<Intent> intents;
 
   WebsocketManager(this.http);
 
@@ -25,13 +26,15 @@ class WebsocketManager {
     this.token = token;
     http.defineHeader(header: 'Authorization', value: "Bot $token");
 
+    this.intents = intents.contains(Intent.all)
+      ? Intent.values.map((intent) => intent).toList()
+      : intents;
+
     Response response = await getWebsocketEndpoint(Constants.apiVersion);
     AuthenticationResponse authenticationResponse = AuthenticationResponse.fromResponse(response);
 
     websocket = await WebSocket.connect(authenticationResponse.url);
     Console.info(message: 'Websocket is connected');
-
-    print(Intent.getIntent(intents));
 
     send(OpCode.identify, {
       'token': token,
