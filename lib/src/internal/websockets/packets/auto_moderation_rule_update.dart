@@ -4,9 +4,9 @@ import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-class AutoModerationRuleDelete implements WebsocketPacket {
+class AutoModerationRuleCreate implements WebsocketPacket {
   @override
-  PacketType packetType = PacketType.autoModerationRuleDelete;
+  PacketType packetType = PacketType.autoModerationRuleCreate;
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
@@ -16,11 +16,12 @@ class AutoModerationRuleDelete implements WebsocketPacket {
     dynamic payload = websocketResponse.payload;
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
-    ModerationRule? moderationRule = guild?.moderationRules.cache.get(payload['id']);
+    if (guild != null) {
+      ModerationRule? before = guild.moderationRules.cache.get(payload['id']);
+      ModerationRule after = ModerationRule.from(guild: guild, payload: payload);
 
-    if (moderationRule != null) {
-      manager.emit(Events.moderationRuleDelete, [moderationRule]);
-      guild?.moderationRules.cache.remove(moderationRule.id);
+      manager.emit(Events.moderationRuleUpdate, [before, after]);
+      guild.moderationRules.cache.set(after.id, after);
     }
   }
 }

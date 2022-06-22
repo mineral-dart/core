@@ -1,6 +1,7 @@
+import 'dart:convert';
+
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/channel.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
@@ -16,6 +17,7 @@ class GuildUpdate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
+    print(jsonEncode(websocketResponse.payload));
     EventManager manager = ioc.singleton(ioc.services.event);
     MineralClient client = ioc.singleton(ioc.services.client);
 
@@ -28,39 +30,13 @@ class GuildUpdate implements WebsocketPacket {
     }
 
     MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
-    for (dynamic member in websocketResponse.payload['members']) {
-      GuildMember guildMember = GuildMember.from(
-        roles: roleManager,
-        user: User.from(member['user']),
-        member: member,
-        guildId: websocketResponse.payload['id']
-      );
-
-      memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
-    }
+    memberManager.cache.addAll(before!.members.cache);
 
     ChannelManager channelManager = ChannelManager(guildId: websocketResponse.payload['id']);
-    for(dynamic payload in websocketResponse.payload['channels']) {
-      ChannelType channelType = ChannelType.values.firstWhere((type) => type.value == payload['type']);
-      if (channels.containsKey(channelType)) {
-        Channel Function(dynamic payload) item = channels[channelType] as Channel Function(dynamic payload);
-        Channel channel = item(payload);
-
-        channelManager.cache.putIfAbsent(channel.id, () => channel);
-      }
-    }
+    channelManager.cache.addAll(before.channels.cache);
 
     EmojiManager emojiManager = EmojiManager(guildId: websocketResponse.payload['id']);
-    for(dynamic payload in websocketResponse.payload['emojis']) {
-      Emoji emoji = Emoji.from(
-        memberManager: memberManager,
-        roleManager: roleManager,
-        emojiManager: emojiManager,
-        payload: payload
-      );
-
-      emojiManager.cache.putIfAbsent(emoji.id, () => emoji);
-    }
+    emojiManager.cache.addAll(before.emojis.cache);
 
     ModerationRuleManager moderationManager = ModerationRuleManager(guildId: websocketResponse.payload['id']);
 
@@ -72,21 +48,6 @@ class GuildUpdate implements WebsocketPacket {
         moderationRuleManager: moderationManager,
       payload: websocketResponse.payload
     );
-
-    // Assign guild members
-    after.members.cache.forEach((Snowflake id, GuildMember member) {
-      member.guild = after;
-      member.voice.member = member;
-      member.voice.channel = after.channels.cache.get(member.voice.channelId);
-    });
-
-    // Assign guild channels
-    channelManager.guild = after;
-    after.channels.cache.forEach((Snowflake id, Channel channel) {
-      channel.guildId = after.id;
-      channel.guild = after;
-      channel.parent = channel.parentId != null ? after.channels.cache.get<CategoryChannel>(channel.parentId) : null;
-    });
 
     moderationManager.guild = after;
 
