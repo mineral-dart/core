@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
@@ -209,9 +207,6 @@ class ModerationRule {
 
   factory ModerationRule.from ({ required Guild guild, required dynamic payload }) {
     List<ModerationAction> actions = [];
-
-    print(jsonEncode(payload));
-
     if (payload['actions'] != null) {
       for (dynamic item in payload['actions']) {
         ModerationAction action = ModerationAction(
@@ -226,6 +221,27 @@ class ModerationRule {
       }
     }
 
+    List<String> keywordFilter = [];
+    for (dynamic keyword in payload['trigger_metadata']['keyword_filter']) {
+      keywordFilter.add(keyword);
+    }
+
+    List<Role> roles = [];
+    for (Snowflake id in payload['exempt_roles']) {
+      Role? role = guild.roles.cache.get(id);
+      if (role != null) {
+        roles.add(role);
+      }
+    }
+
+    List<Channel> channels = [];
+    for (Snowflake id in payload['exempt_channels']) {
+      Channel? channel = guild.channels.cache.get(id);
+      if (channel != null) {
+        channels.add(channel);
+      }
+    }
+
     return ModerationRule(
       id: payload['id'],
       guildId: payload['guild_id'],
@@ -235,16 +251,16 @@ class ModerationRule {
       actions: actions,
       triggerType: ModerationTriggerType.values.firstWhere((element) => element.value == payload['trigger_type']),
       triggerMetadata: ModerationTriggerMetadata(
-        presets: payload['trigger_metadata'] != null
+        presets: payload['trigger_metadata'] != null && payload['trigger_metadata']['presets'] != null
           ? ['presets'].map((preset) {
             return ModerationPresetType.values.firstWhere((element) => element.value == preset);
           }).toList()
           : [],
-        keywordFilter: payload['trigger_metadata']['keyword_filter']
+        keywordFilter: keywordFilter
       ),
       enabled: payload['enabled'] ?? false,
-      exemptRoles: payload['exempt_roles']?.map((Snowflake id) => guild.roles.cache.get(id)).toList(),
-      exemptChannels: payload['exempt_channels']?.map((Snowflake id) => guild.channels.cache.get(id)).toList()
+      exemptRoles: roles,
+      exemptChannels: channels,
     );
   }
 }
