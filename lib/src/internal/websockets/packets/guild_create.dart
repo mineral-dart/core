@@ -9,6 +9,7 @@ import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -67,13 +68,16 @@ class GuildCreate implements WebsocketPacket {
 
     ModerationRuleManager moderationManager = ModerationRuleManager(guildId: websocketResponse.payload['id']);
 
+    WebhookManager webhookManager = WebhookManager(guildId: websocketResponse.payload['id']);
+
     Guild guild = Guild.from(
       emojiManager: emojiManager,
       memberManager: memberManager,
       roleManager: roleManager,
       channelManager: channelManager,
-        moderationRuleManager: moderationManager,
-      payload: websocketResponse.payload
+      moderationRuleManager: moderationManager,
+      webhookManager: webhookManager,
+      payload: websocketResponse.payload,
     );
 
     // Assign guild members
@@ -89,6 +93,7 @@ class GuildCreate implements WebsocketPacket {
       channel.guildId = guild.id;
       channel.guild = guild;
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
+      channel.webhooks.guild = guild;
     });
 
     moderationManager.guild = guild;
@@ -105,6 +110,8 @@ class GuildCreate implements WebsocketPacket {
     guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
     guild.emojis.guild = guild;
     guild.roles.guild = guild;
+    webhookManager.guild = guild;
+    guild.webhooks.guild = guild;
 
     Map<Snowflake, ModerationRule>? autoModerationRules = await getAutoModerationRules(guild);
     if (autoModerationRules != null) {

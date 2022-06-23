@@ -13,6 +13,8 @@ export 'src/api/voice.dart' show Voice;
 export 'src/api/guild.dart' show Guild;
 export 'src/api/moderation_rule.dart' show ModerationEventType, ModerationTriggerType, ModerationPresetType, ModerationActionType, ModerationTriggerMetadata, ModerationActionMetadata, ModerationAction, ModerationRule;
 
+export 'src/api/webhook.dart' show Webhook;
+
 export 'src/api/channels/channel.dart' show Channel, ChannelType;
 export 'src/api/channels/voice_channel.dart' show VoiceChannel;
 export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;

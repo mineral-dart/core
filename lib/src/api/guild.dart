@@ -6,10 +6,12 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
+import 'package:mineral/src/api/managers/guild_webhook_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/api/managers/sticker_manager.dart';
+import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 
@@ -61,6 +63,7 @@ class Guild {
   ChannelManager channels;
   EmojiManager emojis;
   ModerationRuleManager moderationRules;
+  GuildWebhookManager webhooks;
 
   Guild({
     required this.id,
@@ -106,6 +109,7 @@ class Guild {
     required this.emojis,
     required this.features,
     required this.moderationRules,
+    required this.webhooks,
   });
 
   Future<void> setName (String name) async {
@@ -322,6 +326,7 @@ class Guild {
     required RoleManager roleManager,
     required ChannelManager channelManager,
     required ModerationRuleManager moderationRuleManager,
+    required WebhookManager webhookManager,
     required dynamic payload
   }) {
     StickerManager stickerManager = StickerManager(guildId: payload['id']);
@@ -380,6 +385,7 @@ class Guild {
       emojis: emojiManager,
       welcomeScreen: payload['welcome_screen'] != null ? WelcomeScreen.from(payload['welcome_screen']) : null,
       moderationRules: moderationRuleManager,
+      webhooks: GuildWebhookManager.fromManager(webhookManager: webhookManager),
     );
   }
 }

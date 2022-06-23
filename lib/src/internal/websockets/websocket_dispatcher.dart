@@ -6,6 +6,7 @@ import 'package:mineral/src/internal/websockets/packets/channel_create.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_member_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_update.dart';
 import 'package:mineral/src/internal/websockets/packets/interaction_create.dart';
@@ -14,6 +15,7 @@ import 'package:mineral/src/internal/websockets/packets/message_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/message_update.dart';
 import 'package:mineral/src/internal/websockets/packets/presence_update.dart';
 import 'package:mineral/src/internal/websockets/packets/ready.dart';
+import 'package:mineral/src/internal/websockets/packets/webhook_update.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
@@ -35,6 +37,8 @@ class WebsocketDispatcher {
     register(PacketType.interactionCreate, InteractionCreate());
     register(PacketType.autoModerationRuleCreate, AutoModerationRuleCreate());
     register(PacketType.autoModerationRuleDelete, AutoModerationRuleDelete());
+    register(PacketType.webhookUpdate, WebhookUpdate());
+    register(PacketType.guildIntegrationsUpdate, GuildIntegrationsUpdate());
   }
 
   void register (PacketType type, WebsocketPacket packet) {

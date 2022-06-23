@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 enum ChannelType {
   guildText(0),
@@ -46,6 +47,7 @@ class Channel {
   Snowflake? parentId;
   late CategoryChannel? parent;
   int? flags;
+  WebhookManager webhooks;
 
   Channel({
     required this.id,
@@ -56,6 +58,7 @@ class Channel {
     required this.applicationId,
     required this.parentId,
     required this.flags,
+    required this.webhooks,
   });
 
   Future<T> setLabel<T extends Channel> (String label) async {

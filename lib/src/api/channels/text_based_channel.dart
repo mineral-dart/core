@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
+import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class TextBasedChannel extends Channel {
   String? description;
@@ -34,6 +35,7 @@ class TextBasedChannel extends Channel {
     applicationId: applicationId,
     parentId: parentId,
     flags: flags,
+    webhooks: WebhookManager(guildId: guildId, channelId: id)
   );
 
   Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {

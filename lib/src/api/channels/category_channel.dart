@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/channel.dart';
+import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class CategoryChannel extends Channel {
   CategoryChannel({
@@ -21,7 +22,8 @@ class CategoryChannel extends Channel {
     applicationId: applicationId,
     parentId: null,
     type: ChannelType.guildCategory,
-    flags: flags
+    flags: flags,
+      webhooks: WebhookManager(guildId: guildId, channelId: id)
   );
 
   Future<CategoryChannel?> update ({ String? label, int? position }) async {

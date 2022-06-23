@@ -5,6 +5,7 @@ import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -37,12 +38,16 @@ class GuildUpdate implements WebsocketPacket {
 
     ModerationRuleManager moderationManager = ModerationRuleManager(guildId: websocketResponse.payload['id']);
 
+    WebhookManager webhookManager = WebhookManager(guildId: websocketResponse.payload['id']);
+    webhookManager.cache.addAll(before.webhooks.cache);
+
     Guild after = Guild.from(
       emojiManager: emojiManager,
       memberManager: memberManager,
       roleManager: roleManager,
       channelManager: channelManager,
-        moderationRuleManager: moderationManager,
+      moderationRuleManager: moderationManager,
+      webhookManager: webhookManager,
       payload: websocketResponse.payload
     );
 
