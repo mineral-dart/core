@@ -1,5 +1,7 @@
 part of api;
 
+
+
 class Message {
   Snowflake id;
   String content;
@@ -45,12 +47,25 @@ class Message {
     return message;
   }
 
+  Future<void> createThread ({ required String name, ArchiveDuration? duration, int? rateLimit }) async {
+    if (rateLimit == null || rateLimit > 21600) {
+      Console.error(message: 'The value of rateLimit is greater than 21600');
+      return;
+    }
+    Http http = ioc.singleton(Service.http);
+    await http.post("/channels/$channelId/messages/$id/threads", {
+      "name": name,
+      "auto_archive_duration": duration,
+      "rate_limit_per_user": rateLimit
+    });
+  }
+
   factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
     return Message(
       id: payload['id'],
       content: payload['content'],
       tts: payload['tts'],
-      allowMentions: payload['allow_mentions'],
+      allowMentions: payload['allow_mentions'] ?? false,
       reference: payload['reference'],
       flags: payload['flags'],
       channelId: channel.id,

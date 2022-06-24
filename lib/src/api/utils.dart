@@ -53,3 +53,29 @@ enum GuildFeature {
   VIP_REGIONS,
   WELCOME_SCREEN_ENABLED,
 }
+
+enum ArchiveDuration {
+  oneHour(60),
+  oneDay(1440),
+  threeDays(4320),
+  oneWeek(10080);
+
+  final int duration;
+
+  const ArchiveDuration(this.duration);
+
+  @override
+  String toString () => duration.toString();
+}
+
+enum ThreadType {
+  public(11),
+  private(12);
+
+  final int scope;
+
+  const ThreadType (this.scope);
+
+  @override
+  String toString () => scope.toString();
+}

@@ -1,4 +1,6 @@
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import "dart:convert";
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -13,6 +15,8 @@ class GuildCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
+    Http http = ioc.singleton(Service.http);
+    
     RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(item);
@@ -20,19 +24,19 @@ class GuildCreate implements WebsocketPacket {
     }
 
     MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
-    for(dynamic member in websocketResponse.payload['members']) {
+    for (dynamic member in websocketResponse.payload['members']) {
       GuildMember guildMember = GuildMember.from(
-        roles: roleManager,
-        user: User.from(member['user']),
-        member: member,
-        guildId: websocketResponse.payload['id']
+          roles: roleManager,
+          user: User.from(member['user']),
+          member: member,
+          guildId: websocketResponse.payload['id']
       );
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
     }
 
     ChannelManager channelManager = ChannelManager(guildId: websocketResponse.payload['id']);
-    for(dynamic payload in websocketResponse.payload['channels']) {
+    for (dynamic payload in websocketResponse.payload['channels']) {
       if (channels.containsKey(payload['type'])) {
         Channel Function(dynamic payload) item = channels[payload['type']] as Channel Function(dynamic payload);
         Channel channel = item(payload);
@@ -42,7 +46,7 @@ class GuildCreate implements WebsocketPacket {
     }
 
     EmojiManager emojiManager = EmojiManager(guildId: websocketResponse.payload['id']);
-    for(dynamic payload in websocketResponse.payload['emojis']) {
+    for (dynamic payload in websocketResponse.payload['emojis']) {
       Emoji emoji = Emoji.from(
         memberManager: memberManager,
         roleManager: roleManager,
@@ -67,13 +71,23 @@ class GuildCreate implements WebsocketPacket {
 
     // Assign guild channels
     channelManager.guild = guild;
-    guild.channels.cache.forEach((Snowflake id, Channel channel) {
+    
+    guild.channels.cache.forEach((Snowflake id, Channel channel) async {
       channel.guildId = guild.id;
       channel.guild = guild;
-      channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
-    });
+      channel.parent = channel.parentId != null 
+        ? guild.channels.cache.get<CategoryChannel>(channel.parentId) 
+        : null;
 
-    NewsChannel? newsChannel = guild.channels.cache.get<NewsChannel>('977261584382558328');
-    await newsChannel?.follow('977261752976830474');
+      Response response = await http.get("/channels/${channel.id}/messages");
+      dynamic payload = jsonDecode(response.body);
+      for (dynamic element in payload) {
+        Message message = Message.from(channel: channel as TextBasedChannel, payload: element);
+        channel.messages.cache.set(message.id, message);
+      }
+    });
+    Response response = await http.get('/channels/977261752976830474/messages/977339647908773969');
+    dynamic payload = jsonDecode(response.body);
+    print(payload);
   }
 }

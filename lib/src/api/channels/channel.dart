@@ -22,6 +22,7 @@ Map<int, Channel Function(dynamic payload)> channels = {
   // 'GROUP_DM': () => ,
   ChannelType.guildCategory: (dynamic payload) => CategoryChannel.from(payload),
   ChannelType.guildNews: (dynamic payload) => NewsChannel.from(payload),
+  ChannelType.guildPublicThread: (dynamic payload) => PublicThread.from(payload),
   // 'GUILD_NEWS_THREAD': () => ,
   // 'GUILD_PUBLIC_THREAD': () => ,
   // 'GUILD_PRIVATE_THREAD': () => ,

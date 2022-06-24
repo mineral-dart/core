@@ -6,6 +6,7 @@ class TextBasedChannel extends Channel {
   Snowflake? lastMessageId;
   DateTime? lastPinTimestamp;
   MessageManager messages;
+  ThreadManager threads;
 
   TextBasedChannel({
     required Snowflake id,
@@ -20,6 +21,7 @@ class TextBasedChannel extends Channel {
     required this.lastMessageId,
     required this.lastPinTimestamp,
     required this.messages,
+    required this.threads,
   }) : super(
     id: id,
     type: ChannelType.guildText,

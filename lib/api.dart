@@ -14,6 +14,9 @@ import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/api/managers/thread_manager.dart';
+
+import 'package:mineral/console.dart';
 
 part 'src/api/mineral_client.dart';
 part 'src/api/application.dart';
@@ -28,6 +31,7 @@ part 'src/api/channels/text_based_channel.dart';
 part 'src/api/channels/text_channel.dart';
 part 'src/api/channels/category_channel.dart';
 part 'src/api/channels/news_channel.dart';
+part 'src/api/channels/public_thread.dart';
 
 part 'src/api/message.dart';
 

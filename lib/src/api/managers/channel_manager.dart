@@ -77,6 +77,16 @@ class ChannelManager implements CacheManager<Channel> {
     });
   }
 
+  Future<PublicThread?> createPublicThread ({ required String label, String? description, int? delay, int? position, CategoryChannel? categoryChannel }) async {
+    return await _create<PublicThread>(data: {
+      'name': label,
+      'topic': description,
+      'type': ChannelType.guildPublicThread,
+      'parent_id': categoryChannel?.id,
+      'rate_limit_per_user': delay ?? 0,
+    });
+  }
+
   Future<T?> _create<T> ({ required dynamic data }) async {
     Http http = ioc.singleton(Service.http);
 

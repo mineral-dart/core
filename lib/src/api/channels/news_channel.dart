@@ -28,6 +28,7 @@ class NewsChannel extends TextBasedChannel {
     lastMessageId: lastMessageId,
     lastPinTimestamp: lastPinTimestamp,
     messages: MessageManager(id, guildId),
+    threads: ThreadManager(guildId: guildId)
   );
 
   @override
