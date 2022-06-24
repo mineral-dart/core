@@ -21,10 +21,15 @@ enum PacketType {
   ready('READY'),
   guildCreate('GUILD_CREATE'),
   guildUpdate('GUILD_UPDATE'),
+
+  guildIntegrationsUpdate('GUILD_INTEGRATIONS_UPDATE'),
+
   presenceUpdate('PRESENCE_UPDATE'),
 
   autoModerationRuleCreate('AUTO_MODERATION_RULE_CREATE'),
   autoModerationRuleDelete('AUTO_MODERATION_RULE_DELETE'),
+
+  webhookUpdate('WEBHOOKS_UPDATE'),
 
   messageCreate('MESSAGE_CREATE'),
   messageUpdate('MESSAGE_UPDATE'),
