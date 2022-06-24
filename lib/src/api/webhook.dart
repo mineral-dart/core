@@ -102,7 +102,7 @@ class Webhook {
       'embeds': embeds != null ? embedList : [],
       'components': components != null ? componentList : [],
       'tts': tts ?? false,
-      'flags': MessageFlag.suppressEmbeds.value
+      'flags': suppressEmbed != null ? MessageFlag.suppressEmbeds.value : null
     });
   }
 
