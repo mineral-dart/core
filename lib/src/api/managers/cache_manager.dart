@@ -1,10 +1,9 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
 
 abstract class CacheManager<T> {
-  Collection<Snowflake, T> cache = Collection();
+  Map<Snowflake, T> cache = {};
 
-  Future<Collection<Snowflake, T>> sync () async {
+  Future<Map<Snowflake, T>> sync () async {
     throw UnimplementedError();
   }
 }

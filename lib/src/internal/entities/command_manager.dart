@@ -3,6 +3,7 @@ import 'dart:mirrors';
 import 'package:mineral/api.dart';
 import 'package:mineral/src/internal/entities/file_entity.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
+import 'package:mineral/src/internal/extensions/collection.dart';
 
 class CommandManager {
   final Map<String, SlashCommand> _commands = {};
@@ -11,7 +12,7 @@ class CommandManager {
   Map<String, SlashCommand> get commands => _commands;
   Map<String, dynamic> get handlers => _handlers;
 
-  dynamic getHandler (String handler) => _handlers[handler];
+  dynamic getHandler (String handler) => _handlers.get(handler);
 
   CommandManager addAll (List<FileEntity> fileEntities) {
     for (FileEntity fileEntity in fileEntities) {

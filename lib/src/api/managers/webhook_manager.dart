@@ -5,11 +5,10 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/api/webhook.dart';
 
 class WebhookManager implements CacheManager<Webhook> {
   @override
-  Collection<Snowflake, Webhook> cache = Collection();
+  Map<Snowflake, Webhook> cache = {};
 
   Snowflake? channelId;
   Snowflake? guildId;
@@ -18,7 +17,7 @@ class WebhookManager implements CacheManager<Webhook> {
   WebhookManager({ this.channelId, required this.guildId });
 
   @override
-  Future<Collection<Snowflake, Webhook>> sync () async {
+  Future<Map<Snowflake, Webhook>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.get(url: "/channels/$channelId/webhooks");
 

@@ -38,5 +38,6 @@ export 'src/api/components/link.dart' show Link;
 export 'src/api/interactions/command_interaction.dart' show CommandInteraction;
 
 export 'src/api/utils.dart';
+export 'package:mineral/src/internal/extensions/collection.dart';
 
 typedef Snowflake = String;

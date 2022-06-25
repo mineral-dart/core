@@ -4,7 +4,9 @@ import 'package:mineral/console.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/exceptions/invalid_class_entity.dart';
 import 'package:mineral/src/internal/entities/file_entity.dart';
+import 'package:mineral/src/internal/models/pubspec.dart';
 import 'package:path/path.dart';
+import 'package:yaml/yaml.dart';
 
 class Workspace {
   Directory root;
@@ -50,6 +52,11 @@ class Workspace {
     ClassMirror classMirror = libraryMirror.declarations[Symbol(classEntry)] as ClassMirror;
 
     return classMirror.metadata.first.reflectee is Ignore ? null : classMirror.newInstance(Symbol(''), []);
+  }
+
+  Future<Pubspec> loadPubspec () async {
+    File file = File(join(root.path, 'pubspec.yaml'));
+    return Pubspec.from(payload: loadYaml(await file.readAsString()));
   }
 }
 

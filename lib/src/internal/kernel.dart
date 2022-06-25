@@ -28,6 +28,7 @@ class Kernel {
 
     Workspace workspace = Workspace(root: Directory.current);
     ioc.bind(namespace: ioc.services.workspace, service: workspace);
+    ioc.bind(namespace: ioc.services.info, service: await workspace.loadPubspec());
     await workspace.loadFromDisk();
 
     stores.addAll(await workspace.getEntities<Store>());

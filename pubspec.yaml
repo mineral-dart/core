@@ -9,6 +9,7 @@ environment:
 dependencies:
   http: ^0.13.4
   path: ^1.8.2
+  yaml: ^3.1.1
 
 dev_dependencies:
   lints: ^1.0.0

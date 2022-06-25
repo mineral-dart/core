@@ -5,14 +5,20 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
-class ModerationRuleManager extends CacheManager<ModerationRule> {
+class ModerationRuleManager implements CacheManager<ModerationRule> {
   Snowflake guildId;
   late Guild guild;
 
   @override
-  Collection<Snowflake, ModerationRule> cache = Collection();
+  Map<Snowflake, ModerationRule> cache = {};
 
   ModerationRuleManager({ required this.guildId });
+
+  @override
+  Future<Map<Snowflake, ModerationRule>> sync() {
+    // TODO: implement sync
+    throw UnimplementedError();
+  }
 
   Future<ModerationRule?> create ({ required String label, required ModerationEventType eventType, required ModerationTriggerType triggerType, ModerationTriggerMetadata? triggerMetadata, List<ModerationAction>? actions, bool? enabled, List<Snowflake>? exemptRoles, List<Snowflake>? exemptChannels }) async {
     Http http = ioc.singleton(ioc.services.http);
