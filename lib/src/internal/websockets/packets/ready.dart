@@ -2,6 +2,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
+import 'package:mineral/src/internal/entities/file_entity.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
@@ -34,11 +35,11 @@ class Ready implements WebsocketPacket {
   }
 
   void infuseClientIntoEvents ({ required EventManager manager, required MineralClient client }) {
-    Collection<Events, List<MineralEvent>> events = manager.getRegisteredEvents();
+    Map<Events, List<FileEntity>> events = manager.events;
     events.forEach((_, events) {
-      for (MineralEvent event in events) {
-        event.client = client;
-        event.stores = ioc.singleton(ioc.services.store);
+      for (FileEntity eventEntity in events) {
+        eventEntity.instanceMirror.reflectee.client = client;
+        eventEntity.instanceMirror.reflectee.stores = ioc.singleton(ioc.services.store);
       }
     });
   }
