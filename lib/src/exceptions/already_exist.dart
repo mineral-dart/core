@@ -1,9 +1,9 @@
 import 'package:mineral/console.dart';
 
 class AlreadyExist implements Exception {
-  String? prefix;
+  String prefix = 'AlreadyExist';
   String cause;
-  AlreadyExist({ this.prefix, required this.cause });
+  AlreadyExist({ required this.cause });
 
   @override
   String toString () {

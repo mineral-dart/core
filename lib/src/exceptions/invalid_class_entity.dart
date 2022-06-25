@@ -1,9 +1,9 @@
 import 'package:mineral/console.dart';
 
-class TokenException implements Exception {
-  String prefix;
+class InvalidClassEntity implements Exception {
+  String prefix = 'InvalidClassEntity';
   String cause;
-  TokenException({ required this.prefix, required this.cause });
+  InvalidClassEntity({ required this.prefix, required this.cause });
 
   @override
   String toString () {

@@ -1,9 +1,9 @@
 import 'package:mineral/console.dart';
 
 class TooMany implements Exception {
-  String? prefix;
+  String prefix;
   String cause;
-  TooMany({ this.prefix, required this.cause });
+  TooMany({ required this.prefix, required this.cause });
 
   @override
   String toString () {

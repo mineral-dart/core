@@ -1,9 +1,9 @@
 import 'package:mineral/console.dart';
 
 class NotExist implements Exception {
-  String? prefix;
+  String prefix = 'NotExist';
   String cause;
-  NotExist({ this.prefix, required this.cause });
+  NotExist({ required this.cause });
 
   @override
   String toString () {
