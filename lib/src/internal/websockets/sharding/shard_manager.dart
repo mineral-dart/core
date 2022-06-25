@@ -48,7 +48,7 @@ class ShardManager {
     }
 
     Future<AuthenticationResponse> getBotGateway(int version) async {
-        Response response = await http.get("/v$version/gateway/bot");
+        Response response = await http.get(url: "/v$version/gateway/bot");
         return AuthenticationResponse.fromResponse(response);
     }
 

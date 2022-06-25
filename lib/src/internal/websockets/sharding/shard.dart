@@ -13,6 +13,8 @@ import 'package:mineral/src/internal/websockets/sharding/shard_message.dart';
 import 'package:mineral/src/internal/websockets/websocket_dispatcher.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
+import 'package:mineral/src/exceptions/shard_exception.dart';
+
 class Shard {
   final ShardManager manager;
 
@@ -67,7 +69,7 @@ class Shard {
 
         Console.debug(message: data.op.toString() + " | " + data.payload.toString(), prefix: "Shard #$id");
 
-        switch(data.op) {
+        switch(OpCode.getWithValue(data.op)) {
           case OpCode.heartbeat: return _heartbeat.reset();
           case OpCode.hello:
             Console.success(message: "Received Hello code, shard started!", prefix: "Shard #$id");
@@ -120,9 +122,9 @@ class Shard {
     }
   }
 
-  void send(int opCode, dynamic data) {
+  void send(OpCode opCode, dynamic data) {
     final dynamic rawData = {
-      "op": opCode,
+      "op": opCode.value,
       "d": data
     };
     _sendPort.send(ShardMessage(command: ShardCommand.send, data: rawData));

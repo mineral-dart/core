@@ -1,3 +1,5 @@
+import 'package:mineral/core.dart';
+
 enum OpCode {
   dispatch(0),
   heartbeat(1),
@@ -15,6 +17,13 @@ enum OpCode {
 
   final int value;
   const OpCode (this.value);
+
+  static OpCode? getWithValue(int value) {
+    for(OpCode opcode in OpCode.values) {
+      if(value == opcode.value) return opcode;
+    }
+    return null;
+  }
 }
 
 enum PacketType {
