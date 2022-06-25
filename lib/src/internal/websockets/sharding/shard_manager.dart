@@ -58,4 +58,10 @@ class ShardManager {
         final Shard shard = Shard(this, id, gatewayURL, _token);
         shards.putIfAbsent(id, () => shard);
     }
+
+    Future<void> send(OpCode code, dynamic data) async {
+        shards.forEach((key, value) {
+           value.send(code, data);
+        });
+    }
 }

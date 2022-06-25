@@ -1,6 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
+import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_manager.dart';
 
 import '../../internal/entities/command_manager.dart';
@@ -86,7 +87,7 @@ class MineralClient {
   });
 
   setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
-    WebsocketManager manager = ioc.singleton(ioc.services.websocket);
+    ShardManager manager = ioc.singleton(Service.websocket);
     manager.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
