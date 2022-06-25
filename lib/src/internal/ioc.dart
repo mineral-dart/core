@@ -6,6 +6,7 @@ class Service {
   final command = 'Mineral/Core/Command';
   final store = 'Mineral/Core/Store';
   final websocket = 'Mineral/Core/Websocket';
+  final workspace = 'Mineral/Core/Workspace';
 }
 
 class Ioc {
