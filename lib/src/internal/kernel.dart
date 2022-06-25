@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mineral/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
@@ -5,6 +7,7 @@ import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_manager.dart';
+import 'package:mineral/src/internal/workspace.dart';
 
 class Kernel {
   EventManager events = EventManager();
@@ -23,6 +26,12 @@ class Kernel {
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     ioc.bind(namespace: ioc.services.http, service: http);
 
+    Workspace workspace = Workspace(root: Directory.current);
+    ioc.bind(namespace: ioc.services.workspace, service: workspace);
+    await workspace.loadFromDisk();
+
+    events.addAll(await workspace.getEntities<Event>());
+
     Environment environment = await _loadEnvironment();
     WebsocketManager manager = WebsocketManager(http);
     ioc.bind(namespace: ioc.services.websocket, service: manager);
@@ -35,12 +44,12 @@ class Kernel {
       );
     }
 
+
     await manager.connect(
       token: token,
       intents: intents,
     );
   }
-
 
   Future<Environment> _loadEnvironment () async {
     Environment environment = Environment();
