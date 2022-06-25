@@ -169,7 +169,7 @@ class ModerationRule {
   Future<void> setExemptRoles(List<Role> roles) async {
     int maxItems = 50;
     if (roles.length > maxItems) {
-      TooMany(cause: "The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
+      TooMany(prefix: 'ToManyRole', cause: "The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
     }
 
     Http http = ioc.singleton(ioc.services.http);
@@ -185,7 +185,7 @@ class ModerationRule {
   Future<void> setExemptChannels(List<Channel> channels) async {
     int maxItems = 50;
     if (channels.length > maxItems) {
-      TooMany(cause: "The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
+      TooMany(prefix: 'ToManyChannel', cause: "The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
     }
 
     Http http = ioc.singleton(ioc.services.http);
