@@ -4,4 +4,11 @@ extension Collection<K, V> on Map<K, V> {
   void set (K key, V value) {
     this[key] = value;
   }
+
+  V? overrideIfPresent (K key, V Function() ifPresent) {
+    if (this[key] != null) {
+      this[key] = ifPresent();
+    }
+    return this[key];
+  }
 }
