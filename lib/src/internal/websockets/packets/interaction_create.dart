@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
@@ -17,7 +16,6 @@ class InteractionCreate implements WebsocketPacket {
     MineralClient client = ioc.singleton(ioc.services.client);
 
     dynamic payload = websocketResponse.payload;
-    print(jsonEncode(payload));
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     GuildMember? member = guild?.members.cache.get(payload['member']['user']['id']);
@@ -45,6 +43,7 @@ class InteractionCreate implements WebsocketPacket {
     }
 
     dynamic handle = manager.getHandler(identifier);
-    reflect(handle['commandClass']).invoke(handle['symbol'], [commandInteraction]);
+    InstanceMirror instanceMirror = handle['instanceMirror'];
+    instanceMirror.invoke(handle['symbol'], [commandInteraction]);
   }
 }

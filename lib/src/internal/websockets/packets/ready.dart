@@ -1,3 +1,5 @@
+import 'dart:mirrors';
+
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
@@ -45,12 +47,12 @@ class Ready implements WebsocketPacket {
   }
 
   void infuseClientIntoCommands ({ required CommandManager manager, required MineralClient client }) {
-    Map<String, dynamic> commands = manager.getHandlers();
+    Map<String, dynamic> commands = manager.handlers;
     commands.forEach((_, handler) {
-      MineralCommand command = handler['commandClass'];
+      InstanceMirror instanceMirror = handler['instanceMirror'];
 
-      command.client = client;
-      command.stores = ioc.singleton(ioc.services.store);
+      instanceMirror.reflectee.client = client;
+      instanceMirror.reflectee.stores = ioc.singleton(ioc.services.store);
     });
   }
 }

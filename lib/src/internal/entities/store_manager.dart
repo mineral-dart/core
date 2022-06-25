@@ -1,18 +1,20 @@
-import 'dart:mirrors';
-
 import 'package:mineral/src/exceptions/already_exist.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
+import 'package:mineral/src/internal/entities/file_entity.dart';
 
 class StoreManager {
-  final Map<String, dynamic> _stores = {};
+  final Map<String, FileEntity> _stores = {};
 
-  StoreManager add (MineralStore store) {
-    String name = reflect(store).type.metadata.first.reflectee.name;
-    if (_stores.containsKey(name)) {
-      throw AlreadyExist(cause: "A store named $name already exists.");
+  StoreManager addAll (List<FileEntity> fileEntities) {
+    for (FileEntity fileEntity in fileEntities) {
+      String name = fileEntity.instanceMirror.type.metadata.first.reflectee.name;
+      if (_stores.containsKey(name)) {
+        throw AlreadyExist(cause: "A store named $name already exists.");
+      }
+
+      _stores[name] = fileEntity;
     }
 
-    _stores[name] = store;
     return this;
   }
 
@@ -21,7 +23,8 @@ class StoreManager {
       throw NotExist(cause: "The blind $store does not exist in your project.");
     }
 
-    return _stores[store];
+    FileEntity? fileEntity = _stores[store];
+    return fileEntity?.instanceMirror.reflectee;
   }
 }
 

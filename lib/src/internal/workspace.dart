@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:mirrors';
 import 'package:mineral/console.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/exceptions/invalid_class_entity.dart';
 import 'package:mineral/src/internal/entities/file_entity.dart';
@@ -43,7 +42,7 @@ class Workspace {
 
     if (!containClass) {
       throw InvalidClassEntity(
-        prefix: 'Invalid event',
+        prefix: 'INVALID EVENT',
         cause: "The MineralEvent entity does not have a class named ${ColorList.white(classEntry)} in file:\\\\${file.path}"
       );
     }

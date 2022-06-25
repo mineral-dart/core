@@ -30,7 +30,9 @@ class Kernel {
     ioc.bind(namespace: ioc.services.workspace, service: workspace);
     await workspace.loadFromDisk();
 
+    stores.addAll(await workspace.getEntities<Store>());
     events.addAll(await workspace.getEntities<Event>());
+    commands.addAll(await workspace.getEntities<Command>());
 
     Environment environment = await _loadEnvironment();
     WebsocketManager manager = WebsocketManager(http);

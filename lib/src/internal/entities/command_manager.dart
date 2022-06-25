@@ -1,33 +1,34 @@
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/entities/file_entity.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
 
 class CommandManager {
-  final Collection<String, SlashCommand> _commands = Collection();
+  final Map<String, SlashCommand> _commands = {};
   final Map<String, dynamic> _handlers = {};
 
-  Collection<String, SlashCommand> getRegisteredCommands () => _commands;
-
-  Map<String, dynamic> getHandlers () => _handlers;
+  Map<String, SlashCommand> get commands => _commands;
+  Map<String, dynamic> get handlers => _handlers;
 
   dynamic getHandler (String handler) => _handlers[handler];
 
-  CommandManager add (MineralCommand mineralCommand) {
-    SlashCommand command = SlashCommand(name: '', description: '', scope: '', options: []);
+  CommandManager addAll (List<FileEntity> fileEntities) {
+    for (FileEntity fileEntity in fileEntities) {
+      SlashCommand command = SlashCommand(name: '', description: '', scope: '', options: []);
 
-    _registerCommands(
-      command: command,
-      mineralCommand: mineralCommand
-    );
+      _registerCommands(
+        command: command,
+        fileEntity: fileEntity
+      );
 
-    _registerCommandMethods(
-      command: command,
-      mineralCommand: mineralCommand
-    );
+      _registerCommandMethods(
+        command: command,
+        fileEntity: fileEntity
+      );
 
-    _commands.set<SlashCommand>(command.name, command);
+      _commands[command.name] = command;
+    }
     return this;
   }
 
@@ -53,11 +54,8 @@ class CommandManager {
     return commands;
   }
 
-  void _registerCommands ({ required SlashCommand command, required MineralCommand mineralCommand }) {
-    ClassMirror classMirror = reflect(mineralCommand).type;
-    MineralCommand classCommand = reflect(mineralCommand).reflectee;
-
-    for (InstanceMirror element in classMirror.metadata) {
+  void _registerCommands ({ required SlashCommand command, required FileEntity fileEntity }) {
+    for (InstanceMirror element in fileEntity.instanceMirror.type.metadata) {
       dynamic reflectee = element.reflectee;
 
       if (reflectee is CommandGroup) {
@@ -75,11 +73,11 @@ class CommandManager {
           ..description = reflectee.description
           ..scope = reflectee.scope;
 
-        if (classMirror.instanceMembers.values.toList().where((element) => element.simpleName == Symbol('handle')).isNotEmpty) {
-          MethodMirror handle = classMirror.instanceMembers.values.toList().firstWhere((element) => element.simpleName == Symbol('handle'));
+        MethodMirror? handle = fileEntity.instanceMirror.type.instanceMembers[Symbol('handle')];
+        if (handle != null) {
           _handlers.putIfAbsent(command.name, () => {
             'symbol': handle.simpleName,
-            'commandClass': classCommand,
+            'instanceMirror': fileEntity.instanceMirror,
           });
         }
       }
@@ -90,9 +88,8 @@ class CommandManager {
     }
   }
 
-  void _registerCommandMethods ({ required SlashCommand command, required MineralCommand mineralCommand }) {
-    dynamic classCommand = reflect(mineralCommand).reflectee;
-    reflect(mineralCommand).type.declarations.forEach((key, value) {
+  void _registerCommandMethods ({ required SlashCommand command, required FileEntity fileEntity }) {
+    fileEntity.instanceMirror.type.declarations.forEach((key, value) {
       if (value.metadata.isEmpty) {
         return;
       }
@@ -113,16 +110,15 @@ class CommandManager {
 
             _handlers.putIfAbsent("${command.name}.${group.name}.${subcommand.name}", () => {
               'symbol': Symbol(subcommand.name),
-              'commandClass': classCommand,
+              'instanceMirror': fileEntity.instanceMirror,
             });
           } else {
             command.subcommands.add(subcommand);
             _handlers.putIfAbsent("${command.name}.${subcommand.name}", () => {
               'symbol': Symbol(subcommand.name),
-              'commandClass': classCommand,
+              'instanceMirror': fileEntity.instanceMirror,
             });
           }
-
         }
 
         if (reflectee is Option) {
