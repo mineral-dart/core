@@ -1,39 +1,37 @@
-import 'dart:mirrors';
-
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/entities/file_entity.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
 
 class EventManager {
-  final Collection<Events, List<MineralEvent>> _events = Collection();
+  final Map<Events, List<FileEntity>> _events = {};
 
-  Collection<Events, List<MineralEvent>> getRegisteredEvents () => _events;
+  Map<Events, List<FileEntity>> get events => _events;
 
-  EventManager add (MineralEvent mineralEvent) {
-    Events event = reflect(mineralEvent).type.metadata.first.reflectee.event;
-    if (_events.containsKey(event)) {
-      List<MineralEvent>? events = _events.get(event);
-      events?.add(mineralEvent);
-    } else {
-      _events.putIfAbsent(event, () => [mineralEvent]);
+  EventManager addAll (List<FileEntity> fileEntities) {
+    for (FileEntity fileEntity in fileEntities) {
+      Events event = fileEntity.instanceMirror.type.metadata.first.reflectee.event;
+      if (_events.containsKey(event)) {
+        List<FileEntity>? events = _events[event];
+        events?.add(fileEntity);
+      } else {
+        _events.putIfAbsent(event, () => [fileEntity]);
+      }
     }
-
     return this;
   }
 
   void emit (Events event, [params]) {
-    List<Object>? events = _events.get(event);
+    List<FileEntity>? events = _events[event];
 
     if (events != null) {
-      for (Object event in events) {
-        reflect(event).invoke(Symbol('handle'), params);
+      for (FileEntity fileEntity in events) {
+        fileEntity.instanceMirror.invoke(Symbol('handle'), params);
       }
     }
   }
 }
 
 class Event {
-  final String type = 'event';
   final Events event;
 
   const Event(this.event);
