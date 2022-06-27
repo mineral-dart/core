@@ -1,5 +1,3 @@
-import 'package:mineral/core.dart';
-
 enum OpCode {
   dispatch(0),
   heartbeat(1),
