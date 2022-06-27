@@ -15,7 +15,7 @@ Future<void> shardHandler(SendPort shardPort) async {
   shardPort.send(sendPort);
 
   final ShardMessage initData = await receiveStream.first;
-  final String gatewayURL = initData.data["url"];
+  final String gatewayURL = initData.data['url'];
 
   late WebSocket socket;
   late StreamSubscription socketListener;
@@ -29,18 +29,17 @@ Future<void> shardHandler(SendPort shardPort) async {
 
     socket.handleError((err) => {
       shardPort.send(ShardMessage(command: ShardCommand.error, data: {
-        "error": err.toString(),
-        "code": socket.closeCode,
-        "reason": socket.closeReason
+        'error': err.toString(),
+        'code': socket.closeCode,
+        'reason': socket.closeReason
       }))
     });
 
-    socket.done.then((value) => {
-      shardPort.send(ShardMessage(command: ShardCommand.disconnected, data: {
-        "code": socket.closeCode,
-        "reason": socket.closeReason
-      }))
-    });
+    await socket.done;
+    shardPort.send(ShardMessage(command: ShardCommand.disconnected, data: {
+      'code': socket.closeCode,
+      'reason': socket.closeReason
+    }));
   }
 
   _connect();

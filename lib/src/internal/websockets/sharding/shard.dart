@@ -40,7 +40,7 @@ class Shard {
   bool _pendingReconnect = false;
 
   Shard(this.manager, this.id, String gatewayURL, this._token) {
-    Console.info(prefix: "Shard #$id", message: manager.totalShards.toString());
+    Console.info(prefix: 'Shard #$id', message: manager.totalShards.toString());
     dispatcher = WebsocketDispatcher();
     _heartbeat = Heartbeat(shard: this);
 
@@ -68,25 +68,27 @@ class Shard {
         final WebsocketResponse data = message.data as WebsocketResponse;
         sequence = data.sequence;
 
-        Console.debug(message: data.op.toString() + " | " + data.payload.toString(), prefix: "Shard #$id");
+        Console.debug(message: '${data.op} | ${data.payload}', prefix: 'Shard #$id');
 
         switch(OpCode.values.firstWhereOrNull((element) => element.value == data.op)) {
           case OpCode.heartbeat: return _heartbeat.reset();
           case OpCode.hello:
-            Console.success(message: "Received Hello code, shard started!", prefix: "Shard #$id");
+            Console.debug(message: 'Received Hello code, shard started!', prefix: 'Shard #$id');
+
             _pendingReconnect = false;
             _canResume ? _resume : manager.identifyQueue.add(id);
-            _heartbeat.start(Duration(milliseconds: data.payload["heartbeat_interval"]));
+            _heartbeat.start(Duration(milliseconds: data.payload['heartbeat_interval']));
+
             break;
           case OpCode.dispatch: return await dispatcher.dispatch(data);
-          case OpCode.reconnect:
-            return _reconnect(resume: true);
-          case OpCode.invalidSession:
-            _reconnect(resume: data.payload);
+          case OpCode.reconnect: return _reconnect(resume: true);
+          case OpCode.invalidSession: return _reconnect(resume: data.payload);
+          case OpCode.heartbeatAck:
+            Console.debug(message: 'Heartbeart ACK', prefix: 'Shard #$id');
         }
         break;
       case ShardCommand.error:
-        Console.error(prefix: "Shard #$id", message: message.data["reason"] + " | " + message.data["code"]);
+        Console.error(prefix: 'Shard #$id', message: '${message.data['reason']} | ${message.data['code']}');
 
         final Map<int, Function> errors = {
           4000: () => _reconnect(resume: true),
@@ -95,44 +97,42 @@ class Shard {
           4003: () => _reconnect(resume: false),
           4004: () => {
             _terminate(),
-            throw TokenException(cause: "APP_TOKEN is invalid, please modify it in .env file", prefix: "INVALID TOKEN")
+            throw TokenException(cause: 'APP_TOKEN is invalid, please modify it in .env file', prefix: 'INVALID TOKEN')
           },
           4005: () => _reconnect(resume: true),
           4007: () => _reconnect(resume: false),
           4008: () => {
-            Console.warn(prefix: "Shard #$id", message: 'You\'re ratelimited!'),
+            Console.warn(prefix: 'Shard #$id', message: 'You send to many packets!'),
             _reconnect(resume: false)
           },
           4009: () => _reconnect(resume: true),
-          4010: () => throw ShardException(prefix: "Shard #$id", cause: "Invalid shard id sended to gateway"),
-          4011: () => throw ShardException(prefix: "Shard #$id", cause: "Sharding is necessary")
+          4010: () => throw ShardException(prefix: 'Shard #$id', cause: 'Invalid shard id sended to gateway'),
+          4011: () => throw ShardException(prefix: 'Shard #$id', cause: 'Sharding is necessary')
         };
 
         final Function? errorCallback = errors[message.data['code']];
-        if(errorCallback != null) {
-          errorCallback();
-        } else {
-          Console.error(prefix: "Shard #$id", message: "Websocket disconnected");
-        }
+        if(errorCallback != null) return errorCallback();
+        Console.error(prefix: 'Shard #$id', message: 'Websocket disconnected');
         break;
       case ShardCommand.disconnected:
-        Console.warn(prefix: "Shard #$id", message: "Websocket disconnected");
+        Console.warn(prefix: 'Shard #$id', message: 'Websocket disconnected');
         return _reconnect(resume: true);
       default:
-        Console.info(prefix: "Shard #$id", message: "Unhandled error");
+        Console.error(prefix: 'Shard #$id', message: 'Unhandled message : ${message.command.name}');
     }
   }
 
   void send(OpCode opCode, dynamic data) {
-    final dynamic rawData = {
-      "op": opCode.value,
-      "d": data
+    Console.debug(message: 'Send message : ${opCode.name},$data', prefix: 'Shard #$id');
+    final Map<String, dynamic> rawData = {
+      'op': opCode.value,
+      'd': data
     };
     _sendPort.send(ShardMessage(command: ShardCommand.send, data: rawData));
   }
 
   void identify() {
-    Console.success(message: "Send identify message", prefix: "Shard #$id");
+    Console.debug(message: 'Send identify message', prefix: 'Shard #$id');
 
     Map<String, dynamic> identifyData = {
       'token': _token,

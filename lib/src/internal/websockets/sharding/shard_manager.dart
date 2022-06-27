@@ -10,73 +10,73 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 import 'package:mineral/api.dart';
 
 class ShardManager {
-    final Http http;
-    final List<Intent> intents;
-    final String _token;
+  final Http http;
+  final List<Intent> intents;
+  final String _token;
 
-    late final String _gatewayURL;
-    late final int maxConcurrency;
+  late final String _gatewayURL;
+  late final int maxConcurrency;
 
-    int possibleActions = 0;
+  int possibleActions = 0;
 
-    late final Duration identifyTimeout;
+  late final Duration identifyTimeout;
 
-    final Map<int, Shard> shards = {};
-    final List<int> shardsToStart = [];
+  final Map<int, Shard> shards = {};
+  final List<int> shardsToStart = [];
 
-    final List<int> identifyQueue = [];
+  final List<int> identifyQueue = [];
 
-    int totalShards = 0;
+  int totalShards = 0;
 
-    ShardManager(this.http, this._token, this.intents);
+  ShardManager(this.http, this._token, this.intents);
 
-    Future<void> start ({ int? shardsCount }) async {
-        http.defineHeader(header: 'Authorization', value: "Bot $_token");
-        AuthenticationResponse response = await getBotGateway(Constants.apiVersion);
+  Future<void> start ({ int? shardsCount }) async {
+    http.defineHeader(header: 'Authorization', value: 'Bot $_token');
+    AuthenticationResponse response = await getBotGateway(Constants.apiVersion);
 
-        _gatewayURL = response.url;
-        maxConcurrency = response.maxConcurrency;
+    _gatewayURL = response.url;
+    maxConcurrency = response.maxConcurrency;
 
-        identifyTimeout = Duration(milliseconds: (5000 ~/ maxConcurrency));
-        possibleActions = maxConcurrency;
+    identifyTimeout = Duration(milliseconds: (5000 ~/ maxConcurrency));
+    possibleActions = maxConcurrency;
 
-        shardsCount != null
-            ? totalShards = shardsCount
-            : totalShards = response.shards;
+    shardsCount != null
+        ? totalShards = shardsCount
+        : totalShards = response.shards;
 
-        while(totalShards > shards.length) {
-          startShard(shards.length, _gatewayURL);
-        }
-
-        Timer.periodic(Duration(milliseconds: 5200), (timer) {
-           if(identifyQueue.isEmpty) return;
-           for(int i = 0; i < maxConcurrency; i++) {
-               final int shardId = identifyQueue[0];
-
-               final Shard? shard = shards[shardId];
-               if(shard == null) throw ShardException(prefix: "Shard #$shardId", cause: "Shard must exist to be identified");
-               shard.identify();
-
-               identifyQueue.removeAt(0);
-           }
-        });
+    while(totalShards > shards.length) {
+      startShard(shards.length, _gatewayURL);
     }
 
-    Future<AuthenticationResponse> getBotGateway(int version) async {
-        Response response = await http.get(url: "/v$version/gateway/bot");
-        return AuthenticationResponse.fromResponse(response);
-    }
+    Timer.periodic(Duration(milliseconds: 5200), (timer) {
+      if(identifyQueue.isEmpty) return;
+      for(int i = 0; i < maxConcurrency; i++) {
+        final int shardId = identifyQueue[0];
 
-    Future<void> startShard(int id, String gatewayURL) async {
-        Console.info(message: "Starting shard #$id");
+        final Shard? shard = shards[shardId];
+        if(shard == null) throw ShardException(prefix: 'Shard #$shardId', cause: 'Shard must exist to be identified');
+        shard.identify();
 
-        final Shard shard = Shard(this, id, gatewayURL, _token);
-        shards.putIfAbsent(id, () => shard);
-    }
+        identifyQueue.removeAt(0);
+      }
+    });
+  }
 
-    Future<void> send(OpCode code, dynamic data) async {
-        shards.forEach((key, value) {
-           value.send(code, data);
-        });
-    }
+  Future<AuthenticationResponse> getBotGateway(int version) async {
+    Response response = await http.get(url: '/v$version/gateway/bot');
+    return AuthenticationResponse.fromResponse(response);
+  }
+
+  Future<void> startShard(int id, String gatewayURL) async {
+    Console.info(message: 'Starting shard #$id');
+
+    final Shard shard = Shard(this, id, gatewayURL, _token);
+    shards.putIfAbsent(id, () => shard);
+  }
+
+  Future<void> send(OpCode code, dynamic data) async {
+    shards.forEach((key, value) {
+      value.send(code, data);
+    });
+  }
 }
