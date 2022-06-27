@@ -10,12 +10,14 @@ class Ready implements WebsocketPacket {
   PacketType packetType = PacketType.ready;
 
   @override
-  Future<void> handle(WebsocketResponse websocketResponse) async {
+  Future<void> handle (WebsocketResponse websocketResponse) async {
     EventManager eventManager = ioc.singleton(ioc.services.event);
     CommandManager commandManager = ioc.singleton(ioc.services.command);
 
     MineralClient client = MineralClient.from(payload: websocketResponse.payload);
-    client.shard.sessionId = websocketResponse.payload["session_id"];
+    if (client.shard != null) {
+      client.shard!.sessionId = websocketResponse.payload["session_id"];
+    }
 
     ioc.bind(namespace: ioc.services.client, service: client);
 
@@ -34,7 +36,7 @@ class Ready implements WebsocketPacket {
     eventManager.emit(Events.ready, [client]);
   }
 
-  void infuseClientIntoEvents ({ required EventManager manager, required MineralClient client }) {
+  void infuseClientIntoEvents ({required EventManager manager, required MineralClient client}) {
     Collection<Events, List<MineralEvent>> events = manager.getRegisteredEvents();
     events.forEach((_, events) {
       for (MineralEvent event in events) {
@@ -44,7 +46,7 @@ class Ready implements WebsocketPacket {
     });
   }
 
-  void infuseClientIntoCommands ({ required CommandManager manager, required MineralClient client }) {
+  void infuseClientIntoCommands ({required CommandManager manager, required MineralClient client}) {
     Map<String, dynamic> commands = manager.getHandlers();
     commands.forEach((_, handler) {
       MineralCommand command = handler['commandClass'];
