@@ -87,7 +87,7 @@ class MineralClient {
   });
 
   setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
-    ShardManager manager = ioc.singleton(Service.websocket);
+    ShardManager manager = ioc.singleton('Mineral/Core/Websocket');
     manager.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
