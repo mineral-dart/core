@@ -1,8 +1,8 @@
-import 'dart:ffi';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:async';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
@@ -133,12 +133,13 @@ class Shard {
   void _identify() {
     send(OpCode.identify, {
       'token': _token,
-      'intents': 131071,
+      'intents': Intent.getIntent(manager.intents),
       'shard': <int>[id, manager.totalShards],
       'properties': { '\$os': Platform.operatingSystem }
     });
   }
 
+  //TODO: Check with ShardManager timer -> Discord ratelimit
   void _reconnect({ bool resume = false }) {
     if(!_pendingReconnect) {
       _pendingReconnect = true;
