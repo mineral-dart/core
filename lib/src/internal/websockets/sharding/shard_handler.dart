@@ -52,7 +52,7 @@ Future<void> shardHandler(SendPort shardPort) async {
 
   Future<void> terminate() async {
     await disconnect();
-    shardPort.send(ShardMessage(command: ShardCommand.terminate_ok));
+    shardPort.send(ShardMessage(command: ShardCommand.terminateOk));
   }
 
   await for (final ShardMessage message in receiveStream) {

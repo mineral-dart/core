@@ -10,5 +10,5 @@ class ShardMessage {
 }
 
 enum ShardCommand {
-  init, data, error, disconnected, reconnect, send, terminate, terminate_ok;
+  init, data, error, disconnected, reconnect, send, terminate, terminateOk;
 }

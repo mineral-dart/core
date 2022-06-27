@@ -77,7 +77,7 @@ class Shard {
             _canResume ? _resume : manager.identifyQueue.add(id);
             _heartbeat.start(Duration(milliseconds: data.payload["heartbeat_interval"]));
             break;
-          //case OpCode.dispatch: return await dispatcher.dispatch(data);
+          case OpCode.dispatch: return await dispatcher.dispatch(data);
           case OpCode.reconnect:
             return _reconnect(resume: true);
           case OpCode.invalidSession:
