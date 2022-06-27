@@ -14,6 +14,7 @@ import 'package:mineral/src/internal/websockets/websocket_dispatcher.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 import 'package:mineral/src/exceptions/shard_exception.dart';
+import 'package:collection/collection.dart';
 
 class Shard {
   final ShardManager manager;
@@ -69,7 +70,7 @@ class Shard {
 
         Console.debug(message: data.op.toString() + " | " + data.payload.toString(), prefix: "Shard #$id");
 
-        switch(OpCode.getWithValue(data.op)) {
+        switch(OpCode.values.firstWhereOrNull((element) => element.value == data.op)) {
           case OpCode.heartbeat: return _heartbeat.reset();
           case OpCode.hello:
             Console.success(message: "Received Hello code, shard started!", prefix: "Shard #$id");
@@ -94,7 +95,7 @@ class Shard {
           4003: () => _reconnect(resume: false),
           4004: () => {
             _terminate(),
-            throw TokenException(cause: "Change the APP_TOKEN", prefix: "WRONG TOKEN")
+            throw TokenException(cause: "APP_TOKEN is invalid, please modify it in .env file", prefix: "INVALID TOKEN")
           },
           4005: () => _reconnect(resume: true),
           4007: () => _reconnect(resume: false),
@@ -133,15 +134,16 @@ class Shard {
   void identify() {
     Console.success(message: "Send identify message", prefix: "Shard #$id");
 
-    send(OpCode.identify, {
+    Map<String, dynamic> identifyData = {
       'token': _token,
       'intents': Intent.getIntent(manager.intents),
-      'shard': <int>[id, manager.totalShards],
       'properties': { '\$os': Platform.operatingSystem }
-    });
+    };
+    if(manager.totalShards >= 2) identifyData.putIfAbsent('shard', () => <int>[id, manager.totalShards]);
+
+    send(OpCode.identify, identifyData);
   }
 
-  //TODO: Check with ShardManager timer -> Discord ratelimit
   void _reconnect({ bool resume = false }) {
     if(!_pendingReconnect) {
       _pendingReconnect = true;

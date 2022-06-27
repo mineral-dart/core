@@ -24,9 +24,12 @@ void main() {
 
   test('can create websocket connection', () async {
     String discordEndpoint = 'https://discord.com/api';
-
     Http http = Http(baseUrl: discordEndpoint);
-    ShardManager manager = ShardManager(http, 'Nzg1ODgxOTk1NDc2ODYwOTc5.Gihx50.TKgmVB5cBsw-QV_W3kzAJdRP_Hk9CKZXUxbxnk', [Intent.all]);
+
+    Environment environment = Environment();
+    environment.load(".env");
+
+    ShardManager manager = ShardManager(http, environment.get("APP_TOKEN")!, [Intent.all]);
     await manager.start(shardsCount: 1);
   });
 }
