@@ -74,10 +74,10 @@ class Shard {
           case OpCode.hello:
             Console.success(message: "Received Hello code, shard started!", prefix: "Shard #$id");
             _pendingReconnect = false;
-            _canResume ? _resume : _identify();
+            _canResume ? _resume : manager.identifyQueue.add(id);
             _heartbeat.start(Duration(milliseconds: data.payload["heartbeat_interval"]));
             break;
-          case OpCode.dispatch: return await dispatcher.dispatch(data);
+          //case OpCode.dispatch: return await dispatcher.dispatch(data);
           case OpCode.reconnect:
             return _reconnect(resume: true);
           case OpCode.invalidSession:
@@ -130,7 +130,9 @@ class Shard {
     _sendPort.send(ShardMessage(command: ShardCommand.send, data: rawData));
   }
 
-  void _identify() {
+  void identify() {
+    Console.success(message: "Send identify message", prefix: "Shard #$id");
+
     send(OpCode.identify, {
       'token': _token,
       'intents': Intent.getIntent(manager.intents),
