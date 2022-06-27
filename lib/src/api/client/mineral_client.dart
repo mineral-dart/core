@@ -1,6 +1,10 @@
+import 'dart:convert';
+
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
+import 'package:mineral/src/internal/websockets/sharding/shard.dart';
+import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_manager.dart';
 
 import '../../internal/entities/command_manager.dart';
@@ -72,7 +76,7 @@ class MineralClient {
   User user;
   GuildManager guilds;
   String sessionId;
-  List<Map<String, int>> shards;
+  Shard shard;
   Application application;
   List<Intent> intents;
 
@@ -80,13 +84,13 @@ class MineralClient {
     required this.user,
     required this.guilds,
     required this.sessionId,
-    required this.shards,
+    required this.shard,
     required this.application,
     required this.intents,
   });
 
   setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
-    WebsocketManager manager = ioc.singleton(ioc.services.websocket);
+    ShardManager manager = ioc.singleton(ioc.services.websocket);
     manager.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
@@ -114,13 +118,13 @@ class MineralClient {
   }
 
   factory MineralClient.from({ required dynamic payload }) {
-    WebsocketManager manager = ioc.singleton(ioc.services.websocket);
+    ShardManager manager = ioc.singleton(ioc.services.websocket);
 
     return MineralClient(
       user: User.from(payload['user']),
       guilds: GuildManager(),
       sessionId: payload['session_id'],
-      shards: payload['shards'] ?? [],
+      shard: manager.shards[payload['shard'][0]]!,
       application: Application.from(payload['application']),
       intents: manager.intents
     );

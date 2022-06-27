@@ -3,8 +3,10 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/entities/store_manager.dart';
+import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_manager.dart';
+
+import 'entities/store_manager.dart';
 
 class Kernel {
   EventManager events = EventManager();
@@ -24,8 +26,6 @@ class Kernel {
     ioc.bind(namespace: ioc.services.http, service: http);
 
     Environment environment = await _loadEnvironment();
-    WebsocketManager manager = WebsocketManager(http);
-    ioc.bind(namespace: ioc.services.websocket, service: manager);
 
     String? token = environment.get('APP_TOKEN');
     if (token == null) {
@@ -35,10 +35,12 @@ class Kernel {
       );
     }
 
-    await manager.connect(
-      token: token,
-      intents: intents,
-    );
+    final String? shardsCount = environment.get('SHARDS_COUNT');
+
+    ShardManager manager = ShardManager(http, token, intents);
+    manager.start(shardsCount: (shardsCount != null ? int.tryParse(shardsCount) : null));
+
+    ioc.bind(namespace: 'Mineral/Core/Websocket', service: manager);
   }
 
 

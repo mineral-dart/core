@@ -1,26 +1,40 @@
 library console;
 
+import 'package:mineral/core.dart';
+
 class Console {
-  static void log ({ required String message}) {
+  static void log ({ required String message, String level = "info"}) {
+    if(level == "debug") {
+      final Environment environment = ioc.singleton(ioc.services.environment);
+      final String? logLevel = environment.get('LOG_LEVEL');
+
+      if (logLevel != "debug") return;
+    }
+
     print(message);
+  }
+
+  static debug ({ String prefix = 'debug', required String message }) {
+    String p = ColorList.white(prefix);
+    log(message: "[ $p ] $message", level: "debug");
   }
 
   static info ({ String prefix = 'info', required String message }) {
     String p = ColorList.blue(prefix);
-    print("[ $p ] $message");
+    log(message: "[ $p ] $message", level: "info");
   }
 
   static success ({ String prefix = 'success', required String message }) {
     String p = ColorList.green(prefix);
-    print("[ $p ] $message");
+    log(message: "[ $p ] $message", level: "info");
   }
 
   static error ({ String prefix = 'error', required String message }) {
-    print(getErrorMessage(prefix: ColorList.red(prefix), message: message));
+    log(message: getErrorMessage(prefix: ColorList.red(prefix), message: message), level: "error");
   }
 
   static warn ({ String prefix = 'warn', required String message }) {
-    print(getWarnMessage(prefix: ColorList.yellow(prefix), message: message));
+    log(message: getWarnMessage(prefix: ColorList.yellow(prefix), message: message), level: "warn");
   }
 
   static String getWarnMessage ({ String? prefix = 'warn', required String message }) {
