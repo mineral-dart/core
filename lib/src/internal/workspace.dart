@@ -1,9 +1,13 @@
 import 'dart:io';
 import 'dart:mirrors';
 import 'package:mineral/console.dart';
+import 'package:mineral/core.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/exceptions/invalid_class_entity.dart';
+import 'package:mineral/src/internal/entities/command_manager.dart';
+import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/entities/file_entity.dart';
+import 'package:mineral/src/internal/entities/store_manager.dart';
 import 'package:mineral/src/internal/models/pubspec.dart';
 import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
@@ -11,6 +15,7 @@ import 'package:yaml/yaml.dart';
 class Workspace {
   Directory root;
   List<FileSystemEntity> files = [];
+
   Workspace({ required this.root });
 
   Future<void> loadFromDisk () async {
@@ -23,19 +28,34 @@ class Workspace {
       && !file.path.endsWith(join(root.path, 'src', 'main.dart'));
   }
 
-  Future<List<FileEntity>> getEntities<T> () async {
-    List<FileEntity> fileEntities = [];
+  Future<void> mock (file, eventManager, commandManager, storeManager) async {
+    LibraryMirror libraryMirror = await currentMirrorSystem().isolate.loadUri(file.uri);
+    InstanceMirror? instanceMirror = _getClassMirror(file, libraryMirror);
 
-    for (FileSystemEntity file in files) {
+    if (instanceMirror != null && instanceMirror.type.metadata.first.reflectee is Event) {
+      eventManager.add(FileEntity(file: file, instanceMirror: instanceMirror));
+    }
+
+    if (instanceMirror != null && instanceMirror.type.metadata.first.reflectee is Command) {
+      commandManager.add(FileEntity(file: file, instanceMirror: instanceMirror));
+    }
+
+    if (instanceMirror != null && instanceMirror.type.metadata.first.reflectee is Store) {
+      storeManager.add(FileEntity(file: file, instanceMirror: instanceMirror));
+    }
+  }
+
+  Future<List<FileEntity?>> getEntities<T> () async {
+    print('entities');
+    return Future.wait(files.map((file) async {
       LibraryMirror libraryMirror = await currentMirrorSystem().isolate.loadUri(file.uri);
       InstanceMirror? instanceMirror = _getClassMirror(file, libraryMirror);
 
       if (instanceMirror != null && instanceMirror.type.metadata.first.reflectee is T) {
-        fileEntities.add(FileEntity(file: file, instanceMirror: instanceMirror));
+        return FileEntity(file: file, instanceMirror: instanceMirror);
       }
-    }
-
-    return fileEntities;
+      return null;
+    }));
   }
 
   InstanceMirror? _getClassMirror (FileSystemEntity file, LibraryMirror libraryMirror) {

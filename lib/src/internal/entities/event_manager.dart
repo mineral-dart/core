@@ -7,6 +7,17 @@ class EventManager {
 
   Map<Events, List<FileEntity>> get events => _events;
 
+  EventManager add (FileEntity fileEntity) {
+    Events event = fileEntity.instanceMirror.type.metadata.first.reflectee.event;
+    if (_events.containsKey(event)) {
+      List<FileEntity>? events = _events[event];
+      events?.add(fileEntity);
+    } else {
+      _events.putIfAbsent(event, () => [fileEntity]);
+    }
+    return this;
+  }
+
   EventManager addAll (List<FileEntity> fileEntities) {
     for (FileEntity fileEntity in fileEntities) {
       Events event = fileEntity.instanceMirror.type.metadata.first.reflectee.event;

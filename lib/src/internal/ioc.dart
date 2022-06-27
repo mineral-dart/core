@@ -15,6 +15,8 @@ class Ioc {
   static late Ioc _instance;
   final Map<String, dynamic> _services = {};
 
+  get instance => _instance;
+
   static Ioc init () {
     Ioc._instance = Ioc();
     return Ioc._instance;

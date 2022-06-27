@@ -5,6 +5,17 @@ import 'package:mineral/src/internal/entities/file_entity.dart';
 class StoreManager {
   final Map<String, FileEntity> _stores = {};
 
+  StoreManager add (FileEntity fileEntity) {
+    String name = fileEntity.instanceMirror.type.metadata.first.reflectee.name;
+    if (_stores.containsKey(name)) {
+      throw AlreadyExist(cause: "A store named $name already exists.");
+    }
+
+    _stores[name] = fileEntity;
+
+    return this;
+  }
+
   StoreManager addAll (List<FileEntity> fileEntities) {
     for (FileEntity fileEntity in fileEntities) {
       String name = fileEntity.instanceMirror.type.metadata.first.reflectee.name;

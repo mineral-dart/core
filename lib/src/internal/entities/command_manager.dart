@@ -14,6 +14,23 @@ class CommandManager {
 
   dynamic getHandler (String handler) => _handlers.get(handler);
 
+  CommandManager add (FileEntity fileEntity) {
+    SlashCommand command = SlashCommand(name: '', description: '', scope: '', options: []);
+
+    _registerCommands(
+        command: command,
+        fileEntity: fileEntity
+    );
+
+    _registerCommandMethods(
+        command: command,
+        fileEntity: fileEntity
+    );
+
+    _commands[command.name] = command;
+    return this;
+  }
+
   CommandManager addAll (List<FileEntity> fileEntities) {
     for (FileEntity fileEntity in fileEntities) {
       SlashCommand command = SlashCommand(name: '', description: '', scope: '', options: []);
