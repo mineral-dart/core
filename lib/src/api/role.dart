@@ -125,6 +125,25 @@ class Role {
     }
   }
 
+  /// Modifies the [icon] of the role from [String] path.
+  ///
+  /// We consider having the file structure
+  /// ```
+  /// .dart_tool
+  /// assets/
+  ///   images/
+  ///     penguin.png
+  /// src/
+  /// test/
+  /// .env
+  /// pubspec.yaml
+  /// ```
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setIcon('assets/images/penguin.png');
+  /// }
+  /// ```
   Future<void> setIcon (String path) async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
