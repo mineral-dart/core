@@ -23,10 +23,9 @@ class Timestamp {
   Timestamp({ required this.start, required this.end });
 
   factory Timestamp.from ({ required dynamic payload }) {
-    print(payload);
     return Timestamp(
-      start: payload['start'] ? DateTime.fromMillisecondsSinceEpoch(payload['start']) : null,
-      end: payload['end'] ? DateTime.fromMillisecondsSinceEpoch(payload['start']) : null,
+      start: payload['start'] != null ? DateTime.fromMillisecondsSinceEpoch(payload['start']) : null,
+      end: payload['end'] != null ? DateTime.fromMillisecondsSinceEpoch(payload['start']) : null,
     );
   }
 }
@@ -36,7 +35,7 @@ class ClientPresence {
   GamePresence type;
   String? url;
   DateTime createdAt;
-  Timestamp timestamps;
+  Timestamp? timestamps;
   Snowflake? applicationId;
   String? details;
   String? state;
@@ -66,7 +65,7 @@ class ClientPresence {
       type: GamePresence.values.firstWhere((type) => type.toString() == payload['type']),
       url: payload['url'],
       createdAt: DateTime.parse(payload['createdAt']),
-      timestamps: Timestamp.from(payload: payload['timestamps']),
+      timestamps: payload['timestamps'] != null ? Timestamp.from(payload: payload['timestamps']) : null,
       applicationId: payload['application_id'],
       details: payload['details'],
       state: payload['state'],

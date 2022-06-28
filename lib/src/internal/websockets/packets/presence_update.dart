@@ -21,7 +21,6 @@ class PresenceUpdate implements WebsocketPacket {
     GuildMember? beforeMember = guild?.members.cache.get(userId)?.clone();
     GuildMember? afterMember = guild?.members.cache.get(userId);
 
-    print(payload);
     afterMember?.user.status = Status.from(guild: guild!, payload: payload);
 
     manager.emit(Events.presenceUpdate, [beforeMember, afterMember]);

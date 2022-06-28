@@ -40,7 +40,6 @@ class Shard {
   bool _pendingReconnect = false;
 
   Shard(this.manager, this.id, String gatewayURL, this._token) {
-    Console.info(prefix: 'Shard #$id', message: manager.totalShards.toString());
     dispatcher = WebsocketDispatcher();
     _heartbeat = Heartbeat(shard: this);
 
@@ -76,7 +75,11 @@ class Shard {
             Console.debug(message: 'Received Hello code, shard started!', prefix: 'Shard #$id');
 
             _pendingReconnect = false;
-            _canResume ? _resume : manager.identifyQueue.add(id);
+            if(_canResume) {
+              _resume();
+            } else {
+              manager.totalShards >= 2 ? manager.identifyQueue.add(id) : identify();
+            }
             _heartbeat.start(Duration(milliseconds: data.payload['heartbeat_interval']));
 
             break;

@@ -17,16 +17,12 @@ class ShardManager {
   late final String _gatewayURL;
   late final int maxConcurrency;
 
-  int possibleActions = 0;
-
   late final Duration identifyTimeout;
 
   final Map<int, Shard> shards = {};
-  final List<int> shardsToStart = [];
+  int totalShards = 0;
 
   final List<int> identifyQueue = [];
-
-  int totalShards = 0;
 
   ShardManager(this.http, this._token, this.intents);
 
@@ -38,28 +34,30 @@ class ShardManager {
     maxConcurrency = response.maxConcurrency;
 
     identifyTimeout = Duration(milliseconds: (5000 ~/ maxConcurrency));
-    possibleActions = maxConcurrency;
 
     shardsCount != null
         ? totalShards = shardsCount
         : totalShards = response.shards;
 
-    while(totalShards > shards.length) {
+    while (totalShards > shards.length) {
       startShard(shards.length, _gatewayURL);
     }
 
-    Timer.periodic(Duration(milliseconds: 5200), (timer) {
-      if(identifyQueue.isEmpty) return;
-      for(int i = 0; i < maxConcurrency; i++) {
-        final int shardId = identifyQueue[0];
+    if (totalShards >= 2) {
+      Timer.periodic(Duration(milliseconds: 5200), (timer) {
+        if (identifyQueue.isEmpty) return;
 
-        final Shard? shard = shards[shardId];
-        if(shard == null) throw ShardException(prefix: 'Shard #$shardId', cause: 'Shard must exist to be identified');
-        shard.identify();
+        for (int i = 0; i < maxConcurrency; i++) {
+          final int shardId = identifyQueue[0];
 
-        identifyQueue.removeAt(0);
-      }
-    });
+          final Shard? shard = shards[shardId];
+          if(shard == null) throw ShardException(prefix: 'Shard #$shardId', cause: 'Shard must exist to be identified');
+          shard.identify();
+
+          identifyQueue.removeAt(0);
+        }
+      });
+    }
   }
 
   Future<AuthenticationResponse> getBotGateway(int version) async {
@@ -68,7 +66,7 @@ class ShardManager {
   }
 
   Future<void> startShard(int id, String gatewayURL) async {
-    Console.info(message: 'Starting shard #$id');
+    Console.debug(message: 'Starting shard #$id');
 
     final Shard shard = Shard(this, id, gatewayURL, _token);
     shards.putIfAbsent(id, () => shard);

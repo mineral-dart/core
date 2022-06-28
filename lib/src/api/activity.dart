@@ -8,7 +8,7 @@ class Activity {
   GamePresence type;
   String? url;
   DateTime createdAt;
-  Timestamp timestamps;
+  Timestamp? timestamps;
   Snowflake? applicationId;
   String? details;
   String? state;
@@ -33,14 +33,12 @@ class Activity {
   });
 
   factory Activity.from({ required dynamic payload }) {
-    print(payload['type']);
-    print(jsonEncode(payload));
     return Activity(
       label: payload['name'],
       type: GamePresence.values.firstWhere((status) => status.value == payload['type']),
       url: payload['url'],
       createdAt: DateTime.fromMillisecondsSinceEpoch(payload['created_at']),
-      timestamps: Timestamp.from(payload: payload['timestamps']),
+      timestamps: payload['timestamps'] != null ? Timestamp.from(payload: payload['timestamps']) : null,
       applicationId: payload['application_id'],
       details: payload['details'],
       state: payload['state'],
