@@ -28,6 +28,13 @@ class Emoji {
     required this.manager,
   });
 
+  /// Modifies the [label] of this.
+  /// ```dart
+  /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
+  /// if (emoji != null) {
+  ///   await emoji.setLabel('New label');
+  /// }
+  /// ```
   Future<void> setLabel (String label) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/${manager.guildId}/emojis/$id", payload: { 'name': label });
