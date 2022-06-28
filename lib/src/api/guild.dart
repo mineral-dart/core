@@ -112,6 +112,10 @@ class Guild {
     required this.webhooks,
   });
 
+  /// Modifies the [name] of the role.
+  /// ```dart
+  /// await guild.setName('Guild name');
+  /// ```
   Future<void> setName (String name) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'name': name });
