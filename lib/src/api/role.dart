@@ -75,6 +75,17 @@ class Role {
     }
   }
 
+  /// Modifies the [color] of the role.
+  /// ```dart
+  /// import 'package:mineral/api.dart' 👈 // then you can use Color class
+  ///
+  /// final role = guild.roles.cache.get('240561194958716924');
+  /// await role.setColor(Color.cyan_600);
+  /// ```
+  /// You can use a custom colour from a hexadecimal format.
+  /// ```dart
+  /// await role.setColor(Color('#ffffff'));
+  /// ```
   Future<void> setColor (Color color) async {
     Http http = ioc.singleton(ioc.services.http);
 
