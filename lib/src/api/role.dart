@@ -160,9 +160,15 @@ class Role {
   }
 
   /// Remove the [icon] of the role.
+  ///
+  /// Your guild requires the [GuildFeature.roleIcons] to perform this action, otherwise throw [MissingFeatureException].
   /// ```dart
+  /// import 'package:mineral/api.dart'; 👈 // then you can use GuildFeature enum
+  ///
   /// final Role? role = guild.roles.cache.get('240561194958716924');
-  /// if (role != null) {
+  /// final bool hasFeature = guild.features.contains(GuildFeature.roleIcons);
+  ///
+  /// if (hasFeature && role != null) {
   ///   await role.removeIcon();
   /// }
   /// ```
