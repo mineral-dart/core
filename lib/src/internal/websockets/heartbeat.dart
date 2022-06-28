@@ -33,6 +33,6 @@ class Heartbeat {
 
   void _send() {
     Console.debug(message: 'Send an heartbeat', prefix: 'Shard #${shard.id}');
-    shard.send(OpCode.heartbeat, shard.sequence);
+    shard.send(OpCode.heartbeat, shard.sequence, canQueue: false);
   }
 }

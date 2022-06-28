@@ -69,14 +69,14 @@ class ClientActivity {
 
  ClientActivity({ required this.name, required this.type });
 
- dynamic toJson () => { 'name': name, 'type': type.toString() };
+ dynamic toJson () => { 'name': name, 'type': type.value };
 }
 
 class MineralClient {
   User user;
   GuildManager guilds;
   String sessionId;
-  Shard? shard;
+  Shard shard;
   Application application;
   List<Intent> intents;
 
@@ -124,7 +124,7 @@ class MineralClient {
       user: User.from(payload['user']),
       guilds: GuildManager(),
       sessionId: payload['session_id'],
-      shard: payload['shard'] != null ? manager.shards[payload['shard'][0]] : null,
+      shard: payload['shard'] != null ? manager.shards[payload['shard'][0]]! : manager.shards[0]!,
       application: Application.from(payload['application']),
       intents: manager.intents
     );

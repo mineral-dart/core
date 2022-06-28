@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:async';
@@ -39,6 +40,9 @@ class Shard {
   bool _canResume = false;
   bool _pendingReconnect = false;
 
+  bool initialized = false;
+  final List<List<dynamic>> queue = [];
+
   Shard(this.manager, this.id, String gatewayURL, this._token) {
     dispatcher = WebsocketDispatcher();
     _heartbeat = Heartbeat(shard: this);
@@ -65,7 +69,6 @@ class Shard {
       case ShardCommand.data:
         if(message.data is! WebsocketResponse) return;
         final WebsocketResponse data = message.data as WebsocketResponse;
-        sequence = data.sequence;
 
         final OpCode? opCode = OpCode.values.firstWhereOrNull((element) => element.value == data.op);
         Console.debug(message: '${opCode.toString()} | ${data.payload}', prefix: 'Shard #$id');
@@ -84,7 +87,9 @@ class Shard {
             _heartbeat.start(Duration(milliseconds: data.payload['heartbeat_interval']));
 
             break;
-          case OpCode.dispatch: return await dispatcher.dispatch(data);
+          case OpCode.dispatch:
+            sequence = data.sequence;
+            return await dispatcher.dispatch(data);
           case OpCode.reconnect: return _reconnect(resume: true);
           case OpCode.invalidSession: return _reconnect(resume: data.payload);
           case OpCode.heartbeatAck:
@@ -126,13 +131,28 @@ class Shard {
     }
   }
 
-  void send(OpCode opCode, dynamic data) {
-    Console.debug(message: 'Send message : ${opCode.name},$data', prefix: 'Shard #$id');
-    final Map<String, dynamic> rawData = {
-      'op': opCode.value,
-      'd': data
-    };
-    _sendPort.send(ShardMessage(command: ShardCommand.send, data: rawData));
+  void send(OpCode opCode, dynamic data, {bool canQueue = true}) {
+    if(initialized || canQueue == false) {
+      Console.debug(message: 'Send message : ${opCode.name},$data', prefix: 'Shard #$id');
+      final Map<String, dynamic> rawData = {
+        'op': opCode.value,
+        'd': data
+      };
+      _sendPort.send(ShardMessage(command: ShardCommand.send, data: rawData));
+      return;
+    }
+
+    queue.add([opCode, data]);
+  }
+
+  void initialize() {
+    initialized = true;
+    for(int i = 0; i < queue.length; i++) {
+      final List<dynamic> element = queue[i];
+
+      send(element[0], element[1]);
+      queue.removeAt(i);
+    }
   }
 
   void identify() {
@@ -145,7 +165,7 @@ class Shard {
     };
     if(manager.totalShards >= 2) identifyData.putIfAbsent('shard', () => <int>[id, manager.totalShards]);
 
-    send(OpCode.identify, identifyData);
+    send(OpCode.identify, identifyData, canQueue: false);
   }
 
   void _reconnect({ bool resume = false }) {
@@ -165,6 +185,6 @@ class Shard {
       'token': _token,
       'session_id': sessionId,
       'seq': sequence
-    });
+    }, canQueue: false);
   }
 }

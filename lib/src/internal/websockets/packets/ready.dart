@@ -15,9 +15,8 @@ class Ready implements WebsocketPacket {
     CommandManager commandManager = ioc.singleton(ioc.services.command);
 
     MineralClient client = MineralClient.from(payload: websocketResponse.payload);
-    if (client.shard != null) {
-      client.shard!.sessionId = websocketResponse.payload["session_id"];
-    }
+    client.shard.sessionId = websocketResponse.payload["session_id"];
+    client.shard.initialize();
 
     ioc.bind(namespace: ioc.services.client, service: client);
 

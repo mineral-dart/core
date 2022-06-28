@@ -1,12 +1,13 @@
 import 'package:mineral/api.dart';
 
-enum StatutType {
+enum StatusType {
   online('online'),
   idle('idle'),
-  doNotDisturb('dnd');
+  doNotDisturb('dnd'),
+  offline('offline');
 
   final String _value;
-  const StatutType(this._value);
+  const StatusType(this._value);
 
   @override
   String toString () => _value;
@@ -16,7 +17,7 @@ class Status {
   User user;
   Snowflake guildId;
   Guild guild;
-  StatutType type;
+  StatusType type;
   List<Activity> activities;
   dynamic platform;
 
@@ -42,7 +43,7 @@ class Status {
     return Status(
       guildId: payload['guild_id'],
       guild: guild,
-      type: StatutType.values.firstWhere((status) => status.toString() == payload['status']),
+      type: StatusType.values.firstWhere((status) => status.toString() == payload['status']),
       user: guildMember.user,
       platform: payload['client_status'],
       activities: activities,
