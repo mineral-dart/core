@@ -50,6 +50,11 @@ class Role {
     required this.manager,
   });
 
+  /// Modifies the [label] of the role.
+  /// ```dart
+  /// final role = guild.roles.cache.get('240561194958716924');
+  /// await role.setLabel('New label');
+  /// ```
   Future<void> setLabel (String label) async {
     Http http = ioc.singleton(ioc.services.http);
 
