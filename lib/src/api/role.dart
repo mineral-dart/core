@@ -109,6 +109,13 @@ class Role {
     }
   }
 
+  /// Modifies the [hoist] of the role from [bool].
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setHoist(true);
+  /// }
+  /// ```
   Future<void> setHoist (bool hoist) async {
     Http http = ioc.singleton(ioc.services.http);
 
