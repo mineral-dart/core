@@ -15,6 +15,17 @@ import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 
+enum VerificationLevel {
+  none(0),
+  low(1),
+  medium(2),
+  high(3),
+  veryHigh(4);
+
+  final int value;
+  const VerificationLevel(this.value);
+}
+
 class Guild {
   Snowflake id;
   String name;
@@ -30,7 +41,7 @@ class Guild {
   int afkTimeout;
   bool widgetEnabled;
   Snowflake? widgetChannelId;
-  int verificationLevel;
+  VerificationLevel verificationLevel;
   int defaultMessageNotifications;
   int explicitContentFilter;
   RoleManager roles;
@@ -112,7 +123,7 @@ class Guild {
     required this.webhooks,
   });
 
-  /// Modifies the [name] of the role.
+  /// Modifies the [name] of this.
   /// ```dart
   /// await guild.setName('Guild name');
   /// ```
@@ -125,9 +136,15 @@ class Guild {
     }
   }
 
-  Future<void> setVerificationLevel (int level) async {
+  /// Modifies the [verificationLevel] of this.
+  /// ```dart
+  /// import 'package:mineral/api.dart'; 👈 // then you can use VerificationLevel enum
+  ///
+  /// await guild.setVerificationLevel(VerificationLevel.veryHigh);
+  /// ```
+  Future<void> setVerificationLevel (VerificationLevel level) async {
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.patch(url: "/guilds/$id", payload: { 'verification_level': level });
+    Response response = await http.patch(url: "/guilds/$id", payload: { 'verification_level': level.value });
 
     if (response.statusCode == 200) {
       verificationLevel = level;
@@ -359,7 +376,7 @@ class Guild {
       afkTimeout: payload['afk_timeout'],
       widgetEnabled: payload['widget_enabled'] ?? false,
       widgetChannelId: payload['widget_channel_id'],
-      verificationLevel: payload['verification_level'],
+      verificationLevel: VerificationLevel.values.firstWhere((level) => level.value == payload['verification_level']),
       defaultMessageNotifications: payload['default_message_notifications'],
       explicitContentFilter: payload['explicit_content_filter'],
       roles: roleManager,
