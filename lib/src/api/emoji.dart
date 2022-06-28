@@ -5,6 +5,8 @@ import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 
+/// Represents an [Emoji] on [Guild] context.
+/// {@category Api}
 class Emoji {
   Snowflake id;
   String label;
@@ -89,6 +91,19 @@ class Emoji {
       manager.cache.remove(id);
     }
   }
+
+  /// Returns this in discord notification format
+  /// ```dart
+  /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
+  /// if (emoji != null) {
+  ///   print(emoji.toString()) // print('<label:240561194958716924>')
+  ///   print('$emoji') // print('<label:240561194958716924>')
+  /// }
+  /// ```
+  @override
+  String toString () => animated
+    ? '<a:$label:$id>'
+    : '<$label:$id>';
 
   factory Emoji.from({ required MemberManager memberManager, required RoleManager roleManager, required EmojiManager emojiManager, required dynamic payload }) {
     List<Role> roles = [];

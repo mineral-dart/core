@@ -3,7 +3,6 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
-import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 
 class Tag {
@@ -225,7 +224,7 @@ class Role {
     }
   }
 
-  /// Removes the current this from the [GuildManager]'s cache
+  /// Removes the current this from the [RoleManager]'s cache
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
@@ -250,6 +249,17 @@ class Role {
       manager.cache.remove(id);
     }
   }
+
+  /// Returns this in discord notification format
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   print(role.toString()) // print('<@&240561194958716924>')
+  ///   print('$role') // print('<@&240561194958716924>')
+  /// }
+  /// ```
+  @override
+  String toString () => '<@&$id>';
 
   factory Role.from({ required RoleManager roleManager, dynamic payload }) {
     return Role(

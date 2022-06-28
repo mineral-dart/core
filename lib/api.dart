@@ -1,3 +1,6 @@
+/// The api is the collection of all the classes, enumerations of the framework
+///
+/// {@category Api}
 library api;
 
 export 'src/api/client/mineral_client.dart' show MineralClient, ClientActivity, ClientStatus, Intent;
