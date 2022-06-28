@@ -209,9 +209,17 @@ class Role {
     }
   }
 
+  /// Modifies the [mentionable] of the role from [bool].
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setMentionable(true);
+  /// }
+  /// ```
   Future<void> setMentionable (bool mentionable) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'mentionable': mentionable });
+
     if (response.statusCode == 200) {
       this.mentionable = mentionable;
     }
