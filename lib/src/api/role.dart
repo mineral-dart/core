@@ -3,6 +3,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
+import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 
 class Tag {
@@ -66,7 +67,7 @@ class Role {
     }
   }
 
-  /// Modifies the permissions associated with this [role]
+  /// Modifies the permissions associated with this
   /// ```dart
   /// import 'package:mineral/api.dart'; 👈 // then you can use Permission class
   ///
@@ -169,6 +170,7 @@ class Role {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
+
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'icon': null });
     if (response.statusCode == 200) {
@@ -176,6 +178,19 @@ class Role {
     }
   }
 
+  /// Define the [unicodeEmoji] of the role from [String].
+  ///
+  /// Your guild requires the [GuildFeature.roleIcons] to perform this action, otherwise throw [MissingFeatureException].
+  /// ```dart
+  /// import 'package:mineral/api.dart'; 👈 // then you can use GuildFeature enum
+  ///
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// final bool hasFeature = guild.features.contains(GuildFeature.roleIcons);
+  ///
+  /// if (hasFeature && role != null) {
+  ///   await role.setUnicodeEmoji('😍');
+  /// }
+  /// ```
   Future<void> setUnicodeEmoji (String unicode) async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
@@ -196,7 +211,7 @@ class Role {
     }
   }
 
-  /// Removes the current [role] from the [guild]'s cache
+  /// Removes the current this from the [GuildManager]'s cache
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
