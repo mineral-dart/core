@@ -67,9 +67,10 @@ class Shard {
         final WebsocketResponse data = message.data as WebsocketResponse;
         sequence = data.sequence;
 
-        Console.debug(message: '${data.op} | ${data.payload}', prefix: 'Shard #$id');
+        final OpCode? opCode = OpCode.values.firstWhereOrNull((element) => element.value == data.op);
+        Console.debug(message: '${opCode.toString()} | ${data.payload}', prefix: 'Shard #$id');
 
-        switch(OpCode.values.firstWhereOrNull((element) => element.value == data.op)) {
+        switch(opCode) {
           case OpCode.heartbeat: return _heartbeat.reset();
           case OpCode.hello:
             Console.debug(message: 'Received Hello code, shard started!', prefix: 'Shard #$id');

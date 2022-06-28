@@ -32,7 +32,7 @@ class Heartbeat {
   }
 
   void _send() {
-    Console.info(message: "Send an heartbeat");
+    Console.debug(message: 'Send an heartbeat', prefix: 'Shard #${shard.id}');
     shard.send(OpCode.heartbeat, shard.sequence);
   }
 }
