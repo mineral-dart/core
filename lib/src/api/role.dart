@@ -158,6 +158,24 @@ class Role {
     }
   }
 
+  /// Remove the [icon] of the role.
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.removeIcon();
+  /// }
+  /// ```
+  Future<void> removeIcon () async {
+    if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
+      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+    }
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'icon': null });
+    if (response.statusCode == 200) {
+      icon = null;
+    }
+  }
+
   Future<void> setUnicodeEmoji (String unicode) async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
