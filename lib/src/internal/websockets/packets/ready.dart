@@ -14,25 +14,24 @@ class Ready implements WebsocketPacket {
     EventManager eventManager = ioc.singleton(ioc.services.event);
     CommandManager commandManager = ioc.singleton(ioc.services.command);
 
-    MineralClient client = MineralClient.from(payload: websocketResponse.payload);
-    client.shard.sessionId = websocketResponse.payload["session_id"];
-    client.shard.initialize();
+    if(ioc.singleton(ioc.services.client) == null) {
+      MineralClient client = MineralClient.from(payload: websocketResponse.payload);
+      ioc.bind(namespace: ioc.services.client, service: client);
 
-    ioc.bind(namespace: ioc.services.client, service: client);
+      await client.registerGlobalCommands(commands: commandManager.getGlobals());
 
-    await client.registerGlobalCommands(commands: commandManager.getGlobals());
+      infuseClientIntoEvents(
+        manager: eventManager,
+        client: client,
+      );
 
-    infuseClientIntoEvents(
-      manager: eventManager,
-      client: client,
-    );
+      infuseClientIntoCommands(
+        manager: commandManager,
+        client: client,
+      );
+    }
 
-    infuseClientIntoCommands(
-      manager: commandManager,
-      client: client,
-    );
-
-    eventManager.emit(Events.ready, [client]);
+    eventManager.emit(Events.ready, [ioc.singleton(ioc.services.client)]);
   }
 
   void infuseClientIntoEvents ({required EventManager manager, required MineralClient client}) {

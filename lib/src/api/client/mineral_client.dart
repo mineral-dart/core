@@ -76,7 +76,6 @@ class MineralClient {
   User user;
   GuildManager guilds;
   String sessionId;
-  Shard shard;
   Application application;
   List<Intent> intents;
 
@@ -84,7 +83,6 @@ class MineralClient {
     required this.user,
     required this.guilds,
     required this.sessionId,
-    required this.shard,
     required this.application,
     required this.intents,
   });
@@ -124,7 +122,6 @@ class MineralClient {
       user: User.from(payload['user']),
       guilds: GuildManager(),
       sessionId: payload['session_id'],
-      shard: payload['shard'] != null ? manager.shards[payload['shard'][0]]! : manager.shards[0]!,
       application: Application.from(payload['application']),
       intents: manager.intents
     );
