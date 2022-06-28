@@ -128,6 +128,17 @@ class Role {
     }
   }
 
+  /// Removes the current [role] from the [guild]'s cache
+  /// ```dart
+  /// final role = guild.roles.cache.get('240561194958716924');
+  /// await role.delete();
+  /// ```
+  /// You can specify a reason for this action
+  /// ```dart
+  /// await role.delete(reason: 'I will destroy this..');
+  /// ```
+  /// You can't delete `@everyone` and [managed] roles.
+  ///
   Future<void> delete () async {
     if (managed || label == '@everyone') {
       return;
