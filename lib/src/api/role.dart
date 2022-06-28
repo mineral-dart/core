@@ -52,8 +52,10 @@ class Role {
 
   /// Modifies the [label] of the role.
   /// ```dart
-  /// final role = guild.roles.cache.get('240561194958716924');
-  /// await role.setLabel('New label');
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setLabel('New label');
+  /// }
   /// ```
   Future<void> setLabel (String label) async {
     Http http = ioc.singleton(ioc.services.http);
@@ -64,6 +66,15 @@ class Role {
     }
   }
 
+  /// Modifies the permissions associated with this [role]
+  /// ```dart
+  /// import 'package:mineral/api.dart'; 👈 // then you can use Permission class
+  ///
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setPermissions([Permission.kickMembers, Permission.banMembers]);
+  /// }
+  ///
   Future<void> setPermissions (List<Permission> permissions) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -77,10 +88,12 @@ class Role {
 
   /// Modifies the [color] of the role.
   /// ```dart
-  /// import 'package:mineral/api.dart' 👈 // then you can use Color class
+  /// import 'package:mineral/api.dart'; 👈 // then you can use Color class
   ///
-  /// final role = guild.roles.cache.get('240561194958716924');
-  /// await role.setColor(Color.cyan_600);
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setColor(Color.cyan_600);
+  /// }
   /// ```
   /// You can use a custom colour from a hexadecimal format.
   /// ```dart
@@ -141,8 +154,10 @@ class Role {
 
   /// Removes the current [role] from the [guild]'s cache
   /// ```dart
-  /// final role = guild.roles.cache.get('240561194958716924');
-  /// await role.delete();
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.delete();
+  /// }
   /// ```
   /// You can specify a reason for this action
   /// ```dart
