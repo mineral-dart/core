@@ -22,12 +22,15 @@ class Shard {
 
   final int id;
   final String _token;
-  //final String gatewayURL;
+  final String gatewayURL;
 
-  late final Isolate _isolate;
-  late final Stream<dynamic> _stream;
-  late final ReceivePort _receivePort;
-  late final SendPort _isolateSendPort;
+  late Isolate _isolate;
+
+  late Stream<dynamic> _stream;
+  late StreamSubscription<dynamic> _streamSubscription;
+
+  late ReceivePort _receivePort;
+  late SendPort _isolateSendPort;
   late SendPort _sendPort;
 
   late final WebsocketDispatcher dispatcher;
@@ -40,13 +43,19 @@ class Shard {
   bool _canResume = false;
   bool _pendingReconnect = false;
 
+
+
   bool initialized = false;
   final List<List<dynamic>> queue = [];
 
-  Shard(this.manager, this.id, String gatewayURL, this._token) {
+  Shard(this.manager, this.id, this.gatewayURL, this._token) {
     dispatcher = WebsocketDispatcher();
     _heartbeat = Heartbeat(shard: this);
 
+    _spawn();
+  }
+
+  Future<void> _spawn() async {
     _receivePort = ReceivePort();
     _stream = _receivePort.asBroadcastStream();
     _isolateSendPort = _receivePort.sendPort;
@@ -58,7 +67,7 @@ class Shard {
       _sendPort.send(ShardMessage(command: ShardCommand.init, data: {
         'url': gatewayURL
       }));
-      _stream.listen(_handle);
+      _streamSubscription = _stream.listen(_handle);
     });
   }
 
@@ -90,31 +99,34 @@ class Shard {
           case OpCode.dispatch:
             sequence = data.sequence;
             return await dispatcher.dispatch(data);
-          case OpCode.reconnect: return _reconnect(resume: true);
-          case OpCode.invalidSession: return _reconnect(resume: data.payload);
+          case OpCode.reconnect: return reconnect(resume: true);
+          case OpCode.invalidSession: return reconnect(resume: data.payload);
           case OpCode.heartbeatAck:
             Console.debug(message: 'Heartbeart ACK', prefix: 'Shard #$id');
+            _heartbeat.ackMissing -= 1;
+            break;
+          default:
         }
         break;
       case ShardCommand.error:
         Console.error(prefix: 'Shard #$id', message: '${message.data['reason']} | ${message.data['code']}');
 
         final Map<int, Function> errors = {
-          4000: () => _reconnect(resume: true),
-          4001: () => _reconnect(resume: true),
-          4002: () => _reconnect(resume: true),
-          4003: () => _reconnect(resume: false),
+          4000: () => reconnect(resume: true),
+          4001: () => reconnect(resume: true),
+          4002: () => reconnect(resume: true),
+          4003: () => reconnect(resume: false),
           4004: () => {
             _terminate(),
             throw TokenException(cause: 'APP_TOKEN is invalid, please modify it in .env file', prefix: 'INVALID TOKEN')
           },
-          4005: () => _reconnect(resume: true),
-          4007: () => _reconnect(resume: false),
+          4005: () => reconnect(resume: true),
+          4007: () => reconnect(resume: false),
           4008: () => {
             Console.warn(prefix: 'Shard #$id', message: 'You send to many packets!'),
-            _reconnect(resume: false)
+            reconnect(resume: false)
           },
-          4009: () => _reconnect(resume: true),
+          4009: () => reconnect(resume: true),
           4010: () => throw ShardException(prefix: 'Shard #$id', cause: 'Invalid shard id sended to gateway'),
           4011: () => throw ShardException(prefix: 'Shard #$id', cause: 'Sharding is necessary')
         };
@@ -125,7 +137,12 @@ class Shard {
         break;
       case ShardCommand.disconnected:
         Console.warn(prefix: 'Shard #$id', message: 'Websocket disconnected');
-        return _reconnect(resume: true);
+        return reconnect(resume: true);
+      case ShardCommand.terminateOk:
+        _streamSubscription.cancel();
+        _isolate.kill();
+        _spawn();
+        break;
       default:
         Console.error(prefix: 'Shard #$id', message: 'Unhandled message : ${message.command.name}');
     }
@@ -168,11 +185,12 @@ class Shard {
     send(OpCode.identify, identifyData, canQueue: false);
   }
 
-  void _reconnect({ bool resume = false }) {
+  void reconnect({ bool resume = false }) {
     if(!_pendingReconnect) {
       _pendingReconnect = true;
       _canResume = resume;
-      _sendPort.send(ShardMessage(command: ShardCommand.reconnect));
+      _terminate();
+      //_sendPort.send(ShardMessage(command: ShardCommand.reconnect));
     }
   }
   

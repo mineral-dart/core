@@ -10,6 +10,8 @@ class Heartbeat {
   Duration? _delay;
   Timer? _timer;
 
+  int ackMissing = 0;
+
   Heartbeat({ required this.shard });
 
   void start (Duration delay) {
@@ -21,6 +23,7 @@ class Heartbeat {
 
   void cancel () {
     _timer?.cancel();
+    ackMissing = 0;
   }
 
   void reset() {
@@ -33,6 +36,15 @@ class Heartbeat {
 
   void _send() {
     Console.debug(message: 'Send an heartbeat', prefix: 'Shard #${shard.id}');
+
+    if(ackMissing == 1) Console.warn(message: 'Discord didn\'t receive last heartbeat', prefix: 'Shard #${shard.id}');
+    if(ackMissing >= 2) {
+      Console.error(message: 'Discord didn\'t receive last $ackMissing heartbeats, connection restart...', prefix: 'Shard #${shard.id}');
+      shard.reconnect(resume: true);
+      return;
+    }
+
     shard.send(OpCode.heartbeat, shard.sequence, canQueue: false);
+    ackMissing += 1;
   }
 }

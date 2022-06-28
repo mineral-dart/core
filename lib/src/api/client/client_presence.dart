@@ -25,7 +25,7 @@ class Timestamp {
   factory Timestamp.from ({ required dynamic payload }) {
     return Timestamp(
       start: payload['start'] != null ? DateTime.fromMillisecondsSinceEpoch(payload['start']) : null,
-      end: payload['end'] != null ? DateTime.fromMillisecondsSinceEpoch(payload['start']) : null,
+      end: payload['end'] != null ? DateTime.fromMillisecondsSinceEpoch(payload['end']) : null,
     );
   }
 }

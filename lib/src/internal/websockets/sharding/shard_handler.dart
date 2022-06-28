@@ -46,7 +46,7 @@ Future<void> shardHandler(SendPort shardPort) async {
 
   Future<void> disconnect() async {
     await socketListener.cancel();
-    await socket.close(1000);
+    await socket.close(4000);
   }
 
   Future<void> terminate() async {

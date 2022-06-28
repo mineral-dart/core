@@ -15,6 +15,7 @@ import 'package:mineral/src/internal/websockets/packets/message_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/message_update.dart';
 import 'package:mineral/src/internal/websockets/packets/presence_update.dart';
 import 'package:mineral/src/internal/websockets/packets/ready.dart';
+import 'package:mineral/src/internal/websockets/packets/resumed.dart';
 import 'package:mineral/src/internal/websockets/packets/webhook_update.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -24,6 +25,7 @@ class WebsocketDispatcher {
 
   WebsocketDispatcher() {
     register(PacketType.ready, Ready());
+    register(PacketType.resumed, Resumed());
     register(PacketType.guildCreate, GuildCreate());
     register(PacketType.guildUpdate, GuildUpdate());
     register(PacketType.presenceUpdate, PresenceUpdate());
