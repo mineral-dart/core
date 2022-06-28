@@ -44,6 +44,15 @@ class Emoji {
     }
   }
 
+  /// Modifies the [roles] of this.
+  /// ```dart
+  /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  ///
+  /// if (role != null && emoji != null) {
+  ///   await emoji.setRoles([role.id]);
+  /// }
+  /// ```
   Future<void> setRoles (List<Snowflake> roles) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/${manager.guildId}/emojis/$id", payload: { 'roles': roles });
@@ -61,6 +70,17 @@ class Emoji {
     }
   }
 
+  /// Removes the current this from the [EmojiManager]'s cache
+  /// ```dart
+  /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
+  /// if (emoji != null) {
+  ///   await emoji.delete();
+  /// }
+  /// ```
+  /// You can specify a reason for this action
+  /// ```dart
+  /// await emoji.delete(reason: 'I will destroy this..');
+  /// ```
   Future<void> delete () async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.destroy(url: "/guilds/${manager.guildId}/emojis/$id");
