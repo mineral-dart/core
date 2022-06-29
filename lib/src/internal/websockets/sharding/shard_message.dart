@@ -1,3 +1,7 @@
+/// ShardMessage represent the messages that can be exchanged between the Shard
+/// and the isolate.
+///
+/// {@category Internal}
 class ShardMessage {
   ShardCommand command;
   dynamic data;
