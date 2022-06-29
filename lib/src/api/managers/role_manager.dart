@@ -9,7 +9,7 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class RoleManager implements CacheManager<Role> {
   @override
-  Map<Snowflake, Role> cache = Map();
+  Map<Snowflake, Role> cache = {};
 
   Snowflake guildId;
   late Guild guild;

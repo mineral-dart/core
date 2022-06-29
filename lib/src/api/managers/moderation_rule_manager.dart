@@ -10,7 +10,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule> {
   late Guild guild;
 
   @override
-  Map<Snowflake, ModerationRule> cache = Map();
+  Map<Snowflake, ModerationRule> cache = {};
 
   ModerationRuleManager({ required this.guildId });
 

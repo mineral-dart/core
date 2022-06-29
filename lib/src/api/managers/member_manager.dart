@@ -7,7 +7,7 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class MemberManager implements CacheManager<GuildMember> {
   @override
-  Map<Snowflake, GuildMember> cache = Map();
+  Map<Snowflake, GuildMember> cache = {};
 
   Snowflake guildId;
   late Guild guild;

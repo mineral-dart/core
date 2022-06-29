@@ -9,7 +9,7 @@ import 'package:mineral/src/api/webhook.dart';
 
 class GuildWebhookManager implements CacheManager<Webhook> {
   @override
-  Map<Snowflake, Webhook> cache = Map();
+  Map<Snowflake, Webhook> cache = {};
 
   Snowflake guildId;
   Guild? guild;

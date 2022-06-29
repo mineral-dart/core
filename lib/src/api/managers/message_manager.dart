@@ -7,7 +7,7 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class MessageManager implements CacheManager<Message> {
   @override
-  Map<Snowflake, Message> cache = Map();
+  Map<Snowflake, Message> cache = {};
 
   final Snowflake? _guildId;
   final Snowflake _channelId;

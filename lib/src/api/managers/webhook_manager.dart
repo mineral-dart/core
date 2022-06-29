@@ -5,11 +5,10 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/api/webhook.dart';
 
 class WebhookManager implements CacheManager<Webhook> {
   @override
-  Map<Snowflake, Webhook> cache = Map();
+  Map<Snowflake, Webhook> cache = {};
 
   Snowflake? channelId;
   Snowflake? guildId;

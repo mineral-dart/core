@@ -10,7 +10,7 @@ import 'package:mineral/src/api/sticker.dart';
 
 class StickerManager implements CacheManager<Sticker> {
   @override
-  Map<Snowflake, Sticker> cache = Map();
+  Map<Snowflake, Sticker> cache = {};
 
   Snowflake? guildId;
   late Guild? guild;

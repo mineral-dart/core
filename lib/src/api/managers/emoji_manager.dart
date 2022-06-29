@@ -9,7 +9,7 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class EmojiManager implements CacheManager<Emoji> {
   @override
-  Map<Snowflake, Emoji> cache = Map();
+  Map<Snowflake, Emoji> cache = {};
 
   Snowflake? guildId;
   late Guild? guild;
