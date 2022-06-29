@@ -91,4 +91,13 @@ class ShardManager {
       value.send(code, data);
     });
   }
+
+  int getLatency() {
+    int latency = 0;
+    shards.forEach((key, value) {
+      latency += value.latency;
+    });
+
+    return latency ~/ shards.length;
+  }
 }

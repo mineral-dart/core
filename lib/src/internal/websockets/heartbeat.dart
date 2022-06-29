@@ -45,6 +45,7 @@ class Heartbeat {
     }
 
     shard.send(OpCode.heartbeat, shard.sequence, canQueue: false);
+    shard.lastHeartbeat = DateTime.now();
     ackMissing += 1;
   }
 }

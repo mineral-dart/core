@@ -48,10 +48,11 @@ class Shard {
   bool _canResume = false;
   bool _pendingReconnect = false;
 
-
-
   bool initialized = false;
   final List<List<dynamic>> queue = [];
+
+  late DateTime lastHeartbeat;
+  int latency = -1;
 
   /// Create a shard instance and launch isolate that will communicate with Discord websockets.
   Shard(this.manager, this.id, this.gatewayURL, this._token) {
@@ -112,7 +113,10 @@ class Shard {
           case OpCode.reconnect: return reconnect(resume: true);
           case OpCode.invalidSession: return reconnect(resume: data.payload);
           case OpCode.heartbeatAck:
+            latency = DateTime.now().millisecond - lastHeartbeat.millisecond;
             _heartbeat.ackMissing -= 1;
+
+            Console.debug(prefix: 'Shard #$id', message: 'Heartbeat ACK : ${latency}ms');
             break;
           default:
         }

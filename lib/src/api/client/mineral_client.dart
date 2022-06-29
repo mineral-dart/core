@@ -97,6 +97,11 @@ class MineralClient {
     });
   }
 
+  int getLatency () {
+    ShardManager manager = ioc.singleton(ioc.services.websocket);
+    return manager.getLatency();
+  }
+
   Future<void> registerGlobalCommands ({ required List<SlashCommand> commands }) async {
     Http http = ioc.singleton(ioc.services.http);
 
