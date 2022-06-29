@@ -3,7 +3,9 @@ import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/interactions/button_interaction.dart';
+import 'package:mineral/src/api/interactions/select_menu_interaction.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -18,18 +20,24 @@ class InteractionCreate implements WebsocketPacket {
     MineralClient client = ioc.singleton(ioc.services.client);
 
     dynamic payload = websocketResponse.payload;
-    print(jsonEncode(payload));
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     GuildMember? member = guild?.members.cache.get(payload['member']['user']['id']);
-
 
     if (payload['type'] == InteractionType.applicationCommand.value) {
       _executeCommandInteraction(guild!, member!, payload);
     }
 
-    if (payload['type'] == InteractionType.messageComponent.value) {
+    if (payload['type'] == InteractionType.messageComponent.value && payload['data']['component_type'] == ComponentType.button.value) {
       _executeButtonInteraction(guild!, member!, payload);
+    }
+
+    if (payload['type'] == InteractionType.messageComponent.value && payload['data']['component_type'] == ComponentType.selectMenu.value) {
+      _executeSelectMenuInteraction(guild!, member!, payload);
+    }
+
+    if (payload['type'] == InteractionType.modalSubmit.value) {
+      _executeModalInteraction(guild!, member!, payload);
     }
   }
 
@@ -83,6 +91,62 @@ class InteractionCreate implements WebsocketPacket {
     manager.emit(
       event: Events.buttonCreate,
       params: [buttonInteraction]
+    );
+  }
+
+  _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
+    EventManager manager = ioc.singleton(ioc.services.event);
+    TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
+    Message? message = channel?.messages.cache.get(payload['message']['id']);
+
+    ModalInteraction modalInteraction = ModalInteraction.from(
+      user: member.user,
+      message: message,
+      payload: payload
+    );
+
+    modalInteraction.guild = guild;
+    for (dynamic row in payload['data']['components']) {
+      for (dynamic component in row['components']) {
+        modalInteraction.data.putIfAbsent(component['custom_id'], () => component['value']);
+      }
+    }
+
+    manager.emit(
+      event: Events.modalCreate,
+      customId: modalInteraction.customId,
+      params: [modalInteraction]
+    );
+
+    manager.emit(
+      event: Events.modalCreate,
+      params: [modalInteraction]
+    );
+  }
+
+  void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
+    print(jsonEncode(payload));
+    EventManager manager = ioc.singleton(ioc.services.event);
+    TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
+    Message? message = channel?.messages.cache.get(payload['message']['id']);
+
+    SelectMenuInteraction modalInteraction = SelectMenuInteraction.from(
+      user: member.user,
+      message: message,
+      payload: payload
+    );
+
+    modalInteraction.data.addAll(payload['data']['values']);
+
+    manager.emit(
+      event: Events.selectMenuCreate,
+      customId: modalInteraction.customId,
+      params: [modalInteraction]
+    );
+
+    manager.emit(
+      event: Events.selectMenuCreate,
+      params: [modalInteraction]
     );
   }
 }

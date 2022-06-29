@@ -1,3 +1,4 @@
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 
@@ -53,5 +54,16 @@ class Interaction {
         'flags': private != null && private == true ? 1 << 6 : null,
       }
     });
+  }
+
+  Future<void> modal (Modal modal) async {
+    Http http = ioc.singleton(ioc.services.http);
+
+    Response response = await http.post(url: "/interactions/$id/$token/callback", payload: {
+      'type': InteractionCallbackType.modal.value,
+      'data': modal.toJson(),
+    });
+
+    print(response.body);
   }
 }

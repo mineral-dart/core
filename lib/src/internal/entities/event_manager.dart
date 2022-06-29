@@ -33,7 +33,6 @@ class EventManager {
 
     if (events != null) {
       for (Map<String, dynamic> event in events) {
-        print("customId ${customId != null} → ${event['customId'] == null}");
         if (customId != null) {
           if (customId == event['customId']) {
             reflect(event['mineralEvent']).invoke(Symbol('handle'), params ?? []);
@@ -83,7 +82,9 @@ enum Events {
   acceptRules('accept::rules'),
 
   commandCreate('create::commandInteraction'),
-  buttonCreate('create::buttonInteraction');
+  buttonCreate('create::buttonInteraction'),
+  modalCreate('create::modalInteraction'),
+  selectMenuCreate('create::selectMenuInteraction');
 
   final String event;
   const Events(this.event);
