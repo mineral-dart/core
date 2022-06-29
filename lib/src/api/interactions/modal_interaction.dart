@@ -25,7 +25,7 @@ class ModalInteraction extends Interaction {
     return ModalInteraction(
       id: payload['id'],
       applicationId: payload['application_id'],
-      type: InteractionType.values.firstWhere((type) => type.value == payload['type']),
+      type: InteractionType.modalSubmit,
       version: payload['version'],
       token: payload['token'],
       user: user,

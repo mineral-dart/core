@@ -53,7 +53,7 @@ class CommandInteraction extends Interaction {
     return CommandInteraction(
       id: payload['id'],
       applicationId: payload['application_id'],
-      type: InteractionType.values.firstWhere((type) => type.value == payload['type']),
+      type: InteractionType.applicationCommand,
       identifier: payload['data']['name'],
       version: payload['version'],
       token: payload['token'],

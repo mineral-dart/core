@@ -27,7 +27,7 @@ class SelectMenuInteraction extends Interaction {
     return SelectMenuInteraction(
       id: payload['id'],
       applicationId: payload['application_id'],
-      type: InteractionType.values.firstWhere((type) => type.value == payload['type']),
+      type: InteractionType.messageComponent,
       version: payload['version'],
       token: payload['token'],
       user: user,

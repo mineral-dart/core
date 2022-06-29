@@ -136,7 +136,9 @@ class InteractionCreate implements WebsocketPacket {
       payload: payload
     );
 
-    modalInteraction.data.addAll(payload['data']['values']);
+    for (dynamic value in payload['data']['values']) {
+      modalInteraction.data.add(value);
+    }
 
     manager.emit(
       event: Events.selectMenuCreate,
