@@ -40,7 +40,7 @@ class Kernel {
     ShardManager manager = ShardManager(http, token, intents);
     manager.start(shardsCount: (shardsCount != null ? int.tryParse(shardsCount) : null));
 
-    ioc.bind(namespace: 'Mineral/Core/Websocket', service: manager);
+    ioc.bind(namespace: ioc.services.shards, service: manager);
   }
 
 
