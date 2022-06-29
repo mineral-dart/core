@@ -35,7 +35,7 @@ class Heartbeat {
   }
 
   void _send() {
-    Console.debug(message: 'Send an heartbeat', prefix: 'Shard #${shard.id}');
+    Console.debug(message: 'Heartbeat called', prefix: 'Shard #${shard.id}');
 
     if(ackMissing == 1) Console.warn(message: 'Discord didn\'t receive last heartbeat', prefix: 'Shard #${shard.id}');
     if(ackMissing >= 2) {

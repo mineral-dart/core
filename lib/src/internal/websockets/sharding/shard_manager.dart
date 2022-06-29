@@ -79,7 +79,7 @@ class ShardManager {
 
   /// Start a new shard
   Future<void> _startShard(int id, String gatewayURL) async {
-    Console.debug(message: 'Starting shard #$id');
+    Console.debug(prefix: 'ShardManager', message: 'Starting shard #$id');
 
     final Shard shard = Shard(this, id, gatewayURL, _token);
     shards.putIfAbsent(id, () => shard);

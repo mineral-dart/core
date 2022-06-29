@@ -90,12 +90,12 @@ class Shard {
         final WebsocketResponse data = message.data as WebsocketResponse;
 
         final OpCode? opCode = OpCode.values.firstWhereOrNull((element) => element.value == data.op);
-        Console.debug(message: '${opCode.toString()} | ${data.payload}', prefix: 'Shard #$id');
+        Console.debug(message: '[DATA] ${opCode.toString()} | ${data.payload}', prefix: 'Shard #$id');
 
         switch(opCode) {
           case OpCode.heartbeat: return _heartbeat.reset();
           case OpCode.hello:
-            Console.debug(message: 'Received Hello code, shard started!', prefix: 'Shard #$id');
+            Console.debug(message: 'Connection initialized with websocket', prefix: 'Shard #$id');
 
             _pendingReconnect = false;
             if(_canResume) {
@@ -112,7 +112,6 @@ class Shard {
           case OpCode.reconnect: return reconnect(resume: true);
           case OpCode.invalidSession: return reconnect(resume: data.payload);
           case OpCode.heartbeatAck:
-            Console.debug(message: 'Heartbeart ACK', prefix: 'Shard #$id');
             _heartbeat.ackMissing -= 1;
             break;
           default:
@@ -143,12 +142,14 @@ class Shard {
 
         final Function? errorCallback = errors[message.data['code']];
         if(errorCallback != null) return errorCallback();
-        Console.error(prefix: 'Shard #$id', message: 'Websocket disconnected');
+        Console.error(prefix: 'Shard #$id', message: 'No error callback');
         break;
       case ShardCommand.disconnected:
-        Console.warn(prefix: 'Shard #$id', message: 'Websocket disconnected');
+        if(_pendingReconnect) return Console.debug(prefix: 'Shard #$id', message: 'Websocket disconnected for reconnection');
+        Console.warn(prefix: 'Shard #$id', message: 'Websocket disconnected without error, try to reconnect...');
         return reconnect(resume: true);
       case ShardCommand.terminateOk:
+        Console.debug(prefix: 'Shard #$id', message: 'Websocket connection terminated, restart...');
         _streamSubscription.cancel();
         _isolate.kill();
         _spawn();
@@ -161,7 +162,7 @@ class Shard {
   /// Send message to websocket
   void send(OpCode opCode, dynamic data, {bool canQueue = true}) {
     if(initialized || canQueue == false) {
-      Console.debug(message: 'Send message : ${opCode.name},$data', prefix: 'Shard #$id');
+      Console.debug(message: '[SEND] ${opCode.toString()} | $data', prefix: 'Shard #$id');
       final Map<String, dynamic> rawData = {
         'op': opCode.value,
         'd': data
@@ -187,8 +188,6 @@ class Shard {
 
   /// Identify to the websocket.
   void identify() {
-    Console.debug(message: 'Send identify message', prefix: 'Shard #$id');
-
     Map<String, dynamic> identifyData = {
       'token': _token,
       'intents': Intent.getIntent(manager.intents),
