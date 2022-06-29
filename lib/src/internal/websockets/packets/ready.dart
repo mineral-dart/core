@@ -15,7 +15,7 @@ class Ready implements WebsocketPacket {
   Future<void> handle (WebsocketResponse websocketResponse) async {
     EventManager eventManager = ioc.singleton(ioc.services.event);
     CommandManager commandManager = ioc.singleton(ioc.services.command);
-    ShardManager shardManager = ioc.singleton(ioc.services.websocket);
+    ShardManager shardManager = ioc.singleton(ioc.services.shards);
 
     if(ioc.singleton(ioc.services.client) == null) {
       MineralClient client = MineralClient.from(payload: websocketResponse.payload);

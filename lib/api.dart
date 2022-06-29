@@ -5,7 +5,7 @@ export 'src/api/client/client_presence.dart' show ClientPresence, GamePresence;
 
 export 'src/api/application.dart' show Application;
 export 'src/api/user.dart' show User;
-export 'src/api/status.dart' show Status;
+export 'src/api/status.dart' show Status, StatusType;
 export 'src/api/activity.dart' show Activity;
 export 'src/api/guild_member.dart' show GuildMember;
 export 'src/api/voice.dart' show Voice;

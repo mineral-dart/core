@@ -1,11 +1,7 @@
-import 'dart:convert';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
-import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
-import 'package:mineral/src/internal/websockets/websocket_manager.dart';
 
 import '../../internal/entities/command_manager.dart';
 
@@ -88,7 +84,7 @@ class MineralClient {
   });
 
   setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
-    ShardManager manager = ioc.singleton(ioc.services.websocket);
+    ShardManager manager = ioc.singleton(ioc.services.shards);
     manager.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
@@ -98,7 +94,7 @@ class MineralClient {
   }
 
   int getLatency () {
-    ShardManager manager = ioc.singleton(ioc.services.websocket);
+    ShardManager manager = ioc.singleton(ioc.services.shards);
     return manager.getLatency();
   }
 
@@ -121,7 +117,7 @@ class MineralClient {
   }
 
   factory MineralClient.from({ required dynamic payload }) {
-    ShardManager manager = ioc.singleton(ioc.services.websocket);
+    ShardManager manager = ioc.singleton(ioc.services.shards);
 
     return MineralClient(
       user: User.from(payload['user']),
