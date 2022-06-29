@@ -9,12 +9,18 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 import 'package:mineral/api.dart';
 
+/// ShardManager is the bridge between the application and the shards [Shard].
+/// It manage shards launching, number of shards needed, identify queue (to avoid rate limiting).
+///
+/// {@category Internal}
 class ShardManager {
   final Http http;
   final List<Intent> intents;
   final String _token;
 
   late final String _gatewayURL;
+  /// Max concurrency correspond to the maximum of connection to the gateway in all 5 seconds.
+  /// See [Discord Docs](https://discord.com/developers/docs/topics/gateway#session-start-limit-object)
   late final int maxConcurrency;
 
   late final Duration identifyTimeout;
@@ -24,8 +30,14 @@ class ShardManager {
 
   final List<int> identifyQueue = [];
 
+  /// Init new ShardManager instance.
+  /// HTTP is needed to get websocket URL.
   ShardManager(this.http, this._token, this.intents);
 
+  /// Define the number of shards to start.
+  ///
+  /// It's possible to define the number of shards with SHARDS_COUNT environment variable. If no
+  /// number is provided, we use [Discord recommendations](https://discord.com/developers/docs/topics/gateway#get-gateway-bot)
   Future<void> start ({ int? shardsCount }) async {
     http.defineHeader(header: 'Authorization', value: 'Bot $_token');
     AuthenticationResponse response = await getBotGateway(Constants.apiVersion);
@@ -40,7 +52,7 @@ class ShardManager {
         : totalShards = response.shards;
 
     while (totalShards > shards.length) {
-      startShard(shards.length, _gatewayURL);
+      _startShard(shards.length, _gatewayURL);
     }
 
     if (totalShards >= 2) {
@@ -65,13 +77,15 @@ class ShardManager {
     return AuthenticationResponse.fromResponse(response);
   }
 
-  Future<void> startShard(int id, String gatewayURL) async {
+  /// Start a new shard
+  Future<void> _startShard(int id, String gatewayURL) async {
     Console.debug(message: 'Starting shard #$id');
 
     final Shard shard = Shard(this, id, gatewayURL, _token);
     shards.putIfAbsent(id, () => shard);
   }
 
+  /// Send a message to all shards
   Future<void> send(OpCode code, dynamic data) async {
     shards.forEach((key, value) {
       value.send(code, data);

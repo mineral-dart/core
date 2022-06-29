@@ -17,6 +17,11 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 import 'package:mineral/src/exceptions/shard_exception.dart';
 import 'package:collection/collection.dart';
 
+/// Represents a Discord Shard.
+/// A Shard is the object used to interact with the discord websocket.
+/// The bot can have one or multiples shards.
+///
+/// {@category Internal}
 class Shard {
   final ShardManager manager;
 
@@ -48,6 +53,7 @@ class Shard {
   bool initialized = false;
   final List<List<dynamic>> queue = [];
 
+  /// Create a shard instance and launch isolate that will communicate with Discord websockets.
   Shard(this.manager, this.id, this.gatewayURL, this._token) {
     dispatcher = WebsocketDispatcher();
     _heartbeat = Heartbeat(shard: this);
@@ -55,6 +61,9 @@ class Shard {
     _spawn();
   }
 
+  /// Spawn an isolate to communicate with the websockets. It's possible to stop and start a
+  /// new isolate to restart the connection. The isolate start a function which read [ShardMessage]
+  /// and execute actions. When Discord send a socket, the isolate send data [ShardMessage].
   Future<void> _spawn() async {
     _receivePort = ReceivePort();
     _stream = _receivePort.asBroadcastStream();
@@ -71,6 +80,7 @@ class Shard {
     });
   }
 
+  /// Handle the websockets messages
   Future<void> _handle(dynamic message) async {
     message = message as ShardMessage;
 
@@ -148,6 +158,7 @@ class Shard {
     }
   }
 
+  /// Send message to websocket
   void send(OpCode opCode, dynamic data, {bool canQueue = true}) {
     if(initialized || canQueue == false) {
       Console.debug(message: 'Send message : ${opCode.name},$data', prefix: 'Shard #$id');
@@ -162,6 +173,8 @@ class Shard {
     queue.add([opCode, data]);
   }
 
+  /// This method is used by Ready packet to define the Shard ready and send to the websockets the messages queue.
+  /// The queue is needed because if we send a message before the Shard identify, the websockets disconnect.
   void initialize() {
     initialized = true;
     for(int i = 0; i < queue.length; i++) {
@@ -172,6 +185,7 @@ class Shard {
     }
   }
 
+  /// Identify to the websocket.
   void identify() {
     Console.debug(message: 'Send identify message', prefix: 'Shard #$id');
 
@@ -185,6 +199,7 @@ class Shard {
     send(OpCode.identify, identifyData, canQueue: false);
   }
 
+  /// In case of errors, it's possible to reconnect to the websockets. This function close the isolate. If resume function is set, the resume message will be send instead of identify to get old events.
   void reconnect({ bool resume = false }) {
     if(!_pendingReconnect) {
       _pendingReconnect = true;
