@@ -41,7 +41,9 @@ enum PacketType {
 
   interactionCreate('INTERACTION_CREATE'),
 
-  memberUpdate('GUILD_MEMBER_UPDATE');
+  memberUpdate('GUILD_MEMBER_UPDATE'),
+
+  resumed('RESUMED');
 
   final String _value;
   const PacketType(this._value);

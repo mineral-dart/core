@@ -5,7 +5,7 @@ class Service {
   final event = 'Mineral/Core/Event';
   final command = 'Mineral/Core/Command';
   final store = 'Mineral/Core/Store';
-  final websocket = 'Mineral/Core/Websocket';
+  final shards = 'Mineral/Core/Shards';
 }
 
 class Ioc {
