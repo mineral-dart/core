@@ -50,6 +50,13 @@ class Role {
     required this.manager,
   });
 
+  /// Modifies the [label] of the role.
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setLabel('New label');
+  /// }
+  /// ```
   Future<void> setLabel (String label) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -59,6 +66,15 @@ class Role {
     }
   }
 
+  /// Modifies the permissions associated with this
+  /// ```dart
+  /// import 'package:mineral/api.dart'; 👈 // then you can use Permission class
+  ///
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setPermissions([Permission.kickMembers, Permission.banMembers]);
+  /// }
+  ///
   Future<void> setPermissions (List<Permission> permissions) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -70,6 +86,19 @@ class Role {
     }
   }
 
+  /// Modifies the [color] of the role.
+  /// ```dart
+  /// import 'package:mineral/api.dart'; 👈 // then you can use Color class
+  ///
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setColor(Color.cyan_600);
+  /// }
+  /// ```
+  /// You can use a custom colour from a hexadecimal format.
+  /// ```dart
+  /// await role.setColor(Color('#ffffff'));
+  /// ```
   Future<void> setColor (Color color) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -80,6 +109,13 @@ class Role {
     }
   }
 
+  /// Modifies the [hoist] of the role from [bool].
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setHoist(true);
+  /// }
+  /// ```
   Future<void> setHoist (bool hoist) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -89,6 +125,25 @@ class Role {
     }
   }
 
+  /// Modifies the [icon] of the role from [String] path.
+  ///
+  /// We consider having the file structure
+  /// ```
+  /// .dart_tool
+  /// assets/
+  ///   images/
+  ///     penguin.png
+  /// src/
+  /// test/
+  /// .env
+  /// pubspec.yaml
+  /// ```
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setIcon('assets/images/penguin.png');
+  /// }
+  /// ```
   Future<void> setIcon (String path) async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
@@ -103,6 +158,44 @@ class Role {
     }
   }
 
+  /// Remove the [icon] of the role.
+  ///
+  /// Your guild requires the [GuildFeature.roleIcons] to perform this action, otherwise throw [MissingFeatureException].
+  /// ```dart
+  /// import 'package:mineral/api.dart'; 👈 // then you can use GuildFeature enum
+  ///
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// final bool hasFeature = guild.features.contains(GuildFeature.roleIcons);
+  ///
+  /// if (hasFeature && role != null) {
+  ///   await role.removeIcon();
+  /// }
+  /// ```
+  Future<void> removeIcon () async {
+    if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
+      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+    }
+
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'icon': null });
+    if (response.statusCode == 200) {
+      icon = null;
+    }
+  }
+
+  /// Define the [unicodeEmoji] of the role from [String].
+  ///
+  /// Your guild requires the [GuildFeature.roleIcons] to perform this action, otherwise throw [MissingFeatureException].
+  /// ```dart
+  /// import 'package:mineral/api.dart'; 👈 // then you can use GuildFeature enum
+  ///
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// final bool hasFeature = guild.features.contains(GuildFeature.roleIcons);
+  ///
+  /// if (hasFeature && role != null) {
+  ///   await role.setUnicodeEmoji('😍');
+  /// }
+  /// ```
   Future<void> setUnicodeEmoji (String unicode) async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
@@ -115,14 +208,35 @@ class Role {
     }
   }
 
+  /// Modifies the [mentionable] of the role from [bool].
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.setMentionable(true);
+  /// }
+  /// ```
   Future<void> setMentionable (bool mentionable) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'mentionable': mentionable });
+
     if (response.statusCode == 200) {
       this.mentionable = mentionable;
     }
   }
 
+  /// Removes the current this from the [RoleManager]'s cache
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   await role.delete();
+  /// }
+  /// ```
+  /// You can specify a reason for this action
+  /// ```dart
+  /// await role.delete(reason: 'I will destroy this..');
+  /// ```
+  /// You can't delete `@everyone` and [managed] roles.
+  ///
   Future<void> delete () async {
     if (managed || label == '@everyone') {
       return;
@@ -135,6 +249,17 @@ class Role {
       manager.cache.remove(id);
     }
   }
+
+  /// Returns this in discord notification format
+  /// ```dart
+  /// final Role? role = guild.roles.cache.get('240561194958716924');
+  /// if (role != null) {
+  ///   print(role.toString()) // print('<@&240561194958716924>')
+  ///   print('$role') // print('<@&240561194958716924>')
+  /// }
+  /// ```
+  @override
+  String toString () => '<@&$id>';
 
   factory Role.from({ required RoleManager roleManager, dynamic payload }) {
     return Role(

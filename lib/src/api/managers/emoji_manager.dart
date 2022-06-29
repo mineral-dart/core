@@ -9,7 +9,7 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class EmojiManager implements CacheManager<Emoji> {
   @override
-  Collection<Snowflake, Emoji> cache = Collection();
+  Map<Snowflake, Emoji> cache = Map();
 
   Snowflake? guildId;
   late Guild? guild;
@@ -17,7 +17,7 @@ class EmojiManager implements CacheManager<Emoji> {
   EmojiManager({ required this.guildId });
 
   @override
-  Future<Collection<Snowflake, Emoji>> sync () async {
+  Future<Map<Snowflake, Emoji>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 

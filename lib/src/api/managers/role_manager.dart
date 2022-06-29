@@ -9,7 +9,7 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class RoleManager implements CacheManager<Role> {
   @override
-  Collection<Snowflake, Role> cache = Collection();
+  Map<Snowflake, Role> cache = Map();
 
   Snowflake guildId;
   late Guild guild;
@@ -17,7 +17,7 @@ class RoleManager implements CacheManager<Role> {
   RoleManager({ required this.guildId });
 
   @override
-  Future<Collection<Snowflake, Role>> sync () async {
+  Future<Map<Snowflake, Role>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 

@@ -210,7 +210,7 @@ class Shard {
       //_sendPort.send(ShardMessage(command: ShardCommand.reconnect));
     }
   }
-  
+
   void _terminate() {
     _sendPort.send(ShardMessage(command: ShardCommand.terminate));
   }

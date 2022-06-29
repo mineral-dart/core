@@ -7,7 +7,7 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class MemberManager implements CacheManager<GuildMember> {
   @override
-  Collection<Snowflake, GuildMember> cache = Collection();
+  Map<Snowflake, GuildMember> cache = Map();
 
   Snowflake guildId;
   late Guild guild;
@@ -15,7 +15,7 @@ class MemberManager implements CacheManager<GuildMember> {
   MemberManager({ required this.guildId });
 
   @override
-  Future<Collection<Snowflake, GuildMember>> sync () async {
+  Future<Map<Snowflake, GuildMember>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
