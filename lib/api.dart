@@ -1,4 +1,4 @@
-/// The api is the collection of all the classes, enumerations of the framework
+/// The api is the Map of all the classes, enumerations of the framework
 ///
 /// {@category Api}
 library api;
@@ -41,5 +41,6 @@ export 'src/api/components/link.dart' show Link;
 export 'src/api/interactions/command_interaction.dart' show CommandInteraction;
 
 export 'src/api/utils.dart';
+export 'src/internal/extensions/collection.dart';
 
 typedef Snowflake = String;

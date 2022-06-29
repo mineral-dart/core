@@ -136,7 +136,7 @@ class Guild {
     }
   }
 
-  /// Modifies the [verificationLevel] of this.
+  /// Modifies the [verificationLevel] of the current [Guild].
   /// ```dart
   /// import 'package:mineral/api.dart'; 👈 // then you can use VerificationLevel enum
   ///

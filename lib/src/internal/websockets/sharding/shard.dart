@@ -21,7 +21,6 @@ class Shard {
 
   final int id;
   final String _token;
-  //final String gatewayURL;
 
   late final Isolate _isolate;
   late final Stream<dynamic> _stream;
@@ -155,7 +154,7 @@ class Shard {
       _sendPort.send(ShardMessage(command: ShardCommand.reconnect));
     }
   }
-  
+
   void _terminate() {
     _sendPort.send(ShardMessage(command: ShardCommand.terminate));
   }

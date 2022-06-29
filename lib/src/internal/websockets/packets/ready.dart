@@ -37,7 +37,7 @@ class Ready implements WebsocketPacket {
   }
 
   void infuseClientIntoEvents ({required EventManager manager, required MineralClient client}) {
-    Collection<Events, List<MineralEvent>> events = manager.getRegisteredEvents();
+    Map<Events, List<MineralEvent>> events = manager.getRegisteredEvents();
     events.forEach((_, events) {
       for (MineralEvent event in events) {
         event.client = client;

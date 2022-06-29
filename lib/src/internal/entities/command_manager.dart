@@ -1,14 +1,13 @@
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
 
 class CommandManager {
-  final Collection<String, SlashCommand> _commands = Collection();
+  final Map<String, SlashCommand> _commands = {};
   final Map<String, dynamic> _handlers = {};
 
-  Collection<String, SlashCommand> getRegisteredCommands () => _commands;
+  Map<String, SlashCommand> getRegisteredCommands () => _commands;
 
   Map<String, dynamic> getHandlers () => _handlers;
 
@@ -27,7 +26,7 @@ class CommandManager {
       mineralCommand: mineralCommand
     );
 
-    _commands.set<SlashCommand>(command.name, command);
+    _commands.set(command.name, command);
     return this;
   }
 

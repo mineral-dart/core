@@ -1,14 +1,14 @@
 typedef EventCallback<T> = void Function(T context);
-typedef CallbackCollection<T> = Set<EventCallback<T>>;
+typedef CallbackMap<T> = Set<EventCallback<T>>;
 
 class EventEmitter<T> {
-  final Map<String, CallbackCollection<T>> _listeners = <String, CallbackCollection<T>>{};
+  final Map<String, CallbackMap<T>> _listeners = <String, CallbackMap<T>>{};
 
   Future<void> on (String event, EventCallback<T> callback) async {
     if (_listeners.containsKey(event)) {
       _listeners[event]?.add((args) => callback);
     } else {
-      CallbackCollection<T> callbacks = {};
+      CallbackMap<T> callbacks = {};
       callbacks.add(callback);
 
       _listeners.putIfAbsent(event, () => callbacks);
@@ -17,9 +17,9 @@ class EventEmitter<T> {
 
   void emit (String event, Object? args) {
     if (_listeners.containsKey(event)) {
-      CallbackCollection<T>? collection = _listeners[event];
+      CallbackMap<T>? Map = _listeners[event];
 
-      collection?.forEach((callback) {
+      Map?.forEach((callback) {
         callback.call(args as T);
       });
     }

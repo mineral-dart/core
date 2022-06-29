@@ -1,13 +1,12 @@
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
 
 class EventManager {
-  final Collection<Events, List<MineralEvent>> _events = Collection();
+  final Map<Events, List<MineralEvent>> _events = {};
 
-  Collection<Events, List<MineralEvent>> getRegisteredEvents () => _events;
+  Map<Events, List<MineralEvent>> getRegisteredEvents () => _events;
 
   EventManager add (MineralEvent mineralEvent) {
     Events event = reflect(mineralEvent).type.metadata.first.reflectee.event;

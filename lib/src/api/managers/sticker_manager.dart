@@ -10,7 +10,7 @@ import 'package:mineral/src/api/sticker.dart';
 
 class StickerManager implements CacheManager<Sticker> {
   @override
-  Collection<Snowflake, Sticker> cache = Collection();
+  Map<Snowflake, Sticker> cache = Map();
 
   Snowflake? guildId;
   late Guild? guild;
@@ -44,7 +44,7 @@ class StickerManager implements CacheManager<Sticker> {
   }
 
   @override
-  Future<Collection<Snowflake, Sticker>> sync () async {
+  Future<Map<Snowflake, Sticker>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
