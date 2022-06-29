@@ -125,7 +125,10 @@ class GuildCreate implements WebsocketPacket {
 
     client.guilds.cache.putIfAbsent(guild.id, () => guild);
 
-    manager.emit(Events.guildCreate, [guild]);
+    manager.emit(
+      event: Events.guildCreate,
+      params: [guild]
+    );
   }
 
   Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {

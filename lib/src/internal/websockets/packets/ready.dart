@@ -38,15 +38,18 @@ class Ready implements WebsocketPacket {
     shard.sessionId = websocketResponse.payload['session_id'];
     shard.initialize();
 
-    eventManager.emit(Events.ready, [ioc.singleton(ioc.services.client)]);
+    eventManager.emit(
+      event: Events.ready,
+      params: [ioc.singleton(ioc.services.client)]
+    );
   }
 
   void infuseClientIntoEvents ({required EventManager manager, required MineralClient client}) {
-    Map<Events, List<MineralEvent>> events = manager.getRegisteredEvents();
+    Map<Events, List<Map<String, dynamic>>> events = manager.getRegisteredEvents();
     events.forEach((_, events) {
-      for (MineralEvent event in events) {
-        event.client = client;
-        event.stores = ioc.singleton(ioc.services.store);
+      for (Map<String, dynamic> event in events) {
+        event['mineralEvent'].client = client;
+        event['mineralEvent'].stores = ioc.singleton(ioc.services.store);
       }
     });
   }

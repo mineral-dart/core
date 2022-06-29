@@ -4,38 +4,54 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
 
 class EventManager {
-  final Map<Events, List<MineralEvent>> _events = {};
+  final Map<Events, List<Map<String, dynamic>>> _events = {};
 
-  Map<Events, List<MineralEvent>> getRegisteredEvents () => _events;
+  Map<Events, List<Map<String, dynamic>>> getRegisteredEvents () => _events;
 
   EventManager add (MineralEvent mineralEvent) {
-    Events event = reflect(mineralEvent).type.metadata.first.reflectee.event;
+    Event eventDecorator = reflect(mineralEvent).type.metadata.first.reflectee;
+    Events event = eventDecorator.event;
+    String? customId = eventDecorator.customId;
+
+    Map<String, dynamic> eventEntity = {
+      'mineralEvent': mineralEvent,
+      'customId': customId,
+    };
+
     if (_events.containsKey(event)) {
-      List<MineralEvent>? events = _events.get(event);
-      events?.add(mineralEvent);
+      List<Map<String, dynamic>>? events = _events.get(event);
+      events?.add(eventEntity);
     } else {
-      _events.putIfAbsent(event, () => [mineralEvent]);
+      _events.putIfAbsent(event, () => [eventEntity]);
     }
 
     return this;
   }
 
-  void emit (Events event, [params]) {
-    List<Object>? events = _events.get(event);
+  void emit ({ required Events event, String? customId, List<dynamic>? params }) {
+    List<Map<String, dynamic>>? events = _events.get(event);
 
     if (events != null) {
-      for (Object event in events) {
-        reflect(event).invoke(Symbol('handle'), params);
+      for (Map<String, dynamic> event in events) {
+        if (customId != null) {
+          if (customId == event['customId']) {
+            reflect(event['mineralEvent']).invoke(Symbol('handle'), params ?? []);
+          }
+        } else {
+          if (event['customId'] == null) {
+            reflect(event['mineralEvent']).invoke(Symbol('handle'), params ?? []);
+          }
+        }
       }
     }
   }
 }
 
 class Event {
-  final String type = 'event';
   final Events event;
+  final String? customId;
 
-  const Event(this.event);
+  const Event(this.event, { this.customId });
 }
 
 abstract class MineralEvent {
@@ -65,7 +81,10 @@ enum Events {
   memberRolesUpdate('update::roles-member'),
   acceptRules('accept::rules'),
 
-  commandCreate('create::commandInteraction');
+  commandCreate('create::commandInteraction'),
+  buttonCreate('create::buttonInteraction'),
+  modalCreate('create::modalInteraction'),
+  selectMenuCreate('create::selectMenuInteraction');
 
   final String event;
   const Events(this.event);
