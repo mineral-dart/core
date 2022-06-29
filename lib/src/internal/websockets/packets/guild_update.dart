@@ -66,7 +66,11 @@ class GuildUpdate implements WebsocketPacket {
     after.emojis.guild = after;
     after.roles.guild = after;
 
-    manager.emit(Events.guildUpdate, [before, after]);
+    manager.emit(
+      event: Events.guildUpdate,
+      params: [before, after]
+    );
+
     client.guilds.cache.set(after.id, after);
   }
 }

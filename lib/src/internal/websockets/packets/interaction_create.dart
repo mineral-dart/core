@@ -3,7 +3,9 @@ import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/interactions/button_interaction.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
+import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
@@ -13,7 +15,6 @@ class InteractionCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    CommandManager manager = ioc.singleton(ioc.services.command);
     MineralClient client = ioc.singleton(ioc.services.client);
 
     dynamic payload = websocketResponse.payload;
@@ -22,7 +23,19 @@ class InteractionCreate implements WebsocketPacket {
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     GuildMember? member = guild?.members.cache.get(payload['member']['user']['id']);
 
-    CommandInteraction commandInteraction = CommandInteraction.from(user: member!.user, payload: payload);
+
+    if (payload['type'] == InteractionType.applicationCommand.value) {
+      _executeCommandInteraction(guild!, member!, payload);
+    }
+
+    if (payload['type'] == InteractionType.messageComponent.value) {
+      _executeButtonInteraction(guild!, member!, payload);
+    }
+  }
+
+  _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
+    CommandManager manager = ioc.singleton(ioc.services.command);
+    CommandInteraction commandInteraction = CommandInteraction.from(user: member.user, payload: payload);
     commandInteraction.guild = guild;
 
     String identifier = commandInteraction.identifier;
@@ -46,5 +59,30 @@ class InteractionCreate implements WebsocketPacket {
 
     dynamic handle = manager.getHandler(identifier);
     reflect(handle['commandClass']).invoke(handle['symbol'], [commandInteraction]);
+  }
+
+  _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) {
+    EventManager manager = ioc.singleton(ioc.services.event);
+    TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
+    Message? message = channel?.messages.cache.get(payload['message']['id']);
+
+    ButtonInteraction buttonInteraction = ButtonInteraction.from(
+      user: member.user,
+      message: message,
+      payload: payload
+    );
+
+    buttonInteraction.guild = guild;
+
+    manager.emit(
+      event: Events.buttonCreate,
+      customId: buttonInteraction.customId,
+      params: [buttonInteraction]
+    );
+
+    manager.emit(
+      event: Events.buttonCreate,
+      params: [buttonInteraction]
+    );
   }
 }

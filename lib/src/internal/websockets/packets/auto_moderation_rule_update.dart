@@ -20,7 +20,11 @@ class AutoModerationRuleCreate implements WebsocketPacket {
       ModerationRule? before = guild.moderationRules.cache.get(payload['id']);
       ModerationRule after = ModerationRule.from(guild: guild, payload: payload);
 
-      manager.emit(Events.moderationRuleUpdate, [before, after]);
+      manager.emit(
+        event: Events.moderationRuleUpdate,
+        params: [before, after]
+      );
+
       guild.moderationRules.cache.set(after.id, after);
     }
   }

@@ -19,7 +19,11 @@ class AutoModerationRuleDelete implements WebsocketPacket {
     ModerationRule? moderationRule = guild?.moderationRules.cache.get(payload['id']);
 
     if (moderationRule != null) {
-      manager.emit(Events.moderationRuleDelete, [moderationRule]);
+      manager.emit(
+        event: Events.moderationRuleDelete,
+        params: [moderationRule]
+      );
+
       guild?.moderationRules.cache.remove(moderationRule.id);
     }
   }

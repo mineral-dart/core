@@ -25,6 +25,9 @@ class MessageCreate implements WebsocketPacket {
     Message message = Message.from(channel: channel, payload: payload);
     channel.messages.cache.putIfAbsent(message.id, () => message);
 
-    manager.emit(Events.messageCreate, [message]);
+    manager.emit(
+      event: Events.messageCreate,
+      params: [message]
+    );
   }
 }

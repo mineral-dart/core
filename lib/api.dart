@@ -39,6 +39,7 @@ export 'src/api/components/button.dart' show Button, ButtonStyle;
 export 'src/api/components/link.dart' show Link;
 
 export 'src/api/interactions/command_interaction.dart' show CommandInteraction;
+export 'src/api/interactions/button_interaction.dart' show ButtonInteraction;
 
 export 'src/api/utils.dart';
 export 'src/internal/extensions/collection.dart';

@@ -32,7 +32,11 @@ class MessageDelete implements WebsocketPacket {
       }
     }
 
-    manager.emit(Events.messageDelete, [message]);
+    manager.emit(
+      event: Events.messageDelete,
+      params: [message]
+    );
+
     channel?.messages.cache.remove(payload['id']);
   }
 }
