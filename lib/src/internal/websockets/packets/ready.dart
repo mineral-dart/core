@@ -2,6 +2,8 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
+import 'package:mineral/src/internal/websockets/sharding/shard.dart';
+import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
@@ -13,6 +15,7 @@ class Ready implements WebsocketPacket {
   Future<void> handle (WebsocketResponse websocketResponse) async {
     EventManager eventManager = ioc.singleton(ioc.services.event);
     CommandManager commandManager = ioc.singleton(ioc.services.command);
+    ShardManager shardManager = ioc.singleton(ioc.services.websocket);
 
     if(ioc.singleton(ioc.services.client) == null) {
       MineralClient client = MineralClient.from(payload: websocketResponse.payload);
@@ -30,6 +33,10 @@ class Ready implements WebsocketPacket {
         client: client,
       );
     }
+
+    final Shard shard = websocketResponse.payload['shard'] != null ? shardManager.shards[websocketResponse.payload['shard'][0]]! : shardManager.shards[0]!;
+    shard.sessionId = websocketResponse.payload['session_id'];
+    shard.initialize();
 
     eventManager.emit(Events.ready, [ioc.singleton(ioc.services.client)]);
   }
