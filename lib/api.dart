@@ -10,10 +10,10 @@ export 'src/api/application.dart' show Application;
 export 'src/api/user.dart' show User;
 export 'src/api/status.dart' show Status, StatusType;
 export 'src/api/activity.dart' show Activity;
-export 'src/api/guild_member.dart' show GuildMember;
+export 'src/api/guilds/guild_member.dart' show GuildMember;
 export 'src/api/voice.dart' show Voice;
 
-export 'src/api/guild.dart' show Guild;
+export 'src/api/guilds/guild.dart' show Guild;
 export 'src/api/moderation_rule.dart' show ModerationEventType, ModerationTriggerType, ModerationPresetType, ModerationActionType, ModerationTriggerMetadata, ModerationActionMetadata, ModerationAction, ModerationRule;
 
 export 'src/api/webhook.dart' show Webhook;
