@@ -20,6 +20,8 @@ import 'package:mineral/src/internal/websockets/packets/webhook_update.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
+import 'package:collection/collection.dart';
+
 class WebsocketDispatcher {
   final Map<PacketType, List<WebsocketPacket>> _packets = {};
 
@@ -53,7 +55,7 @@ class WebsocketDispatcher {
   }
 
   Future<void> dispatch (WebsocketResponse websocketResponse) async {
-    PacketType? packet = PacketType.values.firstWhere((element) => element.toString() == websocketResponse.type);
+    PacketType? packet = PacketType.values.firstWhereOrNull((element) => element.toString() == websocketResponse.type);
 
     if (_packets.containsKey(packet)) {
       List<WebsocketPacket> packets = _packets[packet]!;
