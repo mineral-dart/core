@@ -5,6 +5,7 @@ class Service {
   final event = 'Mineral/Core/Event';
   final command = 'Mineral/Core/Command';
   final store = 'Mineral/Core/Store';
+  final modules = 'Mineral/Core/Modules';
   final shards = 'Mineral/Core/Shards';
 }
 
