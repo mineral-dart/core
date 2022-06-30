@@ -10,3 +10,4 @@ export 'src/internal/http.dart';
 export 'src/internal/entities/event_manager.dart' show Event, Events, MineralEvent;
 export 'src/internal/entities/command_manager.dart' show Command, MineralCommand, Option, OptionType, OptionChoice, Subcommand, CommandGroup;
 export 'src/internal/entities/store_manager.dart' show Store, MineralStore;
+export 'src/internal/entities/module_manager.dart' show Module, MineralModule;
