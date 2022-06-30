@@ -27,14 +27,14 @@ class GuildScheduledEvent {
   Snowflake id;
   //Guild guild;
   Channel? channel;
-  User? creator;
+  GuildMember? creator;
   String name;
   String? description;
   DateTime startTime;
   DateTime? endTime;
   ScheduledEventStatus status;
   ScheduledEventEntityType entityType;
-  Snowflake entityId;
+  Snowflake? entityId;
   int? subscribers;
   String? image;
 
@@ -63,7 +63,7 @@ class GuildScheduledEvent {
       name: payload['name'],
       description: payload['description'],
       startTime: DateTime.parse(payload['scheduled_start_time']),
-      endTime: payload['scheduled_end_time'] ? DateTime.parse(payload['scheduled_end_time']) : null,
+      endTime: payload['scheduled_end_time'] != null ? DateTime.parse(payload['scheduled_end_time']) : null,
       status: ScheduledEventStatus.values.firstWhere((element) => element.value == payload['status']),
       entityType: ScheduledEventEntityType.values.firstWhere((element) => element.value == payload['entity_type']),
       entityId: payload['entity_id'],
@@ -71,6 +71,4 @@ class GuildScheduledEvent {
       image: payload['image']
     );
   }
-
-
 }
