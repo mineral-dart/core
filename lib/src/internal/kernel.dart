@@ -3,8 +3,8 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/entities/module_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
-import 'package:mineral/src/internal/websockets/websocket_manager.dart';
 
 import 'entities/store_manager.dart';
 
@@ -12,20 +12,22 @@ class Kernel {
   EventManager events = EventManager();
   CommandManager commands = CommandManager();
   StoreManager stores = StoreManager();
+  ModuleManager modules = ModuleManager();
   List<Intent> intents = [];
 
   Kernel() {
     ioc.bind(namespace: ioc.services.event, service: events);
     ioc.bind(namespace: ioc.services.command, service: commands);
     ioc.bind(namespace: ioc.services.store, service: stores);
+    ioc.bind(namespace: ioc.services.modules, service: modules);
   }
 
   Future<void> init () async {
+    Environment environment = await _loadEnvironment();
+
     Http http = Http(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     ioc.bind(namespace: ioc.services.http, service: http);
-
-    Environment environment = await _loadEnvironment();
 
     String? token = environment.get('APP_TOKEN');
     if (token == null) {
@@ -34,6 +36,8 @@ class Kernel {
         cause: 'APP_TOKEN is not defined in your environment'
       );
     }
+
+    await modules.load();
 
     final String? shardsCount = environment.get('SHARDS_COUNT');
 
