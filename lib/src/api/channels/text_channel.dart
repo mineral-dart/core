@@ -1,6 +1,8 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 
+import 'package:mineral/src/api/managers/thread_manager.dart';
+
 class TextChannel extends TextBasedChannel {
   TextChannel({
     required Snowflake id,
@@ -27,6 +29,7 @@ class TextChannel extends TextBasedChannel {
     lastMessageId: lastMessageId,
     lastPinTimestamp: lastPinTimestamp,
     messages: MessageManager(id, guildId),
+    threads: ThreadManager(guildId: guildId)
   );
 
   @override
@@ -45,7 +48,7 @@ class TextChannel extends TextBasedChannel {
   }
 
   factory TextChannel.from(dynamic payload) {
-    return TextChannel(
+    TextChannel channel =  TextChannel(
       id: payload['id'],
       guildId: payload['guild_id'],
       position: payload['position'],
@@ -58,5 +61,8 @@ class TextChannel extends TextBasedChannel {
       lastMessageId: payload['last_message_id'],
       lastPinTimestamp: payload['last_pin_timestamp'] != null ? DateTime.parse(payload['last_pin_timestamp']) : null,
     );
+    channel.threads.channel = channel;
+
+    return channel;
   }
 }

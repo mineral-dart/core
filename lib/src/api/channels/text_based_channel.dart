@@ -6,12 +6,15 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
+import '../managers/thread_manager.dart';
+
 class TextBasedChannel extends Channel {
   String? description;
   bool nsfw;
   Snowflake? lastMessageId;
   DateTime? lastPinTimestamp;
   MessageManager messages;
+  ThreadManager threads;
 
   TextBasedChannel({
     required Snowflake id,
@@ -26,6 +29,7 @@ class TextBasedChannel extends Channel {
     required this.lastMessageId,
     required this.lastPinTimestamp,
     required this.messages,
+    required this.threads
   }) : super(
     id: id,
     type: ChannelType.guildText,
@@ -35,7 +39,7 @@ class TextBasedChannel extends Channel {
     applicationId: applicationId,
     parentId: parentId,
     flags: flags,
-    webhooks: WebhookManager(guildId: guildId, channelId: id)
+    webhooks: WebhookManager(guildId: guildId, channelId: id),
   );
 
   Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
@@ -73,6 +77,8 @@ class TextBasedChannel extends Channel {
 
     return null;
   }
+
+
 
   Future<dynamic> setDescription (String description) async {
     Http http = ioc.singleton(ioc.services.http);
