@@ -9,7 +9,7 @@ import 'package:path/path.dart';
 
 class MakeCommand extends MineralCliCommand {
   @override
-  String name = 'make:command';
+  String name = 'make:module';
 
   @override
   Future<void> handle (ArgResults args) async {
@@ -42,7 +42,7 @@ class MakeCommand extends MineralCliCommand {
     } else {
       final location = Input(
         prompt: 'Target folder location',
-        defaultValue: 'App/folder', // optional, will provide the user as a hint
+        defaultValue: 'App/folder',
       ).interact();
 
       file = File(join(Directory.current.path, 'src', location.replaceAll('App/', ''), '${Helper.toSnakeCase(filename)}.dart'));
@@ -56,13 +56,18 @@ class MakeCommand extends MineralCliCommand {
 
   String getTemplate (String filename) => '''
 import 'package:mineral/core.dart';
-import 'package:mineral/api.dart';
+import 'commands/my_command_module.dart';
 
-@Command(name: '${filename.toLowerCase()}', description: '${Helper.toCapitalCase(filename)} command description', scope: 'GUILD')
-class ${Helper.toPascalCase(filename)} extends MineralCommand {
-  Future<void> handle (CommandInteraction interaction) async {
-    // Your code here
-  }
+@Module(identifier: '${Helper.toSnakeCase(filename)}', label: '${Helper.toCapitalCase(filename)} module')
+class ${Helper.toPascalCase(filename)} extends MineralModule {
+  @override
+  List<MineralCommand> commands = [];
+
+  @override
+  List<MineralEvent> events = [];
+
+  @override
+  List<MineralStore> stores = [];
 }
   ''';
 }
