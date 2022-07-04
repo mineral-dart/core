@@ -7,9 +7,9 @@ import 'package:mineral/helper.dart';
 import 'package:mineral/src/internal/entities/cli_manager.dart';
 import 'package:path/path.dart';
 
-class MakeModule extends MineralCliCommand {
+class MakeStore extends MineralCliCommand {
   @override
-  String name = 'make:module';
+  String name = 'make:store';
 
   @override
   Future<void> handle (ArgResults args) async {
@@ -56,18 +56,11 @@ class MakeModule extends MineralCliCommand {
 
   String getTemplate (String filename) => '''
 import 'package:mineral/core.dart';
-import 'commands/my_command_module.dart';
 
-@Module(identifier: '${Helper.toSnakeCase(filename)}', label: '${Helper.toCapitalCase(filename)} module')
-class ${Helper.toPascalCase(filename)} extends MineralModule {
+@Store('${Helper.toSnakeCase(filename)}')
+class ${Helper.toPascalCase(filename)} implements MineralStore<dynamic> {
   @override
-  List<MineralCommand> commands = [];
-
-  @override
-  List<MineralEvent> events = [];
-
-  @override
-  List<MineralStore> stores = [];
+  dynamic state = [];
 }
   ''';
 }

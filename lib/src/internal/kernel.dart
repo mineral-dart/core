@@ -2,6 +2,8 @@ import 'package:mineral/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/commands/make_command.dart';
 import 'package:mineral/src/commands/make_event.dart';
+import 'package:mineral/src/commands/make_module.dart';
+import 'package:mineral/src/commands/make_store.dart';
 import 'package:mineral/src/internal/entities/cli_manager.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
@@ -28,6 +30,8 @@ class Kernel {
 
     cli.add(MakeCommand());
     cli.add(MakeEvent());
+    cli.add(MakeModule());
+    cli.add(MakeStore());
   }
 
   Future<void> init () async {
