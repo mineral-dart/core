@@ -60,35 +60,33 @@ abstract class MineralEvent {
 }
 
 enum Events {
-  ready('ready'),
-  guildCreate('create::guild'),
-  guildUpdate('update::guild'),
-  presenceUpdate('update::presence'),
+  ready('ready', { 'client': MineralClient }),
+  guildCreate('create::guild', { 'guild': Guild }),
+  guildUpdate('update::guild', { 'before': Guild, 'after': Guild }),
+  presenceUpdate('update::presence', { 'before': GuildMember, 'after': GuildMember }),
 
-  moderationRuleCreate('create::moderation-rule'),
-  moderationRuleUpdate('update::moderation-rule'),
-  moderationRuleDelete('delete::moderation-rule'),
+  moderationRuleCreate('create::moderation-rule', { 'rule': ModerationRule }),
+  moderationRuleUpdate('update::moderation-rule', { 'before': ModerationRule, 'after': ModerationRule }),
+  moderationRuleDelete('delete::moderation-rule', { 'rule': ModerationRule }),
 
-  messageCreate('create::message'),
-  messageUpdate('update::message'),
-  messageDelete('delete::message'),
+  messageCreate('create::message', { 'message': Message }),
+  messageUpdate('update::message', { 'before': Message, 'after': Message }),
+  messageDelete('delete::message', { 'message': Message }),
 
-  channelCreate('create::channel'),
-  channelUpdate('update::channel'),
-  channelDelete('delete::channel'),
+  channelCreate('create::channel', { 'channel': Channel }),
+  channelUpdate('update::channel', { 'before': Channel, 'after': Channel }),
+  channelDelete('delete::channel', { 'channel': Channel }),
 
-  memberUpdate('update::member'),
-  memberRolesUpdate('update::roles-member'),
-  acceptRules('accept::rules'),
+  memberUpdate('update::member', { 'member': GuildMember }),
+  memberRolesUpdate('update::roles-member', { 'before': Role, 'after': Role }),
+  acceptRules('accept::rules', { 'member': GuildMember }),
 
-  commandCreate('create::commandInteraction'),
-  buttonCreate('create::buttonInteraction'),
-  modalCreate('create::modalInteraction'),
-  selectMenuCreate('create::selectMenuInteraction');
+  commandCreate('create::commandInteraction', { 'interaction': CommandInteraction }),
+  buttonCreate('create::buttonInteraction', { 'interaction': ButtonInteraction }),
+  modalCreate('create::modalInteraction', { 'interaction': ModalInteraction }),
+  selectMenuCreate('create::selectMenuInteraction', { 'interaction': SelectMenuInteraction });
 
   final String event;
-  const Events(this.event);
-
-  @override
-  String toString() => event;
+  final Map<String, dynamic> params;
+  const Events(this.event, this.params);
 }
