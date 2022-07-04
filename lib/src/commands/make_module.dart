@@ -26,6 +26,7 @@ class MakeModule extends MineralCliCommand {
     ).interact();
 
     late File file;
+    late Directory directory;
 
     if (useExistLocation) {
       List<Directory> directories = await getDirectories();
@@ -38,15 +39,21 @@ class MakeModule extends MineralCliCommand {
           .toList(),
       ).interact();
 
-      file = File(join(directories[selection].path, '${Helper.toSnakeCase(filename)}.dart'));
+      directory = Directory(join(directories[selection].path, Helper.toSnakeCase(filename)));
+      file = File(join(directory.path, '${Helper.toSnakeCase(filename)}.dart'));
     } else {
       final location = Input(
         prompt: 'Target folder location',
         defaultValue: 'App/folder',
       ).interact();
 
-      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', ''), '${Helper.toSnakeCase(filename)}.dart'));
+      directory = Directory(join(Directory.current.path, 'src', location.replaceAll('App/', ''), Helper.toSnakeCase(filename)));
+      file = File(join(directory.path, '${Helper.toSnakeCase(filename)}.dart'));
     }
+
+    await Directory(join(directory.path, 'events')).create(recursive: true);
+    await Directory(join(directory.path, 'commands')).create(recursive: true);
+    await Directory(join(directory.path, 'stores')).create(recursive: true);
 
     await file.create(recursive: true);
     await writeFileContent(file, getTemplate(filename));
@@ -56,7 +63,6 @@ class MakeModule extends MineralCliCommand {
 
   String getTemplate (String filename) => '''
 import 'package:mineral/core.dart';
-import 'commands/my_command_module.dart';
 
 @Module(identifier: '${Helper.toSnakeCase(filename)}', label: '${Helper.toCapitalCase(filename)} module')
 class ${Helper.toPascalCase(filename)} extends MineralModule {
