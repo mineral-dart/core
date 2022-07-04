@@ -1,5 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/exception.dart';
+import 'package:mineral/src/commands/make_command.dart';
+import 'package:mineral/src/internal/entities/cli_manager.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/core.dart';
@@ -13,6 +15,7 @@ class Kernel {
   CommandManager commands = CommandManager();
   StoreManager stores = StoreManager();
   ModuleManager modules = ModuleManager();
+  CliManager cli = CliManager();
   List<Intent> intents = [];
 
   Kernel() {
@@ -20,6 +23,9 @@ class Kernel {
     ioc.bind(namespace: ioc.services.command, service: commands);
     ioc.bind(namespace: ioc.services.store, service: stores);
     ioc.bind(namespace: ioc.services.modules, service: modules);
+    ioc.bind(namespace: ioc.services.cli, service: cli);
+
+    cli.add(MakeCommand());
   }
 
   Future<void> init () async {
