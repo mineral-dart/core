@@ -37,4 +37,17 @@ class Helper {
 
     return _permissions;
   }
+
+  static toPascalCase (String value) {
+    List<String> words = value.split('_');
+    return words.map((word) => "${word[0].toUpperCase()}${word.substring(1)}").join('');
+  }
+
+  static toCapitalCase (String value) {
+    return '${value[0].toUpperCase()}${value.substring(1)}';
+  }
+
+  static String toSnakeCase (String value) {
+    return value.split(RegExp(r"(?=[A-Z])")).join('_').toLowerCase();
+  }
 }
