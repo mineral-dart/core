@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/exception.dart';
+import 'package:mineral/src/commands/create_project.dart';
 import 'package:mineral/src/commands/make_command.dart';
 import 'package:mineral/src/commands/make_event.dart';
 import 'package:mineral/src/commands/make_module.dart';
@@ -32,6 +33,7 @@ class Kernel {
     cli.add(MakeEvent());
     cli.add(MakeModule());
     cli.add(MakeStore());
+    cli.add(CreateProject());
   }
 
   Future<void> init () async {
