@@ -69,6 +69,12 @@ enum Events {
   moderationRuleUpdate('update::moderation-rule', { 'before': ModerationRule, 'after': ModerationRule }),
   moderationRuleDelete('delete::moderation-rule', { 'rule': ModerationRule }),
 
+  guildScheduledEventCreate('create::scheduled-event', { 'event': GuildScheduledEvent }),
+  guildScheduledEventDelete('delete::scheduled-event', { 'event': GuildScheduledEvent }),
+  guildScheduledEventUpdate('update::scheduled-event', { 'before': GuildScheduledEvent, 'after': GuildScheduledEvent }),
+  guildScheduledEventUserAdd('user-add::scheduled-event', { 'event': GuildScheduledEvent, 'user': User, 'member': 'GuildMember?' }),
+  guildScheduledEventUserRemove('user-remove::scheduled-event', { 'event': GuildScheduledEvent, 'user': User, 'member': 'GuildMember?' }),
+
   messageCreate('create::message', { 'message': Message }),
   messageUpdate('update::message', { 'before': Message, 'after': Message }),
   messageDelete('delete::message', { 'message': Message }),

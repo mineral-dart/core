@@ -29,6 +29,12 @@ enum PacketType {
   autoModerationRuleCreate('AUTO_MODERATION_RULE_CREATE'),
   autoModerationRuleDelete('AUTO_MODERATION_RULE_DELETE'),
 
+  guildScheduledEventCreate('GUILD_SCHEDULED_EVENT_CREATE'),
+  guildScheduledEventDelete('GUILD_SCHEDULED_EVENT_DELETE'),
+  guildScheduledEventUpdate('GUILD_SCHEDULED_EVENT_UPDATE'),
+  guildScheduledEventUserAdd('GUILD_SCHEDULED_EVENT_USER_ADD'),
+  guildScheduledEventUserRemove('GUILD_SCHEDULED_EVENT_USER_REMOVE'),
+
   webhookUpdate('WEBHOOKS_UPDATE'),
 
   messageCreate('MESSAGE_CREATE'),
