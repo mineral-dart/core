@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 import 'dart:async';
@@ -90,7 +91,7 @@ class Shard {
         final WebsocketResponse data = message.data as WebsocketResponse;
 
         final OpCode? opCode = OpCode.values.firstWhereOrNull((element) => element.value == data.op);
-        Console.debug(message: '[DATA] ${opCode.toString()} | ${data.type ?? ''} ${data.payload}', prefix: 'Shard #$id');
+        Console.debug(message: '[DATA] ${opCode.toString()} | ${data.type ?? ''} ${jsonEncode(data.payload)}', prefix: 'Shard #$id');
 
         switch(opCode) {
           case OpCode.heartbeat: return _heartbeat.reset();

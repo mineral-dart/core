@@ -9,6 +9,7 @@ import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_member_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_create.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_update.dart';
 import 'package:mineral/src/internal/websockets/packets/interaction_create.dart';
@@ -45,6 +46,7 @@ class WebsocketDispatcher {
     register(PacketType.autoModerationRuleDelete, AutoModerationRuleDelete());
     register(PacketType.guildScheduledEventCreate, GuildScheduledEventCreate());
     register(PacketType.guildScheduledEventUpdate, GuildScheduledEventUpdate());
+    register(PacketType.guildScheduledEventDelete, GuildScheduledEventDelete());
     register(PacketType.webhookUpdate, WebhookUpdate());
     register(PacketType.guildIntegrationsUpdate, GuildIntegrationsUpdate());
   }
