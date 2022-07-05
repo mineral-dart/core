@@ -3,14 +3,13 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
-import 'package:mineral/src/api/managers/role_manager.dart';
 
 /// Represents an [Emoji] on [Guild] context.
 /// {@category Api}
 class Emoji {
   Snowflake id;
   String label;
-  List<Role> roles;
+  //List<Role> roles;
   GuildMember? creator;
   bool requireColons;
   bool managed;
@@ -21,7 +20,7 @@ class Emoji {
   Emoji({
     required this.id,
     required this.label,
-    required this.roles,
+    //required this.roles,
     required this.creator,
     required this.requireColons,
     required this.managed,
@@ -55,7 +54,7 @@ class Emoji {
   ///   await emoji.setRoles([role.id]);
   /// }
   /// ```
-  Future<void> setRoles (List<Snowflake> roles) async {
+  /*Future<void> setRoles (List<Snowflake> roles) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/${manager.guildId}/emojis/$id", payload: { 'roles': roles });
 
@@ -70,7 +69,7 @@ class Emoji {
 
       this.roles = _roles;
     }
-  }
+  }*/
 
   /// Removes the current this from the [EmojiManager]'s cache
   /// ```dart
@@ -105,19 +104,11 @@ class Emoji {
     ? '<a:$label:$id>'
     : '<$label:$id>';
 
-  factory Emoji.from({ required MemberManager memberManager, required RoleManager roleManager, required EmojiManager emojiManager, required dynamic payload }) {
-    List<Role> roles = [];
-    for (dynamic id in payload['roles']) {
-      Role? role = roleManager.cache.get(id);
-      if (role != null) {
-        roles.add(role);
-      }
-    }
-
+  factory Emoji.from({ required MemberManager memberManager, required EmojiManager emojiManager, required dynamic payload }) {
     return Emoji(
       id: payload['id'],
       label: payload['name'],
-      roles: roles,
+      //roles: roles,
       creator: payload['user'] != null ? memberManager.cache.get(payload['user']['id']) : null,
       requireColons: payload['require_colons'] ?? false,
       managed: payload['managed'] ?? false,
