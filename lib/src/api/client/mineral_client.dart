@@ -1,6 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
+import 'package:mineral/src/api/managers/user_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 
 import '../../internal/entities/command_manager.dart';
@@ -71,6 +72,7 @@ class ClientActivity {
 class MineralClient {
   User user;
   GuildManager guilds;
+  UserManager users;
   String sessionId;
   Application application;
   List<Intent> intents;
@@ -78,6 +80,7 @@ class MineralClient {
   MineralClient({
     required this.user,
     required this.guilds,
+    required this.users,
     required this.sessionId,
     required this.application,
     required this.intents,
@@ -122,6 +125,7 @@ class MineralClient {
     return MineralClient(
       user: User.from(payload['user']),
       guilds: GuildManager(),
+      users: UserManager(),
       sessionId: payload['session_id'],
       application: Application.from(payload['application']),
       intents: manager.intents

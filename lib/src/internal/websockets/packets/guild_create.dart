@@ -35,14 +35,17 @@ class GuildCreate implements WebsocketPacket {
 
     MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
     for (dynamic member in websocketResponse.payload['members']) {
+      User user = User.from(member['user']);
+
       GuildMember guildMember = GuildMember.from(
         roles: roleManager,
-        user: User.from(member['user']),
+        user: user,
         member: member,
         guildId: websocketResponse.payload['id']
       );
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
+      client.users.cache.putIfAbsent(user.id, () => user);
     }
 
     ChannelManager channelManager = ChannelManager(guildId: websocketResponse.payload['id']);

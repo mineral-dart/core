@@ -23,6 +23,18 @@ enum ScheduledEventEntityType {
   const ScheduledEventEntityType(this.value);
 }
 
+class ScheduledEventUser {
+  User user;
+  GuildScheduledEvent event;
+  GuildMember? member;
+
+  ScheduledEventUser({
+    required this.user,
+    required this.event,
+    required this.member
+  });
+}
+
 class GuildScheduledEvent {
   Snowflake id;
   //Guild guild;

@@ -16,7 +16,7 @@ export 'src/api/voice.dart' show Voice;
 export 'src/api/guilds/guild.dart' show Guild;
 export 'src/api/moderation_rule.dart' show ModerationEventType, ModerationTriggerType, ModerationPresetType, ModerationActionType, ModerationTriggerMetadata, ModerationActionMetadata, ModerationAction, ModerationRule;
 
-export 'src/api/guilds/guild_scheduled_event.dart' show ScheduledEventStatus, ScheduledEventEntityType, GuildScheduledEvent;
+export 'src/api/guilds/guild_scheduled_event.dart' show ScheduledEventStatus, ScheduledEventEntityType, GuildScheduledEvent, ScheduledEventUser;
 
 export 'src/api/webhook.dart' show Webhook;
 
