@@ -48,6 +48,8 @@ enum PacketType {
   interactionCreate('INTERACTION_CREATE'),
 
   memberUpdate('GUILD_MEMBER_UPDATE'),
+  memberDelete('GUILD_MEMBER_REMOVE'),
+  memberAdd('GUILD_MEMBER_ADD'),
 
   resumed('RESUMED');
 
