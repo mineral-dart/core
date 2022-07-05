@@ -51,6 +51,8 @@ enum PacketType {
   memberDelete('GUILD_MEMBER_REMOVE'),
   memberAdd('GUILD_MEMBER_ADD'),
 
+  memberJoinRequest('GUILD_JOIN_REQUEST_UPDATE'),
+
   resumed('RESUMED');
 
   final String _value;
