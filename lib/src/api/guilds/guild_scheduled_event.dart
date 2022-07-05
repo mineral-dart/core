@@ -35,6 +35,7 @@ class GuildScheduledEvent {
   ScheduledEventStatus status;
   ScheduledEventEntityType entityType;
   Snowflake? entityId;
+  String? location;
   int? subscribers;
   String? image;
 
@@ -51,7 +52,8 @@ class GuildScheduledEvent {
       required this.entityType,
       required this.entityId,
       required this.subscribers,
-      required this.image
+      required this.image,
+      required this.location,
   });
 
   factory GuildScheduledEvent.from({ required ChannelManager channelManager, required MemberManager memberManager, required payload }) {
@@ -68,7 +70,8 @@ class GuildScheduledEvent {
       entityType: ScheduledEventEntityType.values.firstWhere((element) => element.value == payload['entity_type']),
       entityId: payload['entity_id'],
       subscribers: payload['user_count'],
-      image: payload['image']
+      image: payload['image'],
+      location: payload['entity_metadata'] != null && payload['entity_metadata']['location'] != null ? payload['entity_metadata']['location'] : null
     );
   }
 }

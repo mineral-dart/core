@@ -90,7 +90,7 @@ class Shard {
         final WebsocketResponse data = message.data as WebsocketResponse;
 
         final OpCode? opCode = OpCode.values.firstWhereOrNull((element) => element.value == data.op);
-        Console.debug(message: '[DATA] ${opCode.toString()} | ${data.payload}', prefix: 'Shard #$id');
+        Console.debug(message: '[DATA] ${opCode.toString()} | ${data.type ?? ''} ${data.payload}', prefix: 'Shard #$id');
 
         switch(opCode) {
           case OpCode.heartbeat: return _heartbeat.reset();
