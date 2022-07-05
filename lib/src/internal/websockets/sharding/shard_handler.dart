@@ -44,7 +44,14 @@ Future<void> shardHandler(SendPort shardPort) async {
     }));
   }
 
-  _connect();
+  try {
+    _connect();
+  } catch (exception) {
+    shardPort.send(ShardMessage(command: ShardCommand.error, data: {
+      'reason': exception,
+      'code': socket.closeCode
+    }));
+  }
 
   /// Disconnect from the websocket
   Future<void> disconnect() async {

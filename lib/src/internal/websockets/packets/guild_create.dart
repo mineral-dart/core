@@ -4,8 +4,10 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/channel.dart';
+import 'package:mineral/src/api/guilds/guild_scheduled_event.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
+import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
@@ -33,14 +35,17 @@ class GuildCreate implements WebsocketPacket {
 
     MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
     for (dynamic member in websocketResponse.payload['members']) {
+      User user = User.from(member['user']);
+
       GuildMember guildMember = GuildMember.from(
         roles: roleManager,
-        user: User.from(member['user']),
+        user: user,
         member: member,
         guildId: websocketResponse.payload['id']
       );
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
+      client.users.cache.putIfAbsent(user.id, () => user);
     }
 
     ChannelManager channelManager = ChannelManager(guildId: websocketResponse.payload['id']);
@@ -66,6 +71,17 @@ class GuildCreate implements WebsocketPacket {
       emojiManager.cache.putIfAbsent(emoji.id, () => emoji);
     }
 
+    GuildScheduledEventManager guildScheduledManager = GuildScheduledEventManager(guildId: websocketResponse.payload['id']);
+    for(dynamic payload in websocketResponse.payload['guild_scheduled_events']) {
+      GuildScheduledEvent event = GuildScheduledEvent.from(
+        channelManager: channelManager,
+        memberManager: memberManager,
+        payload: payload
+      );
+
+      guildScheduledManager.cache.putIfAbsent(event.id, () => event);
+    }
+
     ModerationRuleManager moderationManager = ModerationRuleManager(guildId: websocketResponse.payload['id']);
 
     WebhookManager webhookManager = WebhookManager(guildId: websocketResponse.payload['id']);
@@ -77,6 +93,7 @@ class GuildCreate implements WebsocketPacket {
       channelManager: channelManager,
       moderationRuleManager: moderationManager,
       webhookManager: webhookManager,
+      guildScheduledEventManager: guildScheduledManager,
       payload: websocketResponse.payload,
     );
 
@@ -110,7 +127,7 @@ class GuildCreate implements WebsocketPacket {
     guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
     guild.emojis.guild = guild;
     guild.roles.guild = guild;
-    webhookManager.guild = guild;
+    guild.scheduledEvents.guild = guild;
     guild.webhooks.guild = guild;
 
     Map<Snowflake, ModerationRule>? autoModerationRules = await getAutoModerationRules(guild);

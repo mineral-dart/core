@@ -12,6 +12,7 @@ import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/api/managers/sticker_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
+import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 
@@ -75,6 +76,7 @@ class Guild {
   EmojiManager emojis;
   ModerationRuleManager moderationRules;
   GuildWebhookManager webhooks;
+  GuildScheduledEventManager scheduledEvents;
 
   Guild({
     required this.id,
@@ -121,6 +123,7 @@ class Guild {
     required this.features,
     required this.moderationRules,
     required this.webhooks,
+    required this.scheduledEvents,
   });
 
   /// Modifies the [name] of this.
@@ -348,6 +351,7 @@ class Guild {
     required ChannelManager channelManager,
     required ModerationRuleManager moderationRuleManager,
     required WebhookManager webhookManager,
+    required GuildScheduledEventManager guildScheduledEventManager,
     required dynamic payload
   }) {
     StickerManager stickerManager = StickerManager(guildId: payload['id']);
@@ -407,6 +411,7 @@ class Guild {
       welcomeScreen: payload['welcome_screen'] != null ? WelcomeScreen.from(payload['welcome_screen']) : null,
       moderationRules: moderationRuleManager,
       webhooks: GuildWebhookManager.fromManager(webhookManager: webhookManager),
+      scheduledEvents: guildScheduledEventManager
     );
   }
 }
