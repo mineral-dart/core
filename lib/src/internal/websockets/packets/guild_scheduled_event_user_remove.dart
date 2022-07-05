@@ -4,9 +4,9 @@ import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-class GuildScheduledEventUserAdd implements WebsocketPacket {
+class GuildScheduledEventUserRemove implements WebsocketPacket {
   @override
-  PacketType packetType = PacketType.guildScheduledEventUserAdd;
+  PacketType packetType = PacketType.guildScheduledEventUserRemove;
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
@@ -26,7 +26,7 @@ class GuildScheduledEventUserAdd implements WebsocketPacket {
       final GuildMember? member = payload['guild_id'] != null ? guild.members.cache.get(user.id) : null;
 
       GuildScheduledEvent event = guild.scheduledEvents.cache.get(eventId)!;
-      manager.emit(Events.guildScheduledEventUserAdd, [event, user, member]);
+      manager.emit(Events.guildScheduledEventUserRemove, [event, user, member]);
     }
   }
 }
