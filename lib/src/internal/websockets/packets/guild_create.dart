@@ -127,7 +127,7 @@ class GuildCreate implements WebsocketPacket {
     guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
     guild.emojis.guild = guild;
     guild.roles.guild = guild;
-    webhookManager.guild = guild;
+    guild.scheduledEvents.guild = guild;
     guild.webhooks.guild = guild;
 
     Map<Snowflake, ModerationRule>? autoModerationRules = await getAutoModerationRules(guild);
