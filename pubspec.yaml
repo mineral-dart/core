@@ -1,6 +1,8 @@
 name: mineral
 description: A starting point for Dart libraries or applications.
 version: 1.0.0
+
+repository: https://github.com/mineral-dart/core
 # homepage: https://www.example.com
 
 environment:
@@ -8,8 +10,10 @@ environment:
 
 dependencies:
   args: ^2.3.1
+  path: ^1.8.2
   http: ^0.13.4
   interact: ^2.1.1
+  collection: ^1.16.0
 
 dev_dependencies:
   lints: ^1.0.0
