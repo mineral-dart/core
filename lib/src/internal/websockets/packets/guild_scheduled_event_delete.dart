@@ -22,7 +22,7 @@ class GuildScheduledEventDelete implements WebsocketPacket {
 
     if(event != null) {
       guild?.scheduledEvents.cache.remove(event.id);
-      manager.emit(Events.guildScheduledEventDelete, [event]);
+      manager.emit(event: Events.guildScheduledEventDelete, params: [event]);
     }
 
     /*

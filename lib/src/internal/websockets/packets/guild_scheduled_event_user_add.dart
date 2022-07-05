@@ -26,7 +26,7 @@ class GuildScheduledEventUserAdd implements WebsocketPacket {
       final GuildMember? member = payload['guild_id'] != null ? guild.members.cache.get(user.id) : null;
 
       GuildScheduledEvent event = guild.scheduledEvents.cache.get(eventId)!;
-      manager.emit(Events.guildScheduledEventUserAdd, [event, user, member]);
+      manager.emit(event: Events.guildScheduledEventUserAdd, params: [event, user, member]);
     }
   }
 }

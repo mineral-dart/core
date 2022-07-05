@@ -21,7 +21,7 @@ class GuildScheduledEventUpdate implements WebsocketPacket {
       GuildScheduledEvent after = GuildScheduledEvent.from(channelManager: guild.channels, memberManager: guild.members, payload: payload);
       guild.scheduledEvents.cache.set(after.id, after);
 
-      manager.emit(Events.guildScheduledEventUpdate, [before, after]);
+      manager.emit(event: Events.guildScheduledEventUpdate, params: [before, after]);
     }
   }
 }

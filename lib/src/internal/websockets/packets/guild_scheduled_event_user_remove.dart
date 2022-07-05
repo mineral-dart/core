@@ -26,7 +26,7 @@ class GuildScheduledEventUserRemove implements WebsocketPacket {
       final GuildMember? member = payload['guild_id'] != null ? guild.members.cache.get(user.id) : null;
 
       GuildScheduledEvent event = guild.scheduledEvents.cache.get(eventId)!;
-      manager.emit(Events.guildScheduledEventUserRemove, [event, user, member]);
+      manager.emit(event: Events.guildScheduledEventUserRemove, params: [event, user, member]);
     }
   }
 }
