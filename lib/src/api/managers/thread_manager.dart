@@ -6,15 +6,13 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/managers/webhook_manager.dart';
-import 'package:mineral/src/exceptions/missing_premium_subscription.dart';
 
 import '../channels/public_thread.dart';
 
 class ThreadManager implements CacheManager<Channel> {
 
   @override
-  Collection<Snowflake, Channel> cache = Collection();
+  Map<Snowflake, Channel> cache = {};
 
   Snowflake? guildId;
   late Guild? guild;
@@ -23,7 +21,7 @@ class ThreadManager implements CacheManager<Channel> {
   ThreadManager({ required this.guildId });
 
   @override
-  Future<Collection<Snowflake, Channel>> sync () async {
+  Future<Map<Snowflake, Channel>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
