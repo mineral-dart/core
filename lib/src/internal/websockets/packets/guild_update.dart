@@ -1,15 +1,16 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/guilds/guild_role_manager.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
-import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+
 
 class GuildUpdate implements WebsocketPacket {
   @override
@@ -22,7 +23,7 @@ class GuildUpdate implements WebsocketPacket {
 
     Guild? before = client.guilds.cache.get(websocketResponse.payload['id']);
 
-    RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
+    GuildRoleManager roleManager = GuildRoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(roleManager: roleManager, payload: item);
       roleManager.cache.putIfAbsent(role.id, () => role);

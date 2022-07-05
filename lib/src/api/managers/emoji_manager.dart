@@ -27,7 +27,7 @@ class EmojiManager implements CacheManager<Emoji> {
     for(dynamic element in payload) {
       Emoji emoji = Emoji.from(
         memberManager: guild!.members,
-        roleManager: guild!.roles,
+        //roleManager: guild!.roles,
         emojiManager: this,
         payload: element
       );
@@ -53,7 +53,7 @@ class EmojiManager implements CacheManager<Emoji> {
 
     Emoji emoji = Emoji.from(
       memberManager: guild!.members,
-      roleManager: guild!.roles,
+      //roleManager: guild!.roles,
       emojiManager: this,
       payload: jsonDecode(response.body),
     );

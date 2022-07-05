@@ -4,12 +4,12 @@ import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
+import 'package:mineral/src/api/guilds/guild_role_manager.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_webhook_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
-import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/api/managers/sticker_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
@@ -45,7 +45,7 @@ class Guild {
   VerificationLevel verificationLevel;
   int defaultMessageNotifications;
   int explicitContentFilter;
-  RoleManager roles;
+  GuildRoleManager roles;
   List<GuildFeature> features;
   int mfaLevel;
   Snowflake? applicationId;
@@ -347,7 +347,7 @@ class Guild {
   factory Guild.from({
     required EmojiManager emojiManager,
     required MemberManager memberManager,
-    required RoleManager roleManager,
+    required GuildRoleManager roleManager,
     required ChannelManager channelManager,
     required ModerationRuleManager moderationRuleManager,
     required WebhookManager webhookManager,
