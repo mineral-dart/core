@@ -7,14 +7,14 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
-class RoleManager implements CacheManager<Role> {
+class GuildRoleManager implements CacheManager<Role> {
   @override
   Map<Snowflake, Role> cache = {};
 
   Snowflake guildId;
   late Guild guild;
 
-  RoleManager({ required this.guildId });
+  GuildRoleManager({ required this.guildId });
 
   @override
   Future<Map<Snowflake, Role>> sync () async {

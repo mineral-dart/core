@@ -3,7 +3,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
-import 'package:mineral/src/api/managers/role_manager.dart';
+import 'package:mineral/src/api/guilds/guild_role_manager.dart';
 
 class Tag {
   Snowflake? botId;
@@ -33,7 +33,7 @@ class Role {
   bool managed;
   bool mentionable;
   Tag? tags;
-  RoleManager manager;
+  GuildRoleManager manager;
 
   Role({
     required this.id,
@@ -224,7 +224,7 @@ class Role {
     }
   }
 
-  /// Removes the current this from the [RoleManager]'s cache
+  /// Removes the current this from the [MemberRoleManager]'s cache
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
@@ -261,7 +261,7 @@ class Role {
   @override
   String toString () => '<@&$id>';
 
-  factory Role.from({ required RoleManager roleManager, dynamic payload }) {
+  factory Role.from({ required GuildRoleManager roleManager, dynamic payload }) {
     return Role(
       id: payload['id'],
       label: payload['name'],

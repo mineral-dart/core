@@ -4,13 +4,13 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/channel.dart';
+import 'package:mineral/src/api/guilds/guild_role_manager.dart';
 import 'package:mineral/src/api/guilds/guild_scheduled_event.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
-import 'package:mineral/src/api/managers/role_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
@@ -27,7 +27,7 @@ class GuildCreate implements WebsocketPacket {
     CommandManager commandManager = ioc.singleton(ioc.services.command);
     MineralClient client = ioc.singleton(ioc.services.client);
 
-    RoleManager roleManager = RoleManager(guildId: websocketResponse.payload['id']);
+    GuildRoleManager roleManager = GuildRoleManager(guildId: websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(roleManager: roleManager, payload: item);
       roleManager.cache.putIfAbsent(role.id, () => role);
@@ -63,7 +63,6 @@ class GuildCreate implements WebsocketPacket {
     for(dynamic payload in websocketResponse.payload['emojis']) {
       Emoji emoji = Emoji.from(
         memberManager: memberManager,
-        roleManager: roleManager,
         emojiManager: emojiManager,
         payload: payload
       );
