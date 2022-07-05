@@ -37,7 +37,6 @@ class ScheduledEventUser {
 
 class GuildScheduledEvent {
   Snowflake id;
-  //Guild guild;
   Channel? channel;
   GuildMember? creator;
   String name;
@@ -48,7 +47,6 @@ class GuildScheduledEvent {
   ScheduledEventEntityType entityType;
   Snowflake? entityId;
   String? location;
-  int? subscribers;
   String? image;
 
   GuildScheduledEvent({
@@ -63,7 +61,6 @@ class GuildScheduledEvent {
       required this.status,
       required this.entityType,
       required this.entityId,
-      required this.subscribers,
       required this.image,
       required this.location,
   });
@@ -81,7 +78,6 @@ class GuildScheduledEvent {
       status: ScheduledEventStatus.values.firstWhere((element) => element.value == payload['status']),
       entityType: ScheduledEventEntityType.values.firstWhere((element) => element.value == payload['entity_type']),
       entityId: payload['entity_id'],
-      subscribers: payload['user_count'],
       image: payload['image'],
       location: payload['entity_metadata'] != null && payload['entity_metadata']['location'] != null ? payload['entity_metadata']['location'] : null
     );
