@@ -4,9 +4,9 @@ import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-class GuildMemberDelete implements WebsocketPacket {
+class GuildMemberRemove implements WebsocketPacket {
   @override
-  PacketType packetType = PacketType.memberDelete;
+  PacketType packetType = PacketType.memberRemove;
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
@@ -20,8 +20,8 @@ class GuildMemberDelete implements WebsocketPacket {
 
     if(guild != null && member != null) {
       manager.emit(
-          event: Events.memberLeave,
-          params: [member]
+        event: Events.memberLeave,
+        params: [member]
       );
 
       guild.members.cache.remove(member.user.id);

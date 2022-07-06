@@ -84,7 +84,7 @@ enum Events {
   channelDelete('delete::channel', { 'channel': Channel }),
 
   memberJoin('join::member', { 'member': GuildMember }),
-  memberUpdate('update::member', { 'member': GuildMember }),
+  memberUpdate('update::member', { 'before': GuildMember, 'after': GuildMember }),
   memberLeave('leave::member', { 'member': GuildMember }),
   memberRolesUpdate('update::roles-member', { 'before': Role, 'after': Role }),
   acceptRules('accept::rules', { 'member': GuildMember }),
