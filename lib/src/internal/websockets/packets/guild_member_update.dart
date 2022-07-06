@@ -31,13 +31,6 @@ class GuildMemberUpdate implements WebsocketPacket {
         params: [before, after]
       );
 
-      if (before?.isPending != after.isPending) {
-        manager.emit(
-          event: Events.acceptRules,
-          params: [after]
-        );
-      }
-
       if (before?.roles.cache.length != after.roles.cache.length) {
         manager.emit(
           event: Events.memberRolesUpdate,

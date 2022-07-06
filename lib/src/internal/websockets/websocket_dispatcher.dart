@@ -7,6 +7,8 @@ import 'package:mineral/src/internal/websockets/packets/channel_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_member_add.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_member_remove.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_member_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_delete.dart';
@@ -15,6 +17,7 @@ import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_us
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_user_remove.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_update.dart';
 import 'package:mineral/src/internal/websockets/packets/interaction_create.dart';
+import 'package:mineral/src/internal/websockets/packets/member_join_request.dart';
 import 'package:mineral/src/internal/websockets/packets/message_create.dart';
 import 'package:mineral/src/internal/websockets/packets/message_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/message_update.dart';
@@ -43,6 +46,9 @@ class WebsocketDispatcher {
     register(PacketType.channelDelete, ChannelDelete());
     register(PacketType.channelUpdate, ChannelUpdate());
     register(PacketType.memberUpdate, GuildMemberUpdate());
+    register(PacketType.memberRemove, GuildMemberRemove());
+    register(PacketType.memberAdd, GuildMemberAdd());
+    register(PacketType.memberJoinRequest, MemberJoinRequest());
     register(PacketType.interactionCreate, InteractionCreate());
     register(PacketType.autoModerationRuleCreate, AutoModerationRuleCreate());
     register(PacketType.autoModerationRuleDelete, AutoModerationRuleDelete());

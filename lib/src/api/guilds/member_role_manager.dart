@@ -44,7 +44,7 @@ class MemberRoleManager implements CacheManager<Role> {
     }
 
     Response response = await http.put(
-      url: '/guilds/{guild.id}/members/$memberId/roles/$id',
+      url: '/guilds/${manager.guildId}/members/$memberId/roles/$id',
       payload: {},
       headers: headers
     );
@@ -76,7 +76,7 @@ class MemberRoleManager implements CacheManager<Role> {
     }
 
     Response response = await http.destroy(
-      url: '/guilds/{guild.id}/members/$memberId/roles/$id',
+      url: '/guilds/${manager.guildId}/members/$memberId/roles/$id',
       headers: headers
     );
 
