@@ -30,6 +30,22 @@ class Image {
   };
 }
 
+class Thumbnail {
+  String url;
+  String? proxyUrl;
+  int? height;
+  int? width;
+
+  Thumbnail({ required this.url, this.proxyUrl, this.height, this.width });
+
+  Object toJson () => {
+    'url': url,
+    'proxy_url': proxyUrl,
+    'width': width,
+    'height': height,
+  };
+}
+
 class Author {
   String name;
   String? url;
@@ -67,7 +83,7 @@ class MessageEmbed {
   DateTime? timestamp;
   Footer? footer;
   Image? image;
-  // Thumbnail thumbnail;
+  Thumbnail? thumbnail;
   Author? author;
   List<Field>? fields;
   Color? color;
@@ -79,6 +95,7 @@ class MessageEmbed {
     this.timestamp,
     this.footer,
     this.image,
+    this.thumbnail,
     this.author,
     this.fields,
     this.color,
@@ -101,6 +118,11 @@ class MessageEmbed {
 
   MessageEmbed setImage ({ required String url, String? proxyUrl, int? width, int? height }) {
     image = Image(url: url, proxyUrl: proxyUrl, width: width, height: height);
+    return this;
+  }
+
+  MessageEmbed setThumbnail ({ required String url, String? proxyUrl, int? width, int? height }) {
+    thumbnail = Thumbnail(url: url, proxyUrl: proxyUrl, width: width, height: height);
     return this;
   }
 
@@ -146,6 +168,7 @@ class MessageEmbed {
       'fields': fields,
       'color': color != null ? int.parse(color.toString().replaceAll('#', ''), radix: 16) : null,
       'image': image?.toJson(),
+      'thumbnail': thumbnail?.toJson(),
     };
   }
 }
