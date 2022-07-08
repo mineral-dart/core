@@ -35,31 +35,18 @@ class VoiceStateUpdate implements WebsocketPacket {
 
       //User move
       if(before.channel != null && after.channel != null && before.channel != after.channel) {
-        manager.emit(
-          event: Events.voiceDisconnect,
-          params: [before]
-        );
-
-        manager.emit(
-          event: Events.voiceConnect,
-          params: [member, before.channel, after.channel]
-        );
+        _emitEvent(manager, Events.voiceDisconnect, [member, before.channel], before.channel!.id);
+        _emitEvent(manager, Events.voiceConnect, [member, before.channel, after.channel], after.channel!.id);
       }
 
       //User connect
       if(before.channel == null && after.channel != null) {
-        manager.emit(
-          event: Events.voiceConnect,
-          params: [member, before.channel, after.channel]
-        );
+        _emitEvent(manager, Events.voiceConnect, [member, before.channel, after.channel], after.channel!.id);
       }
 
       //User leave
       if(before.channel != null && after.channel == null) {
-        manager.emit(
-          event: Events.voiceDisconnect,
-          params: [before]
-        );
+        _emitEvent(manager, Events.voiceDisconnect, [member, before.channel], before.channel!.id);
       }
 
       //User muted
@@ -126,5 +113,18 @@ class VoiceStateUpdate implements WebsocketPacket {
         );
       }
     }
+  }
+
+  _emitEvent(EventManager manager, Events event, dynamic params, Snowflake customId) {
+    manager.emit(
+      event: event,
+      params: params,
+    );
+
+    manager.emit(
+      event: event,
+      params: params,
+      customId: customId
+    );
   }
 }

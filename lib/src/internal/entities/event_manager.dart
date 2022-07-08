@@ -96,8 +96,8 @@ enum Events {
   selectMenuCreate('create::selectMenuInteraction', { 'interaction': SelectMenuInteraction }),
 
   voiceStateUpdate('update::voice', { 'before': VoiceManager, 'after': VoiceManager }),
-  voiceConnect('connect::voice', { 'member': GuildMember }),
-  voiceDisconnect('disconnect::voice', { 'member': GuildMember }),
+  voiceConnect('connect::voice', { 'member': GuildMember, 'before': 'VoiceChannel?', 'after': VoiceChannel }),
+  voiceDisconnect('disconnect::voice', { 'member': GuildMember, 'channel': VoiceChannel }),
   memberMuted('mute::voice', { 'member': GuildMember }),
   memberUnMuted('unmute::voice', { 'member': GuildMember }),
   memberDeaf('deaf::voice', { 'member': GuildMember }),
