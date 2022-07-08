@@ -28,7 +28,9 @@ class Kernel {
     ioc.bind(namespace: ioc.services.store, service: stores);
     ioc.bind(namespace: ioc.services.modules, service: modules);
     ioc.bind(namespace: ioc.services.cli, service: cli);
+  }
 
+  void loadConsole () {
     cli.add(MakeCommand());
     cli.add(MakeEvent());
     cli.add(MakeModule());
