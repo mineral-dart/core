@@ -24,6 +24,7 @@ import 'package:mineral/src/internal/websockets/packets/message_update.dart';
 import 'package:mineral/src/internal/websockets/packets/presence_update.dart';
 import 'package:mineral/src/internal/websockets/packets/ready.dart';
 import 'package:mineral/src/internal/websockets/packets/resumed.dart';
+import 'package:mineral/src/internal/websockets/packets/voice_state_update.dart';
 import 'package:mineral/src/internal/websockets/packets/webhook_update.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -59,6 +60,7 @@ class WebsocketDispatcher {
     register(PacketType.guildScheduledEventUserRemove, GuildScheduledEventUserRemove());
     register(PacketType.webhookUpdate, WebhookUpdate());
     register(PacketType.guildIntegrationsUpdate, GuildIntegrationsUpdate());
+    register(PacketType.voiceStateUpdate, VoiceStateUpdate());
   }
 
   void register (PacketType type, WebsocketPacket packet) {

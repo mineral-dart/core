@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/guilds/guild_role_manager.dart';
+import 'package:mineral/src/api/managers/voice_manager.dart';
 
 class GuildMember {
   User user;
@@ -13,7 +14,7 @@ class GuildMember {
   bool isPending;
   DateTime? timeoutDuration;
   MemberRoleManager roles;
-  Voice voice;
+  late VoiceManager voice;
   late Guild guild;
 
   GuildMember({
@@ -97,7 +98,7 @@ class GuildMember {
       ..roles = roles;
   }
 
-  factory GuildMember.from({ required user, required GuildRoleManager roles, dynamic member, required Snowflake guildId }) {
+  factory GuildMember.from({ required user, required GuildRoleManager roles, dynamic member, required Snowflake guildId, required VoiceManager voice }) {
     MemberRoleManager memberRoleManager = MemberRoleManager(manager: roles, memberId: user.id);
     for (var element in (member['roles'] as List<dynamic>)) {
       Role? role = roles.cache.get(element);
@@ -116,7 +117,7 @@ class GuildMember {
       isPending: member['pending'] == true,
       timeoutDuration: member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
       roles: memberRoleManager,
-      voice: Voice.from(payload: member),
+      voice: voice,
     );
   }
 }

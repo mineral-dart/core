@@ -92,7 +92,18 @@ enum Events {
   commandCreate('create::commandInteraction', { 'interaction': CommandInteraction }),
   buttonCreate('create::buttonInteraction', { 'interaction': ButtonInteraction }),
   modalCreate('create::modalInteraction', { 'interaction': ModalInteraction }),
-  selectMenuCreate('create::selectMenuInteraction', { 'interaction': SelectMenuInteraction });
+  selectMenuCreate('create::selectMenuInteraction', { 'interaction': SelectMenuInteraction }),
+
+  voiceConnect('connect::voice', { 'member': GuildMember }),
+  voiceDisconnect('disconnect::voice', { 'member': GuildMember }),
+  memberMuted('mute::voice', { 'member': GuildMember }),
+  memberUnMuted('unmute::voice', { 'member': GuildMember }),
+  memberDeaf('deaf::voice', { 'member': GuildMember }),
+  memberUnDeaf('undeaf::voice', { 'member': GuildMember }),
+  memberSelfMuted('self::mute::voice', { 'member': GuildMember }),
+  memberSelfUnMuted('self::unmute::voice', { 'member': GuildMember }),
+  memberSelfDeaf('self::deaf::voice', { 'member': GuildMember }),
+  memberSelfUnDeaf('self::undeaf::voice', { 'member': GuildMember });
 
   final String event;
   final Map<String, dynamic> params;

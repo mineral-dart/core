@@ -53,6 +53,8 @@ enum PacketType {
 
   memberJoinRequest('GUILD_JOIN_REQUEST_UPDATE'),
 
+  voiceStateUpdate('VOICE_STATE_UPDATE'),
+
   resumed('RESUMED');
 
   final String _value;

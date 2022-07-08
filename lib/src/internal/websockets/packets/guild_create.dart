@@ -11,6 +11,7 @@ import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
+import 'package:mineral/src/api/managers/voice_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
@@ -32,6 +33,13 @@ class GuildCreate implements WebsocketPacket {
       Role role = Role.from(roleManager: roleManager, payload: item);
       roleManager.cache.putIfAbsent(role.id, () => role);
     }
+    
+    Map<Snowflake, VoiceManager> voices = {};
+    for(dynamic voiceMember in websocketResponse.payload['voice_states']) {
+      final VoiceManager voiceManager = VoiceManager.from(voiceMember, null);
+      voices.putIfAbsent(voiceMember['user_id'], () => voiceManager);
+      voices.putIfAbsent(voiceMember['channel_id'], () => voiceManager);
+    }
 
     MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
     for (dynamic member in websocketResponse.payload['members']) {
@@ -41,7 +49,10 @@ class GuildCreate implements WebsocketPacket {
         roles: roleManager,
         user: user,
         member: member,
-        guildId: websocketResponse.payload['id']
+        guildId: websocketResponse.payload['id'],
+        voice: voices.containsKey(user.id)
+            ? voices.get(user.id)!
+            : VoiceManager(isMute: member['mute'], isDeaf: member['deaf'], isSelfMute: false, isSelfDeaf: false, hasVideo: false, hasStream: false, channel: null)
       );
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
@@ -100,7 +111,6 @@ class GuildCreate implements WebsocketPacket {
     guild.members.cache.forEach((Snowflake id, GuildMember member) {
       member.guild = guild;
       member.voice.member = member;
-      member.voice.channel = guild.channels.cache.get(member.voice.channelId);
     });
 
     // Assign guild channels
@@ -110,6 +120,12 @@ class GuildCreate implements WebsocketPacket {
       channel.guild = guild;
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
       channel.webhooks.guild = guild;
+
+      print(id);
+      print(voices.containsKey(id));
+      if(voices.containsKey(id)) {
+        voices.get(id)!.channel = channel as VoiceChannel;
+      }
     });
 
     moderationManager.guild = guild;

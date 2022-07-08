@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/managers/voice_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -20,11 +21,17 @@ class GuildMemberUpdate implements WebsocketPacket {
       GuildMember? before = guild.members.cache.get(payload['user']['id']);
 
       User user = User.from(payload['user']);
-      GuildMember after = GuildMember.from(user: user, roles: guild.roles, guildId: guild.id, member: payload);
+      GuildMember after = GuildMember.from(
+          user: user,
+          roles: guild.roles,
+          member: payload,
+          guildId: guild.id,
+          voice: VoiceManager(isMute: payload['mute'], isDeaf: payload['deaf'], isSelfMute: false, isSelfDeaf: false, hasVideo: false, hasStream: false, channel: null)
+      );
 
       after.guild = guild;
-      after.voice.member = after;
-      after.voice.channel = guild.channels.cache.get(after.voice.channelId);
+      //after.voice.member = after;
+      //after.voice.channel = guild.channels.cache.get(after.voice.channelId);
 
       manager.emit(
         event: Events.memberUpdate,
