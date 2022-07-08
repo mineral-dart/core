@@ -50,11 +50,13 @@ class Kernel {
     ioc.bind(namespace: ioc.services.http, service: http);
 
     String? report = environment.get('REPORTER');
-    if (report?.toLowerCase() == 'true') {
-      ReporterManager reportManager = ReporterManager(Directory(join(Directory.current.path, 'logs')));
+    if (report != null) {
+      ReporterManager reporter = ReporterManager(Directory(join(Directory.current.path, 'logs')));
+      reporter.reportLevel = report;
+
       ioc.bind(
         namespace: ioc.services.reporter,
-        service: reportManager
+        service: reporter
       );
     }
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:path/path.dart';
 
 class ReporterManager {
+  late String reportLevel = 'info';
   final Directory _reportDirectory;
   late File currentFile;
 
