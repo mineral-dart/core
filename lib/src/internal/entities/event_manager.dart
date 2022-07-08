@@ -1,6 +1,7 @@
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/managers/voice_manager.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
 
 class EventManager {
@@ -94,6 +95,7 @@ enum Events {
   modalCreate('create::modalInteraction', { 'interaction': ModalInteraction }),
   selectMenuCreate('create::selectMenuInteraction', { 'interaction': SelectMenuInteraction }),
 
+  voiceStateUpdate('update::voice', { 'before': VoiceManager, 'after': VoiceManager }),
   voiceConnect('connect::voice', { 'member': GuildMember }),
   voiceDisconnect('disconnect::voice', { 'member': GuildMember }),
   memberMuted('mute::voice', { 'member': GuildMember }),

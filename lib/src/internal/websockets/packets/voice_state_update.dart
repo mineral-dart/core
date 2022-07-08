@@ -28,40 +28,42 @@ class VoiceStateUpdate implements WebsocketPacket {
 
       member.voice = after;
 
+      manager.emit(
+        event: Events.voiceStateUpdate,
+        params: [before, after]
+      );
+
       //User move
       if(before.channel != null && after.channel != null && before.channel != after.channel) {
-        print('USER MOVE');
         manager.emit(
-            event: Events.voiceDisconnect,
-            params: [member]
+          event: Events.voiceDisconnect,
+          params: [before]
         );
+
         manager.emit(
-            event: Events.voiceConnect,
-            params: [member]
+          event: Events.voiceConnect,
+          params: [member, before.channel, after.channel]
         );
       }
 
       //User connect
       if(before.channel == null && after.channel != null) {
-        print('USER CONNECT');
         manager.emit(
-            event: Events.voiceConnect,
-            params: [member]
+          event: Events.voiceConnect,
+          params: [member, before.channel, after.channel]
         );
       }
 
       //User leave
       if(before.channel != null && after.channel == null) {
-        print('USER LEAVE');
         manager.emit(
           event: Events.voiceDisconnect,
-          params: [member]
+          params: [before]
         );
       }
 
       //User muted
       if(!before.isMute && after.isMute) {
-        print('USER MUTE');
         manager.emit(
             event: Events.memberMuted,
             params: [member]
@@ -70,7 +72,6 @@ class VoiceStateUpdate implements WebsocketPacket {
 
       //User unmute
       if(before.isMute && !after.isMute) {
-        print('USER UNMUTE');
         manager.emit(
             event: Events.memberUnMuted,
             params: [member]
@@ -79,7 +80,6 @@ class VoiceStateUpdate implements WebsocketPacket {
 
       //User undeaf
       if(before.isDeaf && !after.isDeaf) {
-        print('USER UNDEAF');
         manager.emit(
             event: Events.memberUnDeaf,
             params: [member]
@@ -88,7 +88,6 @@ class VoiceStateUpdate implements WebsocketPacket {
 
       //User deaf
       if(!before.isDeaf && after.isDeaf) {
-        print('USER DEAF');
         manager.emit(
             event: Events.memberDeaf,
             params: [member]
@@ -97,7 +96,6 @@ class VoiceStateUpdate implements WebsocketPacket {
 
       //User selfUnMute
       if(before.isSelfMute && !after.isSelfMute) {
-        print('USER UNSELFMUTE');
         manager.emit(
             event: Events.memberSelfUnMuted,
             params: [member]
@@ -106,7 +104,6 @@ class VoiceStateUpdate implements WebsocketPacket {
 
       //User selfMute
       if(!before.isSelfMute && after.isSelfMute) {
-        print('USER SELFMUTE');
         manager.emit(
             event: Events.memberSelfMuted,
             params: [member]
@@ -115,7 +112,6 @@ class VoiceStateUpdate implements WebsocketPacket {
 
       //User selfUnDeaf
       if(before.isSelfDeaf && !after.isSelfDeaf) {
-        print('USER UNSELFDEAF');
         manager.emit(
             event: Events.memberSelfUnDeaf,
             params: [member]
@@ -124,7 +120,6 @@ class VoiceStateUpdate implements WebsocketPacket {
 
       //User selfDeaf
       if(!before.isSelfDeaf && after.isSelfDeaf) {
-        print('USER SELFDEAF');
         manager.emit(
             event: Events.memberSelfDeaf,
             params: [member]
