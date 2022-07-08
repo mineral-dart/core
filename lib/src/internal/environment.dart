@@ -22,7 +22,7 @@ class Environment {
     return this;
   }
 
-  String? get (String key){
+  String? get (String key) {
     return _cache[key];
   }
 

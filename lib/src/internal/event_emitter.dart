@@ -4,7 +4,7 @@ typedef CallbackMap<T> = Set<EventCallback<T>>;
 class EventEmitter<T> {
   final Map<String, CallbackMap<T>> _listeners = <String, CallbackMap<T>>{};
 
-  Future<void> on (String event, EventCallback<T> callback) async {
+  void on (String event, EventCallback<T> callback) {
     if (_listeners.containsKey(event)) {
       _listeners[event]?.add((args) => callback);
     } else {
@@ -17,9 +17,9 @@ class EventEmitter<T> {
 
   void emit (String event, Object? args) {
     if (_listeners.containsKey(event)) {
-      CallbackMap<T>? Map = _listeners[event];
+      CallbackMap<T>? callbacks = _listeners[event];
 
-      Map?.forEach((callback) {
+      callbacks?.forEach((callback) {
         callback.call(args as T);
       });
     }

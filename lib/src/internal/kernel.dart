@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mineral/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/commands/create_project.dart';
@@ -10,7 +12,9 @@ import 'package:mineral/src/internal/entities/command_manager.dart';
 import 'package:mineral/src/internal/entities/event_manager.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/entities/module_manager.dart';
+import 'package:mineral/src/internal/entities/reporter_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
+import 'package:path/path.dart';
 
 import 'entities/store_manager.dart';
 
@@ -44,6 +48,15 @@ class Kernel {
     Http http = Http(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     ioc.bind(namespace: ioc.services.http, service: http);
+
+    String? report = environment.get('REPORTER');
+    if (report?.toLowerCase() == 'true') {
+      ReporterManager reportManager = ReporterManager(Directory(join(Directory.current.path, 'logs')));
+      ioc.bind(
+        namespace: ioc.services.reporter,
+        service: reportManager
+      );
+    }
 
     String? token = environment.get('APP_TOKEN');
     if (token == null) {
