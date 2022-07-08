@@ -10,12 +10,13 @@ class Environment {
     List<String> content = await file.readAsLines(encoding: utf8);
 
     for (String line in content) {
-      List<String> content = line.split(':');
+      if (line.isNotEmpty) {
+        List<String> content = line.split(':');
+        String key = content[0].trim();
+        String value = content[1].trim();
 
-      String key = content[0].trim();
-      String value = content[1].trim();
-
-      _cache.putIfAbsent(key, () => value);
+        _cache.putIfAbsent(key, () => value);
+      }
     }
 
     return this;
