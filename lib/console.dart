@@ -1,6 +1,7 @@
 library console;
 
 import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/entities/reporter_manager.dart';
 
 class Console {
   static void log ({ required String message, String level = "info"}) {
@@ -15,6 +16,8 @@ class Console {
   }
 
   static debug ({ String prefix = 'debug', required String message }) {
+    _report('[ $prefix ] $message');
+
     String p = ColorList.white(prefix);
     log(message: "[ $p ] $message", level: "debug");
   }
@@ -22,19 +25,23 @@ class Console {
   static info ({ String prefix = 'info', required String message }) {
     String p = ColorList.blue(prefix);
     log(message: "[ $p ] $message", level: "info");
+    _report('[ $prefix ] $message');
   }
 
   static success ({ String prefix = 'success', required String message }) {
     String p = ColorList.green(prefix);
     log(message: "[ $p ] $message", level: "info");
+    _report('[ $prefix ] $message');
   }
 
   static error ({ String prefix = 'error', required String message }) {
     log(message: getErrorMessage(prefix: ColorList.red(prefix), message: message), level: "error");
+    _report('[ $prefix ] $message');
   }
 
   static warn ({ String prefix = 'warn', required String message }) {
     log(message: getWarnMessage(prefix: ColorList.yellow(prefix), message: message), level: "warn");
+    _report('[ $prefix ] $message');
   }
 
   static String getWarnMessage ({ String? prefix = 'warn', required String message }) {
@@ -45,6 +52,13 @@ class Console {
   static String getErrorMessage ({ String? prefix = 'error', required String message }) {
     String p = ColorList.red(prefix!);
     return "[ $p ] $message";
+  }
+
+  static _report (String message) {
+    ReporterManager? reporter = ioc.singleton(ioc.services.reporter);
+    if (reporter != null) {
+      reporter.write(message);
+    }
   }
 }
 
