@@ -52,7 +52,15 @@ class GuildCreate implements WebsocketPacket {
         guildId: websocketResponse.payload['id'],
         voice: voices.containsKey(user.id)
             ? voices.get(user.id)!
-            : VoiceManager(isMute: member['mute'], isDeaf: member['deaf'], isSelfMute: false, isSelfDeaf: false, hasVideo: false, hasStream: false, channel: null)
+            : VoiceManager(
+                isMute: member['mute'],
+                isDeaf: member['deaf'],
+                isSelfMute: false,
+                isSelfDeaf: false,
+                hasVideo: false,
+                hasStream: false,
+                channel: null
+            )
       );
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
