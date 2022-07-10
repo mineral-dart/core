@@ -24,6 +24,7 @@ class VoiceManager {
 
   Future<void> setMute(bool value) async {
     final Http http = ioc.singleton(ioc.services.http);
+
     final Response response = await http.patch(
       url: '/guilds/${member.guild.id}/members/${member.user.id}',
       payload: {'mute': value}
@@ -47,6 +48,14 @@ class VoiceManager {
   }
 
   Future<void> move(Snowflake channelId) async {
+    _updateChannel(channelId);
+  }
+
+  Future<void> disconnect() async {
+    _updateChannel(null);
+  }
+
+  Future<void> _updateChannel(Snowflake? channelId) async {
     final Http http = ioc.singleton(ioc.services.http);
     final Response response = await http.patch(
       url: '/guilds/${member.guild.id}/members/${member.user.id}',
