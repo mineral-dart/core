@@ -6,6 +6,8 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/channel.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
+import 'package:collection/collection.dart';
+
 class ChannelManager implements CacheManager<Channel> {
   @override
   Map<Snowflake, Channel> cache = {};
@@ -72,8 +74,9 @@ class ChannelManager implements CacheManager<Channel> {
     Response response = await http.post(url: "/guilds/$guildId/channels", payload: data);
     dynamic payload = jsonDecode(response.body);
 
-    if (channels.containsKey(payload['type'])) {
-      Channel Function(dynamic payload) item = channels[payload['type']] as Channel Function(dynamic payload);
+    final ChannelType? type = ChannelType.values.firstWhereOrNull((element) => element.value == payload['type']);
+    if (type != null && channels.containsKey(type)) {
+      Channel Function(dynamic payload) item = channels[type] as Channel Function(dynamic payload);
       Channel channel = item(payload);
 
       // Define deep properties
