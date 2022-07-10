@@ -25,11 +25,11 @@ class VoiceManager {
   Future<void> setMute(bool value) async {
     final Http http = ioc.singleton(ioc.services.http);
     final Response response = await http.patch(
-      url: '/guilds/${member.guild.id}/${member.user.id}',
+      url: '/guilds/${member.guild.id}/members/${member.user.id}',
       payload: {'mute': value}
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 204 || response.statusCode == 200) {
       isMute = value;
     }
   }
@@ -37,11 +37,11 @@ class VoiceManager {
   Future<void> setDeaf(bool value) async {
     final Http http = ioc.singleton(ioc.services.http);
     final Response response = await http.patch(
-      url: '/guilds/${member.guild.id}/${member.user.id}',
+      url: '/guilds/${member.guild.id}/members/${member.user.id}',
       payload: {'deaf': value}
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 204 || response.statusCode == 200) {
       isDeaf = value;
     }
   }

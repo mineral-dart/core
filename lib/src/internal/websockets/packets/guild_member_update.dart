@@ -20,16 +20,21 @@ class GuildMemberUpdate implements WebsocketPacket {
     if (guild != null) {
       GuildMember? before = guild.members.cache.get(payload['user']['id']);
 
+      VoiceManager voice = before != null
+          ? before.voice
+          : VoiceManager(isMute: payload['mute'], isDeaf: payload['deaf'], isSelfMute: false, isSelfDeaf: false, hasVideo: false, hasStream: false, channel: null);
+
       User user = User.from(payload['user']);
       GuildMember after = GuildMember.from(
           user: user,
           roles: guild.roles,
           member: payload,
           guildId: guild.id,
-          voice: VoiceManager(isMute: payload['mute'], isDeaf: payload['deaf'], isSelfMute: false, isSelfDeaf: false, hasVideo: false, hasStream: false, channel: null)
+          voice: voice
       );
 
       after.guild = guild;
+      after.voice.member = after;
       //after.voice.member = after;
       //after.voice.channel = guild.channels.cache.get(after.voice.channelId);
 

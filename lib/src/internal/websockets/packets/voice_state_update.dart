@@ -27,6 +27,7 @@ class VoiceStateUpdate implements WebsocketPacket {
       VoiceManager after = VoiceManager.from(payload, voiceChannel);
 
       member.voice = after;
+      after.member = member;
 
       manager.emit(
         event: Events.voiceStateUpdate,
