@@ -49,11 +49,11 @@ class VoiceManager {
   Future<void> move(Snowflake channelId) async {
     final Http http = ioc.singleton(ioc.services.http);
     final Response response = await http.patch(
-      url: '/guilds/${member.guild.id}/${member.user.id}',
+      url: '/guilds/${member.guild.id}/members/${member.user.id}',
       payload: {'channel_id': channelId}
     );
 
-    if (response.statusCode == 200) {
+    if (response.statusCode == 204 || response.statusCode == 200) {
       final VoiceChannel? channel = member.guild.channels.cache.get(channelId);
       if (channel != null) {
         this.channel = channel;
