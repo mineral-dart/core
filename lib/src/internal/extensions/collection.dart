@@ -30,6 +30,11 @@ extension Collection<K, V> on Map<K, V> {
   /// Channel channel = guild.channels.cache.getOrFail('991686152585232404');
   /// print(channel);
   /// ```
+  /// You can define an error customized message
+  /// ```dart
+  /// Channel channel = guild.channels.cache.getOrFail('991686152585232404', message: 'Channel is undefined');
+  /// print(channel);
+  /// ```
   T getOrFail<T extends V> (K? key, { String? message }) {
     final T? result = get(key);
     if (result == null) {
