@@ -30,10 +30,10 @@ extension Collection<K, V> on Map<K, V> {
   /// Channel channel = guild.channels.cache.getOrFail('991686152585232404');
   /// print(channel);
   /// ```
-  T getOrFail<T extends V> (K? key) {
+  T getOrFail<T extends V> (K? key, { String? message }) {
     final T? result = get(key);
     if (result == null) {
-      throw NotExist(cause: 'No values are attached to $key key.');
+      throw NotExist(cause: message ?? 'No values are attached to $key key.');
     }
 
     return result;
