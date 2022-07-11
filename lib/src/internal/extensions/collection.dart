@@ -54,4 +54,23 @@ extension Collection<K, V> on Map<K, V> {
     final MapEntry<K, V>? result = entries.firstWhereOrNull(callback);
     return result?.value as T;
   }
+
+  /// Returns the first element satisfying test, or throw if there are none.
+  /// ```dart
+  /// Channel? channel = guild.channels.cache.find((channel) => channel.id == '991686152585232404');
+  /// print(channel);
+  /// ```
+  /// You can define an error customized message
+  /// ```dart
+  /// Channel channel = guild.channels.cache.find((channel) => channel.id == '991686152585232404', message: 'Channel is undefined');
+  /// print(channel);
+  /// ```
+  T findOrFail<T extends V> (bool Function(MapEntry<K, V>) callback, { String? message }) {
+    final V? result = find(callback);
+    if (result == null) {
+      throw NotExist(cause: message ?? 'No values were found.');
+    }
+
+    return result as T;
+  }
 }
