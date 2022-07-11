@@ -1,6 +1,7 @@
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/voice_manager.dart';
 import 'package:mineral/src/internal/entities/store_manager.dart';
 
@@ -58,6 +59,7 @@ class Event {
 abstract class MineralEvent {
   late StoreManager stores;
   late MineralClient client;
+  late Environment environment;
 }
 
 enum Events {

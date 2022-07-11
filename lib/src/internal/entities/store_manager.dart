@@ -1,5 +1,6 @@
 import 'dart:mirrors';
 
+import 'package:mineral/core.dart';
 import 'package:mineral/src/exceptions/already_exist.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
 
@@ -11,6 +12,8 @@ class StoreManager {
     if (_stores.containsKey(name)) {
       throw AlreadyExist(cause: "A store named $name already exists.");
     }
+
+    store.environment = ioc.singleton(ioc.services.environment);
 
     _stores[name] = store;
     return this;
@@ -33,5 +36,6 @@ class Store {
 }
 
 abstract class MineralStore<T> {
+  late Environment environment;
   late T state;
 }
