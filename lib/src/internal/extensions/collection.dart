@@ -39,7 +39,7 @@ extension Collection<K, V> on Map<K, V> {
   T getOrFail<T extends V> (K? key, { String? message }) {
     final T? result = get(key);
     if (result == null) {
-      throw NotExist(cause: message ?? 'No values are attached to $key key.');
+      throw NotExist(prefix: 'Invalid value', cause: message ?? 'No values are attached to $key key.');
     }
 
     return result;
@@ -50,9 +50,9 @@ extension Collection<K, V> on Map<K, V> {
   /// Channel? channel = guild.channels.cache.find((channel) => channel.id == '991686152585232404');
   /// print(channel);
   /// ```
-  T? find<T extends V> (bool Function(MapEntry<K, V>) callback) {
-    final MapEntry<K, V>? result = entries.firstWhereOrNull(callback);
-    return result?.value as T;
+  T? find<T extends V> (bool Function(V element) callback) {
+    final MapEntry<K, V>? result = entries.firstWhereOrNull((item) => callback(item.value));
+    return result?.value as T?;
   }
 
   /// Returns the first element satisfying test, or throw if there are none.
@@ -65,10 +65,10 @@ extension Collection<K, V> on Map<K, V> {
   /// Channel channel = guild.channels.cache.find((channel) => channel.id == '991686152585232404', message: 'Channel is undefined');
   /// print(channel);
   /// ```
-  T findOrFail<T extends V> (bool Function(MapEntry<K, V>) callback, { String? message }) {
+  T findOrFail<T extends V> (bool Function(V element) callback, { String? message }) {
     final V? result = find(callback);
     if (result == null) {
-      throw NotExist(cause: message ?? 'No values were found.');
+      throw NotExist(prefix: 'Invalid value', cause: message ?? 'No values were found.');
     }
 
     return result as T;
