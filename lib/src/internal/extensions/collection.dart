@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
 
 extension Collection<K, V> on Map<K, V> {
@@ -42,5 +43,15 @@ extension Collection<K, V> on Map<K, V> {
     }
 
     return result;
+  }
+
+  /// Returns the first element satisfying test, or null if there are none.
+  /// ```dart
+  /// Channel? channel = guild.channels.cache.find((channel) => channel.id == '991686152585232404');
+  /// print(channel);
+  /// ```
+  T? find<T extends V> (bool Function(MapEntry<K, V>) callback) {
+    final MapEntry<K, V>? result = entries.firstWhereOrNull(callback);
+    return result?.value as T;
   }
 }
