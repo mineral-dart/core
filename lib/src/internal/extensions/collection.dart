@@ -9,6 +9,20 @@ extension Collection<K, V> on Map<K, V> {
   /// ```
   T? get<T extends V?> (K? key) => this[key] as T?;
 
+  /// Returns the value associated from the [K] parameter or defined value
+  /// ```dart
+  /// Channel firstChannel = guild.channels.cache.getOrFail('991686152585232404', defaultValue: myChannel );
+  /// Channel? secondChannel = guild.channels.cache.getOr('991686152585232404', defaultValue: firstChannel );
+  /// print(secondChannel);
+  /// ```
+  T? getOr<T extends V?> (K? key, { T? defaultValue }) {
+    V? result = get(key);
+    if (result == null) {
+      return defaultValue;
+    }
+    return result as T;
+  }
+
   /// Inserts or replaces data in the collection
   /// ```dart
   /// Channel channel = Channel.from({...});
