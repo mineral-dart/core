@@ -1,5 +1,7 @@
+import 'package:mineral/src/exceptions/not_exist.dart';
+
 extension Collection<K, V> on Map<K, V> {
-  /// Returns the value associated from the [key] parameter
+  /// Returns the value associated from the [K] parameter
   /// ```dart
   /// Channel? channel = guild.channels.cache.get('991686152585232404');
   /// print(channel);
@@ -21,5 +23,19 @@ extension Collection<K, V> on Map<K, V> {
   V? overrideIfPresent (K key, V Function() ifPresent) {
     if (this[key] != null) this[key] = ifPresent();
     return this[key];
+  }
+
+  /// Returns the value associated from the [K] parameter
+  /// ```dart
+  /// Channel channel = guild.channels.cache.getOrFail('991686152585232404');
+  /// print(channel);
+  /// ```
+  T getOrFail<T extends V> (K? key) {
+    final T? result = get(key);
+    if (result == null) {
+      throw NotExist(cause: 'No values are attached to $key key.');
+    }
+
+    return result;
   }
 }
