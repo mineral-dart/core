@@ -1,46 +1,61 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/components/component.dart';
-import 'package:mineral/src/api/message_attachment.dart';
-import 'package:mineral/src/api/message_sticker_item.dart';
+import 'package:mineral/src/api/messages/message_attachment.dart';
+import 'package:mineral/src/api/messages/message_sticker_item.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
 
-class DmMessage {
-  Snowflake id;
-  String content;
-  bool tts;
-  List<MessageEmbed> embeds;
-  bool allowMentions;
-  Message? reference;
-  List<Component> components;
-  List<MessageStickerItem> stickers;
-  dynamic payload;
-  List<MessageAttachment> attachments;
-  int? flags;
-  Snowflake channelId;
-  DmChannel channel;
-  User author;
+class Message extends PartialMessage<TextBasedChannel> {
+  GuildMember author;
 
-  DmMessage({
-    required this.id,
-    required this.content,
-    required this.tts,
-    required this.embeds,
-    required this.allowMentions,
-    required this.reference,
-    required this.components,
-    required this.stickers,
-    required this.payload,
-    required this.attachments,
-    required this.flags,
-    required this.channelId,
-    required this.channel,
+  Message({
+    required id,
+    required content,
+    required tts,
+    required embeds,
+    required allowMentions,
+    required reference,
+    required components,
+    required stickers,
+    required payload,
+    required attachments,
+    required flags,
+    required channelId,
+    required channel,
     required this.author,
-  });
+  }): super(
+    id: id,
+    content: content,
+    tts: tts,
+    embeds: embeds,
+    allowMentions: allowMentions,
+    reference: reference,
+    components: components,
+    stickers: stickers,
+    payload: payload,
+    attachments: attachments,
+    flags: flags,
+    channelId: channelId,
+    channel: channel,
+  );
 
-  factory DmMessage.from({ required DmChannel channel, required dynamic payload }) {
-    MineralClient client = ioc.singleton(ioc.services.client);
-    User? user = client.users.cache.get(payload['author']['id']);
+  Future<Message> sync () async {
+    Http http = ioc.singleton(ioc.services.http);
+
+    Response response = await http.get(url: "/channels/${channel.id}");
+    dynamic payload = jsonDecode(response.body);
+
+    Message message = Message.from(channel: channel, payload: payload);
+    channel.messages.cache.set(message.id, message);
+
+    return message;
+  }
+
+  factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
+    GuildMember? guildMember = channel.guild?.members.cache.get(payload['author']['id']);
     List<MessageEmbed> embeds = [];
 
     for (dynamic element in payload['embeds']) {
@@ -102,7 +117,7 @@ class DmMessage {
       components.add(component);
     }
 
-    return DmMessage(
+    return Message(
       id: payload['id'],
       content: payload['content'],
       tts: payload['tts'] ?? false,
@@ -111,7 +126,7 @@ class DmMessage {
       flags: payload['flags'],
       channelId: channel.id,
       channel: channel,
-      author: user!,
+      author: guildMember!,
       embeds: embeds,
       components: components,
       payload: payload['payload'],
