@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/channel.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class CategoryChannel extends Channel {

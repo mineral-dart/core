@@ -1,7 +1,7 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/base_channel.dart';
+import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 enum ChannelType {
@@ -37,7 +37,7 @@ Map<ChannelType, Channel Function(dynamic payload)> channels = {
   // 'GUILD_FORUM': () => ,
 };
 
-class Channel extends BaseChannel {
+class Channel extends PartialChannel {
   ChannelType type;
   Snowflake? guildId;
   late Guild? guild;

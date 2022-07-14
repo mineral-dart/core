@@ -1,11 +1,11 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/channels/base_channel.dart';
+import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_embed.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 
-class PartialMessage<T extends BaseChannel> {
+class PartialMessage<T extends PartialChannel> {
   Snowflake id;
   String content;
   bool tts;

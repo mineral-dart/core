@@ -1,9 +1,9 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/base_channel.dart';
+import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 
-class DmChannel extends BaseChannel {
+class DmChannel extends PartialChannel {
   Snowflake? lastMessageId;
   MessageManager messages;
   Map<Snowflake, User> recipients;

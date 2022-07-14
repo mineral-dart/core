@@ -1,6 +1,5 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
-
 import 'package:mineral/src/api/managers/thread_manager.dart';
 
 class TextChannel extends TextBasedChannel {
