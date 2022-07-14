@@ -71,6 +71,7 @@ extension StringFormat on String {
     return '${word.substring(0, 1).toUpperCase()}${word.substring(1).toLowerCase()}';
   }
 
+  String get capitalCase => _upperCaseFirstLetter(this);
   String get camelCase => _getCamelCase();
   String get constantCase => _getConstantCase();
   String get sentenceCase => _getSentenceCase();
