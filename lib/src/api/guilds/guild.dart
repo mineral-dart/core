@@ -344,6 +344,16 @@ class Guild {
     }
   }
 
+  Future<void> leave () async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.destroy(url: '/users/@me/guilds/$id');
+
+    if (response.statusCode == 204) {
+      MineralClient client = ioc.singleton(ioc.services.client);
+      client.guilds.cache.remove(this);
+    }
+  }
+
   factory Guild.from({
     required EmojiManager emojiManager,
     required MemberManager memberManager,
