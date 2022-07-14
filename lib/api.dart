@@ -48,5 +48,6 @@ export 'src/api/interactions/select_menu_interaction.dart' show SelectMenuIntera
 
 export 'src/api/utils.dart';
 export 'src/internal/extensions/collection.dart';
+export 'src/internal/extensions/string.dart';
 
 typedef Snowflake = String;
