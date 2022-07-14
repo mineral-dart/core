@@ -11,7 +11,7 @@ class GuildMember {
   DateTime joinedAt;
   DateTime? premiumSince;
   String? permissions;
-  bool isPending;
+  bool pending;
   DateTime? timeoutDuration;
   MemberRoleManager roles;
   late VoiceManager voice;
@@ -24,7 +24,7 @@ class GuildMember {
     required this.joinedAt,
     required this.premiumSince,
     required this.permissions,
-    required this.isPending,
+    required this.pending,
     required this.timeoutDuration,
     required this.roles,
     required this.voice,
@@ -76,6 +76,10 @@ class GuildMember {
     await http.destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
 
+  bool isBot () => user.bot;
+
+  bool isPending () => pending;
+
   @override
   String toString () {
     return "<@${nickname != null ? '!' : ''}${user.id}>";
@@ -89,7 +93,7 @@ class GuildMember {
       joinedAt: joinedAt,
       premiumSince: premiumSince,
       permissions: permissions,
-      isPending: isPending,
+      pending: pending,
       timeoutDuration: timeoutDuration,
       roles: roles,
       voice: voice
@@ -114,7 +118,7 @@ class GuildMember {
       joinedAt: DateTime.parse(member['joined_at']),
       premiumSince: member['premium_since'] != null ? DateTime.parse(member['premium_since']) : null,
       permissions: member['permissions'],
-      isPending: member['pending'] == true,
+      pending: member['pending'] == true,
       timeoutDuration: member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
       roles: memberRoleManager,
       voice: voice,

@@ -1,12 +1,12 @@
 
 import 'dart:io';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:path/path.dart';
 import 'package:args/args.dart';
 import 'package:interact/interact.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/helper.dart';
 import 'package:mineral/src/internal/entities/cli_manager.dart';
 
 class MakeEvent extends MineralCliCommand {
@@ -20,7 +20,7 @@ class MakeEvent extends MineralCliCommand {
       return;
     }
 
-    String filename = Helper.toCapitalCase(args.arguments.elementAt(1));
+    String filename = args.arguments.elementAt(1).capitalCase;
 
     final eventKey = Select(
       prompt: 'Which event would you like to use ?',
@@ -45,14 +45,14 @@ class MakeEvent extends MineralCliCommand {
           .toList(),
       ).interact();
 
-      file = File(join(directories[selection].path, '${Helper.toSnakeCase(filename)}.dart'));
+      file = File(join(directories[selection].path, '${filename.snakeCase}.dart'));
     } else {
       final location = Input(
         prompt: 'Target folder location',
         defaultValue: 'App/folder', // optional, will provide the user as a hint
       ).interact();
 
-      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', ''), '${Helper.toSnakeCase(filename)}.dart'));
+      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', ''), '${filename.snakeCase}.dart'));
     }
 
     await file.create(recursive: true);
@@ -73,7 +73,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/api.dart';
 
 @Event(${event.toString()})
-class ${Helper.toCapitalCase(filename)} extends MineralEvent {
+class ${filename.capitalCase} extends MineralEvent {
   Future<void> handle (${params.join(', ')}) async {
     // Your code here
   }

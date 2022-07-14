@@ -4,42 +4,43 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
-import 'package:mineral/src/api/message_attachment.dart';
-import 'package:mineral/src/api/message_embed.dart';
-import 'package:mineral/src/api/message_sticker_item.dart';
+import 'package:mineral/src/api/messages/message_attachment.dart';
+import 'package:mineral/src/api/messages/message_sticker_item.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
 
-class Message {
-  Snowflake id;
-  String content;
-  bool tts;
-  List<MessageEmbed> embeds;
-  bool allowMentions;
-  Message? reference;
-  List<Component> components;
-  List<MessageStickerItem> stickers;
-  dynamic payload;
-  List<MessageAttachment> attachments;
-  int? flags;
-  Snowflake channelId;
-  TextBasedChannel channel;
+class Message extends PartialMessage<TextBasedChannel> {
   GuildMember author;
 
   Message({
-    required this.id,
-    required this.content,
-    required this.tts,
-    required this.embeds,
-    required this.allowMentions,
-    required this.reference,
-    required this.components,
-    required this.stickers,
-    required this.payload,
-    required this.attachments,
-    required this.flags,
-    required this.channelId,
-    required this.channel,
+    required id,
+    required content,
+    required tts,
+    required embeds,
+    required allowMentions,
+    required reference,
+    required components,
+    required stickers,
+    required payload,
+    required attachments,
+    required flags,
+    required channelId,
+    required channel,
     required this.author,
-  });
+  }): super(
+    id: id,
+    content: content,
+    tts: tts,
+    embeds: embeds,
+    allowMentions: allowMentions,
+    reference: reference,
+    components: components,
+    stickers: stickers,
+    payload: payload,
+    attachments: attachments,
+    flags: flags,
+    channelId: channelId,
+    channel: channel,
+  );
 
   Future<Message> sync () async {
     Http http = ioc.singleton(ioc.services.http);

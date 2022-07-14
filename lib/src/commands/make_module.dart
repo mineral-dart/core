@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:interact/interact.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
-import 'package:mineral/helper.dart';
 import 'package:mineral/src/internal/entities/cli_manager.dart';
 import 'package:path/path.dart';
 
@@ -18,7 +18,7 @@ class MakeModule extends MineralCliCommand {
       return;
     }
 
-    String filename = Helper.toCapitalCase(args.arguments.elementAt(1));
+    String filename = args.arguments.elementAt(1).capitalCase;
 
     final useExistLocation = Confirm(
       prompt: 'Do you want to use an existing location on your disk ?',
@@ -39,16 +39,16 @@ class MakeModule extends MineralCliCommand {
           .toList(),
       ).interact();
 
-      directory = Directory(join(directories[selection].path, Helper.toSnakeCase(filename)));
-      file = File(join(directory.path, '${Helper.toSnakeCase(filename)}.dart'));
+      directory = Directory(join(directories[selection].path, filename.snakeCase));
+      file = File(join(directory.path, '${filename.snakeCase}.dart'));
     } else {
       final location = Input(
         prompt: 'Target folder location',
         defaultValue: 'App/folder',
       ).interact();
 
-      directory = Directory(join(Directory.current.path, 'src', location.replaceAll('App/', ''), Helper.toSnakeCase(filename)));
-      file = File(join(directory.path, '${Helper.toSnakeCase(filename)}.dart'));
+      directory = Directory(join(Directory.current.path, 'src', location.replaceAll('App/', ''), filename.snakeCase));
+      file = File(join(directory.path, '${filename.snakeCase}.dart'));
     }
 
     await Directory(join(directory.path, 'events')).create(recursive: true);
@@ -65,8 +65,8 @@ class MakeModule extends MineralCliCommand {
   String getTemplate (String filename) => '''
 import 'package:mineral/core.dart';
 
-@Module(identifier: '${Helper.toSnakeCase(filename)}', label: '${Helper.toCapitalCase(filename)} module')
-class ${Helper.toPascalCase(filename)} extends MineralModule {
+@Module(identifier: '${filename.snakeCase}', label: '${filename.capitalCase} module')
+class ${filename.pascalCase} extends MineralModule {
   @override
   List<MineralCommand> commands = [];
 

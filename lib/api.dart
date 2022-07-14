@@ -27,8 +27,8 @@ export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
 export 'src/api/channels/text_channel.dart' show TextChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
 
-export 'src/api/message.dart' show Message;
-export 'src/api/message_embed.dart' show MessageEmbed, Footer, Image, Thumbnail, Author, Field;
+export 'src/api/messages/message.dart' show Message;
+export 'src/api/messages/message_embed.dart' show MessageEmbed, Footer, Image, Thumbnail, Author, Field;
 export 'src/api/color.dart' show Color;
 
 export 'src/api/emoji.dart' show Emoji;
@@ -48,5 +48,6 @@ export 'src/api/interactions/select_menu_interaction.dart' show SelectMenuIntera
 
 export 'src/api/utils.dart';
 export 'src/internal/extensions/collection.dart';
+export 'src/internal/extensions/string.dart';
 
 typedef Snowflake = String;

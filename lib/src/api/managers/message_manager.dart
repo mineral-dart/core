@@ -4,10 +4,11 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
 
-class MessageManager implements CacheManager<Message> {
+class MessageManager implements CacheManager<PartialMessage> {
   @override
-  Map<Snowflake, Message> cache = {};
+  Map<Snowflake, PartialMessage> cache = {};
 
   final Snowflake? _guildId;
   final Snowflake _channelId;
@@ -15,7 +16,7 @@ class MessageManager implements CacheManager<Message> {
   MessageManager(this._channelId, this._guildId);
 
   @override
-  Future<Map<Snowflake, Message>> sync () async {
+  Future<Map<Snowflake, PartialMessage>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 

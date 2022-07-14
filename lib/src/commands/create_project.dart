@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
-import 'package:mineral/helper.dart';
 import 'package:mineral/src/internal/entities/cli_manager.dart';
 import 'package:path/path.dart';
 
@@ -17,11 +17,11 @@ class CreateProject extends MineralCliCommand {
       return;
     }
 
-    String filename = Helper.toSnakeCase(args.arguments.elementAt(1));
+    String filename = args.arguments.elementAt(1).snakeCase;
 
     final projectDirectory = Directory(join(Directory.current.path, filename));
 
-    ProcessResult process = await Process.run('git', ['clone', 'https://github.com/mineral-dart/base-structure.git', Helper.toSnakeCase(filename)]);
+    ProcessResult process = await Process.run('git', ['clone', 'https://github.com/mineral-dart/base-structure.git', filename.snakeCase]);
 
     switch (process.exitCode) {
       case 0:

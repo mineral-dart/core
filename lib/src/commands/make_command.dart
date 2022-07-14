@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:interact/interact.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
-import 'package:mineral/helper.dart';
 import 'package:mineral/src/internal/entities/cli_manager.dart';
 import 'package:path/path.dart';
 
@@ -18,7 +18,7 @@ class MakeCommand extends MineralCliCommand {
       return;
     }
 
-    String filename = Helper.toCapitalCase(args.arguments.elementAt(1));
+    String filename = args.arguments.elementAt(1).capitalCase;
 
     final useExistLocation = Confirm(
       prompt: 'Do you want to use an existing location on your disk ?',
@@ -38,14 +38,14 @@ class MakeCommand extends MineralCliCommand {
           .toList(),
       ).interact();
 
-      file = File(join(directories[selection].path, '${Helper.toSnakeCase(filename)}.dart'));
+      file = File(join(directories[selection].path, '${filename.snakeCase}.dart'));
     } else {
       final location = Input(
         prompt: 'Target folder location',
         defaultValue: 'App/folder', // optional, will provide the user as a hint
       ).interact();
 
-      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', ''), '${Helper.toSnakeCase(filename)}.dart'));
+      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', ''), '${filename.snakeCase}.dart'));
     }
 
     await file.create(recursive: true);
@@ -59,8 +59,8 @@ class MakeCommand extends MineralCliCommand {
 import 'package:mineral/core.dart';
 import 'package:mineral/api.dart';
 
-@Command(name: '${filename.toLowerCase()}', description: '${Helper.toCapitalCase(filename)} command description', scope: 'GUILD')
-class ${Helper.toPascalCase(filename)} extends MineralCommand {
+@Command(name: '${filename.toLowerCase()}', description: '${filename.capitalCase} command description', scope: 'GUILD')
+class ${filename.pascalCase} extends MineralCommand {
   Future<void> handle (CommandInteraction interaction) async {
     // Your code here
   }
