@@ -4,7 +4,7 @@ extension StringFormat on String {
     RegExp _upperAlphaRegex = RegExp(r'[A-Z]');
     Set<String> symbolSet = {' ', '.', '/', '_', '\\', '-'};
 
-    StringBuffer sb = StringBuffer();
+    StringBuffer buffer = StringBuffer();
     List<String> words = [];
     bool isAllCaps = text.toUpperCase() == text;
 
@@ -16,15 +16,15 @@ extension StringFormat on String {
         continue;
       }
 
-      sb.write(char);
+      buffer.write(char);
 
       bool isEndOfWord = nextChar == null
         || (_upperAlphaRegex.hasMatch(nextChar) && !isAllCaps)
         || symbolSet.contains(nextChar);
 
       if (isEndOfWord) {
-        words.add(sb.toString());
-        sb.clear();
+        words.add(buffer.toString());
+        buffer.clear();
       }
     }
 
