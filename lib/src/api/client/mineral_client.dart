@@ -5,7 +5,7 @@ import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/user_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 
-import '../../internal/entities/command_manager.dart';
+import 'package:mineral/src/internal/managers/command_manager.dart';
 
 enum Intent {
   guilds(1 << 0),
