@@ -6,8 +6,8 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/interactions/button_interaction.dart';
 import 'package:mineral/src/api/interactions/select_menu_interaction.dart';
-import 'package:mineral/src/internal/entities/command_manager.dart';
-import 'package:mineral/src/internal/entities/event_manager.dart';
+import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 

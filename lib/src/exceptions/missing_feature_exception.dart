@@ -1,6 +1,6 @@
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/entities/reporter_manager.dart';
+import 'package:mineral/src/internal/managers/reporter_manager.dart';
 
 class MissingFeatureException implements Exception {
   String prefix = 'MISSING FEATURE';

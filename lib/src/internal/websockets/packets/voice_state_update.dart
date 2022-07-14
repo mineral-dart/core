@@ -1,10 +1,7 @@
-import 'dart:convert';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/voice_manager.dart';
-import 'package:mineral/src/internal/entities/event_manager.dart';
-import 'package:mineral/src/internal/event_emitter.dart';
+import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 

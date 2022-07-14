@@ -3,7 +3,7 @@ import 'dart:mirrors';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/voice_manager.dart';
-import 'package:mineral/src/internal/entities/store_manager.dart';
+import 'package:mineral/src/internal/managers/store_manager.dart';
 
 class EventManager {
   final Map<Events, List<Map<String, dynamic>>> _events = {};

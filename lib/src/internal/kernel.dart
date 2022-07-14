@@ -7,16 +7,15 @@ import 'package:mineral/src/commands/make_command.dart';
 import 'package:mineral/src/commands/make_event.dart';
 import 'package:mineral/src/commands/make_module.dart';
 import 'package:mineral/src/commands/make_store.dart';
-import 'package:mineral/src/internal/entities/cli_manager.dart';
-import 'package:mineral/src/internal/entities/command_manager.dart';
-import 'package:mineral/src/internal/entities/event_manager.dart';
+import 'package:mineral/src/internal/managers/cli_manager.dart';
+import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/entities/module_manager.dart';
-import 'package:mineral/src/internal/entities/reporter_manager.dart';
+import 'package:mineral/src/internal/managers/module_manager.dart';
+import 'package:mineral/src/internal/managers/reporter_manager.dart';
+import 'package:mineral/src/internal/managers/store_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:path/path.dart';
-
-import 'entities/store_manager.dart';
 
 class Kernel {
   EventManager events = EventManager();

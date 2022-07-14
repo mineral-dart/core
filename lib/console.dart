@@ -1,7 +1,7 @@
 library console;
 
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/entities/reporter_manager.dart';
+import 'package:mineral/src/internal/managers/reporter_manager.dart';
 
 class Console {
   static void log ({ required String message, String level = 'info'}) {

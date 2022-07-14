@@ -7,7 +7,7 @@ import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
-import 'package:mineral/src/internal/entities/event_manager.dart';
+import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 

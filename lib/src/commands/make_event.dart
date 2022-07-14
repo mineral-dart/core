@@ -7,7 +7,7 @@ import 'package:path/path.dart';
 import 'package:args/args.dart';
 import 'package:interact/interact.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/entities/cli_manager.dart';
+import 'package:mineral/src/internal/managers/cli_manager.dart';
 
 class MakeEvent extends MineralCliCommand {
   @override

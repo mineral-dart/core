@@ -3,8 +3,8 @@ import 'dart:mirrors';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/exceptions/already_exist.dart';
-import 'package:mineral/src/internal/entities/command_manager.dart';
-import 'package:mineral/src/internal/entities/store_manager.dart';
+import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/store_manager.dart';
 
 import 'event_manager.dart';
 

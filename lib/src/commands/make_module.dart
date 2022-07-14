@@ -4,7 +4,7 @@ import 'package:args/args.dart';
 import 'package:interact/interact.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
-import 'package:mineral/src/internal/entities/cli_manager.dart';
+import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:path/path.dart';
 
 class MakeModule extends MineralCliCommand {
