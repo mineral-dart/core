@@ -63,7 +63,7 @@ class CommandManager {
       if (reflectee is CommandGroup) {
         SlashCommand group = SlashCommand(name: '', description: '', scope: '', options: [])
           ..type = 2
-          ..name = reflectee.name
+          ..name = reflectee.name.toLowerCase()
           ..description = reflectee.description;
 
         command.groups.add(group);
@@ -71,7 +71,7 @@ class CommandManager {
 
       if (reflectee is Command) {
         command
-          ..name = reflectee.name
+          ..name = reflectee.name.toLowerCase()
           ..description = reflectee.description
           ..scope = reflectee.scope;
 

@@ -63,6 +63,7 @@ import 'package:mineral/api.dart';
 class ${filename.pascalCase} extends MineralCommand {
   Future<void> handle (CommandInteraction interaction) async {
     // Your code here
+    await interaction.reply(content: 'Hello World ! 💪');
   }
 }
   ''';
