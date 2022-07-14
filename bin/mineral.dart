@@ -5,6 +5,8 @@ import 'package:mineral/src/internal/managers/cli_manager.dart';
 
 Future<void> main (List<String> arguments) async {
   Kernel kernel = Kernel();
+  kernel.loadConsole();
+
   final ArgParser parser = ArgParser();
 
   final makeCommandParser = ArgParser();
