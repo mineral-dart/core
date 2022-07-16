@@ -7,6 +7,7 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 
 import 'package:mineral/core.dart';
 
+import '../channels/private_thread.dart';
 import '../channels/public_thread.dart';
 
 class ThreadManager implements CacheManager<Channel> {
@@ -31,33 +32,48 @@ class ThreadManager implements CacheManager<Channel> {
     for (dynamic element in payload) {
       if (element['type'] == ChannelType.guildPublicThread) {
         PublicThread thread = PublicThread.from(payload: element);
-
         cache.putIfAbsent(thread.id, () => thread);
       }
+
       if (element['type'] == ChannelType.guildPrivateThread) {
-        //TODO
+        PrivateThread thread = PrivateThread.from(payload: element);
+        cache.putIfAbsent(thread.id, () => thread);
       }
     }
 
     return cache;
   }
 
-  Future<PublicThread?> createPublicThread ({ required String label, }) async {
+  Future<PublicThread?> createPublicThread ({ required String label }) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.post(url: "/channels/${channel?.id}/threads", payload: {
       'name': label,
       'auto_archive_duration': '60',
       'type': 11
     });
-    print(response.body);
+
     if (response.statusCode == 200) {
       PublicThread thread = PublicThread.from(payload: jsonDecode(response.body));
       return thread;
     }
 
-    if (response.statusCode == 400) {
-      // TODO
+    return null;
+  }
+
+  Future<PrivateThread?> createPrivateThread ({ required String label}) async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.post(url: "/channels/${channel?.id}/threads", payload: {
+      'name': label,
+      'auto_archive_duration': '60',
+      'type': 12
+    });
+
+    if (response.statusCode == 200) {
+      PrivateThread thread = PrivateThread.from(payload: jsonDecode(response.body));
+      return thread;
     }
+
+    return null;
   }
 
 }
