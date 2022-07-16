@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/channel.dart';
-import 'package:mineral/src/api/guilds/guild_role_manager.dart';
+import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/api/guilds/guild_scheduled_event.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -33,7 +33,7 @@ class GuildCreate implements WebsocketPacket {
       Role role = Role.from(roleManager: roleManager, payload: item);
       roleManager.cache.putIfAbsent(role.id, () => role);
     }
-    
+
     Map<Snowflake, VoiceManager> voices = {};
     for(dynamic voiceMember in websocketResponse.payload['voice_states']) {
       final VoiceManager voiceManager = VoiceManager.from(voiceMember, null);

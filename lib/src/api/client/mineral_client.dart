@@ -89,7 +89,17 @@ class MineralClient {
     required this.intents,
   });
 
-  setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
+  /// ### Defines the presence that this should adopt
+  ///
+  ///
+  /// Example :
+  /// ```dart
+  /// client.setPresence(
+  ///   activity: ClientActivity(name: 'My activity', type: GamePresence.listening),
+  ///   status: ClientStatus.doNotDisturb
+  /// );
+  /// ```
+  void setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
     ShardManager manager = ioc.singleton(ioc.services.shards);
     manager.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
@@ -99,6 +109,12 @@ class MineralClient {
     });
   }
 
+  /// Sends a ping/pong to the APi websocket of discord and returns the latency
+  ///
+  /// Example :
+  /// ```dart
+  /// final int latency = client.getLatency();
+  /// ```
   int getLatency () {
     ShardManager manager = ioc.singleton(ioc.services.shards);
     return manager.getLatency();

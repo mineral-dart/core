@@ -1,3 +1,20 @@
+/// Instance of colour.
+/// You can use a pre-designed colour panel
+///
+/// Example
+///
+  /// Example :
+  /// ```dart
+/// import 'package:mineral/api.dart';
+/// print(Color.cyan_600);
+/// ```
+/// Or create your own colour instances
+///
+  /// Example :
+  /// ```dart
+/// import 'package:mineral/api.dart';
+/// print(Color('#FFFFFF'));
+// ```
 class Color {
   static Color amber_50 = Color('#fff7ed');
   static Color amber_100 = Color('#ffedd5');

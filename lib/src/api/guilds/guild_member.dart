@@ -1,7 +1,8 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/guilds/guild_role_manager.dart';
+import 'package:mineral/src/api/managers/guild_role_manager.dart';
+import 'package:mineral/src/api/managers/member_role_manager.dart';
 import 'package:mineral/src/api/managers/voice_manager.dart';
 
 class GuildMember {
@@ -30,6 +31,12 @@ class GuildMember {
     required this.voice,
   });
 
+  /// ### Update the username of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.setUsername('John Doe');
+  /// ```
   Future<void> setUsername (String name) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -39,6 +46,17 @@ class GuildMember {
     }
   }
 
+  /// ### Excludes this for a pre-defined period
+  ///
+  /// Note: An exclusion cannot exceed 28 days
+  ///
+  /// See [documentation](https://discord.com/developers/docs/resources/guild#modify-guild-member)
+  ///
+  /// Example :
+  /// ```dart
+  /// final DateTime = DateTime.now().add(Duration(days: 28));
+  /// await member.timeout(DateTime);
+  /// ```
   Future<void> timeout (DateTime expiration) async {
     // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
     Http http = ioc.singleton(ioc.services.http);
@@ -49,6 +67,12 @@ class GuildMember {
     }
   }
 
+  /// ### Cancels the exclusion of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.removeTimeout();
+  /// ```
   Future<void> removeTimeout () async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -58,6 +82,18 @@ class GuildMember {
     }
   }
 
+  /// ### banned this from the [Guild] and deleted its messages for a given period
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.ban();
+  /// ```
+  /// With the deletion of his messages for 7 days
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.ban(count: 7);
+  /// ```
   Future<void> ban ({ int? count, String? reason }) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -71,13 +107,31 @@ class GuildMember {
     }
   }
 
+  /// ### Kick this of [Guild]
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.removeTimeout();
+  /// ```
   Future<void> kick ({ int? count, String? reason }) async {
     Http http = ioc.singleton(ioc.services.http);
     await http.destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
 
+  /// ### Returns whether of this is a bot
+  ///
+  /// Example :
+  /// ```dart
+  /// print(member.isBot());
+  /// ```
   bool isBot () => user.bot;
 
+  /// ### Returns whether of this is pending
+  ///
+  /// Example :
+  /// ```dart
+  /// print(member.isPending());
+  /// ```
   bool isPending () => pending;
 
   @override

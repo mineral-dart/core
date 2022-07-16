@@ -1,8 +1,4 @@
-import 'dart:convert';
-
-import 'package:http/http.dart';
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
@@ -41,18 +37,6 @@ class Message extends PartialMessage<TextBasedChannel> {
     channelId: channelId,
     channel: channel,
   );
-
-  Future<Message> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
-
-    Response response = await http.get(url: "/channels/${channel.id}");
-    dynamic payload = jsonDecode(response.body);
-
-    Message message = Message.from(channel: channel, payload: payload);
-    channel.messages.cache.set(message.id, message);
-
-    return message;
-  }
 
   factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
     GuildMember? guildMember = channel.guild?.members.cache.get(payload['author']['id']);

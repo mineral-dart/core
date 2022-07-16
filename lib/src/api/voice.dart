@@ -15,6 +15,15 @@ class Voice {
     required this.channelId,
   });
 
+  /// ### Mutes a server member
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  ///
+  /// if (member != null) {
+  ///   await member.mute();
+  /// }
   Future<void> mute () async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -24,6 +33,15 @@ class Voice {
     }
   }
 
+  /// ### Remove mutes a server member
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  ///
+  /// if (member != null) {
+  ///   await member.unmute();
+  /// }
   Future<void> unmute () async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -33,6 +51,15 @@ class Voice {
     }
   }
 
+  /// ### Deafens a server member
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  ///
+  /// if (member != null) {
+  ///   await member.deaf();
+  /// }
   Future<void> deaf () async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -42,6 +69,15 @@ class Voice {
     }
   }
 
+  /// ### Remove deafens a server member
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  ///
+  /// if (member != null) {
+  ///   await member.undeaf();
+  /// }
   Future<void> undeaf () async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -51,6 +87,16 @@ class Voice {
     }
   }
 
+  /// ### Moves a member from one voice channel to another
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  /// final voiceChannel = guild.channels.cache.get('240561194958716924');
+  ///
+  /// if (member != null && voiceChannel != null) {
+  ///   await member.move(voiceChannel);
+  /// }
   Future<void> move (VoiceChannel channel) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -60,7 +106,15 @@ class Voice {
       this.channel = channel;
     }
   }
-
+  /// ### Disconnects the user from a voice channel
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  ///
+  /// if (member != null) {
+  ///   await member.disconnect();
+  /// }
   Future<void> disconnect () async {
     Http http = ioc.singleton(ioc.services.http);
 

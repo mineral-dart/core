@@ -11,11 +11,25 @@ class Modal extends Component {
 
   Modal({ required this.customId, required this.label }) : super(type: ComponentType.selectMenu);
 
+  /// ### Created a input text field
+  ///
+  /// Example :
+  /// ```dart
+  /// final Modal modal = Modal(customId: 'my_modal', label: 'My modal')
+  ///   .addInput(customId: 'my_text', label: 'Premier texte');
+  /// ```
   Modal addInput ({ required String customId, required String label, bool? required, int? minLength, int? maxLength, String? placeholder, String? value }) {
     _addInput(customId: customId, label: label, style: TextInputStyle.short, required: required, minLength: minLength, maxLength: maxLength, placeholder: placeholder, value: value);
     return this;
   }
 
+  /// ### Created a input text field with multiple lines
+  ///
+  /// Example :
+  /// ```dart
+  /// final Modal modal = Modal(customId: 'my_modal', label: 'My modal')
+  ///   .addParagraph(customId: 'my_paragraph', label: 'Second texte');
+  /// ```
   Modal addParagraph ({ required String customId, required String label, bool? required, int? minLength, int? maxLength, String? placeholder, String? value }) {
     _addInput(customId: customId, label: label, style: TextInputStyle.paragraph, required: required, minLength: minLength, maxLength: maxLength, placeholder: placeholder, value: value);
     return this;
