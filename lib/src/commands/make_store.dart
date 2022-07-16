@@ -59,7 +59,7 @@ class MakeStore extends MineralCliCommand {
 import 'package:mineral/core.dart';
 
 @Store('${filename.snakeCase}')
-class ${filename.pascalCase} implements MineralStore<dynamic> {
+class ${filename.pascalCase} extends MineralStore<dynamic> {
   @override
   dynamic state = [];
 }
