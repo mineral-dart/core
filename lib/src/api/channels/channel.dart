@@ -95,6 +95,15 @@ class Channel extends PartialChannel {
     return this as T;
   }
 
+  Future<bool> delete () async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.destroy(url: "/channels/$id");
+
+    guild?.channels.cache.remove(id);
+
+    return response.statusCode == 200;
+  }
+
   @override
   String toString () => "<#$id>";
 }

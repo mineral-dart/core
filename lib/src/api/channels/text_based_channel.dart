@@ -111,13 +111,4 @@ class TextBasedChannel extends Channel {
     guild?.channels.cache.set(channel.id, channel);
     return channel;
   }
-
-  Future<bool> delete () async {
-    Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.destroy(url: "/channels/$id");
-
-    guild?.channels.cache.remove(id);
-
-    return response.statusCode == 200;
-  }
 }
