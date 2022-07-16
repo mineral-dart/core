@@ -42,8 +42,8 @@ class Helper {
   }
 
   static List<Permission> bitfieldToPermissions (int bitfield) {
-    for (Permission element in Permission.values) {
     List<Permission> permissions = [];
+    for (Permission element in Permission.values) {
       if((bitfield & element.value) == element.value) permissions.add(element);
     }
     return permissions;
