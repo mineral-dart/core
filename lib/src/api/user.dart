@@ -66,6 +66,7 @@ class User {
     return null;
   }
 
+  /// Returns the absolute url to the user's avatar
   String getDisplayAvatarUrl () {
     return '${Constants.cdnUrl}/avatars/$id/$avatar';
   }
