@@ -2,12 +2,15 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/managers/thread_message_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 
 class Message extends PartialMessage<TextBasedChannel> {
   GuildMember author;
+  ThreadMessageManager threads;
+
 
   Message({
     required id,
@@ -23,6 +26,7 @@ class Message extends PartialMessage<TextBasedChannel> {
     required flags,
     required channelId,
     required channel,
+    required this.threads,
     required this.author,
   }): super(
     id: id,
@@ -127,6 +131,10 @@ class Message extends PartialMessage<TextBasedChannel> {
       components.add(component);
     }
 
+    ThreadMessageManager threadManager = ThreadMessageManager(guildId: channel.guildId);
+    threadManager.channel = channel;
+    threadManager.message = payload['id'];
+
     return Message(
       id: payload['id'],
       content: payload['content'],
@@ -142,6 +150,7 @@ class Message extends PartialMessage<TextBasedChannel> {
       payload: payload['payload'],
       stickers: stickers,
       attachments: messageAttachments,
+      threads: threadManager
     );
   }
 }
