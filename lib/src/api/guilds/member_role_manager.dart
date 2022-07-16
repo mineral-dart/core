@@ -21,11 +21,11 @@ class MemberRoleManager implements CacheManager<Role> {
   /// ```dart
   /// final Role? role = guild.roles.cache.get('446556480850755604');
   /// final GuildMember? member = guild.members.cache.get('240561194958716924');
+  ///
   /// if (member != null && role != null) {
   ///   await member.roles.add(role.id)
   /// }
   /// ```
-  ///
   /// You can pass a reason for the audit logs.
   /// ```dart
   /// await member.roles.add('446556480850755604', reason: 'I love this user');
