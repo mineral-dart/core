@@ -27,6 +27,10 @@ abstract class MineralCliCommand {
       }
     });
 
+    if (directories.isEmpty) {
+      directories.add(Directory(join(Directory.current.path, 'src')));
+    }
+
     return directories;
   }
 

@@ -45,7 +45,7 @@ class MakeStore extends MineralCliCommand {
         defaultValue: 'App/folder',
       ).interact();
 
-      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', ''), '${filename.snakeCase}.dart'));
+      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', '').replaceAll('App', ''), '${filename.snakeCase}.dart'));
     }
 
     await file.create(recursive: true);

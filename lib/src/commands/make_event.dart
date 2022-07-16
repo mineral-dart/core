@@ -52,7 +52,7 @@ class MakeEvent extends MineralCliCommand {
         defaultValue: 'App/folder', // optional, will provide the user as a hint
       ).interact();
 
-      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', ''), '${filename.snakeCase}.dart'));
+      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', '').replaceAll('App', ''), '${filename.snakeCase}.dart'));
     }
 
     await file.create(recursive: true);

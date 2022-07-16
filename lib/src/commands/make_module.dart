@@ -47,7 +47,7 @@ class MakeModule extends MineralCliCommand {
         defaultValue: 'App/folder',
       ).interact();
 
-      directory = Directory(join(Directory.current.path, 'src', location.replaceAll('App/', ''), filename.snakeCase));
+      directory = Directory(join(Directory.current.path, 'src', location.replaceAll('App/', '').replaceAll('App', ''), filename.snakeCase));
       file = File(join(directory.path, '${filename.snakeCase}.dart'));
     }
 
