@@ -18,6 +18,22 @@ class User {
   String? avatarDecoration;
   late Status status;
 
+  User({
+    required this.id,
+    required this.username,
+    required this.tag,
+    required this.discriminator,
+    required this.bot,
+    required this.publicFlags,
+    required this.avatar,
+    required this.avatarDecoration,
+  });
+
+  /// Envoie un message en DM à l'utilisateur
+  /// ```dart
+  /// GuildMember? member = guild.members.cache.get('240561194958716924');
+  /// await member.user.send(content: 'Hello World !');
+  /// ```
   Future<DmMessage?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
     MineralClient client = ioc.singleton(ioc.services.client);
     Http http = ioc.singleton(ioc.services.http);
@@ -50,19 +66,8 @@ class User {
     return null;
   }
 
-  User({
-    required this.id,
-    required this.username,
-    required this.tag,
-    required this.discriminator,
-    required this.bot,
-    required this.publicFlags,
-    required this.avatar,
-    required this.avatarDecoration,
-  });
-
   String getDisplayAvatarUrl () {
-    return "${Constants.cdnUrl}/avatars/$id/$avatar";
+    return '${Constants.cdnUrl}/avatars/$id/$avatar';
   }
 
   @override
