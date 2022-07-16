@@ -45,21 +45,21 @@ class MakeStore extends MineralCliCommand {
         defaultValue: 'App/folder',
       ).interact();
 
-      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', ''), '${filename.snakeCase}.dart'));
+      file = File(join(Directory.current.path, 'src', location.replaceAll('App/', '').replaceAll('App', ''), '${filename.snakeCase}.dart'));
     }
 
     await file.create(recursive: true);
     await writeFileContent(file, getTemplate(filename));
 
-    Console.success(message: 'The file was created in the location ${file.uri}');
-    Console.success(message: 'Don\'t forget to add your file to the main.dart file');
+    Console.success(message: 'File created : ${file.uri}');
+    Console.warn(message: 'Don\'t forget to add your file to the main or module file');
   }
 
   String getTemplate (String filename) => '''
 import 'package:mineral/core.dart';
 
 @Store('${filename.snakeCase}')
-class ${filename.pascalCase} implements MineralStore<dynamic> {
+class ${filename.pascalCase} extends MineralStore<dynamic> {
   @override
   dynamic state = [];
 }

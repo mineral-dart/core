@@ -47,7 +47,7 @@ class MakeModule extends MineralCliCommand {
         defaultValue: 'App/folder',
       ).interact();
 
-      directory = Directory(join(Directory.current.path, 'src', location.replaceAll('App/', ''), filename.snakeCase));
+      directory = Directory(join(Directory.current.path, 'src', location.replaceAll('App/', '').replaceAll('App', ''), filename.snakeCase));
       file = File(join(directory.path, '${filename.snakeCase}.dart'));
     }
 
@@ -58,8 +58,8 @@ class MakeModule extends MineralCliCommand {
     await file.create(recursive: true);
     await writeFileContent(file, getTemplate(filename));
 
-    Console.success(message: 'The file was created in the location ${file.uri}');
-    Console.success(message: 'Don\'t forget to add your file to the main.dart file');
+    Console.success(message: 'File created : ${file.uri}');
+    Console.warn(message: 'Don\'t forget to add your file to the main file');
   }
 
   String getTemplate (String filename) => '''
