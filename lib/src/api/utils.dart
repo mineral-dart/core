@@ -143,6 +143,7 @@ enum GuildFeature {
   partnered('PARTNERED'),
   preview('PREVIEW_ENABLED'),
   privateThreads('PRIVATE_THREADS'),
+  threeDayThreadArchive('THREE_DAY_THREAD_ARCHIVE'),
   roleIcons('ROLE_ICONS'),
   ticketedEvents('TICKETED_EVENTS_ENABLED'),
   vanityUrl('VANITY_URL'),

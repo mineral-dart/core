@@ -16,6 +16,8 @@ import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 
+import 'package:collection/collection.dart';
+
 enum VerificationLevel {
   none(0),
   low(1),
@@ -520,8 +522,12 @@ class Guild {
 
     List<GuildFeature> features = [];
     for (String element in payload['features']) {
-      GuildFeature feature = GuildFeature.values.firstWhere((feature) => feature.value == element);
-      features.add(feature);
+      GuildFeature? feature = GuildFeature.values.firstWhereOrNull((feature) => feature.value == element);
+      if(feature == null) {
+        Console.warn(message: 'Guild feature $element don\'t exist! Please report this to our team.');
+      } else {
+        features.add(feature); 
+      }
     }
 
     return Guild(
