@@ -154,17 +154,29 @@ class Guild {
     }
   }
 
-  Future<Guild> setMessageNotification (int level) async {
+  /// Defines the notification level of this
+  /// - 0 → All messages
+  /// - 1 → Only mentions
+  /// ```dart
+  /// await guild.setMessageNotification(1);
+  /// ```
+  Future<void> setMessageNotification (int level) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'default_message_notifications': level });
 
     if (response.statusCode == 200) {
       defaultMessageNotifications = level;
     }
-
-    return this;
   }
 
+  /// Defines the explicit content level of this
+  /// - 0 → Disabled
+  /// - 1 → Members without roles
+  /// - 2 → All members
+  ///
+  /// ```dart
+  /// await guild.setExplicitContentFilter(2);
+  /// ```
   Future<void> setExplicitContentFilter (int level) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'explicit_content_filter': level });
@@ -174,6 +186,14 @@ class Guild {
     }
   }
 
+  /// Update the afk channel
+  /// ```dart
+  /// final voiceChannel = guild.channels.cache.get('240561194958716924');
+  ///
+  /// if (voiceChannel != null) {
+  ///   await guild.setAfkChannel(2);
+  /// }
+  /// ```
   Future<void> setAfkChannel (VoiceChannel channel) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'afk_channel_id': channel.id });
@@ -183,7 +203,18 @@ class Guild {
       afkChannelId = channel.id;
     }
   }
-
+  /// Update the owner of this
+  ///
+  /// Warning : This method only works if the server was created via a discord bot and the bot is the current owner
+  ///
+  /// See [documentation](Warning: This method only works if the server was created via a discord bot)
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  ///
+  /// if (member != null) {
+  ///   await guild.setOwner(member);
+  /// }
+  /// ```
   Future<void> setOwner (GuildMember guildMember) async {
     MineralClient client = ioc.singleton(ioc.services.client);
     Http http = ioc.singleton(ioc.services.http);
@@ -201,6 +232,12 @@ class Guild {
     }
   }
 
+  /// Update the splash banner of this
+  ///
+  /// This method requires the feature [GuildFeature.banner] of this
+  /// ```dart
+  /// await guild.setSplash('assets/images/my_splash_banner.png');
+  /// ```
   Future<void> setSplash (String filename) async {
     if (!features.contains(GuildFeature.banner)) {
       throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.inviteSplash} feature.");
@@ -216,6 +253,12 @@ class Guild {
     }
   }
 
+  /// Remove the splash banner of this
+  ///
+  /// This method requires the feature [GuildFeature.banner] of this
+  /// ```dart
+  /// await guild.removeSplash();
+  /// ```
   Future<void> removeSplash () async {
     if (!features.contains(GuildFeature.banner)) {
       throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.inviteSplash} feature.");
@@ -229,6 +272,12 @@ class Guild {
     }
   }
 
+  /// Update the discovery splash banner of this
+  ///
+  /// This method requires the feature [GuildFeature.banner] of this
+  /// ```dart
+  /// await guild.setDiscoverySplash('assets/images/my_splash_discovery_banner.png');
+  /// ```
   Future<void> setDiscoverySplash (String filename) async {
     if (!features.contains(GuildFeature.banner)) {
       throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.discoverable} feature.");
@@ -244,6 +293,12 @@ class Guild {
     }
   }
 
+  /// Remove the discovery splash banner of this
+  ///
+  /// This method requires the feature [GuildFeature.banner] of this
+  /// ```dart
+  /// await guild.removeDiscoverySplash();
+  /// ```
   Future<void> removeDiscoverySplash () async {
     if (!features.contains(GuildFeature.banner)) {
       throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.discoverable} feature.");
@@ -257,6 +312,12 @@ class Guild {
     }
   }
 
+  /// Update the banner of this
+  ///
+  /// This method requires the feature [GuildFeature.banner] of this
+  /// ```dart
+  /// await guild.setBanner('assets/images/my_banner.png');
+  /// ```
   Future<void> setBanner (String filename) async {
     if (!features.contains(GuildFeature.banner)) {
       throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.banner} feature.");
@@ -272,6 +333,12 @@ class Guild {
     }
   }
 
+  /// Remove the banner of this
+  ///
+  /// This method requires the feature [GuildFeature.banner] of this
+  /// ```dart
+  /// await guild.removeBanner();
+  /// ```
   Future<void> removeBanner () async {
     if (!features.contains(GuildFeature.banner)) {
       throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.banner} feature.");
@@ -285,6 +352,10 @@ class Guild {
     }
   }
 
+  /// Update the icon of this
+  /// ```dart
+  /// await guild.setIcon('assets/images/my_guild_icon.png');
+  /// ```
   Future<void> setIcon (String filename) async {
     String file = await Helper.getPicture(filename);
 
@@ -296,6 +367,10 @@ class Guild {
     }
   }
 
+  /// Remove the icon of this
+  /// ```dart
+  /// await guild.removeIcon();
+  /// ```
   Future<void> removeIcon () async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': null });
@@ -305,6 +380,14 @@ class Guild {
     }
   }
 
+  /// Update system channel of this
+  /// ```dart
+  /// final channel = guild.channels.cache.get('240561194958716924');
+  ///
+  /// if (channel != null) {
+  ///   await guild.setSystemChannel(channel);
+  /// }
+  /// ```
   Future<void> setSystemChannel (TextChannel channel) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'system_channel_id': channel.id });
@@ -315,6 +398,14 @@ class Guild {
     }
   }
 
+  /// Update rules channel of this
+  /// ```dart
+  /// final channel = guild.channels.cache.get('240561194958716924');
+  ///
+  /// if (channel != null) {
+  ///   await guild.setRulesChannel(channel);
+  /// }
+  /// ```
   Future<void> setRulesChannel (TextChannel channel) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'rules_channel_id': channel.id });
@@ -325,6 +416,14 @@ class Guild {
     }
   }
 
+  /// Update public updates channel of this
+  /// ```dart
+  /// final channel = guild.channels.cache.get('240561194958716924');
+  ///
+  /// if (channel != null) {
+  ///   await guild.setPublicUpdateChannel(channel);
+  /// }
+  /// ```
   Future<void> setPublicUpdateChannel (TextChannel channel) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': channel.id });
@@ -335,6 +434,12 @@ class Guild {
     }
   }
 
+  /// Update preferred language of this
+  /// ```dart
+  /// import 'package:mineral/api.dart';
+  ///
+  /// await guild.setPreferredLocale(Locale.fr); // 👈 Now you can use Lang enum
+  /// ```
   Future<void> setPreferredLocale (Locale locale) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': locale });
@@ -344,6 +449,10 @@ class Guild {
     }
   }
 
+  /// Remove the discord client of this
+  /// ```dart
+  /// await guild.leave();
+  /// ```
   Future<void> leave () async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.destroy(url: '/users/@me/guilds/$id');
