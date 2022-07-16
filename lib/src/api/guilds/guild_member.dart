@@ -30,6 +30,10 @@ class GuildMember {
     required this.voice,
   });
 
+  /// Update the username of this
+  /// ```dart
+  /// await member.setUsername('John Doe');
+  /// ```
   Future<void> setUsername (String name) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -39,6 +43,15 @@ class GuildMember {
     }
   }
 
+  /// Excludes this for a pre-defined period
+  ///
+  /// Note: An exclusion cannot exceed 28 days
+  ///
+  /// See [documentation](https://discord.com/developers/docs/resources/guild#modify-guild-member)
+  /// ```dart
+  /// final DateTime = DateTime.now().add(Duration(days: 28));
+  /// await member.timeout(DateTime);
+  /// ```
   Future<void> timeout (DateTime expiration) async {
     // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
     Http http = ioc.singleton(ioc.services.http);
@@ -49,6 +62,10 @@ class GuildMember {
     }
   }
 
+  /// Cancels the exclusion of this
+  /// ```dart
+  /// await member.removeTimeout();
+  /// ```
   Future<void> removeTimeout () async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -58,6 +75,14 @@ class GuildMember {
     }
   }
 
+  /// banned this from the [Guild] and deleted its messages for a given period
+  /// ```dart
+  /// await member.ban();
+  /// ```
+  /// With the deletion of his messages for 7 days
+  /// ```dart
+  /// await member.ban(count: 7);
+  /// ```
   Future<void> ban ({ int? count, String? reason }) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -71,13 +96,25 @@ class GuildMember {
     }
   }
 
+  /// Kick this of [Guild]
+  /// ```dart
+  /// await member.removeTimeout();
+  /// ```
   Future<void> kick ({ int? count, String? reason }) async {
     Http http = ioc.singleton(ioc.services.http);
     await http.destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
 
+  /// Returns whether of this is a bot
+  /// ```dart
+  /// print(member.isBot());
+  /// ```
   bool isBot () => user.bot;
 
+  /// Returns whether of this is pending
+  /// ```dart
+  /// print(member.isPending());
+  /// ```
   bool isPending () => pending;
 
   @override
