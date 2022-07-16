@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/permission_overwrite.dart';
+import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class CategoryChannel extends Channel {
@@ -13,6 +15,7 @@ class CategoryChannel extends Channel {
     required String label,
     required Snowflake? applicationId,
     required int? flags,
+    required PermissionOverwriteManager permissionsOverwrite
   }) : super(
     id: id,
     guildId: guildId,
@@ -22,7 +25,8 @@ class CategoryChannel extends Channel {
     parentId: null,
     type: ChannelType.guildCategory,
     flags: flags,
-      webhooks: WebhookManager(guildId: guildId, channelId: id)
+      webhooks: WebhookManager(guildId: guildId, channelId: id),
+    permissionsOverwrite: permissionsOverwrite
   );
 
   Future<CategoryChannel?> update ({ String? label, int? position }) async {
@@ -56,6 +60,12 @@ class CategoryChannel extends Channel {
   }
 
   factory CategoryChannel.from(dynamic payload) {
+    final PermissionOverwriteManager permissionOverwriteManager = PermissionOverwriteManager(guildId: payload['guild_id']);
+    for(dynamic element in payload['permission_overwrites']) {
+      final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
+      permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
+    }
+
     return CategoryChannel(
       id: payload['id'],
       guildId: payload['guild_id'],
@@ -63,6 +73,7 @@ class CategoryChannel extends Channel {
       label: payload['name'],
       applicationId: payload['application_id'],
       flags: payload['flags'],
+      permissionsOverwrite: permissionOverwriteManager
     );
   }
 }
