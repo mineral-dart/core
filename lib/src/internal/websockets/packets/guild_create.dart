@@ -5,7 +5,6 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/channel.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
-import 'package:mineral/src/api/guilds/guild_scheduled_event.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';

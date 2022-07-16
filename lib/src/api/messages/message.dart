@@ -1,4 +1,6 @@
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
@@ -37,6 +39,30 @@ class Message extends PartialMessage<TextBasedChannel> {
     channelId: channelId,
     channel: channel,
   );
+
+  Future<Message> edit ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
+    Http http = ioc.singleton(ioc.services.http);
+
+    Response response = await http.patch(
+        url: '/channels/$channelId/messages/$id',
+        payload: {
+          'content': content,
+          'embeds': embeds,
+          'flags': flags,
+          'allowed_mentions': allowMentions,
+          'components': components,
+        }
+    );
+
+    print(response.body);
+    if (response.statusCode == 200) {
+      this.content = content ?? this.content;
+      this.embeds = embeds ?? this.embeds;
+      this.components = components ?? this.components;
+    }
+
+    return this;
+  }
 
   factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
     GuildMember? guildMember = channel.guild?.members.cache.get(payload['author']['id']);
