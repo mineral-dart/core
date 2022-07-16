@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 enum ChannelType {
@@ -36,8 +37,7 @@ Map<ChannelType, Channel Function(dynamic payload)> channels = {
   // 'GUILD_FORUM': () => ,
 };
 
-class Channel {
-  Snowflake id;
+class Channel extends PartialChannel {
   ChannelType type;
   Snowflake? guildId;
   late Guild? guild;
@@ -50,7 +50,7 @@ class Channel {
   WebhookManager webhooks;
 
   Channel({
-    required this.id,
+    required id,
     required this.type,
     required this.guildId,
     required this.position,
@@ -59,7 +59,7 @@ class Channel {
     required this.parentId,
     required this.flags,
     required this.webhooks,
-  });
+  }): super(id: id);
 
   Future<T> setLabel<T extends Channel> (String label) async {
     Http http = ioc.singleton(ioc.services.http);
@@ -93,6 +93,15 @@ class Channel {
     }
 
     return this as T;
+  }
+
+  Future<bool> delete () async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.destroy(url: "/channels/$id");
+
+    guild?.channels.cache.remove(id);
+
+    return response.statusCode == 200;
   }
 
   @override

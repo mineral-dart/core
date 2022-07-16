@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mineral/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/commands/create_project.dart';
@@ -5,14 +7,15 @@ import 'package:mineral/src/commands/make_command.dart';
 import 'package:mineral/src/commands/make_event.dart';
 import 'package:mineral/src/commands/make_module.dart';
 import 'package:mineral/src/commands/make_store.dart';
-import 'package:mineral/src/internal/entities/cli_manager.dart';
-import 'package:mineral/src/internal/entities/command_manager.dart';
-import 'package:mineral/src/internal/entities/event_manager.dart';
+import 'package:mineral/src/internal/managers/cli_manager.dart';
+import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/entities/module_manager.dart';
+import 'package:mineral/src/internal/managers/module_manager.dart';
+import 'package:mineral/src/internal/managers/reporter_manager.dart';
+import 'package:mineral/src/internal/managers/store_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
-
-import 'entities/store_manager.dart';
+import 'package:path/path.dart';
 
 class Kernel {
   EventManager events = EventManager();
@@ -28,7 +31,9 @@ class Kernel {
     ioc.bind(namespace: ioc.services.store, service: stores);
     ioc.bind(namespace: ioc.services.modules, service: modules);
     ioc.bind(namespace: ioc.services.cli, service: cli);
+  }
 
+  void loadConsole () {
     cli.add(MakeCommand());
     cli.add(MakeEvent());
     cli.add(MakeModule());
@@ -42,6 +47,17 @@ class Kernel {
     Http http = Http(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     ioc.bind(namespace: ioc.services.http, service: http);
+
+    String? report = environment.get('REPORTER');
+    if (report != null) {
+      ReporterManager reporter = ReporterManager(Directory(join(Directory.current.path, 'logs')));
+      reporter.reportLevel = report;
+
+      ioc.bind(
+        namespace: ioc.services.reporter,
+        service: reporter
+      );
+    }
 
     String? token = environment.get('APP_TOKEN');
     if (token == null) {

@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/entities/command_manager.dart';
-import 'package:mineral/src/internal/entities/event_manager.dart';
+import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -48,8 +48,10 @@ class Ready implements WebsocketPacket {
     Map<Events, List<Map<String, dynamic>>> events = manager.getRegisteredEvents();
     events.forEach((_, events) {
       for (Map<String, dynamic> event in events) {
-        event['mineralEvent'].client = client;
-        event['mineralEvent'].stores = ioc.singleton(ioc.services.store);
+        event['mineralEvent']
+          ..client = client
+          ..stores = ioc.singleton(ioc.services.store)
+          ..environment = ioc.singleton(ioc.services.environment);
       }
     });
   }
@@ -57,10 +59,10 @@ class Ready implements WebsocketPacket {
   void infuseClientIntoCommands ({required CommandManager manager, required MineralClient client}) {
     Map<String, dynamic> commands = manager.getHandlers();
     commands.forEach((_, handler) {
-      MineralCommand command = handler['commandClass'];
-
-      command.client = client;
-      command.stores = ioc.singleton(ioc.services.store);
+      handler['commandClass']
+        ..client = client
+        ..stores = ioc.singleton(ioc.services.store)
+        ..environment = ioc.singleton(ioc.services.environment);
     });
   }
 }

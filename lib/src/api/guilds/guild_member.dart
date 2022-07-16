@@ -1,7 +1,8 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/guilds/guild_role_manager.dart';
+import 'package:mineral/src/api/managers/guild_role_manager.dart';
+import 'package:mineral/src/api/managers/voice_manager.dart';
 
 class GuildMember {
   User user;
@@ -10,10 +11,10 @@ class GuildMember {
   DateTime joinedAt;
   DateTime? premiumSince;
   String? permissions;
-  bool isPending;
+  bool pending;
   DateTime? timeoutDuration;
   MemberRoleManager roles;
-  Voice voice;
+  late VoiceManager voice;
   late Guild guild;
 
   GuildMember({
@@ -23,12 +24,18 @@ class GuildMember {
     required this.joinedAt,
     required this.premiumSince,
     required this.permissions,
-    required this.isPending,
+    required this.pending,
     required this.timeoutDuration,
     required this.roles,
     required this.voice,
   });
 
+  /// ### Update the username of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.setUsername('John Doe');
+  /// ```
   Future<void> setUsername (String name) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -38,6 +45,17 @@ class GuildMember {
     }
   }
 
+  /// ### Excludes this for a pre-defined period
+  ///
+  /// Note: An exclusion cannot exceed 28 days
+  ///
+  /// See [documentation](https://discord.com/developers/docs/resources/guild#modify-guild-member)
+  ///
+  /// Example :
+  /// ```dart
+  /// final DateTime = DateTime.now().add(Duration(days: 28));
+  /// await member.timeout(DateTime);
+  /// ```
   Future<void> timeout (DateTime expiration) async {
     // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
     Http http = ioc.singleton(ioc.services.http);
@@ -48,6 +66,12 @@ class GuildMember {
     }
   }
 
+  /// ### Cancels the exclusion of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.removeTimeout();
+  /// ```
   Future<void> removeTimeout () async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -57,6 +81,18 @@ class GuildMember {
     }
   }
 
+  /// ### banned this from the [Guild] and deleted its messages for a given period
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.ban();
+  /// ```
+  /// With the deletion of his messages for 7 days
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.ban(count: 7);
+  /// ```
   Future<void> ban ({ int? count, String? reason }) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -70,10 +106,32 @@ class GuildMember {
     }
   }
 
+  /// ### Kick this of [Guild]
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.removeTimeout();
+  /// ```
   Future<void> kick ({ int? count, String? reason }) async {
     Http http = ioc.singleton(ioc.services.http);
     await http.destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
+
+  /// ### Returns whether of this is a bot
+  ///
+  /// Example :
+  /// ```dart
+  /// print(member.isBot());
+  /// ```
+  bool isBot () => user.bot;
+
+  /// ### Returns whether of this is pending
+  ///
+  /// Example :
+  /// ```dart
+  /// print(member.isPending());
+  /// ```
+  bool isPending () => pending;
 
   @override
   String toString () {
@@ -88,7 +146,7 @@ class GuildMember {
       joinedAt: joinedAt,
       premiumSince: premiumSince,
       permissions: permissions,
-      isPending: isPending,
+      pending: pending,
       timeoutDuration: timeoutDuration,
       roles: roles,
       voice: voice
@@ -97,7 +155,7 @@ class GuildMember {
       ..roles = roles;
   }
 
-  factory GuildMember.from({ required user, required GuildRoleManager roles, dynamic member, required Snowflake guildId }) {
+  factory GuildMember.from({ required user, required GuildRoleManager roles, dynamic member, required Snowflake guildId, required VoiceManager voice }) {
     MemberRoleManager memberRoleManager = MemberRoleManager(manager: roles, memberId: user.id);
     for (var element in (member['roles'] as List<dynamic>)) {
       Role? role = roles.cache.get(element);
@@ -113,10 +171,10 @@ class GuildMember {
       joinedAt: DateTime.parse(member['joined_at']),
       premiumSince: member['premium_since'] != null ? DateTime.parse(member['premium_since']) : null,
       permissions: member['permissions'],
-      isPending: member['pending'] == true,
+      pending: member['pending'] == true,
       timeoutDuration: member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
       roles: memberRoleManager,
-      voice: Voice.from(payload: member),
+      voice: voice,
     );
   }
 }

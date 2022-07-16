@@ -42,7 +42,13 @@ class Webhook {
     required this.url,
   });
 
-  Future<void> setName (String label) async {
+  /// ### Update the label of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await webhook.setLabel('My webhook name');
+  /// ```
+  Future<void> setLabel (String label) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/webhooks/$id", payload: { 'name': label });
 
@@ -51,6 +57,12 @@ class Webhook {
     }
   }
 
+  /// ### Update the avatar of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await webhook.setAvatar('assets/images/my_picture.png');
+  /// ```
   Future<void> setAvatar (String avatar) async {
     Http http = ioc.singleton(ioc.services.http);
     String path = await Helper.getPicture(avatar);
@@ -61,6 +73,13 @@ class Webhook {
     }
   }
 
+  /// ### Updates multiple properties of this in a single request.
+  /// When you need to update more than 2 fields, we advise you to use this method to reduce the number of outgoing requests.
+  ///
+  /// Example :
+  /// ```dart
+  /// await webhook.update(label: 'My webhook name', avatar: 'assets/images/my_picture.png');
+  /// ```
   Future<void> update ({ String? label, String? avatar }) async {
     Http http = ioc.singleton(ioc.services.http);
     String? path = avatar != null
@@ -77,7 +96,12 @@ class Webhook {
       if (avatar != null) this.avatar = path;
     }
   }
-
+  /// ### Send a message from the webhook
+  ///
+  /// Example :
+  /// ```dart
+  /// await webhook.execute(content: 'Hello World !');
+  /// ```
   Future<void> execute ({ String? content, String? username, String? avatarUrl, bool? tts, List<MessageEmbed>? embeds, List<Row>? components, bool? suppressEmbed }) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -106,6 +130,12 @@ class Webhook {
     });
   }
 
+  /// ### Delete this
+  ///
+  /// Example :
+  /// ```dart
+  /// await webhook.delete();
+  /// ```
   Future<bool> delete () async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.destroy(url: "/webhooks/$id/$token");

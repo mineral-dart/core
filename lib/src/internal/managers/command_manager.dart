@@ -1,7 +1,8 @@
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/src/internal/entities/store_manager.dart';
+import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/managers/store_manager.dart';
 
 class CommandManager {
   final Map<String, SlashCommand> _commands = {};
@@ -62,7 +63,7 @@ class CommandManager {
       if (reflectee is CommandGroup) {
         SlashCommand group = SlashCommand(name: '', description: '', scope: '', options: [])
           ..type = 2
-          ..name = reflectee.name
+          ..name = reflectee.name.toLowerCase()
           ..description = reflectee.description;
 
         command.groups.add(group);
@@ -70,7 +71,7 @@ class CommandManager {
 
       if (reflectee is Command) {
         command
-          ..name = reflectee.name
+          ..name = reflectee.name.toLowerCase()
           ..description = reflectee.description
           ..scope = reflectee.scope;
 
@@ -135,6 +136,7 @@ class CommandManager {
 class MineralCommand {
   late MineralClient client;
   late StoreManager stores;
+  late Environment environment;
 }
 
 class Command {

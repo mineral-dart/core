@@ -1,7 +1,9 @@
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/src/internal/entities/store_manager.dart';
+import 'package:mineral/core.dart';
+import 'package:mineral/src/api/managers/voice_manager.dart';
+import 'package:mineral/src/internal/managers/store_manager.dart';
 
 class EventManager {
   final Map<Events, List<Map<String, dynamic>>> _events = {};
@@ -57,6 +59,7 @@ class Event {
 abstract class MineralEvent {
   late StoreManager stores;
   late MineralClient client;
+  late Environment environment;
 }
 
 enum Events {
@@ -83,14 +86,28 @@ enum Events {
   channelUpdate('update::channel', { 'before': Channel, 'after': Channel }),
   channelDelete('delete::channel', { 'channel': Channel }),
 
-  memberUpdate('update::member', { 'member': GuildMember }),
+  memberJoin('join::member', { 'member': GuildMember }),
+  memberUpdate('update::member', { 'before': GuildMember, 'after': GuildMember }),
+  memberLeave('leave::member', { 'member': GuildMember }),
   memberRolesUpdate('update::roles-member', { 'before': Role, 'after': Role }),
   acceptRules('accept::rules', { 'member': GuildMember }),
 
   commandCreate('create::commandInteraction', { 'interaction': CommandInteraction }),
   buttonCreate('create::buttonInteraction', { 'interaction': ButtonInteraction }),
   modalCreate('create::modalInteraction', { 'interaction': ModalInteraction }),
-  selectMenuCreate('create::selectMenuInteraction', { 'interaction': SelectMenuInteraction });
+  selectMenuCreate('create::selectMenuInteraction', { 'interaction': SelectMenuInteraction }),
+
+  voiceStateUpdate('update::voice', { 'before': VoiceManager, 'after': VoiceManager }),
+  voiceConnect('connect::voice', { 'member': GuildMember, 'before': 'VoiceChannel?', 'after': VoiceChannel }),
+  voiceDisconnect('disconnect::voice', { 'member': GuildMember, 'channel': VoiceChannel }),
+  memberMuted('mute::voice', { 'member': GuildMember }),
+  memberUnMuted('unmute::voice', { 'member': GuildMember }),
+  memberDeaf('deaf::voice', { 'member': GuildMember }),
+  memberUnDeaf('undeaf::voice', { 'member': GuildMember }),
+  memberSelfMuted('self::mute::voice', { 'member': GuildMember }),
+  memberSelfUnMuted('self::unmute::voice', { 'member': GuildMember }),
+  memberSelfDeaf('self::deaf::voice', { 'member': GuildMember }),
+  memberSelfUnDeaf('self::undeaf::voice', { 'member': GuildMember });
 
   final String event;
   final Map<String, dynamic> params;

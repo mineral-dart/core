@@ -6,7 +6,7 @@ class PublicThread extends Channel {
 
   String? name;
   Snowflake? lastMessageId;
-  DateTime? lastPinTimstamp;
+  DateTime? lastPinTimestamp;
 
   PublicThread({
     required Snowflake id,

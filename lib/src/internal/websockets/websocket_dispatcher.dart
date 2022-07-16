@@ -7,6 +7,8 @@ import 'package:mineral/src/internal/websockets/packets/channel_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_member_add.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_member_remove.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_member_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_delete.dart';
@@ -15,12 +17,14 @@ import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_us
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_user_remove.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_update.dart';
 import 'package:mineral/src/internal/websockets/packets/interaction_create.dart';
+import 'package:mineral/src/internal/websockets/packets/member_join_request.dart';
 import 'package:mineral/src/internal/websockets/packets/message_create.dart';
 import 'package:mineral/src/internal/websockets/packets/message_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/message_update.dart';
 import 'package:mineral/src/internal/websockets/packets/presence_update.dart';
 import 'package:mineral/src/internal/websockets/packets/ready.dart';
 import 'package:mineral/src/internal/websockets/packets/resumed.dart';
+import 'package:mineral/src/internal/websockets/packets/voice_state_update.dart';
 import 'package:mineral/src/internal/websockets/packets/webhook_update.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -43,6 +47,9 @@ class WebsocketDispatcher {
     register(PacketType.channelDelete, ChannelDelete());
     register(PacketType.channelUpdate, ChannelUpdate());
     register(PacketType.memberUpdate, GuildMemberUpdate());
+    register(PacketType.memberRemove, GuildMemberRemove());
+    register(PacketType.memberAdd, GuildMemberAdd());
+    register(PacketType.memberJoinRequest, MemberJoinRequest());
     register(PacketType.interactionCreate, InteractionCreate());
     register(PacketType.autoModerationRuleCreate, AutoModerationRuleCreate());
     register(PacketType.autoModerationRuleDelete, AutoModerationRuleDelete());
@@ -53,6 +60,7 @@ class WebsocketDispatcher {
     register(PacketType.guildScheduledEventUserRemove, GuildScheduledEventUserRemove());
     register(PacketType.webhookUpdate, WebhookUpdate());
     register(PacketType.guildIntegrationsUpdate, GuildIntegrationsUpdate());
+    register(PacketType.voiceStateUpdate, VoiceStateUpdate());
   }
 
   void register (PacketType type, WebsocketPacket packet) {

@@ -1,10 +1,12 @@
 import 'package:args/args.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/entities/cli_manager.dart';
+import 'package:mineral/src/internal/managers/cli_manager.dart';
 
 Future<void> main (List<String> arguments) async {
   Kernel kernel = Kernel();
+  kernel.loadConsole();
+
   final ArgParser parser = ArgParser();
 
   final makeCommandParser = ArgParser();

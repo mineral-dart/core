@@ -5,8 +5,9 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
+import 'package:mineral/src/api/managers/thread_manager.dart';
+import 'package:mineral/src/internal/extensions/mineral_client.dart';
 
-import '../managers/thread_manager.dart';
 
 class TextBasedChannel extends Channel {
   String? description;
@@ -43,28 +44,13 @@ class TextBasedChannel extends Channel {
   );
 
   Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    MineralClient client = ioc.singleton(ioc.services.client);
 
-    List<dynamic> embedList = [];
-    if (embeds != null) {
-      for (MessageEmbed element in embeds) {
-        embedList.add(element.toJson());
-      }
-    }
-
-    List<dynamic> componentList = [];
-    if (components != null) {
-      for (Row element in components) {
-        componentList.add(element.toJson());
-      }
-    }
-
-    Response response = await http.post(url: "/channels/$id/messages", payload: {
-      'tts': tts ?? false,
-      'content': content,
-      'embeds': embeds != null ? embedList : [],
-      'components': components != null ? componentList : [],
-    });
+    Response response = await client.sendMessage(this,
+      content: content,
+      embeds: embeds,
+      components: components
+    );
 
     if (response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);
@@ -124,14 +110,5 @@ class TextBasedChannel extends Channel {
 
     guild?.channels.cache.set(channel.id, channel);
     return channel;
-  }
-
-  Future<bool> delete () async {
-    Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.destroy(url: "/channels/$id");
-
-    guild?.channels.cache.remove(id);
-
-    return response.statusCode == 200;
   }
 }

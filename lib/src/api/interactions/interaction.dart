@@ -1,4 +1,3 @@
-import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 
@@ -27,6 +26,12 @@ class Interaction {
 
   Interaction({ required this.id, required this.applicationId, required this.version, required this.type, required this.token, required this.user });
 
+  /// ### Responds to this by an [Message]
+  ///
+  /// Example :
+  /// ```dart
+  /// await interaction.reply(content: 'Hello ${interaction.user.username}');
+  /// ```
   Future<void> reply ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts, bool? private }) async {
     Http http = ioc.singleton(ioc.services.http);
 
@@ -56,14 +61,22 @@ class Interaction {
     });
   }
 
+  /// ### Responds to this by an [Modal]
+  ///
+  /// Example :
+  /// ```dart
+  /// Modal modal = Modal(customId: 'modal', label: 'My modal')
+  ///   .addInput(customId: 'my_text', label: 'First text')
+  ///   .addParagraph(customId: 'my_paragraph', label: 'Second text');
+  ///
+  /// await interaction.modal(modal);
+  /// ```
   Future<void> modal (Modal modal) async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.post(url: "/interactions/$id/$token/callback", payload: {
+    await http.post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.modal.value,
       'data': modal.toJson(),
     });
-
-    print(response.body);
   }
 }

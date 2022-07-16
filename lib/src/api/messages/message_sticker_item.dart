@@ -13,8 +13,6 @@ class MessageStickerItem {
   });
 
   factory MessageStickerItem.from(dynamic payload) {
-    print(payload);
-
     return MessageStickerItem(
       id: payload['id'],
       name: payload['name'],

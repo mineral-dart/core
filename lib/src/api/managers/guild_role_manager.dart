@@ -16,6 +16,12 @@ class GuildRoleManager implements CacheManager<Role> {
 
   GuildRoleManager({ required this.guildId });
 
+  /// Synchronise the cache from the Discord API
+  ///
+  /// Example :
+  /// ```dart
+  /// await guild.roles.sync();
+  /// ```
   @override
   Future<Map<Snowflake, Role>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
@@ -35,6 +41,19 @@ class GuildRoleManager implements CacheManager<Role> {
     return cache;
   }
 
+  /// Create a this
+  ///
+  /// Warning: if you want to define an icon, the [Guid] must have the feature [GuildFeature.roleIcons]
+  ///
+  /// Example :
+  /// ```dart
+  /// await guild.roles.create(
+  ///   label: 'My role',
+  ///   color: Color.cyan_600,
+  ///   permissions: [Permission.moderateMembers, Permission.banMembers],
+  ///   hoist: true,
+  /// );
+  /// ```
   Future<Role> create ({ required String label, Color? color, bool? hoist, String? icon, String? unicode, bool? mentionable, List<Permission>? permissions }) async {
     if ((icon != null || unicode != null) && !guild.features.contains('ROLE_ICONS')) {
       throw MissingFeatureException(cause: "Guild ${guild.name} has no 'ROLE_ICONS' feature.");

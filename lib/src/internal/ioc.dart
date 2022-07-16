@@ -8,6 +8,7 @@ class Service {
   final modules = 'Mineral/Core/Modules';
   final cli = 'Mineral/Core/Cli';
   final shards = 'Mineral/Core/Shards';
+  final reporter = 'Mineral/Core/Reporter';
 }
 
 class Ioc {

@@ -119,6 +119,12 @@ class ModerationRule {
     required this.exemptChannels,
   });
 
+  /// ### Update the label of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await rule.setLabel('My label');
+  /// ```
   Future<void> setLabel(String label) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'label': label });
@@ -128,6 +134,12 @@ class ModerationRule {
     }
   }
 
+  /// ### Update the event of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await rule.setEventType(ModerationEventType.messageSend);
+  /// ```
   Future<void> setEventType(ModerationEventType event) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'event_type': event.value });
@@ -137,6 +149,17 @@ class ModerationRule {
     }
   }
 
+  /// ### Update the trigger metadata of this
+  ///
+  /// Example :
+  /// ```dart
+  /// final metadata = ModerationTriggerMetadata(
+  ///   keywordFilter: ['foo'],
+  ///   presets: [ModerationPresetType.profanity]
+  /// );
+  ///
+  /// await rule.setTriggerMetadata(metadata);
+  /// ```
   Future<void> setTriggerMetadata(ModerationTriggerMetadata triggerMetadata) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'trigger_metadata': triggerMetadata.toJson() });
@@ -146,6 +169,19 @@ class ModerationRule {
     }
   }
 
+  /// ### Update actions of this
+  ///
+  /// Example :
+  /// ```dart
+  /// final channel = guild.channels.cache.get('240561194958716924');
+  ///
+  /// final action = ModerationAction(
+  ///   metadata: ModerationActionMetadata(duration: 3000, channel: channel),
+  ///   type: ModerationActionType.sendAlertMessage
+  /// );
+  ///
+  /// await rule.setActions([action]);
+  /// ```
   Future<void> setActions(List<ModerationAction> actions) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
@@ -157,6 +193,12 @@ class ModerationRule {
     }
   }
 
+  /// ### Update enabled of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await rule.setEnabled(true);
+  /// ```
   Future<void> setEnabled(bool value) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'value': value });
@@ -166,6 +208,16 @@ class ModerationRule {
     }
   }
 
+  /// ### Defines which roles will not be affected by this
+  ///
+  /// Example :
+  /// ```dart
+  /// final role = guild.roles.cache.get('240561194958716924');
+  ///
+  /// if (role != null) {
+  ///   await rule.setExemptRoles([role]);
+  /// }
+  /// ```
   Future<void> setExemptRoles(List<Role> roles) async {
     int maxItems = 50;
     if (roles.length > maxItems) {
@@ -182,6 +234,16 @@ class ModerationRule {
     }
   }
 
+  /// ### Defines which roles will not be affected by this
+  ///
+  /// Example :
+  /// ```dart
+  /// final channel = guild.channels.cache.get('240561194958716924');
+  ///
+  /// if (channel != null) {
+  ///   await rule.setExemptChannels([channel]);
+  /// }
+  /// ```
   Future<void> setExemptChannels(List<Channel> channels) async {
     int maxItems = 50;
     if (channels.length > maxItems) {
@@ -197,7 +259,12 @@ class ModerationRule {
       exemptChannels = channels;
     }
   }
-
+  /// ### Delete this
+  ///
+  /// Example :
+  /// ```dart
+  ///   await rule.delete();
+  /// ```
   Future<bool> delete() async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.destroy(url: "/guilds/$guildId/auto-moderation/rules/$id");

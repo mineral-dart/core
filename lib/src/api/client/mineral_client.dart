@@ -1,10 +1,11 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/managers/dm_channel_manager.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/user_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 
-import '../../internal/entities/command_manager.dart';
+import 'package:mineral/src/internal/managers/command_manager.dart';
 
 enum Intent {
   guilds(1 << 0),
@@ -66,12 +67,13 @@ class ClientActivity {
 
  ClientActivity({ required this.name, required this.type });
 
- dynamic toJson () => { 'name': name, 'type': type.value };
+ Object toJson () => { 'name': name, 'type': type.value };
 }
 
 class MineralClient {
   User user;
   GuildManager guilds;
+  DmChannelManager dmChannels;
   UserManager users;
   String sessionId;
   Application application;
@@ -80,13 +82,24 @@ class MineralClient {
   MineralClient({
     required this.user,
     required this.guilds,
+    required this.dmChannels,
     required this.users,
     required this.sessionId,
     required this.application,
     required this.intents,
   });
 
-  setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
+  /// ### Defines the presence that this should adopt
+  ///
+  ///
+  /// Example :
+  /// ```dart
+  /// client.setPresence(
+  ///   activity: ClientActivity(name: 'My activity', type: GamePresence.listening),
+  ///   status: ClientStatus.doNotDisturb
+  /// );
+  /// ```
+  void setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
     ShardManager manager = ioc.singleton(ioc.services.shards);
     manager.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
@@ -96,6 +109,12 @@ class MineralClient {
     });
   }
 
+  /// Sends a ping/pong to the APi websocket of discord and returns the latency
+  ///
+  /// Example :
+  /// ```dart
+  /// final int latency = client.getLatency();
+  /// ```
   int getLatency () {
     ShardManager manager = ioc.singleton(ioc.services.shards);
     return manager.getLatency();
@@ -128,7 +147,8 @@ class MineralClient {
       users: UserManager(),
       sessionId: payload['session_id'],
       application: Application.from(payload['application']),
-      intents: manager.intents
+      intents: manager.intents,
+      dmChannels: DmChannelManager()
     );
   }
 }

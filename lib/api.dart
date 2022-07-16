@@ -1,6 +1,4 @@
 /// The api is the Map of all the classes, enumerations of the framework
-///
-/// {@category Api}
 library api;
 
 export 'src/api/client/mineral_client.dart' show MineralClient, ClientActivity, ClientStatus, Intent;
@@ -11,8 +9,7 @@ export 'src/api/user.dart' show User;
 export 'src/api/status.dart' show Status, StatusType;
 export 'src/api/activity.dart' show Activity;
 export 'src/api/guilds/guild_member.dart' show GuildMember;
-export 'src/api/guilds/member_role_manager.dart' show MemberRoleManager;
-export 'src/api/voice.dart' show Voice;
+export 'src/api/managers/member_role_manager.dart' show MemberRoleManager;
 
 export 'src/api/guilds/guild.dart' show Guild;
 export 'src/api/moderation_rule.dart' show ModerationEventType, ModerationTriggerType, ModerationPresetType, ModerationActionType, ModerationTriggerMetadata, ModerationActionMetadata, ModerationAction, ModerationRule;
@@ -27,8 +24,8 @@ export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
 export 'src/api/channels/text_channel.dart' show TextChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
 
-export 'src/api/message.dart' show Message;
-export 'src/api/message_embed.dart' show MessageEmbed, Footer, Image, Author, Field;
+export 'src/api/messages/message.dart' show Message;
+export 'src/api/messages/message_embed.dart' show MessageEmbed, Footer, Image, Thumbnail, Author, Field;
 export 'src/api/color.dart' show Color;
 
 export 'src/api/emoji.dart' show Emoji;
@@ -48,5 +45,6 @@ export 'src/api/interactions/select_menu_interaction.dart' show SelectMenuIntera
 
 export 'src/api/utils.dart';
 export 'src/internal/extensions/collection.dart';
+export 'src/internal/extensions/string.dart';
 
 typedef Snowflake = String;
