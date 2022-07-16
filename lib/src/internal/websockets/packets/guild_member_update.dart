@@ -34,7 +34,7 @@ class GuildMemberUpdate implements WebsocketPacket {
       );
 
       after.guild = guild;
-      after.voice.member = after;
+      after.voice.member ??= after;
       //after.voice.member = after;
       //after.voice.channel = guild.channels.cache.get(after.voice.channelId);
 
