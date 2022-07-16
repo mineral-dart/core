@@ -58,8 +58,8 @@ class MakeModule extends MineralCliCommand {
     await file.create(recursive: true);
     await writeFileContent(file, getTemplate(filename));
 
-    Console.success(message: 'The file was created in the location ${file.uri}');
-    Console.success(message: 'Don\'t forget to add your file to the main.dart file');
+    Console.success(message: 'File created : ${file.uri}');
+    Console.warn(message: 'Don\'t forget to add your file to the main file');
   }
 
   String getTemplate (String filename) => '''

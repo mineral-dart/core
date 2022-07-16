@@ -19,6 +19,8 @@ abstract class MineralCliCommand {
 
   Future<List<Directory>> getDirectories () async {
     List<Directory> directories = [];
+    directories.add(Directory(join(Directory.current.path, 'src')));
+
     Stream<FileSystemEntity> files = Directory(join(Directory.current.path, 'src')).list(recursive: true);
 
     await files.forEach((element) {
@@ -26,10 +28,6 @@ abstract class MineralCliCommand {
         directories.add(element);
       }
     });
-
-    if (directories.isEmpty) {
-      directories.add(Directory(join(Directory.current.path, 'src')));
-    }
 
     return directories;
   }

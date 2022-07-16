@@ -58,8 +58,8 @@ class MakeEvent extends MineralCliCommand {
     await file.create(recursive: true);
     await writeFileContent(file, getTemplate(filename, Events.values.elementAt(eventKey)));
 
-    Console.success(message: 'The file was created in the location ${file.uri}');
-    Console.success(message: 'Don\'t forget to add your file to the main.dart file');
+    Console.success(message: 'File created : ${file.uri}');
+    Console.warn(message: 'Don\'t forget to add your file to the main or module file');
   }
 
   String getTemplate (String filename, Events event) {
