@@ -82,7 +82,7 @@ class User {
       username: payload['username'],
       tag: "${payload['username']}#${payload['discriminator']}",
       discriminator: payload['discriminator'],
-      bot: payload['bot'],
+      bot: payload['bot'] == true,
       publicFlags: payload['public_flags'] ?? 0,
       avatar: payload['avatar'],
       avatarDecoration: payload['avatar_decoration']
