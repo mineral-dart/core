@@ -1,5 +1,5 @@
 # Mineral
-![banner](https://github.com/mineral-dart/core/blob/develop/assets/images/banner.png)
+![banner](https://raw.githubusercontent.com/mineral-dart/core/develop/assets/images/banner.png)
 
 Mineral is a robust, powerful and scalable framework designed to let you develop discord bots with the Dart language.
 

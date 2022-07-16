@@ -10,7 +10,6 @@ export 'src/api/status.dart' show Status, StatusType;
 export 'src/api/activity.dart' show Activity;
 export 'src/api/guilds/guild_member.dart' show GuildMember;
 export 'src/api/managers/member_role_manager.dart' show MemberRoleManager;
-export 'src/api/voice.dart' show Voice;
 
 export 'src/api/guilds/guild.dart' show Guild;
 export 'src/api/moderation_rule.dart' show ModerationEventType, ModerationTriggerType, ModerationPresetType, ModerationActionType, ModerationTriggerMetadata, ModerationActionMetadata, ModerationAction, ModerationRule;

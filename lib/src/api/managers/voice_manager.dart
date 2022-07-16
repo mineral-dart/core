@@ -22,6 +22,15 @@ class VoiceManager {
     required this.channel
   });
 
+  /// ### Mutes or unmute a server member
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  ///
+  /// if (member != null) {
+  ///   await member.setMute(true);
+  /// }
   Future<void> setMute(bool value) async {
     final Http http = ioc.singleton(ioc.services.http);
 
@@ -35,6 +44,15 @@ class VoiceManager {
     }
   }
 
+  /// ### Deafens or not a server member
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  ///
+  /// if (member != null) {
+  ///   await member.setDeaf(true);
+  /// }
   Future<void> setDeaf(bool value) async {
     final Http http = ioc.singleton(ioc.services.http);
     final Response response = await http.patch(
@@ -47,10 +65,29 @@ class VoiceManager {
     }
   }
 
+  /// ### Moves a member from one voice channel to another
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  /// final voiceChannel = guild.channels.cache.get('240561194958716924');
+  ///
+  /// if (member != null && voiceChannel != null) {
+  ///   await member.move(voiceChannel.id);
+  /// }
   Future<void> move(Snowflake channelId) async {
     _updateChannel(channelId);
   }
 
+  /// ### Disconnects the user from a voice channel
+  ///
+  /// Example :
+  /// ```dart
+  /// final member = guild.members.cache.get('240561194958716924');
+  ///
+  /// if (member != null) {
+  ///   await member.disconnect();
+  /// }
   Future<void> disconnect() async {
     _updateChannel(null);
   }
