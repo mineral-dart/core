@@ -29,13 +29,13 @@ class CategoryChannel extends Channel {
     permissionsOverwrite: permissionsOverwrite
   );
 
-  Future<CategoryChannel?> update ({ String? label, int? position }) async {
+  Future<CategoryChannel?> update ({ String? label, int? position, List<PermissionOverwrite>? permissions }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/channels/$id", payload: {
       'name': label,
       'position': position,
-      'permission_overwrites': [],
+      'permission_overwrites': permissions?.map((e) => e.toJSON()),
     });
 
     dynamic payload = jsonDecode(response.body);
@@ -60,7 +60,10 @@ class CategoryChannel extends Channel {
   }
 
   factory CategoryChannel.from(dynamic payload) {
-    final PermissionOverwriteManager permissionOverwriteManager = PermissionOverwriteManager(guildId: payload['guild_id']);
+    final PermissionOverwriteManager permissionOverwriteManager = PermissionOverwriteManager(
+        guildId: payload['guild_id'],
+        channelId: payload['id']
+    );
     for(dynamic element in payload['permission_overwrites']) {
       final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
       permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);

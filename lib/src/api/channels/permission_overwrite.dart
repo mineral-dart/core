@@ -21,6 +21,15 @@ class PermissionOverwrite {
     required this.allow,
     required this.deny
   });
+  
+  Map<String, dynamic> toJSON() {
+    return {
+      'id': id,
+      'type': type.value,
+      'allow': Helper.reduceRolePermissions(allow),
+      'deny': Helper.reduceRolePermissions(deny)
+    };
+  }
 
   factory PermissionOverwrite.from({required dynamic payload}) {
     return PermissionOverwrite(

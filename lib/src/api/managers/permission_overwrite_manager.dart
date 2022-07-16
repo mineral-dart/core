@@ -11,12 +11,17 @@ class PermissionOverwriteManager implements CacheManager<PermissionOverwrite> {
   Map<Snowflake, PermissionOverwrite> cache = {};
 
   Snowflake? guildId;
-  late Channel channel;
+  Snowflake? channelId;
 
-  PermissionOverwriteManager({required this.guildId});
+  PermissionOverwriteManager({required this.guildId, required this.channelId});
 
+  //TODO: Need channel sync
   @override
   Future<Map<Snowflake, PermissionOverwrite>> sync() async {
     throw UnimplementedError();
+  }
+
+  Future<void> add() async {
+
   }
 }
