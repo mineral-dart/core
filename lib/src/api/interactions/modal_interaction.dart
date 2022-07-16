@@ -19,6 +19,10 @@ class ModalInteraction extends Interaction {
     required User user
   }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
 
+  /// Return an [String] if the modal has the designed field
+  /// ```dart
+  /// String? field = interaction.getText('custom_field_id');
+  /// ```
   String? getText(String customId) => data.get(customId);
 
   factory ModalInteraction.from({ required User user, required Message? message, required dynamic payload }) {
