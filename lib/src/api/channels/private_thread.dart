@@ -1,6 +1,4 @@
-
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class PrivateThread extends Channel {
@@ -29,14 +27,6 @@ class PrivateThread extends Channel {
     flags: flags,
     webhooks: webhooks,
   );
-
-  Future<void> create (Snowflake message, String name) async {
-    Http http = ioc.singleton(ioc.services.http);
-    await http.post(url: '/channels/$id/messages/$message/threads', payload: {
-      'name': name,
-
-    });
-  }
 
   factory PrivateThread.from({ required dynamic payload }) {
     return PrivateThread(
