@@ -29,7 +29,7 @@ class Emoji {
     required this.manager,
   });
 
-  /// Modifies the [label] of this.
+  /// ### Modifies the [label] of this.
   /// ```dart
   /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
   /// if (emoji != null) {
@@ -45,7 +45,7 @@ class Emoji {
     }
   }
 
-  /// Modifies the [roles] of this.
+  /// ### Modifies the [roles] of this.
   /// ```dart
   /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
   /// final Role? role = guild.roles.cache.get('240561194958716924');
@@ -71,7 +71,7 @@ class Emoji {
     }
   }*/
 
-  /// Removes the current this from the [EmojiManager]'s cache
+  /// ### Removes the current this from the [EmojiManager]'s cache
   /// ```dart
   /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
   /// if (emoji != null) {
@@ -91,7 +91,7 @@ class Emoji {
     }
   }
 
-  /// Returns this in discord notification format
+  /// ### Returns this in discord notification format
   /// ```dart
   /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
   /// if (emoji != null) {

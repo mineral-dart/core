@@ -101,7 +101,7 @@ class MessageEmbed {
     this.color,
   });
 
-  /// Set the [title] field and return this
+  /// ### Set the [title] field and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setTitle('My title');
@@ -111,7 +111,7 @@ class MessageEmbed {
     return this;
   }
 
-  /// Set the [description] field and return this
+  /// ### Set the [description] field and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setDescription('My description');
@@ -121,7 +121,7 @@ class MessageEmbed {
     return this;
   }
 
-  /// Set the [footer] field and return this
+  /// ### Set the [footer] field and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setFooter(text: 'My title');
@@ -131,7 +131,7 @@ class MessageEmbed {
     return this;
   }
 
-  /// Set the [image] field and return this
+  /// ### Set the [image] field and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setImage(url: 'https://..../images/my_picture.png');
@@ -141,7 +141,7 @@ class MessageEmbed {
     return this;
   }
 
-  /// Set the [thumbnail] field and return this
+  /// ### Set the [thumbnail] field and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setThumbnail(url: 'https://..../images/my_picture.png');
@@ -151,7 +151,7 @@ class MessageEmbed {
     return this;
   }
 
-  /// Set the [author] field and return this
+  /// ### Set the [author] field and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setAuthor(name: 'John Doe');
@@ -161,7 +161,7 @@ class MessageEmbed {
     return this;
   }
 
-  /// Set the [color] field and return this
+  /// ### Set the [color] field and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setColor(Color.cyan_600);
@@ -176,7 +176,7 @@ class MessageEmbed {
     return this;
   }
 
-  /// Set the [timestamp] field and return this
+  /// ### Set the [timestamp] field and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setTimestamp();
@@ -191,7 +191,7 @@ class MessageEmbed {
     return this;
   }
 
-  /// Set the [url] field and return this
+  /// ### Set the [url] field and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setUrl('https://.....com');
@@ -201,7 +201,7 @@ class MessageEmbed {
     return this;
   }
 
-  /// Add an field into [fields] and return this
+  /// ### Add an field into [fields] and return this
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .addField(name: 'My field', value: 'My custom value');

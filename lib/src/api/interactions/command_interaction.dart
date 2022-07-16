@@ -18,7 +18,7 @@ class CommandInteraction extends Interaction {
     required User user
   }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
 
-  /// Returns an instance of [Channel] if the command has the designed option
+  /// ### Returns an instance of [Channel] if the command has the designed option
   /// ```dart
   /// Channel? channel = interaction.getChannel('option_name');
   /// ```
@@ -26,7 +26,7 @@ class CommandInteraction extends Interaction {
     return guild?.channels.cache.get(data[optionName]?['value']);
   }
 
-  /// Returns an [int] if the command has the designed option
+  /// ### Returns an [int] if the command has the designed option
   /// ```dart
   /// int? value = interaction.getInteger('option_name');
   /// ```
@@ -34,7 +34,7 @@ class CommandInteraction extends Interaction {
     return data[optionName]?['value'];
   }
 
-  /// Returns an [String] if the command has the designed option
+  /// ### Returns an [String] if the command has the designed option
   /// ```dart
   /// String? str = interaction.getString('option_name');
   /// ```
@@ -42,7 +42,7 @@ class CommandInteraction extends Interaction {
     return data[optionName]?['value'];
   }
 
-  /// Returns an instance of [GuildMember] if the command has the designed option
+  /// ### Returns an instance of [GuildMember] if the command has the designed option
   /// ```dart
   /// GuildMember? member = interaction.getMember('option_name');
   /// ```
@@ -50,7 +50,7 @@ class CommandInteraction extends Interaction {
     return guild?.members.cache.get(data[optionName]?['value']);
   }
 
-  /// Returns an instance of [User] if the command has the designed option
+  /// ### Returns an instance of [User] if the command has the designed option
   /// ```dart
   /// User? user = interaction.getUser('option_name');
   /// ```
@@ -59,7 +59,7 @@ class CommandInteraction extends Interaction {
     return client.users.cache.get(data[optionName]?['value']);
   }
 
-  /// Returns an [bool] if the command has the designed option
+  /// ### Returns an [bool] if the command has the designed option
   /// ```dart
   /// book? boolean = interaction.getBoolean('option_name');
   /// ```
@@ -67,7 +67,7 @@ class CommandInteraction extends Interaction {
     return data[optionName]?['value'];
   }
 
-  /// Returns an instance of [Role] if the command has the designed option
+  /// ### Returns an instance of [Role] if the command has the designed option
   /// ```dart
   /// Role? role = interaction.getRole('option_name');
   /// ```
@@ -75,7 +75,7 @@ class CommandInteraction extends Interaction {
     return guild?.roles.cache.get(data[optionName]?['value']);
   }
 
-  /// Returns an [T] if the command has the designed option
+  /// ### Returns an [T] if the command has the designed option
   /// ```dart
   /// String? str = interaction.getChoice<String>('option_name');
   /// int? value = interaction.getChoice<int>('option_name');
@@ -84,7 +84,7 @@ class CommandInteraction extends Interaction {
     return data[optionName]?['value'];
   }
 
-  /// Returns an value if the command has the designed option
+  /// ### Returns an value if the command has the designed option
   /// ```dart
   /// dynamic mentionable = interaction.getMentionable('option_name');
   /// ```

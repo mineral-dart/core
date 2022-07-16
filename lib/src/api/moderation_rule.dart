@@ -119,7 +119,7 @@ class ModerationRule {
     required this.exemptChannels,
   });
 
-  /// Update the label of this
+  /// ### Update the label of this
   /// ```dart
   /// await rule.setLabel('My label');
   /// ```
@@ -132,7 +132,7 @@ class ModerationRule {
     }
   }
 
-  /// Update the event of this
+  /// ### Update the event of this
   /// ```dart
   /// await rule.setEventType(ModerationEventType.messageSend);
   /// ```
@@ -145,7 +145,7 @@ class ModerationRule {
     }
   }
 
-  /// Update the trigger metadata of this
+  /// ### Update the trigger metadata of this
   /// ```dart
   /// final metadata = ModerationTriggerMetadata(
   ///   keywordFilter: ['foo'],
@@ -163,7 +163,7 @@ class ModerationRule {
     }
   }
 
-  /// Update actions of this
+  /// ### Update actions of this
   /// ```dart
   /// final channel = guild.channels.cache.get('240561194958716924');
   ///
@@ -185,7 +185,7 @@ class ModerationRule {
     }
   }
 
-  /// Update enabled of this
+  /// ### Update enabled of this
   /// ```dart
   /// await rule.setEnabled(true);
   /// ```
@@ -198,7 +198,7 @@ class ModerationRule {
     }
   }
 
-  /// Defines which roles will not be affected by this
+  /// ### Defines which roles will not be affected by this
   /// ```dart
   /// final role = guild.roles.cache.get('240561194958716924');
   ///
@@ -222,7 +222,7 @@ class ModerationRule {
     }
   }
 
-  /// Defines which roles will not be affected by this
+  /// ### Defines which roles will not be affected by this
   /// ```dart
   /// final channel = guild.channels.cache.get('240561194958716924');
   ///
@@ -245,7 +245,7 @@ class ModerationRule {
       exemptChannels = channels;
     }
   }
-  /// Delete this
+  /// ### Delete this
   /// ```dart
   ///   await rule.delete();
   /// ```

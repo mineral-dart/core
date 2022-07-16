@@ -11,7 +11,7 @@ class Modal extends Component {
 
   Modal({ required this.customId, required this.label }) : super(type: ComponentType.selectMenu);
 
-  /// Created a input text field
+  /// ### Created a input text field
   /// ```dart
   /// final Modal modal = Modal(customId: 'my_modal', label: 'My modal')
   ///   .addInput(customId: 'my_text', label: 'Premier texte');
@@ -21,7 +21,7 @@ class Modal extends Component {
     return this;
   }
 
-  /// Created a input text field with multiple lines
+  /// ### Created a input text field with multiple lines
   /// ```dart
   /// final Modal modal = Modal(customId: 'my_modal', label: 'My modal')
   ///   .addParagraph(customId: 'my_paragraph', label: 'Second texte');

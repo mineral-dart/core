@@ -89,7 +89,8 @@ class MineralClient {
     required this.intents,
   });
 
-  /// Defines the presence that this should adopt
+  /// ### Defines the presence that this should adopt
+  ///
   /// ```dart
   /// client.setPresence(
   ///   activity: ClientActivity(name: 'My activity', type: GamePresence.listening),

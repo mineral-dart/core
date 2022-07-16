@@ -26,7 +26,7 @@ class Interaction {
 
   Interaction({ required this.id, required this.applicationId, required this.version, required this.type, required this.token, required this.user });
 
-  /// Responds to this by an [Message]
+  /// ### Responds to this by an [Message]
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
@@ -59,7 +59,7 @@ class Interaction {
     });
   }
 
-  /// Responds to this by an [Modal]
+  /// ### Responds to this by an [Modal]
   /// ```dart
   /// Modal modal = Modal(customId: 'modal', label: 'My modal')
   ///   .addInput(customId: 'my_text', label: 'First text')

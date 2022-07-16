@@ -15,7 +15,7 @@ class Voice {
     required this.channelId,
   });
 
-  /// Mutes a server member
+  /// ### Mutes a server member
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///
@@ -31,7 +31,7 @@ class Voice {
     }
   }
 
-  /// Remove mutes a server member
+  /// ### Remove mutes a server member
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///
@@ -47,7 +47,7 @@ class Voice {
     }
   }
 
-  /// Deafens a server member
+  /// ### Deafens a server member
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///
@@ -63,7 +63,7 @@ class Voice {
     }
   }
 
-  /// Remove deafens a server member
+  /// ### Remove deafens a server member
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///
@@ -79,7 +79,7 @@ class Voice {
     }
   }
 
-  /// Moves a member from one voice channel to another
+  /// ### Moves a member from one voice channel to another
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   /// final voiceChannel = guild.channels.cache.get('240561194958716924');
@@ -96,7 +96,7 @@ class Voice {
       this.channel = channel;
     }
   }
-  /// Disconnects the user from a voice channel
+  /// ### Disconnects the user from a voice channel
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///

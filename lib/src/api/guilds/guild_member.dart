@@ -31,7 +31,7 @@ class GuildMember {
     required this.voice,
   });
 
-  /// Update the username of this
+  /// ### Update the username of this
   /// ```dart
   /// await member.setUsername('John Doe');
   /// ```
@@ -44,7 +44,7 @@ class GuildMember {
     }
   }
 
-  /// Excludes this for a pre-defined period
+  /// ### Excludes this for a pre-defined period
   ///
   /// Note: An exclusion cannot exceed 28 days
   ///
@@ -63,7 +63,7 @@ class GuildMember {
     }
   }
 
-  /// Cancels the exclusion of this
+  /// ### Cancels the exclusion of this
   /// ```dart
   /// await member.removeTimeout();
   /// ```
@@ -76,7 +76,7 @@ class GuildMember {
     }
   }
 
-  /// banned this from the [Guild] and deleted its messages for a given period
+  /// ### banned this from the [Guild] and deleted its messages for a given period
   /// ```dart
   /// await member.ban();
   /// ```
@@ -97,7 +97,7 @@ class GuildMember {
     }
   }
 
-  /// Kick this of [Guild]
+  /// ### Kick this of [Guild]
   /// ```dart
   /// await member.removeTimeout();
   /// ```
@@ -106,13 +106,13 @@ class GuildMember {
     await http.destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
 
-  /// Returns whether of this is a bot
+  /// ### Returns whether of this is a bot
   /// ```dart
   /// print(member.isBot());
   /// ```
   bool isBot () => user.bot;
 
-  /// Returns whether of this is pending
+  /// ### Returns whether of this is pending
   /// ```dart
   /// print(member.isPending());
   /// ```

@@ -50,7 +50,7 @@ class Role {
     required this.manager,
   });
 
-  /// Modifies the [label] of the role.
+  /// ### Modifies the [label] of the role.
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
@@ -66,7 +66,7 @@ class Role {
     }
   }
 
-  /// Modifies the permissions associated with this
+  /// ### Modifies the permissions associated with this
   /// ```dart
   /// import 'package:mineral/api.dart'; 👈 // then you can use Permission class
   ///
@@ -86,7 +86,7 @@ class Role {
     }
   }
 
-  /// Modifies the [color] of the role.
+  /// ### Modifies the [color] of the role.
   /// ```dart
   /// import 'package:mineral/api.dart'; 👈 // then you can use Color class
   ///
@@ -109,7 +109,7 @@ class Role {
     }
   }
 
-  /// Modifies the [hoist] of the role from [bool].
+  /// ### Modifies the [hoist] of the role from [bool].
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
@@ -125,7 +125,7 @@ class Role {
     }
   }
 
-  /// Modifies the [icon] of the role from [String] path.
+  /// ### Modifies the [icon] of the role from [String] path.
   ///
   /// We consider having the file structure
   /// ```
@@ -158,7 +158,7 @@ class Role {
     }
   }
 
-  /// Remove the [icon] of the role.
+  /// ### Remove the [icon] of the role.
   ///
   /// Your guild requires the [GuildFeature.roleIcons] to perform this action, otherwise throw [MissingFeatureException].
   /// ```dart
@@ -183,7 +183,7 @@ class Role {
     }
   }
 
-  /// Define the [unicodeEmoji] of the role from [String].
+  /// ### Define the [unicodeEmoji] of the role from [String].
   ///
   /// Your guild requires the [GuildFeature.roleIcons] to perform this action, otherwise throw [MissingFeatureException].
   /// ```dart
@@ -208,7 +208,7 @@ class Role {
     }
   }
 
-  /// Modifies the [mentionable] of the role from [bool].
+  /// ### Modifies the [mentionable] of the role from [bool].
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {

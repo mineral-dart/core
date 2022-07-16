@@ -29,7 +29,7 @@ class User {
     required this.avatarDecoration,
   });
 
-  /// Envoie un message en DM à l'utilisateur
+  /// ### Envoie un message en DM à l'utilisateur
   /// ```dart
   /// GuildMember? member = guild.members.cache.get('240561194958716924');
   /// await member.user.send(content: 'Hello World !');
@@ -66,7 +66,7 @@ class User {
     return null;
   }
 
-  /// Returns the absolute url to the user's avatar
+  /// ### Returns the absolute url to the user's avatar
   String getDisplayAvatarUrl () {
     return '${Constants.cdnUrl}/avatars/$id/$avatar';
   }

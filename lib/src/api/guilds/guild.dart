@@ -126,7 +126,7 @@ class Guild {
     required this.scheduledEvents,
   });
 
-  /// Modifies the [name] of this.
+  /// ### Modifies the [name] of this.
   /// ```dart
   /// await guild.setName('Guild name');
   /// ```
@@ -139,7 +139,7 @@ class Guild {
     }
   }
 
-  /// Modifies the [verificationLevel] of the current [Guild].
+  /// ### Modifies the [verificationLevel] of the current [Guild].
   /// ```dart
   /// import 'package:mineral/api.dart'; 👈 // then you can use VerificationLevel enum
   ///
@@ -154,7 +154,7 @@ class Guild {
     }
   }
 
-  /// Defines the notification level of this
+  /// ### Defines the notification level of this
   /// - 0 → All messages
   /// - 1 → Only mentions
   /// ```dart
@@ -169,7 +169,7 @@ class Guild {
     }
   }
 
-  /// Defines the explicit content level of this
+  /// ### Defines the explicit content level of this
   /// - 0 → Disabled
   /// - 1 → Members without roles
   /// - 2 → All members
@@ -186,7 +186,7 @@ class Guild {
     }
   }
 
-  /// Update the afk channel
+  /// ### Update the afk channel
   /// ```dart
   /// final voiceChannel = guild.channels.cache.get('240561194958716924');
   ///
@@ -203,7 +203,7 @@ class Guild {
       afkChannelId = channel.id;
     }
   }
-  /// Update the owner of this
+  /// ### Update the owner of this
   ///
   /// Warning : This method only works if the server was created via a discord bot and the bot is the current owner
   ///
@@ -232,7 +232,7 @@ class Guild {
     }
   }
 
-  /// Update the splash banner of this
+  /// ### Update the splash banner of this
   ///
   /// This method requires the feature [GuildFeature.banner] of this
   /// ```dart
@@ -253,7 +253,7 @@ class Guild {
     }
   }
 
-  /// Remove the splash banner of this
+  /// ### Remove the splash banner of this
   ///
   /// This method requires the feature [GuildFeature.banner] of this
   /// ```dart
@@ -272,7 +272,7 @@ class Guild {
     }
   }
 
-  /// Update the discovery splash banner of this
+  /// ### Update the discovery splash banner of this
   ///
   /// This method requires the feature [GuildFeature.banner] of this
   /// ```dart
@@ -293,7 +293,7 @@ class Guild {
     }
   }
 
-  /// Remove the discovery splash banner of this
+  /// ### Remove the discovery splash banner of this
   ///
   /// This method requires the feature [GuildFeature.banner] of this
   /// ```dart
@@ -312,7 +312,7 @@ class Guild {
     }
   }
 
-  /// Update the banner of this
+  /// ### Update the banner of this
   ///
   /// This method requires the feature [GuildFeature.banner] of this
   /// ```dart
@@ -333,7 +333,7 @@ class Guild {
     }
   }
 
-  /// Remove the banner of this
+  /// ### Remove the banner of this
   ///
   /// This method requires the feature [GuildFeature.banner] of this
   /// ```dart
@@ -352,7 +352,7 @@ class Guild {
     }
   }
 
-  /// Update the icon of this
+  /// ### Update the icon of this
   /// ```dart
   /// await guild.setIcon('assets/images/my_guild_icon.png');
   /// ```
@@ -367,7 +367,7 @@ class Guild {
     }
   }
 
-  /// Remove the icon of this
+  /// ### Remove the icon of this
   /// ```dart
   /// await guild.removeIcon();
   /// ```
@@ -380,7 +380,7 @@ class Guild {
     }
   }
 
-  /// Update system channel of this
+  /// ### Update system channel of this
   /// ```dart
   /// final channel = guild.channels.cache.get('240561194958716924');
   ///
@@ -398,7 +398,7 @@ class Guild {
     }
   }
 
-  /// Update rules channel of this
+  /// ### Update rules channel of this
   /// ```dart
   /// final channel = guild.channels.cache.get('240561194958716924');
   ///
@@ -416,7 +416,7 @@ class Guild {
     }
   }
 
-  /// Update public updates channel of this
+  /// ### Update public updates channel of this
   /// ```dart
   /// final channel = guild.channels.cache.get('240561194958716924');
   ///
@@ -434,7 +434,7 @@ class Guild {
     }
   }
 
-  /// Update preferred language of this
+  /// ### Update preferred language of this
   /// ```dart
   /// import 'package:mineral/api.dart';
   ///
@@ -449,7 +449,7 @@ class Guild {
     }
   }
 
-  /// Remove the discord client of this
+  /// ### Remove the discord client of this
   /// ```dart
   /// await guild.leave();
   /// ```

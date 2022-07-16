@@ -1,5 +1,7 @@
 /// Instance of colour.
 /// You can use a pre-designed colour panel
+///
+/// Example
 /// ```dart
 /// import 'package:mineral/api.dart';
 /// print(Color.cyan_600);
