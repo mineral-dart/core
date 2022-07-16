@@ -1,3 +1,4 @@
+/// Core exceptions
 library exception;
 
 export 'src/exceptions/token_exception.dart';

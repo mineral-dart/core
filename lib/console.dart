@@ -1,3 +1,4 @@
+/// Console to print formatted and beautifully messages
 library console;
 
 import 'package:mineral/core.dart';

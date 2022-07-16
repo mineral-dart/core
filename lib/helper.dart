@@ -1,3 +1,4 @@
+/// Helper class to simplify actions
 library helper;
 
 import 'dart:convert';

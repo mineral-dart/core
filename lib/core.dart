@@ -1,3 +1,4 @@
+/// 🧡 The neuralgic heart of the application, this module gathers all the functionalities of the framework.
 library core;
 
 export 'src/internal/environment.dart' show Environment;

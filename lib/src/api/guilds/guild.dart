@@ -213,11 +213,12 @@ class Guild {
       afkChannelId = channel.id;
     }
   }
+
   /// ### Update the owner of this
   ///
   /// Warning : This method only works if the server was created via a discord bot and the bot is the current owner
   ///
-  /// See [documentation](Warning: This method only works if the server was created via a discord bot)
+  /// See [documentation](https://discord.com/developers/docs/resources/guild#modify-guild)
   ///
   /// Example :
   /// ```dart
