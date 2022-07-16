@@ -3,7 +3,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
-import 'package:mineral/src/api/guilds/guild_role_manager.dart';
+import 'package:mineral/src/api/managers/guild_role_manager.dart';
 
 class Tag {
   Snowflake? botId;

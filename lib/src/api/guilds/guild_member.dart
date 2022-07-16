@@ -1,7 +1,8 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/guilds/guild_role_manager.dart';
+import 'package:mineral/src/api/managers/guild_role_manager.dart';
+import 'package:mineral/src/api/managers/member_role_manager.dart';
 import 'package:mineral/src/api/managers/voice_manager.dart';
 
 class GuildMember {
