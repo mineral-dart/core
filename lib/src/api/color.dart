@@ -2,12 +2,16 @@
 /// You can use a pre-designed colour panel
 ///
 /// Example
-/// ```dart
+///
+  /// Example :
+  /// ```dart
 /// import 'package:mineral/api.dart';
 /// print(Color.cyan_600);
 /// ```
 /// Or create your own colour instances
-/// ```dart
+///
+  /// Example :
+  /// ```dart
 /// import 'package:mineral/api.dart';
 /// print(Color('#FFFFFF'));
 // ```

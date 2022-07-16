@@ -32,6 +32,8 @@ class GuildMember {
   });
 
   /// ### Update the username of this
+  ///
+  /// Example :
   /// ```dart
   /// await member.setUsername('John Doe');
   /// ```
@@ -49,6 +51,8 @@ class GuildMember {
   /// Note: An exclusion cannot exceed 28 days
   ///
   /// See [documentation](https://discord.com/developers/docs/resources/guild#modify-guild-member)
+  ///
+  /// Example :
   /// ```dart
   /// final DateTime = DateTime.now().add(Duration(days: 28));
   /// await member.timeout(DateTime);
@@ -64,6 +68,8 @@ class GuildMember {
   }
 
   /// ### Cancels the exclusion of this
+  ///
+  /// Example :
   /// ```dart
   /// await member.removeTimeout();
   /// ```
@@ -77,10 +83,14 @@ class GuildMember {
   }
 
   /// ### banned this from the [Guild] and deleted its messages for a given period
+  ///
+  /// Example :
   /// ```dart
   /// await member.ban();
   /// ```
   /// With the deletion of his messages for 7 days
+  ///
+  /// Example :
   /// ```dart
   /// await member.ban(count: 7);
   /// ```
@@ -98,6 +108,8 @@ class GuildMember {
   }
 
   /// ### Kick this of [Guild]
+  ///
+  /// Example :
   /// ```dart
   /// await member.removeTimeout();
   /// ```
@@ -107,12 +119,16 @@ class GuildMember {
   }
 
   /// ### Returns whether of this is a bot
+  ///
+  /// Example :
   /// ```dart
   /// print(member.isBot());
   /// ```
   bool isBot () => user.bot;
 
   /// ### Returns whether of this is pending
+  ///
+  /// Example :
   /// ```dart
   /// print(member.isPending());
   /// ```

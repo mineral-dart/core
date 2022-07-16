@@ -43,6 +43,8 @@ class Webhook {
   });
 
   /// ### Update the label of this
+  ///
+  /// Example :
   /// ```dart
   /// await webhook.setLabel('My webhook name');
   /// ```
@@ -56,6 +58,8 @@ class Webhook {
   }
 
   /// ### Update the avatar of this
+  ///
+  /// Example :
   /// ```dart
   /// await webhook.setAvatar('assets/images/my_picture.png');
   /// ```
@@ -71,6 +75,8 @@ class Webhook {
 
   /// ### Updates multiple properties of this in a single request.
   /// When you need to update more than 2 fields, we advise you to use this method to reduce the number of outgoing requests.
+  ///
+  /// Example :
   /// ```dart
   /// await webhook.update(label: 'My webhook name', avatar: 'assets/images/my_picture.png');
   /// ```
@@ -91,6 +97,8 @@ class Webhook {
     }
   }
   /// ### Send a message from the webhook
+  ///
+  /// Example :
   /// ```dart
   /// await webhook.execute(content: 'Hello World !');
   /// ```
@@ -123,6 +131,8 @@ class Webhook {
   }
 
   /// ### Delete this
+  ///
+  /// Example :
   /// ```dart
   /// await webhook.delete();
   /// ```

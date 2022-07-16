@@ -19,6 +19,8 @@ class CommandInteraction extends Interaction {
   }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
 
   /// ### Returns an instance of [Channel] if the command has the designed option
+  ///
+  /// Example :
   /// ```dart
   /// Channel? channel = interaction.getChannel('option_name');
   /// ```
@@ -27,6 +29,8 @@ class CommandInteraction extends Interaction {
   }
 
   /// ### Returns an [int] if the command has the designed option
+  ///
+  /// Example :
   /// ```dart
   /// int? value = interaction.getInteger('option_name');
   /// ```
@@ -35,6 +39,8 @@ class CommandInteraction extends Interaction {
   }
 
   /// ### Returns an [String] if the command has the designed option
+  ///
+  /// Example :
   /// ```dart
   /// String? str = interaction.getString('option_name');
   /// ```
@@ -43,6 +49,8 @@ class CommandInteraction extends Interaction {
   }
 
   /// ### Returns an instance of [GuildMember] if the command has the designed option
+  ///
+  /// Example :
   /// ```dart
   /// GuildMember? member = interaction.getMember('option_name');
   /// ```
@@ -51,6 +59,8 @@ class CommandInteraction extends Interaction {
   }
 
   /// ### Returns an instance of [User] if the command has the designed option
+  ///
+  /// Example :
   /// ```dart
   /// User? user = interaction.getUser('option_name');
   /// ```
@@ -60,6 +70,8 @@ class CommandInteraction extends Interaction {
   }
 
   /// ### Returns an [bool] if the command has the designed option
+  ///
+  /// Example :
   /// ```dart
   /// book? boolean = interaction.getBoolean('option_name');
   /// ```
@@ -68,6 +80,8 @@ class CommandInteraction extends Interaction {
   }
 
   /// ### Returns an instance of [Role] if the command has the designed option
+  ///
+  /// Example :
   /// ```dart
   /// Role? role = interaction.getRole('option_name');
   /// ```
@@ -76,6 +90,8 @@ class CommandInteraction extends Interaction {
   }
 
   /// ### Returns an [T] if the command has the designed option
+  ///
+  /// Example :
   /// ```dart
   /// String? str = interaction.getChoice<String>('option_name');
   /// int? value = interaction.getChoice<int>('option_name');
@@ -85,6 +101,8 @@ class CommandInteraction extends Interaction {
   }
 
   /// ### Returns an value if the command has the designed option
+  ///
+  /// Example :
   /// ```dart
   /// dynamic mentionable = interaction.getMentionable('option_name');
   /// ```

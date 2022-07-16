@@ -16,6 +16,8 @@ class Voice {
   });
 
   /// ### Mutes a server member
+  ///
+  /// Example :
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///
@@ -32,6 +34,8 @@ class Voice {
   }
 
   /// ### Remove mutes a server member
+  ///
+  /// Example :
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///
@@ -48,6 +52,8 @@ class Voice {
   }
 
   /// ### Deafens a server member
+  ///
+  /// Example :
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///
@@ -64,6 +70,8 @@ class Voice {
   }
 
   /// ### Remove deafens a server member
+  ///
+  /// Example :
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///
@@ -80,6 +88,8 @@ class Voice {
   }
 
   /// ### Moves a member from one voice channel to another
+  ///
+  /// Example :
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   /// final voiceChannel = guild.channels.cache.get('240561194958716924');
@@ -97,6 +107,8 @@ class Voice {
     }
   }
   /// ### Disconnects the user from a voice channel
+  ///
+  /// Example :
   /// ```dart
   /// final member = guild.members.cache.get('240561194958716924');
   ///

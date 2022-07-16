@@ -102,6 +102,8 @@ class MessageEmbed {
   });
 
   /// ### Set the [title] field and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setTitle('My title');
@@ -112,6 +114,8 @@ class MessageEmbed {
   }
 
   /// ### Set the [description] field and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setDescription('My description');
@@ -122,6 +126,8 @@ class MessageEmbed {
   }
 
   /// ### Set the [footer] field and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setFooter(text: 'My title');
@@ -132,6 +138,8 @@ class MessageEmbed {
   }
 
   /// ### Set the [image] field and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setImage(url: 'https://..../images/my_picture.png');
@@ -142,6 +150,8 @@ class MessageEmbed {
   }
 
   /// ### Set the [thumbnail] field and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setThumbnail(url: 'https://..../images/my_picture.png');
@@ -152,6 +162,8 @@ class MessageEmbed {
   }
 
   /// ### Set the [author] field and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setAuthor(name: 'John Doe');
@@ -162,11 +174,15 @@ class MessageEmbed {
   }
 
   /// ### Set the [color] field and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setColor(Color.cyan_600);
   /// ```
   /// Or with your custom color
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setColor(Color('#FFFFFF'));
@@ -177,6 +193,8 @@ class MessageEmbed {
   }
 
   /// ### Set the [timestamp] field and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setTimestamp();
@@ -192,6 +210,8 @@ class MessageEmbed {
   }
 
   /// ### Set the [url] field and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .setUrl('https://.....com');
@@ -202,6 +222,8 @@ class MessageEmbed {
   }
 
   /// ### Add an field into [fields] and return this
+  ///
+  /// Example :
   /// ```dart
   /// final embed = MessageEmbed()
   ///   .addField(name: 'My field', value: 'My custom value');

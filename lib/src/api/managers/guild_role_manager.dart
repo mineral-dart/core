@@ -17,6 +17,8 @@ class GuildRoleManager implements CacheManager<Role> {
   GuildRoleManager({ required this.guildId });
 
   /// Synchronise the cache from the Discord API
+  ///
+  /// Example :
   /// ```dart
   /// await guild.roles.sync();
   /// ```
@@ -42,6 +44,8 @@ class GuildRoleManager implements CacheManager<Role> {
   /// Create a this
   ///
   /// Warning: if you want to define an icon, the [Guid] must have the feature [GuildFeature.roleIcons]
+  ///
+  /// Example :
   /// ```dart
   /// await guild.roles.create(
   ///   label: 'My role',

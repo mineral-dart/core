@@ -120,6 +120,8 @@ class ModerationRule {
   });
 
   /// ### Update the label of this
+  ///
+  /// Example :
   /// ```dart
   /// await rule.setLabel('My label');
   /// ```
@@ -133,6 +135,8 @@ class ModerationRule {
   }
 
   /// ### Update the event of this
+  ///
+  /// Example :
   /// ```dart
   /// await rule.setEventType(ModerationEventType.messageSend);
   /// ```
@@ -146,6 +150,8 @@ class ModerationRule {
   }
 
   /// ### Update the trigger metadata of this
+  ///
+  /// Example :
   /// ```dart
   /// final metadata = ModerationTriggerMetadata(
   ///   keywordFilter: ['foo'],
@@ -164,6 +170,8 @@ class ModerationRule {
   }
 
   /// ### Update actions of this
+  ///
+  /// Example :
   /// ```dart
   /// final channel = guild.channels.cache.get('240561194958716924');
   ///
@@ -186,6 +194,8 @@ class ModerationRule {
   }
 
   /// ### Update enabled of this
+  ///
+  /// Example :
   /// ```dart
   /// await rule.setEnabled(true);
   /// ```
@@ -199,6 +209,8 @@ class ModerationRule {
   }
 
   /// ### Defines which roles will not be affected by this
+  ///
+  /// Example :
   /// ```dart
   /// final role = guild.roles.cache.get('240561194958716924');
   ///
@@ -223,6 +235,8 @@ class ModerationRule {
   }
 
   /// ### Defines which roles will not be affected by this
+  ///
+  /// Example :
   /// ```dart
   /// final channel = guild.channels.cache.get('240561194958716924');
   ///
@@ -246,6 +260,8 @@ class ModerationRule {
     }
   }
   /// ### Delete this
+  ///
+  /// Example :
   /// ```dart
   ///   await rule.delete();
   /// ```

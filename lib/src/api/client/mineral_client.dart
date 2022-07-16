@@ -91,6 +91,8 @@ class MineralClient {
 
   /// ### Defines the presence that this should adopt
   ///
+  ///
+  /// Example :
   /// ```dart
   /// client.setPresence(
   ///   activity: ClientActivity(name: 'My activity', type: GamePresence.listening),
@@ -108,6 +110,8 @@ class MineralClient {
   }
 
   /// Sends a ping/pong to the APi websocket of discord and returns the latency
+  ///
+  /// Example :
   /// ```dart
   /// final int latency = client.getLatency();
   /// ```

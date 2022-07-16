@@ -30,6 +30,8 @@ class User {
   });
 
   /// ### Envoie un message en DM à l'utilisateur
+  ///
+  /// Example :
   /// ```dart
   /// GuildMember? member = guild.members.cache.get('240561194958716924');
   /// await member.user.send(content: 'Hello World !');

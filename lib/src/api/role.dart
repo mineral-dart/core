@@ -51,6 +51,8 @@ class Role {
   });
 
   /// ### Modifies the [label] of the role.
+  ///
+  /// Example :
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
@@ -67,6 +69,8 @@ class Role {
   }
 
   /// ### Modifies the permissions associated with this
+  ///
+  /// Example :
   /// ```dart
   /// import 'package:mineral/api.dart'; 👈 // then you can use Permission class
   ///
@@ -87,6 +91,8 @@ class Role {
   }
 
   /// ### Modifies the [color] of the role.
+  ///
+  /// Example :
   /// ```dart
   /// import 'package:mineral/api.dart'; 👈 // then you can use Color class
   ///
@@ -96,6 +102,8 @@ class Role {
   /// }
   /// ```
   /// You can use a custom colour from a hexadecimal format.
+  ///
+  /// Example :
   /// ```dart
   /// await role.setColor(Color('#ffffff'));
   /// ```
@@ -110,6 +118,8 @@ class Role {
   }
 
   /// ### Modifies the [hoist] of the role from [bool].
+  ///
+  /// Example :
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
@@ -138,6 +148,8 @@ class Role {
   /// .env
   /// pubspec.yaml
   /// ```
+  ///
+  /// Example :
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
@@ -161,6 +173,8 @@ class Role {
   /// ### Remove the [icon] of the role.
   ///
   /// Your guild requires the [GuildFeature.roleIcons] to perform this action, otherwise throw [MissingFeatureException].
+  ///
+  /// Example :
   /// ```dart
   /// import 'package:mineral/api.dart'; 👈 // then you can use GuildFeature enum
   ///
@@ -186,6 +200,8 @@ class Role {
   /// ### Define the [unicodeEmoji] of the role from [String].
   ///
   /// Your guild requires the [GuildFeature.roleIcons] to perform this action, otherwise throw [MissingFeatureException].
+  ///
+  /// Example :
   /// ```dart
   /// import 'package:mineral/api.dart'; 👈 // then you can use GuildFeature enum
   ///
@@ -209,6 +225,8 @@ class Role {
   }
 
   /// ### Modifies the [mentionable] of the role from [bool].
+  ///
+  /// Example :
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
@@ -225,6 +243,8 @@ class Role {
   }
 
   /// Removes the current this from the [MemberRoleManager]'s cache
+  ///
+  /// Example :
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {
@@ -232,6 +252,8 @@ class Role {
   /// }
   /// ```
   /// You can specify a reason for this action
+  ///
+  /// Example :
   /// ```dart
   /// await role.delete(reason: 'I will destroy this..');
   /// ```
@@ -251,6 +273,8 @@ class Role {
   }
 
   /// Returns this in discord notification format
+  ///
+  /// Example :
   /// ```dart
   /// final Role? role = guild.roles.cache.get('240561194958716924');
   /// if (role != null) {

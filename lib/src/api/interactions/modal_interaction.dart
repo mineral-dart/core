@@ -20,6 +20,8 @@ class ModalInteraction extends Interaction {
   }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
 
   /// ### Return an [String] if the modal has the designed field
+  ///
+  /// Example :
   /// ```dart
   /// String? field = interaction.getText('custom_field_id');
   /// ```

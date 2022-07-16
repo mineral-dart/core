@@ -20,6 +20,8 @@ class SelectMenuInteraction extends Interaction {
   }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
 
   /// ### Return an [List] of [T] if this has the designed field
+  ///
+  /// Example :
   /// ```dart
   /// List<String>? fields = interaction.getValues<String>();
   /// List<int>? fields = interaction.getValues<int>();
@@ -27,6 +29,8 @@ class SelectMenuInteraction extends Interaction {
   List<T> getValues<T> () => data as List<T>;
 
   /// ### Return the first [T] if this has the designed field
+  ///
+  /// Example :
   /// ```dart
   /// String? field = interaction.getValue<String>();
   /// int? field = interaction.getValue<int>();

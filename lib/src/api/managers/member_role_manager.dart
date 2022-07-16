@@ -18,6 +18,8 @@ class MemberRoleManager implements CacheManager<Role> {
   MemberRoleManager({ required this.manager, required this.memberId });
 
   /// Add a [Role] to the [GuildMember]
+  ///
+  /// Example :
   /// ```dart
   /// final Role? role = guild.roles.cache.get('446556480850755604');
   /// final GuildMember? member = guild.members.cache.get('240561194958716924');
@@ -27,6 +29,8 @@ class MemberRoleManager implements CacheManager<Role> {
   /// }
   /// ```
   /// You can pass a reason for the audit logs.
+  ///
+  /// Example :
   /// ```dart
   /// await member.roles.add('446556480850755604', reason: 'I love this user');
   /// ```
@@ -55,6 +59,8 @@ class MemberRoleManager implements CacheManager<Role> {
   }
 
   /// Remove a [Role] from the [GuildMember]
+  ///
+  /// Example :
   /// ```dart
   /// final Role? role = guild.roles.cache.get('446556480850755604');
   /// final GuildMember? member = guild.members.cache.get('240561194958716924');
@@ -64,6 +70,8 @@ class MemberRoleManager implements CacheManager<Role> {
   /// ```
   ///
   /// You can pass a reason for the audit logs.
+  ///
+  /// Example :
   /// ```dart
   /// await member.roles.remove('446556480850755604', reason: 'Hello, World!');
   /// ```
@@ -86,6 +94,8 @@ class MemberRoleManager implements CacheManager<Role> {
   }
 
   /// Toggle a [Role] from the [GuildMember]. If the user has the role, this method will remove the role, else this method will add the role.
+  ///
+  /// Example :
   /// ```dart
   /// final Role? role = guild.roles.cache.get('446556480850755604');
   /// final GuildMember? member = guild.members.cache.get('240561194958716924');
@@ -95,6 +105,8 @@ class MemberRoleManager implements CacheManager<Role> {
   /// ```
   ///
   /// You can pass a reason for the audit logs.
+  ///
+  /// Example :
   /// ```dart
   /// await member.roles.toggle('446556480850755604', reason: 'Hello, World!');
   /// ```

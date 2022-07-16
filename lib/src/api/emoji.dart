@@ -30,6 +30,8 @@ class Emoji {
   });
 
   /// ### Modifies the [label] of this.
+  ///
+  /// Example :
   /// ```dart
   /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
   /// if (emoji != null) {
@@ -46,6 +48,8 @@ class Emoji {
   }
 
   /// ### Modifies the [roles] of this.
+  ///
+  /// Example :
   /// ```dart
   /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
   /// final Role? role = guild.roles.cache.get('240561194958716924');
@@ -72,6 +76,8 @@ class Emoji {
   }*/
 
   /// ### Removes the current this from the [EmojiManager]'s cache
+  ///
+  /// Example :
   /// ```dart
   /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
   /// if (emoji != null) {
@@ -79,6 +85,8 @@ class Emoji {
   /// }
   /// ```
   /// You can specify a reason for this action
+  ///
+  /// Example :
   /// ```dart
   /// await emoji.delete(reason: 'I will destroy this..');
   /// ```
@@ -92,6 +100,8 @@ class Emoji {
   }
 
   /// ### Returns this in discord notification format
+  ///
+  /// Example :
   /// ```dart
   /// final Emoji? emoji = guild.emojis.cache.get('240561194958716924');
   /// if (emoji != null) {
