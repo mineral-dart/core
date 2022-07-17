@@ -49,7 +49,7 @@ class Channel extends PartialChannel {
   late CategoryChannel? parent;
   int? flags;
   WebhookManager webhooks;
-  PermissionOverwriteManager? permissionsOverwrite;
+  PermissionOverwriteManager? permissionOverwrites;
 
   Channel({
     required id,
@@ -61,7 +61,7 @@ class Channel extends PartialChannel {
     required this.parentId,
     required this.flags,
     required this.webhooks,
-    this.permissionsOverwrite
+    this.permissionOverwrites
   }): super(id: id);
 
   Future<T> setLabel<T extends Channel> (String label) async {

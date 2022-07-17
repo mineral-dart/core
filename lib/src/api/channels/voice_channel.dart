@@ -27,7 +27,7 @@ class VoiceChannel extends Channel {
     required this.rateLimitPerUser,
     required this.rtcRegion,
     required this.videoQualityMode,
-    required PermissionOverwriteManager permissionsOverwrite
+    required PermissionOverwriteManager permissionOverwrites
   }) : super(
     id: id,
     type: ChannelType.guildVoice,
@@ -38,11 +38,11 @@ class VoiceChannel extends Channel {
     parentId: parentId,
     flags: flags,
     webhooks: WebhookManager(guildId: guildId, channelId: id),
-    permissionsOverwrite: permissionsOverwrite
+    permissionOverwrites: permissionOverwrites
   );
 
 
-  Future<VoiceChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionsOverwrite }) async {
+  Future<VoiceChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionOverwrites }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/channels/$id", payload: {
@@ -51,7 +51,7 @@ class VoiceChannel extends Channel {
       'parent_id': categoryChannel?.id,
       'nsfw': nsfw ?? false,
       'rate_limit_per_user': delay ?? 0,
-      'permission_overwrites': permissionsOverwrite?.map((e) => e.toJSON()),
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()),
     });
 
     dynamic payload = jsonDecode(response.body);
@@ -89,7 +89,7 @@ class VoiceChannel extends Channel {
       rateLimitPerUser: payload['rate_limit_per_user'],
       rtcRegion: payload['rtc_region'] ,
       videoQualityMode: payload['video_quality_mode'],
-      permissionsOverwrite: permissionOverwriteManager
+      permissionOverwrites: permissionOverwriteManager
     );
   }
 }

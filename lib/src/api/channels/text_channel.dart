@@ -17,7 +17,7 @@ class TextChannel extends TextBasedChannel {
     required bool nsfw,
     required Snowflake? lastMessageId,
     required DateTime? lastPinTimestamp,
-    required PermissionOverwriteManager permissionsOverwrite
+    required PermissionOverwriteManager permissionOverwrites
   }) : super(
     id: id,
     guildId: guildId,
@@ -32,7 +32,7 @@ class TextChannel extends TextBasedChannel {
     lastPinTimestamp: lastPinTimestamp,
     messages: MessageManager(id, guildId),
     threads: ThreadManager(guildId: guildId),
-    permissionsOverwrite: permissionsOverwrite
+    permissionOverwrites: permissionOverwrites
   );
 
   @override
@@ -46,8 +46,8 @@ class TextChannel extends TextBasedChannel {
   }
 
   @override
-  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionsOverwrite }) async {
-    return await super.update(label: label, description: description, delay: delay, position: position, categoryChannel: categoryChannel, nsfw: nsfw, permissionsOverwrite: permissionsOverwrite);
+  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionOverwrites }) async {
+    return await super.update(label: label, description: description, delay: delay, position: position, categoryChannel: categoryChannel, nsfw: nsfw, permissionOverwrites: permissionOverwrites);
   }
 
   factory TextChannel.from(dynamic payload) {
@@ -72,7 +72,7 @@ class TextChannel extends TextBasedChannel {
       nsfw: payload['nsfw'] ?? false,
       lastMessageId: payload['last_message_id'],
       lastPinTimestamp: payload['last_pin_timestamp'] != null ? DateTime.parse(payload['last_pin_timestamp']) : null,
-      permissionsOverwrite: permissionOverwriteManager
+      permissionOverwrites: permissionOverwriteManager
     );
     channel.threads.channel = channel;
 

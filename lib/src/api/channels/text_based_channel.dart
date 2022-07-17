@@ -33,7 +33,7 @@ class TextBasedChannel extends Channel {
     required this.lastPinTimestamp,
     required this.messages,
     required this.threads,
-    required PermissionOverwriteManager permissionsOverwrite
+    required PermissionOverwriteManager permissionOverwrites
   }) : super(
     id: id,
     type: ChannelType.guildText,
@@ -44,7 +44,7 @@ class TextBasedChannel extends Channel {
     parentId: parentId,
     flags: flags,
     webhooks: WebhookManager(guildId: guildId, channelId: id),
-    permissionsOverwrite: permissionsOverwrite
+    permissionOverwrites: permissionOverwrites
   );
 
   Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
@@ -92,7 +92,7 @@ class TextBasedChannel extends Channel {
     return this;
   }
 
-  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionsOverwrite }) async {
+  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionOverwrites }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/channels/$id", payload: {
@@ -101,7 +101,7 @@ class TextBasedChannel extends Channel {
       'parent_id': categoryChannel?.id,
       'nsfw': nsfw ?? false,
       'rate_limit_per_user': delay ?? 0,
-      'permission_overwrites': permissionsOverwrite?.map((e) => e.toJSON()).toList(),
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()).toList(),
     });
 
     dynamic payload = jsonDecode(response.body);

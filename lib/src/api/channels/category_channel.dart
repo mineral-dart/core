@@ -15,7 +15,7 @@ class CategoryChannel extends Channel {
     required String label,
     required Snowflake? applicationId,
     required int? flags,
-    required PermissionOverwriteManager permissionsOverwrite
+    required PermissionOverwriteManager permissionOverwrites
   }) : super(
     id: id,
     guildId: guildId,
@@ -26,16 +26,16 @@ class CategoryChannel extends Channel {
     type: ChannelType.guildCategory,
     flags: flags,
       webhooks: WebhookManager(guildId: guildId, channelId: id),
-    permissionsOverwrite: permissionsOverwrite
+    permissionOverwrites: permissionOverwrites
   );
 
-  Future<CategoryChannel?> update ({ String? label, int? position, List<PermissionOverwrite>? permissionsOverwrite }) async {
+  Future<CategoryChannel?> update ({ String? label, int? position, List<PermissionOverwrite>? permissionOverwrites }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/channels/$id", payload: {
       'name': label,
       'position': position,
-      'permission_overwrites': permissionsOverwrite?.map((e) => e.toJSON()),
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()),
     });
 
     dynamic payload = jsonDecode(response.body);
@@ -76,7 +76,7 @@ class CategoryChannel extends Channel {
       label: payload['name'],
       applicationId: payload['application_id'],
       flags: payload['flags'],
-      permissionsOverwrite: permissionOverwriteManager
+      permissionOverwrites: permissionOverwriteManager
     );
   }
 }

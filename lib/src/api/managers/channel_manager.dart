@@ -38,7 +38,7 @@ class ChannelManager implements CacheManager<Channel> {
     return cache;
   }
 
-  Future<TextChannel?> createTextChannel ({ required String label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw,  List<PermissionOverwrite>? permissionsOverwrite}) async {
+  Future<TextChannel?> createTextChannel ({ required String label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw,  List<PermissionOverwrite>? permissionOverwrites}) async {
     return await _create<TextChannel>(data: {
       'name': label,
       'topic': description,
@@ -46,26 +46,26 @@ class ChannelManager implements CacheManager<Channel> {
       'parent_id': categoryChannel?.id,
       'nsfw': nsfw ?? false,
       'rate_limit_per_user': delay ?? 0,
-      'permission_overwrites': permissionsOverwrite?.map((e) => e.toJSON()).toList(),
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()).toList(),
     });
   }
 
-  Future<VoiceChannel?> createVoiceChannel ({ required String label, int? position, CategoryChannel? categoryChannel, int? bitrate, int? maxUsers, List<PermissionOverwrite>? permissionsOverwrite }) async {
+  Future<VoiceChannel?> createVoiceChannel ({ required String label, int? position, CategoryChannel? categoryChannel, int? bitrate, int? maxUsers, List<PermissionOverwrite>? permissionOverwrites }) async {
     return await _create<VoiceChannel>(data: {
       'name': label,
       'type': ChannelType.guildVoice.value,
       'parent_id': categoryChannel?.id,
-      'permission_overwrites': permissionsOverwrite?.map((e) => e.toJSON()).toList(),
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()).toList(),
       'bitrate': bitrate ?? 64000,
       'user_limit': maxUsers ?? 0,
     });
   }
 
-  Future<CategoryChannel?> createCategoryChannel ({ required String label, int? position, List<PermissionOverwrite>? permissionsOverwrite }) async {
+  Future<CategoryChannel?> createCategoryChannel ({ required String label, int? position, List<PermissionOverwrite>? permissionOverwrites }) async {
     return await _create<CategoryChannel>(data: {
       'name': label,
       'type': ChannelType.guildCategory.value,
-      'permission_overwrites': permissionsOverwrite?.map((e) => e.toJSON()).toList(),
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()).toList(),
     });
   }
 
