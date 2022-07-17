@@ -29,13 +29,13 @@ class CategoryChannel extends Channel {
     permissionsOverwrite: permissionsOverwrite
   );
 
-  Future<CategoryChannel?> update ({ String? label, int? position, List<PermissionOverwrite>? permissions }) async {
+  Future<CategoryChannel?> update ({ String? label, int? position, List<PermissionOverwrite>? permissionsOverwrite }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/channels/$id", payload: {
       'name': label,
       'position': position,
-      'permission_overwrites': permissions?.map((e) => e.toJSON()),
+      'permission_overwrites': permissionsOverwrite?.map((e) => e.toJSON()),
     });
 
     dynamic payload = jsonDecode(response.body);

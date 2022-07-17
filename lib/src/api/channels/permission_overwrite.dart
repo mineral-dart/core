@@ -3,7 +3,7 @@ import 'package:mineral/helper.dart';
 
 enum PermissionOverwriteType {
   role(0),
-  user(1);
+  member(1);
 
   final int value;
   const PermissionOverwriteType(this.value);
@@ -22,12 +22,12 @@ class PermissionOverwrite {
     required this.deny
   });
   
-  Map<String, dynamic> toJSON() {
+  dynamic toJSON() {
     return {
       'id': id,
       'type': type.value,
-      'allow': Helper.reduceRolePermissions(allow),
-      'deny': Helper.reduceRolePermissions(deny)
+      'allow': Helper.reduceRolePermissions(allow).toString(),
+      'deny': Helper.reduceRolePermissions(deny).toString()
     };
   }
 

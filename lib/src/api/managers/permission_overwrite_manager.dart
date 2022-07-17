@@ -21,7 +21,13 @@ class PermissionOverwriteManager implements CacheManager<PermissionOverwrite> {
     throw UnimplementedError();
   }
 
-  Future<void> add() async {
+  Future<void> set (List<PermissionOverwrite> permissionsOverwrite) async {
+    final MineralClient client = ioc.singleton(ioc.services.client);
+    final Guild guild = client.guilds.cache.getOrFail(guildId);
+    final dynamic channel = guild.channels.cache.getOrFail(channelId);
 
+    if(channel is VoiceChannel || channel is TextBasedChannel || channel is CategoryChannel) {
+      await channel.update(permissionsOverwrite: permissionsOverwrite);
+    }
   }
 }
