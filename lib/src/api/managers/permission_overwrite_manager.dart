@@ -41,6 +41,7 @@ class PermissionOverwriteManager implements CacheManager<PermissionOverwrite> {
   ///   )
   /// ];
   /// await channel.permissionOverwrites.set(overwrites);
+  /// ```
   Future<void> set (List<PermissionOverwrite> permissionOverwrites) async {
     final MineralClient client = ioc.singleton(ioc.services.client);
     final Guild guild = client.guilds.cache.getOrFail(guildId);
@@ -62,6 +63,7 @@ class PermissionOverwriteManager implements CacheManager<PermissionOverwrite> {
   ///   allow: [],
   ///   deny: [Permission.banMembers]
   /// ));
+  /// ```
   Future<void> add (PermissionOverwrite permissionOverwrite) async {
     final MineralClient client = ioc.singleton(ioc.services.client);
     final Guild guild = client.guilds.cache.getOrFail(guildId);
