@@ -4,8 +4,6 @@ import 'dart:mirrors';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
-import 'package:mineral/src/api/interactions/button_interaction.dart';
-import 'package:mineral/src/api/interactions/select_menu_interaction.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -43,8 +41,9 @@ class InteractionCreate implements WebsocketPacket {
 
   _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
     CommandManager manager = ioc.singleton(ioc.services.command);
-    CommandInteraction commandInteraction = CommandInteraction.from(user: member.user, payload: payload);
-    commandInteraction.guild = guild;
+    CommandInteraction commandInteraction = CommandInteraction.from(user: member.user, payload: payload)
+      ..channel = guild.channels.cache.get(payload['channel_id'])
+      ..guild = guild;
 
     String identifier = commandInteraction.identifier;
 

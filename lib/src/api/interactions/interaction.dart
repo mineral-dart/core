@@ -23,7 +23,6 @@ class Interaction {
   User user;
   Guild? guild;
 
-
   Interaction({ required this.id, required this.applicationId, required this.version, required this.type, required this.token, required this.user });
 
   /// ### Responds to this by an [Message]

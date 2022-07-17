@@ -35,7 +35,7 @@ class Store {
   const Store(this.name);
 }
 
-abstract class MineralStore<T> {
+abstract class MineralStore {
   late Environment environment;
-  late T state;
+  late dynamic state;
 }

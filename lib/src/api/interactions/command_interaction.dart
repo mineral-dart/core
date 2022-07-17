@@ -6,6 +6,7 @@ import 'package:mineral/src/api/interactions/interaction.dart';
 
 class CommandInteraction extends Interaction {
   String identifier;
+  TextBasedChannel? channel;
   Map<String, dynamic> data = {};
 
   CommandInteraction({
@@ -15,7 +16,7 @@ class CommandInteraction extends Interaction {
     required Snowflake id,
     required int version,
     required String token,
-    required User user
+    required User user,
   }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
 
   /// ### Returns an instance of [Channel] if the command has the designed option
