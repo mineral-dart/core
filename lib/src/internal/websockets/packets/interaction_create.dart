@@ -97,7 +97,7 @@ class InteractionCreate implements WebsocketPacket {
   _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
     EventManager manager = ioc.singleton(ioc.services.event);
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['message']['id']);
+    Message? message = channel?.messages.cache.get(payload['message']?['id']);
 
     ModalInteraction modalInteraction = ModalInteraction.from(
       user: member.user,
