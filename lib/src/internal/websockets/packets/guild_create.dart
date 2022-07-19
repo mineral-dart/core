@@ -127,6 +127,7 @@ class GuildCreate implements WebsocketPacket {
       channel.guild = guild;
       channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
       channel.webhooks.guild = guild;
+      channel.permissionOverwrites?.guildId = guild.id;
 
       if(voices.containsKey(id)) {
         voices.get(id)!.channel = channel as VoiceChannel;

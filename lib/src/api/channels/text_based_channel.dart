@@ -3,7 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/permission_overwrite.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
+import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
@@ -30,7 +32,8 @@ class TextBasedChannel extends Channel {
     required this.lastMessageId,
     required this.lastPinTimestamp,
     required this.messages,
-    required this.threads
+    required this.threads,
+    required PermissionOverwriteManager permissionOverwrites
   }) : super(
     id: id,
     type: ChannelType.guildText,
@@ -41,6 +44,7 @@ class TextBasedChannel extends Channel {
     parentId: parentId,
     flags: flags,
     webhooks: WebhookManager(guildId: guildId, channelId: id),
+    permissionOverwrites: permissionOverwrites
   );
 
   Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
@@ -88,7 +92,7 @@ class TextBasedChannel extends Channel {
     return this;
   }
 
-  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
+  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionOverwrites }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/channels/$id", payload: {
@@ -97,7 +101,7 @@ class TextBasedChannel extends Channel {
       'parent_id': categoryChannel?.id,
       'nsfw': nsfw ?? false,
       'rate_limit_per_user': delay ?? 0,
-      'permission_overwrites': [],
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()).toList(),
     });
 
     dynamic payload = jsonDecode(response.body);

@@ -5,6 +5,8 @@ import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
+import 'package:collection/collection.dart';
+
 class ChannelUpdate implements WebsocketPacket {
   @override
   PacketType packetType = PacketType.channelUpdate;
@@ -35,8 +37,9 @@ class ChannelUpdate implements WebsocketPacket {
   }
 
   Channel? _dispatch (Guild? guild, dynamic payload) {
-    if (channels.containsKey(payload['type'])) {
-      Channel Function(dynamic payload) item = channels[payload['type']] as Channel Function(dynamic payload);
+    final ChannelType? type = ChannelType.values.firstWhereOrNull((element) => element.value == payload['type']);
+    if (type != null && channels.containsKey(type)) {
+      Channel Function(dynamic payload) item = channels[type] as Channel Function(dynamic payload);
       return item(payload);
     }
     return null;

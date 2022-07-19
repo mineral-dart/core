@@ -3,6 +3,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
+import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 
 enum ChannelType {
   guildText(0),
@@ -48,6 +49,7 @@ class Channel extends PartialChannel {
   late CategoryChannel? parent;
   int? flags;
   WebhookManager webhooks;
+  PermissionOverwriteManager? permissionOverwrites;
 
   Channel({
     required id,
@@ -59,6 +61,7 @@ class Channel extends PartialChannel {
     required this.parentId,
     required this.flags,
     required this.webhooks,
+    this.permissionOverwrites
   }): super(id: id);
 
   Future<T> setLabel<T extends Channel> (String label) async {

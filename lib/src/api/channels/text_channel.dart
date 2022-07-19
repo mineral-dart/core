@@ -1,5 +1,7 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/channels/permission_overwrite.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
+import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
 
 class TextChannel extends TextBasedChannel {
@@ -15,6 +17,7 @@ class TextChannel extends TextBasedChannel {
     required bool nsfw,
     required Snowflake? lastMessageId,
     required DateTime? lastPinTimestamp,
+    required PermissionOverwriteManager permissionOverwrites
   }) : super(
     id: id,
     guildId: guildId,
@@ -28,7 +31,8 @@ class TextChannel extends TextBasedChannel {
     lastMessageId: lastMessageId,
     lastPinTimestamp: lastPinTimestamp,
     messages: MessageManager(id, guildId),
-    threads: ThreadManager(guildId: guildId)
+    threads: ThreadManager(guildId: guildId),
+    permissionOverwrites: permissionOverwrites
   );
 
   @override
@@ -42,11 +46,20 @@ class TextChannel extends TextBasedChannel {
   }
 
   @override
-  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
-    return await super.update(label: label, description: description, delay: delay, position: position, categoryChannel: categoryChannel, nsfw: nsfw);
+  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionOverwrites }) async {
+    return await super.update(label: label, description: description, delay: delay, position: position, categoryChannel: categoryChannel, nsfw: nsfw, permissionOverwrites: permissionOverwrites);
   }
 
   factory TextChannel.from(dynamic payload) {
+    final PermissionOverwriteManager permissionOverwriteManager = PermissionOverwriteManager(
+        guildId: payload['guild_id'],
+        channelId: payload['id']
+    );
+    for(dynamic element in payload['permission_overwrites']) {
+      final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
+      permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
+    }
+
     TextChannel channel =  TextChannel(
       id: payload['id'],
       guildId: payload['guild_id'],
@@ -59,6 +72,7 @@ class TextChannel extends TextBasedChannel {
       nsfw: payload['nsfw'] ?? false,
       lastMessageId: payload['last_message_id'],
       lastPinTimestamp: payload['last_pin_timestamp'] != null ? DateTime.parse(payload['last_pin_timestamp']) : null,
+      permissionOverwrites: permissionOverwriteManager
     );
     channel.threads.channel = channel;
 

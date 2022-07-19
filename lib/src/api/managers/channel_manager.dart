@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/channel.dart';
+import 'package:mineral/src/api/channels/permission_overwrite.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
 import 'package:collection/collection.dart';
@@ -37,7 +38,7 @@ class ChannelManager implements CacheManager<Channel> {
     return cache;
   }
 
-  Future<TextChannel?> createTextChannel ({ required String label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
+  Future<TextChannel?> createTextChannel ({ required String label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw,  List<PermissionOverwrite>? permissionOverwrites}) async {
     return await _create<TextChannel>(data: {
       'name': label,
       'topic': description,
@@ -45,26 +46,26 @@ class ChannelManager implements CacheManager<Channel> {
       'parent_id': categoryChannel?.id,
       'nsfw': nsfw ?? false,
       'rate_limit_per_user': delay ?? 0,
-      'permission_overwrites': [],
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()).toList(),
     });
   }
 
-  Future<VoiceChannel?> createVoiceChannel ({ required String label, int? position, CategoryChannel? categoryChannel, int? bitrate, int? maxUsers }) async {
+  Future<VoiceChannel?> createVoiceChannel ({ required String label, int? position, CategoryChannel? categoryChannel, int? bitrate, int? maxUsers, List<PermissionOverwrite>? permissionOverwrites }) async {
     return await _create<VoiceChannel>(data: {
       'name': label,
       'type': ChannelType.guildVoice.value,
       'parent_id': categoryChannel?.id,
-      'permission_overwrites': [],
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()).toList(),
       'bitrate': bitrate ?? 64000,
       'user_limit': maxUsers ?? 0,
     });
   }
 
-  Future<CategoryChannel?> createCategoryChannel ({ required String label, int? position }) async {
+  Future<CategoryChannel?> createCategoryChannel ({ required String label, int? position, List<PermissionOverwrite>? permissionOverwrites }) async {
     return await _create<CategoryChannel>(data: {
       'name': label,
       'type': ChannelType.guildCategory.value,
-      'permission_overwrites': [],
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()).toList(),
     });
   }
 

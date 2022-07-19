@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/permission_overwrite.dart';
+import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class VoiceChannel extends Channel {
@@ -25,6 +27,7 @@ class VoiceChannel extends Channel {
     required this.rateLimitPerUser,
     required this.rtcRegion,
     required this.videoQualityMode,
+    required PermissionOverwriteManager permissionOverwrites
   }) : super(
     id: id,
     type: ChannelType.guildVoice,
@@ -34,11 +37,12 @@ class VoiceChannel extends Channel {
     applicationId: applicationId,
     parentId: parentId,
     flags: flags,
-    webhooks: WebhookManager(guildId: guildId, channelId: id)
+    webhooks: WebhookManager(guildId: guildId, channelId: id),
+    permissionOverwrites: permissionOverwrites
   );
 
 
-  Future<VoiceChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
+  Future<VoiceChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionOverwrites }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(url: "/channels/$id", payload: {
@@ -47,7 +51,7 @@ class VoiceChannel extends Channel {
       'parent_id': categoryChannel?.id,
       'nsfw': nsfw ?? false,
       'rate_limit_per_user': delay ?? 0,
-      'permission_overwrites': [],
+      'permission_overwrites': permissionOverwrites?.map((e) => e.toJSON()),
     });
 
     dynamic payload = jsonDecode(response.body);
@@ -63,6 +67,15 @@ class VoiceChannel extends Channel {
   }
 
   factory VoiceChannel.from(dynamic payload) {
+    final PermissionOverwriteManager permissionOverwriteManager = PermissionOverwriteManager(
+        guildId: payload['guild_id'],
+        channelId: payload['id']
+    );
+    for(dynamic element in payload['permission_overwrites']) {
+      final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
+      permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
+    }
+
     return VoiceChannel(
       id: payload['id'],
       guildId: payload['guild_id'],
@@ -75,7 +88,8 @@ class VoiceChannel extends Channel {
       userLimit: payload['user_limit'] ?? false,
       rateLimitPerUser: payload['rate_limit_per_user'],
       rtcRegion: payload['rtc_region'] ,
-      videoQualityMode: payload['video_quality_mode']
+      videoQualityMode: payload['video_quality_mode'],
+      permissionOverwrites: permissionOverwriteManager
     );
   }
 }

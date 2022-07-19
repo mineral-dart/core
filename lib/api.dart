@@ -23,6 +23,8 @@ export 'src/api/channels/voice_channel.dart' show VoiceChannel;
 export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
 export 'src/api/channels/text_channel.dart' show TextChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
+export 'src/api/channels/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
+export 'src/api/managers/permission_overwrite_manager.dart' show PermissionOverwriteManager;
 
 export 'src/api/messages/message.dart' show Message;
 export 'src/api/messages/message_embed.dart' show MessageEmbed, Footer, Image, Thumbnail, Author, Field;

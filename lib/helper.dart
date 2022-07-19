@@ -7,6 +7,8 @@ import 'dart:typed_data';
 import 'package:mineral/api.dart';
 import 'package:path/path.dart' as path;
 
+import 'dart:math';
+
 class Helper {
   static String toBase64(Uint8List bytes) {
     return base64.encode(bytes);
@@ -38,4 +40,13 @@ class Helper {
 
     return _permissions;
   }
+
+  static List<Permission> bitfieldToPermissions (int bitfield) {
+    List<Permission> permissions = [];
+    for (Permission element in Permission.values) {
+      if((bitfield & element.value) == element.value) permissions.add(element);
+    }
+    return permissions;
+  }
+
 }
