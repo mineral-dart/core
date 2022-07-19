@@ -25,7 +25,7 @@ class CategoryChannel extends Channel {
     parentId: null,
     type: ChannelType.guildCategory,
     flags: flags,
-      webhooks: WebhookManager(guildId: guildId, channelId: id),
+    webhooks: WebhookManager(guildId: guildId, channelId: id),
     permissionOverwrites: permissionOverwrites
   );
 
