@@ -43,7 +43,8 @@ class InteractionCreate implements WebsocketPacket {
     CommandManager manager = ioc.singleton(ioc.services.command);
     CommandInteraction commandInteraction = CommandInteraction.from(user: member.user, payload: payload)
       ..channel = guild.channels.cache.get(payload['channel_id'])
-      ..guild = guild;
+      ..guild = guild
+      ..member = member;
 
     String identifier = commandInteraction.identifier;
 
