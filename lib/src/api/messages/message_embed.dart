@@ -251,6 +251,7 @@ class MessageEmbed {
       'color': color != null ? int.parse(color.toString().replaceAll('#', ''), radix: 16) : null,
       'image': image?.toJson(),
       'thumbnail': thumbnail?.toJson(),
+      'author': author?.toJson(),
     };
   }
 }
