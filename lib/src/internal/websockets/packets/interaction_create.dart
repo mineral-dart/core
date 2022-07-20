@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
@@ -130,7 +129,6 @@ class InteractionCreate implements WebsocketPacket {
   }
 
   void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
-    print(jsonEncode(payload));
     EventManager manager = ioc.singleton(ioc.services.event);
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
