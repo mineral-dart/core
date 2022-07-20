@@ -22,6 +22,7 @@ class Interaction {
   String token;
   User user;
   Guild? guild;
+  late GuildMember? member;
 
   Interaction({ required this.id, required this.applicationId, required this.version, required this.type, required this.token, required this.user });
 

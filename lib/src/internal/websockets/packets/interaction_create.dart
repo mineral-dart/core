@@ -80,7 +80,9 @@ class InteractionCreate implements WebsocketPacket {
       payload: payload
     );
 
-    buttonInteraction.guild = guild;
+    buttonInteraction
+      ..guild = guild
+      ..member = member;
 
     manager.emit(
       event: Events.buttonCreate,
@@ -105,7 +107,10 @@ class InteractionCreate implements WebsocketPacket {
       payload: payload
     );
 
-    modalInteraction.guild = guild;
+    modalInteraction
+      ..guild = guild
+      ..member = member;
+
     for (dynamic row in payload['data']['components']) {
       for (dynamic component in row['components']) {
         modalInteraction.data.putIfAbsent(component['custom_id'], () => component['value']);
@@ -130,25 +135,29 @@ class InteractionCreate implements WebsocketPacket {
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
 
-    SelectMenuInteraction modalInteraction = SelectMenuInteraction.from(
+    SelectMenuInteraction interaction = SelectMenuInteraction.from(
       user: member.user,
       message: message,
       payload: payload
     );
 
+    interaction
+      ..guild = guild
+      ..member = member;
+
     for (dynamic value in payload['data']['values']) {
-      modalInteraction.data.add(value);
+      interaction.data.add(value);
     }
 
     manager.emit(
       event: Events.selectMenuCreate,
-      customId: modalInteraction.customId,
-      params: [modalInteraction]
+      customId: interaction.customId,
+      params: [interaction]
     );
 
     manager.emit(
       event: Events.selectMenuCreate,
-      params: [modalInteraction]
+      params: [interaction]
     );
   }
 }
