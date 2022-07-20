@@ -194,7 +194,7 @@ class Option {
   final String name;
   final String description;
   final OptionType type;
-  final bool required;
+  final bool? required;
   final List<ChannelType>? channels;
   final int? min;
   final int? max;
@@ -204,7 +204,7 @@ class Option {
     required this.name,
     required this.description,
     required this.type,
-    required this.required,
+    this.required,
     this.channels,
     this.min,
     this.max,
@@ -216,7 +216,7 @@ class Option {
       'name': name,
       'description': description,
       'type': type.value,
-      'required': required,
+      'required': required ?? false,
       'channel_types': channels?.map((channel) => channel.value).toList(),
       'choices': choices?.map((choice) => choice.toJson()).toList(),
       'min_value': min,
