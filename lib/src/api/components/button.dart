@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/components/component.dart';
 
 enum ButtonStyle {
@@ -18,8 +19,10 @@ class Button extends Component {
   String customId;
   String label;
   ButtonStyle style;
+  PartialEmoji? emoji;
+  bool disabled;
 
-  Button({ required this.customId, required this.label, required this.style }) : super(type: ComponentType.button);
+  Button({ required this.customId, required this.label, required this.style, this.emoji, this.disabled = false }) : super(type: ComponentType.button);
 
   @override
   dynamic toJson () {
@@ -28,6 +31,8 @@ class Button extends Component {
       'custom_id': customId,
       'label': label,
       'style': style.value,
+      'emoji': emoji?.toJson(),
+      'disabled': disabled
     };
   }
 

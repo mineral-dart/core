@@ -30,7 +30,7 @@ export 'src/api/messages/message.dart' show Message;
 export 'src/api/messages/message_embed.dart' show MessageEmbed, Footer, Image, Thumbnail, Author, Field;
 export 'src/api/color.dart' show Color;
 
-export 'src/api/emoji.dart' show Emoji;
+export 'src/api/emoji.dart' show PartialEmoji, Emoji;
 export 'src/api/role.dart' show Role;
 
 export 'src/api/components/row.dart' show Row;
