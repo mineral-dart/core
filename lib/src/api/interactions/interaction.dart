@@ -22,6 +22,7 @@ class Interaction {
   String token;
   User user;
   Guild? guild;
+  late GuildMember? member;
 
   Interaction({ required this.id, required this.applicationId, required this.version, required this.type, required this.token, required this.user });
 
@@ -77,5 +78,16 @@ class Interaction {
       'type': InteractionCallbackType.modal.value,
       'data': modal.toJson(),
     });
+  }
+
+  factory Interaction.from({ required User user, required dynamic payload }) {
+    return Interaction(
+        id: payload['id'],
+        applicationId: payload['application_id'],
+        version: payload['version'],
+        type: InteractionType.values.firstWhere((element) => element.value == payload['type']),
+        token: payload['token'],
+        user: user
+    );
   }
 }

@@ -7,7 +7,6 @@ import 'package:mineral/src/api/interactions/interaction.dart';
 class CommandInteraction extends Interaction {
   String identifier;
   TextBasedChannel? channel;
-  late GuildMember member;
   Map<String, dynamic> data = {};
 
   CommandInteraction({
