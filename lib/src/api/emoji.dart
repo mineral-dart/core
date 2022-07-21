@@ -4,28 +4,38 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 
-/// Represents an [Emoji] on [Guild] context.
-class Emoji {
+class PartialEmoji {
   Snowflake id;
   String label;
+  bool animated;
+
+  PartialEmoji({ this.id = '', this.label = '', this.animated = false });
+
+  Object toJson () => {
+    'id': id == '' ? null : id,
+    'name': label,
+    'animated': animated,
+  };
+}
+
+/// Represents an [Emoji] on [Guild] context.
+class Emoji extends PartialEmoji {
   GuildMember? creator;
   bool requireColons;
   bool managed;
-  bool animated;
   bool available;
   EmojiManager manager;
 
   Emoji({
-    required this.id,
-    required this.label,
-    //required this.roles,
+    required id,
+    required label,
     required this.creator,
     required this.requireColons,
     required this.managed,
-    required this.animated,
+    required animated,
     required this.available,
     required this.manager,
-  });
+  }): super(id: id, label: label, animated: animated);
 
   /// ### Modifies the [label] of this.
   ///
