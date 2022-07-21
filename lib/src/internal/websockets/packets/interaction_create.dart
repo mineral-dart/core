@@ -3,6 +3,7 @@ import 'dart:mirrors';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/interactions/interaction.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -14,6 +15,7 @@ class InteractionCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
+    EventManager manager = ioc.singleton(ioc.services.event);
     MineralClient client = ioc.singleton(ioc.services.client);
 
     dynamic payload = websocketResponse.payload;
@@ -35,6 +37,15 @@ class InteractionCreate implements WebsocketPacket {
 
     if (payload['type'] == InteractionType.modalSubmit.value) {
       _executeModalInteraction(guild!, member!, payload);
+    }
+
+    if (member != null) {
+      final Interaction interaction = Interaction.from(user: member.user, payload: payload);
+
+      manager.emit(
+        event: Events.interactionCreate,
+        params: [interaction]
+      );
     }
   }
 

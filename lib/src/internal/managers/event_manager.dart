@@ -2,6 +2,7 @@ import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/interactions/interaction.dart';
 import 'package:mineral/src/api/managers/voice_manager.dart';
 import 'package:mineral/src/internal/managers/store_manager.dart';
 
@@ -92,6 +93,7 @@ enum Events {
   memberRolesUpdate('update::roles-member', { 'before': Role, 'after': Role }),
   acceptRules('accept::rules', { 'member': GuildMember }),
 
+  interactionCreate('create::interaction', { 'interaction': Interaction }),
   commandCreate('create::commandInteraction', { 'interaction': CommandInteraction }),
   buttonCreate('create::buttonInteraction', { 'interaction': ButtonInteraction }),
   modalCreate('create::modalInteraction', { 'interaction': ModalInteraction }),
