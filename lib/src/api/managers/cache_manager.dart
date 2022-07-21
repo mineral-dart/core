@@ -7,3 +7,7 @@ abstract class CacheManager<T> {
     throw UnimplementedError();
   }
 }
+
+abstract class FetchableCacheManager<T> implements CacheManager<T> {
+  Future<T?> fetch(Snowflake id);
+}
