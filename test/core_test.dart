@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/event_emitter.dart';
+import 'package:mineral/src/internal/services/event_emitter.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:test/scaffolding.dart';
 
