@@ -149,7 +149,9 @@ enum GuildFeature {
   vanityUrl('VANITY_URL'),
   verified('VERIFIED'),
   vipRegions('VIP_REGIONS'),
-  welcomeScreen('WELCOME_SCREEN_ENABLED');
+  welcomeScreen('WELCOME_SCREEN_ENABLED'),
+  memberProfiles('MEMBER_PROFILES'),
+  sevenDayThreadArchive('SEVEN_DAY_THREAD_ARCHIVE');
 
   final String value;
   const GuildFeature(this.value);
