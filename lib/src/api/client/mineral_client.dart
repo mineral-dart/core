@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/dm_channel_manager.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
@@ -128,12 +129,21 @@ class MineralClient {
     );
   }
 
-  Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands}) async {
+  Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands, required List<MineralContextMenu> contextMenus }) async {
     Http http = ioc.singleton(ioc.services.http);
+
+    Console.info(message: 'commands');
+    print([
+      ...commands.map((command) => command.toJson()).toList(),
+      ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
+    ]);
 
     await http.put(
       url: "/applications/${application.id}/guilds/${guild.id}/commands",
-      payload: commands.map((command) => command.toJson()).toList()
+      payload: [
+        ...commands.map((command) => command.toJson()).toList(),
+        ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
+      ]
     );
   }
 

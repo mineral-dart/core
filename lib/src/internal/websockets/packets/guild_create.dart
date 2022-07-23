@@ -13,6 +13,7 @@ import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/voice_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -25,6 +26,7 @@ class GuildCreate implements WebsocketPacket {
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventManager manager = ioc.singleton(ioc.services.event);
     CommandManager commandManager = ioc.singleton(ioc.services.command);
+    ContextMenuManager contextMenuManager = ioc.singleton(ioc.services.contextMenu);
     MineralClient client = ioc.singleton(ioc.services.client);
 
     GuildRoleManager roleManager = GuildRoleManager(guildId: websocketResponse.payload['id']);
@@ -158,7 +160,8 @@ class GuildCreate implements WebsocketPacket {
 
     await client.registerGuildCommands(
       guild: guild,
-      commands: commandManager.getFromGuild(guild)
+      commands: commandManager.getFromGuild(guild),
+      contextMenus: contextMenuManager.getFromGuild(guild)
     );
 
     client.guilds.cache.putIfAbsent(guild.id, () => guild);

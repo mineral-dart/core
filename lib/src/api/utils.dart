@@ -9,6 +9,14 @@ enum InteractionType {
   const InteractionType(this.value);
 }
 
+enum ContextMenuType {
+  user(2),
+  message(3);
+
+  final int value;
+  const ContextMenuType(this.value);
+}
+
 enum ApplicationCommandType {
   chatInput(1),
   user(2),

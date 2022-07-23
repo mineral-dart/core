@@ -9,6 +9,7 @@ import 'package:mineral/src/commands/make_module.dart';
 import 'package:mineral/src/commands/make_store.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/module_manager.dart';
@@ -23,6 +24,7 @@ class Kernel {
   StoreManager stores = StoreManager();
   ModuleManager modules = ModuleManager();
   CliManager cli = CliManager();
+  ContextMenuManager contextMenus = ContextMenuManager();
   List<Intent> intents = [];
 
   Kernel() {
@@ -31,6 +33,7 @@ class Kernel {
     ioc.bind(namespace: ioc.services.store, service: stores);
     ioc.bind(namespace: ioc.services.modules, service: modules);
     ioc.bind(namespace: ioc.services.cli, service: cli);
+    ioc.bind(namespace: ioc.services.contextMenu, service: contextMenus);
   }
 
   void loadConsole () {

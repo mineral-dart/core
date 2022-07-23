@@ -45,6 +45,8 @@ export 'src/api/interactions/command_interaction.dart' show CommandInteraction;
 export 'src/api/interactions/button_interaction.dart' show ButtonInteraction;
 export 'src/api/interactions/modal_interaction.dart' show ModalInteraction;
 export 'src/api/interactions/select_menu_interaction.dart' show SelectMenuInteraction;
+export 'src/api/interactions/context_user_interaction.dart' show ContextUserInteraction;
+export 'src/api/interactions/context_message_interaction.dart' show ContextMessageInteraction;
 export 'src/api/interactions/interaction.dart' show Interaction;
 
 export 'src/api/utils.dart';

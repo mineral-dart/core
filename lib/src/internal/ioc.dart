@@ -9,6 +9,7 @@ class Service {
   final cli = 'Mineral/Core/Cli';
   final shards = 'Mineral/Core/Shards';
   final reporter = 'Mineral/Core/Reporter';
+  final contextMenu = 'Mineral/Core/ContextMenu';
 }
 
 class Ioc {

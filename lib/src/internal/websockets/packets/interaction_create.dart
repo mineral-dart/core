@@ -1,10 +1,12 @@
+import 'dart:convert';
 import 'dart:mirrors';
 
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
-import 'package:mineral/src/api/interactions/interaction.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -23,8 +25,16 @@ class InteractionCreate implements WebsocketPacket {
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     GuildMember? member = guild?.members.cache.get(payload['member']['user']['id']);
 
-    if (payload['type'] == InteractionType.applicationCommand.value) {
+    if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.chatInput.value) {
       _executeCommandInteraction(guild!, member!, payload);
+    }
+
+    if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.user.value) {
+      _executeContextMenuInteraction(guild!, member!, payload);
+    }
+
+    if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.message.value) {
+      _executeContextMenuInteraction(guild!, member!, payload);
     }
 
     if (payload['type'] == InteractionType.messageComponent.value && payload['data']['component_type'] == ComponentType.button.value) {
@@ -77,6 +87,46 @@ class InteractionCreate implements WebsocketPacket {
 
     dynamic handle = manager.getHandler(identifier);
     reflect(handle['commandClass']).invoke(handle['symbol'], [commandInteraction]);
+  }
+
+  _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {
+    ContextMenuManager contextMenuManager = ioc.singleton(ioc.services.contextMenu);
+    MineralContextMenu contextMenu = contextMenuManager.contextMenus.findOrFail((element) => element.name == payload['data']?['name']);
+
+    if (payload['data']?['type'] == ApplicationCommandType.user.value) {
+      GuildMember? targetMember = guild.members.cache.get(payload['data']?['target_id']);
+
+      final interaction = ContextUserInteraction.from(target: targetMember, user: member.user, payload: payload)
+        ..member = member
+        ..channel = guild.channels.cache.get(payload['channel_id'])
+        ..guild = guild;
+
+      reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
+    }
+
+    if (payload['data']?['type'] == ApplicationCommandType.message.value) {
+      print('is Message');
+      Http http = ioc.singleton(ioc.services.http);
+      TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
+      Message? message = channel?.messages.cache.get(payload['data']?['target_id']);
+
+      if (message == null) {
+        Response response = await http.get(url: '/channels/${payload['channel_id']}/messages/${payload['data']?['target_id']}');
+        if (response.statusCode == 200) {
+          message = Message.from(channel: channel!, payload: jsonDecode(response.body));
+          channel.messages.cache.putIfAbsent(message.id, () => message!);
+        }
+      }
+
+      final interaction = ContextMessageInteraction.from(message: message!, user: member.user, payload: payload)
+        ..member = member
+        ..channel = guild.channels.cache.getOrFail(payload['channel_id'])
+        ..guild = guild;
+
+      print(interaction);
+
+      reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
+    }
   }
 
   _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) {
