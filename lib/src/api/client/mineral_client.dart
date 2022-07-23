@@ -3,9 +3,8 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/dm_channel_manager.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/user_manager.dart';
+import 'package:mineral/src/internal/entities/command.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
-
-import 'package:mineral/src/internal/managers/command_manager.dart';
 
 enum Intent {
   guilds(1 << 0),

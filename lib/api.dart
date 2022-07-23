@@ -10,6 +10,7 @@ export 'src/api/status.dart' show Status, StatusType;
 export 'src/api/activity.dart' show Activity;
 export 'src/api/guilds/guild_member.dart' show GuildMember;
 export 'src/api/managers/member_role_manager.dart' show MemberRoleManager;
+export 'src/api/managers/voice_manager.dart' show VoiceManager;
 
 export 'src/api/guilds/guild.dart' show Guild;
 export 'src/api/moderation_rule.dart' show ModerationEventType, ModerationTriggerType, ModerationPresetType, ModerationActionType, ModerationTriggerMetadata, ModerationActionMetadata, ModerationAction, ModerationRule;
@@ -44,6 +45,7 @@ export 'src/api/interactions/command_interaction.dart' show CommandInteraction;
 export 'src/api/interactions/button_interaction.dart' show ButtonInteraction;
 export 'src/api/interactions/modal_interaction.dart' show ModalInteraction;
 export 'src/api/interactions/select_menu_interaction.dart' show SelectMenuInteraction;
+export 'src/api/interactions/interaction.dart' show Interaction;
 
 export 'src/api/utils.dart';
 export 'src/internal/extensions/collection.dart';
