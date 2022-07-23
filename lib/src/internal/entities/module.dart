@@ -16,6 +16,7 @@ abstract class MineralModule {
   abstract List<MineralEvent> events;
   abstract List<MineralCommand> commands;
   abstract List<MineralStore> stores;
+  abstract List<MineralContextMenu> contextMenu;
 
   Future<void> init () async {}
 }

@@ -4,6 +4,7 @@ import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/exceptions/already_exist.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/store_manager.dart';
 
 import 'event_manager.dart';
@@ -35,6 +36,7 @@ class ModuleManager {
     EventManager eventManager = ioc.singleton(ioc.services.event);
     CommandManager commandManager = ioc.singleton(ioc.services.command);
     StoreManager storeManager = ioc.singleton(ioc.services.store);
+    ContextMenuManager contextMenuManager = ioc.singleton(ioc.services.contextMenu);
 
     _modules.forEach((key, module) async {
       await module.init();
@@ -47,8 +49,12 @@ class ModuleManager {
         commandManager.add(command);
       }
 
-      for (MineralStore event in module.stores) {
-        storeManager.add(event);
+      for (MineralStore store in module.stores) {
+        storeManager.add(store);
+      }
+
+      for (MineralContextMenu contextMenu in module.contextMenu) {
+        contextMenuManager.add(contextMenu);
       }
 
       Console.debug(
