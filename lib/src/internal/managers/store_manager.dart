@@ -27,15 +27,3 @@ class StoreManager {
     return _stores[store];
   }
 }
-
-class Store {
-  final String type = 'store';
-  final String name;
-
-  const Store(this.name);
-}
-
-abstract class MineralStore {
-  late Environment environment;
-  late dynamic state;
-}
