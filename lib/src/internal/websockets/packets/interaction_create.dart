@@ -4,10 +4,12 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/interactions/interaction.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+import 'package:mineral/src/internal/extensions/cache_manager.dart';
 
 class InteractionCreate implements WebsocketPacket {
   @override
@@ -79,10 +81,10 @@ class InteractionCreate implements WebsocketPacket {
     reflect(handle['commandClass']).invoke(handle['symbol'], [commandInteraction]);
   }
 
-  _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) {
+  _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) async {
     EventManager manager = ioc.singleton(ioc.services.event);
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['message']['id']);
+    Message? message = await channel?.messages.getOrFetch(payload['message']['id']) as Message;
 
     ButtonInteraction buttonInteraction = ButtonInteraction.from(
       user: member.user,
@@ -106,10 +108,10 @@ class InteractionCreate implements WebsocketPacket {
     );
   }
 
-  _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
+  _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) async {
     EventManager manager = ioc.singleton(ioc.services.event);
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['message']?['id']);
+    Message? message = await channel?.messages.getOrFetch(payload['message']?['id']) as Message;
 
     ModalInteraction modalInteraction = ModalInteraction.from(
       user: member.user,
@@ -139,10 +141,10 @@ class InteractionCreate implements WebsocketPacket {
     );
   }
 
-  void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
+  void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {
     EventManager manager = ioc.singleton(ioc.services.event);
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['message']['id']);
+    Message? message = await channel?.messages.getOrFetch(payload['message']['id']) as Message;
 
     SelectMenuInteraction interaction = SelectMenuInteraction.from(
       user: member.user,
