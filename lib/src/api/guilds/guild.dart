@@ -564,7 +564,7 @@ class Guild {
     required GuildScheduledEventManager guildScheduledEventManager,
     required dynamic payload
   }) {
-    StickerManager stickerManager = StickerManager(guildId: payload['id']);
+    StickerManager stickerManager = StickerManager();
     for (dynamic element in payload['stickers']) {
       Sticker sticker = Sticker.from(element);
       stickerManager.cache.putIfAbsent(sticker.id, () => sticker);
