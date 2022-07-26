@@ -103,7 +103,7 @@ class TextBasedChannel extends Channel {
     });
 
     dynamic payload = jsonDecode(response.body);
-    TextChannel channel = TextChannel.from(payload);
+    TextChannel channel = TextChannel.from(guild, payload);
 
     channel.parent = payload['parent_id'] != null
       ? guild?.channels.cache.get<CategoryChannel>(payload['parent_id'])

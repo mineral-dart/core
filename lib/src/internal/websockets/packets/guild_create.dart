@@ -29,7 +29,7 @@ class GuildCreate implements WebsocketPacket {
     ContextMenuManager contextMenuManager = ioc.singleton(ioc.services.contextMenu);
     MineralClient client = ioc.singleton(ioc.services.client);
 
-    GuildRoleManager roleManager = GuildRoleManager(guildId: websocketResponse.payload['id']);
+    GuildRoleManager roleManager = GuildRoleManager();
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(roleManager: roleManager, payload: item);
       roleManager.cache.putIfAbsent(role.id, () => role);
@@ -37,49 +37,16 @@ class GuildCreate implements WebsocketPacket {
 
     Map<Snowflake, VoiceManager> voices = {};
     for(dynamic voiceMember in websocketResponse.payload['voice_states']) {
-      final VoiceManager voiceManager = VoiceManager.from(voiceMember, null);
-      voices.putIfAbsent(voiceMember['user_id'], () => voiceManager);
-      voices.putIfAbsent(voiceMember['channel_id'], () => voiceManager);
+      print(voiceMember);
+      // final VoiceManager voiceManager = VoiceManager.from(voiceMember, null);
+      // voices.putIfAbsent(voiceMember['user_id'], () => voiceManager);
+      // voices.putIfAbsent(voiceMember['channel_id'], () => voiceManager);
     }
 
-    MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
-    for (dynamic member in websocketResponse.payload['members']) {
-      User user = User.from(member['user']);
+    MemberManager memberManager = MemberManager();
+    ChannelManager channelManager = ChannelManager();
 
-      GuildMember guildMember = GuildMember.from(
-        roles: roleManager,
-        user: user,
-        member: member,
-        guildId: websocketResponse.payload['id'],
-        voice: voices.containsKey(user.id)
-            ? voices.get(user.id)!
-            : VoiceManager(
-                isMute: member['mute'],
-                isDeaf: member['deaf'],
-                isSelfMute: false,
-                isSelfDeaf: false,
-                hasVideo: false,
-                hasStream: false,
-                channel: null
-            )
-      );
-
-      memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
-      client.users.cache.putIfAbsent(user.id, () => user);
-    }
-
-    ChannelManager channelManager = ChannelManager(guildId: websocketResponse.payload['id']);
-    for(dynamic payload in websocketResponse.payload['channels']) {
-      ChannelType channelType = ChannelType.values.firstWhere((type) => type.value == payload['type']);
-      if (channels.containsKey(channelType)) {
-        Channel Function(dynamic payload) item = channels[channelType] as Channel Function(dynamic payload);
-        Channel channel = item(payload);
-
-        channelManager.cache.putIfAbsent(channel.id, () => channel);
-      }
-    }
-
-    EmojiManager emojiManager = EmojiManager(guildId: websocketResponse.payload['id']);
+    EmojiManager emojiManager = EmojiManager();
     for(dynamic payload in websocketResponse.payload['emojis']) {
       Emoji emoji = Emoji.from(
         memberManager: memberManager,
@@ -90,7 +57,7 @@ class GuildCreate implements WebsocketPacket {
       emojiManager.cache.putIfAbsent(emoji.id, () => emoji);
     }
 
-    GuildScheduledEventManager guildScheduledManager = GuildScheduledEventManager(guildId: websocketResponse.payload['id']);
+    GuildScheduledEventManager guildScheduledManager = GuildScheduledEventManager();
     for(dynamic payload in websocketResponse.payload['guild_scheduled_events']) {
       GuildScheduledEvent event = GuildScheduledEvent.from(
         channelManager: channelManager,
@@ -101,7 +68,7 @@ class GuildCreate implements WebsocketPacket {
       guildScheduledManager.cache.putIfAbsent(event.id, () => event);
     }
 
-    ModerationRuleManager moderationManager = ModerationRuleManager(guildId: websocketResponse.payload['id']);
+    ModerationRuleManager moderationManager = ModerationRuleManager();
 
     WebhookManager webhookManager = WebhookManager(guildId: websocketResponse.payload['id']);
 
@@ -116,34 +83,52 @@ class GuildCreate implements WebsocketPacket {
       payload: websocketResponse.payload,
     );
 
-    // Assign guild members
-    guild.members.cache.forEach((Snowflake id, GuildMember member) {
-      member.guild = guild;
-      member.voice.member = member;
-    });
+    client.guilds.cache.putIfAbsent(guild.id, () => guild);
+
+    for (dynamic member in websocketResponse.payload['members']) {
+      User user = User.from(member['user']);
+      GuildMember guildMember = GuildMember.from(
+        roles: roleManager,
+        user: user,
+        member: member,
+        guild: guild,
+        voice: voices.containsKey(user.id)
+          ? voices.get(user.id)!
+          : VoiceManager(member['mute'], member['deaf'], false, false, false, false, null, null)
+      );
+
+      guildMember.voice.member = guildMember;
+
+      memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
+      client.users.cache.putIfAbsent(user.id, () => user);
+    }
+
+    for(dynamic payload in websocketResponse.payload['channels']) {
+      ChannelType channelType = ChannelType.values.firstWhere((type) => type.value == payload['type']);
+      if (channels.containsKey(channelType)) {
+        Channel Function(Guild guild, dynamic payload) item = channels[channelType] as Channel Function(Guild guild, dynamic payload);
+        Channel channel = item(guild, payload);
+
+        channelManager.cache.putIfAbsent(channel.id, () => channel);
+      }
+    }
 
     // Assign guild channels
-    channelManager.guild = guild;
     guild.channels.cache.forEach((Snowflake id, Channel channel) {
-      channel.guildId = guild.id;
-      channel.guild = guild;
-      channel.parent = channel.parentId != null ? guild.channels.cache.get<CategoryChannel>(channel.parentId) : null;
-      channel.webhooks.guild = guild;
-      channel.permissionOverwrites?.guildId = guild.id;
-
-      if(voices.containsKey(id)) {
-        voices.get(id)!.channel = channel as VoiceChannel;
-      }
+      // if(voices.containsKey(id)) {
+      //   voices.get(id)!.channel = channel as VoiceChannel;
+      // }
     });
 
-    moderationManager.guild = guild;
+    // moderationManager.guild = guild;
+    //
+    // guild.stickers.guild = guild;
+    // guild.stickers.cache.forEach((_, sticker) {
+    //   sticker.guild = guild;
+    //   sticker.guildMember = guild.channels.cache.get(sticker.guildMemberId);
+    // });
 
-    guild.stickers.guild = guild;
-    guild.stickers.cache.forEach((_, sticker) {
-      sticker.guild = guild;
-      sticker.guildMember = guild.channels.cache.get(sticker.guildMemberId);
-    });
-
+    guild.owner = memberManager.cache.getOrFail(websocketResponse.payload['owner_id']);
     guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
     guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);
     guild.rulesChannel = guild.channels.cache.get<TextChannel>(guild.rulesChannelId);
@@ -163,8 +148,6 @@ class GuildCreate implements WebsocketPacket {
       commands: commandManager.getFromGuild(guild),
       contextMenus: contextMenuManager.getFromGuild(guild)
     );
-
-    client.guilds.cache.putIfAbsent(guild.id, () => guild);
 
     manager.emit(
       event: Events.guildCreate,

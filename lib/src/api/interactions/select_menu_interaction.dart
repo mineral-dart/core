@@ -6,7 +6,7 @@ class SelectMenuInteraction extends Interaction {
   Message? _message;
   Snowflake _customId;
 
-  final List<String> _data = [];
+  final List<String> data = [];
 
   SelectMenuInteraction(
     super._id,
@@ -31,7 +31,7 @@ class SelectMenuInteraction extends Interaction {
   /// List<String>? fields = interaction.getValues<String>();
   /// List<int>? fields = interaction.getValues<int>();
   /// ```
-  List<T> getValues<T> () => _data as List<T>;
+  List<T> getValues<T> () => data as List<T>;
 
   /// ### Return the first [T] if this has the designed field
   ///
@@ -40,7 +40,7 @@ class SelectMenuInteraction extends Interaction {
   /// String? field = interaction.getValue<String>();
   /// int? field = interaction.getValue<int>();
   /// ```
-  T getValue<T> () => _data.first as T;
+  T getValue<T> () => data.first as T;
 
   factory SelectMenuInteraction.from({ required User user, required Message? message, required Guild? guild, required dynamic payload }) {
     return SelectMenuInteraction(

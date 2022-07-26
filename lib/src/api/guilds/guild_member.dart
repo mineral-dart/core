@@ -13,7 +13,7 @@ class GuildMember {
   bool _pending;
   DateTime? _timeoutDuration;
   MemberRoleManager _roles;
-  VoiceManager _voice;
+  VoiceManager voice;
   Guild _guild;
 
   GuildMember(
@@ -26,10 +26,11 @@ class GuildMember {
     this._pending,
     this._timeoutDuration,
     this._roles,
-    this._voice,
+    this.voice,
     this._guild,
   );
 
+  Snowflake get id => _user.id;
   User get user => _user;
   String? get nickname => _nickname;
   String? get avatar => _avatar;
@@ -39,7 +40,6 @@ class GuildMember {
   bool get pending => _pending;
   DateTime? get timeoutDuration => _timeoutDuration;
   MemberRoleManager get roles => _roles;
-  VoiceManager get voice => _voice;
   Guild get guild => _guild;
 
   /// ### Update the username of this
@@ -152,7 +152,7 @@ class GuildMember {
 
   GuildMember clone () => GuildMember(user, nickname, avatar, joinedAt, premiumSince, permissions, pending, timeoutDuration, roles, voice, guild);
 
-  factory GuildMember.from({ required user, required GuildRoleManager roles, dynamic member, required Snowflake guildId, required VoiceManager voice }) {
+  factory GuildMember.from({ required user, required GuildRoleManager roles, required Guild guild, dynamic member, required VoiceManager voice }) {
     MemberRoleManager memberRoleManager = MemberRoleManager(manager: roles, memberId: user.id);
     for (var element in (member['roles'] as List<dynamic>)) {
       Role? role = roles.cache.get(element);
@@ -172,7 +172,7 @@ class GuildMember {
       member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
       memberRoleManager,
       voice,
-      roles.guild
+      guild
     );
   }
 }

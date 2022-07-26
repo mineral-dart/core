@@ -36,11 +36,10 @@ class Guild {
   String? _iconHash;
   String? _splash;
   String? _discoverySplash;
-  GuildMember _owner;
-  Snowflake _ownerId;
+  late GuildMember owner;
   int? _permissions;
   Snowflake? _afkChannelId;
-  late VoiceChannel? _afkChannel;
+  late VoiceChannel? afkChannel;
   int _afkTimeout;
   bool _widgetEnabled;
   Snowflake? _widgetChannelId;
@@ -52,10 +51,10 @@ class Guild {
   int _mfaLevel;
   Snowflake? _applicationId;
   Snowflake? _systemChannelId;
-  late TextChannel? _systemChannel;
+  late TextChannel? systemChannel;
   int _systemChannelFlags;
   Snowflake? _rulesChannelId;
-  late TextChannel? _rulesChannel;
+  late TextChannel? rulesChannel;
   int? _maxPresences;
   int _maxMembers;
   String? _vanityUrlCode;
@@ -65,7 +64,7 @@ class Guild {
   int _premiumSubscriptionCount;
   String _preferredLocale;
   Snowflake? _publicUpdatesChannelId;
-  late TextChannel? _publicUpdatesChannel;
+  late TextChannel? publicUpdatesChannel;
   int _maxVideoChannelUsers;
   int? _approximateMemberCount;
   int? _approximatePresenceCount;
@@ -87,8 +86,6 @@ class Guild {
     this._iconHash,
     this._splash,
     this._discoverySplash,
-    this._owner,
-    this._ownerId,
     this._permissions,
     this._afkChannelId,
     this._afkTimeout,
@@ -134,11 +131,8 @@ class Guild {
   String? get iconHash => _iconHash;
   String? get splash => _splash;
   String? get discoverySplash => _discoverySplash;
-  GuildMember get owner => _owner;
-  Snowflake get ownerId => _ownerId;
   int? get permissions => _permissions;
   Snowflake? get afkChannelId => _afkChannelId;
-  VoiceChannel? get afkChannel => _afkChannel;
   int get afkTimeout => _afkTimeout;
   bool get widgetEnabled => _widgetEnabled;
   Snowflake? get widgetChannelId => _widgetChannelId;
@@ -150,10 +144,8 @@ class Guild {
   int get mfaLevel => _mfaLevel;
   Snowflake? get applicationId => _applicationId;
   Snowflake? get systemChannelId => _systemChannelId;
-  TextChannel? get systemChannel => _systemChannel;
   int get systemChannelFlags => _systemChannelFlags;
   Snowflake? get rulesChannelId => _rulesChannelId;
-  TextChannel? get rulesChannel => _rulesChannel;
   int? get maxPresences => _maxPresences;
   int get maxMembers => _maxMembers;
   String? get vanityUrlCode => _vanityUrlCode;
@@ -163,7 +155,6 @@ class Guild {
   int get premiumSubscriptionCount => _premiumSubscriptionCount;
   String get preferredLocale => _preferredLocale;
   Snowflake? get publicUpdatesChannelId => _publicUpdatesChannelId;
-  TextChannel? get publicUpdatesChannel => _publicUpdatesChannel;
   int get maxVideoChannelUsers => _maxVideoChannelUsers;
   int? get approximateMemberCount => _approximateMemberCount;
   int? get approximatePresenceCount => _approximatePresenceCount;
@@ -261,7 +252,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'afk_channel_id': channel.id });
 
     if (response.statusCode == 200) {
-      _afkChannel = channel;
+      afkChannel = channel;
       _afkChannelId = channel.id;
     }
   }
@@ -284,7 +275,7 @@ class Guild {
     MineralClient client = ioc.singleton(ioc.services.client);
     Http http = ioc.singleton(ioc.services.http);
 
-    if (ownerId != client.user.id) {
+    if (owner.id != client.user.id) {
       Console.error(message: "You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
       return;
     }
@@ -292,8 +283,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'owner_id': guildMember.user.id });
 
     if (response.statusCode == 200) {
-      _owner = guildMember;
-      _ownerId = guildMember.user.id;
+      owner = guildMember;
     }
   }
 
@@ -477,7 +467,7 @@ class Guild {
 
     if (response.statusCode == 200) {
       _systemChannelId = channel.id;
-      _systemChannel = channel;
+      systemChannel = channel;
     }
   }
 
@@ -497,7 +487,7 @@ class Guild {
 
     if (response.statusCode == 200) {
       _rulesChannelId = channel.id;
-      _rulesChannel = channel;
+      rulesChannel = channel;
     }
   }
 
@@ -517,7 +507,7 @@ class Guild {
 
     if (response.statusCode == 200) {
       _publicUpdatesChannelId = channel.id;
-      _publicUpdatesChannel = channel;
+      publicUpdatesChannel = channel;
     }
   }
 
@@ -587,8 +577,6 @@ class Guild {
       payload['icon_hash'],
       payload['splash'],
       payload['discovery_splash'],
-      memberManager.cache.get(payload['owner_id'])!,
-      payload['owner_id'],
       payload['permissions'],
       payload['afk_channel_id'],
       payload['afk_timeout'],

@@ -8,8 +8,7 @@ import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class GuildRoleManager extends CacheManager<Role> {
-  late final Guild _guild;
-  Guild get guild => _guild;
+  late final Guild guild;
 
   /// Synchronise the cache from the Discord API
   ///
@@ -21,7 +20,7 @@ class GuildRoleManager extends CacheManager<Role> {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
-    Response response = await http.get(url: "/guilds/${_guild.id}/roles");
+    Response response = await http.get(url: "/guilds/${guild.id}/roles");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -49,15 +48,15 @@ class GuildRoleManager extends CacheManager<Role> {
   /// );
   /// ```
   Future<Role> create ({ required String label, Color? color, bool? hoist, String? icon, String? unicode, bool? mentionable, List<Permission>? permissions }) async {
-    if ((icon != null || unicode != null) && !_guild.features.contains('ROLE_ICONS')) {
-      throw MissingFeatureException(cause: "Guild ${_guild.name} has no 'ROLE_ICONS' feature.");
+    if ((icon != null || unicode != null) && !guild.features.contains('ROLE_ICONS')) {
+      throw MissingFeatureException(cause: "Guild ${guild.name} has no 'ROLE_ICONS' feature.");
     }
 
     String? _icon = icon != null ? await Helper.getPicture(icon) : null;
     int? _permissions = permissions != null ? Helper.reduceRolePermissions(permissions) : null;
 
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.post(url: "/guilds/${_guild.id}/roles", payload: {
+    Response response = await http.post(url: "/guilds/${guild.id}/roles", payload: {
       'name': label,
       'color': color != null ? Helper.toRgbColor(color) : null,
       'hoist': hoist ?? false,

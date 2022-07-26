@@ -23,12 +23,12 @@ enum ChannelType {
   const ChannelType(this.value);
 }
 
-Map<ChannelType, Channel Function(dynamic payload)> channels = {
-  ChannelType.guildText: (dynamic payload) => TextChannel.from(payload),
+Map<ChannelType, Channel Function(Guild? guild, dynamic payload)> channels = {
+  ChannelType.guildText: (Guild? guild, dynamic payload) => TextChannel.from(guild, payload),
   // 'DM': () => ,
-  ChannelType.guildVoice: (dynamic payload) => VoiceChannel.from(payload),
+  ChannelType.guildVoice: (Guild? guild, dynamic payload) => VoiceChannel.from(guild, payload),
   // 'GROUP_DM': () => ,
-  ChannelType.guildCategory: (dynamic payload) => CategoryChannel.from(payload),
+  ChannelType.guildCategory: (Guild? guild, dynamic payload) => CategoryChannel.from(guild, payload),
   // 'GUILD_NEWS': () => ,
   // 'GUILD_NEWS_THREAD': () => ,
   // 'GUILD_PUBLIC_THREAD': () => ,

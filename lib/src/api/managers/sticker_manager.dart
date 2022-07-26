@@ -26,6 +26,7 @@ class StickerManager extends CacheManager<Sticker> {
 
       Sticker sticker = Sticker.from(payload);
       sticker.manager = this;
+
       cache.putIfAbsent(sticker.id, () => sticker);
 
       return sticker;

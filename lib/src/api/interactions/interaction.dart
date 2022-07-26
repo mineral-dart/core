@@ -89,7 +89,7 @@ class Interaction {
     });
   }
 
-  factory Interaction.from({ required User user, required Guild guild, required dynamic payload }) {
+  factory Interaction.from({ required User user, required Guild? guild, required dynamic payload }) {
     return Interaction(
       payload['id'],
       payload['application_id'],
@@ -98,7 +98,7 @@ class Interaction {
       payload['token'],
       user,
       guild,
-      guild.members.cache.getOrFail(user.id)
+      guild?.members.cache.getOrFail(user.id)
     );
   }
 }

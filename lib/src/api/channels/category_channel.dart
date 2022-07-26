@@ -28,7 +28,7 @@ class CategoryChannel extends Channel {
     });
 
     dynamic payload = jsonDecode(response.body);
-    CategoryChannel channel = CategoryChannel.from(payload);
+    CategoryChannel channel = CategoryChannel.from(guild, payload);
 
     // Define deep properties
     channel.parent = channel.parent != null
@@ -48,7 +48,7 @@ class CategoryChannel extends Channel {
     return response.statusCode == 200;
   }
 
-  factory CategoryChannel.from(dynamic payload) {
+  factory CategoryChannel.from(Guild? guild, dynamic payload) {
     MineralClient client = ioc.singleton(ioc.services.client);
     final permissionOverwriteManager = PermissionOverwriteManager();
 

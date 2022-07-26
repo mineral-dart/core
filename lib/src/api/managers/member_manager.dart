@@ -26,9 +26,11 @@ class MemberManager extends CacheManager<GuildMember> {
         GuildMember guildMember = GuildMember.from(
           user: User.from(element['user']),
           roles: _guild.roles,
-          guildId: _guild.id,
-          voice: voiceManager ?? VoiceManager.from(payload, guild, voiceChannel)
+          guild: _guild,
+          voice: voiceManager ?? VoiceManager.from(payload, null, voiceChannel)
         );
+
+        guildMember.voice.member = guildMember;
 
         cache.putIfAbsent(guildMember.user.id, () => guildMember);
       }

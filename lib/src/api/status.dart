@@ -48,8 +48,8 @@ class Status {
       guildMember.user,
       guild,
       StatusType.values.firstWhere((status) => status.toString() == payload['status']),
-      payload['client_status'],
       activities,
+      payload['client_status'],
     );
   }
 }

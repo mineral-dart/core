@@ -1,5 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
@@ -40,10 +39,7 @@ class TextChannel extends TextBasedChannel {
     return await super.update(label: label, description: description, delay: delay, position: position, categoryChannel: categoryChannel, nsfw: nsfw, permissionOverwrites: permissionOverwrites);
   }
 
-  factory TextChannel.from(dynamic payload) {
-    MineralClient client = ioc.singleton(ioc.services.client);
-    Guild? guild = client.guilds.cache.get(payload['guild_id']);
-
+  factory TextChannel.from(Guild? guild, dynamic payload) {
     final PermissionOverwriteManager permissionOverwriteManager = PermissionOverwriteManager();
     for(dynamic element in payload['permission_overwrites']) {
       final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);

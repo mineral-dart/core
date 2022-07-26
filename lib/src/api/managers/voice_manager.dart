@@ -10,9 +10,9 @@ class VoiceManager {
   bool _hasVideo;
   bool? _hasStream;
   VoiceChannel? _channel;
-  GuildMember? _member;
+  GuildMember? member;
 
-  VoiceManager( this._isDeaf, this._isMute, this._isSelfMute, this._isSelfDeaf, this._hasVideo, this._hasStream, this._channel, this._member);
+  VoiceManager( this._isDeaf, this._isMute, this._isSelfMute, this._isSelfDeaf, this._hasVideo, this._hasStream, this._channel, this.member);
 
   bool get isDeaf => _isDeaf;
   bool get isMute => _isMute;
@@ -21,7 +21,6 @@ class VoiceManager {
   bool get hasVideo => _hasVideo;
   bool? get hasStream => _hasStream;
   VoiceChannel? get channel => _channel;
-  GuildMember? get member => _member;
 
   /// ### Mutes or unmute a server member
   ///
@@ -108,7 +107,7 @@ class VoiceManager {
     }
   }
 
-  factory VoiceManager.from(dynamic payload, Guild guild, VoiceChannel? channel) {
+  factory VoiceManager.from(dynamic payload, GuildMember? member, VoiceChannel? channel) {
     return VoiceManager(
       payload['deaf'] == true,
       payload['mute'] == true,
@@ -117,7 +116,7 @@ class VoiceManager {
       payload['self_video'] == true,
       payload['self_stream'] == true,
       channel,
-      guild.members.cache.get(payload['user']?['id']),
+      member
     );
   }
 }

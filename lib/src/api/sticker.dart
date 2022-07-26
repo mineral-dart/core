@@ -39,7 +39,7 @@ class Sticker {
   Guild _guild;
   GuildMember? _guildMember;
   int? _sortValue;
-  late StickerManager _manager;
+  late StickerManager manager;
 
   Sticker(
     this._id,
@@ -64,8 +64,6 @@ class Sticker {
   Guild get guild => _guild;
   GuildMember? get guildMember => _guildMember;
   int? get sortValue => _sortValue;
-  StickerManager get manager => _manager;
-
 
   Future<void> setName (String name) async {
     Http http = ioc.singleton(ioc.services.http);

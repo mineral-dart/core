@@ -49,7 +49,7 @@ class VoiceChannel extends Channel {
     });
 
     dynamic payload = jsonDecode(response.body);
-    VoiceChannel channel = VoiceChannel.from(payload);
+    VoiceChannel channel = VoiceChannel.from(guild, payload);
 
     // Define deep properties
     channel.parent = payload['parent_id'] != null
@@ -60,7 +60,7 @@ class VoiceChannel extends Channel {
     return channel;
   }
 
-  factory VoiceChannel.from(dynamic payload) {
+  factory VoiceChannel.from(Guild? guild, dynamic payload) {
     MineralClient client = ioc.singleton(ioc.services.client);
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
 

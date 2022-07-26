@@ -7,14 +7,13 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class GuildWebhookManager extends CacheManager<Webhook> {
-  late final Guild _guild;
-  Guild get guild => _guild;
+  late final Guild guild;
 
   GuildWebhookManager();
 
   Future<Map<Snowflake, Webhook>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.get(url: "/guilds/${_guild.id}/webhooks");
+    Response response = await http.get(url: "/guilds/${guild.id}/webhooks");
 
     for (dynamic element in jsonDecode(response.body)) {
       Webhook webhook = Webhook.from(payload: element);

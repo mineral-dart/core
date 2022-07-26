@@ -23,9 +23,9 @@ class ChannelUpdate implements WebsocketPacket {
 
     Channel? after = _dispatch(guild, payload);
     if (after != null) {
-      after.guildId = guild?.id;
-      after.guild = guild;
-      after.parent = after.parentId != null ? guild?.channels.cache.get<CategoryChannel>(after.parentId) : null;
+      after.parent = payload['parent_id'] != null
+        ? guild?.channels.cache.get<CategoryChannel>(payload['parent_id'])
+        : null;
 
       manager.emit(
         event: Events.channelUpdate,
