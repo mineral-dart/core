@@ -29,83 +29,97 @@ enum FormatType {
 }
 
 class Sticker {
-  Snowflake id;
-  Snowflake packId;
-  String name;
-  String? description;
-  String tags;
-  StickerType type;
-  FormatType format;
-  Snowflake guildId;
-  late Guild guild;
-  Snowflake? guildMemberId;
-  late GuildMember? guildMember;
-  int? sortValue;
-  late StickerManager manager;
+  Snowflake _id;
+  Snowflake _packId;
+  String _name;
+  String? _description;
+  String _tags;
+  StickerType _type;
+  FormatType _format;
+  Guild _guild;
+  GuildMember? _guildMember;
+  int? _sortValue;
+  late StickerManager _manager;
 
-  Sticker({
-    required this.id,
-    required this.packId,
-    required this.name,
-    required this.description,
-    required this.tags,
-    required this.type,
-    required this.format,
-    required this.guildId,
-    required this.guildMemberId,
-    required this.sortValue,
-  });
+  Sticker(
+    this._id,
+    this._packId,
+    this._name,
+    this._description,
+    this._tags,
+    this._type,
+    this._format,
+    this._guild,
+    this._guildMember,
+    this._sortValue,
+  );
+
+  Snowflake get id => _id;
+  Snowflake get packId => _packId;
+  String get name => _name;
+  String? get description => _description;
+  String get tags => _tags;
+  StickerType get type => _type;
+  FormatType get format => _format;
+  Guild get guild => _guild;
+  GuildMember? get guildMember => _guildMember;
+  int? get sortValue => _sortValue;
+  StickerManager get manager => _manager;
+
 
   Future<void> setName (String name) async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.patch(url: "/guilds/$guildId/stickers/$id", payload: { 'name': name });
+    Response response = await http.patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'name': name });
     if (response.statusCode == 200) {
-      this.name = name;
+      _name = name;
     }
   }
 
   Future<void> setDescription (String description) async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.patch(url: "/guilds/$guildId/stickers/$id", payload: { 'description': description });
+    Response response = await http.patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'description': description });
     if (response.statusCode == 200) {
-      this.description = description;
+      _description = description;
     }
   }
 
   Future<void> setTags (String tags) async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.patch(url: "/guilds/$guildId/stickers/$id", payload: { 'tags': tags });
+    Response response = await http.patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'tags': tags });
     if (response.statusCode == 200) {
-      this.tags = tags;
+      _tags = tags;
     }
   }
 
   Future<void> delete () async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.destroy(url: "/guilds/$guildId/stickers/$id");
+    Response response = await http.destroy(url: "/guilds/${guild.id}/stickers/$id");
     if (response.statusCode == 200) {
       manager.cache.remove(id);
     }
   }
 
   factory Sticker.from(dynamic payload) {
-    dynamic user = payload['user'];
+    MineralClient client = ioc.singleton(ioc.services.client);
+
+    Guild guild = client.guilds.cache.getOrFail(payload['guild_id']);
+    GuildMember? member = guild.members.cache.get(payload['user']?['id']);
 
     return Sticker(
-      id: payload['id'],
-      packId: payload['pack_id'],
-      name: payload['name'],
-      description: payload['description'],
-      tags: payload['tags'],
-      type: payload['type'],
-      format: payload['format_type'],
-      guildId: payload['guild_id'],
-      guildMemberId: user['id'],
-      sortValue: payload['sortValue']
+      payload['id'],
+      payload['pack_id'],
+      payload['name'],
+      payload['description'],
+      payload['tags'],
+      StickerType.values.firstWhere((element) => element.value == payload['type']),
+      payload['format_type'],
+      guild,
+      member,
+      payload['sortValue']
     );
   }
 }
