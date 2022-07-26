@@ -7,26 +7,20 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
-class EmojiManager implements CacheManager<Emoji> {
-  @override
-  Map<Snowflake, Emoji> cache = {};
+class EmojiManager extends CacheManager<Emoji> {
+  late final Guild _guild;
+  Guild get guild => _guild;
 
-  Snowflake? guildId;
-  late Guild? guild;
-
-  EmojiManager({ required this.guildId });
-
-  @override
   Future<Map<Snowflake, Emoji>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
-    Response response = await http.get(url: "/guilds/$guildId/emojis");
+    Response response = await http.get(url: "/guilds/${_guild.id}/emojis");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
       Emoji emoji = Emoji.from(
-        memberManager: guild!.members,
+        memberManager: _guild.members,
         //roleManager: guild!.roles,
         emojiManager: this,
         payload: element
@@ -45,14 +39,15 @@ class EmojiManager implements CacheManager<Emoji> {
 
     Http http = ioc.singleton(ioc.services.http);
     String image = await Helper.getPicture(path);
-    Response response = await http.post(url: "/guilds/$guildId/emojis", payload: {
+
+    Response response = await http.post(url: "/guilds/${_guild.id}/emojis", payload: {
       'name': label,
       'image': image,
       'roles': roles ?? [],
     });
 
     Emoji emoji = Emoji.from(
-      memberManager: guild!.members,
+      memberManager: _guild.members,
       //roleManager: guild!.roles,
       emojiManager: this,
       payload: jsonDecode(response.body),
