@@ -9,8 +9,7 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
 
 class StickerManager extends CacheManager<Sticker> {
-  late final Guild _guild;
-  Guild get guild => _guild;
+  late final Guild guild;
 
   Future<Sticker?> create ({ required String name, required String description, required String tags, required String filename }) async {
     if (guild.features.contains(GuildFeature.verified) || guild.features.contains(GuildFeature.partnered)) {

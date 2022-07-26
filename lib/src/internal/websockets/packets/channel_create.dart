@@ -29,6 +29,7 @@ class ChannelCreate implements WebsocketPacket {
         : null;
 
       channel?.webhooks?.guild = guild;
+      channel?.webhooks?.channel = channel;
 
       guild?.channels.cache.putIfAbsent(channel!.id, () => channel!);
     }

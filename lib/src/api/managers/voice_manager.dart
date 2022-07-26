@@ -9,10 +9,10 @@ class VoiceManager {
   bool _isSelfDeaf;
   bool _hasVideo;
   bool? _hasStream;
-  VoiceChannel? _channel;
+  VoiceChannel? channel;
   GuildMember? member;
 
-  VoiceManager( this._isDeaf, this._isMute, this._isSelfMute, this._isSelfDeaf, this._hasVideo, this._hasStream, this._channel, this.member);
+  VoiceManager( this._isDeaf, this._isMute, this._isSelfMute, this._isSelfDeaf, this._hasVideo, this._hasStream, this.channel, this.member);
 
   bool get isDeaf => _isDeaf;
   bool get isMute => _isMute;
@@ -20,7 +20,6 @@ class VoiceManager {
   bool get isSelfDeaf => _isSelfDeaf;
   bool get hasVideo => _hasVideo;
   bool? get hasStream => _hasStream;
-  VoiceChannel? get channel => _channel;
 
   /// ### Mutes or unmute a server member
   ///
@@ -102,7 +101,7 @@ class VoiceManager {
     if (response.statusCode == 204 || response.statusCode == 200) {
       final VoiceChannel? channel = member!.guild.channels.cache.get(channelId);
       if (channel != null) {
-        _channel = channel;
+        this.channel = channel;
       }
     }
   }

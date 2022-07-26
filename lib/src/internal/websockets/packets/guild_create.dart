@@ -10,7 +10,6 @@ import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
-import 'package:mineral/src/api/managers/voice_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
@@ -37,10 +36,10 @@ class GuildCreate implements WebsocketPacket {
 
     Map<Snowflake, VoiceManager> voices = {};
     for(dynamic voiceMember in websocketResponse.payload['voice_states']) {
-      print(voiceMember);
-      // final VoiceManager voiceManager = VoiceManager.from(voiceMember, null);
-      // voices.putIfAbsent(voiceMember['user_id'], () => voiceManager);
-      // voices.putIfAbsent(voiceMember['channel_id'], () => voiceManager);
+      final VoiceManager voiceManager = VoiceManager.from(voiceMember, null, null);
+
+      voices.putIfAbsent(voiceMember['user_id'], () => voiceManager);
+      voices.putIfAbsent(voiceMember['channel_id'], () => voiceManager);
     }
 
     MemberManager memberManager = MemberManager();
@@ -70,7 +69,7 @@ class GuildCreate implements WebsocketPacket {
 
     ModerationRuleManager moderationManager = ModerationRuleManager();
 
-    WebhookManager webhookManager = WebhookManager(guildId: websocketResponse.payload['id']);
+    WebhookManager webhookManager = WebhookManager();
 
     Guild guild = Guild.from(
       emojiManager: emojiManager,
@@ -115,24 +114,17 @@ class GuildCreate implements WebsocketPacket {
 
     // Assign guild channels
     guild.channels.cache.forEach((Snowflake id, Channel channel) {
-      // if(voices.containsKey(id)) {
-      //   voices.get(id)!.channel = channel as VoiceChannel;
-      // }
+      if(voices.containsKey(id)) {
+        voices.getOrFail(id).channel = channel as VoiceChannel;
+      }
     });
-
-    // moderationManager.guild = guild;
-    //
-    // guild.stickers.guild = guild;
-    // guild.stickers.cache.forEach((_, sticker) {
-    //   sticker.guild = guild;
-    //   sticker.guildMember = guild.channels.cache.get(sticker.guildMemberId);
-    // });
 
     guild.owner = memberManager.cache.getOrFail(websocketResponse.payload['owner_id']);
     guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
     guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);
     guild.rulesChannel = guild.channels.cache.get<TextChannel>(guild.rulesChannelId);
     guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
+    guild.webhooks.guild = guild;
     guild.emojis.guild = guild;
     guild.roles.guild = guild;
     guild.scheduledEvents.guild = guild;

@@ -36,10 +36,10 @@ class Sticker {
   String _tags;
   StickerType _type;
   FormatType _format;
-  Guild _guild;
-  GuildMember? _guildMember;
   int? _sortValue;
+  GuildMember? member;
   late StickerManager manager;
+  late Guild guild;
 
   Sticker(
     this._id,
@@ -49,8 +49,6 @@ class Sticker {
     this._tags,
     this._type,
     this._format,
-    this._guild,
-    this._guildMember,
     this._sortValue,
   );
 
@@ -61,8 +59,6 @@ class Sticker {
   String get tags => _tags;
   StickerType get type => _type;
   FormatType get format => _format;
-  Guild get guild => _guild;
-  GuildMember? get guildMember => _guildMember;
   int? get sortValue => _sortValue;
 
   Future<void> setName (String name) async {
@@ -107,7 +103,7 @@ class Sticker {
     Guild guild = client.guilds.cache.getOrFail(payload['guild_id']);
     GuildMember? member = guild.members.cache.get(payload['user']?['id']);
 
-    return Sticker(
+    final sticker = Sticker(
       payload['id'],
       payload['pack_id'],
       payload['name'],
@@ -115,9 +111,12 @@ class Sticker {
       payload['tags'],
       StickerType.values.firstWhere((element) => element.value == payload['type']),
       payload['format_type'],
-      guild,
-      member,
       payload['sortValue']
     );
+
+    sticker.guild = guild;
+    sticker.member = member;
+
+    return sticker;
   }
 }

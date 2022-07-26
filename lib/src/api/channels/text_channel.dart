@@ -53,7 +53,7 @@ class TextChannel extends TextBasedChannel {
       payload['name'],
       payload['application_id'],
       payload['flags'],
-      WebhookManager(guildId: guild?.id),
+      WebhookManager(),
       permissionOverwriteManager,
       guild,
       payload['topic'],
@@ -64,6 +64,7 @@ class TextChannel extends TextBasedChannel {
       ThreadManager(guildId: guild?.id),
     );
 
+    channel.webhooks?.channel = channel;
     channel.threads.channel = channel;
 
     return channel;
