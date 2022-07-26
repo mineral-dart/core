@@ -9,7 +9,7 @@ import 'package:mineral/core.dart';
 
 import '../channels/public_thread.dart';
 
-class ThreadManager implements CacheManager<Channel> {
+class ThreadManager extends CacheManager<Channel> {
 
   @override
   Map<Snowflake, Channel> cache = {};
