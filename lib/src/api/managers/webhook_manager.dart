@@ -6,7 +6,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
-class WebhookManager implements CacheManager<Webhook> {
+class WebhookManager extends CacheManager<Webhook> {
   @override
   Map<Snowflake, Webhook> cache = {};
 
