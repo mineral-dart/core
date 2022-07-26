@@ -24,22 +24,28 @@ class PartialEmoji {
 
 /// Represents an [Emoji] on [Guild] context.
 class Emoji extends PartialEmoji {
-  GuildMember? creator;
-  bool requireColons;
-  bool managed;
-  bool available;
-  EmojiManager manager;
+  GuildMember? _creator;
+  bool _requireColons;
+  bool _managed;
+  bool _available;
+  EmojiManager _manager;
 
   Emoji(
-    super.id,
-    super.label,
-    super.animated,
-    this.creator,
-    this.requireColons,
-    this.managed,
-    this.available,
-    this.manager,
+    super._id,
+    super._label,
+    super._animated,
+    this._creator,
+    this._requireColons,
+    this._managed,
+    this._available,
+    this._manager,
   );
+
+  GuildMember? get creator => _creator;
+  bool get requireColons => _requireColons;
+  bool get managed => _managed;
+  bool get available => _available;
+  EmojiManager get manager => _manager;
 
   /// ### Modifies the [label] of this.
   ///
