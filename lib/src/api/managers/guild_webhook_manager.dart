@@ -5,21 +5,16 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
-import 'package:mineral/src/api/webhook.dart';
 
-class GuildWebhookManager implements CacheManager<Webhook> {
-  @override
-  Map<Snowflake, Webhook> cache = {};
+class GuildWebhookManager extends CacheManager<Webhook> {
+  late final Guild _guild;
+  Guild get guild => _guild;
 
-  Snowflake guildId;
-  Guild? guild;
+  GuildWebhookManager();
 
-  GuildWebhookManager({ required this.guildId });
-
-  @override
   Future<Map<Snowflake, Webhook>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.get(url: "/guilds/$guildId/webhooks");
+    Response response = await http.get(url: "/guilds/${_guild.id}/webhooks");
 
     for (dynamic element in jsonDecode(response.body)) {
       Webhook webhook = Webhook.from(payload: element);
@@ -30,8 +25,8 @@ class GuildWebhookManager implements CacheManager<Webhook> {
   }
 
   factory GuildWebhookManager.fromManager({ required WebhookManager webhookManager }) {
-    GuildWebhookManager guildWebhookManager = GuildWebhookManager(guildId: webhookManager.guildId!);
-    guildWebhookManager.cache = webhookManager.cache;
+    final guildWebhookManager = GuildWebhookManager();
+    guildWebhookManager.cache.addAll(webhookManager.cache);
 
     return guildWebhookManager;
   }
