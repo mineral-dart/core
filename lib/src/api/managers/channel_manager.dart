@@ -4,26 +4,19 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/channel.dart';
-import 'package:mineral/src/api/channels/permission_overwrite.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
 import 'package:collection/collection.dart';
 
-class ChannelManager implements CacheManager<Channel> {
-  @override
-  Map<Snowflake, Channel> cache = {};
+class ChannelManager extends CacheManager<Channel> {
+  late final Guild _guild;
+  Guild get guild => _guild;
 
-  Snowflake? guildId;
-  late Guild? guild;
-
-  ChannelManager({ required this.guildId });
-
-  @override
   Future<Map<Snowflake, Channel>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
-    Response response = await http.get(url: "/guilds/$guildId/channels");
+    Response response = await http.get(url: "/guilds/${_guild.id}/channels");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -72,7 +65,7 @@ class ChannelManager implements CacheManager<Channel> {
   Future<T?> _create<T> ({ required dynamic data }) async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.post(url: "/guilds/$guildId/channels", payload: data);
+    Response response = await http.post(url: "/guilds/${_guild.id}/channels", payload: data);
     dynamic payload = jsonDecode(response.body);
 
     final ChannelType? type = ChannelType.values.firstWhereOrNull((element) => element.value == payload['type']);
@@ -80,10 +73,9 @@ class ChannelManager implements CacheManager<Channel> {
       Channel Function(dynamic payload) item = channels[type] as Channel Function(dynamic payload);
       Channel channel = item(payload);
 
-      // Define deep properties
-      channel.guildId = guildId;
-      channel.guild = guild;
-      channel.parent = channel.parentId != null ? guild?.channels.cache.get<CategoryChannel>(channel.parentId) : null;
+      channel.parent = payload['parent_id'] != null
+        ? _guild.channels.cache.get<CategoryChannel>(payload['parent_id'])
+        : null;
 
       cache.putIfAbsent(channel.id, () => channel);
       return channel as T;
