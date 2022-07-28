@@ -30,103 +30,144 @@ enum VerificationLevel {
 }
 
 class Guild {
-  Snowflake id;
-  String name;
-  String? icon;
-  String? iconHash;
-  String? splash;
-  String? discoverySplash;
-  GuildMember owner;
-  Snowflake ownerId;
-  int? permissions;
-  Snowflake? afkChannelId;
+  Snowflake _id;
+  String _name;
+  String? _icon;
+  String? _iconHash;
+  String? _splash;
+  String? _discoverySplash;
+  late GuildMember owner;
+  int? _permissions;
+  Snowflake? _afkChannelId;
   late VoiceChannel? afkChannel;
-  int afkTimeout;
-  bool widgetEnabled;
-  Snowflake? widgetChannelId;
-  VerificationLevel verificationLevel;
-  int defaultMessageNotifications;
-  int explicitContentFilter;
-  GuildRoleManager roles;
-  List<GuildFeature> features;
-  int mfaLevel;
-  Snowflake? applicationId;
-  Snowflake? systemChannelId;
+  int _afkTimeout;
+  bool _widgetEnabled;
+  Snowflake? _widgetChannelId;
+  VerificationLevel _verificationLevel;
+  int _defaultMessageNotifications;
+  int _explicitContentFilter;
+  GuildRoleManager _roles;
+  List<GuildFeature> _features;
+  int _mfaLevel;
+  Snowflake? _applicationId;
+  Snowflake? _systemChannelId;
   late TextChannel? systemChannel;
-  int systemChannelFlags;
-  Snowflake? rulesChannelId;
+  int _systemChannelFlags;
+  Snowflake? _rulesChannelId;
   late TextChannel? rulesChannel;
-  int? maxPresences;
-  int maxMembers;
-  String? vanityUrlCode;
-  String? description;
-  String? banner;
-  int premiumTier;
-  int premiumSubscriptionCount;
-  String preferredLocale;
-  Snowflake? publicUpdatesChannelId;
+  int? _maxPresences;
+  int _maxMembers;
+  String? _vanityUrlCode;
+  String? _description;
+  String? _banner;
+  int _premiumTier;
+  int _premiumSubscriptionCount;
+  String _preferredLocale;
+  Snowflake? _publicUpdatesChannelId;
   late TextChannel? publicUpdatesChannel;
-  int maxVideoChannelUsers;
-  int? approximateMemberCount;
-  int? approximatePresenceCount;
-  WelcomeScreen? welcomeScreen;
-  int nsfwLevel;
-  StickerManager stickers;
-  bool premiumProgressBarEnabled;
-  MemberManager members;
-  ChannelManager channels;
-  EmojiManager emojis;
-  ModerationRuleManager moderationRules;
-  GuildWebhookManager webhooks;
-  GuildScheduledEventManager scheduledEvents;
+  int _maxVideoChannelUsers;
+  int? _approximateMemberCount;
+  int? _approximatePresenceCount;
+  WelcomeScreen? _welcomeScreen;
+  int _nsfwLevel;
+  StickerManager _stickers;
+  bool _premiumProgressBarEnabled;
+  MemberManager _members;
+  ChannelManager _channels;
+  EmojiManager _emojis;
+  ModerationRuleManager _moderationRules;
+  GuildWebhookManager _webhooks;
+  GuildScheduledEventManager _scheduledEvents;
 
-  Guild({
-    required this.id,
-    required this.name,
-    required this.icon,
-    required this.iconHash,
-    required this.splash,
-    required this.discoverySplash,
-    required this.owner,
-    required this.ownerId,
-    required this.permissions,
-    required this.afkChannelId,
-    required this.afkTimeout,
-    required this.widgetEnabled,
-    required this.widgetChannelId,
-    required this.verificationLevel,
-    required this.defaultMessageNotifications,
-    required this.explicitContentFilter,
-    required this.roles,
-    required this.mfaLevel,
-    required this.applicationId,
-    required this.systemChannelId,
-    required this.systemChannelFlags,
-    required this.rulesChannelId,
-    required this.maxPresences,
-    required this.maxMembers,
-    required this.vanityUrlCode,
-    required this.description,
-    required this.banner,
-    required this.premiumTier,
-    required this.premiumSubscriptionCount,
-    required this.preferredLocale,
-    required this.publicUpdatesChannelId,
-    required this.maxVideoChannelUsers,
-    required this.approximateMemberCount,
-    required this.approximatePresenceCount,
-    required this.welcomeScreen,
-    required this.nsfwLevel,
-    required this.stickers,
-    required this.premiumProgressBarEnabled,
-    required this.members,
-    required this.channels,
-    required this.emojis,
-    required this.features,
-    required this.moderationRules,
-    required this.webhooks,
-    required this.scheduledEvents,
-  });
+  Guild(
+    this._id,
+    this._name,
+    this._icon,
+    this._iconHash,
+    this._splash,
+    this._discoverySplash,
+    this._permissions,
+    this._afkChannelId,
+    this._afkTimeout,
+    this._widgetEnabled,
+    this._widgetChannelId,
+    this._verificationLevel,
+    this._defaultMessageNotifications,
+    this._explicitContentFilter,
+    this._roles,
+    this._mfaLevel,
+    this._applicationId,
+    this._systemChannelId,
+    this._systemChannelFlags,
+    this._rulesChannelId,
+    this._maxPresences,
+    this._maxMembers,
+    this._vanityUrlCode,
+    this._description,
+    this._banner,
+    this._premiumTier,
+    this._premiumSubscriptionCount,
+    this._preferredLocale,
+    this._publicUpdatesChannelId,
+    this._maxVideoChannelUsers,
+    this._approximateMemberCount,
+    this._approximatePresenceCount,
+    this._welcomeScreen,
+    this._nsfwLevel,
+    this._stickers,
+    this._premiumProgressBarEnabled,
+    this._members,
+    this._channels,
+    this._emojis,
+    this._features,
+    this._moderationRules,
+    this._webhooks,
+    this._scheduledEvents,
+  );
+
+  Snowflake get id => _id;
+  String get name => _name;
+  String? get icon => _icon;
+  String? get iconHash => _iconHash;
+  String? get splash => _splash;
+  String? get discoverySplash => _discoverySplash;
+  int? get permissions => _permissions;
+  Snowflake? get afkChannelId => _afkChannelId;
+  int get afkTimeout => _afkTimeout;
+  bool get widgetEnabled => _widgetEnabled;
+  Snowflake? get widgetChannelId => _widgetChannelId;
+  VerificationLevel get verificationLevel => _verificationLevel;
+  int get defaultMessageNotifications => _defaultMessageNotifications;
+  int get explicitContentFilter => _explicitContentFilter;
+  GuildRoleManager get roles => _roles;
+  List<GuildFeature> get features => _features;
+  int get mfaLevel => _mfaLevel;
+  Snowflake? get applicationId => _applicationId;
+  Snowflake? get systemChannelId => _systemChannelId;
+  int get systemChannelFlags => _systemChannelFlags;
+  Snowflake? get rulesChannelId => _rulesChannelId;
+  int? get maxPresences => _maxPresences;
+  int get maxMembers => _maxMembers;
+  String? get vanityUrlCode => _vanityUrlCode;
+  String? get description => _description;
+  String? get banner => _banner;
+  int get premiumTier => _premiumTier;
+  int get premiumSubscriptionCount => _premiumSubscriptionCount;
+  String get preferredLocale => _preferredLocale;
+  Snowflake? get publicUpdatesChannelId => _publicUpdatesChannelId;
+  int get maxVideoChannelUsers => _maxVideoChannelUsers;
+  int? get approximateMemberCount => _approximateMemberCount;
+  int? get approximatePresenceCount => _approximatePresenceCount;
+  WelcomeScreen? get welcomeScreen => _welcomeScreen;
+  int get nsfwLevel => _nsfwLevel;
+  StickerManager get stickers => _stickers;
+  bool get premiumProgressBarEnabled => _premiumProgressBarEnabled;
+  MemberManager get members => _members;
+  ChannelManager get channels => _channels;
+  EmojiManager get emojis => _emojis;
+  ModerationRuleManager get moderationRules => _moderationRules;
+  GuildWebhookManager get webhooks => _webhooks;
+  GuildScheduledEventManager get scheduledEvents => _scheduledEvents;
 
   /// ### Modifies the [name] of this.
   ///
@@ -139,7 +180,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'name': name });
 
     if (response.statusCode == 200) {
-      this.name = name;
+      _name = name;
     }
   }
 
@@ -156,7 +197,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'verification_level': level.value });
 
     if (response.statusCode == 200) {
-      verificationLevel = level;
+      _verificationLevel = level;
     }
   }
 
@@ -173,7 +214,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'default_message_notifications': level });
 
     if (response.statusCode == 200) {
-      defaultMessageNotifications = level;
+      _defaultMessageNotifications = level;
     }
   }
 
@@ -192,7 +233,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'explicit_content_filter': level });
 
     if (response.statusCode == 200) {
-      explicitContentFilter = level;
+      _explicitContentFilter = level;
     }
   }
 
@@ -212,7 +253,7 @@ class Guild {
 
     if (response.statusCode == 200) {
       afkChannel = channel;
-      afkChannelId = channel.id;
+      _afkChannelId = channel.id;
     }
   }
 
@@ -234,7 +275,7 @@ class Guild {
     MineralClient client = ioc.singleton(ioc.services.client);
     Http http = ioc.singleton(ioc.services.http);
 
-    if (ownerId != client.user.id) {
+    if (owner.id != client.user.id) {
       Console.error(message: "You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
       return;
     }
@@ -243,7 +284,6 @@ class Guild {
 
     if (response.statusCode == 200) {
       owner = guildMember;
-      ownerId = guildMember.user.id;
     }
   }
 
@@ -266,7 +306,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'splash': file });
 
     if (response.statusCode == 200) {
-      splash = file;
+      _splash = file;
     }
   }
 
@@ -287,7 +327,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'splash': null });
 
     if (response.statusCode == 200) {
-      splash = null;
+      _splash = null;
     }
   }
 
@@ -310,7 +350,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'discovery_splash': file });
 
     if (response.statusCode == 200) {
-      discoverySplash = file;
+      _discoverySplash = file;
     }
   }
 
@@ -331,7 +371,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'discovery_splash': null });
 
     if (response.statusCode == 200) {
-      discoverySplash = null;
+      _discoverySplash = null;
     }
   }
 
@@ -354,7 +394,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'banner': file });
 
     if (response.statusCode == 200) {
-      banner = file;
+      _banner = file;
     }
   }
 
@@ -375,7 +415,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'banner': null });
 
     if (response.statusCode == 200) {
-      banner = null;
+      _banner = null;
     }
   }
 
@@ -392,7 +432,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': file });
 
     if (response.statusCode == 200) {
-      icon = file;
+      _icon = file;
     }
   }
 
@@ -407,7 +447,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': null });
 
     if (response.statusCode == 200) {
-      icon = null;
+      _icon = null;
     }
   }
 
@@ -426,7 +466,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'system_channel_id': channel.id });
 
     if (response.statusCode == 200) {
-      systemChannelId = channel.id;
+      _systemChannelId = channel.id;
       systemChannel = channel;
     }
   }
@@ -446,7 +486,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'rules_channel_id': channel.id });
 
     if (response.statusCode == 200) {
-      rulesChannelId = channel.id;
+      _rulesChannelId = channel.id;
       rulesChannel = channel;
     }
   }
@@ -466,7 +506,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': channel.id });
 
     if (response.statusCode == 200) {
-      publicUpdatesChannelId = channel.id;
+      _publicUpdatesChannelId = channel.id;
       publicUpdatesChannel = channel;
     }
   }
@@ -484,7 +524,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': locale });
 
     if (response.statusCode == 200) {
-      preferredLocale = locale as String;
+      _preferredLocale = locale as String;
     }
   }
 
@@ -514,7 +554,7 @@ class Guild {
     required GuildScheduledEventManager guildScheduledEventManager,
     required dynamic payload
   }) {
-    StickerManager stickerManager = StickerManager(guildId: payload['id']);
+    StickerManager stickerManager = StickerManager();
     for (dynamic element in payload['stickers']) {
       Sticker sticker = Sticker.from(element);
       stickerManager.cache.putIfAbsent(sticker.id, () => sticker);
@@ -526,56 +566,54 @@ class Guild {
       if(feature == null) {
         Console.warn(message: 'Guild feature $element don\'t exist! Please report this to our team.');
       } else {
-        features.add(feature); 
+        features.add(feature);
       }
     }
 
     return Guild(
-      id: payload['id'],
-      name: payload['name'],
-      icon: payload['icon'],
-      iconHash: payload['icon_hash'],
-      splash: payload['splash'],
-      discoverySplash: payload['discovery_splash'],
-      owner: memberManager.cache.get(payload['owner_id'])!,
-      ownerId: payload['owner_id'],
-      permissions: payload['permissions'],
-      afkChannelId: payload['afk_channel_id'],
-      afkTimeout: payload['afk_timeout'],
-      widgetEnabled: payload['widget_enabled'] ?? false,
-      widgetChannelId: payload['widget_channel_id'],
-      verificationLevel: VerificationLevel.values.firstWhere((level) => level.value == payload['verification_level']),
-      defaultMessageNotifications: payload['default_message_notifications'],
-      explicitContentFilter: payload['explicit_content_filter'],
-      roles: roleManager,
-      features: features,
-      mfaLevel: payload['mfa_level'],
-      applicationId: payload['application_id'],
-      systemChannelId: payload['system_channel_id'],
-      systemChannelFlags: payload['system_channel_flags'],
-      rulesChannelId: payload['rules_channel_id'],
-      maxPresences: payload['max_presences'],
-      maxMembers: payload['max_members'],
-      vanityUrlCode: payload['vanity_url_code'],
-      description: payload['description'],
-      banner: payload['banner'],
-      premiumTier: payload['premium_tier'],
-      premiumSubscriptionCount: payload['premium_subscription_count'],
-      preferredLocale: payload['preferred_locale'],
-      publicUpdatesChannelId: payload['public_updates_channel_id'],
-      maxVideoChannelUsers: payload['max_video_channel_users'],
-      approximateMemberCount: payload['approximate_member_count'],
-      approximatePresenceCount: payload['approximate_presence_count'],
-      nsfwLevel: payload['nsfw_level'],
-      stickers: stickerManager,
-      premiumProgressBarEnabled: payload['premium_progress_bar_enabled'],
-      members: memberManager,
-      channels: channelManager,
-      emojis: emojiManager,
-      welcomeScreen: payload['welcome_screen'] != null ? WelcomeScreen.from(payload['welcome_screen']) : null,
-      moderationRules: moderationRuleManager,
-      webhooks: GuildWebhookManager.fromManager(webhookManager: webhookManager),
-      scheduledEvents: guildScheduledEventManager
+      payload['id'],
+      payload['name'],
+      payload['icon'],
+      payload['icon_hash'],
+      payload['splash'],
+      payload['discovery_splash'],
+      payload['permissions'],
+      payload['afk_channel_id'],
+      payload['afk_timeout'],
+      payload['widget_enabled'] ?? false,
+      payload['widget_channel_id'],
+      VerificationLevel.values.firstWhere((level) => level.value == payload['verification_level']),
+      payload['default_message_notifications'],
+      payload['explicit_content_filter'],
+      roleManager,
+      payload['mfa_level'],
+      payload['application_id'],
+      payload['system_channel_id'],
+      payload['system_channel_flags'],
+      payload['rules_channel_id'],
+      payload['max_presences'],
+      payload['max_members'],
+      payload['vanity_url_code'],
+      payload['description'],
+      payload['banner'],
+      payload['premium_tier'],
+      payload['premium_subscription_count'],
+      payload['preferred_locale'],
+      payload['public_updates_channel_id'],
+      payload['max_video_channel_users'],
+      payload['approximate_member_count'],
+      payload['approximate_presence_count'],
+      payload['welcome_screen'] != null ? WelcomeScreen.from(payload['welcome_screen']) : null,
+      payload['nsfw_level'],
+      stickerManager,
+      payload['premium_progress_bar_enabled'],
+      memberManager,
+      channelManager,
+      emojiManager,
+      features,
+      moderationRuleManager,
+      GuildWebhookManager.fromManager(webhookManager: webhookManager),
+      guildScheduledEventManager
     );
   }
 }

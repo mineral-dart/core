@@ -23,27 +23,27 @@ class GuildUpdate implements WebsocketPacket {
 
     Guild? before = client.guilds.cache.get(websocketResponse.payload['id']);
 
-    GuildRoleManager roleManager = GuildRoleManager(guildId: websocketResponse.payload['id']);
+    GuildRoleManager roleManager = GuildRoleManager();
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(roleManager: roleManager, payload: item);
       roleManager.cache.putIfAbsent(role.id, () => role);
     }
 
-    MemberManager memberManager = MemberManager(guildId: websocketResponse.payload['id']);
+    MemberManager memberManager = MemberManager();
     memberManager.cache.addAll(before!.members.cache);
 
-    ChannelManager channelManager = ChannelManager(guildId: websocketResponse.payload['id']);
+    ChannelManager channelManager = ChannelManager();
     channelManager.cache.addAll(before.channels.cache);
 
-    EmojiManager emojiManager = EmojiManager(guildId: websocketResponse.payload['id']);
+    EmojiManager emojiManager = EmojiManager();
     emojiManager.cache.addAll(before.emojis.cache);
 
-    ModerationRuleManager moderationManager = ModerationRuleManager(guildId: websocketResponse.payload['id']);
+    ModerationRuleManager moderationManager = ModerationRuleManager();
 
-    WebhookManager webhookManager = WebhookManager(guildId: websocketResponse.payload['id']);
+    WebhookManager webhookManager = WebhookManager();
     webhookManager.cache.addAll(before.webhooks.cache);
 
-    GuildScheduledEventManager guildScheduledEventManager = GuildScheduledEventManager(guildId: websocketResponse.payload['id']);
+    GuildScheduledEventManager guildScheduledEventManager = GuildScheduledEventManager();
     guildScheduledEventManager.cache.addAll(before.scheduledEvents.cache);
 
     Guild after = Guild.from(
@@ -62,7 +62,7 @@ class GuildUpdate implements WebsocketPacket {
     after.stickers.guild = after;
     after.stickers.cache.forEach((_, sticker) {
       sticker.guild = after;
-      sticker.guildMember = after.channels.cache.get(sticker.guildMemberId);
+      sticker.member = after.channels.cache.get(sticker.member?.id);
     });
 
     after.afkChannel = after.channels.cache.get<VoiceChannel>(after.afkChannelId);

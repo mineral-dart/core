@@ -1,6 +1,5 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/managers/voice_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -21,7 +20,7 @@ class VoiceStateUpdate implements WebsocketPacket {
     VoiceChannel? voiceChannel = guild?.channels.cache.get(payload['channel_id']);
     if (guild != null && member != null) {
       VoiceManager before = member.voice;
-      VoiceManager after = VoiceManager.from(payload, voiceChannel);
+      VoiceManager after = VoiceManager.from(payload, member, voiceChannel);
 
       member.voice = after;
       after.member = member;

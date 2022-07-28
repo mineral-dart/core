@@ -2,22 +2,28 @@ import 'dart:core';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/interactions/interaction.dart';
 
 class CommandInteraction extends Interaction {
-  String identifier;
-  TextBasedChannel? channel;
+  String _identifier;
+  TextBasedChannel? _channel;
+
   Map<String, dynamic> data = {};
 
-  CommandInteraction({
-    required this.identifier,
-    required InteractionType type,
-    required Snowflake applicationId,
-    required Snowflake id,
-    required int version,
-    required String token,
-    required User user,
-  }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
+  CommandInteraction(
+    super._id,
+    super._applicationId,
+    super._version,
+    super._type,
+    super._token,
+    super._user,
+    super._guild,
+    super._member,
+    this._identifier,
+    this._channel,
+  );
+
+  String get identifier => _identifier;
+  TextBasedChannel? get channel => _channel;
 
   /// ### Returns an instance of [Channel] if the command has the designed option
   ///
@@ -111,15 +117,18 @@ class CommandInteraction extends Interaction {
     return data[optionName]?['value'];
   }
 
-  factory CommandInteraction.from({ required User user, required dynamic payload }) {
+  factory CommandInteraction.from({ required User user, required Guild? guild, required dynamic payload }) {
     return CommandInteraction(
-      id: payload['id'],
-      applicationId: payload['application_id'],
-      type: InteractionType.applicationCommand,
-      identifier: payload['data']['name'],
-      version: payload['version'],
-      token: payload['token'],
-      user: user,
+      payload['id'],
+      payload['application_id'],
+      payload['version'],
+      InteractionType.applicationCommand,
+      payload['token'],
+      user,
+      guild,
+      guild?.members.cache.get(user.id),
+      payload['data']['name'],
+      guild?.channels.cache.get(payload['channel_id']),
     );
   }
 }

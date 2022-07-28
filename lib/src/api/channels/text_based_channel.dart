@@ -3,49 +3,47 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/permission_overwrite.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
-import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
-import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
 
 
 class TextBasedChannel extends Channel {
-  String? description;
-  bool nsfw;
-  Snowflake? lastMessageId;
-  DateTime? lastPinTimestamp;
-  MessageManager messages;
-  ThreadManager threads;
+  Channel? _parent;
+  String? _description;
+  bool _nsfw;
+  final Snowflake? _lastMessageId;
+  final DateTime? _lastPinTimestamp;
+  final MessageManager _messages;
+  final ThreadManager _threads;
 
-  TextBasedChannel({
-    required Snowflake id,
-    required Snowflake? guildId,
-    required int? position,
-    required String label,
-    required Snowflake? applicationId,
-    required Snowflake? parentId,
-    required int? flags,
-    required this.description,
-    required this.nsfw,
-    required this.lastMessageId,
-    required this.lastPinTimestamp,
-    required this.messages,
-    required this.threads,
-    required PermissionOverwriteManager permissionOverwrites
-  }) : super(
-    id: id,
-    type: ChannelType.guildText,
-    guildId: guildId,
-    position: position,
-    label: label,
-    applicationId: applicationId,
-    parentId: parentId,
-    flags: flags,
-    webhooks: WebhookManager(guildId: guildId, channelId: id),
-    permissionOverwrites: permissionOverwrites
+  TextBasedChannel(
+    super._id,
+    super._type,
+    super._position,
+    super.label,
+    super._applicationId,
+    super.flags,
+    super._webhooks,
+    super._permissionOverwrites,
+    super._guild,
+    this._description,
+    this._nsfw,
+    this._lastMessageId,
+    this._lastPinTimestamp,
+    this._messages,
+    this._threads,
   );
+
+  @override
+  Channel? get parent => _parent;
+
+  String? get description => _description;
+  bool get isNsfw => _nsfw;
+  Snowflake? get lastMessageId => _lastMessageId;
+  DateTime? get lastPinTimestamp => _lastPinTimestamp;
+  MessageManager get messages => _messages;
+  ThreadManager get threads => _threads;
 
   Future<Message?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
     MineralClient client = ioc.singleton(ioc.services.client);
@@ -75,7 +73,7 @@ class TextBasedChannel extends Channel {
     Response response = await http.patch(url: "/channels/$id", payload: { 'topic': description });
 
     if (response.statusCode == 200) {
-      this.description = description;
+      _description = description;
     }
 
     return this;
@@ -86,7 +84,7 @@ class TextBasedChannel extends Channel {
     Response response = await http.patch(url: "/channels/$id", payload: { 'nsfw': value });
 
     if (response.statusCode == 200) {
-      nsfw = value;
+      _nsfw = value;
     }
 
     return this;
@@ -105,12 +103,11 @@ class TextBasedChannel extends Channel {
     });
 
     dynamic payload = jsonDecode(response.body);
-    TextChannel channel = TextChannel.from(payload);
+    TextChannel channel = TextChannel.from(guild, payload);
 
-    // Define deep properties
-    channel.guildId = guildId;
-    channel.guild = guild;
-    channel.parent = channel.parentId != null ? guild?.channels.cache.get<CategoryChannel>(channel.parentId) : null;
+    channel.parent = payload['parent_id'] != null
+      ? guild?.channels.cache.get<CategoryChannel>(payload['parent_id'])
+      : null;
 
     guild?.channels.cache.set(channel.id, channel);
     return channel;

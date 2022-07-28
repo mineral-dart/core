@@ -24,10 +24,12 @@ class ChannelCreate implements WebsocketPacket {
     if (channel == null) {
       channel = _dispatch(guild, payload);
 
-      channel?.guildId = guild?.id;
-      channel?.guild = guild;
-      channel?.parent = channel.parentId != null ? guild?.channels.cache.get<CategoryChannel>(channel.parentId) : null;
-      channel?.webhooks.guild = guild;
+      channel?.parent = payload['parent_id'] != null
+        ? guild?.channels.cache.get<CategoryChannel>(payload['parent_id'])
+        : null;
+
+      channel?.webhooks?.guild = guild;
+      channel?.webhooks?.channel = channel;
 
       guild?.channels.cache.putIfAbsent(channel!.id, () => channel!);
     }

@@ -15,16 +15,25 @@ enum InteractionCallbackType {
 }
 
 class Interaction {
-  Snowflake id;
-  Snowflake applicationId;
-  int version;
-  InteractionType type;
-  String token;
-  User user;
-  Guild? guild;
-  late GuildMember? member;
+  Snowflake _id;
+  Snowflake _applicationId;
+  int _version;
+  InteractionType _type;
+  String _token;
+  User _user;
+  Guild? _guild;
+  GuildMember? _member;
 
-  Interaction({ required this.id, required this.applicationId, required this.version, required this.type, required this.token, required this.user });
+  Interaction(this._id, this._applicationId, this._version, this._type, this._token, this._user, this._guild, this._member);
+
+  Snowflake get id => _id;
+  Snowflake get applicationId => _applicationId;
+  int get version => _version;
+  InteractionType get type => _type;
+  String get token => _token;
+  User get user => _user;
+  Guild? get guild => _guild;
+  GuildMember? get member => _member;
 
   /// ### Responds to this by an [Message]
   ///
@@ -80,14 +89,16 @@ class Interaction {
     });
   }
 
-  factory Interaction.from({ required User user, required dynamic payload }) {
+  factory Interaction.from({ required User user, required Guild? guild, required dynamic payload }) {
     return Interaction(
-        id: payload['id'],
-        applicationId: payload['application_id'],
-        version: payload['version'],
-        type: InteractionType.values.firstWhere((element) => element.value == payload['type']),
-        token: payload['token'],
-        user: user
+      payload['id'],
+      payload['application_id'],
+      payload['version'],
+      InteractionType.values.firstWhere((element) => element.value == payload['type']),
+      payload['token'],
+      user,
+      guild,
+      guild?.members.cache.getOrFail(user.id)
     );
   }
 }

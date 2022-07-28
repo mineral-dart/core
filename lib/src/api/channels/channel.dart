@@ -23,12 +23,12 @@ enum ChannelType {
   const ChannelType(this.value);
 }
 
-Map<ChannelType, Channel Function(dynamic payload)> channels = {
-  ChannelType.guildText: (dynamic payload) => TextChannel.from(payload),
+Map<ChannelType, Channel Function(Guild? guild, dynamic payload)> channels = {
+  ChannelType.guildText: (Guild? guild, dynamic payload) => TextChannel.from(guild, payload),
   // 'DM': () => ,
-  ChannelType.guildVoice: (dynamic payload) => VoiceChannel.from(payload),
+  ChannelType.guildVoice: (Guild? guild, dynamic payload) => VoiceChannel.from(guild, payload),
   // 'GROUP_DM': () => ,
-  ChannelType.guildCategory: (dynamic payload) => CategoryChannel.from(payload),
+  ChannelType.guildCategory: (Guild? guild, dynamic payload) => CategoryChannel.from(guild, payload),
   // 'GUILD_NEWS': () => ,
   // 'GUILD_NEWS_THREAD': () => ,
   // 'GUILD_PUBLIC_THREAD': () => ,
@@ -39,37 +39,44 @@ Map<ChannelType, Channel Function(dynamic payload)> channels = {
 };
 
 class Channel extends PartialChannel {
-  ChannelType type;
-  Snowflake? guildId;
-  late Guild? guild;
-  int? position;
-  String? label;
-  Snowflake? applicationId;
-  Snowflake? parentId;
-  late CategoryChannel? parent;
-  int? flags;
-  WebhookManager webhooks;
-  PermissionOverwriteManager? permissionOverwrites;
+  final Guild? _guild;
+  late Channel? parent;
 
-  Channel({
-    required id,
-    required this.type,
-    required this.guildId,
-    required this.position,
-    required this.label,
-    required this.applicationId,
-    required this.parentId,
-    required this.flags,
-    required this.webhooks,
-    this.permissionOverwrites
-  }): super(id: id);
+  final ChannelType _type;
+  int? _position;
+  String? _label;
+  final Snowflake? _applicationId;
+  final int? _flags;
+  final WebhookManager? _webhooks;
+  final PermissionOverwriteManager? _permissionOverwrites;
+
+  Channel(
+    super.id,
+    this._type,
+    this._position,
+    this._label,
+    this._applicationId,
+    this._flags,
+    this._webhooks,
+    this._permissionOverwrites,
+    this._guild,
+  );
+
+  ChannelType get type => _type;
+  Guild? get guild => _guild;
+  int? get position => _position;
+  String? get label => _label;
+  Snowflake? get applicationId => _applicationId;
+  int? get flags => _flags;
+  WebhookManager? get webhooks => _webhooks;
+  PermissionOverwriteManager? get permissionOverwrites => _permissionOverwrites;
 
   Future<T> setLabel<T extends Channel> (String label) async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/channels/$id", payload: { 'label': label });
 
     if (response.statusCode == 200) {
-      this.label = label;
+      _label = label;
     }
 
     return this as T;
@@ -80,7 +87,7 @@ class Channel extends PartialChannel {
     Response response = await http.patch(url: "/channels/$id", payload: { 'position': position });
 
     if (response.statusCode == 200) {
-      this.position = position;
+      _position = position;
     }
 
     return this as T;
@@ -91,7 +98,6 @@ class Channel extends PartialChannel {
     Response response = await http.patch(url: "/channels/$id", payload: { 'parent_id': channel.id });
 
     if (response.statusCode == 200) {
-      parentId = channel.id;
       parent = channel;
     }
 

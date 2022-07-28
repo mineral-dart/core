@@ -1,33 +1,32 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/managers/webhook_manager.dart';
+
 
 class PublicThread extends Channel {
+  Channel? _parent;
+  Snowflake? _lastMessageId;
+  DateTime? _lastPinTimestamp;
 
-  String? name;
-  Snowflake? lastMessageId;
-  DateTime? lastPinTimestamp;
-
-  PublicThread({
-    required Snowflake id,
-    required Snowflake? guildId,
-    required int? position,
-    required String label,
-    required Snowflake? applicationId,
-    required Snowflake? parentId,
-    required int? flags,
-    required WebhookManager webhooks,
-  }) : super(
-    id: id,
-    type: ChannelType.guildPublicThread,
-    guildId: guildId,
-    position: position,
-    label: label,
-    applicationId: applicationId,
-    parentId: parentId,
-    flags: flags,
-    webhooks: webhooks,
+  PublicThread(
+    super._id,
+    super._type,
+    super._position,
+    super._label,
+    super._applicationId,
+    super._flags,
+    super._webhooks,
+    super._permissionOverwrites,
+    super._guild,
+    this._parent,
+    this._lastMessageId,
+    this._lastPinTimestamp,
   );
+
+  @override
+  Channel? get parent => _parent;
+
+  Snowflake? get lastMessageId => _lastMessageId;
+  DateTime? get lastPinTimestamp => _lastPinTimestamp;
 
   Future<void> create (Snowflake message, String name) async {
     Http http = ioc.singleton(ioc.services.http);
@@ -37,15 +36,24 @@ class PublicThread extends Channel {
   }
 
   factory PublicThread.from({ required dynamic payload }) {
+    MineralClient client = ioc.singleton(ioc.services.client);
+
+    Guild? guild = client.guilds.cache.get(payload['guild_id']);
+    Channel? parent = guild?.channels.cache.get(payload['parent_id']);
+
     return PublicThread(
-      id: payload['id'],
-      guildId: payload['guild_id'],
-      position: payload['position'],
-      label: payload['name'],
-      applicationId: payload['application_id'],
-      parentId: payload['parent_id'],
-      flags: payload['flags'],
-      webhooks: payload['webhooks'],
+      payload['id'],
+      ChannelType.guildPublicThread,
+      payload['position'],
+      payload['name'],
+      payload['application_id'],
+      payload['flags'],
+      payload['webhooks'],
+      null,
+      guild,
+      parent,
+      payload['last_message_id'],
+      payload['last_pin_message'],
     );
   }
 }

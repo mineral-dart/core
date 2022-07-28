@@ -1,38 +1,27 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/channels/permission_overwrite.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
+
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
+import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class TextChannel extends TextBasedChannel {
-  TextChannel({
-    required Snowflake id,
-    required Snowflake? guildId,
-    required int? position,
-    required String label,
-    required Snowflake? applicationId,
-    required Snowflake? parentId,
-    required int? flags,
-    required Snowflake? description,
-    required bool nsfw,
-    required Snowflake? lastMessageId,
-    required DateTime? lastPinTimestamp,
-    required PermissionOverwriteManager permissionOverwrites
-  }) : super(
-    id: id,
-    guildId: guildId,
-    position: position,
-    label: label,
-    applicationId: applicationId,
-    parentId: parentId,
-    flags: flags,
-    description: description,
-    nsfw: nsfw,
-    lastMessageId: lastMessageId,
-    lastPinTimestamp: lastPinTimestamp,
-    messages: MessageManager(id, guildId),
-    threads: ThreadManager(guildId: guildId),
-    permissionOverwrites: permissionOverwrites
+  TextChannel(
+    super.id,
+    super._type,
+    super._position,
+    super._label,
+    super._applicationId,
+    super._flags,
+    super._webhooks,
+    super.permissionOverwrites,
+    super._guild,
+    super.description,
+    super.nsfw,
+    super.lastMessageId,
+    super.lastPinTimestamp,
+    super._messages,
+    super._threads,
   );
 
   @override
@@ -50,30 +39,32 @@ class TextChannel extends TextBasedChannel {
     return await super.update(label: label, description: description, delay: delay, position: position, categoryChannel: categoryChannel, nsfw: nsfw, permissionOverwrites: permissionOverwrites);
   }
 
-  factory TextChannel.from(dynamic payload) {
-    final PermissionOverwriteManager permissionOverwriteManager = PermissionOverwriteManager(
-        guildId: payload['guild_id'],
-        channelId: payload['id']
-    );
+  factory TextChannel.from(Guild? guild, dynamic payload) {
+    final PermissionOverwriteManager permissionOverwriteManager = PermissionOverwriteManager();
     for(dynamic element in payload['permission_overwrites']) {
       final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
       permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
     }
 
     TextChannel channel =  TextChannel(
-      id: payload['id'],
-      guildId: payload['guild_id'],
-      position: payload['position'],
-      label: payload['name'],
-      applicationId: payload['application_id'],
-      parentId: payload['parent_id'],
-      flags: payload['flags'],
-      description: payload['topic'],
-      nsfw: payload['nsfw'] ?? false,
-      lastMessageId: payload['last_message_id'],
-      lastPinTimestamp: payload['last_pin_timestamp'] != null ? DateTime.parse(payload['last_pin_timestamp']) : null,
-      permissionOverwrites: permissionOverwriteManager
+      payload['id'],
+      ChannelType.guildText,
+      payload['position'],
+      payload['name'],
+      payload['application_id'],
+      payload['flags'],
+      WebhookManager(),
+      permissionOverwriteManager,
+      guild,
+      payload['topic'],
+      payload['nsfw'] ?? false,
+      payload['last_message_id'],
+      payload['last_pin_timestamp'] != null ? DateTime.parse(payload['last_pin_timestamp']) : null,
+      MessageManager(),
+      ThreadManager(guildId: guild?.id),
     );
+
+    channel.webhooks?.channel = channel;
     channel.threads.channel = channel;
 
     return channel;

@@ -71,23 +71,31 @@ class ClientActivity {
 }
 
 class MineralClient {
-  User user;
-  GuildManager guilds;
-  DmChannelManager dmChannels;
-  UserManager users;
-  String sessionId;
-  Application application;
-  List<Intent> intents;
+  User _user;
+  GuildManager _guilds;
+  DmChannelManager _dmChannels;
+  UserManager _users;
+  String _sessionId;
+  Application _application;
+  List<Intent> _intents;
 
-  MineralClient({
-    required this.user,
-    required this.guilds,
-    required this.dmChannels,
-    required this.users,
-    required this.sessionId,
-    required this.application,
-    required this.intents,
-  });
+  MineralClient(
+    this._user,
+    this._guilds,
+    this._dmChannels,
+    this._users,
+    this._sessionId,
+    this._application,
+    this._intents,
+  );
+
+  User get user => _user;
+  GuildManager get guilds => _guilds;
+  DmChannelManager get dmChannels => _dmChannels;
+  UserManager get users => _users;
+  String get sessionId => _sessionId;
+  Application get application => _application;
+  List<Intent> get intents => _intents;
 
   /// ### Defines the presence that this should adopt
   ///
@@ -124,7 +132,7 @@ class MineralClient {
     Http http = ioc.singleton(ioc.services.http);
 
     await http.put(
-      url: "/applications/${application.id}/commands",
+      url: "/applications/${_application.id}/commands",
       payload: commands.map((command) => command.toJson()).toList()
     );
   }
@@ -139,7 +147,7 @@ class MineralClient {
     ]);
 
     await http.put(
-      url: "/applications/${application.id}/guilds/${guild.id}/commands",
+      url: "/applications/${_application.id}/guilds/${guild.id}/commands",
       payload: [
         ...commands.map((command) => command.toJson()).toList(),
         ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
@@ -151,13 +159,13 @@ class MineralClient {
     ShardManager manager = ioc.singleton(ioc.services.shards);
 
     return MineralClient(
-      user: User.from(payload['user']),
-      guilds: GuildManager(),
-      users: UserManager(),
-      sessionId: payload['session_id'],
-      application: Application.from(payload['application']),
-      intents: manager.intents,
-      dmChannels: DmChannelManager()
+      User.from(payload['user']),
+      GuildManager(),
+      DmChannelManager(),
+      UserManager(),
+      payload['session_id'],
+      Application.from(payload['application']),
+      manager.intents,
     );
   }
 }

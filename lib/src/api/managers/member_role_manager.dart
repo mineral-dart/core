@@ -7,15 +7,14 @@ import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
 
-class MemberRoleManager implements CacheManager<Role> {
-  @override
-  Map<Snowflake, Role> cache = {};
-
+class MemberRoleManager extends CacheManager<Role> {
+  late final Guild _guild;
   GuildRoleManager manager;
   Snowflake memberId;
-  //late Guild guild;
 
   MemberRoleManager({ required this.manager, required this.memberId });
+
+  Guild get guild => _guild;
 
   /// Add a [Role] to the [GuildMember]
   ///
@@ -48,7 +47,7 @@ class MemberRoleManager implements CacheManager<Role> {
     }
 
     Response response = await http.put(
-      url: '/guilds/${manager.guildId}/members/$memberId/roles/$id',
+      url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
       payload: {},
       headers: headers
     );
@@ -84,7 +83,7 @@ class MemberRoleManager implements CacheManager<Role> {
     }
 
     Response response = await http.destroy(
-      url: '/guilds/${manager.guildId}/members/$memberId/roles/$id',
+      url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
       headers: headers
     );
 
@@ -116,11 +115,10 @@ class MemberRoleManager implements CacheManager<Role> {
         : add(id, reason: reason);
   }
 
-  @override
   Future<Map<Snowflake, Role>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.get(url: "/guilds/${manager.guildId}/members/$memberId");
+    Response response = await http.get(url: "/guilds/${manager.guild.id}/members/$memberId");
     if(response.statusCode == 200) {
       cache.clear();
       dynamic payload = jsonDecode(response.body)['roles'];

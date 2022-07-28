@@ -50,7 +50,7 @@ class InteractionCreate implements WebsocketPacket {
     }
 
     if (member != null) {
-      final Interaction interaction = Interaction.from(user: member.user, payload: payload);
+      final Interaction interaction = Interaction.from(user: member.user, payload: payload, guild: guild);
 
       manager.emit(
         event: Events.interactionCreate,
@@ -61,10 +61,7 @@ class InteractionCreate implements WebsocketPacket {
 
   _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
     CommandManager manager = ioc.singleton(ioc.services.command);
-    CommandInteraction commandInteraction = CommandInteraction.from(user: member.user, payload: payload)
-      ..channel = guild.channels.cache.get(payload['channel_id'])
-      ..guild = guild
-      ..member = member;
+    CommandInteraction commandInteraction = CommandInteraction.from(user: member.user, payload: payload, guild: guild);
 
     String identifier = commandInteraction.identifier;
 
@@ -95,11 +92,7 @@ class InteractionCreate implements WebsocketPacket {
 
     if (payload['data']?['type'] == ApplicationCommandType.user.value) {
       GuildMember? targetMember = guild.members.cache.get(payload['data']?['target_id']);
-
-      final interaction = ContextUserInteraction.from(target: targetMember, user: member.user, payload: payload)
-        ..member = member
-        ..channel = guild.channels.cache.get(payload['channel_id'])
-        ..guild = guild;
+      final interaction = ContextUserInteraction.from(target: targetMember, user: member.user, payload: payload, guild: guild);
 
       reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
     }
@@ -118,31 +111,32 @@ class InteractionCreate implements WebsocketPacket {
         }
       }
 
-      final interaction = ContextMessageInteraction.from(message: message!, user: member.user, payload: payload)
-        ..member = member
-        ..channel = guild.channels.cache.getOrFail(payload['channel_id'])
-        ..guild = guild;
-
-      print(interaction);
+      final interaction = ContextMessageInteraction.from(message: message!, user: member.user, payload: payload, guild: guild);
 
       reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
     }
   }
 
-  _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) {
+  _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) async {
+    Http http = ioc.singleton(ioc.services.http);
     EventManager manager = ioc.singleton(ioc.services.event);
+
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
 
+    if (message == null) {
+      Response response = await http.get(url: '/channels/${channel?.id}/messages/${payload['message']['id']}');
+      if (response.statusCode == 200) {
+        message = Message.from(channel: channel!, payload: jsonDecode(response.body));
+      }
+    }
+
     ButtonInteraction buttonInteraction = ButtonInteraction.from(
       user: member.user,
-      message: message,
-      payload: payload
+      message: message!,
+      payload: payload,
+      guild: guild,
     );
-
-    buttonInteraction
-      ..guild = guild
-      ..member = member;
 
     manager.emit(
       event: Events.buttonCreate,
@@ -164,12 +158,9 @@ class InteractionCreate implements WebsocketPacket {
     ModalInteraction modalInteraction = ModalInteraction.from(
       user: member.user,
       message: message,
-      payload: payload
+      payload: payload,
+      guild: guild
     );
-
-    modalInteraction
-      ..guild = guild
-      ..member = member;
 
     for (dynamic row in payload['data']['components']) {
       for (dynamic component in row['components']) {
@@ -197,12 +188,9 @@ class InteractionCreate implements WebsocketPacket {
     SelectMenuInteraction interaction = SelectMenuInteraction.from(
       user: member.user,
       message: message,
-      payload: payload
+      payload: payload,
+      guild: guild,
     );
-
-    interaction
-      ..guild = guild
-      ..member = member;
 
     for (dynamic value in payload['data']['values']) {
       interaction.data.add(value);

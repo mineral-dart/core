@@ -1,28 +1,37 @@
 import 'package:mineral/api.dart';
 
 class ContextMessageInteraction extends Interaction {
-  Message message;
-  late Channel channel;
+  Message _message;
+  Channel _channel;
 
-  ContextMessageInteraction({
-    required this.message,
-    required super.id,
-    required super.applicationId,
-    required super.version,
-    required super.type,
-    required super.token,
-    required super.user
-  });
+  ContextMessageInteraction(
+    super._id,
+    super._applicationId,
+    super._version,
+    super._type,
+    super._token,
+    super._user,
+    super._guild,
+    super._member,
+    this._message,
+    this._channel,
+  );
 
-  factory ContextMessageInteraction.from({ required User user, required Message message, required dynamic payload }) {
+  Message get message => _message;
+  Channel get channel => _channel;
+
+  factory ContextMessageInteraction.from({ required User user, required Guild guild, required Message message, required dynamic payload }) {
     return ContextMessageInteraction(
-        message: message,
-        id: payload['id'],
-        applicationId: payload['application_id'],
-        version: payload['version'],
-        type: InteractionType.values.firstWhere((element) => element.value == payload['type']),
-        token: payload['token'],
-        user: user
+      payload['id'],
+      payload['application_id'],
+      payload['version'],
+      InteractionType.values.firstWhere((element) => element.value == payload['type']),
+      payload['token'],
+      user,
+      guild,
+      guild.members.cache.get(user.id),
+      message,
+      message.channel,
     );
   }
 }
