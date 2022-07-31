@@ -62,6 +62,11 @@ class Message extends PartialMessage<TextBasedChannel> {
     await http.post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
   }
 
+  Future<void> pin (Snowflake webhookId) async {
+    Http http = ioc.singleton(ioc.services.http);
+    await http.put(url: '/channels/${channel.id}/pins/$id', payload: {});
+  }
+
   factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
     GuildMember? guildMember = channel.guild?.members.cache.get(payload['author']['id']);
     List<MessageEmbed> embeds = [];
