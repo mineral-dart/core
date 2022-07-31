@@ -5,33 +5,47 @@ import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 
 class PartialMessage<T extends PartialChannel> {
-  Snowflake id;
+  final Snowflake _id;
   String content;
-  bool tts;
+  final bool _tts;
   List<MessageEmbed> embeds;
-  bool allowMentions;
-  PartialMessage? reference;
+  final bool _allowMentions;
+  final PartialMessage? _reference;
   List<Component> components;
-  List<MessageStickerItem> stickers;
-  dynamic payload;
-  List<MessageAttachment> attachments;
-  int? flags;
-  Snowflake channelId;
-  T channel;
+  final List<MessageStickerItem> _stickers;
+  final dynamic _payload;
+  final List<MessageAttachment> _attachments;
+  final int? _flags;
+  final bool _pinned;
+  final Snowflake _channelId;
+  final T _channel;
 
-  PartialMessage({
-    required this.id,
-    required this.content,
-    required this.tts,
-    required this.embeds,
-    required this.allowMentions,
-    required this.reference,
-    required this.components,
-    required this.stickers,
-    required this.payload,
-    required this.attachments,
-    required this.flags,
-    required this.channelId,
-    required this.channel,
-  });
+  PartialMessage(
+    this._id,
+    this.content,
+    this._tts,
+    this.embeds,
+    this._allowMentions,
+    this._reference,
+    this.components,
+    this._stickers,
+    this._payload,
+    this._attachments,
+    this._flags,
+    this._pinned,
+    this._channelId,
+    this._channel,
+  );
+
+  Snowflake get id => _id;
+  bool get tts => _tts;
+  bool get allowMentions => _allowMentions;
+  PartialMessage? get reference => _reference;
+  List<MessageStickerItem> get stickers => _stickers;
+  dynamic get payload => _payload;
+  List<MessageAttachment> get attachments => _attachments;
+  int? get flags => _flags;
+  bool get isPinned => _pinned;
+  Snowflake get channelId => _channelId;
+  T get channel => _channel;
 }

@@ -104,6 +104,7 @@ class GuildCreate implements WebsocketPacket {
 
     for(dynamic payload in websocketResponse.payload['channels']) {
       ChannelType channelType = ChannelType.values.firstWhere((type) => type.value == payload['type']);
+
       if (channels.containsKey(channelType)) {
         Channel Function(Guild guild, dynamic payload) item = channels[channelType] as Channel Function(Guild guild, dynamic payload);
         Channel channel = item(guild, payload);
@@ -128,7 +129,6 @@ class GuildCreate implements WebsocketPacket {
     guild.emojis.guild = guild;
     guild.roles.guild = guild;
     guild.scheduledEvents.guild = guild;
-    guild.webhooks.guild = guild;
 
     Map<Snowflake, ModerationRule>? autoModerationRules = await getAutoModerationRules(guild);
     if (autoModerationRules != null) {

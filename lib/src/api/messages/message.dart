@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
@@ -7,54 +8,42 @@ import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 
 class Message extends PartialMessage<TextBasedChannel> {
-  GuildMember author;
+  GuildMember? _author;
 
-  Message({
-    required id,
-    required content,
-    required tts,
-    required embeds,
-    required allowMentions,
-    required reference,
-    required components,
-    required stickers,
-    required payload,
-    required attachments,
-    required flags,
-    required channelId,
-    required channel,
-    required this.author,
-  }): super(
-    id: id,
-    content: content,
-    tts: tts,
-    embeds: embeds,
-    allowMentions: allowMentions,
-    reference: reference,
-    components: components,
-    stickers: stickers,
-    payload: payload,
-    attachments: attachments,
-    flags: flags,
-    channelId: channelId,
-    channel: channel,
+  Message(
+    super._id,
+    super._content,
+    super._tts,
+    super._embeds,
+    super._allowMentions,
+    super._reference,
+    super._components,
+    super._stickers,
+    super._payload,
+    super._attachments,
+    super._flags,
+    super._pinned,
+    super._channelId,
+    super._channel,
+    this._author,
   );
+
+  GuildMember? get author => _author;
 
   Future<Message> edit ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(
-        url: '/channels/$channelId/messages/$id',
-        payload: {
-          'content': content,
-          'embeds': embeds,
-          'flags': flags,
-          'allowed_mentions': allowMentions,
-          'components': components,
-        }
+      url: '/channels/$channelId/messages/$id',
+      payload: {
+        'content': content,
+        'embeds': embeds,
+        'flags': flags,
+        'allowed_mentions': allowMentions,
+        'components': components,
+      }
     );
 
-    print(response.body);
     if (response.statusCode == 200) {
       this.content = content ?? this.content;
       this.embeds = embeds ?? this.embeds;
@@ -64,8 +53,37 @@ class Message extends PartialMessage<TextBasedChannel> {
     return this;
   }
 
+  Future<void> crossPost () async {
+    if (channel.type != ChannelType.guildNews) {
+      Console.warn(message: 'Message $id cannot be cross-posted as it is not in an announcement channel');
+      return;
+    }
+
+    Http http = ioc.singleton(ioc.services.http);
+    await http.post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
+  }
+
+  Future<void> pin (Snowflake webhookId) async {
+    if (isPinned) {
+      Console.warn(message: 'Message $id is already pinned');
+      return;
+    }
+
+    Http http = ioc.singleton(ioc.services.http);
+    await http.put(url: '/channels/${channel.id}/pins/$id', payload: {});
+  }
+
+  Future<void> unpin () async {
+    if (!isPinned) {
+      Console.warn(message: 'Message $id isn\'t pinned');
+      return;
+    }
+
+    Http http = ioc.singleton(ioc.services.http);
+    await http.destroy(url: '/channels/${channel.id}/pins/$id');
+  }
+
   factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
-    print(channel.guild);
     GuildMember? guildMember = channel.guild?.members.cache.get(payload['author']['id']);
     List<MessageEmbed> embeds = [];
 
@@ -129,20 +147,21 @@ class Message extends PartialMessage<TextBasedChannel> {
     }
 
     return Message(
-      id: payload['id'],
-      content: payload['content'],
-      tts: payload['tts'] ?? false,
-      allowMentions: payload['allow_mentions'] ?? false,
-      reference: payload['reference'],
-      flags: payload['flags'],
-      channelId: channel.id,
-      channel: channel,
-      author: guildMember!,
-      embeds: embeds,
-      components: components,
-      payload: payload['payload'],
-      stickers: stickers,
-      attachments: messageAttachments,
+      payload['id'],
+      payload['content'],
+      payload['tts'] ?? false,
+      embeds,
+      payload['allow_mentions'] ?? false,
+      payload['reference'],
+      components,
+      stickers,
+      payload['payload'],
+      messageAttachments,
+      payload['flags'],
+      payload['pinned'],
+      channel.id,
+      channel,
+      guildMember,
     );
   }
 }

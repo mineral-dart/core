@@ -98,7 +98,6 @@ class InteractionCreate implements WebsocketPacket {
     }
 
     if (payload['data']?['type'] == ApplicationCommandType.message.value) {
-      print('is Message');
       Http http = ioc.singleton(ioc.services.http);
       TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
       Message? message = channel?.messages.cache.get(payload['data']?['target_id']);

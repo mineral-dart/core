@@ -9,35 +9,22 @@ import 'package:mineral/src/api/messages/partial_message.dart';
 class DmMessage extends PartialMessage<DmChannel> {
   User author;
 
-  DmMessage({
-    required id,
-    required content,
-    required tts,
-    required embeds,
-    required allowMentions,
-    required reference,
-    required components,
-    required stickers,
-    required payload,
-    required attachments,
-    required flags,
-    required channelId,
-    required channel,
-    required this.author,
-  }): super(
-    id: id,
-    content: content,
-    tts: tts,
-    embeds: embeds,
-    allowMentions: allowMentions,
-    reference: reference,
-    components: components,
-    stickers: stickers,
-    payload: payload,
-    attachments: attachments,
-    flags: flags,
-    channelId: channelId,
-    channel: channel,
+  DmMessage(
+    super.id,
+    super.content,
+    super.tts,
+    super.embeds,
+    super.allowMentions,
+    super.reference,
+    super.components,
+    super.stickers,
+    super.payload,
+    super.attachments,
+    super.flags,
+    super.pinned,
+    super.channelId,
+    super.channel,
+    this.author,
   );
 
   factory DmMessage.from({ required DmChannel channel, required dynamic payload }) {
@@ -105,20 +92,21 @@ class DmMessage extends PartialMessage<DmChannel> {
     }
 
     return DmMessage(
-      id: payload['id'],
-      content: payload['content'],
-      tts: payload['tts'] ?? false,
-      allowMentions: payload['allow_mentions'] ?? false,
-      reference: payload['reference'],
-      flags: payload['flags'],
-      channelId: channel.id,
-      channel: channel,
-      author: user!,
-      embeds: embeds,
-      components: components,
-      payload: payload['payload'],
-      stickers: stickers,
-      attachments: messageAttachments,
+      payload['id'],
+      payload['content'],
+      payload['tts'] ?? false,
+      embeds,
+      payload['allow_mentions'] ?? false,
+      payload['reference'],
+      components,
+      stickers,
+      payload['payload'],
+      messageAttachments,
+      payload['flags'],
+      payload['pinned'],
+      channel.id,
+      channel,
+      user!,
     );
   }
 }
