@@ -16,6 +16,7 @@ class PartialMessage<T extends PartialChannel> {
   final dynamic _payload;
   final List<MessageAttachment> _attachments;
   final int? _flags;
+  final bool _pinned;
   final Snowflake _channelId;
   final T _channel;
 
@@ -31,6 +32,7 @@ class PartialMessage<T extends PartialChannel> {
     this._payload,
     this._attachments,
     this._flags,
+    this._pinned,
     this._channelId,
     this._channel,
   );
@@ -43,6 +45,7 @@ class PartialMessage<T extends PartialChannel> {
   dynamic get payload => _payload;
   List<MessageAttachment> get attachments => _attachments;
   int? get flags => _flags;
+  bool get isPinned => _pinned;
   Snowflake get channelId => _channelId;
   T get channel => _channel;
 }

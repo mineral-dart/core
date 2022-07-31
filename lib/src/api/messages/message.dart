@@ -22,6 +22,7 @@ class Message extends PartialMessage<TextBasedChannel> {
     super._payload,
     super._attachments,
     super._flags,
+    super._pinned,
     super._channelId,
     super._channel,
     this._author,
@@ -63,8 +64,23 @@ class Message extends PartialMessage<TextBasedChannel> {
   }
 
   Future<void> pin (Snowflake webhookId) async {
+    if (isPinned) {
+      Console.warn(message: 'Message $id is already pinned');
+      return;
+    }
+
     Http http = ioc.singleton(ioc.services.http);
     await http.put(url: '/channels/${channel.id}/pins/$id', payload: {});
+  }
+
+  Future<void> unpin () async {
+    if (!isPinned) {
+      Console.warn(message: 'Message $id isn\'t pinned');
+      return;
+    }
+
+    Http http = ioc.singleton(ioc.services.http);
+    await http.destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
   factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
@@ -142,6 +158,7 @@ class Message extends PartialMessage<TextBasedChannel> {
       payload['payload'],
       messageAttachments,
       payload['flags'],
+      payload['pinned'],
       channel.id,
       channel,
       guildMember,
