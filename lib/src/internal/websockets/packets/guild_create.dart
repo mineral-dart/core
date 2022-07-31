@@ -104,6 +104,7 @@ class GuildCreate implements WebsocketPacket {
 
     for(dynamic payload in websocketResponse.payload['channels']) {
       ChannelType channelType = ChannelType.values.firstWhere((type) => type.value == payload['type']);
+
       if (channels.containsKey(channelType)) {
         Channel Function(Guild guild, dynamic payload) item = channels[channelType] as Channel Function(Guild guild, dynamic payload);
         Channel channel = item(guild, payload);

@@ -24,6 +24,7 @@ export 'src/api/channels/voice_channel.dart' show VoiceChannel;
 export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
 export 'src/api/channels/text_channel.dart' show TextChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
+export 'src/api/channels/news_channel.dart' show NewsChannel;
 export 'src/api/channels/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
 
 export 'src/api/messages/message.dart' show Message;

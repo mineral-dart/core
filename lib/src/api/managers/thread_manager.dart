@@ -49,7 +49,7 @@ class ThreadManager extends CacheManager<Channel> {
       'auto_archive_duration': '60',
       'type': 11
     });
-    print(response.body);
+
     if (response.statusCode == 200) {
       PublicThread thread = PublicThread.from(payload: jsonDecode(response.body));
       return thread;
