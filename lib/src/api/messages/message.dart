@@ -3,6 +3,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
@@ -25,6 +26,7 @@ class Message extends PartialMessage<TextBasedChannel> {
     super._pinned,
     super._channelId,
     super._channel,
+    super._reactions,
     this._author,
   );
 
@@ -146,7 +148,7 @@ class Message extends PartialMessage<TextBasedChannel> {
       components.add(component);
     }
 
-    return Message(
+    final message = Message(
       payload['id'],
       payload['content'],
       payload['tts'] ?? false,
@@ -161,7 +163,12 @@ class Message extends PartialMessage<TextBasedChannel> {
       payload['pinned'],
       channel.id,
       channel,
+      MessageReactionManager<TextBasedChannel, Message>(channel),
       guildMember,
     );
+
+    message.reactions.message = message;
+
+    return message;
   }
 }
