@@ -128,7 +128,6 @@ class GuildCreate implements WebsocketPacket {
     guild.emojis.guild = guild;
     guild.roles.guild = guild;
     guild.scheduledEvents.guild = guild;
-    guild.webhooks.guild = guild;
 
     Map<Snowflake, ModerationRule>? autoModerationRules = await getAutoModerationRules(guild);
     if (autoModerationRules != null) {
