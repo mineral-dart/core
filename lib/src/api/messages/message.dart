@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
@@ -52,6 +53,11 @@ class Message extends PartialMessage<TextBasedChannel> {
   }
 
   Future<void> crossPost () async {
+    if (channel.type != ChannelType.guildNews) {
+      Console.warn(message: 'Message $id cannot be cross-posted as it is not in an announcement channel');
+      return;
+    }
+
     Http http = ioc.singleton(ioc.services.http);
     await http.post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
   }
