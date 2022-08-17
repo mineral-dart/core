@@ -41,6 +41,7 @@ class Ready implements WebsocketPacket {
       : shardManager.shards[0]!;
 
     shard.sessionId = websocketResponse.payload['session_id'];
+    shard.resumeURL = websocketResponse.payload['resume_gateway_url'];
     shard.initialize();
 
     eventManager.emit(
