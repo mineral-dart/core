@@ -19,7 +19,7 @@ class Button extends Component {
   String customId;
   String label;
   ButtonStyle style;
-  PartialEmoji? emoji;
+  EmojiBuilder? emoji;
   bool disabled;
 
   Button({ required this.customId, required this.label, required this.style, this.emoji, this.disabled = false }) : super(type: ComponentType.button);
@@ -31,7 +31,7 @@ class Button extends Component {
       'custom_id': customId,
       'label': label,
       'style': style.value,
-      'emoji': emoji?.toJson(),
+      'emoji': emoji?.emoji.toJson(),
       'disabled': disabled
     };
   }

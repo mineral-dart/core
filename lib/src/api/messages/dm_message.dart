@@ -2,6 +2,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
@@ -24,14 +25,15 @@ class DmMessage extends PartialMessage<DmChannel> {
     super.pinned,
     super.channelId,
     super.channel,
+    super.reactions,
     this.author,
   );
 
   factory DmMessage.from({ required DmChannel channel, required dynamic payload }) {
     MineralClient client = ioc.singleton(ioc.services.client);
     User? user = client.users.cache.get(payload['author']['id']);
-    List<MessageEmbed> embeds = [];
 
+    List<MessageEmbed> embeds = [];
     for (dynamic element in payload['embeds']) {
       List<Field> fields = [];
       if (element['fields'] != null) {
@@ -86,12 +88,14 @@ class DmMessage extends PartialMessage<DmChannel> {
     }
 
     List<Component> components = [];
-    for (dynamic payload in payload['components']) {
-      Component component = Component.from(payload: payload);
-      components.add(component);
+    if (payload['components'] != null) {
+      for (dynamic payload in payload['components']) {
+        Component component = Component.from(payload: payload);
+        components.add(component);
+      }
     }
 
-    return DmMessage(
+    final message = DmMessage(
       payload['id'],
       payload['content'],
       payload['tts'] ?? false,
@@ -106,7 +110,12 @@ class DmMessage extends PartialMessage<DmChannel> {
       payload['pinned'],
       channel.id,
       channel,
+      MessageReactionManager<DmChannel, DmMessage>(channel),
       user!,
     );
+
+    message.reactions.message = message;
+
+    return message;
   }
 }

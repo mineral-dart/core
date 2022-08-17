@@ -1,6 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 
@@ -19,6 +20,7 @@ class PartialMessage<T extends PartialChannel> {
   final bool _pinned;
   final Snowflake _channelId;
   final T _channel;
+  final MessageReactionManager _reactions;
 
   PartialMessage(
     this._id,
@@ -35,6 +37,7 @@ class PartialMessage<T extends PartialChannel> {
     this._pinned,
     this._channelId,
     this._channel,
+    this._reactions,
   );
 
   Snowflake get id => _id;
@@ -48,4 +51,5 @@ class PartialMessage<T extends PartialChannel> {
   bool get isPinned => _pinned;
   Snowflake get channelId => _channelId;
   T get channel => _channel;
+  MessageReactionManager get reactions => _reactions;
 }
