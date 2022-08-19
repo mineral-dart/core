@@ -1,8 +1,5 @@
-import 'package:http/http.dart';
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/helper.dart';
-import 'package:mineral/src/exceptions/api_error.dart';
 
 enum PermissionOverwriteType {
   role(0),
@@ -24,7 +21,7 @@ class PermissionOverwrite {
     required this.allow,
     required this.deny
   });
-  
+
   dynamic toJSON() {
     return {
       'id': id,

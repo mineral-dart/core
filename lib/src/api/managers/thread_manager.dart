@@ -20,7 +20,6 @@ class ThreadManager extends CacheManager<Channel> {
 
   ThreadManager({ required this.guildId });
 
-  @override
   Future<Map<Snowflake, Channel>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
@@ -58,6 +57,7 @@ class ThreadManager extends CacheManager<Channel> {
     if (response.statusCode == 400) {
       // TODO
     }
+    return null;
   }
 
 }

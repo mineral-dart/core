@@ -39,6 +39,7 @@ class CategoryChannel extends Channel {
     return channel;
   }
 
+  @override
   Future<bool> delete () async {
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.destroy(url: "/channels/$id");
