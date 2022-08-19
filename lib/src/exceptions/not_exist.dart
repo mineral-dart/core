@@ -5,7 +5,7 @@ import 'package:mineral/src/internal/managers/reporter_manager.dart';
 class NotExist implements Exception {
   String? prefix;
   String cause;
-  NotExist({ this.prefix, required this.cause });
+  NotExist({ this.prefix = 'error', required this.cause });
 
   @override
   String toString () {
@@ -13,7 +13,6 @@ class NotExist implements Exception {
     if (reporter != null) {
       reporter.write('[ $prefix ] $cause');
     }
-
     return Console.getErrorMessage(prefix: prefix, message: cause);
   }
 }

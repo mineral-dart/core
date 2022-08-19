@@ -44,8 +44,12 @@ class Kernel {
     cli.add(CreateProject());
   }
 
-  Future<void> init () async {
-    Environment environment = await _loadEnvironment();
+  Future<void> init (List<String> arguments) async {
+    Environment environment = await _loadEnvironment(
+      arguments.contains('--production')
+        ? Environment.production
+        : Environment.development
+    );
 
     Http http = Http(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
@@ -81,10 +85,10 @@ class Kernel {
   }
 
 
-  Future<Environment> _loadEnvironment () async {
+  Future<Environment> _loadEnvironment (String dartEnvironment) async {
     Environment environment = Environment();
     ioc.bind(namespace: ioc.services.environment, service: environment);
 
-    return await environment.load('.env');
+    return await environment.load(dartEnvironment);
   }
 }

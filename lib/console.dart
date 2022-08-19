@@ -50,12 +50,12 @@ class Console {
   }
 
   static String getWarnMessage ({ String? prefix = 'warn', required String message }) {
-    String p = ColorList.yellow(prefix!);
+    String p = ColorList.yellow(prefix);
     return '[ $p ] $message';
   }
 
   static String getErrorMessage ({ String? prefix = 'error', required String message }) {
-    String p = ColorList.red(prefix!);
+    String p = ColorList.red(prefix);
     return '[ $p ] $message';
   }
 
@@ -68,12 +68,12 @@ class Console {
 }
 
 class ColorList {
-  static String black (String text) => '\x1B[30m$text\x1B[0m';
-  static String red (String text) => '\x1B[186m$text\x1B[0m';
-  static String green (String text) => '\x1B[32m$text\x1B[0m';
-  static String yellow (String text) => '\x1B[33m$text\x1B[0m';
-  static String blue (String text) => '\x1B[34m$text\x1B[0m';
-  static String magenta (String text) => '\x1B[35m$text\x1B[0m';
-  static String cyan (String text) => '\x1B[36m$text\x1B[0m';
-  static String white (String text) => '\x1B[37m$text\x1B[0m';
+  static String black (String? text) => '\x1B[30m$text\x1B[0m';
+  static String red (String? text) => '\x1B[186m$text\x1B[0m';
+  static String green (String? text) => '\x1B[32m$text\x1B[0m';
+  static String yellow (String? text) => '\x1B[33m$text\x1B[0m';
+  static String blue (String? text) => '\x1B[34m$text\x1B[0m';
+  static String magenta (String? text) => '\x1B[35m$text\x1B[0m';
+  static String cyan (String? text) => '\x1B[36m$text\x1B[0m';
+  static String white (String? text) => '\x1B[37m$text\x1B[0m';
 }
