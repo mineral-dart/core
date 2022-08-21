@@ -44,7 +44,7 @@ class Kernel {
     cli.add(CreateProject());
   }
 
-  Future<void> init (List<String> arguments) async {
+  Future<void> init () async {
     Environment environment = await _loadEnvironment();
 
     Http http = Http(baseUrl: 'https://discord.com/api');
