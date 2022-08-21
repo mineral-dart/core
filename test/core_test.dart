@@ -27,7 +27,7 @@ void main() {
     Http http = Http(baseUrl: discordEndpoint);
 
     Environment environment = Environment();
-    environment.load(".env");
+    environment.load();
 
     ShardManager manager = ShardManager(http, environment.get("APP_TOKEN")!, [Intent.all]);
     await manager.start(shardsCount: 1);

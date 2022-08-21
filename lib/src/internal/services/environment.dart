@@ -4,18 +4,13 @@ import 'package:mineral/src/exceptions/not_exist.dart';
 import 'package:path/path.dart' as path;
 
 class Environment {
-  static String development = '.env';
-  static String production = '.env.prod';
-
   final Map<String, String> _cache = Map.from(Platform.environment);
 
-  Future<Environment> load (String environment) async {
-    add('ENVIRONMENT', () => environment == '.env.prod' ? 'production' : 'development');
-
-    File file = File(path.join(Directory.current.path, environment));
+  Future<Environment> load () async {
+    File file = File(path.join(Directory.current.path, '.env'));
 
     if (!file.existsSync()) {
-      throw NotExist(cause: 'The $environment file does not exist, please create one.');
+      throw NotExist(cause: 'The .env file does not exist, please create one.');
     }
 
     List<String> content = await file.readAsLines(encoding: utf8);
