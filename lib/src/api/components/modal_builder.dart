@@ -1,5 +1,5 @@
 import 'package:mineral/src/api/components/component.dart';
-import 'package:mineral/src/api/components/text_input.dart';
+import 'package:mineral/src/api/components/text_input_builder.dart';
 
 import '../../../api.dart';
 
@@ -7,9 +7,9 @@ class ModalBuilder extends Component {
   String label;
   String customId;
 
-  List<RowBuilder> components = [];
+  List<RowBuilder>? components = [];
 
-  ModalBuilder({ required this.customId, required this.label }) : super(type: ComponentType.selectMenu);
+  ModalBuilder({ required this.customId, required this.label, this.components }) : super(type: ComponentType.selectMenu);
 
   /// ### Created a input text field
   ///
@@ -19,7 +19,7 @@ class ModalBuilder extends Component {
   ///   .addInput(customId: 'my_text', label: 'Premier texte');
   /// ```
   ModalBuilder addInput ({ required String customId, required String label, bool? required, int? minLength, int? maxLength, String? placeholder, String? value }) {
-    _addInput(customId: customId, label: label, style: TextInputStyle.short, required: required, minLength: minLength, maxLength: maxLength, placeholder: placeholder, value: value);
+    _addInput(customId: customId, label: label, style: TextInputStyle.input, required: required, minLength: minLength, maxLength: maxLength, placeholder: placeholder, value: value);
     return this;
   }
 
@@ -36,7 +36,9 @@ class ModalBuilder extends Component {
   }
 
   void _addInput ({ required String customId, required String label, required TextInputStyle style, bool? required, int? minLength, int? maxLength, String? placeholder, String? value }) {
-    TextInput input = TextInput(
+    components ??= [];
+
+    final TextInputBuilder input = TextInputBuilder(
       customId: customId,
       label: label,
       style: style,
@@ -47,7 +49,7 @@ class ModalBuilder extends Component {
       value: value,
     );
 
-    components.add(RowBuilder(components: [input]));
+    components?.add(RowBuilder(components: [input]));
   }
 
   @override
@@ -55,7 +57,7 @@ class ModalBuilder extends Component {
     return {
       'title': label,
       'custom_id': customId,
-      'components': components.map((component) => component.toJson()).toList()
+      'components': components?.map((component) => component.toJson()).toList()
     };
   }
 }

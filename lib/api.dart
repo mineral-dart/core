@@ -38,7 +38,7 @@ export 'src/api/role.dart' show Role;
 export 'src/api/components/row_builder.dart' show RowBuilder;
 export 'src/api/components/select_menu_builder.dart' show SelectMenuBuilder, SelectMenuOption, EmojiOption;
 export 'src/api/components/modal_builder.dart' show ModalBuilder;
-export 'src/api/components/text_input.dart' show TextInputStyle;
+export 'src/api/components/text_input_builder.dart' show TextInputBuilder, TextInputStyle;
 export 'src/api/components/button_builder.dart' show ButtonBuilder, ButtonStyle;
 export 'src/api/components/link_builder.dart' show LinkBuilder;
 
