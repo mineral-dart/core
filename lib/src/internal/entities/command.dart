@@ -32,8 +32,9 @@ class Subcommand {
   final String description;
   final int type = 1;
   final String? group;
+  final String? bind;
 
-  const Subcommand ({ required this.name, required this.description, this.group });
+  const Subcommand ({ required this.name, required this.description, this.group, this.bind });
 }
 
 

@@ -1,5 +1,8 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:http/http.dart';
+
+import 'dart:convert';
 
 enum InteractionCallbackType {
   pong(1),
@@ -57,8 +60,15 @@ class Interaction {
         componentList.add(element.toJson());
       }
     }
+    print(jsonEncode({
+      'tts': tts ?? false,
+      'content': content,
+      'embeds': embeds != null ? embedList : [],
+      'components': components != null ? componentList : [],
+      'flags': private != null && private == true ? 1 << 6 : null,
+    }));
 
-    await http.post(url: "/interactions/$id/$token/callback", payload: {
+    Response r = await http.post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.channelMessageWithSource.value,
       'data': {
         'tts': tts ?? false,
@@ -68,6 +78,8 @@ class Interaction {
         'flags': private != null && private == true ? 1 << 6 : null,
       }
     });
+
+    print(r.body);
   }
 
   /// ### Responds to this by an [Modal]
