@@ -77,6 +77,7 @@ class MineralClient {
   String _sessionId;
   Application _application;
   List<Intent> _intents;
+  late DateTime uptime;
 
   MineralClient(
     this._user,
@@ -96,8 +97,10 @@ class MineralClient {
   Application get application => _application;
   List<Intent> get intents => _intents;
 
+  /// ### Returns the time the [MineralClient] is online
+  Duration getUptimeDuration () => DateTime.now().difference(uptime);
+
   /// ### Defines the presence that this should adopt
-  ///
   ///
   /// Example :
   /// ```dart

@@ -17,8 +17,10 @@ class Ready implements WebsocketPacket {
     CommandManager commandManager = ioc.singleton(ioc.services.command);
     ShardManager shardManager = ioc.singleton(ioc.services.shards);
 
-    if(ioc.singleton(ioc.services.client) == null) {
+    if (ioc.singleton(ioc.services.client) == null) {
       MineralClient client = MineralClient.from(payload: websocketResponse.payload);
+      client.uptime = DateTime.now();
+
       ioc.bind(namespace: ioc.services.client, service: client);
 
       await client.registerGlobalCommands(commands: commandManager.getGlobals());
@@ -34,7 +36,10 @@ class Ready implements WebsocketPacket {
       );
     }
 
-    final Shard shard = websocketResponse.payload['shard'] != null ? shardManager.shards[websocketResponse.payload['shard'][0]]! : shardManager.shards[0]!;
+    final Shard shard = websocketResponse.payload['shard'] != null
+      ? shardManager.shards[websocketResponse.payload['shard'][0]]!
+      : shardManager.shards[0]!;
+
     shard.sessionId = websocketResponse.payload['session_id'];
     shard.initialize();
 
