@@ -69,7 +69,6 @@ class InteractionCreate implements WebsocketPacket {
     walk (List<dynamic> objects) {
       for (dynamic object in objects) {
         if (object['type'] == 1 || object['type'] == 2) {
-          print(object);
           identifier += ".${object['name']}";
           if (object['options'] != null) {
             walk(object['options']);
