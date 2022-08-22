@@ -15,14 +15,14 @@ enum ButtonStyle {
   String toString () => value.toString();
 }
 
-class Button extends Component {
+class ButtonBuilder extends Component {
   String customId;
   String label;
   ButtonStyle style;
   EmojiBuilder? emoji;
   bool disabled;
 
-  Button({ required this.customId, required this.label, required this.style, this.emoji, this.disabled = false }) : super(type: ComponentType.button);
+  ButtonBuilder({ required this.customId, required this.label, required this.style, this.emoji, this.disabled = false }) : super(type: ComponentType.button);
 
   @override
   dynamic toJson () {
@@ -36,8 +36,8 @@ class Button extends Component {
     };
   }
 
-  factory Button.from({ required dynamic payload }) {
-    return Button(
+  factory ButtonBuilder.from({ required dynamic payload }) {
+    return ButtonBuilder(
       customId: payload['custom_id'],
       label: payload['label'],
       style: ButtonStyle.values.firstWhere((element) => element.value == payload['style'])
