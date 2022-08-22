@@ -102,7 +102,7 @@ class Webhook {
   /// ```dart
   /// await webhook.execute(content: 'Hello World !');
   /// ```
-  Future<void> execute ({ String? content, String? username, String? avatarUrl, bool? tts, List<EmbedBuilder>? embeds, List<Row>? components, bool? suppressEmbed }) async {
+  Future<void> execute ({ String? content, String? username, String? avatarUrl, bool? tts, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? suppressEmbed }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     List<dynamic> embedList = [];
@@ -114,7 +114,7 @@ class Webhook {
 
     List<dynamic> componentList = [];
     if (components != null) {
-      for (Row element in components) {
+      for (RowBuilder element in components) {
         componentList.add(element.toJson());
       }
     }

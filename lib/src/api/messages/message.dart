@@ -32,7 +32,7 @@ class Message extends PartialMessage<TextBasedChannel> {
 
   GuildMember? get author => _author;
 
-  Future<Message> edit ({ String? content, List<EmbedBuilder>? embeds, List<Row>? components, bool? tts }) async {
+  Future<Message> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(

@@ -45,7 +45,7 @@ class TextBasedChannel extends Channel {
   MessageManager get messages => _messages;
   ThreadManager get threads => _threads;
 
-  Future<Message?> send ({ String? content, List<EmbedBuilder>? embeds, List<Row>? components, bool? tts }) async {
+  Future<Message?> send ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
     MineralClient client = ioc.singleton(ioc.services.client);
 
     Response response = await client.sendMessage(this,

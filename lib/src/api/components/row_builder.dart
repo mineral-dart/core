@@ -1,9 +1,9 @@
 import 'package:mineral/src/api/components/component.dart';
 
-class Row extends Component {
+class RowBuilder extends Component {
   List<Component>? components = [];
 
-  Row({ this.components }) : super(type: ComponentType.actionRow);
+  RowBuilder({ this.components }) : super(type: ComponentType.actionRow);
 
   @override
   Object toJson () {
@@ -13,7 +13,7 @@ class Row extends Component {
     };
   }
 
-  factory Row.from({ required dynamic payload }) {
-    return Row();
+  factory RowBuilder.from({ required dynamic payload }) {
+    return RowBuilder();
   }
 }

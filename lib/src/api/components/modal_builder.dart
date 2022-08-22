@@ -7,7 +7,7 @@ class ModalBuilder extends Component {
   String label;
   String customId;
 
-  List<Row> components = [];
+  List<RowBuilder> components = [];
 
   ModalBuilder({ required this.customId, required this.label }) : super(type: ComponentType.selectMenu);
 
@@ -47,7 +47,7 @@ class ModalBuilder extends Component {
       value: value,
     );
 
-    components.add(Row(components: [input]));
+    components.add(RowBuilder(components: [input]));
   }
 
   @override
