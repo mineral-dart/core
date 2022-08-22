@@ -70,7 +70,9 @@ class User {
 
   /// ### Returns the absolute url to the user's avatar
   String getDisplayAvatarUrl () {
-    return '${Constants.cdnUrl}/avatars/$id/$avatar';
+    return avatar != null
+      ? '${Constants.cdnUrl}/avatars/$id/$avatar'
+      : '${Constants.cdnUrl}/embed/avatars/${int.parse(discriminator) % 5 }.png';
   }
 
   @override

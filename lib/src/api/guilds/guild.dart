@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
@@ -13,7 +15,6 @@ import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/sticker_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
-import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 
 import 'package:collection/collection.dart';
@@ -544,6 +545,16 @@ class Guild {
     }
   }
 
+  Future<GuildPreview> preview () async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.get(url: '/guilds/$id/preview');
+
+    return GuildPreview.from(
+      guild: this,
+      payload: jsonDecode(response.body)
+    );
+  }
+
   factory Guild.from({
     required EmojiManager emojiManager,
     required MemberManager memberManager,
@@ -555,10 +566,6 @@ class Guild {
     required dynamic payload
   }) {
     StickerManager stickerManager = StickerManager();
-    for (dynamic element in payload['stickers']) {
-      Sticker sticker = Sticker.from(element);
-      stickerManager.cache.putIfAbsent(sticker.id, () => sticker);
-    }
 
     List<GuildFeature> features = [];
     for (String element in payload['features']) {

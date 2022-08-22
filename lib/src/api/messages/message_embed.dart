@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
 
 class Footer {
   String text;
@@ -229,6 +230,8 @@ class MessageEmbed {
   ///   .addField(name: 'My field', value: 'My custom value');
   /// ```
   MessageEmbed addField ({ required String name, required String value, bool? inline }) {
+    fields ??= [];
+
     fields?.add(Field(name: name, value: value, inline: inline));
     return this;
   }
@@ -253,5 +256,33 @@ class MessageEmbed {
       'thumbnail': thumbnail?.toJson(),
       'author': author?.toJson(),
     };
+  }
+
+  factory MessageEmbed.fromGuildPreview(GuildPreview preview) {
+    MineralClient client = ioc.singleton(ioc.services.client);
+
+    final MessageEmbed embed = MessageEmbed(
+      title: preview.label,
+      description: preview.description,
+      thumbnail: preview.icon != null ? Thumbnail(url: preview.icon!) : null,
+      image: preview.discoverySplash != null ? Image(url: preview.discoverySplash!) : null,
+      color: Color.invisible,
+      timestamp: DateTime.now(),
+      author: Author(name: client.user.username, iconUrl: client.user.getDisplayAvatarUrl())
+    );
+
+    embed.addField(name: 'Identifier', value: preview.id);
+    embed.addField(name: 'Features', value: preview.features.map((feature) => '• $feature').join('\n'), inline: true);
+
+    if (preview.stickers.isNotEmpty) {
+      embed.addField(name: 'Emojis', value: preview.emojis.values.map((emoji) => emoji).join(' '), inline: true);
+    }
+
+    embed.addField(name: '\u200B', value: '\u200B');
+    embed.addField(name: 'Online members', value: '${preview.approximatePresenceCount} members', inline: true);
+    embed.addField(name: 'Members', value: '${preview.approximateMemberCount} members', inline: true);
+    embed.addField(name: '\u200B', value: '\u200B', inline: true);
+
+    return embed;
   }
 }

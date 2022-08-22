@@ -111,7 +111,7 @@ class Emoji extends PartialEmoji {
   @override
   String toString () => isAnimated
     ? '<a:$label:$id>'
-    : '<$label:$id>';
+    : '<:$label:$id>';
 
   factory Emoji.from({ required MemberManager memberManager, required EmojiManager emojiManager, required dynamic payload }) {
     return Emoji(
