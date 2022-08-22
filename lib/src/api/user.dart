@@ -36,7 +36,7 @@ class User {
   /// GuildMember? member = guild.members.cache.get('240561194958716924');
   /// await member.user.send(content: 'Hello World !');
   /// ```
-  Future<DmMessage?> send ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
+  Future<DmMessage?> send ({ String? content, List<EmbedBuilder>? embeds, List<Row>? components, bool? tts }) async {
     MineralClient client = ioc.singleton(ioc.services.client);
     Http http = ioc.singleton(ioc.services.http);
 

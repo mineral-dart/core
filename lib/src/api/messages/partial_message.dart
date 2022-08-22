@@ -9,7 +9,7 @@ class PartialMessage<T extends PartialChannel> {
   final Snowflake _id;
   String content;
   final bool _tts;
-  List<MessageEmbed> embeds;
+  List<EmbedBuilder> embeds;
   final bool _allowMentions;
   final PartialMessage? _reference;
   List<Component> components;

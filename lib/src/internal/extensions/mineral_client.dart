@@ -3,12 +3,12 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 
 extension MineralClientExtension on MineralClient {
-  Future<Response> sendMessage (dynamic channel, { String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
+  Future<Response> sendMessage (dynamic channel, { String? content, List<EmbedBuilder>? embeds, List<Row>? components, bool? tts }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     List<dynamic> embedList = [];
     if (embeds != null) {
-      for (MessageEmbed element in embeds) {
+      for (EmbedBuilder element in embeds) {
         embedList.add(element.toJson());
       }
     }

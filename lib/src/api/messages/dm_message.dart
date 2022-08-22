@@ -33,7 +33,7 @@ class DmMessage extends PartialMessage<DmChannel> {
     MineralClient client = ioc.singleton(ioc.services.client);
     User? user = client.users.cache.get(payload['author']['id']);
 
-    List<MessageEmbed> embeds = [];
+    List<EmbedBuilder> embeds = [];
     for (dynamic element in payload['embeds']) {
       List<Field> fields = [];
       if (element['fields'] != null) {
@@ -43,7 +43,7 @@ class DmMessage extends PartialMessage<DmChannel> {
         }
       }
 
-      MessageEmbed embed = MessageEmbed(
+      EmbedBuilder embed = EmbedBuilder(
         title: element['title'],
         description: element['description'],
         url: element['url'],

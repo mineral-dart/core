@@ -41,12 +41,12 @@ class Interaction {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<void> reply ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts, bool? private }) async {
+  Future<void> reply ({ String? content, List<EmbedBuilder>? embeds, List<Row>? components, bool? tts, bool? private }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     List<dynamic> embedList = [];
     if (embeds != null) {
-      for (MessageEmbed element in embeds) {
+      for (EmbedBuilder element in embeds) {
         embedList.add(element.toJson());
       }
     }

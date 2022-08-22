@@ -29,7 +29,7 @@ export 'src/api/channels/news_channel.dart' show NewsChannel;
 export 'src/api/channels/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
 
 export 'src/api/messages/message.dart' show Message;
-export 'src/api/messages/message_embed.dart' show MessageEmbed, Footer, Image, Thumbnail, Author, Field;
+export 'src/api/messages/embed_builder.dart' show EmbedBuilder, Footer, Image, Thumbnail, Author, Field;
 export 'src/api/color.dart' show Color;
 
 export 'src/api/emoji.dart' show EmojiBuilder, Emoji;
