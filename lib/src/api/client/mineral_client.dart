@@ -98,7 +98,7 @@ class MineralClient {
   List<Intent> get intents => _intents;
 
   /// ### Returns the time the [MineralClient] is online
-  Duration getUptimeDuration () => DateTime.now().difference(uptime);
+  Duration get uptimeDuration => DateTime.now().difference(uptime);
 
   /// ### Defines the presence that this should adopt
   ///
