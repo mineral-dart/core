@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/components/component.dart';
 
 class RowBuilder extends Component {
@@ -13,7 +14,11 @@ class RowBuilder extends Component {
     };
   }
 
-  factory RowBuilder.from({ required dynamic payload }) {
-    return RowBuilder();
+  factory RowBuilder.fromComponents(List<Component> components) {
+    return RowBuilder(components: components);
+  }
+
+  factory RowBuilder.fromTextInput(TextInputBuilder input) {
+    return RowBuilder(components: [input]);
   }
 }
