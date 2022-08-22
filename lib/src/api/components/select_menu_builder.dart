@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/components/component.dart';
 
-class SelectMenu extends Component {
+class SelectMenuBuilder extends Component {
   String customId;
   List<SelectMenuOption> options = [];
   String? placeholder;
@@ -9,7 +9,7 @@ class SelectMenu extends Component {
   int? maxValues = 25;
   bool? disabled = false;
 
-  SelectMenu({ required this.customId, required this.options, this.placeholder, this.minValues, this.maxValues, this.disabled }) : super (type: ComponentType.selectMenu);
+  SelectMenuBuilder({ required this.customId, required this.options, this.placeholder, this.minValues, this.maxValues, this.disabled }) : super (type: ComponentType.selectMenu);
 
   @override
   Object toJson () {
