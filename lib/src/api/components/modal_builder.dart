@@ -1,5 +1,4 @@
 import 'package:mineral/src/api/components/component.dart';
-import 'package:mineral/src/api/components/text_input_builder.dart';
 
 import '../../../api.dart';
 
@@ -49,7 +48,7 @@ class ModalBuilder extends Component {
       value: value,
     );
 
-    components?.add(RowBuilder(components: [input]));
+    components?.add(RowBuilder.fromComponents([input]));
   }
 
   @override
