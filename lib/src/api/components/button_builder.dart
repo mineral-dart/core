@@ -17,12 +17,12 @@ enum ButtonStyle {
 
 class ButtonBuilder extends Component {
   String customId;
-  String label;
+  String? label;
   ButtonStyle style;
   EmojiBuilder? emoji;
   bool disabled;
 
-  ButtonBuilder({ required this.customId, required this.label, required this.style, this.emoji, this.disabled = false }) : super(type: ComponentType.button);
+  ButtonBuilder({ required this.customId, this.label, required this.style, this.emoji, this.disabled = false }) : super(type: ComponentType.button);
 
   @override
   dynamic toJson () {
