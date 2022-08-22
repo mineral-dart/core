@@ -37,7 +37,7 @@ export 'src/api/role.dart' show Role;
 
 export 'src/api/components/row.dart' show Row;
 export 'src/api/components/select_menu.dart' show SelectMenu, SelectMenuOption, EmojiOption;
-export 'src/api/components/modal.dart' show Modal;
+export 'src/api/components/modal_builder.dart' show ModalBuilder;
 export 'src/api/components/text_input.dart' show TextInputStyle;
 export 'src/api/components/button.dart' show Button, ButtonStyle;
 export 'src/api/components/link.dart' show Link;

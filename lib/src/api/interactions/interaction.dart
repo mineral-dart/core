@@ -80,7 +80,7 @@ class Interaction {
   ///
   /// await interaction.modal(modal);
   /// ```
-  Future<void> modal (Modal modal) async {
+  Future<void> modal (ModalBuilder modal) async {
     Http http = ioc.singleton(ioc.services.http);
 
     await http.post(url: "/interactions/$id/$token/callback", payload: {
