@@ -20,10 +20,18 @@ export 'src/api/guilds/guild_scheduled_event.dart' show ScheduledEventStatus, Sc
 
 export 'src/api/webhook.dart' show Webhook;
 
-export 'src/api/channels/channel.dart' show Channel, ChannelType;
+// export 'src/api/channels/channel.dart' show Channel, ChannelType;
+// export 'src/api/channels/voice_channel.dart' show VoiceChannel;
+// export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
+// export 'src/api/channels/text_channel.dart' show TextChannel;
+// export 'src/api/channels/category_channel.dart' show CategoryChannel;
+// export 'src/api/channels/news_channel.dart' show NewsChannel;
+// export 'src/api/channels/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
+
 export 'src/api/channels/voice_channel.dart' show VoiceChannel;
 export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
-export 'src/api/channels/text_channel.dart' show TextChannel;
+export 'src/api/channels/partial_text_channel.dart' show PartialTextChannel;
+export 'src/api/channels/guild_channel.dart' show GuildChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
 export 'src/api/channels/news_channel.dart' show NewsChannel;
 export 'src/api/channels/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
