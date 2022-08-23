@@ -33,8 +33,7 @@ export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
 export 'src/api/channels/partial_text_channel.dart' show PartialTextChannel;
 export 'src/api/channels/guild_channel.dart' show GuildChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
-export 'src/api/channels/news_channel.dart' show NewsChannel;
-export 'src/api/channels/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
+export 'src/api/channels/partial_channel.dart' show PartialChannel;
 
 export 'src/api/messages/message.dart' show Message;
 export 'src/api/messages/embed_builder.dart' show EmbedBuilder, Footer, Image, Thumbnail, Author, Field;
