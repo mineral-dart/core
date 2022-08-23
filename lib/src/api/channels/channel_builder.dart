@@ -24,15 +24,35 @@ class ChannelBuilder {
     });
   }
 
-  factory ChannelBuilder.fromCategoryChannel ({
-    String? label,
-    int? position,
-    List<PermissionOverwrite>? permissions,
-  }) {
+  factory ChannelBuilder.fromCategoryChannel ({ String? label, int? position, List<PermissionOverwrite>? permissions }) {
     return ChannelBuilder({
       'name': label,
       'position': position,
       'permission_overwrites': permissions?.map((permission) => permission.toJSON()),
+    });
+  }
+
+  factory ChannelBuilder.fromVoiceChannel ({
+    String? label,
+    int? parentId,
+    int? position,
+    List<PermissionOverwrite>? permissions,
+    bool? nsfw,
+    int? bitrate,
+    int? userLimit,
+    String? rtcRegion,
+    int? videoQualityMode,
+  }) {
+    return ChannelBuilder({
+      'name': label,
+      'parent_id': parentId,
+      'position': position,
+      'permission_overwrites': permissions?.map((permission) => permission.toJSON()),
+      'nsfw': nsfw,
+      'bitrate': bitrate,
+      'user_limit': userLimit,
+      'rtc_region': rtcRegion,
+      'video_quality_mode': videoQualityMode
     });
   }
 }
