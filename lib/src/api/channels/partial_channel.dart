@@ -1,6 +1,9 @@
 import 'package:mineral/api.dart';
 
 class PartialChannel {
-  Snowflake id;
-  PartialChannel(this.id);
+  final Snowflake _id;
+
+  PartialChannel(this._id);
+
+  Snowflake get id => _id;
 }
