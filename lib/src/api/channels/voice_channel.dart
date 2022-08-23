@@ -70,13 +70,15 @@ class VoiceChannel extends TextBasedChannel {
       permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
     }
 
+    print(payload);
+
     return VoiceChannel(
       payload['bitrate'],
       payload['user_limit'],
       payload['rtc_region'],
-      payload['video_quality_mode'],
-      payload['nsfw'],
-      WebhookManager(),
+      payload['video_quality_mode'] ?? VideoQualityMode.auto.value,
+      payload['nsfw'] ?? false,
+      WebhookManager(payload['guild_id'], payload['id']),
       MessageManager(),
       payload['last_message_id'],
       payload['guild_id'],

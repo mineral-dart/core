@@ -65,7 +65,7 @@ class ModerationTriggerMetadata {
 }
 
 class ModerationActionMetadata {
-  Channel? channel;
+  GuildChannel? channel;
   int? duration;
 
   ModerationActionMetadata({ required this.channel, required this.duration });
@@ -103,7 +103,7 @@ class ModerationRule {
   ModerationTriggerMetadata triggerMetadata;
   bool enabled;
   List<Role> exemptRoles;
-  List<Channel> exemptChannels;
+  List<GuildChannel> exemptChannels;
 
   ModerationRule({
     required this.id,
@@ -244,7 +244,7 @@ class ModerationRule {
   ///   await rule.setExemptChannels([channel]);
   /// }
   /// ```
-  Future<void> setExemptChannels(List<Channel> channels) async {
+  Future<void> setExemptChannels(List<GuildChannel> channels) async {
     int maxItems = 50;
     if (channels.length > maxItems) {
       TooMany(cause: "The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
@@ -252,7 +252,7 @@ class ModerationRule {
 
     Http http = ioc.singleton(ioc.services.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
-      'exempt_roles': channels.map((Channel channel) => channel.id)
+      'exempt_roles': channels.map((GuildChannel channel) => channel.id)
     });
 
     if (response.statusCode == 200) {
@@ -303,9 +303,9 @@ class ModerationRule {
       }
     }
 
-    List<Channel> channels = [];
+    List<GuildChannel> channels = [];
     for (Snowflake id in payload['exempt_channels']) {
-      Channel? channel = guild.channels.cache.get(id);
+      GuildChannel? channel = guild.channels.cache.get(id);
       if (channel != null) {
         channels.add(channel);
       }

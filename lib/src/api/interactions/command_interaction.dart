@@ -31,7 +31,7 @@ class CommandInteraction extends Interaction {
   /// ```dart
   /// Channel? channel = interaction.getChannel('option_name');
   /// ```
-  T? getChannel<T extends Channel> (String optionName) {
+  T? getChannel<T extends PartialTextChannel> (String optionName) {
     return guild?.channels.cache.get(data[optionName]?['value']);
   }
 

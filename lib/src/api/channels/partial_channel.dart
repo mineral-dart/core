@@ -37,11 +37,11 @@ class PartialChannel {
 }
 
 class ChannelWrapper {
-  static dynamic create (int type, dynamic payload) {
-    final ChannelType? channelType = ChannelType.values.firstWhereOrNull((element) => element.value == type);
+  static dynamic create (dynamic payload) {
+    final ChannelType? channelType = ChannelType.values.firstWhereOrNull((element) => element.value == payload['type']);
 
     if (channelType == null) {
-      Console.warn(message: "Guild channel $type don't exist! Please report this to our team.");
+      Console.warn(message: "Guild channel ${payload['type']} don't exist! Please report this to our team.");
       return null;
     }
 
@@ -65,7 +65,7 @@ class ChannelWrapper {
       case ChannelType.guildStageVoice:
         return StageChannel.fromPayload(payload);
       default:
-        Console.warn(message: "${channelType} is not supported");
+        Console.warn(message: "$channelType is not supported");
     }
 
     return null;

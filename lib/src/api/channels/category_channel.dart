@@ -1,8 +1,5 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
-import 'package:mineral/src/api/managers/thread_manager.dart';
-import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class CategoryChannel extends GuildChannel {
   CategoryChannel(super.guildId, super.parentId, super.label, super.type, super.position, super.flags, super.permissions, super.id);
@@ -21,10 +18,12 @@ class CategoryChannel extends GuildChannel {
       permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
     }
 
+    print(payload);
+
     return CategoryChannel(
       payload['guild_id'],
       payload['parent_id'],
-      payload['label'],
+      payload['name'],
       payload['type'],
       payload['position'],
       payload['flags'],

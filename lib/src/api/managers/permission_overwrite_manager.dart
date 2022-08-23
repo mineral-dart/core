@@ -2,7 +2,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class PermissionOverwriteManager extends CacheManager<PermissionOverwrite> {
-  late final Channel channel;
+  late final GuildChannel channel;
 
   //TODO: Need channel sync
   Future<Map<Snowflake, PermissionOverwrite>> sync() async {

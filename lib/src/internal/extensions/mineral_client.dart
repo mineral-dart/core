@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/partial_channel.dart';
 
 extension MineralClientExtension on MineralClient {
   Future<Response> sendMessage (dynamic channel, { String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
@@ -26,5 +29,15 @@ extension MineralClientExtension on MineralClient {
       'embeds': embeds != null ? embedList : [],
       'components': components != null ? componentList : [],
     });
+  }
+
+  Future<T?> createChannel<T extends GuildChannel> (Snowflake guildId, ChannelBuilder builder) async {
+    Http http = ioc.singleton(ioc.services.http);
+
+    Response response = await http.post(url: "/guilds/$guildId/channels", payload: builder.payload);
+    final payload = jsonDecode(response.body);
+
+    final channel = ChannelWrapper.create(payload);
+    return channel as T;
   }
 }

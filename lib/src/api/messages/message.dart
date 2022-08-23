@@ -86,7 +86,7 @@ class Message extends PartialMessage<TextBasedChannel> {
   }
 
   factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
-    GuildMember? guildMember = channel.guild?.members.cache.get(payload['author']['id']);
+    GuildMember? guildMember = channel.guild.members.cache.get(payload['author']['id']);
     List<EmbedBuilder> embeds = [];
 
     for (dynamic element in payload['embeds']) {

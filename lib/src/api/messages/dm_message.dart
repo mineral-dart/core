@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/dm_channel.dart.dart';
+import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';

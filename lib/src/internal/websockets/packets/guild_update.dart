@@ -40,7 +40,7 @@ class GuildUpdate implements WebsocketPacket {
 
     ModerationRuleManager moderationManager = ModerationRuleManager();
 
-    WebhookManager webhookManager = WebhookManager();
+    WebhookManager webhookManager = WebhookManager(before.id, null);
     webhookManager.cache.addAll(before.webhooks.cache);
 
     GuildScheduledEventManager guildScheduledEventManager = GuildScheduledEventManager();

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/dm_channel.dart.dart';
+import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/messages/dm_message.dart';
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
 
@@ -46,7 +46,7 @@ class User {
     if (channel == null) {
       Response response = await http.post(url: '/users/@me/channels', payload: { 'recipient_id': id });
       if (response.statusCode == 200) {
-        channel = DmChannel.from(payload: jsonDecode(response.body));
+        channel = DmChannel.fromPayload(jsonDecode(response.body));
         client.dmChannels.cache.putIfAbsent(channel.id, () => channel!);
       }
     }

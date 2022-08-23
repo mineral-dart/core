@@ -2,7 +2,7 @@ import 'package:mineral/api.dart';
 
 class ContextUserInteraction extends Interaction {
   GuildMember? _target;
-  Channel? _channel;
+  GuildChannel? _channel;
 
   ContextUserInteraction(
     super._id,
@@ -18,7 +18,7 @@ class ContextUserInteraction extends Interaction {
   );
 
   GuildMember? get target => _target;
-  Channel? get channel => _channel;
+  GuildChannel? get channel => _channel;
 
   factory ContextUserInteraction.from({ required GuildMember? target, required Guild guild, required User user, required dynamic payload }) {
     return ContextUserInteraction(
