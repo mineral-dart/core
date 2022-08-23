@@ -28,6 +28,8 @@ export 'src/api/webhook.dart' show Webhook;
 // export 'src/api/channels/news_channel.dart' show NewsChannel;
 // export 'src/api/channels/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
 
+export 'src/api/channels/channel_builder.dart' show ChannelBuilder;
+
 export 'src/api/channels/voice_channel.dart' show VoiceChannel;
 export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
 export 'src/api/channels/partial_text_channel.dart' show PartialTextChannel;

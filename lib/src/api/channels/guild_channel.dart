@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/text_channel.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
@@ -35,6 +36,29 @@ class GuildChannel<T extends PartialChannel> extends PartialChannel {
   /// Get [PermissionOverwrite] manager
   PermissionOverwriteManager? get permissions => _permissions;
 
+  Future<void> setLabel (String value) async {
+    await update(ChannelBuilder({ 'name': value }));
+  }
+
+  Future<void> setParentId (Snowflake id) async {
+    await update(ChannelBuilder({ 'parent_id': id }));
+  }
+
+  Future<void> setParent (CategoryChannel channel) async {
+    await update(ChannelBuilder({ 'parent_id': channel.id }));
+  }
+
+  Future<void> setPermissionsOverwrite (List<PermissionOverwrite> permissions) async {
+    await update(ChannelBuilder({ 'permission_overwrites': permissions }));
+  }
+
+  Future<void> update (ChannelBuilder builder) async {
+    if (_validate()) {
+      Http http = ioc.singleton(ioc.services.http);
+      await http.patch(url: '/channels/$id', payload: builder.payload);
+    }
+  }
+
   List<Flag> _getFlagsFromBitfield (int bitfield) {
     List<Flag> flags = [];
     for (Flag element in Flag.values) {
@@ -43,6 +67,20 @@ class GuildChannel<T extends PartialChannel> extends PartialChannel {
       }
     }
     return flags;
+  }
+
+  bool _validate () {
+    if (type == ChannelType.guildCategory) {
+      Console.warn(message: 'A category channel cannot have a parent');
+      return false;
+    }
+
+    if (type == ChannelType.guildPublicThread || type == ChannelType.private || type == ChannelType.guildNewsThread) {
+      Console.warn(message: 'A thread channel cannot change a parent');
+      return false;
+    }
+
+    return true;
   }
 }
 
