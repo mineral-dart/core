@@ -85,7 +85,7 @@ class Message extends PartialMessage<TextBasedChannel> {
     await http.destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
-  factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
+  factory Message.from({ required PartialTextChannel channel, required dynamic payload }) {
     GuildMember? guildMember = channel.guild.members.cache.get(payload['author']['id']);
     List<EmbedBuilder> embeds = [];
 
@@ -162,7 +162,7 @@ class Message extends PartialMessage<TextBasedChannel> {
       payload['flags'],
       payload['pinned'],
       channel.id,
-      channel,
+      channel as TextBasedChannel,
       MessageReactionManager<TextBasedChannel, Message>(channel),
       guildMember,
     );

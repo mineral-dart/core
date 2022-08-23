@@ -6,6 +6,18 @@ import 'package:mineral/src/api/channels/news_channel.dart';
 import 'package:mineral/src/api/channels/stage_channel.dart';
 import 'package:mineral/src/api/channels/thread_channel.dart';
 
+class PartialChannel {
+  final Snowflake _id;
+
+  PartialChannel(this._id);
+
+  /// Get id of this
+  Snowflake get id => _id;
+
+  @override
+  String toString () => '<#$id>';
+}
+
 enum ChannelType {
   guildText(0),
   private(1),
@@ -22,18 +34,6 @@ enum ChannelType {
 
   final int value;
   const ChannelType(this.value);
-}
-
-class PartialChannel {
-  final Snowflake _id;
-
-  PartialChannel(this._id);
-
-  /// Get id of this
-  Snowflake get id => _id;
-
-  @override
-  String toString () => '<#$id>';
 }
 
 class ChannelWrapper {

@@ -1,3 +1,4 @@
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
@@ -56,6 +57,20 @@ class GuildChannel extends PartialChannel {
       Http http = ioc.singleton(ioc.services.http);
       await http.patch(url: '/channels/$id', payload: builder.payload);
     }
+  }
+
+  /// Deletes this
+  ///
+  /// ```dart
+  /// final GuildChannel channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await channel.delete()
+  /// ```
+  Future<bool> delete () async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.destroy(url: '/channels/$id');
+
+    guild.channels.cache.remove(this);
+    return response.statusCode == 200;
   }
 
   List<Flag> _getFlagsFromBitfield (int bitfield) {

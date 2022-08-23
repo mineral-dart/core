@@ -42,11 +42,19 @@ class TextChannel extends TextBasedChannel {
   ThreadManager get threads => _threads;
 
   /// Define the description if this
+  /// ```dart
+  /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await channel.setDescription('Lorem ipsum dolor sit amet.');
+  /// ```
   Future<void> setDescription (String value) async {
     await update(ChannelBuilder({ 'topic': value }));
   }
 
   /// Define the rate limit of this
+  /// ```dart
+  /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await channel.setRateLimit(5000); // Rate limit for 5 seconds
+  /// ```
   Future<void> setRateLimit (int limit) async {
     await update(ChannelBuilder({ 'rate_limit': limit }));
   }

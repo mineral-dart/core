@@ -1,8 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
-import 'package:mineral/src/api/managers/thread_manager.dart';
-import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class ThreadChannel extends PartialTextChannel {
   final bool _archived;
@@ -61,7 +59,7 @@ class ThreadChannel extends PartialTextChannel {
       payload['thread_metadata']['locked'],
       payload['thread_metadata']['invitable'],
       payload['create_timestamp'],
-      payload['messages'],
+      MessageManager(),
       payload['last_message_id'],
       payload['guild_id'],
       payload['parent_id'],

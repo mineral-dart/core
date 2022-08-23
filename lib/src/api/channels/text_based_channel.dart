@@ -1,5 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/managers/thread_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class TextBasedChannel extends PartialTextChannel {
@@ -26,4 +25,9 @@ class TextBasedChannel extends PartialTextChannel {
 
   /// Access to [WebhookManager]
   WebhookManager get webhooks => _webhooks;
+
+  /// Allow or disallow [nsfw] of this
+  Future<void> setNsfw (bool value) async {
+    await update(ChannelBuilder({ 'nsfw': value }));
+  }
 }
