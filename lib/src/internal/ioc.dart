@@ -26,8 +26,8 @@ class Ioc {
     _services.putIfAbsent(namespace, () => service);
   }
 
-  singleton (String namespace) {
-    return Ioc._instance._services[namespace];
+  T singleton<T extends dynamic> (String namespace) {
+    return Ioc._instance._services[namespace] as T;
   }
 }
 
