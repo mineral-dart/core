@@ -32,7 +32,7 @@ class Message extends PartialMessage<TextBasedChannel> {
 
   GuildMember? get author => _author;
 
-  Future<Message> edit ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts }) async {
+  Future<Message> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(
@@ -87,7 +87,7 @@ class Message extends PartialMessage<TextBasedChannel> {
 
   factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
     GuildMember? guildMember = channel.guild?.members.cache.get(payload['author']['id']);
-    List<MessageEmbed> embeds = [];
+    List<EmbedBuilder> embeds = [];
 
     for (dynamic element in payload['embeds']) {
       List<Field> fields = [];
@@ -98,7 +98,7 @@ class Message extends PartialMessage<TextBasedChannel> {
         }
       }
 
-      MessageEmbed embed = MessageEmbed(
+      EmbedBuilder embed = EmbedBuilder(
         title: element['title'],
         description: element['description'],
         url: element['url'],

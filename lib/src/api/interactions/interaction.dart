@@ -41,19 +41,19 @@ class Interaction {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<void> reply ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts, bool? private }) async {
+  Future<void> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     List<dynamic> embedList = [];
     if (embeds != null) {
-      for (MessageEmbed element in embeds) {
+      for (EmbedBuilder element in embeds) {
         embedList.add(element.toJson());
       }
     }
 
     List<dynamic> componentList = [];
     if (components != null) {
-      for (Row element in components) {
+      for (RowBuilder element in components) {
         componentList.add(element.toJson());
       }
     }
@@ -80,7 +80,7 @@ class Interaction {
   ///
   /// await interaction.modal(modal);
   /// ```
-  Future<void> modal (Modal modal) async {
+  Future<void> modal (ModalBuilder modal) async {
     Http http = ioc.singleton(ioc.services.http);
 
     await http.post(url: "/interactions/$id/$token/callback", payload: {

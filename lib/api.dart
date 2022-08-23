@@ -13,6 +13,7 @@ export 'src/api/managers/member_role_manager.dart' show MemberRoleManager;
 export 'src/api/managers/voice_manager.dart' show VoiceManager;
 
 export 'src/api/guilds/guild.dart' show Guild;
+export 'src/api/guilds/guild_preview.dart' show GuildPreview;
 export 'src/api/moderation_rule.dart' show ModerationEventType, ModerationTriggerType, ModerationPresetType, ModerationActionType, ModerationTriggerMetadata, ModerationActionMetadata, ModerationAction, ModerationRule;
 
 export 'src/api/guilds/guild_scheduled_event.dart' show ScheduledEventStatus, ScheduledEventEntityType, GuildScheduledEvent, ScheduledEventUser;
@@ -28,18 +29,18 @@ export 'src/api/channels/news_channel.dart' show NewsChannel;
 export 'src/api/channels/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
 
 export 'src/api/messages/message.dart' show Message;
-export 'src/api/messages/message_embed.dart' show MessageEmbed, Footer, Image, Thumbnail, Author, Field;
+export 'src/api/messages/embed_builder.dart' show EmbedBuilder, Footer, Image, Thumbnail, Author, Field;
 export 'src/api/color.dart' show Color;
 
 export 'src/api/emoji.dart' show EmojiBuilder, Emoji;
 export 'src/api/role.dart' show Role;
 
-export 'src/api/components/row.dart' show Row;
-export 'src/api/components/select_menu.dart' show SelectMenu, SelectMenuOption, EmojiOption;
-export 'src/api/components/modal.dart' show Modal;
-export 'src/api/components/text_input.dart' show TextInputStyle;
-export 'src/api/components/button.dart' show Button, ButtonStyle;
-export 'src/api/components/link.dart' show Link;
+export 'src/api/components/row_builder.dart' show RowBuilder;
+export 'src/api/components/select_menu_builder.dart' show SelectMenuBuilder, SelectMenuOption, EmojiOption;
+export 'src/api/components/modal_builder.dart' show ModalBuilder;
+export 'src/api/components/text_input_builder.dart' show TextInputBuilder, TextInputStyle;
+export 'src/api/components/button_builder.dart' show ButtonBuilder, ButtonStyle;
+export 'src/api/components/link_builder.dart' show LinkBuilder;
 
 export 'src/api/interactions/command_interaction.dart' show CommandInteraction;
 export 'src/api/interactions/button_interaction.dart' show ButtonInteraction;

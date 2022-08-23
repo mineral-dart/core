@@ -11,6 +11,7 @@ import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
+import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
@@ -83,6 +84,11 @@ class GuildCreate implements WebsocketPacket {
     );
 
     client.guilds.cache.putIfAbsent(guild.id, () => guild);
+
+    for (dynamic element in websocketResponse.payload['stickers']) {
+      Sticker sticker = Sticker.from(element);
+      guild.stickers.cache.putIfAbsent(sticker.id, () => sticker);
+    }
 
     for (dynamic member in websocketResponse.payload['members']) {
       User user = User.from(member['user']);

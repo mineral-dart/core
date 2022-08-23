@@ -30,7 +30,7 @@ enum FormatType {
 
 class Sticker {
   Snowflake _id;
-  Snowflake _packId;
+  Snowflake? _packId;
   String _name;
   String? _description;
   String _tags;
@@ -53,7 +53,7 @@ class Sticker {
   );
 
   Snowflake get id => _id;
-  Snowflake get packId => _packId;
+  Snowflake? get packId => _packId;
   String get name => _name;
   String? get description => _description;
   String get tags => _tags;
@@ -110,7 +110,7 @@ class Sticker {
       payload['description'],
       payload['tags'],
       StickerType.values.firstWhere((element) => element.value == payload['type']),
-      payload['format_type'],
+      FormatType.values.firstWhere((format) => format.value == payload['format_type']),
       payload['sortValue']
     );
 

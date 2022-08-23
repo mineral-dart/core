@@ -12,6 +12,7 @@ class CommandManager {
   Map<String, dynamic> getHandlers () => _handlers;
 
   dynamic getHandler (String handler) => _handlers[handler];
+  dynamic get handlers => _handlers;
 
   CommandManager add (MineralCommand mineralCommand) {
     SlashCommand command = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, options: []);
@@ -62,7 +63,7 @@ class CommandManager {
       if (reflectee is CommandGroup) {
         SlashCommand group = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, options: [])
           ..type = 2
-          ..name = reflectee.name.toLowerCase()
+          ..name = reflectee.name.snakeCase
           ..description = reflectee.description;
 
         command.groups.add(group);
@@ -106,23 +107,23 @@ class CommandManager {
 
         if (reflectee is Subcommand) {
           String? groupName = reflectee.group;
+          String? bind = reflectee.bind;
 
           if (groupName != null) {
             SlashCommand group = command.groups.firstWhere((group) => group.name == groupName);
             group.subcommands.add(subcommand);
 
             _handlers.putIfAbsent("${command.name}.${group.name}.${subcommand.name}", () => {
-              'symbol': Symbol(subcommand.name),
+              'symbol': Symbol(bind ?? subcommand.name),
               'commandClass': classCommand,
             });
           } else {
             command.subcommands.add(subcommand);
             _handlers.putIfAbsent("${command.name}.${subcommand.name}", () => {
-              'symbol': Symbol(subcommand.name),
+              'symbol': Symbol(bind ?? subcommand.name),
               'commandClass': classCommand,
             });
           }
-
         }
 
         if (reflectee is Option) {
