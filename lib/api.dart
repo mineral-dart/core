@@ -31,6 +31,7 @@ export 'src/api/webhook.dart' show Webhook;
 export 'src/api/channels/channel_builder.dart' show ChannelBuilder;
 
 export 'src/api/channels/voice_channel.dart' show VoiceChannel;
+export 'src/api/channels/text_channel.dart' show TextChannel;
 export 'src/api/channels/text_based_channel.dart' show TextBasedChannel;
 export 'src/api/channels/partial_text_channel.dart' show PartialTextChannel;
 export 'src/api/channels/guild_channel.dart' show GuildChannel;

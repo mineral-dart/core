@@ -4,27 +4,45 @@ import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
-class CategoryChannel extends GuildChannel {
-  CategoryChannel(super.guildId, super.parentId, super.label, super.type, super.position, super.flags, super.permissions, super.id);
+class NewsChannel extends TextChannel {
+  NewsChannel(
+    super.description,
+    super.lastPinTime,
+    super.rateLimit,
+    super.threads,
+    super.nsfw,
+    super.webhooks,
+    super.messages,
+    super.lastMessageId,
+    super.guildId,
+    super.parentId,
+    super.label,
+    super.type,
+    super.position,
+    super.flags,
+    super.permissions,
+    super.id
+  );
 
-  /// Get children of this
-  Map<Snowflake, GuildChannel> get children => guild.channels.cache.where((element) => element.parent?.id == id);
-
-  Future<GuildChannel> create (ChannelBuilder channel) async {
-    return super.guild.channels.create(channel) as GuildChannel;
-  }
-
-  factory CategoryChannel.fromPayload(dynamic payload) {
+  factory NewsChannel.fromPayload(dynamic payload) {
     final permissionOverwriteManager = PermissionOverwriteManager();
     for (dynamic element in payload['permission_overwrites']) {
       final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
       permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
     }
 
-    return CategoryChannel(
+    return NewsChannel(
+      payload['topic'],
+      payload['last_pin_timestamp'],
+      payload['rate_limit_per_user'],
+      ThreadManager(guildId: payload['guild_id']) ,
+      payload['nsfw'],
+      WebhookManager(),
+      MessageManager(),
+      payload['last_message_id'],
       payload['guild_id'],
       payload['parent_id'],
-      payload['label'],
+      payload['name'],
       payload['type'],
       payload['position'],
       payload['flags'],

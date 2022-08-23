@@ -1,4 +1,7 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/managers/message_manager.dart';
+import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
+import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class VoiceChannel extends TextBasedChannel {
   final int? _bitrate;
@@ -55,6 +58,36 @@ class VoiceChannel extends TextBasedChannel {
   /// Define the rtc region of this
   Future<void> setVideoQuality (VideoQualityMode mode) async {
     await update(ChannelBuilder({ 'video_quality_mode': mode.value }));
+  }
+
+  @override
+  CategoryChannel get parent => super.parent as CategoryChannel;
+
+  factory VoiceChannel.fromPayload(dynamic payload) {
+    final permissionOverwriteManager = PermissionOverwriteManager();
+    for (dynamic element in payload['permission_overwrites']) {
+      final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
+      permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
+    }
+
+    return VoiceChannel(
+      payload['bitrate'],
+      payload['user_limit'],
+      payload['rtc_region'],
+      payload['video_quality_mode'],
+      payload['nsfw'],
+      WebhookManager(),
+      MessageManager(),
+      payload['last_message_id'],
+      payload['guild_id'],
+      payload['parent_id'],
+      payload['name'],
+      payload['type'],
+      payload['position'],
+      payload['flags'],
+      permissionOverwriteManager,
+      payload['id']
+    );
   }
 }
 

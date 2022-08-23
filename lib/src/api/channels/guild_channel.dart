@@ -1,10 +1,9 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/text_channel.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 
-class GuildChannel<T extends PartialChannel> extends PartialChannel {
+class GuildChannel extends PartialChannel {
   final Snowflake _guildId;
   final Snowflake? _parentId;
   final String _label;
@@ -19,7 +18,7 @@ class GuildChannel<T extends PartialChannel> extends PartialChannel {
   Guild get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId);
 
   /// Get [CategoryChannel] or [TextChannel] parent
-  T get parent => guild.channels.cache.get(_parentId);
+  GuildChannel? get parent => guild.channels.cache.get(_parentId);
 
   /// Get [GuildChannel] label
   String get label => _label;
