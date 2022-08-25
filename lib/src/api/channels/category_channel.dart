@@ -18,8 +18,6 @@ class CategoryChannel extends GuildChannel {
       permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
     }
 
-    print(payload);
-
     return CategoryChannel(
       payload['guild_id'],
       payload['parent_id'],

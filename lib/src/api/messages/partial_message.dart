@@ -1,9 +1,10 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/channels/partial_channel.dart';
+import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
+
 
 class PartialMessage<T extends PartialChannel> {
   final Snowflake _id;
@@ -18,8 +19,8 @@ class PartialMessage<T extends PartialChannel> {
   final List<MessageAttachment> _attachments;
   final int? _flags;
   final bool _pinned;
+  final Snowflake? _guildId;
   final Snowflake _channelId;
-  final T _channel;
   final MessageReactionManager _reactions;
 
   PartialMessage(
@@ -35,8 +36,8 @@ class PartialMessage<T extends PartialChannel> {
     this._attachments,
     this._flags,
     this._pinned,
+    this._guildId,
     this._channelId,
-    this._channel,
     this._reactions,
   );
 
@@ -50,6 +51,8 @@ class PartialMessage<T extends PartialChannel> {
   int? get flags => _flags;
   bool get isPinned => _pinned;
   Snowflake get channelId => _channelId;
-  T get channel => _channel;
+  PartialChannel get channel => _guildId != null
+    ? ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId).channels.cache.getOrFail(_channelId)
+    : ioc.singleton<MineralClient>(ioc.services.client).dmChannels.cache.getOrFail(_channelId);
   MessageReactionManager get reactions => _reactions;
 }

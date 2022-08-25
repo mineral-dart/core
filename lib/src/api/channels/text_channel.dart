@@ -60,7 +60,7 @@ class TextChannel extends TextBasedChannel {
   }
 
   @override
-  CategoryChannel get parent => super.parent as CategoryChannel;
+  CategoryChannel? get parent => super.parent as CategoryChannel?;
 
   factory TextChannel.fromPayload(dynamic payload) {
     final permissionOverwriteManager = PermissionOverwriteManager();

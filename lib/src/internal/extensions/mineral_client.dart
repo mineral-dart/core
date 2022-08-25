@@ -6,7 +6,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 
 extension MineralClientExtension on MineralClient {
-  Future<Response> sendMessage (dynamic channel, { String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
+  Future<Response> sendMessage (PartialChannel channel, { String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, Map<String, Snowflake>? message_reference }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     List<dynamic> embedList = [];
@@ -23,11 +23,12 @@ extension MineralClientExtension on MineralClient {
       }
     }
 
-    return await http.post(url: '/channels/${channel?.id}/messages', payload: {
+    return await http.post(url: '/channels/${channel.id}/messages', payload: {
       'tts': tts ?? false,
       'content': content,
       'embeds': embeds != null ? embedList : [],
       'components': components != null ? componentList : [],
+      'message_reference': message_reference != null ? { ...message_reference, 'fail_if_not_exists': true } : null,
     });
   }
 

@@ -23,8 +23,8 @@ class DmMessage extends PartialMessage<DmChannel> {
     super.attachments,
     super.flags,
     super.pinned,
+    super._guildId,
     super.channelId,
-    super.channel,
     super.reactions,
     this.author,
   );
@@ -108,8 +108,8 @@ class DmMessage extends PartialMessage<DmChannel> {
       messageAttachments,
       payload['flags'],
       payload['pinned'],
+      null,
       channel.id,
-      channel,
       MessageReactionManager<DmChannel, DmMessage>(channel),
       user!,
     );

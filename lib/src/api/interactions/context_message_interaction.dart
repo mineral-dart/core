@@ -1,8 +1,9 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
 
 class ContextMessageInteraction extends Interaction {
   Message _message;
-  PartialTextChannel _channel;
+  PartialChannel _channel;
 
   ContextMessageInteraction(
     super._id,
@@ -18,9 +19,9 @@ class ContextMessageInteraction extends Interaction {
   );
 
   Message get message => _message;
-  PartialTextChannel get channel => _channel;
+  PartialChannel get channel => _channel;
 
-  factory ContextMessageInteraction.from({ required User user, required Guild guild, required Message message, required dynamic payload }) {
+  factory ContextMessageInteraction.from({ required User user, required Guild guild, required PartialMessage message, required dynamic payload }) {
     return ContextMessageInteraction(
       payload['id'],
       payload['application_id'],
@@ -30,7 +31,7 @@ class ContextMessageInteraction extends Interaction {
       user,
       guild,
       guild.members.cache.get(user.id),
-      message,
+      message as Message,
       message.channel,
     );
   }

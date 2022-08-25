@@ -70,8 +70,6 @@ class VoiceChannel extends TextBasedChannel {
       permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
     }
 
-    print(payload);
-
     return VoiceChannel(
       payload['bitrate'],
       payload['user_limit'],
