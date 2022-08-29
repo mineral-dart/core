@@ -169,6 +169,7 @@ class Guild {
   ModerationRuleManager get moderationRules => _moderationRules;
   GuildWebhookManager get webhooks => _webhooks;
   GuildScheduledEventManager get scheduledEvents => _scheduledEvents;
+  Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot());
 
   /// ### Modifies the [name] of this.
   ///
