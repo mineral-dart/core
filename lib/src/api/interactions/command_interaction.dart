@@ -5,7 +5,7 @@ import 'package:mineral/core.dart';
 
 class CommandInteraction extends Interaction {
   String _identifier;
-  TextBasedChannel? _channel;
+  Snowflake? _channelId;
 
   Map<String, dynamic> data = {};
 
@@ -13,17 +13,16 @@ class CommandInteraction extends Interaction {
     super._id,
     super._applicationId,
     super._version,
-    super._type,
+    super._typeId,
     super._token,
-    super._user,
-    super._guild,
-    super._member,
+    super._userId,
+    super._guildId,
     this._identifier,
-    this._channel,
+    this._channelId,
   );
 
   String get identifier => _identifier;
-  TextBasedChannel? get channel => _channel;
+  TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId);
 
   /// ### Returns an instance of [Channel] if the command has the designed option
   ///
@@ -117,18 +116,17 @@ class CommandInteraction extends Interaction {
     return data[optionName]?['value'];
   }
 
-  factory CommandInteraction.from({ required User user, required Guild? guild, required dynamic payload }) {
+  factory CommandInteraction.from({ required dynamic payload }) {
     return CommandInteraction(
       payload['id'],
       payload['application_id'],
       payload['version'],
-      InteractionType.applicationCommand,
+      payload['type'],
       payload['token'],
-      user,
-      guild,
-      guild?.members.cache.get(user.id),
+      payload['user']?['id'],
+      payload['guild_id'],
       payload['data']['name'],
-      guild?.channels.cache.get(payload['channel_id']),
+      payload['channel_id'],
     );
   }
 }

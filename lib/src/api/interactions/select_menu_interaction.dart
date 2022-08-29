@@ -5,6 +5,7 @@ import 'package:mineral/api.dart';
 class SelectMenuInteraction extends Interaction {
   Message? _message;
   Snowflake _customId;
+  Snowflake _channelId;
 
   final List<String> data = [];
 
@@ -16,13 +17,14 @@ class SelectMenuInteraction extends Interaction {
     super._token,
     super._user,
     super._guild,
-    super._member,
     this._message,
     this._customId,
+    this._channelId,
   );
 
   Message? get message => _message;
   Snowflake get customId => _customId;
+  TextBasedChannel? get channel => guild?.channels.cache.get(_channelId);
 
   /// ### Return an [List] of [T] if this has the designed field
   ///
@@ -42,18 +44,18 @@ class SelectMenuInteraction extends Interaction {
   /// ```
   T getValue<T> () => data.first as T;
 
-  factory SelectMenuInteraction.from({ required User user, required Message? message, required Guild? guild, required dynamic payload }) {
+  factory SelectMenuInteraction.from({ required Message? message, required dynamic payload }) {
     return SelectMenuInteraction(
-        payload['id'],
-        payload['application_id'],
-        payload['version'],
-        InteractionType.messageComponent,
-        payload['token'],
-        user,
-        guild,
-        guild?.members.cache.get(user.id),
-        message,
-        payload['data']['custom_id'],
+      payload['id'],
+      payload['application_id'],
+      payload['version'],
+      payload['type'],
+      payload['token'],
+      payload['user']?['id'],
+      payload['guild_id'],
+      message,
+      payload['data']['custom_id'],
+      payload['channel_id'],
     );
   }
 }

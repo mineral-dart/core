@@ -51,7 +51,7 @@ class InteractionCreate implements WebsocketPacket {
     }
 
     if (member != null) {
-      final Interaction interaction = Interaction.from(user: member.user, payload: payload, guild: guild);
+      final Interaction interaction = Interaction.from(payload: payload);
 
       manager.emit(
         event: Events.interactionCreate,
@@ -62,7 +62,7 @@ class InteractionCreate implements WebsocketPacket {
 
   _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
     CommandManager manager = ioc.singleton(ioc.services.command);
-    CommandInteraction commandInteraction = CommandInteraction.from(user: member.user, payload: payload, guild: guild);
+    CommandInteraction commandInteraction = CommandInteraction.from(payload: payload);
 
     String identifier = commandInteraction.identifier;
 
@@ -100,8 +100,7 @@ class InteractionCreate implements WebsocketPacket {
     MineralContextMenu contextMenu = contextMenuManager.contextMenus.findOrFail((element) => element.name == payload['data']?['name']);
 
     if (payload['data']?['type'] == ApplicationCommandType.user.value) {
-      GuildMember? targetMember = guild.members.cache.get(payload['data']?['target_id']);
-      final interaction = ContextUserInteraction.from(target: targetMember, user: member.user, payload: payload, guild: guild);
+      final interaction = ContextUserInteraction.from(payload: payload );
 
       reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
     }
@@ -119,7 +118,7 @@ class InteractionCreate implements WebsocketPacket {
         }
       }
 
-      final interaction = ContextMessageInteraction.from(message: message!, user: member.user, payload: payload, guild: guild);
+      final interaction = ContextMessageInteraction.from(message: message!, payload: payload);
 
       reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
     }
@@ -160,15 +159,7 @@ class InteractionCreate implements WebsocketPacket {
 
   _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
     EventManager manager = ioc.singleton(ioc.services.event);
-    TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['message']?['id']);
-
-    ModalInteraction modalInteraction = ModalInteraction.from(
-      user: member.user,
-      message: message,
-      payload: payload,
-      guild: guild
-    );
+    ModalInteraction modalInteraction = ModalInteraction.from(payload: payload);
 
     for (dynamic row in payload['data']['components']) {
       for (dynamic component in row['components']) {
@@ -176,6 +167,7 @@ class InteractionCreate implements WebsocketPacket {
       }
     }
 
+    print(modalInteraction.customId);
     manager.emit(
       event: Events.modalCreate,
       customId: modalInteraction.customId,
@@ -194,10 +186,8 @@ class InteractionCreate implements WebsocketPacket {
     Message? message = channel?.messages.cache.get(payload['message']['id']);
 
     SelectMenuInteraction interaction = SelectMenuInteraction.from(
-      user: member.user,
       message: message,
       payload: payload,
-      guild: guild,
     );
 
     for (dynamic value in payload['data']['values']) {

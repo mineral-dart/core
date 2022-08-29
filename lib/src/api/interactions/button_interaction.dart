@@ -3,37 +3,39 @@ import 'dart:core';
 import 'package:mineral/api.dart';
 
 class ButtonInteraction extends Interaction {
-  Message? _message;
   Snowflake _customId;
+  Snowflake _messageId;
+  Snowflake _channelId;
 
   ButtonInteraction(
-    super.id,
-    super.applicationId,
-    super.version,
-    super.type,
+    super._id,
+    super._applicationId,
+    super._version,
+    super._typeId,
     super.token,
-    super.user,
-    super.guild,
-    super.member,
-    this._message,
+    super._userId,
+    super._guildId,
+    this._messageId,
     this._customId,
+    this._channelId,
   );
 
-  Message? get message => _message;
   Snowflake get customId => _customId;
+  Message? get message => guild?.channels.cache.get<TextBasedChannel>(_channelId)?.messages.cache.get(_messageId);
+  TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId)?.messages.cache.get(_messageId);
 
   factory ButtonInteraction.from({ required User user, required Guild guild, required Message message, required dynamic payload }) {
     return ButtonInteraction(
       payload['id'],
       payload['application_id'],
       payload['version'],
-      InteractionType.messageComponent,
+      payload['type'],
       payload['token'],
-      user,
-      guild,
-      guild.members.cache.getOrFail(user.id),
-      message,
-      payload['data']['custom_id']
+      payload['user']?['id'],
+      payload['guild_id'],
+      payload['message_id'],
+      payload['data']['custom_id'],
+      payload['channel_id'],
     );
   }
 }

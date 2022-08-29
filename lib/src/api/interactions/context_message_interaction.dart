@@ -1,38 +1,35 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/messages/partial_message.dart';
 
 class ContextMessageInteraction extends Interaction {
+  Snowflake _channelId;
   Message _message;
-  PartialChannel _channel;
 
   ContextMessageInteraction(
     super._id,
     super._applicationId,
     super._version,
-    super._type,
+    super._typeId,
     super._token,
-    super._user,
-    super._guild,
-    super._member,
+    super._userId,
+    super._guildId,
+    this._channelId,
     this._message,
-    this._channel,
   );
 
   Message get message => _message;
-  PartialChannel get channel => _channel;
+  TextBasedChannel get channel => guild!.channels.cache.get(_channelId)!;
 
-  factory ContextMessageInteraction.from({ required User user, required Guild guild, required PartialMessage message, required dynamic payload }) {
+  factory ContextMessageInteraction.from({ required Message message, required dynamic payload }) {
     return ContextMessageInteraction(
       payload['id'],
       payload['application_id'],
       payload['version'],
-      InteractionType.values.firstWhere((element) => element.value == payload['type']),
+      payload['type'],
       payload['token'],
-      user,
-      guild,
-      guild.members.cache.get(user.id),
-      message as Message,
-      message.channel,
+      payload['user']?['id'],
+      payload['guild_id'],
+      payload['guild_id'],
+      message,
     );
   }
 }

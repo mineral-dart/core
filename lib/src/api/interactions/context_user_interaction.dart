@@ -1,8 +1,8 @@
 import 'package:mineral/api.dart';
 
 class ContextUserInteraction extends Interaction {
-  GuildMember? _target;
-  GuildChannel? _channel;
+  Snowflake? _targetId;
+  Snowflake? _channelId;
 
   ContextUserInteraction(
     super._id,
@@ -12,26 +12,24 @@ class ContextUserInteraction extends Interaction {
     super._token,
     super._user,
     super._guild,
-    super._member,
-    this._target,
-    this._channel,
+    this._targetId,
+    this._channelId,
   );
 
-  GuildMember? get target => _target;
-  GuildChannel? get channel => _channel;
+  GuildMember? get target => guild?.members.cache.get(_targetId);
+  GuildChannel? get channel => guild?.channels.cache.get(_channelId);
 
-  factory ContextUserInteraction.from({ required GuildMember? target, required Guild guild, required User user, required dynamic payload }) {
+  factory ContextUserInteraction.from({ required dynamic payload }) {
     return ContextUserInteraction(
       payload['id'],
       payload['application_id'],
       payload['version'],
-      InteractionType.values.firstWhere((element) => element.value == payload['type']),
+      payload['type'],
       payload['token'],
-      user,
-      guild,
-      guild.members.cache.get(user.id),
-      target,
-      guild.channels.cache.getOrFail('channel_id')
+      payload['user']?['id'],
+      payload['guild_id'],
+      payload['target_id'],
+      payload['channel_id']
     );
   }
 }
