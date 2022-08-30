@@ -167,7 +167,6 @@ class InteractionCreate implements WebsocketPacket {
       }
     }
 
-    print(modalInteraction.customId);
     manager.emit(
       event: Events.modalCreate,
       customId: modalInteraction.customId,

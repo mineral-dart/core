@@ -212,8 +212,6 @@ class Message extends PartialMessage<TextBasedChannel> {
       }
     }
 
-    print(payload['mention_roles']);
-
     final message = Message(
       payload['id'],
       payload['content'],
