@@ -15,6 +15,7 @@ class CliManager {
 
 abstract class MineralCliCommand {
   abstract String name;
+  abstract String description;
   Future<void> handle (ArgResults args);
 
   Future<List<Directory>> getDirectories () async {

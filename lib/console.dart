@@ -70,10 +70,22 @@ class Console {
 class ColorList {
   static String black (String? text) => '\x1B[30m$text\x1B[0m';
   static String red (String? text) => '\x1B[186m$text\x1B[0m';
-  static String green (String? text) => '\x1B[32m$text\x1B[0m';
+  static String green (String? text) => '\x1B[32m$text\x1B[m';
   static String yellow (String? text) => '\x1B[33m$text\x1B[0m';
   static String blue (String? text) => '\x1B[34m$text\x1B[0m';
   static String magenta (String? text) => '\x1B[35m$text\x1B[0m';
   static String cyan (String? text) => '\x1B[36m$text\x1B[0m';
   static String white (String? text) => '\x1B[37m$text\x1B[0m';
+  static String bright (String? text) => '\x1B[1m$text\x1B[0m';
+  static String dim (String? text) => '\x1B[2m$text\x1B[0';
+  static String reversed (String? text) => '\x1B[5m$text\x1B[0m';
+  static String blink (String? text) => '\x1B[5m$text\x1B[0m';
+  static String reset () => '\x1B[4m\x1B[0m';
+
+  static String bgGreen (String? text) => '\x1B[102m$text\x1B[0m';
+  static String bgRed (String? text) => '\x1B[101m$text\x1B[0m';
+  static String bgYellow (String? text) => '\x1B[103m$text\x1B[0m';
+  static String bgBlue (String? text) => '\x1B[104m$text\x1B[0m';
+  static String bgPurple (String? text) => '\x1B[105m$text\x1B[0m';
+  static String bgCyan (String? text) => '\x1B[106m$text\x1B[0m';
 }

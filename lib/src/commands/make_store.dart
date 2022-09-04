@@ -12,6 +12,9 @@ class MakeStore extends MineralCliCommand {
   String name = 'make:store';
 
   @override
+  String description = 'Make a new store file';
+
+  @override
   Future<void> handle (ArgResults args) async {
     if (args.arguments.length == 1) {
       Console.error(message: 'The name argument is not defined');

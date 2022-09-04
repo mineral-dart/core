@@ -11,6 +11,9 @@ class CreateProject extends MineralCliCommand {
   String name = 'create';
 
   @override
+  String description = 'Create new mineral project';
+
+  @override
   Future<void> handle(ArgResults args) async {
     if (args.arguments.length == 1) {
       Console.error(message: 'The name argument is not defined');

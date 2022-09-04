@@ -12,6 +12,9 @@ class MakeModule extends MineralCliCommand {
   String name = 'make:module';
 
   @override
+  String description = 'Make a new module structure';
+
+  @override
   Future<void> handle (ArgResults args) async {
     if (args.arguments.length == 1) {
       Console.error(message: 'The name argument is not defined');
