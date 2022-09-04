@@ -30,8 +30,8 @@ class Message extends PartialMessage<TextBasedChannel> {
     super._attachments,
     super._flags,
     super._pinned,
+    super._guildId,
     super._channelId,
-    super._channel,
     super._reactions,
     this._authorId,
     this._mentions,
@@ -44,11 +44,11 @@ class Message extends PartialMessage<TextBasedChannel> {
 
   MessageMention get mentions => _mentions;
 
-  Future<Message> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
+  Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(
-      url: '/channels/$channelId/messages/$id',
+      url: '/channels/${channel.id}/messages/$id',
       payload: {
         'content': content,
         'embeds': embeds,
@@ -58,13 +58,9 @@ class Message extends PartialMessage<TextBasedChannel> {
       }
     );
 
-    if (response.statusCode == 200) {
-      this.content = content ?? this.content;
-      this.embeds = embeds ?? this.embeds;
-      this.components = components ?? this.components;
-    }
-
-    return this;
+    return response.statusCode == 200
+      ? Message.from(channel: channel, payload: jsonDecode(response.body))
+      : null;
   }
 
   Future<void> crossPost () async {
@@ -185,7 +181,7 @@ class Message extends PartialMessage<TextBasedChannel> {
 
     List<Component> components = [];
     for (dynamic payload in payload['components']) {
-      Component component = Component.from(payload: payload);
+      final component = Component.from(payload: payload);
       components.add(component);
     }
 
@@ -223,8 +219,8 @@ class Message extends PartialMessage<TextBasedChannel> {
       messageAttachments,
       payload['flags'],
       payload['pinned'],
-      channel.guild.id,
-      channel.id,
+      payload['guild_id'],
+      payload['channel_id'],
       MessageReactionManager<GuildChannel, Message>(channel),
       payload['author']['id'],
       MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false)

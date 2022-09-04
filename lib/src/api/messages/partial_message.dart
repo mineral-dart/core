@@ -8,12 +8,12 @@ import 'package:mineral/src/api/messages/message_sticker_item.dart';
 
 class PartialMessage<T extends PartialChannel> {
   final Snowflake _id;
-  String content;
+  String _content;
   final bool _tts;
-  List<EmbedBuilder> embeds;
+  final List<EmbedBuilder> _embeds;
   final bool _allowMentions;
   final PartialMessage? _reference;
-  List<Component> components;
+  final List<Component> _components;
   final List<MessageStickerItem> _stickers;
   final dynamic _payload;
   final List<MessageAttachment> _attachments;
@@ -25,12 +25,12 @@ class PartialMessage<T extends PartialChannel> {
 
   PartialMessage(
     this._id,
-    this.content,
+    this._content,
     this._tts,
-    this.embeds,
+    this._embeds,
     this._allowMentions,
     this._reference,
-    this.components,
+    this._components,
     this._stickers,
     this._payload,
     this._attachments,
@@ -42,15 +42,29 @@ class PartialMessage<T extends PartialChannel> {
   );
 
   Snowflake get id => _id;
+
+  String? get content => _content;
+
   bool get tts => _tts;
+
   bool get allowMentions => _allowMentions;
+
   PartialMessage? get reference => _reference;
+
   List<MessageStickerItem> get stickers => _stickers;
+
+  List<Component> get components => _components;
+
+  List<EmbedBuilder> get embeds => _embeds;
+
   dynamic get payload => _payload;
+
   List<MessageAttachment> get attachments => _attachments;
+
   int? get flags => _flags;
+
   bool get isPinned => _pinned;
-  Snowflake get channelId => _channelId;
+
   PartialChannel get channel => _guildId != null
     ? ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId).channels.cache.getOrFail(_channelId)
     : ioc.singleton<MineralClient>(ioc.services.client).dmChannels.cache.getOrFail(_channelId);
