@@ -126,7 +126,6 @@ class GuildCreate implements WebsocketPacket {
       }
     });
 
-    guild.owner = memberManager.cache.getOrFail(websocketResponse.payload['owner_id']);
     guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
     guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);
     guild.rulesChannel = guild.channels.cache.get<TextChannel>(guild.rulesChannelId);

@@ -6,6 +6,7 @@ import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
+import 'package:mineral/src/api/components/ImageFormater.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -33,11 +34,11 @@ enum VerificationLevel {
 class Guild {
   Snowflake _id;
   String _name;
-  String? _icon;
+  Snowflake _ownerId;
+  ImageFormater? _icon;
   String? _iconHash;
-  String? _splash;
-  String? _discoverySplash;
-  late GuildMember owner;
+  ImageFormater? _splash;
+  ImageFormater? _discoverySplash;
   int? _permissions;
   Snowflake? _afkChannelId;
   late VoiceChannel? afkChannel;
@@ -60,7 +61,7 @@ class Guild {
   int _maxMembers;
   String? _vanityUrlCode;
   String? _description;
-  String? _banner;
+  ImageFormater? _banner;
   int _premiumTier;
   int _premiumSubscriptionCount;
   String _preferredLocale;
@@ -83,6 +84,7 @@ class Guild {
   Guild(
     this._id,
     this._name,
+    this._ownerId,
     this._icon,
     this._iconHash,
     this._splash,
@@ -128,10 +130,11 @@ class Guild {
 
   Snowflake get id => _id;
   String get name => _name;
-  String? get icon => _icon;
+  GuildMember get owner => members.cache.getOrFail(_ownerId);
+  ImageFormater? get icon => _icon;
   String? get iconHash => _iconHash;
-  String? get splash => _splash;
-  String? get discoverySplash => _discoverySplash;
+  ImageFormater? get splash => _splash;
+  ImageFormater? get discoverySplash => _discoverySplash;
   int? get permissions => _permissions;
   Snowflake? get afkChannelId => _afkChannelId;
   int get afkTimeout => _afkTimeout;
@@ -151,7 +154,7 @@ class Guild {
   int get maxMembers => _maxMembers;
   String? get vanityUrlCode => _vanityUrlCode;
   String? get description => _description;
-  String? get banner => _banner;
+  ImageFormater? get banner => _banner;
   int get premiumTier => _premiumTier;
   int get premiumSubscriptionCount => _premiumSubscriptionCount;
   String get preferredLocale => _preferredLocale;
@@ -254,7 +257,6 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'afk_channel_id': channel.id });
 
     if (response.statusCode == 200) {
-      afkChannel = channel;
       _afkChannelId = channel.id;
     }
   }
@@ -285,7 +287,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'owner_id': guildMember.user.id });
 
     if (response.statusCode == 200) {
-      owner = guildMember;
+      _ownerId = guildMember.id;
     }
   }
 
@@ -308,7 +310,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'splash': file });
 
     if (response.statusCode == 200) {
-      _splash = file;
+      _splash = ImageFormater(file, '');
     }
   }
 
@@ -352,7 +354,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'discovery_splash': file });
 
     if (response.statusCode == 200) {
-      _discoverySplash = file;
+      _discoverySplash = ImageFormater(file, '');
     }
   }
 
@@ -396,7 +398,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'banner': file });
 
     if (response.statusCode == 200) {
-      _banner = file;
+      _banner = ImageFormater(file, '');
     }
   }
 
@@ -434,7 +436,7 @@ class Guild {
     Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': file });
 
     if (response.statusCode == 200) {
-      _icon = file;
+      _icon = ImageFormater(file, '');
     }
   }
 
@@ -578,13 +580,16 @@ class Guild {
       }
     }
 
+    print(payload['icon']);
+
     return Guild(
       payload['id'],
       payload['name'],
-      payload['icon'],
+      payload['owner_id'],
+      payload['icon'] != null ? ImageFormater(payload['icon'], 'icons/${payload['id']}') : null,
       payload['icon_hash'],
-      payload['splash'],
-      payload['discovery_splash'],
+      payload['splash'] != null ? ImageFormater(payload['splash'], 'splashes/${payload['id']}') : null,
+      payload['discovery_splash'] != null ? ImageFormater(payload['discovery_splash'], 'discovery-splashes/${payload['id']}') : null,
       payload['permissions'],
       payload['afk_channel_id'],
       payload['afk_timeout'],
@@ -603,7 +608,7 @@ class Guild {
       payload['max_members'],
       payload['vanity_url_code'],
       payload['description'],
-      payload['banner'],
+      payload['banner'] != null ? ImageFormater(payload['banner'], 'banners/${payload['id']}') : null,
       payload['premium_tier'],
       payload['premium_subscription_count'],
       payload['preferred_locale'],
