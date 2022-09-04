@@ -62,6 +62,11 @@ import 'package:mineral/core.dart';
 class ${filename.pascalCase} extends MineralStore<dynamic> {
   @override
   dynamic state = [];
+  
+  // Please define your shared methods below
+  void addState (value) {
+    state.add(value);
+  }
 }
   ''';
 }

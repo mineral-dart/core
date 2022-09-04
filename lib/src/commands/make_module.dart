@@ -68,13 +68,12 @@ import 'package:mineral/core.dart';
 @Module(identifier: '${filename.snakeCase}', label: '${filename.capitalCase} module')
 class ${filename.pascalCase} extends MineralModule {
   @override
-  List<MineralCommand> commands = [];
-
-  @override
-  List<MineralEvent> events = [];
-
-  @override
-  List<MineralStore> stores = [];
+  Future<void> init () async {
+    commands.register([]);
+    events.register([]);
+    contextMenus.register([]);
+    stores.register([]);
+  }
 }
   ''';
 }

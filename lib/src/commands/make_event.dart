@@ -73,7 +73,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/api.dart';
 
 @Event(${event.toString()})
-class ${filename.capitalCase} extends MineralEvent {
+class ${filename.pascalCase} extends MineralEvent {
   Future<void> handle (${params.join(', ')}) async {
     // Your code here
   }
