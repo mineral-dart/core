@@ -14,7 +14,7 @@ import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
 
 class Message extends PartialMessage<TextBasedChannel> {
-  GuildMember? _author;
+  Snowflake _authorId;
   final MessageMention _mentions;
 
   Message(
@@ -33,11 +33,11 @@ class Message extends PartialMessage<TextBasedChannel> {
     super._channelId,
     super._channel,
     super._reactions,
-    this._author,
+    this._authorId,
     this._mentions,
   );
 
-  GuildMember? get author => _author;
+  GuildMember? get author => channel.guild.members.cache.get(_authorId);
 
   @override
   GuildChannel get channel => super.channel as GuildChannel;
@@ -129,9 +129,7 @@ class Message extends PartialMessage<TextBasedChannel> {
   }
 
   factory Message.from({ required GuildChannel channel, required dynamic payload }) {
-    GuildMember? guildMember = channel.guild.members.cache.get(payload['author']['id']);
     List<EmbedBuilder> embeds = [];
-
     for (dynamic element in payload['embeds']) {
       List<Field> fields = [];
       if (element['fields'] != null) {
@@ -228,7 +226,7 @@ class Message extends PartialMessage<TextBasedChannel> {
       channel.guild.id,
       channel.id,
       MessageReactionManager<GuildChannel, Message>(channel),
-      guildMember,
+      payload['author']['id'],
       MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false)
     );
 

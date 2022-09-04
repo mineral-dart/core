@@ -43,6 +43,8 @@ class GuildMember {
   MemberRoleManager get roles => _roles;
   Guild get guild => _guild;
 
+  bool get hasGuildAvatar => avatar != null;
+
   /// ### Update the username of this
   ///
   /// Example :

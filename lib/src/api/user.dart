@@ -42,6 +42,12 @@ class User {
       ? '${Constants.cdnUrl}/avatars/$_id/${_avatar?.url}'
       : '${Constants.cdnUrl}/embed/avatars/${int.parse(_discriminator) % 5 }.png';
 
+  /// Return [GuildMember] of [Guild] context for this
+  GuildMember? toGuildMember (Snowflake guildId) {
+    MineralClient client = ioc.singleton(ioc.services.client);
+    return client.guilds.cache.get(guildId)?.members.cache.get(_id);
+  }
+
   /// ### Envoie un message en DM à l'utilisateur
   ///
   /// Example :

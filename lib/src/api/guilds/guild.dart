@@ -580,8 +580,6 @@ class Guild {
       }
     }
 
-    print(payload['icon']);
-
     return Guild(
       payload['id'],
       payload['name'],
