@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:http/http.dart';
-import 'package:mineral/src/api/client/mineral_client.dart';
 import 'package:mineral/src/internal/websockets/websocket_dispatcher.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
