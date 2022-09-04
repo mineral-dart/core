@@ -7,16 +7,18 @@ class ContextMenuManager {
   final Map<String, MineralContextMenu> _contextMenus = {};
   Map<String, MineralContextMenu> get contextMenus => _contextMenus;
 
-  ContextMenuManager add (MineralContextMenu contextMenu) {
-    ContextMenu decorator = reflect(contextMenu).type.metadata.first.reflectee;
-    contextMenu..name = decorator.name
-      ..description = decorator.description
-      ..type = decorator.type
-      ..everyone = decorator.everyone ?? false
-      ..scope = decorator.scope;
+  void register (List<MineralContextMenu> mineralContextMenus) {
+    for (final contextMenu in mineralContextMenus) {
+      ContextMenu decorator = reflect(contextMenu).type.metadata.first.reflectee;
+      contextMenu
+        ..name = decorator.name
+        ..description = decorator.description
+        ..type = decorator.type
+        ..everyone = decorator.everyone ?? false
+        ..scope = decorator.scope;
 
-    _contextMenus.putIfAbsent(contextMenu.name, () => contextMenu);
-    return this;
+      _contextMenus.putIfAbsent(contextMenu.name, () => contextMenu);
+    }
   }
 
   List<MineralContextMenu> getFromGuild (Guild guild) {

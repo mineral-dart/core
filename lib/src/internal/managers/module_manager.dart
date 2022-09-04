@@ -3,63 +3,41 @@ import 'dart:mirrors';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/exceptions/already_exist.dart';
-import 'package:mineral/src/internal/managers/command_manager.dart';
-import 'package:mineral/src/internal/managers/context_menu_manager.dart';
-import 'package:mineral/src/internal/managers/store_manager.dart';
-
-import 'event_manager.dart';
 
 class ModuleManager {
   final Map<String, MineralModule> _modules = {};
   Map<String, MineralModule> get modules => _modules;
 
-  ModuleManager add (MineralModule module, { String? overrideIdentifier }) {
-    Module moduleDecorator = reflect(module).type.metadata.first.reflectee;
-    module..identifier = moduleDecorator.identifier
-      ..label = moduleDecorator.label
-      ..description = moduleDecorator.description;
+  void register (List<MineralModule> mineralModules) {
+    for (final moduleClass in mineralModules) {
+      Module moduleDecorator = reflect(moduleClass).type.metadata.first.reflectee;
 
-    if (_modules.containsKey(moduleDecorator.identifier)) {
-      if (overrideIdentifier != null) {
-        _modules.putIfAbsent(overrideIdentifier, () => module);
-      } else {
-        throw AlreadyExist(cause: 'Module ${moduleDecorator.identifier} is already registered, perhaps this is an error. If not, please change the name of the module when you register it.');
+      moduleClass
+        ..identifier = moduleDecorator.identifier
+        ..label = moduleDecorator.label
+        ..description = moduleDecorator.description;
+
+      if (_modules.containsKey(moduleDecorator.identifier)) {
+        throw AlreadyExist(cause: 'Module ${moduleDecorator.identifier} is already registered, perhaps this is an error.');
       }
-    } else {
-      _modules.putIfAbsent(moduleDecorator.identifier, () => module);
-    }
 
-    return this;
+      _modules.putIfAbsent(moduleDecorator.identifier, () => moduleClass);
+    }
   }
 
-  Future<void> load () async {
-    EventManager eventManager = ioc.singleton(ioc.services.event);
-    CommandManager commandManager = ioc.singleton(ioc.services.command);
-    StoreManager storeManager = ioc.singleton(ioc.services.store);
-    ContextMenuManager contextMenuManager = ioc.singleton(ioc.services.contextMenu);
-
+  Future<void> load (Kernel kernel) async {
     _modules.forEach((key, module) async {
+      module
+        ..commands = kernel.commands
+        ..events = kernel.events
+        ..contextMenus = kernel.contextMenus
+        ..stores = kernel.stores;
+
       await module.init();
-
-      for (MineralEvent event in module.events) {
-        eventManager.add(event);
-      }
-
-      for (MineralCommand command in module.commands) {
-        commandManager.add(command);
-      }
-
-      for (MineralStore store in module.stores) {
-        storeManager.add(store);
-      }
-
-      for (MineralContextMenu contextMenu in module.contextMenu) {
-        contextMenuManager.add(contextMenu);
-      }
 
       Console.debug(
         prefix: 'Loading module',
-        message: '"${module.label}" with ${module.events.length} events, ${module.commands.length} commands and ${module.stores.length} stores.'
+        message: '"${module.label}" is ready to use.'
       );
     });
   }

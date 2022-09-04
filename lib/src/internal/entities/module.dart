@@ -1,4 +1,7 @@
-import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/context_menu_manager.dart';
+import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/managers/store_manager.dart';
 
 class Module {
   final String identifier;
@@ -13,10 +16,10 @@ abstract class MineralModule {
   late final String label;
   late final String? description;
 
-  abstract List<MineralEvent> events;
-  abstract List<MineralCommand> commands;
-  abstract List<MineralStore> stores;
-  abstract List<MineralContextMenu> contextMenu;
+  late final EventManager events;
+  late final CommandManager commands;
+  late final StoreManager stores;
+  late final ContextMenuManager contextMenus;
 
-  Future<void> init () async {}
+  Future<void> init ();
 }

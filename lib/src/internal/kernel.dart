@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:mineral/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/commands/create_project.dart';
 import 'package:mineral/src/commands/make_command.dart';
 import 'package:mineral/src/commands/make_event.dart';
 import 'package:mineral/src/commands/make_module.dart';
 import 'package:mineral/src/commands/make_store.dart';
+import 'package:mineral/src/internal/managers/IntentManager.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
@@ -25,7 +25,7 @@ class Kernel {
   ModuleManager modules = ModuleManager();
   CliManager cli = CliManager();
   ContextMenuManager contextMenus = ContextMenuManager();
-  List<Intent> intents = [];
+  IntentManager intents = IntentManager();
 
   Kernel() {
     ioc.bind(namespace: ioc.services.event, service: events);
@@ -70,11 +70,11 @@ class Kernel {
       );
     }
 
-    await modules.load();
+    await modules.load(this);
 
     final String? shardsCount = environment.get('SHARDS_COUNT');
 
-    ShardManager manager = ShardManager(http, token, intents);
+    ShardManager manager = ShardManager(http, token, intents.list);
     manager.start(shardsCount: (shardsCount != null ? int.tryParse(shardsCount) : null));
 
     ioc.bind(namespace: ioc.services.shards, service: manager);
