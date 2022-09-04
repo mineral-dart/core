@@ -32,7 +32,7 @@ class GuildUpdate implements WebsocketPacket {
     MemberManager memberManager = MemberManager();
     memberManager.cache.addAll(before!.members.cache);
 
-    ChannelManager channelManager = ChannelManager();
+    ChannelManager channelManager = ChannelManager(before.id);
     channelManager.cache.addAll(before.channels.cache);
 
     EmojiManager emojiManager = EmojiManager();

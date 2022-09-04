@@ -46,7 +46,7 @@ class GuildCreate implements WebsocketPacket {
     }
 
     MemberManager memberManager = MemberManager();
-    ChannelManager channelManager = ChannelManager();
+    ChannelManager channelManager = ChannelManager(websocketResponse.payload['id']);
 
     EmojiManager emojiManager = EmojiManager();
     for(dynamic payload in websocketResponse.payload['emojis']) {

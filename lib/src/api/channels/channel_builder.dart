@@ -7,13 +7,14 @@ class ChannelBuilder {
   factory ChannelBuilder.fromTextChannel ({
     String? label,
     String? description,
-    int? parentId,
+    Snowflake? parentId,
     int? position,
     List<PermissionOverwrite>? permissions,
     bool? nsfw,
     int? rateLimitPerUser,
   }) {
     return ChannelBuilder({
+      'type': ChannelType.guildText.value,
       'name': label,
       'topic': description,
       'parent_id': parentId,
@@ -26,6 +27,7 @@ class ChannelBuilder {
 
   factory ChannelBuilder.fromCategoryChannel ({ String? label, int? position, List<PermissionOverwrite>? permissions }) {
     return ChannelBuilder({
+      'type': ChannelType.guildCategory.value,
       'name': label,
       'position': position,
       'permission_overwrites': permissions?.map((permission) => permission.toJSON()),
@@ -34,7 +36,7 @@ class ChannelBuilder {
 
   factory ChannelBuilder.fromVoiceChannel ({
     String? label,
-    int? parentId,
+    Snowflake? parentId,
     int? position,
     List<PermissionOverwrite>? permissions,
     bool? nsfw,
@@ -44,6 +46,7 @@ class ChannelBuilder {
     int? videoQualityMode,
   }) {
     return ChannelBuilder({
+      'type': ChannelType.guildVoice.value,
       'name': label,
       'parent_id': parentId,
       'position': position,

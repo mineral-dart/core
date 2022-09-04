@@ -38,6 +38,10 @@ enum ChannelType {
 
 class ChannelWrapper {
   static dynamic create (dynamic payload) {
+    if (payload['type'] == null) {
+      return null;
+    }
+
     final ChannelType? channelType = ChannelType.values.firstWhereOrNull((element) => element.value == payload['type']);
 
     if (channelType == null) {
