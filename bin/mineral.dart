@@ -31,6 +31,10 @@ Future<void> main (List<String> arguments) async {
   createProjectParser.addOption('project-name');
   parser.addCommand('create', createProjectParser);
 
+  final startProjectParser = ArgParser();
+  startProjectParser.addOption('start');
+  parser.addCommand('start', startProjectParser);
+
   ArgResults results = parser.parse(arguments);
 
   MineralCliCommand? command = kernel.cli.commands.get(results.command?.name);
@@ -41,7 +45,9 @@ Future<void> main (List<String> arguments) async {
   Map<String, List> commands = {};
 
   for (final command in parser.commands.entries) {
-    final String key = command.key.split(':').first;
+    final String key = command.key.contains(':')
+      ? command.key.split(':').first
+      : 'Available commands';
 
     MineralCliCommand? mineralCommand = kernel.cli.commands.get(command.key);
 

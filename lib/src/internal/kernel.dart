@@ -6,6 +6,7 @@ import 'package:mineral/src/commands/make_command.dart';
 import 'package:mineral/src/commands/make_event.dart';
 import 'package:mineral/src/commands/make_module.dart';
 import 'package:mineral/src/commands/make_store.dart';
+import 'package:mineral/src/commands/start_project.dart';
 import 'package:mineral/src/internal/managers/IntentManager.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
@@ -42,6 +43,7 @@ class Kernel {
     cli.add(MakeModule());
     cli.add(MakeStore());
     cli.add(CreateProject());
+    cli.add(StartProject());
   }
 
   Future<void> init () async {
