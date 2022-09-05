@@ -54,8 +54,7 @@ class MakeCommand extends MineralCliCommand {
     await file.create(recursive: true);
     await writeFileContent(file, getTemplate(filename));
 
-    Console.success(message: 'File created : ${file.uri}');
-    Console.warn(message: 'Don\'t forget to add your file to the main or module file');
+    Console.cli.success(message: 'File created ${file.uri}');
   }
 
   String getTemplate (String filename) => '''

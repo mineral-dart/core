@@ -4,7 +4,28 @@ library console;
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
 
+class Cli {
+  void log ({ required String message, String level = 'info'}) {
+    if (level == 'debug') {
+      final Environment environment = ioc.singleton(ioc.services.environment);
+      final String? logLevel = environment.get('LOG_LEVEL');
+
+      if (logLevel != 'debug') return;
+    }
+
+    print(message);
+  }
+
+  void success ({ String prefix = ' success ', required String message }) {
+    String p = ColorList.bgGreen(prefix);
+    log(message: '$p $message', level: 'info');
+  }
+}
+
 class Console {
+  static final Cli _cli = Cli();
+  static Cli get cli => _cli;
+
   static void log ({ required String message, String level = 'info'}) {
     if (level == 'debug') {
       final Environment environment = ioc.singleton(ioc.services.environment);
