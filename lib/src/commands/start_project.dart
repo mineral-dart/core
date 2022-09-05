@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:mineral/console.dart';
 import 'package:mineral/src/exceptions/code_error_exception.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:path/path.dart';
@@ -15,6 +16,7 @@ class StartProject extends MineralCliCommand {
 
   @override
   Future<void> handle(ArgResults args) async {
+    Console.info(message: 'Starting project..');
     final projectDirectory = Directory(join(Directory.current.path, 'src', 'main.dart'));
 
     Process process = await Process.start('dart', ['run', projectDirectory.path]);
