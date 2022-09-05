@@ -34,15 +34,16 @@ class MakeModule extends MineralCliCommand {
     if (useExistLocation) {
       List<Directory> directories = await getDirectories();
 
-      final selection = Select(
-        prompt: 'Your favorite programming language',
-        options: directories.map((directory) => directory.path
-          .replaceAll(join(Directory.current.path, 'src'), 'App')
-          .replaceAll('\\', '/'))
-          .toList(),
-      ).interact();
+      final location = Console.cli.choice(
+        label: 'Where do you want to place your file ?',
+        list: directories,
+        items: directories.map((directory) => directory.path
+            .replaceAll(join(Directory.current.path, 'src'), 'App')
+            .replaceAll('\\', '/'))
+            .toList()
+      );
 
-      directory = Directory(join(directories[selection].path, filename.snakeCase));
+      directory = Directory(join(location.path, filename.snakeCase));
       file = File(join(directory.path, '${filename.snakeCase}.dart'));
     } else {
       final location = Input(

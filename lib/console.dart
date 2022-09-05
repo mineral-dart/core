@@ -1,6 +1,8 @@
 /// Console to print formatted and beautifully messages
 library console;
 
+import 'dart:io';
+
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
 
@@ -19,6 +21,17 @@ class Cli {
   void success ({ String prefix = ' success ', required String message }) {
     String p = ColorList.bgGreen(prefix);
     log(message: '$p $message', level: 'info');
+  }
+
+  E choice<E, T> ({ required String label, required List<E> list, required List<T> items }) {
+    stdout.writeln(label);
+    for (final item in items) {
+      final int index = items.indexOf(item) + 1;
+      stdout.writeln(ColorList.dim('$index) $item' + ColorList.reset()));
+    }
+
+    final index = stdin.readLineSync();
+    return list.elementAt(int.parse(index!) - 1);
   }
 }
 
