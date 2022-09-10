@@ -1,7 +1,6 @@
 import 'package:args/args.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/managers/cli_manager.dart';
 
 Future<void> main (List<String> arguments) async {
   Kernel kernel = Kernel();
@@ -37,7 +36,7 @@ Future<void> main (List<String> arguments) async {
 
   ArgResults results = parser.parse(arguments);
 
-  MineralCliCommand? command = kernel.cli.commands.get(results.command?.name ?? 'help');
+  final command = kernel.cli.commands.get(results.command?.name ?? 'help');
   if (command != null) {
     command.parser = parser;
     return await command.handle(results);
