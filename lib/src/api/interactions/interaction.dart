@@ -18,22 +18,25 @@ class Interaction {
   Snowflake _id;
   Snowflake _applicationId;
   int _version;
-  InteractionType _type;
+  int _typeId;
   String _token;
-  User _user;
-  Guild? _guild;
-  GuildMember? _member;
+  Snowflake? _userId;
+  Snowflake? _guildId;
 
-  Interaction(this._id, this._applicationId, this._version, this._type, this._token, this._user, this._guild, this._member);
+  Interaction(this._id, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId);
 
   Snowflake get id => _id;
   Snowflake get applicationId => _applicationId;
   int get version => _version;
-  InteractionType get type => _type;
+  InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
   String get token => _token;
-  User get user => _user;
-  Guild? get guild => _guild;
-  GuildMember? get member => _member;
+  Guild? get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.get(_guildId);
+
+  User get user => _guildId != null
+    ? guild!.members.cache.getOrFail(_userId).user
+    : ioc.singleton<MineralClient>(ioc.services.client).users.cache.getOrFail(_userId);
+
+  GuildMember? get member => guild?.members.cache.get(_userId);
 
   /// ### Responds to this by an [Message]
   ///
@@ -89,16 +92,15 @@ class Interaction {
     });
   }
 
-  factory Interaction.from({ required User user, required Guild? guild, required dynamic payload }) {
+  factory Interaction.from({ required dynamic payload }) {
     return Interaction(
       payload['id'],
       payload['application_id'],
       payload['version'],
-      InteractionType.values.firstWhere((element) => element.value == payload['type']),
+      payload['type'],
       payload['token'],
-      user,
-      guild,
-      guild?.members.cache.getOrFail(user.id)
+      payload['member']?['user']?['id'],
+      payload['guild_id'],
     );
   }
 }

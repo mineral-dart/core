@@ -32,7 +32,7 @@ class GuildUpdate implements WebsocketPacket {
     MemberManager memberManager = MemberManager();
     memberManager.cache.addAll(before!.members.cache);
 
-    ChannelManager channelManager = ChannelManager();
+    ChannelManager channelManager = ChannelManager(before.id);
     channelManager.cache.addAll(before.channels.cache);
 
     EmojiManager emojiManager = EmojiManager();
@@ -40,7 +40,7 @@ class GuildUpdate implements WebsocketPacket {
 
     ModerationRuleManager moderationManager = ModerationRuleManager();
 
-    WebhookManager webhookManager = WebhookManager();
+    WebhookManager webhookManager = WebhookManager(before.id, null);
     webhookManager.cache.addAll(before.webhooks.cache);
 
     GuildScheduledEventManager guildScheduledEventManager = GuildScheduledEventManager();

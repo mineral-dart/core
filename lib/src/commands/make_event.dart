@@ -14,6 +14,9 @@ class MakeEvent extends MineralCliCommand {
   String name = 'make:event';
 
   @override
+  String description = 'Make a new event file';
+
+  @override
   Future<void> handle (ArgResults args) async {
     if (args.arguments.length == 1) {
       Console.error(message: 'The name argument is not defined');
@@ -22,10 +25,11 @@ class MakeEvent extends MineralCliCommand {
 
     String filename = args.arguments.elementAt(1).capitalCase;
 
-    final eventKey = Select(
-      prompt: 'Which event would you like to use ?',
-      options: Events.values.map((e) => e.toString()).toList(),
-    ).interact();
+    final event = Console.cli.choice(
+      label: 'Which event would you like to use ?',
+      list: Events.values,
+      items: Events.values.map((e) => e.toString()).toList()
+    );
 
     final useExistLocation = Confirm(
       prompt: 'Do you want to use an existing location on your disk ?',
@@ -37,15 +41,16 @@ class MakeEvent extends MineralCliCommand {
     if (useExistLocation) {
       List<Directory> directories = await getDirectories();
 
-      final selection = Select(
-        prompt: 'Your favorite programming language',
-        options: directories.map((directory) => directory.path
+      final location = Console.cli.choice(
+        label: 'Where do you want to place your file ?',
+        list: directories,
+        items: directories.map((directory) => directory.path
           .replaceAll(join(Directory.current.path, 'src'), 'App')
           .replaceAll('\\', '/'))
-          .toList(),
-      ).interact();
+          .toList()
+      );
 
-      file = File(join(directories[selection].path, '${filename.snakeCase}.dart'));
+      file = File(join(location.path, '${filename.snakeCase}.dart'));
     } else {
       final location = Input(
         prompt: 'Target folder location',
@@ -56,10 +61,9 @@ class MakeEvent extends MineralCliCommand {
     }
 
     await file.create(recursive: true);
-    await writeFileContent(file, getTemplate(filename, Events.values.elementAt(eventKey)));
+    await writeFileContent(file, getTemplate(filename, event));
 
-    Console.success(message: 'File created : ${file.uri}');
-    Console.warn(message: 'Don\'t forget to add your file to the main or module file');
+    Console.cli.success(message: 'File created ${file.uri}');
   }
 
   String getTemplate (String filename, Events event) {
@@ -73,7 +77,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/api.dart';
 
 @Event(${event.toString()})
-class ${filename.capitalCase} extends MineralEvent {
+class ${filename.pascalCase} extends MineralEvent {
   Future<void> handle (${params.join(', ')}) async {
     // Your code here
   }

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
@@ -5,11 +7,15 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
+import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 
+import 'package:mineral/src/internal/extensions/mineral_client.dart';
+
 class Message extends PartialMessage<TextBasedChannel> {
-  GuildMember? _author;
+  Snowflake _authorId;
+  final MessageMention _mentions;
 
   Message(
     super._id,
@@ -24,19 +30,25 @@ class Message extends PartialMessage<TextBasedChannel> {
     super._attachments,
     super._flags,
     super._pinned,
+    super._guildId,
     super._channelId,
-    super._channel,
     super._reactions,
-    this._author,
+    this._authorId,
+    this._mentions,
   );
 
-  GuildMember? get author => _author;
+  GuildMember? get author => channel.guild.members.cache.get(_authorId);
 
-  Future<Message> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
+  @override
+  GuildChannel get channel => super.channel as GuildChannel;
+
+  MessageMention get mentions => _mentions;
+
+  Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     Response response = await http.patch(
-      url: '/channels/$channelId/messages/$id',
+      url: '/channels/${channel.id}/messages/$id',
       payload: {
         'content': content,
         'embeds': embeds,
@@ -46,13 +58,9 @@ class Message extends PartialMessage<TextBasedChannel> {
       }
     );
 
-    if (response.statusCode == 200) {
-      this.content = content ?? this.content;
-      this.embeds = embeds ?? this.embeds;
-      this.components = components ?? this.components;
-    }
-
-    return this;
+    return response.statusCode == 200
+      ? Message.from(channel: channel, payload: jsonDecode(response.body))
+      : null;
   }
 
   Future<void> crossPost () async {
@@ -85,10 +93,39 @@ class Message extends PartialMessage<TextBasedChannel> {
     await http.destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
-  factory Message.from({ required TextBasedChannel channel, required dynamic payload }) {
-    GuildMember? guildMember = channel.guild?.members.cache.get(payload['author']['id']);
-    List<EmbedBuilder> embeds = [];
+  Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
+    MineralClient client = ioc.singleton(ioc.services.client);
 
+    Response response = await client.sendMessage(channel,
+      content: content,
+      embeds: embeds,
+      components: components,
+      message_reference: {
+        'guild_id': channel.guild.id,
+        'channel_id': channel.id,
+        'message_id': id,
+      }
+    );
+
+    if (response.statusCode == 200) {
+      Message message = Message.from(channel: channel, payload: jsonDecode(response.body));
+
+      if (channel is CategoryChannel) {
+        (channel as TextBasedChannel).messages.cache.putIfAbsent(message.id, () => message);
+      }
+
+      if (channel is PartialTextChannel) {
+        (channel as PartialTextChannel).messages.cache.putIfAbsent(message.id, () => message);
+      }
+
+      return message;
+    }
+
+    return null;
+  }
+
+  factory Message.from({ required GuildChannel channel, required dynamic payload }) {
+    List<EmbedBuilder> embeds = [];
     for (dynamic element in payload['embeds']) {
       List<Field> fields = [];
       if (element['fields'] != null) {
@@ -144,8 +181,29 @@ class Message extends PartialMessage<TextBasedChannel> {
 
     List<Component> components = [];
     for (dynamic payload in payload['components']) {
-      Component component = Component.from(payload: payload);
+      final component = Component.from(payload: payload);
       components.add(component);
+    }
+
+    List<Snowflake> memberMentions = [];
+    if (payload['mentions'] != null) {
+      for (final element in payload['mentions']) {
+        memberMentions.add(element['id']);
+      }
+    }
+
+    List<Snowflake> roleMentions = [];
+    if (payload['mention_roles'] != null) {
+      for (final element in payload['mention_roles']) {
+        roleMentions.add(element);
+      }
+    }
+
+    List<Snowflake> channelMentions = [];
+    if (payload['mention_channels'] != null) {
+      for (final element in payload['mention_channels']) {
+        channelMentions.add(element['id']);
+      }
     }
 
     final message = Message(
@@ -161,10 +219,11 @@ class Message extends PartialMessage<TextBasedChannel> {
       messageAttachments,
       payload['flags'],
       payload['pinned'],
-      channel.id,
-      channel,
-      MessageReactionManager<TextBasedChannel, Message>(channel),
-      guildMember,
+      payload['guild_id'],
+      payload['channel_id'],
+      MessageReactionManager<GuildChannel, Message>(channel),
+      payload['author']['id'],
+      MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false)
     );
 
     message.reactions.message = message;

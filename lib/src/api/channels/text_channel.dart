@@ -1,72 +1,91 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
-
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class TextChannel extends TextBasedChannel {
+  final String? _description;
+  final String? _lastPinTime;
+  final int _rateLimit;
+  final ThreadManager _threads;
+
   TextChannel(
-    super.id,
-    super._type,
-    super._position,
-    super._label,
-    super._applicationId,
-    super._flags,
-    super._webhooks,
-    super.permissionOverwrites,
-    super._guild,
-    super.description,
+    this._description,
+    this._lastPinTime,
+    this._rateLimit,
+    this._threads,
     super.nsfw,
+    super.webhooks,
+    super.messages,
     super.lastMessageId,
-    super.lastPinTimestamp,
-    super._messages,
-    super._threads,
+    super.guildId,
+    super.parentId,
+    super.label,
+    super.type,
+    super.position,
+    super.flags,
+    super.permissions,
+    super.id
   );
 
-  @override
-  Future<TextChannel> setDescription (String description) async {
-    return await super.setDescription(description);
+  /// Get description of this
+  String? get description => _description;
+
+  /// Get last pinned [DateTime]
+  DateTime? get lastPinTime => _lastPinTime != null ? DateTime.parse(_lastPinTime!) : null;
+
+  /// Get rate limit
+  int get rateLimit => _rateLimit;
+
+  /// Access to [ThreadManager]
+  ThreadManager get threads => _threads;
+
+  /// Define the description if this
+  /// ```dart
+  /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await channel.setDescription('Lorem ipsum dolor sit amet.');
+  /// ```
+  Future<void> setDescription (String value) async {
+    await update(ChannelBuilder({ 'topic': value }));
+  }
+
+  /// Define the rate limit of this
+  /// ```dart
+  /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await channel.setRateLimit(5000); // Rate limit for 5 seconds
+  /// ```
+  Future<void> setRateLimit (int limit) async {
+    await update(ChannelBuilder({ 'rate_limit': limit }));
   }
 
   @override
-  Future<TextChannel> setNsfw (bool value) async {
-    return await super.setNsfw(value);
-  }
+  CategoryChannel? get parent => super.parent as CategoryChannel?;
 
-  @override
-  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw, List<PermissionOverwrite>? permissionOverwrites }) async {
-    return await super.update(label: label, description: description, delay: delay, position: position, categoryChannel: categoryChannel, nsfw: nsfw, permissionOverwrites: permissionOverwrites);
-  }
-
-  factory TextChannel.from(Guild? guild, dynamic payload) {
-    final PermissionOverwriteManager permissionOverwriteManager = PermissionOverwriteManager();
-    for(dynamic element in payload['permission_overwrites']) {
+  factory TextChannel.fromPayload(dynamic payload) {
+    final permissionOverwriteManager = PermissionOverwriteManager();
+    for (dynamic element in payload['permission_overwrites']) {
       final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
       permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
     }
 
-    TextChannel channel =  TextChannel(
-      payload['id'],
-      ChannelType.guildText,
-      payload['position'],
-      payload['name'],
-      payload['application_id'],
-      payload['flags'],
-      WebhookManager(),
-      permissionOverwriteManager,
-      guild,
+    return TextChannel(
       payload['topic'],
+      payload['last_pin_timestamp'],
+      payload['rate_limit_per_user'],
+      ThreadManager(payload['guild_id']) ,
       payload['nsfw'] ?? false,
-      payload['last_message_id'],
-      payload['last_pin_timestamp'] != null ? DateTime.parse(payload['last_pin_timestamp']) : null,
+      WebhookManager(payload['guild_id'], payload['id']),
       MessageManager(),
-      ThreadManager(guildId: guild?.id),
+      payload['last_message_id'],
+      payload['guild_id'],
+      payload['parent_id'],
+      payload['name'],
+      payload['type'],
+      payload['position'],
+      payload['flags'],
+      permissionOverwriteManager,
+      payload['id']
     );
-
-    channel.webhooks?.channel = channel;
-    channel.threads.channel = channel;
-
-    return channel;
   }
 }

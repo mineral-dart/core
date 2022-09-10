@@ -12,6 +12,9 @@ class MakeStore extends MineralCliCommand {
   String name = 'make:store';
 
   @override
+  String description = 'Make a new store file';
+
+  @override
   Future<void> handle (ArgResults args) async {
     if (args.arguments.length == 1) {
       Console.error(message: 'The name argument is not defined');
@@ -30,15 +33,16 @@ class MakeStore extends MineralCliCommand {
     if (useExistLocation) {
       List<Directory> directories = await getDirectories();
 
-      final selection = Select(
-        prompt: 'Your favorite programming language',
-        options: directories.map((directory) => directory.path
-          .replaceAll(join(Directory.current.path, 'src'), 'App')
-          .replaceAll('\\', '/'))
-          .toList(),
-      ).interact();
+      final location = Console.cli.choice(
+        label: 'Where do you want to place your file ?',
+        list: directories,
+        items: directories.map((directory) => directory.path
+            .replaceAll(join(Directory.current.path, 'src'), 'App')
+            .replaceAll('\\', '/'))
+            .toList()
+      );
 
-      file = File(join(directories[selection].path, '${filename.snakeCase}.dart'));
+      file = File(join(location.path, '${filename.snakeCase}.dart'));
     } else {
       final location = Input(
         prompt: 'Target folder location',
@@ -51,8 +55,7 @@ class MakeStore extends MineralCliCommand {
     await file.create(recursive: true);
     await writeFileContent(file, getTemplate(filename));
 
-    Console.success(message: 'File created : ${file.uri}');
-    Console.warn(message: 'Don\'t forget to add your file to the main or module file');
+    Console.cli.success(message: 'File created ${file.uri}');
   }
 
   String getTemplate (String filename) => '''
@@ -62,6 +65,11 @@ import 'package:mineral/core.dart';
 class ${filename.pascalCase} extends MineralStore<dynamic> {
   @override
   dynamic state = [];
+  
+  // Please define your shared methods below
+  void addState (value) {
+    state.add(value);
+  }
 }
   ''';
 }

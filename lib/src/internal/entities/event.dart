@@ -35,9 +35,9 @@ enum Events {
   messageUpdate('update::message', { 'before': Message, 'after': Message }),
   messageDelete('delete::message', { 'message': Message }),
 
-  channelCreate('create::channel', { 'channel': Channel }),
-  channelUpdate('update::channel', { 'before': Channel, 'after': Channel }),
-  channelDelete('delete::channel', { 'channel': Channel }),
+  channelCreate('create::channel', { 'channel': GuildChannel }),
+  channelUpdate('update::channel', { 'before': GuildChannel, 'after': GuildChannel }),
+  channelDelete('delete::channel', { 'channel': GuildChannel }),
 
   memberJoin('join::member', { 'member': GuildMember }),
   memberUpdate('update::member', { 'before': GuildMember, 'after': GuildMember }),

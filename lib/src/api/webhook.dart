@@ -18,7 +18,7 @@ class Webhook {
   Snowflake? guildId;
   late Guild? guild;
   Snowflake? channelId;
-  late Channel? channel;
+  late GuildChannel? channel;
   User? user;
   String? label;
   String? avatar;

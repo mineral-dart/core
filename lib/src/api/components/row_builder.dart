@@ -15,7 +15,8 @@ class RowBuilder extends Component {
   }
 
   factory RowBuilder.fromComponents(List<Component> components) {
-    return RowBuilder.fromComponents(components);
+    return RowBuilder()
+      ..components = components;
   }
 
   factory RowBuilder.fromComponent(Component component) {

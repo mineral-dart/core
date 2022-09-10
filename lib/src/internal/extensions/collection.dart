@@ -105,4 +105,15 @@ extension Collection<K, V> on Map<K, V> {
 
     return result as T;
   }
+
+  Map<K, T> where<T extends V> (bool Function(V element) callback) {
+    Map<K, T> result = {};
+    forEach((key, value) {
+      if (callback(value)) {
+        result.putIfAbsent(key, () => value as T);
+      }
+    });
+
+    return result;
+  }
 }

@@ -6,25 +6,27 @@ import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
-class NewsChannel extends TextBasedChannel {
+class NewsChannel extends TextChannel {
   NewsChannel(
-    super._id,
-    super._type,
-    super._position,
-    super._label,
-    super._applicationId,
-    super._flags,
-    super._webhooks,
-    super.permissionOverwrites,
-    super._guild,
     super.description,
+    super.lastPinTime,
+    super.rateLimit,
+    super.threads,
     super.nsfw,
+    super.webhooks,
+    super.messages,
     super.lastMessageId,
-    super.lastPinTimestamp,
-    super._messages,
-    super._threads,
+    super.guildId,
+    super.parentId,
+    super.label,
+    super.type,
+    super.position,
+    super.flags,
+    super.permissions,
+    super.id
   );
 
+  /// Follow this by an webhook application
   Future<void> follow (Snowflake webhookId) async {
     if (type != ChannelType.guildNews) {
       Console.warn(message: 'Impossible to follow the channel $id as it is not an announcement channel');
@@ -37,34 +39,30 @@ class NewsChannel extends TextBasedChannel {
     });
   }
 
-  factory NewsChannel.from(Guild? guild, dynamic payload) {
+  factory NewsChannel.fromPayload(dynamic payload) {
     final permissionOverwriteManager = PermissionOverwriteManager();
-    for(dynamic element in payload['permission_overwrites']) {
+    for (dynamic element in payload['permission_overwrites']) {
       final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
       permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
     }
 
-    NewsChannel channel =  NewsChannel(
-      payload['id'],
-      ChannelType.guildNews,
-      payload['position'],
-      payload['name'],
-      payload['application_id'],
-      payload['flags'],
-      WebhookManager(),
-      permissionOverwriteManager,
-      guild,
+    return NewsChannel(
       payload['topic'],
+      payload['last_pin_timestamp'],
+      payload['rate_limit_per_user'],
+      ThreadManager(payload['guild_id']) ,
       payload['nsfw'] ?? false,
-      payload['last_message_id'],
-      payload['last_pin_timestamp'] != null ? DateTime.parse(payload['last_pin_timestamp']) : null,
+      WebhookManager(payload['guild_id'], payload['id']),
       MessageManager(),
-      ThreadManager(guildId: guild?.id),
+      payload['last_message_id'],
+      payload['guild_id'],
+      payload['parent_id'],
+      payload['name'],
+      payload['type'],
+      payload['position'],
+      payload['flags'],
+      permissionOverwriteManager,
+      payload['id']
     );
-
-    channel.webhooks?.channel = channel;
-    channel.threads.channel = channel;
-
-    return channel;
   }
 }

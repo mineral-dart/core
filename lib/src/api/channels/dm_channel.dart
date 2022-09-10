@@ -1,6 +1,5 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 
 class DmChannel extends PartialChannel {
@@ -9,13 +8,13 @@ class DmChannel extends PartialChannel {
   Map<Snowflake, User> recipients;
 
   DmChannel(
-    super.id,
     this.lastMessageId,
     this.messages,
     this.recipients,
+    super.id
   );
 
-  factory DmChannel.from({ required dynamic payload }) {
+  factory DmChannel.fromPayload(dynamic payload) {
     MineralClient client = ioc.singleton(ioc.services.client);
 
     Map<Snowflake, User> users = {};
@@ -29,10 +28,10 @@ class DmChannel extends PartialChannel {
     }
 
     return DmChannel(
-      payload['id'],
       payload['last_message_id'],
       MessageManager(),
       users,
+      payload['id'],
     );
   }
 }

@@ -4,30 +4,49 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
+import 'package:mineral/src/api/components/ImageFormater.dart';
 import 'package:mineral/src/api/messages/dm_message.dart';
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
 
 class User {
-  Snowflake id;
-  String username;
-  String tag;
-  String discriminator;
-  bool bot = false;
-  int publicFlags;
-  String? avatar;
-  String? avatarDecoration;
+  Snowflake _id;
+  String _username;
+  String _discriminator;
+  bool _bot;
+  int _publicFlags;
+  ImageFormater? _avatar;
+  ImageFormater? _avatarDecoration;
   late Status status;
 
-  User({
-    required this.id,
-    required this.username,
-    required this.tag,
-    required this.discriminator,
-    required this.bot,
-    required this.publicFlags,
-    required this.avatar,
-    required this.avatarDecoration,
-  });
+  User(
+    this._id,
+    this._username,
+    this._discriminator,
+    this._bot,
+    this._publicFlags,
+    this._avatar,
+    this._avatarDecoration,
+  );
+
+  Snowflake get id => _id;
+  String get username => _username;
+  String get discriminator => _discriminator;
+  bool get bot => _bot;
+  int get publicFlags => _publicFlags;
+  ImageFormater? get avatar => _avatar;
+  ImageFormater? get avatarDecoration => _avatarDecoration;
+  String get tag => '$_username#$_discriminator';
+
+  /// ### Returns the absolute url to the user's avatar
+  String get defaultAvatar => _avatar != null
+      ? '${Constants.cdnUrl}/avatars/$_id/${_avatar?.url}'
+      : '${Constants.cdnUrl}/embed/avatars/${int.parse(_discriminator) % 5 }.png';
+
+  /// Return [GuildMember] of [Guild] context for this
+  GuildMember? toGuildMember (Snowflake guildId) {
+    MineralClient client = ioc.singleton(ioc.services.client);
+    return client.guilds.cache.get(guildId)?.members.cache.get(_id);
+  }
 
   /// ### Envoie un message en DM à l'utilisateur
   ///
@@ -40,13 +59,13 @@ class User {
     MineralClient client = ioc.singleton(ioc.services.client);
     Http http = ioc.singleton(ioc.services.http);
 
-    DmChannel? channel = client.dmChannels.cache.get(id);
+    DmChannel? channel = client.dmChannels.cache.get(_id);
 
     /// Get channel if exist or create
     if (channel == null) {
-      Response response = await http.post(url: '/users/@me/channels', payload: { 'recipient_id': id });
+      Response response = await http.post(url: '/users/@me/channels', payload: { 'recipient_id': _id });
       if (response.statusCode == 200) {
-        channel = DmChannel.from(payload: jsonDecode(response.body));
+        channel = DmChannel.fromPayload(jsonDecode(response.body));
         client.dmChannels.cache.putIfAbsent(channel.id, () => channel!);
       }
     }
@@ -68,26 +87,18 @@ class User {
     return null;
   }
 
-  /// ### Returns the absolute url to the user's avatar
-  String getDisplayAvatarUrl () {
-    return avatar != null
-      ? '${Constants.cdnUrl}/avatars/$id/$avatar'
-      : '${Constants.cdnUrl}/embed/avatars/${int.parse(discriminator) % 5 }.png';
-  }
-
   @override
-  String toString () => "<@$id>";
+  String toString () => "<@$_id>";
 
   factory User.from(dynamic payload) {
     return User(
-      id: payload['id'],
-      username: payload['username'],
-      tag: "${payload['username']}#${payload['discriminator']}",
-      discriminator: payload['discriminator'],
-      bot: payload['bot'] == true,
-      publicFlags: payload['public_flags'] ?? 0,
-      avatar: payload['avatar'],
-      avatarDecoration: payload['avatar_decoration']
+      payload['id'],
+      payload['username'],
+      payload['discriminator'],
+      payload['bot'] == true,
+      payload['public_flags'] ?? 0,
+      payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
+      payload['avatar_decoration']
     );
   }
 }

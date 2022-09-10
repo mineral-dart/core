@@ -1,12 +1,13 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/components/ImageFormater.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 
 class GuildMember {
   User _user;
   String? _nickname;
-  String? _avatar;
+  ImageFormater? _avatar;
   DateTime _joinedAt;
   DateTime? _premiumSince;
   String? _permissions;
@@ -33,7 +34,7 @@ class GuildMember {
   Snowflake get id => _user.id;
   User get user => _user;
   String? get nickname => _nickname;
-  String? get avatar => _avatar;
+  ImageFormater? get avatar => _avatar;
   DateTime get joinedAt => _joinedAt;
   DateTime? get premiumSince => _premiumSince;
   String? get permissions => _permissions;
@@ -41,6 +42,8 @@ class GuildMember {
   DateTime? get timeoutDuration => _timeoutDuration;
   MemberRoleManager get roles => _roles;
   Guild get guild => _guild;
+
+  bool get hasGuildAvatar => avatar != null;
 
   /// ### Update the username of this
   ///
@@ -164,7 +167,7 @@ class GuildMember {
     return GuildMember(
       user,
       member['nick'],
-      member['avatar'],
+      member['avatar'] != null ? ImageFormater(member['avatar'], 'guilds/${guild.id}/users/${user.id}/avatars') : null,
       DateTime.parse(member['joined_at']),
       member['premium_since'] != null ? DateTime.parse(member['premium_since']) : null,
       member['permissions'],

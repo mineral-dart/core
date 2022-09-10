@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/channel.dart';
+import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -29,6 +29,8 @@ class GuildCreate implements WebsocketPacket {
     ContextMenuManager contextMenuManager = ioc.singleton(ioc.services.contextMenu);
     MineralClient client = ioc.singleton(ioc.services.client);
 
+    websocketResponse.payload['guild_id'] = websocketResponse.payload['id'];
+
     GuildRoleManager roleManager = GuildRoleManager();
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(roleManager: roleManager, payload: item);
@@ -44,7 +46,7 @@ class GuildCreate implements WebsocketPacket {
     }
 
     MemberManager memberManager = MemberManager();
-    ChannelManager channelManager = ChannelManager();
+    ChannelManager channelManager = ChannelManager(websocketResponse.payload['id']);
 
     EmojiManager emojiManager = EmojiManager();
     for(dynamic payload in websocketResponse.payload['emojis']) {
@@ -70,7 +72,7 @@ class GuildCreate implements WebsocketPacket {
 
     ModerationRuleManager moderationManager = ModerationRuleManager();
 
-    WebhookManager webhookManager = WebhookManager();
+    WebhookManager webhookManager = WebhookManager(websocketResponse.payload['id'], null);
 
     Guild guild = Guild.from(
       emojiManager: emojiManager,
@@ -109,24 +111,21 @@ class GuildCreate implements WebsocketPacket {
     }
 
     for(dynamic payload in websocketResponse.payload['channels']) {
-      ChannelType channelType = ChannelType.values.firstWhere((type) => type.value == payload['type']);
+      payload['guild_id'] = websocketResponse.payload['id'];
+      final GuildChannel? channel = ChannelWrapper.create(payload);
 
-      if (channels.containsKey(channelType)) {
-        Channel Function(Guild guild, dynamic payload) item = channels[channelType] as Channel Function(Guild guild, dynamic payload);
-        Channel channel = item(guild, payload);
-
+      if (channel != null) {
         channelManager.cache.putIfAbsent(channel.id, () => channel);
       }
     }
 
     // Assign guild channels
-    guild.channels.cache.forEach((Snowflake id, Channel channel) {
+    guild.channels.cache.forEach((Snowflake id, GuildChannel channel) {
       if(voices.containsKey(id)) {
         voices.getOrFail(id).channel = channel as VoiceChannel;
       }
     });
 
-    guild.owner = memberManager.cache.getOrFail(websocketResponse.payload['owner_id']);
     guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
     guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);
     guild.rulesChannel = guild.channels.cache.get<TextChannel>(guild.rulesChannelId);

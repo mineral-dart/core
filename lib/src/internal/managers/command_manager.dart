@@ -14,21 +14,27 @@ class CommandManager {
   dynamic getHandler (String handler) => _handlers[handler];
   dynamic get handlers => _handlers;
 
-  CommandManager add (MineralCommand mineralCommand) {
-    SlashCommand command = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, options: []);
+  void register (List<MineralCommand> mineralCommands) {
+    for (final commandClass in mineralCommands) {
+      SlashCommand command = SlashCommand(name: '',
+          description: '',
+          scope: '',
+          everyone: true,
+          dmChannel: false,
+          options: []);
 
-    _registerCommands(
-      command: command,
-      mineralCommand: mineralCommand
-    );
+      _registerCommands(
+          command: command,
+          mineralCommand: commandClass
+      );
 
-    _registerCommandMethods(
-      command: command,
-      mineralCommand: mineralCommand
-    );
+      _registerCommandMethods(
+          command: command,
+          mineralCommand: commandClass
+      );
 
-    _commands.set(command.name, command);
-    return this;
+      _commands.set(command.name, command);
+    }
   }
 
   List<SlashCommand> getFromGuild (Guild guild) {

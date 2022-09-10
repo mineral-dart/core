@@ -10,29 +10,36 @@ Future<void> main (List<String> arguments) async {
   final ArgParser parser = ArgParser();
 
   final makeCommandParser = ArgParser();
-  makeCommandParser.addOption('name');
+  makeCommandParser.addOption('filename');
   parser.addCommand('make:command', makeCommandParser);
 
   final makeEventParser = ArgParser();
-  makeEventParser.addOption('name');
+  makeEventParser.addOption('filename');
   parser.addCommand('make:event', makeEventParser);
 
   final makeModuleParser = ArgParser();
-  makeModuleParser.addOption('name');
+  makeModuleParser.addOption('filename', help: 'test');
   parser.addCommand('make:module', makeModuleParser);
 
   final makeStoreParser = ArgParser();
-  makeStoreParser.addOption('name');
+  makeStoreParser.addOption('filename');
   parser.addCommand('make:store', makeStoreParser);
 
   final createProjectParser = ArgParser();
-  createProjectParser.addOption('name');
+  createProjectParser.addOption('project-name');
   parser.addCommand('create', createProjectParser);
+
+  final startProjectParser = ArgParser();
+  parser.addCommand('start', startProjectParser);
+
+  final helpParser = ArgParser();
+  parser.addCommand('help', helpParser);
 
   ArgResults results = parser.parse(arguments);
 
-  MineralCliCommand? command = kernel.cli.commands.get(results.command?.name);
+  MineralCliCommand? command = kernel.cli.commands.get(results.command?.name ?? 'help');
   if (command != null) {
+    command.parser = parser;
     return await command.handle(results);
   }
 }

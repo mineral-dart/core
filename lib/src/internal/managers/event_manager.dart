@@ -8,24 +8,24 @@ class EventManager {
 
   Map<Events, List<Map<String, dynamic>>> getRegisteredEvents () => _events;
 
-  EventManager add (MineralEvent mineralEvent) {
-    Event eventDecorator = reflect(mineralEvent).type.metadata.first.reflectee;
-    Events event = eventDecorator.event;
-    String? customId = eventDecorator.customId;
+  void register (List<MineralEvent> mineralEvent) {
+    for (final eventClass in mineralEvent) {
+      Event eventDecorator = reflect(eventClass).type.metadata.first.reflectee;
+      Events event = eventDecorator.event;
+      String? customId = eventDecorator.customId;
 
-    Map<String, dynamic> eventEntity = {
-      'mineralEvent': mineralEvent,
-      'customId': customId,
-    };
+      Map<String, dynamic> eventEntity = {
+        'mineralEvent': eventClass,
+        'customId': customId,
+      };
 
-    if (_events.containsKey(event)) {
-      List<Map<String, dynamic>>? events = _events.get(event);
-      events?.add(eventEntity);
-    } else {
-      _events.putIfAbsent(event, () => [eventEntity]);
+      if (_events.containsKey(event)) {
+        List<Map<String, dynamic>>? events = _events.get(event);
+        events?.add(eventEntity);
+      } else {
+        _events.putIfAbsent(event, () => [eventEntity]);
+      }
     }
-
-    return this;
   }
 
   void emit ({ required Events event, String? customId, List<dynamic>? params }) {
