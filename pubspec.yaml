@@ -2,6 +2,7 @@ name: mineral
 description: A starting point for Dart libraries or applications.
 version: 1.0.0
 
+publish_to: https://pub.dev
 repository: https://github.com/mineral-dart/core
 # homepage: https://www.example.com
 
