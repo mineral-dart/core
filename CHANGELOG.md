@@ -1,3 +1,10 @@
-## 1.0.0
+## 1.0.2
+- Write documentation examples
 
-- Initial version.
+## 1.0.1
+- Improve readme shields
+- Improve `dart analyse` to get 100%
+- Remove unimplemented code
+
+## 1.0.0 Pre-release
+- Initialize mineral framework project
