@@ -40,6 +40,9 @@ class VoiceChannel extends TextBasedChannel {
   /// Get video quality of this
   int get videoQualityMode => _videoQualityMode;
 
+  /// Get current online members
+  Map<Snowflake, GuildMember> get members => guild.members.cache.where((member) => member.voice.channel?.id == id);
+
   /// Define the bitrate of this
   Future<void> setBitrate (int bitrate) async {
     await update(ChannelBuilder({ 'bitrate': bitrate }));
