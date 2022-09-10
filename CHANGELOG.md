@@ -1,3 +1,6 @@
+## 1.0.4
+- Fix badge url
+
 ## 1.0.3
 - Improve `dart analyse` to get 100%
 - Generate api documentation

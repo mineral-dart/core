@@ -196,5 +196,5 @@ class MessageCreate {
 
 Join our ranks and add your contribution to the best discord framework for Dart 💪
 
-[![Discord](https://img.shields.io/badge/Discord-7289DAstyle=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/fH9UQDMZSn)
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/fH9UQDMZSn)
 [![Discord](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mineral-dart/core)
