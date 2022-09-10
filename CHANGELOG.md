@@ -1,3 +1,6 @@
+## 1.0.5
+- Fix missing examples
+
 ## 1.0.4
 - Fix badge url
 

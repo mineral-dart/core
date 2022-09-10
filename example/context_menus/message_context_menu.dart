@@ -1,4 +1,3 @@
-```dart
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 
@@ -8,5 +7,3 @@ class MessageContext extends MineralContextMenu {
     await interaction.reply(content: interaction.message.content, private: true);
   }
 }
-
-```

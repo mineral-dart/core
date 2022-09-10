@@ -1,4 +1,3 @@
-```dart
 import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
@@ -14,5 +13,3 @@ class ButtonCreate extends MineralEvent {
     );
   }
 }
-
-```

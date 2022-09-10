@@ -1,5 +1,5 @@
-```dart
-import 'package:mineral/mineral.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
 
 @Event(Events.guildCreate)
 class GuildCreate extends MineralEvent {
@@ -7,4 +7,3 @@ class GuildCreate extends MineralEvent {
     // Your code here
   }
 }
-```

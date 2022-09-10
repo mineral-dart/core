@@ -9,5 +9,4 @@ class Store {
 
 abstract class MineralStore {
   late Environment environment;
-  late dynamic state;
 }
