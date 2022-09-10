@@ -2,8 +2,6 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 
-import 'package:collection/collection.dart';
-
 enum ScheduledEventStatus {
   scheduled(1),
   active(2),
@@ -37,7 +35,7 @@ class ScheduledEventUser {
 
 class GuildScheduledEvent {
   Snowflake id;
-  Channel? channel;
+  GuildChannel? channel;
   GuildMember? creator;
   String name;
   String? description;

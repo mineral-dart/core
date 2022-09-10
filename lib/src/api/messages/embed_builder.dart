@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/core.dart';
 
 class Footer {
   String text;
@@ -76,7 +77,7 @@ class Field {
   };
 }
 
-class MessageEmbed {
+class EmbedBuilder {
   String? title;
   String? description;
   String? url;
@@ -88,7 +89,7 @@ class MessageEmbed {
   List<Field>? fields;
   Color? color;
 
-  MessageEmbed({
+  EmbedBuilder({
     this.title,
     this.description,
     this.url,
@@ -105,10 +106,10 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setTitle('My title');
   /// ```
-  MessageEmbed setTitle (String value) {
+  EmbedBuilder setTitle (String value) {
     title = value;
     return this;
   }
@@ -117,10 +118,10 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setDescription('My description');
   /// ```
-  MessageEmbed setDescription (String value) {
+  EmbedBuilder setDescription (String value) {
     description = value;
     return this;
   }
@@ -129,10 +130,10 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setFooter(text: 'My title');
   /// ```
-  MessageEmbed setFooter ({ required String text, String? iconUrl, String? proxyIconUrl }) {
+  EmbedBuilder setFooter ({ required String text, String? iconUrl, String? proxyIconUrl }) {
     footer = Footer(text: text, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
     return this;
   }
@@ -141,10 +142,10 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setImage(url: 'https://..../images/my_picture.png');
   /// ```
-  MessageEmbed setImage ({ required String url, String? proxyUrl, int? width, int? height }) {
+  EmbedBuilder setImage ({ required String url, String? proxyUrl, int? width, int? height }) {
     image = Image(url: url, proxyUrl: proxyUrl, width: width, height: height);
     return this;
   }
@@ -153,10 +154,10 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setThumbnail(url: 'https://..../images/my_picture.png');
   /// ```
-  MessageEmbed setThumbnail ({ required String url, String? proxyUrl, int? width, int? height }) {
+  EmbedBuilder setThumbnail ({ required String url, String? proxyUrl, int? width, int? height }) {
     thumbnail = Thumbnail(url: url, proxyUrl: proxyUrl, width: width, height: height);
     return this;
   }
@@ -165,10 +166,10 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setAuthor(name: 'John Doe');
   /// ```
-  MessageEmbed setAuthor ({ required String name, String? url, String? iconUrl, String? proxyIconUrl }) {
+  EmbedBuilder setAuthor ({ required String name, String? url, String? iconUrl, String? proxyIconUrl }) {
     author = Author(name: name, url: url, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
     return this;
   }
@@ -177,17 +178,17 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setColor(Color.cyan_600);
   /// ```
   /// Or with your custom color
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setColor(Color('#FFFFFF'));
   /// ```
-  MessageEmbed setColor (Color color) {
+  EmbedBuilder setColor (Color color) {
     this.color = color;
     return this;
   }
@@ -196,15 +197,15 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setTimestamp();
   /// ```
   /// You can define an older or future timestamp
   /// DateTime date = DateTime.now().add(DateTime(days: 5));
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setTimestamp(dateTime: date);
   /// ```
-  MessageEmbed setTimestamp ({ DateTime? dateTime }) {
+  EmbedBuilder setTimestamp ({ DateTime? dateTime }) {
     timestamp = dateTime ?? DateTime.now();
     return this;
   }
@@ -213,10 +214,10 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .setUrl('https://.....com');
   /// ```
-  MessageEmbed setUrl (String url) {
+  EmbedBuilder setUrl (String url) {
     this.url = url;
     return this;
   }
@@ -225,10 +226,12 @@ class MessageEmbed {
   ///
   /// Example :
   /// ```dart
-  /// final embed = MessageEmbed()
+  /// final embed = EmbedBuilder()
   ///   .addField(name: 'My field', value: 'My custom value');
   /// ```
-  MessageEmbed addField ({ required String name, required String value, bool? inline }) {
+  EmbedBuilder addField ({ required String name, required String value, bool? inline }) {
+    fields ??= [];
+
     fields?.add(Field(name: name, value: value, inline: inline));
     return this;
   }
@@ -251,6 +254,35 @@ class MessageEmbed {
       'color': color != null ? int.parse(color.toString().replaceAll('#', ''), radix: 16) : null,
       'image': image?.toJson(),
       'thumbnail': thumbnail?.toJson(),
+      'author': author?.toJson(),
     };
+  }
+
+  factory EmbedBuilder.fromGuildPreview(GuildPreview preview) {
+    MineralClient client = ioc.singleton(ioc.services.client);
+
+    final EmbedBuilder embed = EmbedBuilder(
+      title: preview.label,
+      description: preview.description,
+      thumbnail: preview.icon != null ? Thumbnail(url: preview.icon!) : null,
+      image: preview.discoverySplash != null ? Image(url: preview.discoverySplash!) : null,
+      color: Color.invisible,
+      timestamp: DateTime.now(),
+      author: Author(name: client.user.username, iconUrl: client.user.defaultAvatar)
+    );
+
+    embed.addField(name: 'Identifier', value: preview.id);
+    embed.addField(name: 'Features', value: preview.features.map((feature) => '• $feature').join('\n'), inline: true);
+
+    if (preview.stickers.isNotEmpty) {
+      embed.addField(name: 'Emojis', value: preview.emojis.values.map((emoji) => emoji).join(' '), inline: true);
+    }
+
+    embed.addField(name: '\u200B', value: '\u200B');
+    embed.addField(name: 'Online members', value: '${preview.approximatePresenceCount} members', inline: true);
+    embed.addField(name: 'Members', value: '${preview.approximateMemberCount} members', inline: true);
+    embed.addField(name: '\u200B', value: '\u200B', inline: true);
+
+    return embed;
   }
 }

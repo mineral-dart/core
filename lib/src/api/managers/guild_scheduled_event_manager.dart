@@ -5,20 +5,13 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
-class GuildScheduledEventManager implements CacheManager<GuildScheduledEvent> {
-  @override
-  Map<Snowflake, GuildScheduledEvent> cache = {};
+class GuildScheduledEventManager extends CacheManager<GuildScheduledEvent> {
+  late final Guild guild;
 
-  Snowflake? guildId;
-  late Guild guild;
-
-  GuildScheduledEventManager({required this.guildId});
-
-  @override
   Future<Map<Snowflake, GuildScheduledEvent>> sync() async {
     final Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.get(url: "/guilds/$guildId/scheduled-events");
+    Response response = await http.get(url: "/guilds/${guild.id}/scheduled-events");
     if (response.statusCode == 200) {
       cache.clear();
 

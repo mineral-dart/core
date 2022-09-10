@@ -1,10 +1,44 @@
 /// Console to print formatted and beautifully messages
 library console;
 
+import 'dart:io';
+
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
 
+class Cli {
+  void log ({ required String message, String level = 'info'}) {
+    if (level == 'debug') {
+      final Environment environment = ioc.singleton(ioc.services.environment);
+      final String? logLevel = environment.get('LOG_LEVEL');
+
+      if (logLevel != 'debug') return;
+    }
+
+    print(message);
+  }
+
+  void success ({ String prefix = ' success ', required String message }) {
+    String p = ColorList.bgGreen(prefix);
+    log(message: '$p $message', level: 'info');
+  }
+
+  E choice<E, T> ({ required String label, required List<E> list, required List<T> items }) {
+    stdout.writeln(label);
+    for (final item in items) {
+      final int index = items.indexOf(item) + 1;
+      stdout.writeln(ColorList.dim('$index) $item' + ColorList.reset()));
+    }
+
+    final index = stdin.readLineSync();
+    return list.elementAt(int.parse(index!) - 1);
+  }
+}
+
 class Console {
+  static final Cli _cli = Cli();
+  static Cli get cli => _cli;
+
   static void log ({ required String message, String level = 'info'}) {
     if (level == 'debug') {
       final Environment environment = ioc.singleton(ioc.services.environment);
@@ -50,12 +84,12 @@ class Console {
   }
 
   static String getWarnMessage ({ String? prefix = 'warn', required String message }) {
-    String p = ColorList.yellow(prefix!);
+    String p = ColorList.yellow(prefix);
     return '[ $p ] $message';
   }
 
   static String getErrorMessage ({ String? prefix = 'error', required String message }) {
-    String p = ColorList.red(prefix!);
+    String p = ColorList.red(prefix);
     return '[ $p ] $message';
   }
 
@@ -68,12 +102,24 @@ class Console {
 }
 
 class ColorList {
-  static String black (String text) => '\x1B[30m$text\x1B[0m';
-  static String red (String text) => '\x1B[186m$text\x1B[0m';
-  static String green (String text) => '\x1B[32m$text\x1B[0m';
-  static String yellow (String text) => '\x1B[33m$text\x1B[0m';
-  static String blue (String text) => '\x1B[34m$text\x1B[0m';
-  static String magenta (String text) => '\x1B[35m$text\x1B[0m';
-  static String cyan (String text) => '\x1B[36m$text\x1B[0m';
-  static String white (String text) => '\x1B[37m$text\x1B[0m';
+  static String black (String? text) => '\x1B[30m$text\x1B[0m';
+  static String red (String? text) => '\x1B[31m$text\x1B[0m';
+  static String green (String? text) => '\x1B[32m$text\x1B[m';
+  static String yellow (String? text) => '\x1B[33m$text\x1B[0m';
+  static String blue (String? text) => '\x1B[34m$text\x1B[0m';
+  static String magenta (String? text) => '\x1B[35m$text\x1B[0m';
+  static String cyan (String? text) => '\x1B[36m$text\x1B[0m';
+  static String white (String? text) => '\x1B[37m$text\x1B[0m';
+  static String bright (String? text) => '\x1B[1m$text\x1B[0m';
+  static String dim (String? text) => '\x1B[2m$text\x1B[0';
+  static String reversed (String? text) => '\x1B[5m$text\x1B[0m';
+  static String blink (String? text) => '\x1B[5m$text\x1B[0m';
+  static String reset () => '\x1B[4m\x1B[0m';
+
+  static String bgGreen (String? text) => '\x1B[102m$text\x1B[0m';
+  static String bgRed (String? text) => '\x1B[101m$text\x1B[0m';
+  static String bgYellow (String? text) => '\x1B[103m$text\x1B[0m';
+  static String bgBlue (String? text) => '\x1B[104m$text\x1B[0m';
+  static String bgPurple (String? text) => '\x1B[105m$text\x1B[0m';
+  static String bgCyan (String? text) => '\x1B[106m$text\x1B[0m';
 }

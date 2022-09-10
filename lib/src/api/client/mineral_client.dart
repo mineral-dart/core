@@ -3,49 +3,8 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/dm_channel_manager.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/user_manager.dart';
+import 'package:mineral/src/internal/entities/command.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
-
-import 'package:mineral/src/internal/managers/command_manager.dart';
-
-enum Intent {
-  guilds(1 << 0),
-  guildMembers(1 << 1),
-  guildBans(1 << 2),
-  guildEmojisAndStickers(1 << 3),
-  guildIntegrations(1 << 4),
-  guildWebhooks(1 << 5),
-  guildInvites(1 << 6),
-  guildVoiceStates(1 << 7),
-  guildPresences(1 << 8),
-  guildMessages(1 << 9),
-  guildMessageReactions(1 << 10),
-  guildMessageTyping(1 << 11),
-  directMessages(1 << 12),
-  directMessageReaction(1 << 13),
-  directMessageTyping(1 << 14),
-  messageContent(1 << 17),
-  guildScheduledEvents(1 << 16),
-  autoModerationConfiguration(1 << 20),
-  autoModerationExecution(1 << 21),
-  all(0);
-
-  final int value;
-  const Intent(this.value);
-
-  static int getIntent (List<Intent> intents) {
-    List<int> values = [];
-
-    List<Intent> source = intents.contains(Intent.all) ? Intent.values : intents;
-    for (Intent intent in source) {
-      values.add(intent.value);
-    }
-
-    return values.reduce((value, element) => value += element);
-  }
-
-  @override
-  String toString () => value.toString();
-}
 
 enum ClientStatus {
   online('online'),
@@ -71,26 +30,37 @@ class ClientActivity {
 }
 
 class MineralClient {
-  User user;
-  GuildManager guilds;
-  DmChannelManager dmChannels;
-  UserManager users;
-  String sessionId;
-  Application application;
-  List<Intent> intents;
+  User _user;
+  GuildManager _guilds;
+  DmChannelManager _dmChannels;
+  UserManager _users;
+  String _sessionId;
+  Application _application;
+  List<Intent> _intents;
+  late DateTime uptime;
 
-  MineralClient({
-    required this.user,
-    required this.guilds,
-    required this.dmChannels,
-    required this.users,
-    required this.sessionId,
-    required this.application,
-    required this.intents,
-  });
+  MineralClient(
+    this._user,
+    this._guilds,
+    this._dmChannels,
+    this._users,
+    this._sessionId,
+    this._application,
+    this._intents,
+  );
+
+  User get user => _user;
+  GuildManager get guilds => _guilds;
+  DmChannelManager get dmChannels => _dmChannels;
+  UserManager get users => _users;
+  String get sessionId => _sessionId;
+  Application get application => _application;
+  List<Intent> get intents => _intents;
+
+  /// ### Returns the time the [MineralClient] is online
+  Duration get uptimeDuration => DateTime.now().difference(uptime);
 
   /// ### Defines the presence that this should adopt
-  ///
   ///
   /// Example :
   /// ```dart
@@ -124,17 +94,19 @@ class MineralClient {
     Http http = ioc.singleton(ioc.services.http);
 
     await http.put(
-      url: "/applications/${application.id}/commands",
+      url: "/applications/${_application.id}/commands",
       payload: commands.map((command) => command.toJson()).toList()
     );
   }
 
-  Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands}) async {
+  Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands, required List<MineralContextMenu> contextMenus }) async {
     Http http = ioc.singleton(ioc.services.http);
-
     await http.put(
-      url: "/applications/${application.id}/guilds/${guild.id}/commands",
-      payload: commands.map((command) => command.toJson()).toList()
+      url: "/applications/${_application.id}/guilds/${guild.id}/commands",
+      payload: [
+        ...commands.map((command) => command.toJson()).toList(),
+        ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
+      ]
     );
   }
 
@@ -142,13 +114,13 @@ class MineralClient {
     ShardManager manager = ioc.singleton(ioc.services.shards);
 
     return MineralClient(
-      user: User.from(payload['user']),
-      guilds: GuildManager(),
-      users: UserManager(),
-      sessionId: payload['session_id'],
-      application: Application.from(payload['application']),
-      intents: manager.intents,
-      dmChannels: DmChannelManager()
+      User.from(payload['user']),
+      GuildManager(),
+      DmChannelManager(),
+      UserManager(),
+      payload['session_id'],
+      Application.from(payload['application']),
+      manager.intents,
     );
   }
 }

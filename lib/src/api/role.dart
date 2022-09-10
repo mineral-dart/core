@@ -22,33 +22,33 @@ class Tag {
 }
 
 class Role {
-  Snowflake id;
-  String label;
-  int color;
-  bool hoist;
-  String? icon;
-  String? unicodeEmoji;
-  int position;
-  int permissions;
-  bool managed;
-  bool mentionable;
-  Tag? tags;
-  GuildRoleManager manager;
+  Snowflake _id;
+  String _label;
+  int _color;
+  bool _hoist;
+  String? _icon;
+  String? _unicodeEmoji;
+  int _position;
+  int _permissions;
+  bool _managed;
+  bool _mentionable;
+  Tag? _tags;
+  GuildRoleManager _manager;
 
-  Role({
-    required this.id,
-    required this.label,
-    required this.color,
-    required this.hoist,
-    required this.icon,
-    required this.unicodeEmoji,
-    required this.position,
-    required this.permissions,
-    required this.managed,
-    required this.mentionable,
-    required this.tags,
-    required this.manager,
-  });
+  Role(this._id, this._label, this._color, this._hoist, this._icon, this._unicodeEmoji, this._position, this._permissions, this._managed, this._mentionable, this._tags, this._manager);
+
+  Snowflake get id => _id;
+  String get label => _label;
+  int get color => _color;
+  bool get isHoist => _hoist;
+  String? get icon => _icon;
+  String? get unicodeEmoji => _unicodeEmoji;
+  int get position => _position;
+  int get permissions => _permissions;
+  bool get isManaged => _managed;
+  bool get isMentionable => _mentionable;
+  Tag? get tags => _tags;
+  GuildRoleManager get manager => _manager;
 
   /// ### Modifies the [label] of the role.
   ///
@@ -62,9 +62,9 @@ class Role {
   Future<void> setLabel (String label) async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'name': label });
+    Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'name': label });
     if (response.statusCode == 200) {
-      this.label = label;
+      _label = label;
     }
   }
 
@@ -83,10 +83,10 @@ class Role {
     Http http = ioc.singleton(ioc.services.http);
 
     int _permissions = Helper.reduceRolePermissions(permissions);
-    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'permissions': _permissions });
+    Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'permissions': _permissions });
 
     if (response.statusCode == 200) {
-      this.permissions = _permissions;
+      this._permissions = _permissions;
     }
   }
 
@@ -111,9 +111,9 @@ class Role {
     Http http = ioc.singleton(ioc.services.http);
 
     int _color = Helper.toRgbColor(color);
-    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'color': _color });
+    Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'color': _color });
     if (response.statusCode == 200) {
-      this.color = _color;
+      this._color = _color;
     }
   }
 
@@ -129,9 +129,9 @@ class Role {
   Future<void> setHoist (bool hoist) async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'hoist': hoist });
+    Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'hoist': hoist });
     if (response.statusCode == 200) {
-      this.hoist = hoist;
+      _hoist = hoist;
     }
   }
 
@@ -164,9 +164,9 @@ class Role {
     String icon = await Helper.getPicture(path);
 
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'icon': icon });
+    Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'icon': icon });
     if (response.statusCode == 200) {
-      this.icon = icon;
+      _icon = icon;
     }
   }
 
@@ -191,9 +191,9 @@ class Role {
     }
 
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'icon': null });
+    Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'icon': null });
     if (response.statusCode == 200) {
-      icon = null;
+      _icon = null;
     }
   }
 
@@ -218,9 +218,9 @@ class Role {
     }
 
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'unicode_emoji': unicode });
+    Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'unicode_emoji': unicode });
     if (response.statusCode == 200) {
-      unicodeEmoji = unicode;
+      _unicodeEmoji = unicode;
     }
   }
 
@@ -235,10 +235,10 @@ class Role {
   /// ```
   Future<void> setMentionable (bool mentionable) async {
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.patch(url: "/guilds/${manager.guildId}/roles/$id", payload: { 'mentionable': mentionable });
+    Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'mentionable': mentionable });
 
     if (response.statusCode == 200) {
-      this.mentionable = mentionable;
+      _mentionable = mentionable;
     }
   }
 
@@ -260,12 +260,12 @@ class Role {
   /// You can't delete `@everyone` and [managed] roles.
   ///
   Future<void> delete () async {
-    if (managed || label == '@everyone') {
+    if (isManaged || label == '@everyone') {
       return;
     }
 
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.destroy(url: "/guilds/${manager.guildId}/roles/$id");
+    Response response = await http.destroy(url: "/guilds/${manager.guild.id}/roles/$id");
 
     if (response.statusCode == 200) {
       manager.cache.remove(id);
@@ -287,18 +287,18 @@ class Role {
 
   factory Role.from({ required GuildRoleManager roleManager, dynamic payload }) {
     return Role(
-      id: payload['id'],
-      label: payload['name'],
-      color: payload['color'],
-      hoist: payload['hoist'],
-      icon: payload['icon'],
-      unicodeEmoji: payload['unicode_emoji'],
-      position: payload['position'],
-      permissions: payload['permissions'],
-      managed: payload['managed'],
-      mentionable: payload['mentionable'],
-      tags: payload['tags'] != null ? Tag.from(payload: payload['tags']) : null,
-      manager: roleManager,
+      payload['id'],
+      payload['name'],
+      payload['color'],
+      payload['hoist'],
+      payload['icon'],
+      payload['unicode_emoji'],
+      payload['position'],
+      payload['permissions'],
+      payload['managed'] ?? false,
+      payload['mentionable'] ?? false,
+      payload['tags'] != null ? Tag.from(payload: payload['tags']) : null,
+      roleManager,
     );
   }
 }

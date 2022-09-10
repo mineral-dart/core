@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:mirrors';
 
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/components/component.dart';
-import 'package:mineral/src/api/interactions/button_interaction.dart';
-import 'package:mineral/src/api/interactions/select_menu_interaction.dart';
+import 'package:mineral/src/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -17,6 +18,7 @@ class InteractionCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
+    EventManager manager = ioc.singleton(ioc.services.event);
     MineralClient client = ioc.singleton(ioc.services.client);
 
     dynamic payload = websocketResponse.payload;
@@ -24,8 +26,16 @@ class InteractionCreate implements WebsocketPacket {
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     GuildMember? member = guild?.members.cache.get(payload['member']['user']['id']);
 
-    if (payload['type'] == InteractionType.applicationCommand.value) {
+    if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.chatInput.value) {
       _executeCommandInteraction(guild!, member!, payload);
+    }
+
+    if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.user.value) {
+      _executeContextMenuInteraction(guild!, member!, payload);
+    }
+
+    if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.message.value) {
+      _executeContextMenuInteraction(guild!, member!, payload);
     }
 
     if (payload['type'] == InteractionType.messageComponent.value && payload['data']['component_type'] == ComponentType.button.value) {
@@ -39,12 +49,20 @@ class InteractionCreate implements WebsocketPacket {
     if (payload['type'] == InteractionType.modalSubmit.value) {
       _executeModalInteraction(guild!, member!, payload);
     }
+
+    if (member != null) {
+      final Interaction interaction = Interaction.from(payload: payload);
+
+      manager.emit(
+        event: Events.interactionCreate,
+        params: [interaction]
+      );
+    }
   }
 
   _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
     CommandManager manager = ioc.singleton(ioc.services.command);
-    CommandInteraction commandInteraction = CommandInteraction.from(user: member.user, payload: payload);
-    commandInteraction.guild = guild;
+    CommandInteraction commandInteraction = CommandInteraction.from(payload: payload);
 
     String identifier = commandInteraction.identifier;
 
@@ -65,22 +83,67 @@ class InteractionCreate implements WebsocketPacket {
       walk(payload['data']['options']);
     }
 
-    dynamic handle = manager.getHandler(identifier);
-    reflect(handle['commandClass']).invoke(handle['symbol'], [commandInteraction]);
+    final handle = manager.getHandler(identifier);
+
+    try {
+      reflect(handle['commandClass']).invoke(handle['symbol'], [commandInteraction]);
+    } catch (err) {
+      final String command = identifier.split('.').first;
+      final String method = identifier.split('.').last;
+
+      throw MissingMethodException(cause: 'The "$method" method does not exist on the "$command" command, please associate a valid method to your command or use the bind parameter of your subcommand');
+    }
   }
 
-  _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) {
+  _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {
+    ContextMenuManager contextMenuManager = ioc.singleton(ioc.services.contextMenu);
+    MineralContextMenu contextMenu = contextMenuManager.contextMenus.findOrFail((element) => element.name == payload['data']?['name']);
+
+    if (payload['data']?['type'] == ApplicationCommandType.user.value) {
+      final interaction = ContextUserInteraction.from(payload: payload );
+
+      reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
+    }
+
+    if (payload['data']?['type'] == ApplicationCommandType.message.value) {
+      Http http = ioc.singleton(ioc.services.http);
+      TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
+      Message? message = channel?.messages.cache.get(payload['data']?['target_id']);
+
+      if (message == null) {
+        Response response = await http.get(url: '/channels/${payload['channel_id']}/messages/${payload['data']?['target_id']}');
+        if (response.statusCode == 200) {
+          message = Message.from(channel: channel!, payload: jsonDecode(response.body));
+          channel.messages.cache.putIfAbsent(message.id, () => message!);
+        }
+      }
+
+      final interaction = ContextMessageInteraction.from(message: message!, payload: payload);
+
+      reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
+    }
+  }
+
+  _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) async {
+    Http http = ioc.singleton(ioc.services.http);
     EventManager manager = ioc.singleton(ioc.services.event);
+
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
 
+    if (message == null) {
+      Response response = await http.get(url: '/channels/${channel?.id}/messages/${payload['message']['id']}');
+      if (response.statusCode == 200) {
+        message = Message.from(channel: channel!, payload: jsonDecode(response.body));
+      }
+    }
+
     ButtonInteraction buttonInteraction = ButtonInteraction.from(
       user: member.user,
-      message: message,
-      payload: payload
+      message: message!,
+      payload: payload,
+      guild: guild,
     );
-
-    buttonInteraction.guild = guild;
 
     manager.emit(
       event: Events.buttonCreate,
@@ -96,16 +159,8 @@ class InteractionCreate implements WebsocketPacket {
 
   _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
     EventManager manager = ioc.singleton(ioc.services.event);
-    TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['message']['id']);
+    ModalInteraction modalInteraction = ModalInteraction.from(payload: payload);
 
-    ModalInteraction modalInteraction = ModalInteraction.from(
-      user: member.user,
-      message: message,
-      payload: payload
-    );
-
-    modalInteraction.guild = guild;
     for (dynamic row in payload['data']['components']) {
       for (dynamic component in row['components']) {
         modalInteraction.data.putIfAbsent(component['custom_id'], () => component['value']);
@@ -125,30 +180,28 @@ class InteractionCreate implements WebsocketPacket {
   }
 
   void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
-    print(jsonEncode(payload));
     EventManager manager = ioc.singleton(ioc.services.event);
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
 
-    SelectMenuInteraction modalInteraction = SelectMenuInteraction.from(
-      user: member.user,
+    SelectMenuInteraction interaction = SelectMenuInteraction.from(
       message: message,
-      payload: payload
+      payload: payload,
     );
 
     for (dynamic value in payload['data']['values']) {
-      modalInteraction.data.add(value);
+      interaction.data.add(value);
     }
 
     manager.emit(
       event: Events.selectMenuCreate,
-      customId: modalInteraction.customId,
-      params: [modalInteraction]
+      customId: interaction.customId,
+      params: [interaction]
     );
 
     manager.emit(
       event: Events.selectMenuCreate,
-      params: [modalInteraction]
+      params: [interaction]
     );
   }
 }

@@ -15,16 +15,28 @@ enum InteractionCallbackType {
 }
 
 class Interaction {
-  Snowflake id;
-  Snowflake applicationId;
-  int version;
-  InteractionType type;
-  String token;
-  User user;
-  Guild? guild;
+  Snowflake _id;
+  Snowflake _applicationId;
+  int _version;
+  int _typeId;
+  String _token;
+  Snowflake? _userId;
+  Snowflake? _guildId;
 
+  Interaction(this._id, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId);
 
-  Interaction({ required this.id, required this.applicationId, required this.version, required this.type, required this.token, required this.user });
+  Snowflake get id => _id;
+  Snowflake get applicationId => _applicationId;
+  int get version => _version;
+  InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
+  String get token => _token;
+  Guild? get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.get(_guildId);
+
+  User get user => _guildId != null
+    ? guild!.members.cache.getOrFail(_userId).user
+    : ioc.singleton<MineralClient>(ioc.services.client).users.cache.getOrFail(_userId);
+
+  GuildMember? get member => guild?.members.cache.get(_userId);
 
   /// ### Responds to this by an [Message]
   ///
@@ -32,19 +44,19 @@ class Interaction {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<void> reply ({ String? content, List<MessageEmbed>? embeds, List<Row>? components, bool? tts, bool? private }) async {
+  Future<void> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
     Http http = ioc.singleton(ioc.services.http);
 
     List<dynamic> embedList = [];
     if (embeds != null) {
-      for (MessageEmbed element in embeds) {
+      for (EmbedBuilder element in embeds) {
         embedList.add(element.toJson());
       }
     }
 
     List<dynamic> componentList = [];
     if (components != null) {
-      for (Row element in components) {
+      for (RowBuilder element in components) {
         componentList.add(element.toJson());
       }
     }
@@ -71,12 +83,24 @@ class Interaction {
   ///
   /// await interaction.modal(modal);
   /// ```
-  Future<void> modal (Modal modal) async {
+  Future<void> modal (ModalBuilder modal) async {
     Http http = ioc.singleton(ioc.services.http);
 
     await http.post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.modal.value,
       'data': modal.toJson(),
     });
+  }
+
+  factory Interaction.from({ required dynamic payload }) {
+    return Interaction(
+      payload['id'],
+      payload['application_id'],
+      payload['version'],
+      payload['type'],
+      payload['token'],
+      payload['member']?['user']?['id'],
+      payload['guild_id'],
+    );
   }
 }

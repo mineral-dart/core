@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/exceptions/shard_exception.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 
 class Heartbeat {
@@ -37,15 +38,20 @@ class Heartbeat {
   void _send() {
     Console.debug(message: 'Heartbeat called', prefix: 'Shard #${shard.id}');
 
-    if(ackMissing == 1) Console.warn(message: 'Discord didn\'t receive last heartbeat', prefix: 'Shard #${shard.id}');
-    if(ackMissing >= 2) {
-      Console.error(message: 'Discord didn\'t receive last $ackMissing heartbeats, connection restart...', prefix: 'Shard #${shard.id}');
+    ackMissing += 1;
+
+    if(ackMissing == 2) Console.warn(message: 'Discord didn\'t receive last heartbeat', prefix: 'Shard #${shard.id}');
+    if(ackMissing >= 3 && ackMissing <= 5) {
+      Console.error(message: 'Discord didn\'t receive last ${ackMissing - 1} heartbeats, connection restart...', prefix: 'Shard #${shard.id}');
       shard.reconnect(resume: true);
       return;
+    }
+    if(ackMissing > 5) {
+      Console.error(message: 'Discord didn\'t receive last ${ackMissing - 1} heartbeats, shutdown.', prefix: 'Shard #${shard.id}');
+      throw ShardException(cause: 'Discord didn\'t receive ${ackMissing - 1} heartbeats');
     }
 
     shard.send(OpCode.heartbeat, shard.sequence, canQueue: false);
     shard.lastHeartbeat = DateTime.now();
-    ackMissing += 1;
   }
 }

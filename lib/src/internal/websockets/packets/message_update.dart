@@ -15,6 +15,10 @@ class MessageUpdate implements WebsocketPacket {
 
     dynamic payload = websocketResponse.payload;
 
+    if (payload['author'] == null) {
+      return;
+    }
+
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     TextBasedChannel? channel = guild?.channels.cache.get(payload['channel_id']);
     Message? before = channel?.messages.cache.get(payload['id']);

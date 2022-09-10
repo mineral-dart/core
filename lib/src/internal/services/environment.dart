@@ -1,12 +1,18 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:mineral/src/exceptions/not_exist.dart';
 import 'package:path/path.dart' as path;
 
 class Environment {
   final Map<String, String> _cache = Map.from(Platform.environment);
 
-  Future<Environment> load (String environment) async {
-    File file = File(path.join(Directory.current.path, environment));
+  Future<Environment> load () async {
+    File file = File(path.join(Directory.current.path, '.env'));
+
+    if (!file.existsSync()) {
+      throw NotExist(cause: 'The .env file does not exist, please create one.');
+    }
+
     List<String> content = await file.readAsLines(encoding: utf8);
 
     for (String line in content) {
@@ -20,6 +26,7 @@ class Environment {
     }
 
     return this;
+
   }
 
   String? get (String key) {

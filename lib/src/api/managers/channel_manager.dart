@@ -3,33 +3,27 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/channel.dart';
+import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
-import 'package:collection/collection.dart';
+class ChannelManager extends CacheManager<GuildChannel> {
+  final Snowflake _guildId;
 
-class ChannelManager implements CacheManager<Channel> {
-  @override
-  Map<Snowflake, Channel> cache = {};
+  ChannelManager(this._guildId);
 
-  Snowflake? guildId;
-  late Guild? guild;
+  Guild get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId);
 
-  ChannelManager({ required this.guildId });
-
-  @override
-  Future<Map<Snowflake, Channel>> sync () async {
+  Future<Map<Snowflake, GuildChannel>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
-    Response response = await http.get(url: "/guilds/$guildId/channels");
+    Response response = await http.get(url: "/guilds/$_guildId/channels");
     dynamic payload = jsonDecode(response.body);
 
-    for(dynamic element in payload) {
-      if (channels.containsKey(element['type'])) {
-        Channel Function(dynamic payload) item = channels[element['type']] as Channel Function(dynamic payload);
-        Channel channel = item(element);
+    for (dynamic element in payload) {
+      final GuildChannel? channel = ChannelWrapper.create(element);
 
+      if (channel != null) {
         cache.putIfAbsent(channel.id, () => channel);
       }
     }
@@ -37,56 +31,13 @@ class ChannelManager implements CacheManager<Channel> {
     return cache;
   }
 
-  Future<TextChannel?> createTextChannel ({ required String label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
-    return await _create<TextChannel>(data: {
-      'name': label,
-      'topic': description,
-      'type': ChannelType.guildText.value,
-      'parent_id': categoryChannel?.id,
-      'nsfw': nsfw ?? false,
-      'rate_limit_per_user': delay ?? 0,
-      'permission_overwrites': [],
-    });
-  }
-
-  Future<VoiceChannel?> createVoiceChannel ({ required String label, int? position, CategoryChannel? categoryChannel, int? bitrate, int? maxUsers }) async {
-    return await _create<VoiceChannel>(data: {
-      'name': label,
-      'type': ChannelType.guildVoice.value,
-      'parent_id': categoryChannel?.id,
-      'permission_overwrites': [],
-      'bitrate': bitrate ?? 64000,
-      'user_limit': maxUsers ?? 0,
-    });
-  }
-
-  Future<CategoryChannel?> createCategoryChannel ({ required String label, int? position }) async {
-    return await _create<CategoryChannel>(data: {
-      'name': label,
-      'type': ChannelType.guildCategory.value,
-      'permission_overwrites': [],
-    });
-  }
-
-  Future<T?> _create<T> ({ required dynamic data }) async {
+  Future<T?> create<T extends GuildChannel> (ChannelBuilder builder) async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.post(url: "/guilds/$guildId/channels", payload: data);
+    Response response = await http.post(url: '/guilds/$_guildId/channels', payload: builder.payload);
     dynamic payload = jsonDecode(response.body);
 
-    final ChannelType? type = ChannelType.values.firstWhereOrNull((element) => element.value == payload['type']);
-    if (type != null && channels.containsKey(type)) {
-      Channel Function(dynamic payload) item = channels[type] as Channel Function(dynamic payload);
-      Channel channel = item(payload);
-
-      // Define deep properties
-      channel.guildId = guildId;
-      channel.guild = guild;
-      channel.parent = channel.parentId != null ? guild?.channels.cache.get<CategoryChannel>(channel.parentId) : null;
-
-      cache.putIfAbsent(channel.id, () => channel);
-      return channel as T;
-    }
-    return null;
+    final GuildChannel? channel = ChannelWrapper.create(payload);
+    return channel as T;
   }
 }

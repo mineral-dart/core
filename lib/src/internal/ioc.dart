@@ -9,6 +9,7 @@ class Service {
   final cli = 'Mineral/Core/Cli';
   final shards = 'Mineral/Core/Shards';
   final reporter = 'Mineral/Core/Reporter';
+  final contextMenu = 'Mineral/Core/ContextMenu';
 }
 
 class Ioc {
@@ -25,8 +26,8 @@ class Ioc {
     _services.putIfAbsent(namespace, () => service);
   }
 
-  singleton (String namespace) {
-    return Ioc._instance._services[namespace];
+  T singleton<T extends dynamic> (String namespace) {
+    return Ioc._instance._services[namespace] as T;
   }
 }
 

@@ -1,33 +1,41 @@
 import 'dart:core';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/interactions/interaction.dart';
 
 class ButtonInteraction extends Interaction {
-  Message? message;
-  Snowflake customId;
+  Snowflake _customId;
+  Snowflake _messageId;
+  Snowflake _channelId;
 
-  ButtonInteraction({
-    required this.message,
-    required this.customId,
-    required InteractionType type,
-    required Snowflake applicationId,
-    required Snowflake id,
-    required int version,
-    required String token,
-    required User user
-  }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
+  ButtonInteraction(
+    super._id,
+    super._applicationId,
+    super._version,
+    super._typeId,
+    super.token,
+    super._userId,
+    super._guildId,
+    this._messageId,
+    this._customId,
+    this._channelId,
+  );
 
-  factory ButtonInteraction.from({ required User user, required Message? message, required dynamic payload }) {
+  Snowflake get customId => _customId;
+  Message? get message => guild?.channels.cache.get<TextBasedChannel>(_channelId)?.messages.cache.get(_messageId);
+  TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId)?.messages.cache.get(_messageId);
+
+  factory ButtonInteraction.from({ required User user, required Guild guild, required Message message, required dynamic payload }) {
     return ButtonInteraction(
-      id: payload['id'],
-      applicationId: payload['application_id'],
-      type: InteractionType.messageComponent,
-      version: payload['version'],
-      token: payload['token'],
-      user: user,
-      message: message,
-      customId: payload['data']['custom_id']
+      payload['id'],
+      payload['application_id'],
+      payload['version'],
+      payload['type'],
+      payload['token'],
+      payload['user']?['id'],
+      payload['guild_id'],
+      payload['message_id'],
+      payload['data']['custom_id'],
+      payload['channel_id'],
     );
   }
 }

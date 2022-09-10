@@ -7,16 +7,16 @@ import 'package:mineral/src/exceptions/not_exist.dart';
 class StoreManager {
   final Map<String, dynamic> _stores = {};
 
-  StoreManager add (MineralStore store) {
-    String name = reflect(store).type.metadata.first.reflectee.name;
-    if (_stores.containsKey(name)) {
-      throw AlreadyExist(cause: "A store named $name already exists.");
+  void register (List<MineralStore> mineralStores) {
+    for (final store in mineralStores) {
+      String name = reflect(store).type.metadata.first.reflectee.name;
+      if (_stores.containsKey(name)) {
+        throw AlreadyExist(cause: "A store named $name already exists.");
+      }
+
+      store.environment = ioc.singleton(ioc.services.environment);
+      _stores[name] = store;
     }
-
-    store.environment = ioc.singleton(ioc.services.environment);
-
-    _stores[name] = store;
-    return this;
   }
 
   T getStore<T> (String store) {
@@ -26,16 +26,4 @@ class StoreManager {
 
     return _stores[store];
   }
-}
-
-class Store {
-  final String type = 'store';
-  final String name;
-
-  const Store(this.name);
-}
-
-abstract class MineralStore<T> {
-  late Environment environment;
-  late T state;
 }

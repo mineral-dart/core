@@ -1,7 +1,7 @@
 import 'package:mineral/src/api/components/component.dart';
 
 enum TextInputStyle {
-  short(1),
+  input(1),
   paragraph(2);
 
   final int value;
@@ -11,23 +11,23 @@ enum TextInputStyle {
   String toString () => value.toString();
 }
 
-class TextInput extends Component {
+class TextInputBuilder extends Component {
   String customId;
   String label;
   TextInputStyle style;
   int? minLength;
   int? maxLength;
-  bool required;
+  bool required = false;
   String? placeholder;
   String? value;
 
-  TextInput({
+  TextInputBuilder({
     required this.customId,
     required this.label,
     required this.style,
     this.minLength,
     this.maxLength,
-    required this.required,
+    this.required = false,
     this.placeholder,
     this.value,
   }) : super(type: ComponentType.textInput);

@@ -1,6 +1,5 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/managers/voice_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -24,10 +23,11 @@ class GuildMemberAdd implements WebsocketPacket {
         user: user,
         roles: guild.roles,
         member: payload,
-        guildId: guild.id,
-        voice: VoiceManager(isMute: payload['mute'], isDeaf: payload['deaf'], isSelfMute: false, isSelfDeaf: false, hasVideo: false, hasStream: false, channel: null)
+        guild: guild,
+        voice: VoiceManager(payload['deaf'], payload['mute'], false, false, false, false, null, null)
       );
-      member.guild = guild;
+
+      member.voice.member = member;
 
       guild.members.cache.putIfAbsent(member.user.id, () => member);
       manager.emit(event: Events.memberJoin, params: [member]);

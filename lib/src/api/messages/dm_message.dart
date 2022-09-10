@@ -2,6 +2,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
@@ -9,42 +10,30 @@ import 'package:mineral/src/api/messages/partial_message.dart';
 class DmMessage extends PartialMessage<DmChannel> {
   User author;
 
-  DmMessage({
-    required id,
-    required content,
-    required tts,
-    required embeds,
-    required allowMentions,
-    required reference,
-    required components,
-    required stickers,
-    required payload,
-    required attachments,
-    required flags,
-    required channelId,
-    required channel,
-    required this.author,
-  }): super(
-    id: id,
-    content: content,
-    tts: tts,
-    embeds: embeds,
-    allowMentions: allowMentions,
-    reference: reference,
-    components: components,
-    stickers: stickers,
-    payload: payload,
-    attachments: attachments,
-    flags: flags,
-    channelId: channelId,
-    channel: channel,
+  DmMessage(
+    super.id,
+    super.content,
+    super.tts,
+    super.embeds,
+    super.allowMentions,
+    super.reference,
+    super.components,
+    super.stickers,
+    super.payload,
+    super.attachments,
+    super.flags,
+    super.pinned,
+    super._guildId,
+    super.channelId,
+    super.reactions,
+    this.author,
   );
 
   factory DmMessage.from({ required DmChannel channel, required dynamic payload }) {
     MineralClient client = ioc.singleton(ioc.services.client);
     User? user = client.users.cache.get(payload['author']['id']);
-    List<MessageEmbed> embeds = [];
 
+    List<EmbedBuilder> embeds = [];
     for (dynamic element in payload['embeds']) {
       List<Field> fields = [];
       if (element['fields'] != null) {
@@ -54,7 +43,7 @@ class DmMessage extends PartialMessage<DmChannel> {
         }
       }
 
-      MessageEmbed embed = MessageEmbed(
+      EmbedBuilder embed = EmbedBuilder(
         title: element['title'],
         description: element['description'],
         url: element['url'],
@@ -99,26 +88,34 @@ class DmMessage extends PartialMessage<DmChannel> {
     }
 
     List<Component> components = [];
-    for (dynamic payload in payload['components']) {
-      Component component = Component.from(payload: payload);
-      components.add(component);
+    if (payload['components'] != null) {
+      for (dynamic payload in payload['components']) {
+        Component component = Component.from(payload: payload);
+        components.add(component);
+      }
     }
 
-    return DmMessage(
-      id: payload['id'],
-      content: payload['content'],
-      tts: payload['tts'] ?? false,
-      allowMentions: payload['allow_mentions'] ?? false,
-      reference: payload['reference'],
-      flags: payload['flags'],
-      channelId: channel.id,
-      channel: channel,
-      author: user!,
-      embeds: embeds,
-      components: components,
-      payload: payload['payload'],
-      stickers: stickers,
-      attachments: messageAttachments,
+    final message = DmMessage(
+      payload['id'],
+      payload['content'],
+      payload['tts'] ?? false,
+      embeds,
+      payload['allow_mentions'] ?? false,
+      payload['reference'],
+      components,
+      stickers,
+      payload['payload'],
+      messageAttachments,
+      payload['flags'],
+      payload['pinned'],
+      null,
+      channel.id,
+      MessageReactionManager<DmChannel, DmMessage>(channel),
+      user!,
     );
+
+    message.reactions.message = message;
+
+    return message;
   }
 }

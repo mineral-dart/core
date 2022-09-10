@@ -1,8 +1,7 @@
 import 'dart:mirrors';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/managers/store_manager.dart';
+import 'package:mineral/src/internal/entities/command.dart';
 
 class CommandManager {
   final Map<String, SlashCommand> _commands = {};
@@ -13,22 +12,29 @@ class CommandManager {
   Map<String, dynamic> getHandlers () => _handlers;
 
   dynamic getHandler (String handler) => _handlers[handler];
+  dynamic get handlers => _handlers;
 
-  CommandManager add (MineralCommand mineralCommand) {
-    SlashCommand command = SlashCommand(name: '', description: '', scope: '', options: []);
+  void register (List<MineralCommand> mineralCommands) {
+    for (final commandClass in mineralCommands) {
+      SlashCommand command = SlashCommand(name: '',
+          description: '',
+          scope: '',
+          everyone: true,
+          dmChannel: false,
+          options: []);
 
-    _registerCommands(
-      command: command,
-      mineralCommand: mineralCommand
-    );
+      _registerCommands(
+          command: command,
+          mineralCommand: commandClass
+      );
 
-    _registerCommandMethods(
-      command: command,
-      mineralCommand: mineralCommand
-    );
+      _registerCommandMethods(
+          command: command,
+          mineralCommand: commandClass
+      );
 
-    _commands.set(command.name, command);
-    return this;
+      _commands.set(command.name, command);
+    }
   }
 
   List<SlashCommand> getFromGuild (Guild guild) {
@@ -61,9 +67,9 @@ class CommandManager {
       dynamic reflectee = element.reflectee;
 
       if (reflectee is CommandGroup) {
-        SlashCommand group = SlashCommand(name: '', description: '', scope: '', options: [])
+        SlashCommand group = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, options: [])
           ..type = 2
-          ..name = reflectee.name.toLowerCase()
+          ..name = reflectee.name.snakeCase
           ..description = reflectee.description;
 
         command.groups.add(group);
@@ -73,7 +79,8 @@ class CommandManager {
         command
           ..name = reflectee.name.toLowerCase()
           ..description = reflectee.description
-          ..scope = reflectee.scope;
+          ..scope = reflectee.scope
+          ..everyone = reflectee.everyone ?? false;
 
         if (classMirror.instanceMembers.values.toList().where((element) => element.simpleName == Symbol('handle')).isNotEmpty) {
           MethodMirror handle = classMirror.instanceMembers.values.toList().firstWhere((element) => element.simpleName == Symbol('handle'));
@@ -97,7 +104,7 @@ class CommandManager {
         return;
       }
 
-      SlashCommand subcommand = SlashCommand(name: '', description: '', scope: '', options: []);
+      SlashCommand subcommand = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, options: []);
       subcommand.name = value.metadata.first.reflectee.name;
       subcommand.description = value.metadata.first.reflectee.description;
 
@@ -106,23 +113,23 @@ class CommandManager {
 
         if (reflectee is Subcommand) {
           String? groupName = reflectee.group;
+          String? bind = reflectee.bind;
 
           if (groupName != null) {
             SlashCommand group = command.groups.firstWhere((group) => group.name == groupName);
             group.subcommands.add(subcommand);
 
             _handlers.putIfAbsent("${command.name}.${group.name}.${subcommand.name}", () => {
-              'symbol': Symbol(subcommand.name),
+              'symbol': Symbol(bind ?? subcommand.name),
               'commandClass': classCommand,
             });
           } else {
             command.subcommands.add(subcommand);
             _handlers.putIfAbsent("${command.name}.${subcommand.name}", () => {
-              'symbol': Symbol(subcommand.name),
+              'symbol': Symbol(bind ?? subcommand.name),
               'commandClass': classCommand,
             });
           }
-
         }
 
         if (reflectee is Option) {
@@ -130,122 +137,5 @@ class CommandManager {
         }
       }
     });
-  }
-}
-
-class MineralCommand {
-  late MineralClient client;
-  late StoreManager stores;
-  late Environment environment;
-}
-
-class Command {
-  final String type = 'command';
-  final String name;
-  final String description;
-  final String scope;
-
-  const Command ({ required this.name, required this.description, required this.scope });
-}
-
-class CommandGroup {
-  final String name;
-  final String description;
-  final int type = 2;
-
-  const CommandGroup ({ required this.name, required this.description });
-}
-
-class Subcommand {
-  final String name;
-  final String description;
-  final int type = 1;
-  final String? group;
-
-  const Subcommand ({ required this.name, required this.description, this.group });
-}
-
-
-enum OptionType {
-  string(3),
-  integer(4),
-  boolean(5),
-  user(6),
-  channel(7),
-  role(8),
-  mentionable(9),
-  number(10),
-  attachment(11);
-
-  final int value;
-  const OptionType(this.value);
-}
-
-class OptionChoice {
-  final String label;
-  final String value;
-
-  const OptionChoice({ required this.label, required this.value });
-
-  Object toJson () => { 'name': label, 'value': value };
-}
-
-class Option {
-  final String name;
-  final String description;
-  final OptionType type;
-  final bool required;
-  final List<ChannelType>? channels;
-  final int? min;
-  final int? max;
-  final List<OptionChoice>? choices;
-
-  const Option ({
-    required this.name,
-    required this.description,
-    required this.type,
-    required this.required,
-    this.channels,
-    this.min,
-    this.max,
-    this.choices,
-  });
-
-  Object toJson () {
-    return {
-      'name': name,
-      'description': description,
-      'type': type.value,
-      'required': required,
-      'channel_types': channels?.map((channel) => channel.value).toList(),
-      'choices': choices?.map((choice) => choice.toJson()).toList(),
-      'min_value': min,
-      'max_value': max,
-    };
-  }
-}
-
-class SlashCommand {
-  String name;
-  String description;
-  String scope;
-  int type = 1;
-  List<Option> options = [];
-  List<SlashCommand> groups = [];
-  List<SlashCommand> subcommands = [];
-
-  SlashCommand({ required this.name, required this.description, required this.scope, required this.options });
-
-  Object toJson () {
-    return {
-      'name': name,
-      'description': description,
-      'type': type,
-      'options': groups.isNotEmpty
-         ? [...groups.map((group) => group.toJson()).toList(), ...subcommands.map((subcommand) => subcommand.toJson()).toList()]
-         : subcommands.isNotEmpty
-            ? subcommands.map((subcommand) => subcommand.toJson()).toList()
-            : options.map((option) => option.toJson()).toList(),
-    };
   }
 }

@@ -14,21 +14,25 @@ enum StatusType {
 }
 
 class Status {
-  User user;
-  Snowflake guildId;
-  Guild guild;
-  StatusType type;
-  List<Activity> activities;
-  dynamic platform;
+  User _user;
+  Guild _guild;
+  StatusType _type;
+  List<Activity> _activities;
+  dynamic _platform;
 
-  Status({
-    required this.user,
-    required this.guildId,
-    required this.guild,
-    required this.type,
-    required this.activities,
-    required this.platform,
-  });
+  Status(
+    this._user,
+    this._guild,
+    this._type,
+    this._activities,
+    this._platform,
+  );
+
+  User get user => _user;
+  Guild get guild => _guild;
+  StatusType get type => _type;
+  List<Activity> get activities => _activities;
+  dynamic get platform => _platform;
 
   factory Status.from({ required Guild guild, required dynamic payload }) {
     GuildMember guildMember = guild.members.cache.get(payload['user']['id'])!;
@@ -41,12 +45,11 @@ class Status {
     }
 
     return Status(
-      guildId: payload['guild_id'],
-      guild: guild,
-      type: StatusType.values.firstWhere((status) => status.toString() == payload['status']),
-      user: guildMember.user,
-      platform: payload['client_status'],
-      activities: activities,
+      guildMember.user,
+      guild,
+      StatusType.values.firstWhere((status) => status.toString() == payload['status']),
+      activities,
+      payload['client_status'],
     );
   }
 }

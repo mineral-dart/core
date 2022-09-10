@@ -1,23 +1,30 @@
 import 'dart:core';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/interactions/interaction.dart';
 
 class SelectMenuInteraction extends Interaction {
-  Message? message;
-  Snowflake customId;
-  List<String> data = [];
+  Message? _message;
+  Snowflake _customId;
+  Snowflake _channelId;
 
-  SelectMenuInteraction({
-    required this.message,
-    required this.customId,
-    required InteractionType type,
-    required Snowflake applicationId,
-    required Snowflake id,
-    required int version,
-    required String token,
-    required User user
-  }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
+  final List<String> data = [];
+
+  SelectMenuInteraction(
+    super._id,
+    super._applicationId,
+    super._version,
+    super._type,
+    super._token,
+    super._user,
+    super._guild,
+    this._message,
+    this._customId,
+    this._channelId,
+  );
+
+  Message? get message => _message;
+  Snowflake get customId => _customId;
+  TextBasedChannel? get channel => guild?.channels.cache.get(_channelId);
 
   /// ### Return an [List] of [T] if this has the designed field
   ///
@@ -37,16 +44,18 @@ class SelectMenuInteraction extends Interaction {
   /// ```
   T getValue<T> () => data.first as T;
 
-  factory SelectMenuInteraction.from({ required User user, required Message? message, required dynamic payload }) {
+  factory SelectMenuInteraction.from({ required Message? message, required dynamic payload }) {
     return SelectMenuInteraction(
-      id: payload['id'],
-      applicationId: payload['application_id'],
-      type: InteractionType.messageComponent,
-      version: payload['version'],
-      token: payload['token'],
-      user: user,
-      message: message,
-      customId: payload['data']['custom_id']
+      payload['id'],
+      payload['application_id'],
+      payload['version'],
+      payload['type'],
+      payload['token'],
+      payload['user']?['id'],
+      payload['guild_id'],
+      message,
+      payload['data']['custom_id'],
+      payload['channel_id'],
     );
   }
 }

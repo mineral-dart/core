@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/components/component.dart';
 
 enum ButtonStyle {
@@ -14,12 +15,14 @@ enum ButtonStyle {
   String toString () => value.toString();
 }
 
-class Button extends Component {
+class ButtonBuilder extends Component {
   String customId;
-  String label;
+  String? label;
   ButtonStyle style;
+  EmojiBuilder? emoji;
+  bool disabled;
 
-  Button({ required this.customId, required this.label, required this.style }) : super(type: ComponentType.button);
+  ButtonBuilder({ required this.customId, this.label, required this.style, this.emoji, this.disabled = false }) : super(type: ComponentType.button);
 
   @override
   dynamic toJson () {
@@ -28,11 +31,13 @@ class Button extends Component {
       'custom_id': customId,
       'label': label,
       'style': style.value,
+      'emoji': emoji?.emoji.toJson(),
+      'disabled': disabled
     };
   }
 
-  factory Button.from({ required dynamic payload }) {
-    return Button(
+  factory ButtonBuilder.from({ required dynamic payload }) {
+    return ButtonBuilder(
       customId: payload['custom_id'],
       label: payload['label'],
       style: ButtonStyle.values.firstWhere((element) => element.value == payload['style'])

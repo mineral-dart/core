@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/channel.dart';
+import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -17,28 +17,18 @@ class ChannelUpdate implements WebsocketPacket {
     dynamic payload = websocketResponse.payload;
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
-    Channel? before = guild?.channels.cache.get(payload['id']);
+    GuildChannel? before = guild?.channels.cache.get(payload['id']);
 
-    Channel? after = _dispatch(guild, payload);
+    GuildChannel? after = ChannelWrapper.create(payload);
+
+    manager.emit(
+      event: Events.channelUpdate,
+      params: [before, after]
+    );
+
     if (after != null) {
-      after.guildId = guild?.id;
-      after.guild = guild;
-      after.parent = after.parentId != null ? guild?.channels.cache.get<CategoryChannel>(after.parentId) : null;
-
-      manager.emit(
-        event: Events.channelUpdate,
-        params: [before, after]
-      );
-
       guild?.channels.cache.set(after.id, after);
+      return;
     }
-  }
-
-  Channel? _dispatch (Guild? guild, dynamic payload) {
-    if (channels.containsKey(payload['type'])) {
-      Channel Function(dynamic payload) item = channels[payload['type']] as Channel Function(dynamic payload);
-      return item(payload);
-    }
-    return null;
   }
 }

@@ -4,28 +4,57 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 
-/// Represents an [Emoji] on [Guild] context.
-class Emoji {
-  Snowflake id;
-  String label;
-  GuildMember? creator;
-  bool requireColons;
-  bool managed;
-  bool animated;
-  bool available;
-  EmojiManager manager;
+class EmojiBuilder {
+  PartialEmoji emoji;
 
-  Emoji({
-    required this.id,
-    required this.label,
-    //required this.roles,
-    required this.creator,
-    required this.requireColons,
-    required this.managed,
-    required this.animated,
-    required this.available,
-    required this.manager,
-  });
+  EmojiBuilder(this.emoji);
+
+  factory EmojiBuilder.fromUnicode(String label) => EmojiBuilder(PartialEmoji('', label, false));
+  factory EmojiBuilder.fromEmoji(Emoji emoji) => EmojiBuilder(emoji);
+}
+
+class PartialEmoji {
+  final Snowflake _id;
+  String _label;
+  final bool _animated;
+
+  PartialEmoji(this._id, this._label, this._animated);
+
+  Snowflake get id => _id;
+  String get label => _label;
+  bool get isAnimated => _animated;
+
+  Object toJson () => {
+    'id': _id == '' ? null : _id,
+    'name': _label,
+    'animated': _animated,
+  };
+}
+
+/// Represents an [Emoji] on [Guild] context.
+class Emoji extends PartialEmoji {
+  GuildMember? _creator;
+  bool _requireColons;
+  bool _managed;
+  bool _available;
+  EmojiManager _manager;
+
+  Emoji(
+    super._id,
+    super._label,
+    super._animated,
+    this._creator,
+    this._requireColons,
+    this._managed,
+    this._available,
+    this._manager,
+  );
+
+  GuildMember? get creator => _creator;
+  bool get requireColons => _requireColons;
+  bool get managed => _managed;
+  bool get available => _available;
+  EmojiManager get manager => _manager;
 
   /// ### Modifies the [label] of this.
   ///
@@ -38,10 +67,10 @@ class Emoji {
   /// ```
   Future<void> setLabel (String label) async {
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.patch(url: "/guilds/${manager.guildId}/emojis/$id", payload: { 'name': label });
+    Response response = await http.patch(url: "/guilds/${manager.guild.id}/emojis/$id", payload: { 'name': label });
 
     if (response.statusCode == 200) {
-      this.label = label;
+      _label = label;
     }
   }
 
@@ -62,7 +91,7 @@ class Emoji {
   /// ```
   Future<void> delete () async {
     Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.destroy(url: "/guilds/${manager.guildId}/emojis/$id");
+    Response response = await http.destroy(url: "/guilds/${manager.guild.id}/emojis/$id");
 
     if (response.statusCode == 200) {
       manager.cache.remove(id);
@@ -80,20 +109,20 @@ class Emoji {
   /// }
   /// ```
   @override
-  String toString () => animated
+  String toString () => isAnimated
     ? '<a:$label:$id>'
-    : '<$label:$id>';
+    : '<:$label:$id>';
 
   factory Emoji.from({ required MemberManager memberManager, required EmojiManager emojiManager, required dynamic payload }) {
     return Emoji(
-      id: payload['id'],
-      label: payload['name'],
-      creator: payload['user'] != null ? memberManager.cache.get(payload['user']['id']) : null,
-      requireColons: payload['require_colons'] ?? false,
-      managed: payload['managed'] ?? false,
-      animated: payload['animated'] ?? false,
-      available: payload['available'] ?? false,
-      manager: emojiManager
+      payload['id'],
+      payload['name'],
+      payload['animated'] ?? false,
+      payload['user'] != null ? memberManager.cache.get(payload['user']['id']) : null,
+      payload['require_colons'] ?? false,
+      payload['managed'] ?? false,
+      payload['available'] ?? false,
+      emojiManager
     );
   }
 }

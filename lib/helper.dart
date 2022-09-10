@@ -38,4 +38,13 @@ class Helper {
 
     return _permissions;
   }
+
+  static List<Permission> bitfieldToPermissions (int bitfield) {
+    List<Permission> permissions = [];
+    for (Permission element in Permission.values) {
+      if((bitfield & element.value) == element.value) permissions.add(element);
+    }
+    return permissions;
+  }
+
 }

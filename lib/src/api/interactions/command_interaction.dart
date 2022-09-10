@@ -2,21 +2,27 @@ import 'dart:core';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/interactions/interaction.dart';
 
 class CommandInteraction extends Interaction {
-  String identifier;
+  String _identifier;
+  Snowflake? _channelId;
+
   Map<String, dynamic> data = {};
 
-  CommandInteraction({
-    required this.identifier,
-    required InteractionType type,
-    required Snowflake applicationId,
-    required Snowflake id,
-    required int version,
-    required String token,
-    required User user
-  }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
+  CommandInteraction(
+    super._id,
+    super._applicationId,
+    super._version,
+    super._typeId,
+    super._token,
+    super._userId,
+    super._guildId,
+    this._identifier,
+    this._channelId,
+  );
+
+  String get identifier => _identifier;
+  TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId);
 
   /// ### Returns an instance of [Channel] if the command has the designed option
   ///
@@ -24,7 +30,7 @@ class CommandInteraction extends Interaction {
   /// ```dart
   /// Channel? channel = interaction.getChannel('option_name');
   /// ```
-  T? getChannel<T extends Channel> (String optionName) {
+  T? getChannel<T extends PartialTextChannel> (String optionName) {
     return guild?.channels.cache.get(data[optionName]?['value']);
   }
 
@@ -110,15 +116,17 @@ class CommandInteraction extends Interaction {
     return data[optionName]?['value'];
   }
 
-  factory CommandInteraction.from({ required User user, required dynamic payload }) {
+  factory CommandInteraction.from({ required dynamic payload }) {
     return CommandInteraction(
-      id: payload['id'],
-      applicationId: payload['application_id'],
-      type: InteractionType.applicationCommand,
-      identifier: payload['data']['name'],
-      version: payload['version'],
-      token: payload['token'],
-      user: user,
+      payload['id'],
+      payload['application_id'],
+      payload['version'],
+      payload['type'],
+      payload['token'],
+      payload['user']?['id'],
+      payload['guild_id'],
+      payload['data']['name'],
+      payload['channel_id'],
     );
   }
 }

@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/event_emitter.dart';
+import 'package:mineral/src/internal/services/event_emitter.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:test/scaffolding.dart';
 
@@ -27,7 +27,7 @@ void main() {
     Http http = Http(baseUrl: discordEndpoint);
 
     Environment environment = Environment();
-    environment.load(".env");
+    environment.load();
 
     ShardManager manager = ShardManager(http, environment.get("APP_TOKEN")!, [Intent.all]);
     await manager.start(shardsCount: 1);

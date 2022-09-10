@@ -1,23 +1,27 @@
 import 'dart:core';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/interactions/interaction.dart';
 
 class ModalInteraction extends Interaction {
-  Message? message;
-  Snowflake customId;
+  Snowflake _customId;
+  Snowflake _channelId;
+
   Map<String, dynamic> data = {};
 
-  ModalInteraction({
-    required this.message,
-    required this.customId,
-    required InteractionType type,
-    required Snowflake applicationId,
-    required Snowflake id,
-    required int version,
-    required String token,
-    required User user
-  }) : super(id: id, version: version, token: token, type: type, user: user, applicationId: applicationId);
+  ModalInteraction(
+    super._id,
+    super._applicationId,
+    super._version,
+    super._typeId,
+    super._token,
+    super._userId,
+    super._guildId,
+    this._customId,
+    this._channelId,
+  );
+
+  Snowflake get customId => _customId;
+  TextChannel? get channel => guild?.channels.cache.get(_channelId);
 
   /// ### Return an [String] if the modal has the designed field
   ///
@@ -27,16 +31,17 @@ class ModalInteraction extends Interaction {
   /// ```
   String? getText(String customId) => data.get(customId);
 
-  factory ModalInteraction.from({ required User user, required Message? message, required dynamic payload }) {
+  factory ModalInteraction.from({ required dynamic payload }) {
     return ModalInteraction(
-      id: payload['id'],
-      applicationId: payload['application_id'],
-      type: InteractionType.modalSubmit,
-      version: payload['version'],
-      token: payload['token'],
-      user: user,
-      message: message,
-      customId: payload['data']['custom_id']
+      payload['id'],
+      payload['application_id'],
+      payload['version'],
+      payload['type'],
+      payload['token'],
+      payload['member']?['user']?['id'],
+      payload['guild_id'],
+      payload['data']['custom_id'],
+      payload['channel_id'],
     );
   }
 }

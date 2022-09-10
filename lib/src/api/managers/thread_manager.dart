@@ -3,61 +3,41 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/channels/thread_channel.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
 import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/extensions/mineral_client.dart';
 
-import '../channels/public_thread.dart';
+class ThreadManager extends CacheManager<ThreadChannel> {
+  final Snowflake _guildId;
 
-class ThreadManager implements CacheManager<Channel> {
+  ThreadManager(this._guildId);
 
-  @override
-  Map<Snowflake, Channel> cache = {};
+  /// Get [Guild] from [Ioc]
+  Guild get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId);
 
-  Snowflake? guildId;
-  late Guild? guild;
-  late TextBasedChannel? channel;
-
-  ThreadManager({ required this.guildId });
-
-  @override
-  Future<Map<Snowflake, Channel>> sync () async {
+  Future<Map<Snowflake, ThreadChannel>> sync () async {
     Http http = ioc.singleton(ioc.services.http);
     cache.clear();
 
-    Response response = await http.get(url: "/guilds/$guildId/threads/active");
+    Response response = await http.get(url: "/guilds/$_guildId/threads/active");
     dynamic payload = jsonDecode(response.body);
 
     for (dynamic element in payload) {
-      if (element['type'] == ChannelType.guildPublicThread) {
-        PublicThread thread = PublicThread.from(payload: element);
-
-        cache.putIfAbsent(thread.id, () => thread);
-      }
-      if (element['type'] == ChannelType.guildPrivateThread) {
-        //TODO
-      }
+      ThreadChannel thread = ThreadChannel.fromPayload(element);
+      cache.putIfAbsent(thread.id, () => thread);
     }
 
     return cache;
   }
 
-  Future<PublicThread?> createPublicThread ({ required String label, }) async {
-    Http http = ioc.singleton(ioc.services.http);
-    Response response = await http.post(url: "/channels/${channel?.id}/threads", payload: {
+  Future<ThreadChannel?> create<T extends GuildChannel> ({ Snowflake? messageId, String? label }) async {
+    MineralClient client = ioc.singleton(ioc.services.client);
+    return await client.createChannel(_guildId, ChannelBuilder({
       'name': label,
       'auto_archive_duration': '60',
-      'type': 11
-    });
-    print(response.body);
-    if (response.statusCode == 200) {
-      PublicThread thread = PublicThread.from(payload: jsonDecode(response.body));
-      return thread;
-    }
-
-    if (response.statusCode == 400) {
-      // TODO
-    }
+      'type': ChannelType.guildPublicThread.value
+    }));
   }
-
 }

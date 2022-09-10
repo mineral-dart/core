@@ -1,15 +1,18 @@
 import 'package:mineral/api.dart';
 
 class Application {
-  Snowflake id;
-  int flags;
+  Snowflake _id;
+  int _flags;
 
-  Application({ required this.id, required this.flags });
+  Application(this._id, this._flags);
+
+  Snowflake get id => _id;
+  int get flags => _flags;
 
   factory Application.from(dynamic payload) {
     return Application(
-      id: payload['id'],
-      flags: payload['flags']
+      payload['id'],
+      payload['flags']
     );
   }
 }

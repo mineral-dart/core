@@ -44,6 +44,7 @@ class Shard {
   late Heartbeat _heartbeat;
 
   late String sessionId;
+  late String resumeURL;
 
   bool _canResume = false;
   bool _pendingReconnect = false;
@@ -75,7 +76,7 @@ class Shard {
       _sendPort = await _stream.first as SendPort;
 
       _sendPort.send(ShardMessage(command: ShardCommand.init, data: {
-        'url': gatewayURL
+        'url': _canResume ? resumeURL : gatewayURL
       }));
       _streamSubscription = _stream.listen(_handle);
     });

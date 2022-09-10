@@ -3,24 +3,23 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 
 class VoiceManager {
-  GuildMember? member;
-  bool isDeaf;
-  bool isMute;
-  bool isSelfMute;
-  bool isSelfDeaf;
-  bool hasVideo;
-  bool? hasStream;
+  bool _isDeaf;
+  bool _isMute;
+  bool _isSelfMute;
+  bool _isSelfDeaf;
+  bool _hasVideo;
+  bool? _hasStream;
   VoiceChannel? channel;
+  GuildMember? member;
 
-  VoiceManager({
-    required this.isMute,
-    required this.isDeaf,
-    required this.isSelfMute,
-    required this.isSelfDeaf,
-    required this.hasVideo,
-    required this.hasStream,
-    required this.channel
-  });
+  VoiceManager( this._isDeaf, this._isMute, this._isSelfMute, this._isSelfDeaf, this._hasVideo, this._hasStream, this.channel, this.member);
+
+  bool get isDeaf => _isDeaf;
+  bool get isMute => _isMute;
+  bool get isSelfMute => _isSelfMute;
+  bool get isSelfDeaf => _isSelfDeaf;
+  bool get hasVideo => _hasVideo;
+  bool? get hasStream => _hasStream;
 
   /// ### Mutes or unmute a server member
   ///
@@ -40,7 +39,7 @@ class VoiceManager {
     );
 
     if (response.statusCode == 204 || response.statusCode == 200) {
-      isMute = value;
+      _isMute = value;
     }
   }
 
@@ -61,7 +60,7 @@ class VoiceManager {
     );
 
     if (response.statusCode == 204 || response.statusCode == 200) {
-      isDeaf = value;
+      _isDeaf = value;
     }
   }
 
@@ -107,17 +106,16 @@ class VoiceManager {
     }
   }
 
-  factory VoiceManager.from(dynamic payload, VoiceChannel? channel) {
+  factory VoiceManager.from(dynamic payload, GuildMember? member, VoiceChannel? channel) {
     return VoiceManager(
-      isMute: payload['mute'],
-      isDeaf: payload['deaf'],
-      isSelfMute: payload['self_mute'],
-      isSelfDeaf: payload['self_deaf'],
-      hasVideo: payload['self_video'],
-      hasStream: payload['self_stream'],
-      channel: channel
+      payload['deaf'] == true,
+      payload['mute'] == true,
+      payload['self_mute'] == true,
+      payload['self_deaf'] == true,
+      payload['self_video'] == true,
+      payload['self_stream'] == true,
+      channel,
+      member
     );
   }
-
-
 }

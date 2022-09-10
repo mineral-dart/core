@@ -1,67 +1,91 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
+import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
+import 'package:mineral/src/api/managers/webhook_manager.dart';
 
 class TextChannel extends TextBasedChannel {
-  TextChannel({
-    required Snowflake id,
-    required Snowflake? guildId,
-    required int? position,
-    required String label,
-    required Snowflake? applicationId,
-    required Snowflake? parentId,
-    required int? flags,
-    required Snowflake? description,
-    required bool nsfw,
-    required Snowflake? lastMessageId,
-    required DateTime? lastPinTimestamp,
-  }) : super(
-    id: id,
-    guildId: guildId,
-    position: position,
-    label: label,
-    applicationId: applicationId,
-    parentId: parentId,
-    flags: flags,
-    description: description,
-    nsfw: nsfw,
-    lastMessageId: lastMessageId,
-    lastPinTimestamp: lastPinTimestamp,
-    messages: MessageManager(id, guildId),
-    threads: ThreadManager(guildId: guildId)
+  final String? _description;
+  final String? _lastPinTime;
+  final int _rateLimit;
+  final ThreadManager _threads;
+
+  TextChannel(
+    this._description,
+    this._lastPinTime,
+    this._rateLimit,
+    this._threads,
+    super.nsfw,
+    super.webhooks,
+    super.messages,
+    super.lastMessageId,
+    super.guildId,
+    super.parentId,
+    super.label,
+    super.type,
+    super.position,
+    super.flags,
+    super.permissions,
+    super.id
   );
 
-  @override
-  Future<TextChannel> setDescription (String description) async {
-    return await super.setDescription(description);
+  /// Get description of this
+  String? get description => _description;
+
+  /// Get last pinned [DateTime]
+  DateTime? get lastPinTime => _lastPinTime != null ? DateTime.parse(_lastPinTime!) : null;
+
+  /// Get rate limit
+  int get rateLimit => _rateLimit;
+
+  /// Access to [ThreadManager]
+  ThreadManager get threads => _threads;
+
+  /// Define the description if this
+  /// ```dart
+  /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await channel.setDescription('Lorem ipsum dolor sit amet.');
+  /// ```
+  Future<void> setDescription (String value) async {
+    await update(ChannelBuilder({ 'topic': value }));
+  }
+
+  /// Define the rate limit of this
+  /// ```dart
+  /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await channel.setRateLimit(5000); // Rate limit for 5 seconds
+  /// ```
+  Future<void> setRateLimit (int limit) async {
+    await update(ChannelBuilder({ 'rate_limit': limit }));
   }
 
   @override
-  Future<TextChannel> setNsfw (bool value) async {
-    return await super.setNsfw(value);
-  }
+  CategoryChannel? get parent => super.parent as CategoryChannel?;
 
-  @override
-  Future<TextChannel?> update ({ String? label, String? description, int? delay, int? position, CategoryChannel? categoryChannel, bool? nsfw }) async {
-    return await super.update(label: label, description: description, delay: delay, position: position, categoryChannel: categoryChannel, nsfw: nsfw);
-  }
+  factory TextChannel.fromPayload(dynamic payload) {
+    final permissionOverwriteManager = PermissionOverwriteManager();
+    for (dynamic element in payload['permission_overwrites']) {
+      final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
+      permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
+    }
 
-  factory TextChannel.from(dynamic payload) {
-    TextChannel channel =  TextChannel(
-      id: payload['id'],
-      guildId: payload['guild_id'],
-      position: payload['position'],
-      label: payload['name'],
-      applicationId: payload['application_id'],
-      parentId: payload['parent_id'],
-      flags: payload['flags'],
-      description: payload['topic'],
-      nsfw: payload['nsfw'] ?? false,
-      lastMessageId: payload['last_message_id'],
-      lastPinTimestamp: payload['last_pin_timestamp'] != null ? DateTime.parse(payload['last_pin_timestamp']) : null,
+    return TextChannel(
+      payload['topic'],
+      payload['last_pin_timestamp'],
+      payload['rate_limit_per_user'],
+      ThreadManager(payload['guild_id']) ,
+      payload['nsfw'] ?? false,
+      WebhookManager(payload['guild_id'], payload['id']),
+      MessageManager(),
+      payload['last_message_id'],
+      payload['guild_id'],
+      payload['parent_id'],
+      payload['name'],
+      payload['type'],
+      payload['position'],
+      payload['flags'],
+      permissionOverwriteManager,
+      payload['id']
     );
-    channel.threads.channel = channel;
-
-    return channel;
   }
 }

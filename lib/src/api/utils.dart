@@ -9,6 +9,14 @@ enum InteractionType {
   const InteractionType(this.value);
 }
 
+enum ContextMenuType {
+  user(2),
+  message(3);
+
+  final int value;
+  const ContextMenuType(this.value);
+}
+
 enum ApplicationCommandType {
   chatInput(1),
   user(2),
@@ -149,7 +157,9 @@ enum GuildFeature {
   vanityUrl('VANITY_URL'),
   verified('VERIFIED'),
   vipRegions('VIP_REGIONS'),
-  welcomeScreen('WELCOME_SCREEN_ENABLED');
+  welcomeScreen('WELCOME_SCREEN_ENABLED'),
+  memberProfiles('MEMBER_PROFILES'),
+  sevenDayThreadArchive('SEVEN_DAY_THREAD_ARCHIVE');
 
   final String value;
   const GuildFeature(this.value);

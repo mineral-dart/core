@@ -1,34 +1,49 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/components/image_formater.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
-import 'package:mineral/src/api/managers/voice_manager.dart';
 
 class GuildMember {
-  User user;
-  String? nickname;
-  String? avatar;
-  DateTime joinedAt;
-  DateTime? premiumSince;
-  String? permissions;
-  bool pending;
-  DateTime? timeoutDuration;
-  MemberRoleManager roles;
-  late VoiceManager voice;
-  late Guild guild;
+  User _user;
+  String? _nickname;
+  ImageFormater? _avatar;
+  DateTime _joinedAt;
+  DateTime? _premiumSince;
+  String? _permissions;
+  bool _pending;
+  DateTime? _timeoutDuration;
+  MemberRoleManager _roles;
+  VoiceManager voice;
+  Guild _guild;
 
-  GuildMember({
-    required this.user,
-    required this.nickname,
-    required this.avatar,
-    required this.joinedAt,
-    required this.premiumSince,
-    required this.permissions,
-    required this.pending,
-    required this.timeoutDuration,
-    required this.roles,
-    required this.voice,
-  });
+  GuildMember(
+    this._user,
+    this._nickname,
+    this._avatar,
+    this._joinedAt,
+    this._premiumSince,
+    this._permissions,
+    this._pending,
+    this._timeoutDuration,
+    this._roles,
+    this.voice,
+    this._guild,
+  );
+
+  Snowflake get id => _user.id;
+  User get user => _user;
+  String? get nickname => _nickname;
+  ImageFormater? get avatar => _avatar;
+  DateTime get joinedAt => _joinedAt;
+  DateTime? get premiumSince => _premiumSince;
+  String? get permissions => _permissions;
+  bool get pending => _pending;
+  DateTime? get timeoutDuration => _timeoutDuration;
+  MemberRoleManager get roles => _roles;
+  Guild get guild => _guild;
+
+  bool get hasGuildAvatar => avatar != null;
 
   /// ### Update the username of this
   ///
@@ -41,7 +56,7 @@ class GuildMember {
 
     Response response = await http.patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'nick': name });
     if (response.statusCode == 200) {
-      nickname = name;
+      _nickname = name;
     }
   }
 
@@ -60,9 +75,9 @@ class GuildMember {
     // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'deaf': expiration.toIso8601String() });
-    if (response.statusCode == 200) {
-      timeoutDuration = expiration;
+    Response response = await http.patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': expiration.toIso8601String() });
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      _timeoutDuration = expiration;
     }
   }
 
@@ -75,9 +90,9 @@ class GuildMember {
   Future<void> removeTimeout () async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'deaf': null });
-    if (response.statusCode == 200) {
-      timeoutDuration = null;
+    Response response = await http.patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': null });
+    if (response.statusCode == 200 || response.statusCode == 204) {
+      _timeoutDuration = null;
     }
   }
 
@@ -96,13 +111,13 @@ class GuildMember {
   Future<void> ban ({ int? count, String? reason }) async {
     Http http = ioc.singleton(ioc.services.http);
 
-    Response response = await http.patch(url: "/guilds/${guild.id}/bans/${user.id}", payload: {
+    Response response = await http.put(url: "/guilds/${guild.id}/bans/${user.id}", payload: {
       'delete_message_days': count,
       'reason': reason
     });
 
     if (response.statusCode == 200) {
-      timeoutDuration = null;
+      _timeoutDuration = null;
     }
   }
 
@@ -138,24 +153,9 @@ class GuildMember {
     return "<@${nickname != null ? '!' : ''}${user.id}>";
   }
 
-  clone () {
-    return GuildMember(
-      user: user,
-      nickname: nickname,
-      avatar: avatar,
-      joinedAt: joinedAt,
-      premiumSince: premiumSince,
-      permissions: permissions,
-      pending: pending,
-      timeoutDuration: timeoutDuration,
-      roles: roles,
-      voice: voice
-    )
-      ..guild = guild
-      ..roles = roles;
-  }
+  GuildMember clone () => GuildMember(user, nickname, avatar, joinedAt, premiumSince, permissions, pending, timeoutDuration, roles, voice, guild);
 
-  factory GuildMember.from({ required user, required GuildRoleManager roles, dynamic member, required Snowflake guildId, required VoiceManager voice }) {
+  factory GuildMember.from({ required user, required GuildRoleManager roles, required Guild guild, dynamic member, required VoiceManager voice }) {
     MemberRoleManager memberRoleManager = MemberRoleManager(manager: roles, memberId: user.id);
     for (var element in (member['roles'] as List<dynamic>)) {
       Role? role = roles.cache.get(element);
@@ -165,16 +165,17 @@ class GuildMember {
     }
 
     return GuildMember(
-      user: user,
-      nickname: member['nick'],
-      avatar: member['avatar'],
-      joinedAt: DateTime.parse(member['joined_at']),
-      premiumSince: member['premium_since'] != null ? DateTime.parse(member['premium_since']) : null,
-      permissions: member['permissions'],
-      pending: member['pending'] == true,
-      timeoutDuration: member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
-      roles: memberRoleManager,
-      voice: voice,
+      user,
+      member['nick'],
+      member['avatar'] != null ? ImageFormater(member['avatar'], 'guilds/${guild.id}/users/${user.id}/avatars') : null,
+      DateTime.parse(member['joined_at']),
+      member['premium_since'] != null ? DateTime.parse(member['premium_since']) : null,
+      member['permissions'],
+      member['pending'] == true,
+      member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
+      memberRoleManager,
+      voice,
+      guild
     );
   }
 }
