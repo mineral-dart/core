@@ -1,3 +1,7 @@
+## 1.0.3
+- Improve `dart analyse` to get 100%
+- Generate api documentation
+
 ## 1.0.2
 - Write documentation examples
 
