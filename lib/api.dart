@@ -20,7 +20,7 @@ export 'src/api/guilds/guild_scheduled_event.dart' show ScheduledEventStatus, Sc
 
 export 'src/api/webhook.dart' show Webhook;
 
-export 'src/internal/managers/IntentManager.dart' show Intent;
+export 'src/internal/managers/intent_manager.dart' show Intent;
 
 export 'src/api/channels/channel_builder.dart' show ChannelBuilder;
 

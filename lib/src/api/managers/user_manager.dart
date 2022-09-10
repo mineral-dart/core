@@ -5,7 +5,6 @@ class UserManager extends CacheManager<User> {
   @override
   Map<Snowflake, User> cache = {};
 
-  @override
   Future<Map<Snowflake, User>> sync() {
     throw UnimplementedError();
   }

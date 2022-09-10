@@ -321,7 +321,7 @@ class ModerationRule {
       triggerType: ModerationTriggerType.values.firstWhere((element) => element.value == payload['trigger_type']),
       triggerMetadata: ModerationTriggerMetadata(
         presets: payload['trigger_metadata'] != null && payload['trigger_metadata']['presets'] != null
-          ? ['presets'].map((preset) {
+          ? (['presets'] as List<int>).map((preset) {
             return ModerationPresetType.values.firstWhere((element) => element.value == preset);
           }).toList()
           : [],

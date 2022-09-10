@@ -8,7 +8,7 @@ import 'package:mineral/src/api/messages/message_sticker_item.dart';
 
 class PartialMessage<T extends PartialChannel> {
   final Snowflake _id;
-  String _content;
+  final String _content;
   final bool _tts;
   final List<EmbedBuilder> _embeds;
   final bool _allowMentions;

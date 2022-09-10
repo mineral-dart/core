@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
-import 'package:mineral/src/api/components/ImageFormater.dart';
+import 'package:mineral/src/api/components/image_formater.dart';
 import 'package:mineral/src/api/messages/dm_message.dart';
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
 
