@@ -33,7 +33,7 @@ class Environment {
   String? get (String key) => _cache[key];
 
   /// Get environment key from .env file
-  String? getOrFail (String key, { String? message }) {
+  String getOrFail (String key, { String? message }) {
     final result = get(key);
     if (result == null) {
       throw NotExist(prefix: 'Missing value', cause: message ?? 'No values are attached to $key key.');

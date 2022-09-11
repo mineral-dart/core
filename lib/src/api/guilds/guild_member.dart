@@ -138,7 +138,7 @@ class GuildMember {
   /// ```dart
   /// print(member.isBot());
   /// ```
-  bool isBot () => user.bot;
+  bool get isBot => user.bot;
 
   /// ### Returns whether of this is pending
   ///
@@ -149,9 +149,7 @@ class GuildMember {
   bool isPending () => pending;
 
   @override
-  String toString () {
-    return "<@${nickname != null ? '!' : ''}${user.id}>";
-  }
+  String toString () => '<@${_nickname != null ? '!' : ''}${user.id}>';
 
   GuildMember clone () => GuildMember(user, nickname, avatar, joinedAt, premiumSince, permissions, pending, timeoutDuration, roles, voice, guild);
 

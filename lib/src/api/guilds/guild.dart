@@ -172,7 +172,7 @@ class Guild {
   ModerationRuleManager get moderationRules => _moderationRules;
   GuildWebhookManager get webhooks => _webhooks;
   GuildScheduledEventManager get scheduledEvents => _scheduledEvents;
-  Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot());
+  Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot);
 
   /// ### Modifies the [name] of this.
   ///
@@ -556,6 +556,19 @@ class Guild {
       guild: this,
       payload: jsonDecode(response.body)
     );
+  }
+
+  /// ### Unbanned this from the [Guild] and deleted its messages for a given period
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.unban();
+  /// ```
+  Future<bool> ban (Snowflake memberId, { String? reason }) async {
+    Http http = ioc.singleton(ioc.services.http);
+    Response response = await http.destroy(url: '/guilds/$id/bans/$memberId');
+
+    return response.statusCode == 200;
   }
 
   factory Guild.from({
