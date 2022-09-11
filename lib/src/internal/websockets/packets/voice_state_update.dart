@@ -83,8 +83,7 @@ class VoiceStateUpdate implements WebsocketPacket {
       manager.emit(event: Events.memberSelfDeaf, params: [member]);
     }
   }
-}
-
+  
   _emitEvent(EventManager manager, Events event, dynamic params, Snowflake customId) {
     manager.emit(
       event: event,
