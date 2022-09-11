@@ -1,3 +1,10 @@
+## 1.0.8 - 1.0.9
+- Add missing return
+
+## 1.0.7
+- Implement `unban` method
+- Improve voice member
+
 ## 1.0.6
 - Fix CategoryChannel cast
 - Improve `nickname` getter, it returns the username if nickname is not defined

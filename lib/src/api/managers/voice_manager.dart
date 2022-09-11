@@ -46,6 +46,7 @@ class VoiceManager {
 
     if (response.statusCode == 204 || response.statusCode == 200) {
       _isMute = value;
+      return;
     }
 
     Console.error(message: 'Unable to ${value ? 'mute' : 'unmute'} user #$_memberId');
@@ -69,6 +70,7 @@ class VoiceManager {
 
     if (response.statusCode == 204 || response.statusCode == 200) {
       _isDeaf = value;
+      return;
     }
 
     Console.error(message: 'Unable to ${value ? 'deaf' : 'undeaf'} user #$_memberId');
@@ -110,6 +112,7 @@ class VoiceManager {
 
     if (response.statusCode == 204 || response.statusCode == 200) {
       _channelId = _channelId;
+      return;
     }
 
     Console.error(message: 'Unable to move user $_memberId to $channelId');
