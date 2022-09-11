@@ -39,10 +39,8 @@ class GuildCreate implements WebsocketPacket {
 
     Map<Snowflake, VoiceManager> voices = {};
     for(dynamic voiceMember in websocketResponse.payload['voice_states']) {
-      final VoiceManager voiceManager = VoiceManager.from(voiceMember, null, null);
-
+      final VoiceManager voiceManager = VoiceManager.from(voiceMember, websocketResponse.payload['guild_id']);
       voices.putIfAbsent(voiceMember['user_id'], () => voiceManager);
-      voices.putIfAbsent(voiceMember['channel_id'], () => voiceManager);
     }
 
     MemberManager memberManager = MemberManager();
@@ -101,10 +99,8 @@ class GuildCreate implements WebsocketPacket {
         guild: guild,
         voice: voices.containsKey(user.id)
           ? voices.get(user.id)!
-          : VoiceManager(member['mute'], member['deaf'], false, false, false, false, null, null)
+          : VoiceManager.empty(member['deaf'], member['mute'], user.id, websocketResponse.payload['guild_id'])
       );
-
-      guildMember.voice.member = guildMember;
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
       client.users.cache.putIfAbsent(user.id, () => user);
@@ -118,13 +114,6 @@ class GuildCreate implements WebsocketPacket {
         channelManager.cache.putIfAbsent(channel.id, () => channel);
       }
     }
-
-    // Assign guild channels
-    guild.channels.cache.forEach((Snowflake id, GuildChannel channel) {
-      if(voices.containsKey(id)) {
-        voices.getOrFail(id).channel = channel as VoiceChannel;
-      }
-    });
 
     guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
     guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);

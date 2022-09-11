@@ -17,100 +17,73 @@ class VoiceStateUpdate implements WebsocketPacket {
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     GuildMember? member = guild?.members.cache.get(payload['user_id']);
-    VoiceChannel? voiceChannel = guild?.channels.cache.get(payload['channel_id']);
-    if (guild != null && member != null) {
-      VoiceManager before = member.voice;
-      VoiceManager after = VoiceManager.from(payload, member, voiceChannel);
+    //VoiceChannel? voiceChannel = guild?.channels.cache.get(payload['channel_id']);
+    if(guild == null || member == null) return;
 
-      member.voice = after;
-      after.member = member;
+    VoiceManager before = member.voice;
+    VoiceManager after = VoiceManager.from(payload, guild.id);
 
-      manager.emit(
-        event: Events.voiceStateUpdate,
-        params: [before, after]
-      );
+    member.voice = after;
+    manager.emit(event: Events.voiceStateUpdate, params: [before, after]);
 
-      //User move
-      if(before.channel != null && after.channel != null && before.channel != after.channel) {
-        _emitEvent(manager, Events.voiceDisconnect, [member, before.channel], before.channel!.id);
-        _emitEvent(manager, Events.voiceConnect, [member, before.channel, after.channel], after.channel!.id);
-      }
+    //User move
+    if(before.channel != null && after.channel != null && before.channel != after.channel) {
+      _emitEvent(manager, Events.voiceDisconnect, [member, before.channel], before.channel!.id);
+      _emitEvent(manager, Events.voiceConnect, [member, before.channel, after.channel], after.channel!.id);
+      manager.emit(event: Events.voiceMove, params: [member, before.channel, after.channel]);
+    }
 
-      //User connect
-      if(before.channel == null && after.channel != null) {
-        _emitEvent(manager, Events.voiceConnect, [member, before.channel, after.channel], after.channel!.id);
-      }
+    //User join
+    if(before.channel == null && after.channel != null) {
+      _emitEvent(manager, Events.voiceConnect, [member, null, after.channel], after.channel!.id);
+    }
 
-      //User leave
-      if(before.channel != null && after.channel == null) {
-        _emitEvent(manager, Events.voiceDisconnect, [member, before.channel], before.channel!.id);
-      }
+    //User leave
+    if(before.channel != null && after.channel == null) {
+      _emitEvent(manager, Events.voiceDisconnect, [member, before.channel], before.channel!.id);
+    }
 
-      //User muted
-      if(!before.isMute && after.isMute) {
-        manager.emit(
-            event: Events.memberMuted,
-            params: [member]
-        );
-      }
+    //User mute
+    if(!before.isMute && after.isMute) {
+      manager.emit(event: Events.memberMuted, params: [member]);
+    }
 
-      //User unmute
-      if(before.isMute && !after.isMute) {
-        manager.emit(
-            event: Events.memberUnMuted,
-            params: [member]
-        );
-      }
+    //User unmute
+    if(before.isMute && !after.isMute) {
+      manager.emit(event: Events.memberUnMuted, params: [member]);
+    }
 
-      //User undeaf
-      if(before.isDeaf && !after.isDeaf) {
-        manager.emit(
-            event: Events.memberUnDeaf,
-            params: [member]
-        );
-      }
+    //User undeaf
+    if(before.isDeaf && !after.isDeaf) {
+      manager.emit(event: Events.memberUnDeaf, params: [member]);
+    }
 
-      //User deaf
-      if(!before.isDeaf && after.isDeaf) {
-        manager.emit(
-            event: Events.memberDeaf,
-            params: [member]
-        );
-      }
+    //User deaf
+    if(!before.isDeaf && after.isDeaf) {
+      manager.emit(event: Events.memberDeaf, params: [member]);
+    }
 
-      //User selfUnMute
-      if(before.isSelfMute && !after.isSelfMute) {
-        manager.emit(
-            event: Events.memberSelfUnMuted,
-            params: [member]
-        );
-      }
+    //User selfUnMute
+    if(before.isSelfMute && !after.isSelfMute) {
+      manager.emit(event: Events.memberSelfUnMuted, params: [member]);
+    }
 
-      //User selfMute
-      if(!before.isSelfMute && after.isSelfMute) {
-        manager.emit(
-            event: Events.memberSelfMuted,
-            params: [member]
-        );
-      }
+    //User selfMute
+    if(!before.isSelfMute && after.isSelfMute) {
+      manager.emit(event: Events.memberSelfMuted, params: [member]);
+    }
 
-      //User selfUnDeaf
-      if(before.isSelfDeaf && !after.isSelfDeaf) {
-        manager.emit(
-            event: Events.memberSelfUnDeaf,
-            params: [member]
-        );
-      }
+    //User selfUnDeaf
+    if(before.isSelfDeaf && !after.isSelfDeaf) {
+      manager.emit(event: Events.memberSelfUnDeaf, params: [member]);
+    }
 
-      //User selfDeaf
-      if(!before.isSelfDeaf && after.isSelfDeaf) {
-        manager.emit(
-            event: Events.memberSelfDeaf,
-            params: [member]
-        );
-      }
+    //User selfDeaf
+    if(!before.isSelfDeaf && after.isSelfDeaf) {
+      manager.emit(event: Events.memberSelfDeaf, params: [member]);
     }
   }
+}
 
   _emitEvent(EventManager manager, Events event, dynamic params, Snowflake customId) {
     manager.emit(
