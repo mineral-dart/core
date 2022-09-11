@@ -63,7 +63,7 @@ class VoiceManager {
   Future<void> setDeaf(bool value) async {
     final Http http = ioc.singleton(ioc.services.http);
     final Response response = await http.patch(
-      url: '/guilds/${member!.guild.id}/members/${member!.user.id}',
+      url: '/guilds/$_guildId/members/$_memberId',
       payload: {'deaf': value}
     );
 
