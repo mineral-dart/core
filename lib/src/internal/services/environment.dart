@@ -29,8 +29,25 @@ class Environment {
 
   }
 
-  String? get (String key) {
-    return _cache[key];
+  /// Get environment key from .env file
+  String? get (String key) => _cache[key];
+
+  /// Get environment key from .env file
+  String? getOrFail (String key, { String? message }) {
+    final result = get(key);
+    if (result == null) {
+      throw NotExist(prefix: 'Missing value', cause: message ?? 'No values are attached to $key key.');
+    }
+
+    return result;
+  }
+
+  T? getOr<T extends dynamic> (String key, { T? defaultValue }) {
+    T? result = get(key) as T?;
+    if (result == null) {
+      return defaultValue;
+    }
+    return result;
   }
 
   Environment add (String key, dynamic value) {

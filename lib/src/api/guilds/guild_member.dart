@@ -33,7 +33,7 @@ class GuildMember {
 
   Snowflake get id => _user.id;
   User get user => _user;
-  String? get nickname => _nickname;
+  String get nickname => _nickname ?? _user.username;
   ImageFormater? get avatar => _avatar;
   DateTime get joinedAt => _joinedAt;
   DateTime? get premiumSince => _premiumSince;

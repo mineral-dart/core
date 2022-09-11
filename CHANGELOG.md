@@ -1,3 +1,8 @@
+## 1.0.6
+- Fix CategoryChannel cast
+- Improve `nickname` getter, it returns the username if nickname is not defined
+- Implement `getOrFail` and `getOr` methods on Environment
+
 ## 1.0.5
 - Fix missing examples
 
