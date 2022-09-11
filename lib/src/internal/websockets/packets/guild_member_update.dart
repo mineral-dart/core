@@ -21,7 +21,7 @@ class GuildMemberUpdate implements WebsocketPacket {
 
       VoiceManager voice = before != null
         ? before.voice
-        : VoiceManager(payload['deaf'], payload['mute'], false, false, false, false, null, null);
+        : VoiceManager.empty(payload['deaf'], payload['mute'], payload['user']['id'], guild.id);
 
       User user = User.from(payload['user']);
       GuildMember after = GuildMember.from(
@@ -31,8 +31,6 @@ class GuildMemberUpdate implements WebsocketPacket {
         guild: guild,
         voice: voice
       );
-
-      after.voice.member ??= after;
 
       manager.emit(
         event: Events.memberUpdate,

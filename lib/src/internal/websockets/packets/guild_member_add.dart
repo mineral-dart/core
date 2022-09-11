@@ -24,10 +24,8 @@ class GuildMemberAdd implements WebsocketPacket {
         roles: guild.roles,
         member: payload,
         guild: guild,
-        voice: VoiceManager(payload['deaf'], payload['mute'], false, false, false, false, null, null)
+        voice: VoiceManager.empty(payload['deaf'], payload['mute'], user.id, guild.id)
       );
-
-      member.voice.member = member;
 
       guild.members.cache.putIfAbsent(member.user.id, () => member);
       manager.emit(event: Events.memberJoin, params: [member]);
