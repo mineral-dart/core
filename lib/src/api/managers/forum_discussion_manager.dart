@@ -12,7 +12,7 @@ class ForumDiscussionManager extends CacheManager<ThreadChannel> {
 
   ForumDiscussionManager(this._channelId);
 
-  Future<ThreadChannel?> create (String label, MessageBuilder message, { int? archiveDuration, int? rateLimit, List<ForumTag>? tags }) async {
+  Future<ThreadChannel?> create (String label, MessageBuilder message, { int? archiveDuration, int? rateLimit, List<Snowflake>? tags }) async {
     Http http = ioc.singleton(Service.http);
 
     Response response = await http.post(url: '/channels/$_channelId/threads', payload: {
@@ -23,8 +23,6 @@ class ForumDiscussionManager extends CacheManager<ThreadChannel> {
       'message': message.toJson()
     });
 
-    print(response.body);
-    final channel = ThreadChannel.fromPayload(jsonDecode(response.body));
-    return channel;
+    return ThreadChannel.fromPayload(jsonDecode(response.body));
   }
 }
