@@ -58,4 +58,21 @@ class ChannelBuilder {
       'video_quality_mode': videoQualityMode
     });
   }
+
+  factory ChannelBuilder.fromForumChannel ({ required String label, String? guidelines, Snowflake? parentId, List<ForumTagBuilder>? tags }) {
+    print({
+      'type': ChannelType.guildForum.value,
+      'name': label,
+      'parent_id': parentId,
+      'topic': guidelines,
+      'available_tags': [...?tags?.map((tag) => tag.toJson())],
+    });
+    return ChannelBuilder({
+      'type': ChannelType.guildForum.value,
+      'name': label,
+      'parent_id': parentId,
+      'topic': guidelines,
+      'available_tags': [...?tags?.map((tag) => tag.toJson())],
+    });
+  }
 }

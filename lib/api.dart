@@ -34,6 +34,7 @@ export 'src/api/channels/partial_channel.dart' show PartialChannel, ChannelType;
 export 'src/api/channels/forum_channel.dart' show ForumChannel;
 export 'src/api/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
 export 'src/api/components/message_builder.dart' show MessageBuilder;
+export 'src/api/components/forum_tag_builder.dart' show ForumTagBuilder;
 
 export 'src/api/messages/message.dart' show Message;
 export 'src/api/messages/embed_builder.dart' show EmbedBuilder, Footer, Image, Thumbnail, Author, Field;
