@@ -62,7 +62,7 @@ class Sticker {
   int? get sortValue => _sortValue;
 
   Future<void> setName (String name) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'name': name });
     if (response.statusCode == 200) {
@@ -71,7 +71,7 @@ class Sticker {
   }
 
   Future<void> setDescription (String description) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'description': description });
     if (response.statusCode == 200) {
@@ -80,7 +80,7 @@ class Sticker {
   }
 
   Future<void> setTags (String tags) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'tags': tags });
     if (response.statusCode == 200) {
@@ -89,7 +89,7 @@ class Sticker {
   }
 
   Future<void> delete () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.destroy(url: "/guilds/${guild.id}/stickers/$id");
     if (response.statusCode == 200) {
@@ -98,7 +98,7 @@ class Sticker {
   }
 
   factory Sticker.from(dynamic payload) {
-    MineralClient client = ioc.singleton(ioc.services.client);
+    MineralClient client = ioc.singleton(Service.client);
 
     Guild guild = client.guilds.cache.getOrFail(payload['guild_id']);
     GuildMember? member = guild.members.cache.get(payload['user']?['id']);

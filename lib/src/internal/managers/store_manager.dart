@@ -3,6 +3,7 @@ import 'dart:mirrors';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/exceptions/already_exist.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class StoreManager {
   final Map<String, dynamic> _stores = {};
@@ -14,7 +15,7 @@ class StoreManager {
         throw AlreadyExist(cause: "A store named $name already exists.");
       }
 
-      store.environment = ioc.singleton(ioc.services.environment);
+      store.environment = ioc.singleton(Service.environment);
       _stores[name] = store;
     }
   }

@@ -66,7 +66,7 @@ class Emoji extends PartialEmoji {
   /// }
   /// ```
   Future<void> setLabel (String label) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/${manager.guild.id}/emojis/$id", payload: { 'name': label });
 
     if (response.statusCode == 200) {
@@ -90,7 +90,7 @@ class Emoji extends PartialEmoji {
   /// await emoji.delete(reason: 'I will destroy this..');
   /// ```
   Future<void> delete () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.destroy(url: "/guilds/${manager.guild.id}/emojis/$id");
 
     if (response.statusCode == 200) {

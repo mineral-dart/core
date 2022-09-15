@@ -70,7 +70,7 @@ class MineralClient {
   /// );
   /// ```
   void setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
-    ShardManager manager = ioc.singleton(ioc.services.shards);
+    ShardManager manager = ioc.singleton(Service.shards);
     manager.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
@@ -86,12 +86,12 @@ class MineralClient {
   /// final int latency = client.getLatency();
   /// ```
   int getLatency () {
-    ShardManager manager = ioc.singleton(ioc.services.shards);
+    ShardManager manager = ioc.singleton(Service.shards);
     return manager.getLatency();
   }
 
   Future<void> registerGlobalCommands ({ required List<SlashCommand> commands }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     await http.put(
       url: "/applications/${_application.id}/commands",
@@ -100,7 +100,7 @@ class MineralClient {
   }
 
   Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands, required List<MineralContextMenu> contextMenus }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     await http.put(
       url: "/applications/${_application.id}/guilds/${guild.id}/commands",
       payload: [
@@ -111,7 +111,7 @@ class MineralClient {
   }
 
   factory MineralClient.from({ required dynamic payload }) {
-    ShardManager manager = ioc.singleton(ioc.services.shards);
+    ShardManager manager = ioc.singleton(Service.shards);
 
     return MineralClient(
       User.from(payload['user']),

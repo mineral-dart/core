@@ -12,7 +12,7 @@ class GuildWebhookManager extends CacheManager<Webhook> {
   GuildWebhookManager();
 
   Future<Map<Snowflake, Webhook>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.get(url: "/guilds/${guild.id}/webhooks");
 
     for (dynamic element in jsonDecode(response.body)) {

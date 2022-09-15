@@ -48,9 +48,11 @@ class ThreadChannel extends PartialTextChannel {
 
   factory ThreadChannel.fromPayload(dynamic payload) {
     final permissionOverwriteManager = PermissionOverwriteManager();
-    for (final element in payload['permission_overwrites']) {
-      final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
-      permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
+    if (payload['permission_overwrites'] != null) {
+      for (final element in payload['permission_overwrites']) {
+        final PermissionOverwrite overwrite = PermissionOverwrite.from(payload: element);
+        permissionOverwriteManager.cache.putIfAbsent(overwrite.id, () => overwrite);
+      }
     }
 
     return ThreadChannel(
@@ -58,7 +60,7 @@ class ThreadChannel extends PartialTextChannel {
       payload['thread_metadata']['auto_archive_duration'],
       payload['thread_metadata']['locked'],
       payload['thread_metadata']['invitable'],
-      payload['create_timestamp'],
+      payload['thread_metadata']['create_timestamp'],
       MessageManager(),
       payload['last_message_id'],
       payload['guild_id'],

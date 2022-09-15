@@ -13,10 +13,10 @@ class WebhookManager extends CacheManager<Webhook> {
   WebhookManager(this._guildId, this._channelId);
 
   /// Get [Guild] from [Ioc]
-  Guild get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId);
+  Guild get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(_guildId);
 
   Future<Map<Snowflake, Webhook>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.get(url: "/channels/$_channelId/webhooks");
 
     for (dynamic element in jsonDecode(response.body)) {
@@ -28,7 +28,7 @@ class WebhookManager extends CacheManager<Webhook> {
   }
 
   Future<Webhook?> create ({ required String label, String? avatar }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.post(url: "/channels/$_channelId/webhooks", payload: {
       'name': label,
       'avatar': avatar != null ? await Helper.getPicture(avatar) : null

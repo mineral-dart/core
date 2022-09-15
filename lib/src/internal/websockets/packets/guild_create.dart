@@ -17,6 +17,7 @@ import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class GuildCreate implements WebsocketPacket {
   @override
@@ -24,10 +25,10 @@ class GuildCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(ioc.services.event);
-    CommandManager commandManager = ioc.singleton(ioc.services.command);
-    ContextMenuManager contextMenuManager = ioc.singleton(ioc.services.contextMenu);
-    MineralClient client = ioc.singleton(ioc.services.client);
+    EventManager manager = ioc.singleton(Service.event);
+    CommandManager commandManager = ioc.singleton(Service.command);
+    ContextMenuManager contextMenuManager = ioc.singleton(Service.contextMenu);
+    MineralClient client = ioc.singleton(Service.client);
 
     websocketResponse.payload['guild_id'] = websocketResponse.payload['id'];
 
@@ -142,7 +143,7 @@ class GuildCreate implements WebsocketPacket {
   }
 
   Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.get(url: "/guilds/${guild.id}/auto-moderation/rules");
 
     if (response.statusCode == 200) {

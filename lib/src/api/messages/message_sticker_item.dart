@@ -12,6 +12,12 @@ class MessageStickerItem {
     required this.format,
   });
 
+  Object toJson () => {
+    'id': id,
+    'name': name,
+    'format': format.value,
+  };
+
   factory MessageStickerItem.from(dynamic payload) {
     return MessageStickerItem(
       id: payload['id'],

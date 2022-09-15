@@ -45,7 +45,7 @@ class Message extends PartialMessage<TextBasedChannel> {
   MessageMention get mentions => _mentions;
 
   Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch(
       url: '/channels/${channel.id}/messages/$id',
@@ -69,7 +69,7 @@ class Message extends PartialMessage<TextBasedChannel> {
       return;
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     await http.post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
   }
 
@@ -79,7 +79,7 @@ class Message extends PartialMessage<TextBasedChannel> {
       return;
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     await http.put(url: '/channels/${channel.id}/pins/$id', payload: {});
   }
 
@@ -89,18 +89,18 @@ class Message extends PartialMessage<TextBasedChannel> {
       return;
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     await http.destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
   Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    MineralClient client = ioc.singleton(ioc.services.client);
+    MineralClient client = ioc.singleton(Service.client);
 
     Response response = await client.sendMessage(channel,
       content: content,
       embeds: embeds,
       components: components,
-      message_reference: {
+      messageReference: {
         'guild_id': channel.guild.id,
         'channel_id': channel.id,
         'message_id': id,

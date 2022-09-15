@@ -10,7 +10,7 @@ class MessageManager extends CacheManager<PartialMessage> {
   late final TextBasedChannel channel;
 
   Future<Map<Snowflake, PartialMessage>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     cache.clear();
 
     Response response = await http.get(url: "/channels/${channel.id}/messages");

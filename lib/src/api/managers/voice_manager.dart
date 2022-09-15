@@ -23,7 +23,7 @@ class VoiceManager {
   bool get hasVideo => _hasVideo;
   bool? get hasStream => _hasStream;
 
-  Guild get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId);
+  Guild get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(_guildId);
   VoiceChannel? get channel => guild.channels.cache.get(_channelId);
   GuildMember get member => guild.members.cache.getOrFail(_memberId);
 
@@ -37,7 +37,7 @@ class VoiceManager {
   ///   await member.setMute(true);
   /// }
   Future<void> setMute(bool value) async {
-    final Http http = ioc.singleton(ioc.services.http);
+    final Http http = ioc.singleton(Service.http);
 
     final Response response = await http.patch(
       url: '/guilds/$_guildId/members/$_memberId',
@@ -62,7 +62,7 @@ class VoiceManager {
   ///   await member.setDeaf(true);
   /// }
   Future<void> setDeaf(bool value) async {
-    final Http http = ioc.singleton(ioc.services.http);
+    final Http http = ioc.singleton(Service.http);
     final Response response = await http.patch(
       url: '/guilds/$_guildId/members/$_memberId',
       payload: {'deaf': value}
@@ -104,7 +104,7 @@ class VoiceManager {
   }
 
   Future<void> _updateChannel(Snowflake? channelId) async {
-    final Http http = ioc.singleton(ioc.services.http);
+    final Http http = ioc.singleton(Service.http);
     final Response response = await http.patch(
       url: '/guilds/$_guildId/members/$_memberId',
       payload: {'channel_id': channelId}

@@ -25,7 +25,7 @@ class PartialTextChannel extends GuildChannel {
   /// await channel.send(content: 'Hello world ! 🔥');
   /// ```
   Future<Message?> send ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    MineralClient client = ioc.singleton(ioc.services.client);
+    MineralClient client = ioc.singleton(Service.client);
 
     Response response = await client.sendMessage(this,
       content: content,

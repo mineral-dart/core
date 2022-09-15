@@ -1,6 +1,6 @@
 import 'package:mineral/console.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class ShardException implements Exception {
   String? prefix;
@@ -9,7 +9,7 @@ class ShardException implements Exception {
 
   @override
   String toString () {
-    ReporterManager? reporter = ioc.singleton(ioc.services.reporter);
+    ReporterManager? reporter = ioc.singleton(Service.reporter);
     if (reporter != null) {
       reporter.write('[ $prefix ] $cause');
     }

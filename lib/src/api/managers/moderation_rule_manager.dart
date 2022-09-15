@@ -9,7 +9,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule> {
   late final Guild guild;
 
   Future<ModerationRule?> create ({ required String label, required ModerationEventType eventType, required ModerationTriggerType triggerType, ModerationTriggerMetadata? triggerMetadata, List<ModerationAction>? actions, bool? enabled, List<Snowflake>? exemptRoles, List<Snowflake>? exemptChannels }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     /**
      * @Todo Add contraints

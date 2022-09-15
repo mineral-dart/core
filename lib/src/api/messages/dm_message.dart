@@ -30,7 +30,7 @@ class DmMessage extends PartialMessage<DmChannel> {
   );
 
   factory DmMessage.from({ required DmChannel channel, required dynamic payload }) {
-    MineralClient client = ioc.singleton(ioc.services.client);
+    MineralClient client = ioc.singleton(Service.client);
     User? user = client.users.cache.get(payload['author']['id']);
 
     List<EmbedBuilder> embeds = [];

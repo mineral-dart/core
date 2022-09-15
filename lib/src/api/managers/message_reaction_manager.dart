@@ -16,8 +16,8 @@ class MessageReactionManager<C extends PartialChannel, T extends PartialMessage>
   MessageReactionManager(this._channel);
 
   Future<void> add (EmojiBuilder emojiBuilder) async {
-    Http http = ioc.singleton(ioc.services.http);
-    MineralClient client = ioc.singleton(ioc.services.client);
+    Http http = ioc.singleton(Service.http);
+    MineralClient client = ioc.singleton(Service.client);
 
     String _emoji = emojiBuilder.emoji is Emoji
       ? '${emojiBuilder.emoji.label}:${emojiBuilder.emoji.id}'
@@ -47,7 +47,7 @@ class MessageReactionManager<C extends PartialChannel, T extends PartialMessage>
   }
 
   Future<void> removeAll () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.destroy(url: '/channels/${message.channel.id}/messages/${message.id}/reactions');
     if (response.statusCode == 200) {

@@ -9,7 +9,7 @@ class GuildScheduledEventManager extends CacheManager<GuildScheduledEvent> {
   late final Guild guild;
 
   Future<Map<Snowflake, GuildScheduledEvent>> sync() async {
-    final Http http = ioc.singleton(ioc.services.http);
+    final Http http = ioc.singleton(Service.http);
 
     Response response = await http.get(url: "/guilds/${guild.id}/scheduled-events");
     if (response.statusCode == 200) {

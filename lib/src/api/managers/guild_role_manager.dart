@@ -17,7 +17,7 @@ class GuildRoleManager extends CacheManager<Role> {
   /// await guild.roles.sync();
   /// ```
   Future<Map<Snowflake, Role>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     cache.clear();
 
     Response response = await http.get(url: "/guilds/${guild.id}/roles");
@@ -55,7 +55,7 @@ class GuildRoleManager extends CacheManager<Role> {
     String? _icon = icon != null ? await Helper.getPicture(icon) : null;
     int? _permissions = permissions != null ? Helper.reduceRolePermissions(permissions) : null;
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.post(url: "/guilds/${guild.id}/roles", payload: {
       'name': label,
       'color': color != null ? Helper.toRgbColor(color) : null,

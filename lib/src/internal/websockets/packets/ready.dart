@@ -6,6 +6,7 @@ import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class Ready implements WebsocketPacket {
   @override
@@ -13,15 +14,15 @@ class Ready implements WebsocketPacket {
 
   @override
   Future<void> handle (WebsocketResponse websocketResponse) async {
-    EventManager eventManager = ioc.singleton(ioc.services.event);
-    CommandManager commandManager = ioc.singleton(ioc.services.command);
-    ShardManager shardManager = ioc.singleton(ioc.services.shards);
+    EventManager eventManager = ioc.singleton(Service.event);
+    CommandManager commandManager = ioc.singleton(Service.command);
+    ShardManager shardManager = ioc.singleton(Service.shards);
 
-    if (ioc.singleton(ioc.services.client) == null) {
+    if (ioc.singleton(Service.client) == null) {
       MineralClient client = MineralClient.from(payload: websocketResponse.payload);
       client.uptime = DateTime.now();
 
-      ioc.bind(namespace: ioc.services.client, service: client);
+      ioc.bind(namespace: Service.client, service: client);
 
       await client.registerGlobalCommands(commands: commandManager.getGlobals());
 
@@ -46,7 +47,7 @@ class Ready implements WebsocketPacket {
 
     eventManager.emit(
       event: Events.ready,
-      params: [ioc.singleton(ioc.services.client)]
+      params: [ioc.singleton(Service.client)]
     );
   }
 
@@ -56,8 +57,8 @@ class Ready implements WebsocketPacket {
       for (Map<String, dynamic> event in events) {
         event['mineralEvent']
           ..client = client
-          ..stores = ioc.singleton(ioc.services.store)
-          ..environment = ioc.singleton(ioc.services.environment);
+          ..stores = ioc.singleton(Service.store)
+          ..environment = ioc.singleton(Service.environment);
       }
     });
   }
@@ -67,8 +68,8 @@ class Ready implements WebsocketPacket {
     commands.forEach((_, handler) {
       handler['commandClass']
         ..client = client
-        ..stores = ioc.singleton(ioc.services.store)
-        ..environment = ioc.singleton(ioc.services.environment);
+        ..stores = ioc.singleton(Service.store)
+        ..environment = ioc.singleton(Service.environment);
     });
   }
 }

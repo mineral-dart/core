@@ -33,7 +33,7 @@ class NewsChannel extends TextChannel {
       return;
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     await http.post(url: '/channels/$id/followers', payload: {
       'webhook_channel_id': webhookId
     });

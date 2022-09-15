@@ -19,7 +19,7 @@ class Help extends MineralCliCommand {
           ? command.key.split(':').first
           : 'Available commands';
 
-      CliManager cli = ioc.singleton(ioc.services.cli);
+      CliManager cli = ioc.singleton(Service.cli);
       MineralCliCommand? mineralCommand = cli.commands.get(command.key);
 
       if (commands.containsKey(key)) {

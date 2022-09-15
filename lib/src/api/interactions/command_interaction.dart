@@ -71,7 +71,7 @@ class CommandInteraction extends Interaction {
   /// User? user = interaction.getUser('option_name');
   /// ```
   User? getUser (String optionName) {
-    final MineralClient client = ioc.singleton(ioc.services.client);
+    final MineralClient client = ioc.singleton(Service.client);
     return client.users.cache.get(data[optionName]?['value']);
   }
 

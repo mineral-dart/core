@@ -15,10 +15,10 @@ class ThreadManager extends CacheManager<ThreadChannel> {
   ThreadManager(this._guildId);
 
   /// Get [Guild] from [Ioc]
-  Guild get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId);
+  Guild get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(_guildId);
 
   Future<Map<Snowflake, ThreadChannel>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     cache.clear();
 
     Response response = await http.get(url: "/guilds/$_guildId/threads/active");
@@ -33,7 +33,7 @@ class ThreadManager extends CacheManager<ThreadChannel> {
   }
 
   Future<ThreadChannel?> create<T extends GuildChannel> ({ Snowflake? messageId, String? label }) async {
-    MineralClient client = ioc.singleton(ioc.services.client);
+    MineralClient client = ioc.singleton(Service.client);
     return await client.createChannel(_guildId, ChannelBuilder({
       'name': label,
       'auto_archive_duration': '60',

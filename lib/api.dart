@@ -31,7 +31,10 @@ export 'src/api/channels/partial_text_channel.dart' show PartialTextChannel;
 export 'src/api/channels/guild_channel.dart' show GuildChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
 export 'src/api/channels/partial_channel.dart' show PartialChannel, ChannelType;
+export 'src/api/channels/forum_channel.dart' show ForumChannel;
 export 'src/api/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
+export 'src/api/forum_tag.dart' show ForumTag;
+export 'src/api/components/message_builder.dart' show MessageBuilder;
 
 export 'src/api/messages/message.dart' show Message;
 export 'src/api/messages/embed_builder.dart' show EmbedBuilder, Footer, Image, Thumbnail, Author, Field;

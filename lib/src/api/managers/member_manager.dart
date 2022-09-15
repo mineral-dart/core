@@ -10,7 +10,7 @@ class MemberManager extends CacheManager<GuildMember> {
   Guild get guild => _guild;
 
   Future<Map<Snowflake, GuildMember>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.get(url: "/guilds/${_guild.id}/members");
     if(response.statusCode == 200) {

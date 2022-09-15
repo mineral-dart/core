@@ -11,10 +11,10 @@ class ChannelManager extends CacheManager<GuildChannel> {
 
   ChannelManager(this._guildId);
 
-  Guild get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId);
+  Guild get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(_guildId);
 
   Future<Map<Snowflake, GuildChannel>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     cache.clear();
 
     Response response = await http.get(url: "/guilds/$_guildId/channels");
@@ -32,7 +32,7 @@ class ChannelManager extends CacheManager<GuildChannel> {
   }
 
   Future<T?> create<T extends GuildChannel> (ChannelBuilder builder) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.post(url: '/guilds/$_guildId/channels', payload: builder.payload);
     dynamic payload = jsonDecode(response.body);
