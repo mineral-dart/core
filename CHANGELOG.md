@@ -1,3 +1,6 @@
+## 1.1.0
+- Implement forum channels
+
 ## 1.0.8 - 1.0.9
 - Add missing return
 

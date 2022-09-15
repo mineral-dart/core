@@ -12,6 +12,9 @@ class ForumDiscussionManager extends CacheManager<ThreadChannel> {
 
   ForumDiscussionManager(this._channelId);
 
+  /// Create a new discussion within a forum.
+  /// Warning guild requires [GuildFeature.community] feature
+  /// ```
   Future<ThreadChannel?> create (String label, MessageBuilder message, { int? archiveDuration, int? rateLimit, List<Snowflake>? tags }) async {
     Http http = ioc.singleton(Service.http);
 
