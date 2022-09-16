@@ -1,3 +1,8 @@
+## 1.2.0
+- Implement `setDefaultReactionEmoji` method
+- Implement `setTags` method
+- Implement `setDefaultRateLimit` method
+
 ## 1.1.0
 - Implement forum channels
 
