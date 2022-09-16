@@ -24,7 +24,7 @@ class CommandInteraction extends Interaction {
   String get identifier => _identifier;
   TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId);
 
-  /// ### Returns an instance of [Channel] if the command has the designed option
+  /// ### Returns an instance of [PartialTextChannel] if the command has the designed option
   ///
   /// Example :
   /// ```dart

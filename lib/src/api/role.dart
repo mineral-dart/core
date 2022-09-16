@@ -257,7 +257,7 @@ class Role {
   /// ```dart
   /// await role.delete(reason: 'I will destroy this..');
   /// ```
-  /// You can't delete `@everyone` and [managed] roles.
+  /// You can't delete `@everyone` and managed roles.
   ///
   Future<void> delete () async {
     if (isManaged || label == '@everyone') {

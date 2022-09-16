@@ -73,7 +73,7 @@ class Interaction {
     });
   }
 
-  /// ### Responds to this by an [Modal]
+  /// ### Responds to this by an [ModalBuilder]
   ///
   /// Example :
   /// ```dart

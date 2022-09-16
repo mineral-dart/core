@@ -26,7 +26,7 @@ class TextBasedChannel extends PartialTextChannel {
   /// Access to [WebhookManager]
   WebhookManager get webhooks => _webhooks;
 
-  /// Allow or disallow [nsfw] of this
+  /// Allow or disallow nsfw of this
   Future<void> setNsfw (bool value) async {
     await update(ChannelBuilder({ 'nsfw': value }));
   }
