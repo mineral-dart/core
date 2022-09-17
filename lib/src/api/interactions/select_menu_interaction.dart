@@ -51,7 +51,7 @@ class SelectMenuInteraction extends Interaction {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['user']?['id'],
+      payload['member']?['user']?['id'],
       payload['guild_id'],
       message,
       payload['data']['custom_id'],
