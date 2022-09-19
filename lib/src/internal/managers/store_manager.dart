@@ -3,7 +3,6 @@ import 'dart:mirrors';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/exceptions/already_exist.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
-import 'package:mineral_ioc/ioc.dart';
 
 class StoreManager {
   final Map<String, dynamic> _stores = {};
