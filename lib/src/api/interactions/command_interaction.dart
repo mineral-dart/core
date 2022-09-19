@@ -117,7 +117,6 @@ class CommandInteraction extends Interaction {
   }
 
   factory CommandInteraction.from({ required dynamic payload }) {
-    print(payload['member']);
     return CommandInteraction(
       payload['id'],
       payload['application_id'],
