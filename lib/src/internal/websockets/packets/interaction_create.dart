@@ -18,8 +18,8 @@ class InteractionCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(ioc.services.event);
-    MineralClient client = ioc.singleton(ioc.services.client);
+    EventManager manager = ioc.singleton(Service.event);
+    MineralClient client = ioc.singleton(Service.client);
 
     dynamic payload = websocketResponse.payload;
 
@@ -61,7 +61,7 @@ class InteractionCreate implements WebsocketPacket {
   }
 
   _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
-    CommandManager manager = ioc.singleton(ioc.services.command);
+    CommandManager manager = ioc.singleton(Service.command);
     CommandInteraction commandInteraction = CommandInteraction.from(payload: payload);
 
     String identifier = commandInteraction.identifier;
@@ -96,7 +96,7 @@ class InteractionCreate implements WebsocketPacket {
   }
 
   _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {
-    ContextMenuManager contextMenuManager = ioc.singleton(ioc.services.contextMenu);
+    ContextMenuManager contextMenuManager = ioc.singleton(Service.contextMenu);
     MineralContextMenu contextMenu = contextMenuManager.contextMenus.findOrFail((element) => element.name == payload['data']?['name']);
 
     if (payload['data']?['type'] == ApplicationCommandType.user.value) {
@@ -106,7 +106,7 @@ class InteractionCreate implements WebsocketPacket {
     }
 
     if (payload['data']?['type'] == ApplicationCommandType.message.value) {
-      Http http = ioc.singleton(ioc.services.http);
+      Http http = ioc.singleton(Service.http);
       TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
       Message? message = channel?.messages.cache.get(payload['data']?['target_id']);
 
@@ -125,8 +125,8 @@ class InteractionCreate implements WebsocketPacket {
   }
 
   _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) async {
-    Http http = ioc.singleton(ioc.services.http);
-    EventManager manager = ioc.singleton(ioc.services.event);
+    Http http = ioc.singleton(Service.http);
+    EventManager manager = ioc.singleton(Service.event);
 
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
@@ -158,7 +158,7 @@ class InteractionCreate implements WebsocketPacket {
   }
 
   _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
-    EventManager manager = ioc.singleton(ioc.services.event);
+    EventManager manager = ioc.singleton(Service.event);
     ModalInteraction modalInteraction = ModalInteraction.from(payload: payload);
 
     for (dynamic row in payload['data']['components']) {
@@ -180,7 +180,7 @@ class InteractionCreate implements WebsocketPacket {
   }
 
   void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
-    EventManager manager = ioc.singleton(ioc.services.event);
+    EventManager manager = ioc.singleton(Service.event);
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
 

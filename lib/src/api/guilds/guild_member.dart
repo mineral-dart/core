@@ -33,7 +33,7 @@ class GuildMember {
 
   Snowflake get id => _user.id;
   User get user => _user;
-  String? get nickname => _nickname;
+  String get nickname => _nickname ?? _user.username;
   ImageFormater? get avatar => _avatar;
   DateTime get joinedAt => _joinedAt;
   DateTime? get premiumSince => _premiumSince;
@@ -42,8 +42,8 @@ class GuildMember {
   DateTime? get timeoutDuration => _timeoutDuration;
   MemberRoleManager get roles => _roles;
   Guild get guild => _guild;
-
   bool get hasGuildAvatar => avatar != null;
+  Locale get lang => _user.lang;
 
   /// ### Update the username of this
   ///
@@ -52,7 +52,7 @@ class GuildMember {
   /// await member.setUsername('John Doe');
   /// ```
   Future<void> setUsername (String name) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'nick': name });
     if (response.statusCode == 200) {
@@ -73,7 +73,7 @@ class GuildMember {
   /// ```
   Future<void> timeout (DateTime expiration) async {
     // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': expiration.toIso8601String() });
     if (response.statusCode == 200 || response.statusCode == 204) {
@@ -88,7 +88,7 @@ class GuildMember {
   /// await member.removeTimeout();
   /// ```
   Future<void> removeTimeout () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': null });
     if (response.statusCode == 200 || response.statusCode == 204) {
@@ -109,7 +109,7 @@ class GuildMember {
   /// await member.ban(count: 7);
   /// ```
   Future<void> ban ({ int? count, String? reason }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.put(url: "/guilds/${guild.id}/bans/${user.id}", payload: {
       'delete_message_days': count,
@@ -128,7 +128,7 @@ class GuildMember {
   /// await member.removeTimeout();
   /// ```
   Future<void> kick ({ int? count, String? reason }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     await http.destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
 
@@ -138,7 +138,7 @@ class GuildMember {
   /// ```dart
   /// print(member.isBot());
   /// ```
-  bool isBot () => user.bot;
+  bool get isBot => user.bot;
 
   /// ### Returns whether of this is pending
   ///
@@ -149,9 +149,7 @@ class GuildMember {
   bool isPending () => pending;
 
   @override
-  String toString () {
-    return "<@${nickname != null ? '!' : ''}${user.id}>";
-  }
+  String toString () => '<@${_nickname != null ? '!' : ''}${user.id}>';
 
   GuildMember clone () => GuildMember(user, nickname, avatar, joinedAt, premiumSince, permissions, pending, timeoutDuration, roles, voice, guild);
 

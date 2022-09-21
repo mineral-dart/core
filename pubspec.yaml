@@ -1,6 +1,6 @@
 name: mineral
 description: Mineral is a Discord framework for designing discord bots in Dart.
-version: 1.0.5
+version: 1.2.1
 
 repository: https://github.com/mineral-dart/core
 # homepage: https://www.example.com
@@ -19,6 +19,7 @@ dependencies:
   http: ^0.13.4
   interact: ^2.1.1
   collection: ^1.16.0
+  mineral_ioc: ^1.0.0
 
 dev_dependencies:
   lints: ^1.0.0

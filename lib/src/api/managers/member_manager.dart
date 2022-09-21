@@ -10,7 +10,7 @@ class MemberManager extends CacheManager<GuildMember> {
   Guild get guild => _guild;
 
   Future<Map<Snowflake, GuildMember>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.get(url: "/guilds/${_guild.id}/members");
     if(response.statusCode == 200) {
@@ -21,16 +21,13 @@ class MemberManager extends CacheManager<GuildMember> {
 
       for(dynamic element in payload) {
         VoiceManager? voiceManager = voiceStateCache.get(element['user']['id']);
-        VoiceChannel? voiceChannel = guild.channels.cache.get(payload['channel_id']);
 
         GuildMember guildMember = GuildMember.from(
           user: User.from(element['user']),
           roles: _guild.roles,
           guild: _guild,
-          voice: voiceManager ?? VoiceManager.from(payload, null, voiceChannel)
+          voice: voiceManager ?? VoiceManager.empty(element['deaf'], element['mute'], element['user']['id'], _guild.id)
         );
-
-        guildMember.voice.member = guildMember;
 
         cache.putIfAbsent(guildMember.user.id, () => guildMember);
       }

@@ -73,7 +73,7 @@ class TextChannel extends TextBasedChannel {
       payload['topic'],
       payload['last_pin_timestamp'],
       payload['rate_limit_per_user'],
-      ThreadManager(payload['guild_id']) ,
+      ThreadManager(payload['guild_id']),
       payload['nsfw'] ?? false,
       WebhookManager(payload['guild_id'], payload['id']),
       MessageManager(),

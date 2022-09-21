@@ -15,9 +15,11 @@ import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/module_manager.dart';
+import 'package:mineral/src/internal/managers/plugin_manager.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
 import 'package:mineral/src/internal/managers/store_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
+import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
 
 class Kernel {
@@ -28,14 +30,18 @@ class Kernel {
   CliManager cli = CliManager();
   ContextMenuManager contextMenus = ContextMenuManager();
   IntentManager intents = IntentManager();
+  PluginManager plugins = PluginManager();
+  Environment environment = Environment();
 
   Kernel() {
-    ioc.bind(namespace: ioc.services.event, service: events);
-    ioc.bind(namespace: ioc.services.command, service: commands);
-    ioc.bind(namespace: ioc.services.store, service: stores);
-    ioc.bind(namespace: ioc.services.modules, service: modules);
-    ioc.bind(namespace: ioc.services.cli, service: cli);
-    ioc.bind(namespace: ioc.services.contextMenu, service: contextMenus);
+    ioc.bind(namespace: Service.event, service: events);
+    ioc.bind(namespace: Service.command, service: commands);
+    ioc.bind(namespace: Service.store, service: stores);
+    ioc.bind(namespace: Service.modules, service: modules);
+    ioc.bind(namespace: Service.cli, service: cli);
+    ioc.bind(namespace: Service.contextMenu, service: contextMenus);
+    ioc.bind(namespace: Service.environment, service: environment);
+
   }
 
   void loadConsole () {
@@ -49,21 +55,18 @@ class Kernel {
   }
 
   Future<void> init () async {
-    Environment environment = await _loadEnvironment();
+    await environment.load();
 
     Http http = Http(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
-    ioc.bind(namespace: ioc.services.http, service: http);
+    ioc.bind(namespace: Service.http, service: http);
 
     String? report = environment.get('REPORTER');
     if (report != null) {
       ReporterManager reporter = ReporterManager(Directory(join(Directory.current.path, 'logs')));
       reporter.reportLevel = report;
 
-      ioc.bind(
-        namespace: ioc.services.reporter,
-        service: reporter
-      );
+      ioc.bind(namespace: Service.reporter, service: reporter);
     }
 
     String? token = environment.get('APP_TOKEN');
@@ -75,20 +78,13 @@ class Kernel {
     }
 
     await modules.load(this);
+    await plugins.load();
 
     final String? shardsCount = environment.get('SHARDS_COUNT');
 
     ShardManager manager = ShardManager(http, token, intents.list);
     manager.start(shardsCount: (shardsCount != null ? int.tryParse(shardsCount) : null));
 
-    ioc.bind(namespace: ioc.services.shards, service: manager);
-  }
-
-
-  Future<Environment> _loadEnvironment () async {
-    Environment environment = Environment();
-    ioc.bind(namespace: ioc.services.environment, service: environment);
-
-    return await environment.load();
+    ioc.bind(namespace: Service.shards, service: manager);
   }
 }

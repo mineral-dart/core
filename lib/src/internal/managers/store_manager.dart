@@ -14,7 +14,7 @@ class StoreManager {
         throw AlreadyExist(cause: "A store named $name already exists.");
       }
 
-      store.environment = ioc.singleton(ioc.services.environment);
+      store.environment = ioc.singleton(Service.environment);
       _stores[name] = store;
     }
   }

@@ -49,7 +49,7 @@ class Webhook {
   /// await webhook.setLabel('My webhook name');
   /// ```
   Future<void> setLabel (String label) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/webhooks/$id", payload: { 'name': label });
 
     if (response.statusCode == 200) {
@@ -64,7 +64,7 @@ class Webhook {
   /// await webhook.setAvatar('assets/images/my_picture.png');
   /// ```
   Future<void> setAvatar (String avatar) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     String path = await Helper.getPicture(avatar);
     Response response = await http.patch(url: "/webhooks/$id", payload: { 'avatar': path });
 
@@ -81,7 +81,7 @@ class Webhook {
   /// await webhook.update(label: 'My webhook name', avatar: 'assets/images/my_picture.png');
   /// ```
   Future<void> update ({ String? label, String? avatar }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     String? path = avatar != null
       ?  await Helper.getPicture(avatar)
       : this.label;
@@ -103,7 +103,7 @@ class Webhook {
   /// await webhook.execute(content: 'Hello World !');
   /// ```
   Future<void> execute ({ String? content, String? username, String? avatarUrl, bool? tts, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? suppressEmbed }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     List<dynamic> embedList = [];
     if (embeds != null) {
@@ -137,7 +137,7 @@ class Webhook {
   /// await webhook.delete();
   /// ```
   Future<bool> delete () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.destroy(url: "/webhooks/$id/$token");
 
     return response.statusCode == 200;

@@ -14,7 +14,7 @@ class GuildMemberReaction {
   GuildMemberReaction(this._manager, this._partialEmoji, this._message, this.user);
 
   Future<void> remove () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     String _emoji = _partialEmoji is Emoji
         ? '${_partialEmoji.label}:${_partialEmoji.id}'

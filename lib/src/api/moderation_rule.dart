@@ -126,7 +126,7 @@ class ModerationRule {
   /// await rule.setLabel('My label');
   /// ```
   Future<void> setLabel(String label) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'label': label });
 
     if (response.statusCode == 200) {
@@ -141,7 +141,7 @@ class ModerationRule {
   /// await rule.setEventType(ModerationEventType.messageSend);
   /// ```
   Future<void> setEventType(ModerationEventType event) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'event_type': event.value });
 
     if (response.statusCode == 200) {
@@ -161,7 +161,7 @@ class ModerationRule {
   /// await rule.setTriggerMetadata(metadata);
   /// ```
   Future<void> setTriggerMetadata(ModerationTriggerMetadata triggerMetadata) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'trigger_metadata': triggerMetadata.toJson() });
 
     if (response.statusCode == 200) {
@@ -183,7 +183,7 @@ class ModerationRule {
   /// await rule.setActions([action]);
   /// ```
   Future<void> setActions(List<ModerationAction> actions) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
       'actions': actions.map((ModerationAction action) => action.toJson())
     });
@@ -200,7 +200,7 @@ class ModerationRule {
   /// await rule.setEnabled(true);
   /// ```
   Future<void> setEnabled(bool value) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'value': value });
 
     if (response.statusCode == 200) {
@@ -224,7 +224,7 @@ class ModerationRule {
       TooMany(cause: "The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
       'exempt_roles': roles.map((Role role) => role.id)
     });
@@ -250,7 +250,7 @@ class ModerationRule {
       TooMany(cause: "The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
       'exempt_roles': channels.map((GuildChannel channel) => channel.id)
     });
@@ -266,7 +266,7 @@ class ModerationRule {
   ///   await rule.delete();
   /// ```
   Future<bool> delete() async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.destroy(url: "/guilds/$guildId/auto-moderation/rules/$id");
 
     return response.statusCode == 204;

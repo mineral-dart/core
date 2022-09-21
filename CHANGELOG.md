@@ -1,3 +1,26 @@
+## 1.2.1
+- Fix wrong userId key into interactions
+
+## 1.2.0
+- Implement `setDefaultReactionEmoji` method
+- Implement `setTags` method
+- Implement `setDefaultRateLimit` method
+
+## 1.1.0
+- Implement forum channels
+
+## 1.0.8 - 1.0.9
+- Add missing return
+
+## 1.0.7
+- Implement `unban` method
+- Improve voice member
+
+## 1.0.6
+- Fix CategoryChannel cast
+- Improve `nickname` getter, it returns the username if nickname is not defined
+- Implement `getOrFail` and `getOr` methods on Environment
+
 ## 1.0.5
 - Fix missing examples
 

@@ -24,7 +24,7 @@ class CommandInteraction extends Interaction {
   String get identifier => _identifier;
   TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId);
 
-  /// ### Returns an instance of [Channel] if the command has the designed option
+  /// ### Returns an instance of [PartialTextChannel] if the command has the designed option
   ///
   /// Example :
   /// ```dart
@@ -71,7 +71,7 @@ class CommandInteraction extends Interaction {
   /// User? user = interaction.getUser('option_name');
   /// ```
   User? getUser (String optionName) {
-    final MineralClient client = ioc.singleton(ioc.services.client);
+    final MineralClient client = ioc.singleton(Service.client);
     return client.users.cache.get(data[optionName]?['value']);
   }
 
@@ -123,7 +123,7 @@ class CommandInteraction extends Interaction {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['user']?['id'],
+      payload['member']?['user']?['id'],
       payload['guild_id'],
       payload['data']['name'],
       payload['channel_id'],

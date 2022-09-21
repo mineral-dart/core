@@ -5,11 +5,12 @@ import 'dart:io';
 
 import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class Cli {
   void log ({ required String message, String level = 'info'}) {
     if (level == 'debug') {
-      final Environment environment = ioc.singleton(ioc.services.environment);
+      final Environment environment = ioc.singleton(Service.environment);
       final String? logLevel = environment.get('LOG_LEVEL');
 
       if (logLevel != 'debug') return;
@@ -41,7 +42,7 @@ class Console {
 
   static void log ({ required String message, String level = 'info'}) {
     if (level == 'debug') {
-      final Environment environment = ioc.singleton(ioc.services.environment);
+      final Environment environment = ioc.singleton(Service.environment);
       final String? logLevel = environment.get('LOG_LEVEL');
 
       if (logLevel != 'debug') return;
@@ -51,7 +52,7 @@ class Console {
   }
 
   static debug ({ String prefix = 'debug', required String message }) {
-    ReporterManager? reporter = ioc.singleton(ioc.services.reporter);
+    ReporterManager? reporter = ioc.singleton(Service.reporter);
 
     if (reporter != null && reporter.reportLevel == 'debug') {
       _report('[ $prefix ] $message');
@@ -94,7 +95,7 @@ class Console {
   }
 
   static _report (String message) {
-    ReporterManager? reporter = ioc.singleton(ioc.services.reporter);
+    ReporterManager? reporter = ioc.singleton(Service.reporter);
     if (reporter != null) {
       reporter.write(message);
     }

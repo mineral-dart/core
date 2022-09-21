@@ -16,7 +16,7 @@ class GuildChannel extends PartialChannel {
   GuildChannel(this._guildId, this._parentId, this._label, this._type, this._position, this._flags, this._permissions, super.id);
 
   /// Get [Guild] from [Ioc]
-  Guild get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.getOrFail(_guildId);
+  Guild get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(_guildId);
 
   /// Get [CategoryChannel] or [TextChannel] parent
   GuildChannel? get parent => guild.channels.cache.get(_parentId);
@@ -54,7 +54,7 @@ class GuildChannel extends PartialChannel {
 
   Future<void> update (ChannelBuilder builder) async {
     if (_validate()) {
-      Http http = ioc.singleton(ioc.services.http);
+      Http http = ioc.singleton(Service.http);
       await http.patch(url: '/channels/$id', payload: builder.payload);
     }
   }
@@ -66,7 +66,7 @@ class GuildChannel extends PartialChannel {
   /// await channel.delete()
   /// ```
   Future<bool> delete () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.destroy(url: '/channels/$id');
 
     guild.channels.cache.remove(this);

@@ -11,8 +11,8 @@ class ChannelCreate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(ioc.services.event);
-    MineralClient client = ioc.singleton(ioc.services.client);
+    EventManager manager = ioc.singleton(Service.event);
+    MineralClient client = ioc.singleton(Service.client);
 
     dynamic payload = websocketResponse.payload;
 

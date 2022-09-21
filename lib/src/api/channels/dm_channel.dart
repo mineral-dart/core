@@ -15,7 +15,7 @@ class DmChannel extends PartialChannel {
   );
 
   factory DmChannel.fromPayload(dynamic payload) {
-    MineralClient client = ioc.singleton(ioc.services.client);
+    MineralClient client = ioc.singleton(Service.client);
 
     Map<Snowflake, User> users = {};
     if (payload['recipients'] != null) {

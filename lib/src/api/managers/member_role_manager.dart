@@ -34,7 +34,7 @@ class MemberRoleManager extends CacheManager<Role> {
   /// await member.roles.add('446556480850755604', reason: 'I love this user');
   /// ```
   Future<void> add (Snowflake id, {String? reason}) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Role? role = manager.cache.get(id);
 
     if(role == null) {
@@ -75,7 +75,7 @@ class MemberRoleManager extends CacheManager<Role> {
   /// await member.roles.remove('446556480850755604', reason: 'Hello, World!');
   /// ```
   Future<void> remove (Snowflake id, {String? reason}) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Map<String, String> headers = {};
     if(reason != null) {
@@ -116,7 +116,7 @@ class MemberRoleManager extends CacheManager<Role> {
   }
 
   Future<Map<Snowflake, Role>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.get(url: "/guilds/${manager.guild.id}/members/$memberId");
     if(response.statusCode == 200) {

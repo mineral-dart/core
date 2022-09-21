@@ -4,7 +4,7 @@ library core;
 export 'src/internal/services/environment.dart' show Environment;
 
 export 'src/internal/kernel.dart' show Kernel;
-export 'src/internal/ioc.dart' show ioc, Service;
+export 'package:mineral_ioc/ioc.dart' show ioc, Service;
 
 export 'src/constants.dart';
 export 'src/internal/services/http.dart';

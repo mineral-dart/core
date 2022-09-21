@@ -172,7 +172,7 @@ class Guild {
   ModerationRuleManager get moderationRules => _moderationRules;
   GuildWebhookManager get webhooks => _webhooks;
   GuildScheduledEventManager get scheduledEvents => _scheduledEvents;
-  Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot());
+  Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot);
 
   /// ### Modifies the [name] of this.
   ///
@@ -181,7 +181,7 @@ class Guild {
   /// await guild.setName('Guild name');
   /// ```
   Future<void> setName (String name) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'name': name });
 
     if (response.statusCode == 200) {
@@ -198,7 +198,7 @@ class Guild {
   /// await guild.setVerificationLevel(VerificationLevel.veryHigh);
   /// ```
   Future<void> setVerificationLevel (VerificationLevel level) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'verification_level': level.value });
 
     if (response.statusCode == 200) {
@@ -215,7 +215,7 @@ class Guild {
   /// await guild.setMessageNotification(1);
   /// ```
   Future<void> setMessageNotification (int level) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'default_message_notifications': level });
 
     if (response.statusCode == 200) {
@@ -234,7 +234,7 @@ class Guild {
   /// await guild.setExplicitContentFilter(2);
   /// ```
   Future<void> setExplicitContentFilter (int level) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'explicit_content_filter': level });
 
     if (response.statusCode == 200) {
@@ -253,7 +253,7 @@ class Guild {
   /// }
   /// ```
   Future<void> setAfkChannel (VoiceChannel channel) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'afk_channel_id': channel.id });
 
     if (response.statusCode == 200) {
@@ -276,8 +276,8 @@ class Guild {
   /// }
   /// ```
   Future<void> setOwner (GuildMember guildMember) async {
-    MineralClient client = ioc.singleton(ioc.services.client);
-    Http http = ioc.singleton(ioc.services.http);
+    MineralClient client = ioc.singleton(Service.client);
+    Http http = ioc.singleton(Service.http);
 
     if (owner.id != client.user.id) {
       Console.error(message: "You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
@@ -306,7 +306,7 @@ class Guild {
 
     String file = await Helper.getPicture(filename);
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'splash': file });
 
     if (response.statusCode == 200) {
@@ -327,7 +327,7 @@ class Guild {
       throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.inviteSplash} feature.");
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'splash': null });
 
     if (response.statusCode == 200) {
@@ -350,7 +350,7 @@ class Guild {
 
     String file = await Helper.getPicture(filename);
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'discovery_splash': file });
 
     if (response.statusCode == 200) {
@@ -371,7 +371,7 @@ class Guild {
       throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.discoverable} feature.");
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'discovery_splash': null });
 
     if (response.statusCode == 200) {
@@ -394,7 +394,7 @@ class Guild {
 
     String file = await Helper.getPicture(filename);
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'banner': file });
 
     if (response.statusCode == 200) {
@@ -415,7 +415,7 @@ class Guild {
       throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.banner} feature.");
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'banner': null });
 
     if (response.statusCode == 200) {
@@ -432,7 +432,7 @@ class Guild {
   Future<void> setIcon (String filename) async {
     String file = await Helper.getPicture(filename);
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': file });
 
     if (response.statusCode == 200) {
@@ -447,7 +447,7 @@ class Guild {
   /// await guild.removeIcon();
   /// ```
   Future<void> removeIcon () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'icon': null });
 
     if (response.statusCode == 200) {
@@ -466,7 +466,7 @@ class Guild {
   /// }
   /// ```
   Future<void> setSystemChannel (TextChannel channel) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'system_channel_id': channel.id });
 
     if (response.statusCode == 200) {
@@ -486,7 +486,7 @@ class Guild {
   /// }
   /// ```
   Future<void> setRulesChannel (TextChannel channel) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'rules_channel_id': channel.id });
 
     if (response.statusCode == 200) {
@@ -506,7 +506,7 @@ class Guild {
   /// }
   /// ```
   Future<void> setPublicUpdateChannel (TextChannel channel) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': channel.id });
 
     if (response.statusCode == 200) {
@@ -524,7 +524,7 @@ class Guild {
   /// await guild.setPreferredLocale(Locale.fr); // 👈 Now you can use Lang enum
   /// ```
   Future<void> setPreferredLocale (Locale locale) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': locale });
 
     if (response.statusCode == 200) {
@@ -539,23 +539,36 @@ class Guild {
   /// await guild.leave();
   /// ```
   Future<void> leave () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.destroy(url: '/users/@me/guilds/$id');
 
     if (response.statusCode == 204) {
-      MineralClient client = ioc.singleton(ioc.services.client);
+      MineralClient client = ioc.singleton(Service.client);
       client.guilds.cache.remove(this);
     }
   }
 
   Future<GuildPreview> preview () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.get(url: '/guilds/$id/preview');
 
     return GuildPreview.from(
       guild: this,
       payload: jsonDecode(response.body)
     );
+  }
+
+  /// ### Unbanned this from the [Guild] and deleted its messages for a given period
+  ///
+  /// Example :
+  /// ```dart
+  /// await member.unban();
+  /// ```
+  Future<bool> ban (Snowflake memberId, { String? reason }) async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.destroy(url: '/guilds/$id/bans/$memberId');
+
+    return response.statusCode == 200;
   }
 
   factory Guild.from({

@@ -7,9 +7,9 @@ import 'package:test/scaffolding.dart';
 void main() {
   test('can get Http from ioc', () {
     String discordEndpoint = 'https://discord.com/api';
-    ioc.bind(namespace: ioc.services.http, service: Http(baseUrl: discordEndpoint));
+    ioc.bind(namespace: Service.http, service: Http(baseUrl: discordEndpoint));
 
-    assert(ioc.singleton(ioc.services.http) is Http);
+    assert(ioc.singleton(Service.http) is Http);
   });
 
   test('can emit with event emitter', () async {

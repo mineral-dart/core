@@ -16,6 +16,7 @@ class User {
   int _publicFlags;
   ImageFormater? _avatar;
   ImageFormater? _avatarDecoration;
+  String _lang;
   late Status status;
 
   User(
@@ -26,6 +27,7 @@ class User {
     this._publicFlags,
     this._avatar,
     this._avatarDecoration,
+    this._lang,
   );
 
   Snowflake get id => _id;
@@ -36,6 +38,8 @@ class User {
   ImageFormater? get avatar => _avatar;
   ImageFormater? get avatarDecoration => _avatarDecoration;
   String get tag => '$_username#$_discriminator';
+  Locale get lang => Locale.values.firstWhere((element) => element.locale == _lang);
+
 
   /// ### Returns the absolute url to the user's avatar
   String get defaultAvatar => _avatar != null
@@ -44,7 +48,7 @@ class User {
 
   /// Return [GuildMember] of [Guild] context for this
   GuildMember? toGuildMember (Snowflake guildId) {
-    MineralClient client = ioc.singleton(ioc.services.client);
+    MineralClient client = ioc.singleton(Service.client);
     return client.guilds.cache.get(guildId)?.members.cache.get(_id);
   }
 
@@ -56,8 +60,8 @@ class User {
   /// await member.user.send(content: 'Hello World !');
   /// ```
   Future<DmMessage?> send ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    MineralClient client = ioc.singleton(ioc.services.client);
-    Http http = ioc.singleton(ioc.services.http);
+    MineralClient client = ioc.singleton(Service.client);
+    Http http = ioc.singleton(Service.http);
 
     DmChannel? channel = client.dmChannels.cache.get(_id);
 
@@ -98,7 +102,8 @@ class User {
       payload['bot'] == true,
       payload['public_flags'] ?? 0,
       payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
-      payload['avatar_decoration']
+      payload['avatar_decoration'],
+      payload['locale'] ?? 'en-GB',
     );
   }
 }

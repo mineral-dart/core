@@ -30,11 +30,11 @@ class Interaction {
   int get version => _version;
   InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
   String get token => _token;
-  Guild? get guild => ioc.singleton<MineralClient>(ioc.services.client).guilds.cache.get(_guildId);
+  Guild? get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.get(_guildId);
 
   User get user => _guildId != null
     ? guild!.members.cache.getOrFail(_userId).user
-    : ioc.singleton<MineralClient>(ioc.services.client).users.cache.getOrFail(_userId);
+    : ioc.singleton<MineralClient>(Service.client).users.cache.getOrFail(_userId);
 
   GuildMember? get member => guild?.members.cache.get(_userId);
 
@@ -45,7 +45,7 @@ class Interaction {
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
   Future<void> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     List<dynamic> embedList = [];
     if (embeds != null) {
@@ -73,7 +73,7 @@ class Interaction {
     });
   }
 
-  /// ### Responds to this by an [Modal]
+  /// ### Responds to this by an [ModalBuilder]
   ///
   /// Example :
   /// ```dart
@@ -84,7 +84,7 @@ class Interaction {
   /// await interaction.modal(modal);
   /// ```
   Future<void> modal (ModalBuilder modal) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     await http.post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.modal.value,

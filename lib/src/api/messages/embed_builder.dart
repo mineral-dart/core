@@ -259,7 +259,7 @@ class EmbedBuilder {
   }
 
   factory EmbedBuilder.fromGuildPreview(GuildPreview preview) {
-    MineralClient client = ioc.singleton(ioc.services.client);
+    MineralClient client = ioc.singleton(Service.client);
 
     final EmbedBuilder embed = EmbedBuilder(
       title: preview.label,

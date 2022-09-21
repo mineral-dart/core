@@ -60,7 +60,7 @@ class Role {
   /// }
   /// ```
   Future<void> setLabel (String label) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'name': label });
     if (response.statusCode == 200) {
@@ -80,7 +80,7 @@ class Role {
   /// }
   ///
   Future<void> setPermissions (List<Permission> permissions) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     int _permissions = Helper.reduceRolePermissions(permissions);
     Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'permissions': _permissions });
@@ -108,7 +108,7 @@ class Role {
   /// await role.setColor(Color('#ffffff'));
   /// ```
   Future<void> setColor (Color color) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     int _color = Helper.toRgbColor(color);
     Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'color': _color });
@@ -127,7 +127,7 @@ class Role {
   /// }
   /// ```
   Future<void> setHoist (bool hoist) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
 
     Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'hoist': hoist });
     if (response.statusCode == 200) {
@@ -163,7 +163,7 @@ class Role {
 
     String icon = await Helper.getPicture(path);
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'icon': icon });
     if (response.statusCode == 200) {
       _icon = icon;
@@ -190,7 +190,7 @@ class Role {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'icon': null });
     if (response.statusCode == 200) {
       _icon = null;
@@ -217,7 +217,7 @@ class Role {
       throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'unicode_emoji': unicode });
     if (response.statusCode == 200) {
       _unicodeEmoji = unicode;
@@ -234,7 +234,7 @@ class Role {
   /// }
   /// ```
   Future<void> setMentionable (bool mentionable) async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'mentionable': mentionable });
 
     if (response.statusCode == 200) {
@@ -257,14 +257,14 @@ class Role {
   /// ```dart
   /// await role.delete(reason: 'I will destroy this..');
   /// ```
-  /// You can't delete `@everyone` and [managed] roles.
+  /// You can't delete `@everyone` and managed roles.
   ///
   Future<void> delete () async {
     if (isManaged || label == '@everyone') {
       return;
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     Response response = await http.destroy(url: "/guilds/${manager.guild.id}/roles/$id");
 
     if (response.statusCode == 200) {

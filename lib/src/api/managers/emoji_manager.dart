@@ -11,7 +11,7 @@ class EmojiManager extends CacheManager<Emoji> {
   late final Guild guild;
 
   Future<Map<Snowflake, Emoji>> sync () async {
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     cache.clear();
 
     Response response = await http.get(url: "/guilds/${guild.id}/emojis");
@@ -36,7 +36,7 @@ class EmojiManager extends CacheManager<Emoji> {
      throw EmptyParameterException(cause: 'Parameter "path" cannot be null or empty');
     }
 
-    Http http = ioc.singleton(ioc.services.http);
+    Http http = ioc.singleton(Service.http);
     String image = await Helper.getPicture(path);
 
     Response response = await http.post(url: "/guilds/${guild.id}/emojis", payload: {

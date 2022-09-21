@@ -68,6 +68,8 @@ class ChannelWrapper {
         return ThreadChannel.fromPayload(payload);
       case ChannelType.guildStageVoice:
         return StageChannel.fromPayload(payload);
+      case ChannelType.guildForum:
+        return ForumChannel.fromPayload(payload);
       default:
         Console.warn(message: "$channelType is not supported");
     }

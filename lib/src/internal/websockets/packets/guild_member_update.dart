@@ -3,6 +3,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class GuildMemberUpdate implements WebsocketPacket {
   @override
@@ -10,8 +11,8 @@ class GuildMemberUpdate implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(ioc.services.event);
-    MineralClient client = ioc.singleton(ioc.services.client);
+    EventManager manager = ioc.singleton(Service.event);
+    MineralClient client = ioc.singleton(Service.client);
 
     dynamic payload = websocketResponse.payload;
 
@@ -21,7 +22,7 @@ class GuildMemberUpdate implements WebsocketPacket {
 
       VoiceManager voice = before != null
         ? before.voice
-        : VoiceManager(payload['deaf'], payload['mute'], false, false, false, false, null, null);
+        : VoiceManager.empty(payload['deaf'], payload['mute'], payload['user']['id'], guild.id);
 
       User user = User.from(payload['user']);
       GuildMember after = GuildMember.from(
@@ -31,8 +32,6 @@ class GuildMemberUpdate implements WebsocketPacket {
         guild: guild,
         voice: voice
       );
-
-      after.voice.member ??= after;
 
       manager.emit(
         event: Events.memberUpdate,
