@@ -38,8 +38,6 @@ class ChannelManager extends CacheManager<GuildChannel> {
     Response response = await http.post(url: '/guilds/$_guildId/channels', payload: builder.payload);
     dynamic payload = jsonDecode(response.body);
 
-    print(payload);
-
     final GuildChannel? channel = ChannelWrapper.create(payload);
     return channel as T;
   }
