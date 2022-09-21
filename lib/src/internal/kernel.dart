@@ -31,6 +31,7 @@ class Kernel {
   ContextMenuManager contextMenus = ContextMenuManager();
   IntentManager intents = IntentManager();
   PluginManager plugins = PluginManager();
+  Environment environment = Environment();
 
   Kernel() {
     ioc.bind(namespace: Service.event, service: events);
@@ -39,6 +40,8 @@ class Kernel {
     ioc.bind(namespace: Service.modules, service: modules);
     ioc.bind(namespace: Service.cli, service: cli);
     ioc.bind(namespace: Service.contextMenu, service: contextMenus);
+    ioc.bind(namespace: Service.environment, service: environment);
+
   }
 
   void loadConsole () {
@@ -52,7 +55,7 @@ class Kernel {
   }
 
   Future<void> init () async {
-    Environment environment = await _loadEnvironment();
+    await environment.load();
 
     Http http = Http(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
@@ -63,10 +66,7 @@ class Kernel {
       ReporterManager reporter = ReporterManager(Directory(join(Directory.current.path, 'logs')));
       reporter.reportLevel = report;
 
-      ioc.bind(
-        namespace: Service.reporter,
-        service: reporter
-      );
+      ioc.bind(namespace: Service.reporter, service: reporter);
     }
 
     String? token = environment.get('APP_TOKEN');
@@ -78,6 +78,7 @@ class Kernel {
     }
 
     await modules.load(this);
+    await plugins.load();
 
     final String? shardsCount = environment.get('SHARDS_COUNT');
 
@@ -85,13 +86,5 @@ class Kernel {
     manager.start(shardsCount: (shardsCount != null ? int.tryParse(shardsCount) : null));
 
     ioc.bind(namespace: Service.shards, service: manager);
-  }
-
-
-  Future<Environment> _loadEnvironment () async {
-    Environment environment = Environment();
-    ioc.bind(namespace: Service.environment, service: environment);
-
-    return await environment.load();
   }
 }

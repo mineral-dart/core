@@ -26,7 +26,7 @@ class ContextUserInteraction extends Interaction {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['user']?['id'],
+      payload['member']?['user']?['id'],
       payload['guild_id'],
       payload['target_id'],
       payload['channel_id']

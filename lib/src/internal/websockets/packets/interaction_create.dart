@@ -11,7 +11,6 @@ import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_ioc/ioc.dart';
 
 class InteractionCreate implements WebsocketPacket {
   @override

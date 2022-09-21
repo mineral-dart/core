@@ -123,7 +123,7 @@ class CommandInteraction extends Interaction {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['user']?['id'],
+      payload['member']?['user']?['id'],
       payload['guild_id'],
       payload['data']['name'],
       payload['channel_id'],

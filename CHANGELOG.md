@@ -1,3 +1,6 @@
+## 1.2.1
+- Fix wrong userId key into interactions
+
 ## 1.2.0
 - Implement `setDefaultReactionEmoji` method
 - Implement `setTags` method

@@ -18,8 +18,8 @@ class Environment {
     for (String line in content) {
       if (line.isNotEmpty) {
         List<String> content = line.split(':');
-        String key = content[0].trim();
-        String value = content[1].trim();
+        String key = content.removeAt(0).trim();
+        String value = content.join(':').trim();
 
         _cache.putIfAbsent(key, () => value);
       }

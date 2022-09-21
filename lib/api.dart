@@ -58,6 +58,8 @@ export 'src/api/interactions/context_user_interaction.dart' show ContextUserInte
 export 'src/api/interactions/context_message_interaction.dart' show ContextMessageInteraction;
 export 'src/api/interactions/interaction.dart' show Interaction;
 
+export 'src/api/components/code_builder.dart' show CodeBuilder;
+
 export 'src/api/utils.dart';
 export 'src/internal/extensions/collection.dart';
 export 'src/internal/extensions/string.dart';
