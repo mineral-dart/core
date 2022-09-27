@@ -138,12 +138,7 @@ class InteractionCreate implements WebsocketPacket {
       }
     }
 
-    ButtonInteraction buttonInteraction = ButtonInteraction.from(
-      user: member.user,
-      message: message!,
-      payload: payload,
-      guild: guild,
-    );
+    ButtonInteraction buttonInteraction = ButtonInteraction.fromPayload(payload);
 
     manager.emit(
       event: Events.buttonCreate,
