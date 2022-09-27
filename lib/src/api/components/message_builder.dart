@@ -10,10 +10,34 @@ class MessageBuilder {
 
   MessageBuilder({ this.content, this.embeds, this.components, this.stickers });
 
-  Object toJson () => {
-    'content': content,
-    'embeds': embeds?.map((embed) => embed.toJson()),
-    'components': components?.map((component) => component.toJson()),
-    'stickers': stickers?.map((sticker) => sticker.toJson())
-  };
+  Object toJson () {
+    final List<dynamic> _embeds = [];
+    if (embeds != null) {
+      for (final embed in embeds!) {
+        _embeds.add(embed.toJson());
+      }
+    }
+
+    final List<dynamic> _components = [];
+    if (components != null) {
+      for (final component in components!) {
+        _components.add(component.toJson());
+      }
+    }
+
+    final List<dynamic> _stickers = [];
+    if (stickers != null) {
+      for (final sticker in stickers!) {
+        _stickers.add(sticker.toJson());
+      }
+    }
+
+
+    return {
+      'content': content,
+      'embeds': _embeds,
+      'components': _components,
+      'stickers': _stickers
+    };
+  }
 }
