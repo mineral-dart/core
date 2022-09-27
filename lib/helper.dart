@@ -47,4 +47,7 @@ class Helper {
     return permissions;
   }
 
+  static bool hasKey (String key, Map<String, dynamic> entry) {
+    return entry[key] != null;
+  }
 }

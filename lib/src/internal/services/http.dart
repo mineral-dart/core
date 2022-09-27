@@ -1,6 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:mineral/exception.dart';
+import 'package:mineral/helper.dart';
 
 class Http {
   String baseUrl;
@@ -44,5 +46,40 @@ class Http {
     }
 
     return map;
+  }
+
+  http.Response responseWrapper<T> (http.Response response) {
+    final dynamic payload = jsonDecode(response.body);
+
+    if (response.statusCode == 400) {
+      if (Helper.hasKey('components', payload)) {
+        final List<int> components = payload['components'];
+
+        throw ApiException(
+          code: response.statusCode,
+          cause: payload['components'].length > 1
+            ? 'Components at ${components.join(', ')} positions are invalid'
+            : 'The component at position ${components.first} is invalid'
+        );
+      }
+
+      if (Helper.hasKey('embeds', payload)) {
+        final List<int> components = payload['embeds'];
+
+        throw ApiException(
+          code: response.statusCode,
+          cause: payload['embeds'].length > 1
+            ? 'Embeds at ${components.join(', ')} positions are invalid'
+            : 'The embed at position ${components.first} is invalid'
+        );
+      }
+
+      throw HttpException(
+        code: response.statusCode,
+        cause: response.body,
+      );
+    }
+
+    return response;
   }
 }
