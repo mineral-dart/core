@@ -8,7 +8,12 @@ import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class GuildRoleManager extends CacheManager<Role> {
-  late final Guild guild;
+  final Snowflake _guildId;
+
+  GuildRoleManager(this._guildId);
+
+  Guild get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(_guildId);
+  Role get everyone => cache.findOrFail((role) => role.label == '@everyone');
 
   /// Synchronise the cache from the Discord API
   ///
@@ -20,7 +25,7 @@ class GuildRoleManager extends CacheManager<Role> {
     Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get(url: "/guilds/${guild.id}/roles");
+    Response response = await http.get(url: "/guilds/$_guildId/roles");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -56,7 +61,7 @@ class GuildRoleManager extends CacheManager<Role> {
     int? _permissions = permissions != null ? Helper.reduceRolePermissions(permissions) : null;
 
     Http http = ioc.singleton(Service.http);
-    Response response = await http.post(url: "/guilds/${guild.id}/roles", payload: {
+    Response response = await http.post(url: "/guilds/$_guildId}/roles", payload: {
       'name': label,
       'color': color != null ? Helper.toRgbColor(color) : null,
       'hoist': hoist ?? false,
