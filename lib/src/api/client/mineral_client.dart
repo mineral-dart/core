@@ -56,6 +56,7 @@ class MineralClient {
   String get sessionId => _sessionId;
   Application get application => _application;
   List<Intent> get intents => _intents;
+  ShardManager get _shards => ioc.singleton(Service.shards);
 
   /// ### Returns the time the [MineralClient] is online
   Duration get uptimeDuration => DateTime.now().difference(uptime);
@@ -70,12 +71,33 @@ class MineralClient {
   /// );
   /// ```
   void setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
-    ShardManager manager = ioc.singleton(Service.shards);
-    manager.send(OpCode.statusUpdate, {
+    _shards.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
       'status': status != null ? status.toString() : ClientStatus.online.toString(),
       'afk': afk ?? false,
+    });
+  }
+
+  /// Define activities of this
+  void setActivities (List<ClientActivity> activities) {
+    _shards.send(OpCode.statusUpdate, {
+      'activities': activities.map((activity) => activity.toJson()),
+    });
+  }
+
+  /// Define status of this
+  void setStatus (ClientStatus status) {
+    _shards.send(OpCode.statusUpdate, {
+      'status': status._value,
+    });
+  }
+
+
+  /// Define afk of this
+  void setAfk (bool afk) {
+    _shards.send(OpCode.statusUpdate, {
+      'afk': afk,
     });
   }
 
