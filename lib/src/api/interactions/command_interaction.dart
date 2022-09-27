@@ -24,7 +24,7 @@ class CommandInteraction extends Interaction {
   String get identifier => _identifier;
   TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId);
 
-  /// ### Returns an instance of [PartialTextChannel] if the command has the designed option
+  /// ### Returns an instance of [PartialTextChannel] or null if the command has the designed option
   ///
   /// Example :
   /// ```dart
@@ -32,6 +32,16 @@ class CommandInteraction extends Interaction {
   /// ```
   T? getChannel<T extends PartialTextChannel> (String optionName) {
     return guild?.channels.cache.get(data[optionName]?['value']);
+  }
+
+  /// ### Returns an instance of [PartialTextChannel] if the command has the designed option
+  ///
+  /// Example :
+  /// ```dart
+  /// final Channel channel = interaction.getChannelOrFail('option_name');
+  /// ```
+  T getChannelOrFail<T extends PartialTextChannel> (String optionName) {
+    return guild!.channels.cache.getOrFail(data[optionName]['value']);
   }
 
   /// ### Returns an [int] if the command has the designed option
@@ -44,13 +54,33 @@ class CommandInteraction extends Interaction {
     return data[optionName]?['value'];
   }
 
-  /// ### Returns an [String] if the command has the designed option
+  /// ### Returns an [int] or null if the command has the designed option
+  ///
+  /// Example :
+  /// ```dart
+  /// final int value = interaction.getIntegerOrFail('option_name');
+  /// ```
+  int getIntegerOrFail (String optionName) {
+    return data[optionName]['value'];
+  }
+
+  /// ### Returns an [String] or null if the command has the designed option
   ///
   /// Example :
   /// ```dart
   /// String? str = interaction.getString('option_name');
   /// ```
   String? getString (String optionName) {
+    return data[optionName]?['value'];
+  }
+
+  /// ### Returns an [String] if the command has the designed option
+  ///
+  /// Example :
+  /// ```dart
+  /// final String str = interaction.getStringOrFail('option_name');
+  /// ```
+  String? getStringOrFail (String optionName) {
     return data[optionName]?['value'];
   }
 
@@ -64,7 +94,17 @@ class CommandInteraction extends Interaction {
     return guild?.members.cache.get(data[optionName]?['value']);
   }
 
-  /// ### Returns an instance of [User] if the command has the designed option
+  /// ### Returns an instance of [GuildMember] if the command has the designed option
+  ///
+  /// Example :
+  /// ```dart
+  /// final GuildMember member = interaction.getMemberOrFail('option_name');
+  /// ```
+  GuildMember getMemberOrFail (String optionName) {
+    return guild!.members.cache.getOrFail(data[optionName]['value']);
+  }
+
+  /// ### Returns an instance of [User] or null if the command has the designed option
   ///
   /// Example :
   /// ```dart
@@ -75,14 +115,45 @@ class CommandInteraction extends Interaction {
     return client.users.cache.get(data[optionName]?['value']);
   }
 
+  /// ### Returns an instance of [User] if the command has the designed option
+  ///
+  /// Example :
+  /// ```dart
+  /// final User user = interaction.getUserOrFail('option_name');
+  /// ```
+  User getUserOrFail (String optionName) {
+    final MineralClient client = ioc.singleton(Service.client);
+    return client.users.cache.getOrFail(data[optionName]['value']);
+  }
+
+  /// ### Returns an [bool] or null if the command has the designed option
+  ///
+  /// Example :
+  /// ```dart
+  /// bool? boolean = interaction.getBoolean('option_name');
+  /// ```
+  bool? getBoolean (String optionName) {
+    return data[optionName]?['value'];
+  }
+
   /// ### Returns an [bool] if the command has the designed option
   ///
   /// Example :
   /// ```dart
-  /// book? boolean = interaction.getBoolean('option_name');
+  /// final bool boolean = interaction.getBooleanOrFail('option_name');
   /// ```
-  bool? getBoolean (String optionName) {
-    return data[optionName]?['value'];
+  bool getBooleanOrFail (String optionName) {
+    return data[optionName]['value'];
+  }
+
+  /// ### Returns an instance of [Role] or null if the command has the designed option
+  ///
+  /// Example :
+  /// ```dart
+  /// Role? role = interaction.getRole('option_name');
+  /// ```
+  Role? getRole (String optionName) {
+    return guild?.roles.cache.get(data[optionName]?['value']);
   }
 
   /// ### Returns an instance of [Role] if the command has the designed option
@@ -91,8 +162,8 @@ class CommandInteraction extends Interaction {
   /// ```dart
   /// Role? role = interaction.getRole('option_name');
   /// ```
-  Role? getRole (String optionName) {
-    return guild?.roles.cache.get(data[optionName]?['value']);
+  Role getRoleOrFail (String optionName) {
+    return guild!.roles.cache.getOrFail(data[optionName]['value']);
   }
 
   /// ### Returns an [T] if the command has the designed option
