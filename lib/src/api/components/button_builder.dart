@@ -16,31 +16,33 @@ enum ButtonStyle {
 }
 
 class ButtonBuilder extends Component {
-  String customId;
-  String? label;
-  ButtonStyle style;
-  EmojiBuilder? emoji;
-  bool disabled;
+  String? _customId;
+  String? _label;
+  ButtonStyle _style;
+  EmojiBuilder? _emoji;
+  bool _disabled = false;
+  String? _url;
 
-  ButtonBuilder({ required this.customId, this.label, required this.style, this.emoji, this.disabled = false }) : super(type: ComponentType.button);
+  ButtonBuilder(this._customId, this._label, this._style, this._emoji, this._disabled, this._url) : super(type: ComponentType.button);
 
   @override
   dynamic toJson () {
     return {
       'type': type.value,
-      'custom_id': customId,
-      'label': label,
-      'style': style.value,
-      'emoji': emoji?.emoji.toJson(),
-      'disabled': disabled
+      'custom_id': _label,
+      'label': _label,
+      'style': _style.value,
+      'emoji': _emoji?.emoji.toJson(),
+      'disabled': _disabled,
+      'url': _url,
     };
   }
 
-  factory ButtonBuilder.from({ required dynamic payload }) {
-    return ButtonBuilder(
-      customId: payload['custom_id'],
-      label: payload['label'],
-      style: ButtonStyle.values.firstWhere((element) => element.value == payload['style'])
-    );
+  factory ButtonBuilder.fromButton({ required String customId, required ButtonStyle style, String? label, EmojiBuilder? emoji, bool disabled = false }) {
+    return ButtonBuilder(customId, label, style, emoji, disabled, null);
+  }
+
+  factory ButtonBuilder.fromLink({ required String url, String? label, EmojiBuilder? emoji, bool disabled = false }) {
+    return ButtonBuilder(null, label, ButtonStyle.link, emoji, disabled, url);
   }
 }
