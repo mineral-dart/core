@@ -89,8 +89,8 @@ class DmMessage extends PartialMessage<DmChannel> {
 
     List<Component> components = [];
     if (payload['components'] != null) {
-      for (dynamic payload in payload['components']) {
-        Component component = Component.from(payload: payload);
+      for (dynamic element in payload['components']) {
+        Component component = Component.wrap(element, payload['guild_id']);
         components.add(component);
       }
     }

@@ -180,8 +180,8 @@ class Message extends PartialMessage<TextBasedChannel> {
     }
 
     List<Component> components = [];
-    for (dynamic payload in payload['components']) {
-      final component = Component.from(payload: payload);
+    for (dynamic element in payload['components']) {
+      final component = Component.wrap(element, payload['guild_id']);
       components.add(component);
     }
 
