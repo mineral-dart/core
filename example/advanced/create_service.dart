@@ -35,8 +35,8 @@ Future<void> main () async {
 
 /// Now it's time to call our service! To do this we will imagine using a command directly within our discord server.
 @Command(name: 'notify', description: 'Say Hello World !', scope: 'GUILD')
-@Option(name: 'action', description: 'Action', required: true)
-@Option(name: 'message', description: 'Message to send', required: true)
+@Option(name: 'action', description: 'Action', type: OptionType.string, required: true)
+@Option(name: 'message', description: 'Message to send', type: OptionType.string, required: true)
 class HelloCommand extends MineralCommand {
   Future<void> handle (CommandInteraction interaction) async {
     final String? member = interaction.getString('action');
