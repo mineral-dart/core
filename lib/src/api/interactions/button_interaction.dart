@@ -4,7 +4,7 @@ import 'package:mineral/api.dart';
 
 class ButtonInteraction extends Interaction {
   Snowflake _customId;
-  Snowflake _messageId;
+  Snowflake? _messageId;
   Snowflake _channelId;
 
   ButtonInteraction(
