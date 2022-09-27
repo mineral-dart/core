@@ -24,7 +24,7 @@ class ButtonInteraction extends Interaction {
   Message? get message => guild?.channels.cache.get<TextBasedChannel>(_channelId)?.messages.cache.get(_messageId);
   TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId)?.messages.cache.get(_messageId);
 
-  factory ButtonInteraction.from({ required User user, required Guild guild, required Message message, required dynamic payload }) {
+  factory ButtonInteraction.fromPayload(dynamic payload) {
     return ButtonInteraction(
       payload['id'],
       payload['application_id'],
