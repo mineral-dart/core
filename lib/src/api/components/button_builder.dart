@@ -29,7 +29,7 @@ class ButtonBuilder extends Component {
   dynamic toJson () {
     return {
       'type': type.value,
-      'custom_id': _label,
+      'custom_id': _customId,
       'label': _label,
       'style': _style.value,
       'emoji': _emoji?.emoji.toJson(),

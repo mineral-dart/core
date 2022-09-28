@@ -54,9 +54,9 @@ class Http {
   }
 
   http.Response responseWrapper<T> (http.Response response) {
-    final dynamic payload = jsonDecode(response.body);
-
     if (response.statusCode == 400) {
+      final dynamic payload = jsonDecode(response.body);
+
       if (Helper.hasKey('components', payload)) {
         final List<int> components = payload['components'];
 

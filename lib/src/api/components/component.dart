@@ -15,7 +15,7 @@ enum ComponentType {
   String toString () => value.toString();
 }
 
-class Component {
+abstract class Component {
   ComponentType type;
 
   Component({ required this.type });
@@ -61,5 +61,5 @@ class Component {
     }
   }
 
-  dynamic toJson () {}
+  dynamic toJson ();
 }
