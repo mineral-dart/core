@@ -21,8 +21,9 @@ class ButtonInteraction extends Interaction {
   );
 
   Snowflake get customId => _customId;
-  Message? get message => guild?.channels.cache.get<TextBasedChannel>(_channelId)?.messages.cache.get(_messageId);
-  TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId)?.messages.cache.get(_messageId);
+  Snowflake? get mid => _messageId;
+  Message? get message => (guild?.channels.cache.get(_channelId) as dynamic)?.messages.cache[_messageId];
+  GuildChannel? get channel => guild?.channels.cache.get<GuildChannel>(_channelId);
 
   factory ButtonInteraction.fromPayload(dynamic payload) {
     return ButtonInteraction(
@@ -33,7 +34,7 @@ class ButtonInteraction extends Interaction {
       payload['token'],
       payload['member']?['user']?['id'],
       payload['guild_id'],
-      payload['message_id'],
+      payload['message']?['id'],
       payload['data']['custom_id'],
       payload['channel_id'],
     );

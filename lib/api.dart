@@ -32,6 +32,7 @@ export 'src/api/channels/guild_channel.dart' show GuildChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
 export 'src/api/channels/partial_channel.dart' show PartialChannel, ChannelType;
 export 'src/api/channels/forum_channel.dart' show ForumChannel;
+export 'src/api/channels/thread_channel.dart' show ThreadChannel;
 export 'src/api/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
 export 'src/api/components/message_builder.dart' show MessageBuilder;
 export 'src/api/components/forum_tag_builder.dart' show ForumTagBuilder;
