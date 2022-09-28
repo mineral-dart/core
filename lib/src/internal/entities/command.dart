@@ -98,6 +98,7 @@ class Option {
 }
 
 class SlashCommand {
+  Snowflake? id;
   String name;
   String description;
   String scope;
@@ -124,4 +125,7 @@ class SlashCommand {
           : options.map((option) => option.toJson()).toList(),
     };
   }
+
+  @override
+  String toString () => '</$name:$id>';
 }

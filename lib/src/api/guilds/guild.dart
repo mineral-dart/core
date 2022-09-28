@@ -7,6 +7,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/components/image_formater.dart';
+import 'package:mineral/src/api/managers/command_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -80,6 +81,7 @@ class Guild {
   ModerationRuleManager _moderationRules;
   GuildWebhookManager _webhooks;
   GuildScheduledEventManager _scheduledEvents;
+  CommandManager _commands;
 
   Guild(
     this._id,
@@ -126,6 +128,7 @@ class Guild {
     this._moderationRules,
     this._webhooks,
     this._scheduledEvents,
+    this._commands,
   );
 
   Snowflake get id => _id;
@@ -173,6 +176,7 @@ class Guild {
   GuildWebhookManager get webhooks => _webhooks;
   GuildScheduledEventManager get scheduledEvents => _scheduledEvents;
   Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot);
+  CommandManager get commands => _commands;
 
   /// ### Modifies the [name] of this.
   ///
@@ -637,7 +641,8 @@ class Guild {
       features,
       moderationRuleManager,
       GuildWebhookManager.fromManager(webhookManager: webhookManager),
-      guildScheduledEventManager
+      guildScheduledEventManager,
+      CommandManager(payload['id']),
     );
   }
 }
