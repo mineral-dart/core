@@ -68,7 +68,7 @@ class GuildCreate implements WebsocketPacket {
       guildScheduledManager.cache.putIfAbsent(event.id, () => event);
     }
 
-    ModerationRuleManager moderationManager = ModerationRuleManager();
+    ModerationRuleManager moderationManager = ModerationRuleManager(websocketResponse.payload['guild_id']);
 
     WebhookManager webhookManager = WebhookManager(websocketResponse.payload['id'], null);
 
@@ -149,7 +149,7 @@ class GuildCreate implements WebsocketPacket {
 
       Map<Snowflake, ModerationRule> rules = {};
       for (dynamic element in payload) {
-        ModerationRule rule = ModerationRule.from(guild: guild, payload: element);
+        ModerationRule rule = ModerationRule.fromPayload(element);
         rules.putIfAbsent(rule.id, () => rule);
       }
 

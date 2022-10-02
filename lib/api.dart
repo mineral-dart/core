@@ -36,6 +36,7 @@ export 'src/api/channels/thread_channel.dart' show ThreadChannel;
 export 'src/api/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
 export 'src/api/components/message_builder.dart' show MessageBuilder;
 export 'src/api/components/forum_tag_builder.dart' show ForumTagBuilder;
+export 'src/api/components/moderation_rules_builder.dart' show ModerationRulesBuilder;
 
 export 'src/api/messages/message.dart' show Message;
 export 'src/api/messages/embed_builder.dart' show EmbedBuilder, Footer, Image, Thumbnail, Author, Field;

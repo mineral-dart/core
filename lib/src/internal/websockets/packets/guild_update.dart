@@ -38,7 +38,7 @@ class GuildUpdate implements WebsocketPacket {
     EmojiManager emojiManager = EmojiManager();
     emojiManager.cache.addAll(before.emojis.cache);
 
-    ModerationRuleManager moderationManager = ModerationRuleManager();
+    ModerationRuleManager moderationManager = ModerationRuleManager(websocketResponse.payload['id']);
 
     WebhookManager webhookManager = WebhookManager(before.id, null);
     webhookManager.cache.addAll(before.webhooks.cache);
@@ -56,8 +56,6 @@ class GuildUpdate implements WebsocketPacket {
       payload: websocketResponse.payload,
       guildScheduledEventManager: guildScheduledEventManager
     );
-
-    moderationManager.guild = after;
 
     after.stickers.guild = after;
     after.stickers.cache.forEach((_, sticker) {
