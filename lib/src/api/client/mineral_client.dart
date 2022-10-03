@@ -138,8 +138,6 @@ class MineralClient {
       ]
     );
 
-    print(response.body);
-
     if (response.statusCode == 200) {
       final List<dynamic> _commands = jsonDecode(response.body);
       for (final element in _commands) {
