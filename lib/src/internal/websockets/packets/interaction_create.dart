@@ -5,7 +5,7 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';

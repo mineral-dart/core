@@ -1,6 +1,6 @@
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 
-class LinkBuilder extends Component {
+class LinkBuilder extends ComponentBuilder {
   String label;
   String url;
   int style = 5;

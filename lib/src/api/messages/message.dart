@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
@@ -181,10 +181,10 @@ class Message extends PartialMessage<TextBasedChannel> {
       }
     }
 
-    List<Component> components = [];
+    List<ComponentBuilder> components = [];
     if (payload['components'] != null) {
       for (dynamic element in payload['components']) {
-        final component = Component.wrap(element, payload['guild_id']);
+        final component = ComponentBuilder.wrap(element, payload['guild_id']);
         components.add(component);
       }
     }

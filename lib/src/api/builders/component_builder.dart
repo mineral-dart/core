@@ -15,10 +15,10 @@ enum ComponentType {
   String toString () => value.toString();
 }
 
-abstract class Component {
+abstract class ComponentBuilder {
   ComponentType type;
 
-  Component({ required this.type });
+  ComponentBuilder({ required this.type });
 
   static wrap (dynamic payload, Snowflake? guildId) {
     final Guild? guild = ioc.singleton<MineralClient>(Service.client).guilds.cache.get(guildId);

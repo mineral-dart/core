@@ -1,4 +1,4 @@
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 
 enum TextInputStyle {
   input(1),
@@ -11,7 +11,7 @@ enum TextInputStyle {
   String toString () => value.toString();
 }
 
-class TextInputBuilder extends Component {
+class TextInputBuilder extends ComponentBuilder {
   String customId;
   String label;
   TextInputStyle style;

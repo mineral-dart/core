@@ -1,11 +1,11 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 
 class MessageBuilder {
   final String? content;
   final List<EmbedBuilder>? embeds;
-  final List<Component>? components;
+  final List<ComponentBuilder>? components;
   final List<MessageStickerItem>? stickers;
 
   MessageBuilder({ this.content, this.embeds, this.components, this.stickers });

@@ -1,5 +1,5 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 
 enum ButtonStyle {
   primary(1),
@@ -15,7 +15,7 @@ enum ButtonStyle {
   String toString () => value.toString();
 }
 
-class ButtonBuilder extends Component {
+class ButtonBuilder extends ComponentBuilder {
   String? _customId;
   String? _label;
   ButtonStyle _style;

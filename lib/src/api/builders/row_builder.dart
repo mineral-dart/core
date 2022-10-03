@@ -1,8 +1,8 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 
-class RowBuilder extends Component {
-  List<Component> components = [];
+class RowBuilder extends ComponentBuilder {
+  List<ComponentBuilder> components = [];
 
   RowBuilder() : super(type: ComponentType.actionRow);
 
@@ -10,16 +10,16 @@ class RowBuilder extends Component {
   Object toJson () {
     return {
       'type': type.value,
-      'components': components.map((Component component) => component.toJson()).toList()
+      'components': components.map((ComponentBuilder component) => component.toJson()).toList()
     };
   }
 
-  factory RowBuilder.fromComponents(List<Component> components) {
+  factory RowBuilder.fromComponents(List<ComponentBuilder> components) {
     return RowBuilder()
       ..components = components;
   }
 
-  factory RowBuilder.fromComponent(Component component) {
+  factory RowBuilder.fromComponent(ComponentBuilder component) {
     return RowBuilder.fromComponents([component]);
   }
 

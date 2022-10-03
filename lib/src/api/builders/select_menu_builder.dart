@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 
-class SelectMenuBuilder extends Component {
+class SelectMenuBuilder extends ComponentBuilder {
   String customId;
   List<SelectMenuOption> options = [];
   String? placeholder;
