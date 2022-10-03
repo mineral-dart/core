@@ -47,12 +47,11 @@ export 'src/api/builders/select_menu_builder.dart' show SelectMenuBuilder, Selec
 export 'src/api/builders/modal_builder.dart' show ModalBuilder;
 export 'src/api/builders/text_input_builder.dart' show TextInputBuilder, TextInputStyle;
 export 'src/api/builders/button_builder.dart' show ButtonBuilder, ButtonStyle;
-export 'src/api/builders/link_builder.dart' show LinkBuilder;
 export 'src/api/builders/code_builder.dart' show CodeBuilder;
 export 'src/api/builders/message_builder.dart' show MessageBuilder;
 export 'src/api/builders/forum_tag_builder.dart' show ForumTagBuilder;
 export 'src/api/builders/moderation_rules_builder.dart' show ModerationRulesBuilder;
-export 'src/api/builders/image_formater.dart' show ImageFormater;
+export 'src/api/image_formater.dart' show ImageFormater;
 
 export 'src/api/interactions/command_interaction.dart' show CommandInteraction;
 export 'src/api/interactions/button_interaction.dart' show ButtonInteraction;
