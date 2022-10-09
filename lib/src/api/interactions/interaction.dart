@@ -82,6 +82,17 @@ class Interaction {
     return this;
   }
 
+  /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
+  Future<Interaction> deferredReply () async {
+    Http http = ioc.singleton(Service.http);
+
+    await http.post(url: "/interactions/$id/$token/callback", payload: {
+      'type': InteractionCallbackType.deferredChannelMessageWithSource.value
+    });
+
+    return this;
+  }
+
   factory Interaction.from({ required dynamic payload }) {
     return Interaction(
       payload['id'],
