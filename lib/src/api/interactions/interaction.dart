@@ -47,27 +47,13 @@ class Interaction {
   Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
     Http http = ioc.singleton(Service.http);
 
-    List<dynamic> embedList = [];
-    if (embeds != null) {
-      for (EmbedBuilder element in embeds) {
-        embedList.add(element.toJson());
-      }
-    }
-
-    List<dynamic> componentList = [];
-    if (components != null) {
-      for (RowBuilder element in components) {
-        componentList.add(element.toJson());
-      }
-    }
-
     await http.post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.channelMessageWithSource.value,
       'data': {
         'tts': tts ?? false,
         'content': content,
-        'embeds': embeds != null ? embedList : [],
-        'components': components != null ? componentList : [],
+        'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
+        'components': components != null ? components.map((e) => e.toJson()).toList() : [],
         'flags': private != null && private == true ? 1 << 6 : null,
       }
     });
