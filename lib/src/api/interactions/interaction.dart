@@ -44,7 +44,7 @@ class Interaction {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<void> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
+  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
     Http http = ioc.singleton(Service.http);
 
     List<dynamic> embedList = [];
@@ -71,6 +71,8 @@ class Interaction {
         'flags': private != null && private == true ? 1 << 6 : null,
       }
     });
+
+    return this;
   }
 
   /// ### Responds to this by an [ModalBuilder]
@@ -83,13 +85,15 @@ class Interaction {
   ///
   /// await interaction.modal(modal);
   /// ```
-  Future<void> modal (ModalBuilder modal) async {
+  Future<Interaction> modal (ModalBuilder modal) async {
     Http http = ioc.singleton(Service.http);
 
     await http.post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.modal.value,
       'data': modal.toJson(),
     });
+
+    return this;
   }
 
   factory Interaction.from({ required dynamic payload }) {
