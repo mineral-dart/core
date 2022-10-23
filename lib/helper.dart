@@ -47,4 +47,17 @@ class Helper {
     return permissions;
   }
 
+  static bool hasKey (String key, Map<String, dynamic> entry) {
+    return entry[key] != null;
+  }
+
+  static int toBitfield (List<int> values) {
+    int _bitfield = 0;
+
+    for (int value in values) {
+      _bitfield += value;
+    }
+
+    return _bitfield;
+  }
 }

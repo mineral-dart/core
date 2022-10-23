@@ -17,11 +17,13 @@ class CommandManager {
   void register (List<MineralCommand> mineralCommands) {
     for (final commandClass in mineralCommands) {
       SlashCommand command = SlashCommand(name: '',
-          description: '',
-          scope: '',
-          everyone: true,
-          dmChannel: false,
-          options: []);
+        description: '',
+        scope: '',
+        everyone: false,
+        dmChannel: false,
+        permissions: [],
+        options: []
+      );
 
       _registerCommands(
           command: command,
@@ -67,7 +69,7 @@ class CommandManager {
       dynamic reflectee = element.reflectee;
 
       if (reflectee is CommandGroup) {
-        SlashCommand group = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, options: [])
+        SlashCommand group = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, permissions: [], options: [])
           ..type = 2
           ..name = reflectee.name.snakeCase
           ..description = reflectee.description;
@@ -80,7 +82,8 @@ class CommandManager {
           ..name = reflectee.name.toLowerCase()
           ..description = reflectee.description
           ..scope = reflectee.scope
-          ..everyone = reflectee.everyone ?? false;
+          ..everyone = reflectee.everyone ?? false
+          ..permissions = reflectee.permissions ?? [];
 
         if (classMirror.instanceMembers.values.toList().where((element) => element.simpleName == Symbol('handle')).isNotEmpty) {
           MethodMirror handle = classMirror.instanceMembers.values.toList().firstWhere((element) => element.simpleName == Symbol('handle'));
@@ -104,7 +107,7 @@ class CommandManager {
         return;
       }
 
-      SlashCommand subcommand = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, options: []);
+      SlashCommand subcommand = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, permissions: [], options: []);
       subcommand.name = value.metadata.first.reflectee.name;
       subcommand.description = value.metadata.first.reflectee.description;
 

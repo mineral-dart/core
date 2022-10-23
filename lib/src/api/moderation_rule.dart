@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/src/exceptions/too_many.dart';
 
 enum ModerationEventType {
@@ -17,7 +18,8 @@ enum ModerationTriggerType {
   keywords(1),
   harmfulLink(2),
   spam(3),
-  keywordPreset(4);
+  keywordPreset(4),
+  mentionSpam(5);
 
   final int value;
   const ModerationTriggerType(this.value);
@@ -51,28 +53,42 @@ enum ModerationActionType {
 }
 
 class ModerationTriggerMetadata {
-  List<String> keywordFilter;
-  List<ModerationPresetType> presets;
+  List<String>? keywordFilter;
+  List<ModerationPresetType>? presets;
+  List<String>? allowList;
+  int? mentionTotalLimit;
 
-  ModerationTriggerMetadata({ required this.keywordFilter, required this.presets });
+  ModerationTriggerMetadata(this.keywordFilter, this.presets, this.allowList, this.mentionTotalLimit);
 
-  Object toJson () {
-    return {
-      'keyword_filter': keywordFilter,
-      'presets': presets.map((preset) => preset.toString()).toList(),
-    };
+  Object toJson () => {
+    'keyword_filter': keywordFilter,
+    'presets': presets?.map((preset) => preset.toString()).toList(),
+    'allow_list': allowList,
+    'mention_total_limit': mentionTotalLimit
+  };
+
+  factory ModerationTriggerMetadata.keywords ({ List<String>? keywordFilter, List<ModerationPresetType>? presets, List<String>? allowList }) {
+    return ModerationTriggerMetadata(keywordFilter, presets, allowList, null);
+  }
+
+  factory ModerationTriggerMetadata.mentions ({ required int maxMentions }) {
+    if (maxMentions <= 0 || maxMentions > 50) {
+      throw InvalidParameterException(cause: 'The number of mentions must be between 1 and 50 per message ($maxMentions given).');
+    }
+
+    return ModerationTriggerMetadata(null, null, null, maxMentions);
   }
 }
 
 class ModerationActionMetadata {
-  GuildChannel? channel;
-  int? duration;
+  final Snowflake? channelId;
+  final int? duration;
 
-  ModerationActionMetadata({ required this.channel, required this.duration });
+  ModerationActionMetadata(this.channelId, this.duration);
 
   Object toJson () {
     return {
-      'channel_id': channel?.id,
+      'channel_id': channelId,
       'duration_seconds': duration,
     };
   }
@@ -82,13 +98,31 @@ class ModerationAction {
   ModerationActionType type;
   ModerationActionMetadata? metadata;
 
-  ModerationAction({ required this.type, required this.metadata });
+  ModerationAction(this.type, this.metadata);
 
   Object toJson () {
     return {
       'type': type.value,
       'metadata': metadata?.toJson(),
     };
+  }
+
+  factory ModerationAction.blockMessage () {
+    return ModerationAction(ModerationActionType.blockMessage, null);
+  }
+
+  factory ModerationAction.sendAlert (Snowflake channelId) {
+    return ModerationAction(
+      ModerationActionType.sendAlertMessage,
+      ModerationActionMetadata(channelId, null)
+    );
+  }
+
+  factory ModerationAction.timeout (Duration duration) {
+    return ModerationAction(
+      ModerationActionType.timeout,
+      ModerationActionMetadata(null, duration.inMilliseconds)
+    );
   }
 }
 
@@ -272,16 +306,18 @@ class ModerationRule {
     return response.statusCode == 204;
   }
 
-  factory ModerationRule.from ({ required Guild guild, required dynamic payload }) {
+  factory ModerationRule.fromPayload (dynamic payload) {
+    Guild guild = ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(payload['guild_id']);
+
     List<ModerationAction> actions = [];
     if (payload['actions'] != null) {
       for (dynamic item in payload['actions']) {
         ModerationAction action = ModerationAction(
-          type: ModerationActionType.values.firstWhere((element) => element.value == item['type']),
-          metadata: item['metadata'].toString() != '{}'
+          ModerationActionType.values.firstWhere((element) => element.value == item['type']),
+          item['metadata'].toString() != '{}'
             ? ModerationActionMetadata(
-              channel: guild.channels.cache.get(item['metadata']['channel_id']!),
-              duration: item['metadata']['duration_seconds']
+              item['metadata']['channel_id'],
+              item['metadata']['duration_seconds']
             )
             : null
         );
@@ -291,23 +327,29 @@ class ModerationRule {
     }
 
     List<String> keywordFilter = [];
-    for (dynamic keyword in payload['trigger_metadata']['keyword_filter']) {
-      keywordFilter.add(keyword);
+    if (payload['trigger_metadata']?['keyword_filter'] != null) {
+      for (dynamic keyword in payload['trigger_metadata']['keyword_filter']) {
+        keywordFilter.add(keyword);
+      }
     }
 
     List<Role> roles = [];
-    for (Snowflake id in payload['exempt_roles']) {
-      Role? role = guild.roles.cache.get(id);
-      if (role != null) {
-        roles.add(role);
+    if (payload['exempt_roles'] != null) {
+      for (Snowflake id in payload['exempt_roles']) {
+        Role? role = guild.roles.cache.get(id);
+        if (role != null) {
+          roles.add(role);
+        }
       }
     }
 
     List<GuildChannel> channels = [];
-    for (Snowflake id in payload['exempt_channels']) {
-      GuildChannel? channel = guild.channels.cache.get(id);
-      if (channel != null) {
-        channels.add(channel);
+    if (payload['exempt_channels'] != null) {
+      for (Snowflake id in payload['exempt_channels']) {
+        GuildChannel? channel = guild.channels.cache.get(id);
+        if (channel != null) {
+          channels.add(channel);
+        }
       }
     }
 
@@ -320,12 +362,14 @@ class ModerationRule {
       actions: actions,
       triggerType: ModerationTriggerType.values.firstWhere((element) => element.value == payload['trigger_type']),
       triggerMetadata: ModerationTriggerMetadata(
-        presets: payload['trigger_metadata'] != null && payload['trigger_metadata']['presets'] != null
-          ? (['presets'] as List<int>).map((preset) {
-            return ModerationPresetType.values.firstWhere((element) => element.value == preset);
-          }).toList()
+        keywordFilter,
+        payload['trigger_metadata'] != null && payload['trigger_metadata']['presets'] != null
+          ? (payload['trigger_metadata']['presets'] as List<dynamic>).map((preset) {
+              return ModerationPresetType.values.firstWhere((element) => element.value == preset);
+            }).toList()
           : [],
-        keywordFilter: keywordFilter
+        payload['allow_list'],
+        payload['mention_total_limit']
       ),
       enabled: payload['enabled'] ?? false,
       exemptRoles: roles,

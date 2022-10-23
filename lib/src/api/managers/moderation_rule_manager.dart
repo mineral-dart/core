@@ -6,31 +6,57 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class ModerationRuleManager extends CacheManager<ModerationRule> {
-  late final Guild guild;
+  final Snowflake _guildId;
 
-  Future<ModerationRule?> create ({ required String label, required ModerationEventType eventType, required ModerationTriggerType triggerType, ModerationTriggerMetadata? triggerMetadata, List<ModerationAction>? actions, bool? enabled, List<Snowflake>? exemptRoles, List<Snowflake>? exemptChannels }) async {
+  ModerationRuleManager(this._guildId);
+
+  /// Create new moderation rule from [builder]
+  /// ```dart
+  /// await guild.moderationRules.create(
+  ///   ModerationRulesBuilder.mentionSpam(
+  ///     label: 'Test',
+  ///     enabled: true,
+  ///     triggerMetadata: ModerationTriggerMetadata.mentions(maxMentions: 4),
+  ///     actions: [
+  ///       ModerationAction.sendAlert('1021156085559726221'),
+  ///       ModerationAction.blockMessage(),
+  ///       ModerationAction.timeout(Duration(seconds: 5)),
+  ///     ]
+  ///   )
+  /// );
+  /// ```
+  Future<ModerationRule?> create (ModerationRulesBuilder builder) async {
     Http http = ioc.singleton(Service.http);
 
-    /**
-     * @Todo Add contraints
-     * https://discord.com/developers/docs/resources/auto-moderation#auto-moderation-rule-object-trigger-types
-     */
-    Response response = await http.post(url: "/guilds/${guild.id}/auto-moderation/rules", payload: {
-      'name': label,
-      'event_type': eventType.value,
-      'trigger_type': triggerType.value,
-      'trigger_metadata': triggerMetadata?.toJson(),
-      'actions': actions != null ? actions.map((action) => action.toJson()).toList() : [],
-      'enabled': enabled ?? false,
-      'exempt_roles': exemptRoles,
-      'exempt_channels': exemptChannels,
+    Response response = await http.post(url: "/guilds/$_guildId/auto-moderation/rules", payload: {
+      'name': builder.label,
+      'event_type': builder.moderationEventType.value,
+      'trigger_type': builder.moderationTriggerType.value,
+      'trigger_metadata': builder.triggerMetadata?.toJson(),
+      'actions': builder.actions.map((action) => action.toJson()).toList(),
+      'enabled': builder.enabled,
+      'exempt_roles': builder.exemptRoles,
+      'exempt_channels': builder.exemptChannels,
     });
 
-    if (response.statusCode == 200) {
-      Object payload = jsonDecode(response.body);
+    return response.statusCode == 200
+      ? ModerationRule.fromPayload(jsonDecode(response.body))
+      : null;
+  }
 
-      return ModerationRule.from(guild: guild, payload: payload);
+  /// Get guild moderation rules from Discord API
+  /// ```dart
+  /// final rules = await guild.moderationRules.sync();
+  /// ```
+  Future<Map<Snowflake, ModerationRule>>sync () async {
+    Http http = ioc.singleton(Service.http);
+    Response response = await http.get(url: "/guilds/$_guildId/auto-moderation/rules");
+
+    for (final payload in jsonDecode(response.body)) {
+      final ModerationRule rule = ModerationRule.fromPayload(payload);
+      cache.putIfAbsent(rule.id, () => rule);
     }
-    return null;
+
+    return cache;
   }
 }

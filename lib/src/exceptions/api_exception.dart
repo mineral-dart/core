@@ -1,19 +1,19 @@
-import 'package:mineral/console.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class ApiError implements Exception {
-  String? prefix;
+class ApiException implements Exception {
+  int code;
   String cause;
-  ApiError({ this.prefix, required this.cause });
+
+  ApiException({ required this.code, required this.cause });
 
   @override
   String toString () {
     ReporterManager? reporter = ioc.singleton(Service.reporter);
     if (reporter != null) {
-      reporter.write('[ $prefix ] $cause');
+      reporter.write('[ $code ] $cause');
     }
 
-    return Console.getErrorMessage(prefix: prefix, message: cause);
+    return '[ $code ] $cause';
   }
 }

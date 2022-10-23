@@ -32,9 +32,8 @@ export 'src/api/channels/guild_channel.dart' show GuildChannel;
 export 'src/api/channels/category_channel.dart' show CategoryChannel;
 export 'src/api/channels/partial_channel.dart' show PartialChannel, ChannelType;
 export 'src/api/channels/forum_channel.dart' show ForumChannel;
+export 'src/api/channels/thread_channel.dart' show ThreadChannel;
 export 'src/api/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
-export 'src/api/components/message_builder.dart' show MessageBuilder;
-export 'src/api/components/forum_tag_builder.dart' show ForumTagBuilder;
 
 export 'src/api/messages/message.dart' show Message;
 export 'src/api/messages/embed_builder.dart' show EmbedBuilder, Footer, Image, Thumbnail, Author, Field;
@@ -43,12 +42,16 @@ export 'src/api/color.dart' show Color;
 export 'src/api/emoji.dart' show EmojiBuilder, Emoji;
 export 'src/api/role.dart' show Role;
 
-export 'src/api/components/row_builder.dart' show RowBuilder;
-export 'src/api/components/select_menu_builder.dart' show SelectMenuBuilder, SelectMenuOption, EmojiOption;
-export 'src/api/components/modal_builder.dart' show ModalBuilder;
-export 'src/api/components/text_input_builder.dart' show TextInputBuilder, TextInputStyle;
-export 'src/api/components/button_builder.dart' show ButtonBuilder, ButtonStyle;
-export 'src/api/components/link_builder.dart' show LinkBuilder;
+export 'src/api/builders/row_builder.dart' show RowBuilder;
+export 'src/api/builders/select_menu_builder.dart' show SelectMenuBuilder, SelectMenuOption, EmojiOption;
+export 'src/api/builders/modal_builder.dart' show ModalBuilder;
+export 'src/api/builders/text_input_builder.dart' show TextInputBuilder, TextInputStyle;
+export 'src/api/builders/button_builder.dart' show ButtonBuilder, ButtonStyle;
+export 'src/api/builders/code_builder.dart' show CodeBuilder;
+export 'src/api/builders/message_builder.dart' show MessageBuilder;
+export 'src/api/builders/forum_tag_builder.dart' show ForumTagBuilder;
+export 'src/api/builders/moderation_rules_builder.dart' show ModerationRulesBuilder;
+export 'src/api/image_formater.dart' show ImageFormater;
 
 export 'src/api/interactions/command_interaction.dart' show CommandInteraction;
 export 'src/api/interactions/button_interaction.dart' show ButtonInteraction;
@@ -58,7 +61,6 @@ export 'src/api/interactions/context_user_interaction.dart' show ContextUserInte
 export 'src/api/interactions/context_message_interaction.dart' show ContextMessageInteraction;
 export 'src/api/interactions/interaction.dart' show Interaction;
 
-export 'src/api/components/code_builder.dart' show CodeBuilder;
 
 export 'src/api/utils.dart';
 export 'src/internal/extensions/collection.dart';

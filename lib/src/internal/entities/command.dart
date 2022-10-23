@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/helper.dart';
 import 'package:mineral/src/internal/managers/store_manager.dart';
 
 class MineralCommand {
@@ -15,8 +16,9 @@ class Command {
   final String scope;
   final bool? everyone;
   final bool? dmChannel;
+  final List<Permission>? permissions;
 
-  const Command ({ required this.name, required this.description, required this.scope, this.everyone, this.dmChannel });
+  const Command ({ required this.name, required this.description, required this.scope, this.everyone, this.dmChannel, this.permissions });
 }
 
 class CommandGroup {
@@ -98,25 +100,32 @@ class Option {
 }
 
 class SlashCommand {
+  Snowflake? id;
   String name;
   String description;
   String scope;
   bool everyone;
   bool dmChannel;
+  List<Permission> permissions = [];
   int type = 1;
   List<Option> options = [];
   List<SlashCommand> groups = [];
   List<SlashCommand> subcommands = [];
 
-  SlashCommand({ required this.name, required this.description, required this.scope, required this.everyone, required this.dmChannel, required this.options });
+  SlashCommand({ required this.name, required this.description, required this.scope, required this.everyone, required this.dmChannel, required this.options, required this.permissions });
 
   Object toJson () {
     return {
       'name': name,
       'description': description,
       'type': type,
-      'default_member_permissions': !everyone ? '0' : null,
+      'default_member_permissions': !everyone
+        ? permissions.isNotEmpty
+          ? Helper.toBitfield(permissions.map((e) => e.value).toList()).toString()
+          : null
+        : 0,
       'dm_permission': dmChannel,
+      'default_permission': everyone,
       'options': groups.isNotEmpty
           ? [...groups.map((group) => group.toJson()).toList(), ...subcommands.map((subcommand) => subcommand.toJson()).toList()]
           : subcommands.isNotEmpty
@@ -124,4 +133,7 @@ class SlashCommand {
           : options.map((option) => option.toJson()).toList(),
     };
   }
+
+  @override
+  String toString () => '</$name:$id>';
 }

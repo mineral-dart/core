@@ -17,7 +17,6 @@ import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_ioc/ioc.dart';
 
 class GuildCreate implements WebsocketPacket {
   @override
@@ -32,7 +31,7 @@ class GuildCreate implements WebsocketPacket {
 
     websocketResponse.payload['guild_id'] = websocketResponse.payload['id'];
 
-    GuildRoleManager roleManager = GuildRoleManager();
+    GuildRoleManager roleManager = GuildRoleManager(websocketResponse.payload['guild_id']);
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(roleManager: roleManager, payload: item);
       roleManager.cache.putIfAbsent(role.id, () => role);
@@ -69,7 +68,7 @@ class GuildCreate implements WebsocketPacket {
       guildScheduledManager.cache.putIfAbsent(event.id, () => event);
     }
 
-    ModerationRuleManager moderationManager = ModerationRuleManager();
+    ModerationRuleManager moderationManager = ModerationRuleManager(websocketResponse.payload['guild_id']);
 
     WebhookManager webhookManager = WebhookManager(websocketResponse.payload['id'], null);
 
@@ -122,7 +121,6 @@ class GuildCreate implements WebsocketPacket {
     guild.publicUpdatesChannel = guild.channels.cache.get<TextChannel>(guild.publicUpdatesChannelId);
     guild.webhooks.guild = guild;
     guild.emojis.guild = guild;
-    guild.roles.guild = guild;
     guild.scheduledEvents.guild = guild;
 
     Map<Snowflake, ModerationRule>? autoModerationRules = await getAutoModerationRules(guild);
@@ -151,7 +149,7 @@ class GuildCreate implements WebsocketPacket {
 
       Map<Snowflake, ModerationRule> rules = {};
       for (dynamic element in payload) {
-        ModerationRule rule = ModerationRule.from(guild: guild, payload: element);
+        ModerationRule rule = ModerationRule.fromPayload(element);
         rules.putIfAbsent(rule.id, () => rule);
       }
 

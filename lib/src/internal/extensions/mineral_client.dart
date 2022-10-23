@@ -40,6 +40,6 @@ extension MineralClientExtension on MineralClient {
     final payload = jsonDecode(response.body);
 
     final channel = ChannelWrapper.create(payload);
-    return channel as T;
+    return channel as T?;
   }
 }

@@ -3,7 +3,6 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_ioc/ioc.dart';
 
 class AutoModerationRuleCreate implements WebsocketPacket {
   @override
@@ -18,7 +17,7 @@ class AutoModerationRuleCreate implements WebsocketPacket {
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     if (guild != null) {
-      ModerationRule moderationRule = ModerationRule.from(guild: guild, payload: payload);
+      ModerationRule moderationRule = ModerationRule.fromPayload(payload);
       guild.moderationRules.cache.set(moderationRule.id, moderationRule);
 
       manager.emit(

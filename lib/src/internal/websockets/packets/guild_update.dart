@@ -10,7 +10,6 @@ import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_ioc/ioc.dart';
 
 
 class GuildUpdate implements WebsocketPacket {
@@ -24,7 +23,7 @@ class GuildUpdate implements WebsocketPacket {
 
     Guild? before = client.guilds.cache.get(websocketResponse.payload['id']);
 
-    GuildRoleManager roleManager = GuildRoleManager();
+    GuildRoleManager roleManager = GuildRoleManager(websocketResponse.payload['id']);
     for (dynamic item in websocketResponse.payload['roles']) {
       Role role = Role.from(roleManager: roleManager, payload: item);
       roleManager.cache.putIfAbsent(role.id, () => role);
@@ -39,7 +38,7 @@ class GuildUpdate implements WebsocketPacket {
     EmojiManager emojiManager = EmojiManager();
     emojiManager.cache.addAll(before.emojis.cache);
 
-    ModerationRuleManager moderationManager = ModerationRuleManager();
+    ModerationRuleManager moderationManager = ModerationRuleManager(websocketResponse.payload['id']);
 
     WebhookManager webhookManager = WebhookManager(before.id, null);
     webhookManager.cache.addAll(before.webhooks.cache);
@@ -58,8 +57,6 @@ class GuildUpdate implements WebsocketPacket {
       guildScheduledEventManager: guildScheduledEventManager
     );
 
-    moderationManager.guild = after;
-
     after.stickers.guild = after;
     after.stickers.cache.forEach((_, sticker) {
       sticker.guild = after;
@@ -71,7 +68,6 @@ class GuildUpdate implements WebsocketPacket {
     after.rulesChannel = after.channels.cache.get<TextChannel>(after.rulesChannelId);
     after.publicUpdatesChannel = after.channels.cache.get<TextChannel>(after.publicUpdatesChannelId);
     after.emojis.guild = after;
-    after.roles.guild = after;
 
     manager.emit(
       event: Events.guildUpdate,

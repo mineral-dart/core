@@ -1,8 +1,7 @@
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 
-import '../../../api.dart';
-
-class ModalBuilder extends Component {
+class ModalBuilder extends ComponentBuilder {
   String label;
   String customId;
 

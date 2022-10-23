@@ -4,7 +4,8 @@ import 'dart:mirrors';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/components/component.dart';
+import 'package:mineral/src/api/channels/partial_channel.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
@@ -125,25 +126,30 @@ class InteractionCreate implements WebsocketPacket {
   }
 
   _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) async {
+    if (payload['guild_id'] == null) {
+        return;
+    }
+
     Http http = ioc.singleton(Service.http);
     EventManager manager = ioc.singleton(Service.event);
 
-    TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['message']['id']);
+    dynamic channel = guild.channels.cache.get(payload['channel_id']);
+    if (channel == null) {
+      final Response response = await http.get(url: '/channels/${payload['channel_id']}');
+      channel = ChannelWrapper.create(jsonDecode(response.body));
 
-    if (message == null) {
-      Response response = await http.get(url: '/channels/${channel?.id}/messages/${payload['message']['id']}');
-      if (response.statusCode == 200) {
-        message = Message.from(channel: channel!, payload: jsonDecode(response.body));
-      }
+      guild.channels.cache.putIfAbsent(channel.id, () => channel);
     }
 
-    ButtonInteraction buttonInteraction = ButtonInteraction.from(
-      user: member.user,
-      message: message!,
-      payload: payload,
-      guild: guild,
-    );
+    Message? message = channel?.messages.cache[payload['message']['id']];
+    if (message == null) {
+      final Response response = await http.get(url: '/channels/${payload['channel_id']}/messages/${payload['message']?['id']}');
+      message = Message.from(channel: channel, payload: jsonDecode(response.body));
+
+      channel.messages.cache.putIfAbsent(message.id, () => message!);
+    }
+
+    ButtonInteraction buttonInteraction = ButtonInteraction.fromPayload(payload);
 
     manager.emit(
       event: Events.buttonCreate,

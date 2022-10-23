@@ -31,45 +31,55 @@ class Timestamp {
 }
 
 class ClientPresence {
-  String? label;
-  GamePresence type;
-  String? url;
-  DateTime createdAt;
-  Timestamp? timestamps;
-  Snowflake? applicationId;
-  String? details;
-  String? state;
+  String? _label;
+  int _type;
+  String? _url;
+  String _createdAt;
+  Timestamp? _timestamps;
+  Snowflake? _applicationId;
+  String? _details;
+  String? _state;
   // Emoji? emoji;
   // Party? party;
   // Asset? assets;
   // Secret? secrets;
   // Instance? instance;
-  int? flags;
+  int? _flags;
   // List<Button> buttons;
 
-  ClientPresence({
-    required this.label,
-    required this.type,
-    required this.url,
-    required this.createdAt,
-    required this.timestamps,
-    required this.applicationId,
-    required this.details,
-    required this.state,
-    required this.flags,
-  });
+  ClientPresence(
+    this._label,
+    this._type,
+    this._url,
+    this._createdAt,
+    this._timestamps,
+    this._applicationId,
+    this._details,
+    this._state,
+    this._flags,
+  );
+
+  String? get label => _label;
+  GamePresence get type => GamePresence.values.firstWhere((type) => type.value == _type);
+  String? get url => _url;
+  DateTime get createdAt => DateTime.parse(_createdAt);
+  Timestamp? get timestamps =>  _timestamps != null ? Timestamp.from(payload: _timestamps) : null;
+  Snowflake? get applicationId => _applicationId;
+  String? get details => _details;
+  String? get state => _state;
+  int? get flags => _flags;
 
   factory ClientPresence.from({ required dynamic payload }) {
     return ClientPresence(
-      label: payload['name'],
-      type: GamePresence.values.firstWhere((type) => type.toString() == payload['type']),
-      url: payload['url'],
-      createdAt: DateTime.parse(payload['createdAt']),
-      timestamps: payload['timestamps'] != null ? Timestamp.from(payload: payload['timestamps']) : null,
-      applicationId: payload['application_id'],
-      details: payload['details'],
-      state: payload['state'],
-      flags: payload['flags']
+      payload['name'],
+      payload['type'],
+      payload['url'],
+      payload['createdAt'],
+      payload['timestamps'],
+      payload['application_id'],
+      payload['details'],
+      payload['state'],
+      payload['flags']
     );
   }
 }

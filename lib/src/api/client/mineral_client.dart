@@ -1,5 +1,9 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/managers/command_manager.dart';
 import 'package:mineral/src/api/managers/dm_channel_manager.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/user_manager.dart';
@@ -37,6 +41,7 @@ class MineralClient {
   String _sessionId;
   Application _application;
   List<Intent> _intents;
+  CommandManager _commands;
   late DateTime uptime;
 
   MineralClient(
@@ -47,6 +52,7 @@ class MineralClient {
     this._sessionId,
     this._application,
     this._intents,
+    this._commands,
   );
 
   User get user => _user;
@@ -56,9 +62,12 @@ class MineralClient {
   String get sessionId => _sessionId;
   Application get application => _application;
   List<Intent> get intents => _intents;
+  ShardManager get _shards => ioc.singleton(Service.shards);
 
   /// ### Returns the time the [MineralClient] is online
   Duration get uptimeDuration => DateTime.now().difference(uptime);
+
+  CommandManager get commands => _commands;
 
   /// ### Defines the presence that this should adopt
   ///
@@ -70,12 +79,33 @@ class MineralClient {
   /// );
   /// ```
   void setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
-    ShardManager manager = ioc.singleton(Service.shards);
-    manager.send(OpCode.statusUpdate, {
+    _shards.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
       'status': status != null ? status.toString() : ClientStatus.online.toString(),
       'afk': afk ?? false,
+    });
+  }
+
+  /// Define activities of this
+  void setActivities (List<ClientActivity> activities) {
+    _shards.send(OpCode.statusUpdate, {
+      'activities': activities.map((activity) => activity.toJson()),
+    });
+  }
+
+  /// Define status of this
+  void setStatus (ClientStatus status) {
+    _shards.send(OpCode.statusUpdate, {
+      'status': status._value,
+    });
+  }
+
+
+  /// Define afk of this
+  void setAfk (bool afk) {
+    _shards.send(OpCode.statusUpdate, {
+      'afk': afk,
     });
   }
 
@@ -101,13 +131,28 @@ class MineralClient {
 
   Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands, required List<MineralContextMenu> contextMenus }) async {
     Http http = ioc.singleton(Service.http);
-    await http.put(
+    Response response = await http.put(
       url: "/applications/${_application.id}/guilds/${guild.id}/commands",
       payload: [
         ...commands.map((command) => command.toJson()).toList(),
         ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
       ]
     );
+
+    if (response.statusCode == 200) {
+      final List<dynamic> _commands = jsonDecode(response.body);
+      for (final element in _commands) {
+        final command = commands.firstWhere((command) => command.name == element['name']);
+        command.id = element['id'];
+
+        if (command.scope == 'GUILD' || command.scope == guild.id) {
+          guild.commands.cache.putIfAbsent(command.name, () => command);
+          return;
+        }
+
+        this._commands.cache.putIfAbsent(command.name, () => command);
+      }
+    }
   }
 
   factory MineralClient.from({ required dynamic payload }) {
@@ -121,6 +166,7 @@ class MineralClient {
       payload['session_id'],
       Application.from(payload['application']),
       manager.intents,
+      CommandManager(null),
     );
   }
 }

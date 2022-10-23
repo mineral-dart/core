@@ -39,6 +39,6 @@ class ChannelManager extends CacheManager<GuildChannel> {
     dynamic payload = jsonDecode(response.body);
 
     final GuildChannel? channel = ChannelWrapper.create(payload);
-    return channel as T;
+    return channel as T?;
   }
 }

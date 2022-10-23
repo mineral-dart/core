@@ -2,9 +2,8 @@ import 'dart:convert';
 
 class CodeBuilder {
   final String _language;
-  final dynamic _code;
+  final Object _code;
   int? indent;
-
 
   CodeBuilder(this._language, this._code, { this.indent });
 
