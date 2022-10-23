@@ -19,7 +19,6 @@ import 'package:mineral/src/internal/managers/plugin_manager.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
 import 'package:mineral/src/internal/managers/store_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
-import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
 
 class Kernel {
@@ -41,7 +40,6 @@ class Kernel {
     ioc.bind(namespace: Service.cli, service: cli);
     ioc.bind(namespace: Service.contextMenu, service: contextMenus);
     ioc.bind(namespace: Service.environment, service: environment);
-
   }
 
   void loadConsole () {
