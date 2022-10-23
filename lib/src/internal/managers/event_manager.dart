@@ -1,35 +1,42 @@
-import 'dart:mirrors';
+import 'dart:async';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 
+typedef EventContainer<T> = Map<T, List<MineralEvent>>;
+
+class EventWrapper {
+  final Type event;
+  final Event param;
+
+  EventWrapper(this.event, this.param);
+}
+
 class EventManager {
-  final Map<Events, List<Map<String, dynamic>>> _events = {};
+  final EventContainer _events = {};
+  static final controller = StreamController<EventWrapper>();
 
-  Map<Events, List<Map<String, dynamic>>> getRegisteredEvents () => _events;
+  EventContainer get events => _events;
 
-  void register (List<MineralEvent> mineralEvent) {
-    for (final eventClass in mineralEvent) {
-      Event eventDecorator = reflect(eventClass).type.metadata.first.reflectee;
-      Events event = eventDecorator.event;
-      String? customId = eventDecorator.customId;
+  void register (List<MineralEvent<Event>> events) {
+    controller.stream.listen((listener) {
+      final events = _events.getOrFail(listener.event);
+      for (final event in events) {
+        event.handle(listener.param);
+      }
+    });
 
-      Map<String, dynamic> eventEntity = {
-        'mineralEvent': eventClass,
-        'customId': customId,
-      };
-
-      if (_events.containsKey(event)) {
-        List<Map<String, dynamic>>? events = _events.get(event);
-        events?.add(eventEntity);
+    for (final event in events) {
+      if (_events.containsKey(event.listener)) {
+        _events.get(event.listener)?.add(event);
       } else {
-        _events.putIfAbsent(event, () => [eventEntity]);
+        _events.putIfAbsent(event.listener, () => [event]);
       }
     }
   }
 
   void emit ({ required Events event, String? customId, List<dynamic>? params }) {
-    List<Map<String, dynamic>>? events = _events.get(event);
+    /*List<Map<String, dynamic>>? events = _events.get(event);
 
     if (events != null) {
       for (Map<String, dynamic> event in events) {
@@ -43,6 +50,6 @@ class EventManager {
           }
         }
       }
-    }
+    }*/
   }
 }

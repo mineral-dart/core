@@ -1,19 +1,17 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/managers/store_manager.dart';
 
-class Event {
-  final Events event;
-  final String? customId;
-
-  const Event(this.event, { this.customId });
+abstract class Event {
+  String? customId = '';
 }
 
-abstract class MineralEvent {
-  late StoreManager stores;
-  late MineralClient client;
-  late Environment environment;
+abstract class MineralEvent<Event> {
+  final Type listener = Event;
+  String? customId;
+
+  Future<void> handle (Event event);
 }
+
+class GuildUpdate extends Event {}
 
 enum Events {
   ready('ready', { 'client': MineralClient }),
