@@ -1,20 +1,19 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_ioc/ioc.dart';
 
-class Ready implements WebsocketPacket {
+class ReadyPacket implements WebsocketPacket {
   @override
   PacketType packetType = PacketType.ready;
 
   @override
   Future<void> handle (WebsocketResponse websocketResponse) async {
-    EventManager eventManager = ioc.singleton(Service.event);
     CommandManager commandManager = ioc.singleton(Service.command);
     ShardManager shardManager = ioc.singleton(Service.shards);
 
@@ -25,11 +24,6 @@ class Ready implements WebsocketPacket {
       ioc.bind(namespace: Service.client, service: client);
 
       await client.registerGlobalCommands(commands: commandManager.getGlobals());
-
-      infuseClientIntoEvents(
-        manager: eventManager,
-        client: client,
-      );
 
       infuseClientIntoCommands(
         manager: commandManager,
@@ -45,22 +39,7 @@ class Ready implements WebsocketPacket {
     shard.resumeURL = websocketResponse.payload['resume_gateway_url'];
     shard.initialize();
 
-    eventManager.emit(
-      event: Events.ready,
-      params: [ioc.singleton(Service.client)]
-    );
-  }
-
-  void infuseClientIntoEvents ({required EventManager manager, required MineralClient client}) {
-    Map<Events, List<Map<String, dynamic>>> events = manager.getRegisteredEvents();
-    events.forEach((_, events) {
-      for (Map<String, dynamic> event in events) {
-        event['mineralEvent']
-          ..client = client
-          ..stores = ioc.singleton(Service.store)
-          ..environment = ioc.singleton(Service.environment);
-      }
-    });
+    EventManager.controller.add(EventWrapper(Ready, Ready(ioc.singleton(Service.client))));
   }
 
   void infuseClientIntoCommands ({required CommandManager manager, required MineralClient client}) {

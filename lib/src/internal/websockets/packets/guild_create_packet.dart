@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
@@ -18,13 +19,12 @@ import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-class GuildCreate implements WebsocketPacket {
+class GuildCreatePacket implements WebsocketPacket {
   @override
   PacketType packetType = PacketType.guildCreate;
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
     CommandManager commandManager = ioc.singleton(Service.command);
     ContextMenuManager contextMenuManager = ioc.singleton(Service.contextMenu);
     MineralClient client = ioc.singleton(Service.client);
@@ -134,10 +134,7 @@ class GuildCreate implements WebsocketPacket {
       contextMenus: contextMenuManager.getFromGuild(guild)
     );
 
-    manager.emit(
-      event: Events.guildCreate,
-      params: [guild]
-    );
+    EventManager.controller.add(EventWrapper(GuildCreate, GuildCreate(guild)));
   }
 
   Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {

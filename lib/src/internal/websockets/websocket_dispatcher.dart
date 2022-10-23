@@ -5,7 +5,7 @@ import 'package:mineral/src/internal/websockets/packets/auto_moderation_rule_del
 import 'package:mineral/src/internal/websockets/packets/channel_create.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_update.dart';
-import 'package:mineral/src/internal/websockets/packets/guild_create.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_create_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_member_add.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_member_remove.dart';
@@ -22,7 +22,7 @@ import 'package:mineral/src/internal/websockets/packets/message_create.dart';
 import 'package:mineral/src/internal/websockets/packets/message_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/message_update.dart';
 import 'package:mineral/src/internal/websockets/packets/presence_update.dart';
-import 'package:mineral/src/internal/websockets/packets/ready.dart';
+import 'package:mineral/src/internal/websockets/packets/ready_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/resumed.dart';
 import 'package:mineral/src/internal/websockets/packets/voice_state_update.dart';
 import 'package:mineral/src/internal/websockets/packets/webhook_update.dart';
@@ -35,9 +35,9 @@ class WebsocketDispatcher {
   final Map<PacketType, List<WebsocketPacket>> _packets = {};
 
   WebsocketDispatcher() {
-    register(PacketType.ready, Ready());
+    register(PacketType.ready, ReadyPacket());
     register(PacketType.resumed, Resumed());
-    register(PacketType.guildCreate, GuildCreate());
+    register(PacketType.guildCreate, GuildCreatePacket());
     register(PacketType.guildUpdate, GuildUpdate());
     register(PacketType.presenceUpdate, PresenceUpdate());
     register(PacketType.messageDelete, MessageDelete());
