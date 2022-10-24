@@ -18,7 +18,7 @@ import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_us
 import 'package:mineral/src/internal/websockets/packets/guild_update_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/interaction_create.dart';
 import 'package:mineral/src/internal/websockets/packets/member_join_request.dart';
-import 'package:mineral/src/internal/websockets/packets/message_create.dart';
+import 'package:mineral/src/internal/websockets/packets/message_create_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/message_delete_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/message_update.dart';
 import 'package:mineral/src/internal/websockets/packets/presence_update.dart';
@@ -41,7 +41,7 @@ class WebsocketDispatcher {
     register(PacketType.guildUpdate, GuildUpdatePacket());
     register(PacketType.presenceUpdate, PresenceUpdatePacket());
     register(PacketType.messageDelete, MessageDeletePacket());
-    register(PacketType.messageCreate, MessageCreate());
+    register(PacketType.messageCreate, MessageCreatePacket());
     register(PacketType.messageUpdate, MessageUpdate());
     register(PacketType.channelCreate, ChannelCreate());
     register(PacketType.channelDelete, ChannelDelete());
