@@ -14,7 +14,7 @@ class EventWrapper {
 
 class EventManager {
   final EventContainer _events = {};
-  static final controller = StreamController<EventWrapper>();
+  final controller = StreamController<EventWrapper>();
 
   EventContainer get events => _events;
 

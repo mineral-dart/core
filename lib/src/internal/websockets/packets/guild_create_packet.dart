@@ -25,6 +25,7 @@ class GuildCreatePacket implements WebsocketPacket {
 
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
+    EventManager eventManager = ioc.singleton(Service.event);
     CommandManager commandManager = ioc.singleton(Service.command);
     ContextMenuManager contextMenuManager = ioc.singleton(Service.contextMenu);
     MineralClient client = ioc.singleton(Service.client);
@@ -134,7 +135,7 @@ class GuildCreatePacket implements WebsocketPacket {
       contextMenus: contextMenuManager.getFromGuild(guild)
     );
 
-    EventManager.controller.add(EventWrapper(GuildCreate, GuildCreate(guild)));
+    eventManager.controller.add(EventWrapper(GuildCreate, GuildCreate(guild)));
   }
 
   Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {

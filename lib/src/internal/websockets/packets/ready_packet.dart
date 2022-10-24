@@ -14,6 +14,7 @@ class ReadyPacket implements WebsocketPacket {
 
   @override
   Future<void> handle (WebsocketResponse websocketResponse) async {
+    EventManager eventManager = ioc.singleton(Service.event);
     CommandManager commandManager = ioc.singleton(Service.command);
     ShardManager shardManager = ioc.singleton(Service.shards);
 
@@ -39,7 +40,7 @@ class ReadyPacket implements WebsocketPacket {
     shard.resumeURL = websocketResponse.payload['resume_gateway_url'];
     shard.initialize();
 
-    EventManager.controller.add(EventWrapper(Ready, Ready(ioc.singleton(Service.client))));
+    eventManager.controller.add(EventWrapper(Ready, Ready(ioc.singleton(Service.client))));
   }
 
   void infuseClientIntoCommands ({required CommandManager manager, required MineralClient client}) {
