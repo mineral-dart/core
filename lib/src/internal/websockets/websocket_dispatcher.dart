@@ -7,8 +7,8 @@ import 'package:mineral/src/internal/websockets/packets/channel_delete_packet.da
 import 'package:mineral/src/internal/websockets/packets/channel_update_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
-import 'package:mineral/src/internal/websockets/packets/guild_member_add.dart';
-import 'package:mineral/src/internal/websockets/packets/guild_member_remove.dart';
+import 'package:mineral/src/internal/websockets/packets/member_join_packet.dart';
+import 'package:mineral/src/internal/websockets/packets/member_remove_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/member_update_event.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_delete.dart';
@@ -16,7 +16,7 @@ import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_up
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_user_add.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_user_remove.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_update_packet.dart';
-import 'package:mineral/src/internal/websockets/packets/interaction_create.dart';
+import 'package:mineral/src/internal/websockets/packets/interaction_create_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/member_join_request.dart';
 import 'package:mineral/src/internal/websockets/packets/message_create_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/message_delete_packet.dart';
@@ -47,10 +47,10 @@ class WebsocketDispatcher {
     register(PacketType.channelDelete, ChannelDeletePacket());
     register(PacketType.channelUpdate, ChannelUpdatePacket());
     register(PacketType.memberUpdate, MemberUpdatePacket());
-    register(PacketType.memberRemove, GuildMemberRemove());
-    register(PacketType.memberAdd, GuildMemberAdd());
+    register(PacketType.memberRemove, MemberLeavePacket());
+    register(PacketType.memberAdd, MemberJoinPacket());
     register(PacketType.memberJoinRequest, MemberJoinRequest());
-    register(PacketType.interactionCreate, InteractionCreate());
+    register(PacketType.interactionCreate, InteractionCreatePacket());
     register(PacketType.autoModerationRuleCreate, AutoModerationRuleCreate());
     register(PacketType.autoModerationRuleDelete, AutoModerationRuleDelete());
     register(PacketType.guildScheduledEventCreate, GuildScheduledEventCreate());

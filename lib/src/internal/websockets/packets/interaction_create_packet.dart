@@ -10,16 +10,14 @@ import 'package:mineral/src/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-class InteractionCreate implements WebsocketPacket {
-  @override
-  PacketType packetType = PacketType.interactionCreate;
-
+class InteractionCreatePacket implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
     MineralClient client = ioc.singleton(Service.client);
 
     dynamic payload = websocketResponse.payload;
@@ -53,11 +51,7 @@ class InteractionCreate implements WebsocketPacket {
 
     if (member != null) {
       final Interaction interaction = Interaction.from(payload: payload);
-
-      manager.emit(
-        event: Events.interactionCreate,
-        params: [interaction]
-      );
+      eventManager.controller.add(InteractionCreateEvent(interaction));
     }
   }
 
