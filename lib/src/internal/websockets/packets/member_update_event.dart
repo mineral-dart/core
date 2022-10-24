@@ -1,17 +1,14 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_ioc/ioc.dart';
 
-class GuildMemberUpdate implements WebsocketPacket {
-  @override
-  PacketType packetType = PacketType.memberUpdate;
-
+class MemberUpdatePacket implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
     MineralClient client = ioc.singleton(Service.client);
 
     dynamic payload = websocketResponse.payload;
@@ -33,16 +30,10 @@ class GuildMemberUpdate implements WebsocketPacket {
         voice: voice
       );
 
-      manager.emit(
-        event: Events.memberUpdate,
-        params: [before, after]
-      );
+      eventManager.controller.add(MemberUpdateEvent(before!, after));
 
-      if (before?.roles.cache.length != after.roles.cache.length) {
-        manager.emit(
-          event: Events.memberRolesUpdate,
-          params: [before, after]
-        );
+      if (before.roles.cache.length != after.roles.cache.length) {
+        eventManager.controller.add(MemberRoleUpdateEvent(before, after));
       }
 
       guild.members.cache.set(after.user.id, after);
