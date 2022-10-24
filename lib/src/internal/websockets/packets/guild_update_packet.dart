@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -12,13 +13,10 @@ import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 
-class GuildUpdate implements WebsocketPacket {
-  @override
-  PacketType packetType = PacketType.guildUpdate;
-
+class GuildUpdatePacket implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
     MineralClient client = ioc.singleton(Service.client);
 
     Guild? before = client.guilds.cache.get(websocketResponse.payload['id']);
@@ -69,11 +67,7 @@ class GuildUpdate implements WebsocketPacket {
     after.publicUpdatesChannel = after.channels.cache.get<TextChannel>(after.publicUpdatesChannelId);
     after.emojis.guild = after;
 
-    manager.emit(
-      event: Events.guildUpdate,
-      params: [before, after]
-    );
-
+    eventManager.controller.add(GuildUpdateEvent(before, after));
     client.guilds.cache.set(after.id, after);
   }
 }
