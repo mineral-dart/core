@@ -16,3 +16,5 @@ export './src/internal/websockets/events/guild_member_self_mute.dart';
 export './src/internal/websockets/events/guild_member_self_unmute.dart';
 export './src/internal/websockets/events/guild_member_self_deaf.dart';
 export './src/internal/websockets/events/guild_member_self_undeaf.dart';
+export './src/internal/websockets/events/guild_update_event.dart';
+export './src/internal/websockets/events/presence_update_event.dart';
