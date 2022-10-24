@@ -3,18 +3,15 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_ioc/ioc.dart';
 
-class MessageDelete implements WebsocketPacket {
-  @override
-  PacketType packetType = PacketType.messageDelete;
-
+class MessageDeletePacket implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
     MineralClient client = ioc.singleton(Service.client);
 
     dynamic payload = websocketResponse.payload;
@@ -33,11 +30,7 @@ class MessageDelete implements WebsocketPacket {
       }
     }
 
-    manager.emit(
-      event: Events.messageDelete,
-      params: [message]
-    );
-
+    eventManager.controller.add(MessageDeleteEvent(message!));
     channel?.messages.cache.remove(payload['id']);
   }
 }
