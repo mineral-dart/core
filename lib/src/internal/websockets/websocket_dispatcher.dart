@@ -2,8 +2,8 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/websockets/packets/auto_moderation_rule_create.dart';
 import 'package:mineral/src/internal/websockets/packets/auto_moderation_rule_delete.dart';
 
-import 'package:mineral/src/internal/websockets/packets/channel_create.dart';
-import 'package:mineral/src/internal/websockets/packets/channel_delete.dart';
+import 'package:mineral/src/internal/websockets/packets/channel_create_packet.dart';
+import 'package:mineral/src/internal/websockets/packets/channel_delete_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
@@ -43,8 +43,8 @@ class WebsocketDispatcher {
     register(PacketType.messageDelete, MessageDeletePacket());
     register(PacketType.messageCreate, MessageCreatePacket());
     register(PacketType.messageUpdate, MessageUpdatePacket());
-    register(PacketType.channelCreate, ChannelCreate());
-    register(PacketType.channelDelete, ChannelDelete());
+    register(PacketType.channelCreate, ChannelCreatePacket());
+    register(PacketType.channelDelete, ChannelDeletePacket());
     register(PacketType.channelUpdate, ChannelUpdate());
     register(PacketType.memberUpdate, GuildMemberUpdate());
     register(PacketType.memberRemove, GuildMemberRemove());
