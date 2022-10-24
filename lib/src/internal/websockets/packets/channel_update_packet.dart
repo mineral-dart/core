@@ -1,18 +1,15 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_ioc/ioc.dart';
 
-class ChannelUpdate implements WebsocketPacket {
-  @override
-  PacketType packetType = PacketType.channelUpdate;
-
+class ChannelUpdatePacket implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
     MineralClient client = ioc.singleton(Service.client);
 
     dynamic payload = websocketResponse.payload;
@@ -20,16 +17,9 @@ class ChannelUpdate implements WebsocketPacket {
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     GuildChannel? before = guild?.channels.cache.get(payload['id']);
 
-    GuildChannel? after = ChannelWrapper.create(payload);
+    GuildChannel after = ChannelWrapper.create(payload);
 
-    manager.emit(
-      event: Events.channelUpdate,
-      params: [before, after]
-    );
-
-    if (after != null) {
-      guild?.channels.cache.set(after.id, after);
-      return;
-    }
+    eventManager.controller.add(ChannelUpdateEvent(before, after));
+    guild?.channels.cache.set(after.id, after);
   }
 }

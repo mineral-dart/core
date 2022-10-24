@@ -4,7 +4,7 @@ import 'package:mineral/src/internal/websockets/packets/auto_moderation_rule_del
 
 import 'package:mineral/src/internal/websockets/packets/channel_create_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/channel_delete_packet.dart';
-import 'package:mineral/src/internal/websockets/packets/channel_update.dart';
+import 'package:mineral/src/internal/websockets/packets/channel_update_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_member_add.dart';
@@ -45,7 +45,7 @@ class WebsocketDispatcher {
     register(PacketType.messageUpdate, MessageUpdatePacket());
     register(PacketType.channelCreate, ChannelCreatePacket());
     register(PacketType.channelDelete, ChannelDeletePacket());
-    register(PacketType.channelUpdate, ChannelUpdate());
+    register(PacketType.channelUpdate, ChannelUpdatePacket());
     register(PacketType.memberUpdate, GuildMemberUpdate());
     register(PacketType.memberRemove, GuildMemberRemove());
     register(PacketType.memberAdd, GuildMemberAdd());
