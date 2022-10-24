@@ -10,9 +10,6 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 class ReadyPacket implements WebsocketPacket {
   @override
-  PacketType packetType = PacketType.ready;
-
-  @override
   Future<void> handle (WebsocketResponse websocketResponse) async {
     EventManager eventManager = ioc.singleton(Service.event);
     CommandManager commandManager = ioc.singleton(Service.command);
@@ -40,7 +37,7 @@ class ReadyPacket implements WebsocketPacket {
     shard.resumeURL = websocketResponse.payload['resume_gateway_url'];
     shard.initialize();
 
-    eventManager.controller.add(EventWrapper(Ready, Ready(ioc.singleton(Service.client))));
+    eventManager.controller.add(ReadyEvent(ioc.singleton(Service.client)));
   }
 
   void infuseClientIntoCommands ({required CommandManager manager, required MineralClient client}) {

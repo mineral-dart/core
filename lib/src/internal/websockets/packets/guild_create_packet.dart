@@ -135,7 +135,7 @@ class GuildCreatePacket implements WebsocketPacket {
       contextMenus: contextMenuManager.getFromGuild(guild)
     );
 
-    eventManager.controller.add(EventWrapper(GuildCreate, GuildCreate(guild)));
+    eventManager.controller.add(GuildCreateEvent(guild));
   }
 
   Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {

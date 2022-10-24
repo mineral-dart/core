@@ -5,24 +5,19 @@ import 'package:mineral/core.dart';
 
 typedef EventContainer<T> = Map<T, List<MineralEvent>>;
 
-class EventWrapper {
-  final Type event;
-  final Event param;
-
-  EventWrapper(this.event, this.param);
-}
-
 class EventManager {
   final EventContainer _events = {};
-  final controller = StreamController<EventWrapper>();
+  final controller = StreamController<Event>();
 
   EventContainer get events => _events;
 
   void register (List<MineralEvent<Event>> events) {
-    controller.stream.listen((listener) {
-      final events = _events.getOrFail(listener.event);
-      for (final event in events) {
-        event.handle(listener.param);
+    controller.stream.listen((_event) {
+      final events = _events.get(_event.runtimeType);
+      if (events != null) {
+        for (final event in events) {
+          event.handle(_event);
+        }
       }
     });
 

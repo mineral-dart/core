@@ -1,10 +1,10 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/event.dart';
 
-class Ready extends Event {
+class ReadyEvent extends Event {
   final MineralClient _client;
 
-  Ready(this._client);
+  ReadyEvent(this._client);
 
   MineralClient get client => _client;
 }
