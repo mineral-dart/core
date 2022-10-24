@@ -1,10 +1,10 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/event.dart';
 
-class GuildMemberSelfUnmuteEvent extends Event {
+class MemberDeafEvent extends Event {
   final GuildMember _member;
 
-  GuildMemberSelfUnmuteEvent(this._member);
+  MemberDeafEvent(this._member);
 
   GuildMember get member => _member;
 }

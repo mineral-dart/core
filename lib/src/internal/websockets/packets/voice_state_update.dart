@@ -45,42 +45,42 @@ class VoiceStateUpdatePacket implements WebsocketPacket {
 
     //User mute
     if (!before.isMute && after.isMute) {
-      eventManager.controller.add(GuildMemberMuteEvent(member));
+      eventManager.controller.add(MemberMuteEvent(member));
     }
 
     //User unmute
     if (before.isMute && !after.isMute) {
-      eventManager.controller.add(GuildMemberUnmuteEvent(member));
+      eventManager.controller.add(MemberUnmuteEvent(member));
     }
 
     //User undeaf
     if (before.isDeaf && !after.isDeaf) {
-      eventManager.controller.add(GuildMemberDeafEvent(member));
+      eventManager.controller.add(MemberDeafEvent(member));
     }
 
     //User deaf
     if(!before.isDeaf && after.isDeaf) {
-      eventManager.controller.add(GuildMemberUndeafEvent(member));
+      eventManager.controller.add(MemberUndeafEvent(member));
     }
 
     //User selfUnMute
     if(before.isSelfMute && !after.isSelfMute) {
-      eventManager.controller.add(GuildMemberSelfUnmuteEvent(member));
+      eventManager.controller.add(MemberSelfUnmuteEvent(member));
     }
 
     //User selfMute
     if(!before.isSelfMute && after.isSelfMute) {
-      eventManager.controller.add(GuildMemberSelfMuteEvent(member));
+      eventManager.controller.add(MemberSelfMuteEvent(member));
     }
 
     //User selfUnDeaf
     if(before.isSelfDeaf && !after.isSelfDeaf) {
-      eventManager.controller.add(GuildMemberSelfUndeafEvent(member));
+      eventManager.controller.add(MemberSelfUndeafEvent(member));
     }
 
     //User selfDeaf
     if(!before.isSelfDeaf && after.isSelfDeaf) {
-      eventManager.controller.add(GuildMemberSelfDeafEvent(member));
+      eventManager.controller.add(MemberSelfDeafEvent(member));
     }
   }
 }
