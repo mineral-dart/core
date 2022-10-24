@@ -1,31 +1,24 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-class ChannelCreate implements WebsocketPacket {
-  @override
-  PacketType packetType = PacketType.channelCreate;
-
+class ChannelCreatePacket implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
     MineralClient client = ioc.singleton(Service.client);
 
     dynamic payload = websocketResponse.payload;
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
-    GuildChannel? channel = ChannelWrapper.create(payload);
+    GuildChannel channel = ChannelWrapper.create(payload);
 
-    if (channel != null) {
-      guild?.channels.cache.set(channel.id, channel);
-    }
+    guild?.channels.cache.set(channel.id, channel);
 
-    manager.emit(
-      event: Events.channelCreate,
-      params: [channel]
-    );
+    eventManager.controller.add(ChannelCreateEvent(channel));
   }
 }
