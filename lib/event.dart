@@ -19,3 +19,4 @@ export './src/internal/websockets/events/guild_member_self_undeaf.dart';
 export './src/internal/websockets/events/guild_update_event.dart';
 export './src/internal/websockets/events/presence_update_event.dart';
 export './src/internal/websockets/events/message_delete_event.dart';
+export './src/internal/websockets/events/message_update_event.dart';
