@@ -1,8 +1,6 @@
 import 'package:mineral/api.dart';
 
-abstract class Event {
-  String? customId = '';
-}
+abstract class Event {}
 
 abstract class MineralEvent<Event> {
   final Type listener = Event;

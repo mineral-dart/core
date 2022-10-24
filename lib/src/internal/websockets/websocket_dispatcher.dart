@@ -9,7 +9,7 @@ import 'package:mineral/src/internal/websockets/packets/guild_create_packet.dart
 import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
 import 'package:mineral/src/internal/websockets/packets/member_join_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/member_remove_packet.dart';
-import 'package:mineral/src/internal/websockets/packets/member_update_event.dart';
+import 'package:mineral/src/internal/websockets/packets/member_update_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_delete.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_update.dart';

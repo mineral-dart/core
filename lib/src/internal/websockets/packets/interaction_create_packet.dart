@@ -4,6 +4,7 @@ import 'dart:mirrors';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/exceptions/missing_method_exception.dart';
@@ -11,6 +12,7 @@ import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
+import 'package:mineral/src/internal/websockets/events/modal_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
@@ -125,7 +127,7 @@ class InteractionCreatePacket implements WebsocketPacket {
     }
 
     Http http = ioc.singleton(Service.http);
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
 
     dynamic channel = guild.channels.cache.get(payload['channel_id']);
     if (channel == null) {
@@ -144,21 +146,11 @@ class InteractionCreatePacket implements WebsocketPacket {
     }
 
     ButtonInteraction buttonInteraction = ButtonInteraction.fromPayload(payload);
-
-    manager.emit(
-      event: Events.buttonCreate,
-      customId: buttonInteraction.customId,
-      params: [buttonInteraction]
-    );
-
-    manager.emit(
-      event: Events.buttonCreate,
-      params: [buttonInteraction]
-    );
+    eventManager.controller.add(ButtonCreateEvent(buttonInteraction));
   }
 
   _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
     ModalInteraction modalInteraction = ModalInteraction.from(payload: payload);
 
     for (dynamic row in payload['data']['components']) {
@@ -167,20 +159,11 @@ class InteractionCreatePacket implements WebsocketPacket {
       }
     }
 
-    manager.emit(
-      event: Events.modalCreate,
-      customId: modalInteraction.customId,
-      params: [modalInteraction]
-    );
-
-    manager.emit(
-      event: Events.modalCreate,
-      params: [modalInteraction]
-    );
+    eventManager.controller.add(ModalCreateEvent(modalInteraction));
   }
 
   void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
-    EventManager manager = ioc.singleton(Service.event);
+    EventManager eventManager = ioc.singleton(Service.event);
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
 
@@ -193,15 +176,6 @@ class InteractionCreatePacket implements WebsocketPacket {
       interaction.data.add(value);
     }
 
-    manager.emit(
-      event: Events.selectMenuCreate,
-      customId: interaction.customId,
-      params: [interaction]
-    );
-
-    manager.emit(
-      event: Events.selectMenuCreate,
-      params: [interaction]
-    );
+    eventManager.controller.add(SelectMenuCreateEvent(interaction));
   }
 }
