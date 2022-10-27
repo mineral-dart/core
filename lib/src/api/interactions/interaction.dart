@@ -93,6 +93,20 @@ class Interaction {
     return this;
   }
 
+  /// ### Edit original response to interaction
+  Future<Interaction> updateReply({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components }) async {
+    Http http = ioc.singleton(Service.http);
+
+    await http.patch(url: "/webhooks/$applicationId/$token/messages/@original", payload: {
+      'content': content,
+      'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
+      'components': components != null ? components.map((e) => e.toJson()).toList() : [],
+    });
+
+    return this;
+  }
+
+
   factory Interaction.from({ required dynamic payload }) {
     return Interaction(
       payload['id'],
