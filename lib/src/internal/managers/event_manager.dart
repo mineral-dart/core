@@ -11,7 +11,7 @@ class EventManager {
 
   EventContainer get events => _events;
 
-  void register (List<MineralEvent<Event>> events) {
+  EventManager() {
     controller.stream.listen((_event) {
       final events = _events.get(_event.runtimeType);
       if (events != null) {
@@ -20,7 +20,9 @@ class EventManager {
         }
       }
     });
+  }
 
+  void register (List<MineralEvent<Event>> events) {
     for (final event in events) {
       if (_events.containsKey(event.listener)) {
         _events.get(event.listener)?.add(event);

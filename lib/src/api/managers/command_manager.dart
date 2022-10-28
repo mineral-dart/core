@@ -1,9 +1,8 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/internal/entities/command.dart';
 
-class CommandManager extends CacheManager<SlashCommand> {
+class CommandManager extends CacheManager<CommandBuilder> {
   final Snowflake? _guildId;
 
   CommandManager(this._guildId);

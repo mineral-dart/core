@@ -34,3 +34,4 @@ export './src/internal/websockets/events/member_join_event.dart';
 export './src/internal/websockets/events/modal_create_event.dart';
 export './src/internal/websockets/events/select_menu_create_event.dart';
 export './src/internal/websockets/events/button_create_event.dart';
+export './src/internal/websockets/events/command_create_event.dart';

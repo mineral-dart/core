@@ -7,12 +7,10 @@ import 'package:mineral/core.dart';
 import 'package:mineral/event.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
-import 'package:mineral/src/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
-import 'package:mineral/src/internal/websockets/events/modal_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
@@ -58,38 +56,10 @@ class InteractionCreatePacket implements WebsocketPacket {
   }
 
   _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
-    CommandManager manager = ioc.singleton(Service.command);
-    CommandInteraction commandInteraction = CommandInteraction.from(payload: payload);
+    CommandManager commandManager = ioc.singleton(Service.command);
 
-    String identifier = commandInteraction.identifier;
-
-    walk (List<dynamic> objects) {
-      for (dynamic object in objects) {
-        if (object['type'] == 1 || object['type'] == 2) {
-          identifier += ".${object['name']}";
-          if (object['options'] != null) {
-            walk(object['options']);
-          }
-        } else {
-          commandInteraction.data.putIfAbsent(object['name'], () => object);
-        }
-      }
-    }
-
-    if (payload['data']['options'] != null) {
-      walk(payload['data']['options']);
-    }
-
-    final handle = manager.getHandler(identifier);
-
-    try {
-      reflect(handle['commandClass']).invoke(handle['symbol'], [commandInteraction]);
-    } catch (err) {
-      final String command = identifier.split('.').first;
-      final String method = identifier.split('.').last;
-
-      throw MissingMethodException(cause: 'The "$method" method does not exist on the "$command" command, please associate a valid method to your command or use the bind parameter of your subcommand');
-    }
+    CommandInteraction interaction = CommandInteraction.fromPayload(payload);
+    commandManager.controller.add(CommandCreateEvent(interaction));
   }
 
   _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {

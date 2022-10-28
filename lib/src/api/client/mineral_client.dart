@@ -120,28 +120,29 @@ class MineralClient {
     return manager.getLatency();
   }
 
-  Future<void> registerGlobalCommands ({ required List<SlashCommand> commands }) async {
+  Future<void> registerGlobalCommands ({ required List<CommandBuilder> commands }) async {
     Http http = ioc.singleton(Service.http);
 
     await http.put(
       url: "/applications/${_application.id}/commands",
-      payload: commands.map((command) => command.toJson()).toList()
+      payload: commands.map((command) => command.toJson).toList()
     );
   }
 
-  Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands, required List<MineralContextMenu> contextMenus }) async {
+  Future<void> registerGuildCommands ({ required Guild guild, required List<CommandBuilder> commands, required List<MineralContextMenu> contextMenus }) async {
     Http http = ioc.singleton(Service.http);
+
     Response response = await http.put(
       url: "/applications/${_application.id}/guilds/${guild.id}/commands",
       payload: [
-        ...commands.map((command) => command.toJson()).toList(),
-        ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
+        ...commands.map((command) => command.toJson).toList(),
+        // ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
       ]
     );
 
     if (response.statusCode == 200) {
-      final List<dynamic> _commands = jsonDecode(response.body);
-      for (final element in _commands) {
+      // final List<dynamic> _commands = jsonDecode(response.body);
+      /*for (final element in _commands) {
         final command = commands.firstWhere((command) => command.name == element['name']);
         command.id = element['id'];
 
@@ -151,7 +152,7 @@ class MineralClient {
         }
 
         this._commands.cache.putIfAbsent(command.name, () => command);
-      }
+      }*/
     }
   }
 

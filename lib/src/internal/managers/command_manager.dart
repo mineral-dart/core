@@ -1,144 +1,84 @@
-import 'dart:mirrors';
+import 'dart:async';
 
 import 'package:mineral/api.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/internal/entities/command.dart';
 
 class CommandManager {
-  final Map<String, SlashCommand> _commands = {};
-  final Map<String, dynamic> _handlers = {};
+  final Map<String, CommandBuilder> _commands = {};
+  Map<String, CommandBuilder> get commands => _commands;
 
-  Map<String, SlashCommand> getRegisteredCommands () => _commands;
+  final Map<String, Function> _handlers = {};
 
-  Map<String, dynamic> getHandlers () => _handlers;
+  StreamController<CommandCreateEvent> controller = StreamController();
 
-  dynamic getHandler (String handler) => _handlers[handler];
-  dynamic get handlers => _handlers;
+  CommandManager() {
+    controller.stream.listen((event) async {
+      final commandIdentifier = event.interaction.identifier;
+      final command = _commands.get(commandIdentifier);
 
-  void register (List<MineralCommand> mineralCommands) {
-    for (final commandClass in mineralCommands) {
-      SlashCommand command = SlashCommand(name: '',
-        description: '',
-        scope: '',
-        everyone: false,
-        dmChannel: false,
-        permissions: [],
-        options: []
-      );
-
-      _registerCommands(
-          command: command,
-          mineralCommand: commandClass
-      );
-
-      _registerCommandMethods(
-          command: command,
-          mineralCommand: commandClass
-      );
-
-      _commands.set(command.name, command);
-    }
-  }
-
-  List<SlashCommand> getFromGuild (Guild guild) {
-    List<SlashCommand> commands = [];
-    _commands.forEach((name, command) {
-      if (command.scope == guild.id || command.scope == 'GUILD') {
-        commands.add(command);
-      }
-    });
-
-    return commands;
-  }
-
-  List<SlashCommand> getGlobals () {
-    List<SlashCommand> commands = [];
-    _commands.forEach((name, command) {
-      if (command.scope == 'GLOBAL') {
-        commands.add(command);
-      }
-    });
-
-    return commands;
-  }
-
-  void _registerCommands ({ required SlashCommand command, required MineralCommand mineralCommand }) {
-    ClassMirror classMirror = reflect(mineralCommand).type;
-    MineralCommand classCommand = reflect(mineralCommand).reflectee;
-
-    for (InstanceMirror element in classMirror.metadata) {
-      dynamic reflectee = element.reflectee;
-
-      if (reflectee is CommandGroup) {
-        SlashCommand group = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, permissions: [], options: [])
-          ..type = 2
-          ..name = reflectee.name.snakeCase
-          ..description = reflectee.description;
-
-        command.groups.add(group);
-      }
-
-      if (reflectee is Command) {
-        command
-          ..name = reflectee.name.toLowerCase()
-          ..description = reflectee.description
-          ..scope = reflectee.scope
-          ..everyone = reflectee.everyone ?? false
-          ..permissions = reflectee.permissions ?? [];
-
-        if (classMirror.instanceMembers.values.toList().where((element) => element.simpleName == Symbol('handle')).isNotEmpty) {
-          MethodMirror handle = classMirror.instanceMembers.values.toList().firstWhere((element) => element.simpleName == Symbol('handle'));
-          _handlers.putIfAbsent(command.name, () => {
-            'symbol': handle.simpleName,
-            'commandClass': classCommand,
-          });
-        }
-      }
-
-      if (reflectee is Option) {
-        command.options.add(reflectee);
-      }
-    }
-  }
-
-  void _registerCommandMethods ({ required SlashCommand command, required MineralCommand mineralCommand }) {
-    dynamic classCommand = reflect(mineralCommand).reflectee;
-    reflect(mineralCommand).type.declarations.forEach((key, value) {
-      if (value.metadata.isEmpty) {
+      if (command == null) {
         return;
       }
 
-      SlashCommand subcommand = SlashCommand(name: '', description: '', scope: '', everyone: true, dmChannel: false, permissions: [], options: []);
-      subcommand.name = value.metadata.first.reflectee.name;
-      subcommand.description = value.metadata.first.reflectee.description;
+      String identifier = event.interaction.data['name'];
 
-      for (InstanceMirror metadata in value.metadata) {
-        dynamic reflectee = metadata.reflectee;
-
-        if (reflectee is Subcommand) {
-          String? groupName = reflectee.group;
-          String? bind = reflectee.bind;
-
-          if (groupName != null) {
-            SlashCommand group = command.groups.firstWhere((group) => group.name == groupName);
-            group.subcommands.add(subcommand);
-
-            _handlers.putIfAbsent("${command.name}.${group.name}.${subcommand.name}", () => {
-              'symbol': Symbol(bind ?? subcommand.name),
-              'commandClass': classCommand,
-            });
-          } else {
-            command.subcommands.add(subcommand);
-            _handlers.putIfAbsent("${command.name}.${subcommand.name}", () => {
-              'symbol': Symbol(bind ?? subcommand.name),
-              'commandClass': classCommand,
-            });
+      void test (List<dynamic> options) {
+        for (final option in options) {
+          if (option['type'] == CommandType.group.type) {
+            identifier += '.' + option['name'];
+            test(option['options']);
+          } else if (option['type'] == CommandType.subcommand.type) {
+            identifier += '.' + option['name'];
           }
         }
+      }
 
-        if (reflectee is Option) {
-          subcommand.options.add(metadata.reflectee);
+      final option = event.interaction.data['options']?[0];
+
+      if (option?['options'] != null) {
+        test(event.interaction.data['options']);
+      }
+
+      Function function = _handlers.getOrFail(identifier);
+      await function(event.interaction);
+    });
+  }
+
+  void register (List<MineralCommand> mineralCommands) {
+    for (final mineralCommand in mineralCommands) {
+      final command = mineralCommand.command;
+      _commands.putIfAbsent(mineralCommand.command.label, () => mineralCommand.command);
+
+      if (command.subcommands.isEmpty && command.groups.isEmpty) {
+        _handlers.putIfAbsent(command.label, () => mineralCommand.handle);
+      }
+
+      if (command.subcommands.isNotEmpty) {
+        _registerSubCommands(mineralCommand.command.label, command.subcommands);
+      }
+
+      if (command.groups.isNotEmpty) {
+        print('groups !');
+        for (final group in command.groups) {
+          _registerSubCommands(mineralCommand.command.label + '.' + group.label, group.subcommands);
         }
       }
-    });
+
+      _commands.putIfAbsent(mineralCommand.command.label, () => mineralCommand.command);
+    }
+
+    print(_handlers);
+  }
+
+  void _registerSubCommands (String identifier, List<SubCommandBuilder> commands) {
+    for (final subcommand in commands) {
+      print('register ${subcommand.label}');
+      _handlers.putIfAbsent(identifier + '.' + subcommand.label, () => subcommand.handle);
+    }
+  }
+
+  getGuildCommands (Guild guild) {
+    return _commands.values.where((element) => element.scope?.mode == Scope.guild.mode || element.scope?.mode == guild.id).toList();
   }
 }

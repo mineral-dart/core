@@ -1,6 +1,6 @@
 import 'package:mineral/event.dart';
 
 class ResumedEvent extends Event {
-  final String payload;
+  final Map<String, dynamic> payload;
   ResumedEvent(this.payload);
 }

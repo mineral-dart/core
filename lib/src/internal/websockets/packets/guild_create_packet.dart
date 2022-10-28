@@ -14,20 +14,16 @@ import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
-import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 class GuildCreatePacket implements WebsocketPacket {
   @override
-  PacketType packetType = PacketType.guildCreate;
-
-  @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventManager eventManager = ioc.singleton(Service.event);
     CommandManager commandManager = ioc.singleton(Service.command);
-    ContextMenuManager contextMenuManager = ioc.singleton(Service.contextMenu);
+    // ContextMenuManager contextMenuManager = ioc.singleton(Service.contextMenu);
     MineralClient client = ioc.singleton(Service.client);
 
     websocketResponse.payload['guild_id'] = websocketResponse.payload['id'];
@@ -131,8 +127,9 @@ class GuildCreatePacket implements WebsocketPacket {
 
     await client.registerGuildCommands(
       guild: guild,
-      commands: commandManager.getFromGuild(guild),
-      contextMenus: contextMenuManager.getFromGuild(guild)
+      commands: commandManager.getGuildCommands(guild),
+      // contextMenus: contextMenuManager.getFromGuild(guild)
+        contextMenus: []
     );
 
     eventManager.controller.add(GuildCreateEvent(guild));
