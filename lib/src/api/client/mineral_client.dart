@@ -1,13 +1,9 @@
-import 'dart:convert';
-
-import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/command_manager.dart';
 import 'package:mineral/src/api/managers/dm_channel_manager.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/user_manager.dart';
-import 'package:mineral/src/internal/entities/command.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 
 enum ClientStatus {
@@ -132,28 +128,13 @@ class MineralClient {
   Future<void> registerGuildCommands ({ required Guild guild, required List<CommandBuilder> commands, required List<MineralContextMenu> contextMenus }) async {
     Http http = ioc.singleton(Service.http);
 
-    Response response = await http.put(
+    await http.put(
       url: "/applications/${_application.id}/guilds/${guild.id}/commands",
       payload: [
         ...commands.map((command) => command.toJson).toList(),
         // ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
       ]
     );
-
-    if (response.statusCode == 200) {
-      // final List<dynamic> _commands = jsonDecode(response.body);
-      /*for (final element in _commands) {
-        final command = commands.firstWhere((command) => command.name == element['name']);
-        command.id = element['id'];
-
-        if (command.scope == 'GUILD' || command.scope == guild.id) {
-          guild.commands.cache.putIfAbsent(command.name, () => command);
-          return;
-        }
-
-        this._commands.cache.putIfAbsent(command.name, () => command);
-      }*/
-    }
   }
 
   factory MineralClient.from({ required dynamic payload }) {
