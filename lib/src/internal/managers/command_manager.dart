@@ -59,7 +59,6 @@ class CommandManager {
       }
 
       if (command.groups.isNotEmpty) {
-        print('groups !');
         for (final group in command.groups) {
           _registerSubCommands(mineralCommand.command.label + '.' + group.label, group.subcommands);
         }
@@ -67,13 +66,10 @@ class CommandManager {
 
       _commands.putIfAbsent(mineralCommand.command.label, () => mineralCommand.command);
     }
-
-    print(_handlers);
   }
 
   void _registerSubCommands (String identifier, List<SubCommandBuilder> commands) {
     for (final subcommand in commands) {
-      print('register ${subcommand.label}');
       _handlers.putIfAbsent(identifier + '.' + subcommand.label, () => subcommand.handle);
     }
   }

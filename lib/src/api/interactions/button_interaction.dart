@@ -9,6 +9,7 @@ class ButtonInteraction extends Interaction {
 
   ButtonInteraction(
     super._id,
+    super._label,
     super._applicationId,
     super._version,
     super._typeId,
@@ -28,6 +29,7 @@ class ButtonInteraction extends Interaction {
   factory ButtonInteraction.fromPayload(dynamic payload) {
     return ButtonInteraction(
       payload['id'],
+      null,
       payload['application_id'],
       payload['version'],
       payload['type'],

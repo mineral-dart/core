@@ -16,6 +16,7 @@ enum InteractionCallbackType {
 
 class Interaction {
   Snowflake _id;
+  String? _label;
   Snowflake _applicationId;
   int _version;
   int _typeId;
@@ -23,9 +24,10 @@ class Interaction {
   Snowflake? _userId;
   Snowflake? _guildId;
 
-  Interaction(this._id, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId);
+  Interaction(this._id, this._label, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId);
 
   Snowflake get id => _id;
+  String? get label => _label;
   Snowflake get applicationId => _applicationId;
   int get version => _version;
   InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
@@ -95,6 +97,7 @@ class Interaction {
   factory Interaction.from({ required dynamic payload }) {
     return Interaction(
       payload['id'],
+      null,
       payload['application_id'],
       payload['version'],
       payload['type'],

@@ -1,33 +1,31 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/internal/managers/store_manager.dart';
 
-class ContextMenu {
-  final String name;
-  final String description;
-  final ContextMenuType type;
-  final String scope;
-  final bool? everyone;
+class ContextMenuBuilder {
+  final String _label;
+  final Scope _scope;
+  final ContextMenuType _type;
+  final bool _everyone;
 
-  const ContextMenu ({ required this.name, this.description = '', required this.type, required this.scope, this.everyone });
+  ContextMenuBuilder(this._label, this._type, this._scope, this._everyone);
+
+  String get label => _label;
+  Scope get scope => _scope;
+  ContextMenuType get type => _type;
+  bool get everyone => _everyone;
+
+  Object get toJson => {
+    'name': _label,
+    'type': _type.value
+  };
 }
 
-abstract class MineralContextMenu {
-  late final String name;
-  late final String description;
-  late final ContextMenuType type;
-  late final String scope;
-  late final bool everyone;
+abstract class MineralContextMenu<T> {
+  late ContextMenuBuilder builder;
 
-  late StoreManager stores;
-  late MineralClient client;
-  late Environment environment;
-
-  Object toJson () {
-    return {
-      'name': name,
-      'description': description,
-      'type': type.value,
-    };
+  void register(String label, ContextMenuType type, { Scope? scope, bool everyone = false }) {
+    builder = ContextMenuBuilder(label, type, scope ?? Scope.guild, everyone);
   }
+
+  Future<void> handle (T event);
 }

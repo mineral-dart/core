@@ -1,5 +1,4 @@
 import 'dart:convert';
-import 'dart:mirrors';
 
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
@@ -64,12 +63,10 @@ class InteractionCreatePacket implements WebsocketPacket {
 
   _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {
     ContextMenuManager contextMenuManager = ioc.singleton(Service.contextMenu);
-    MineralContextMenu contextMenu = contextMenuManager.contextMenus.findOrFail((element) => element.name == payload['data']?['name']);
 
     if (payload['data']?['type'] == ApplicationCommandType.user.value) {
       final interaction = ContextUserInteraction.from(payload: payload );
-
-      reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
+      contextMenuManager.controller.add(interaction);
     }
 
     if (payload['data']?['type'] == ApplicationCommandType.message.value) {
@@ -86,8 +83,7 @@ class InteractionCreatePacket implements WebsocketPacket {
       }
 
       final interaction = ContextMessageInteraction.from(message: message!, payload: payload);
-
-      reflect(contextMenu).invoke(Symbol('handle'), [interaction]);
+      contextMenuManager.controller.add(interaction);
     }
   }
 

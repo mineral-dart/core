@@ -7,7 +7,7 @@ typedef EventContainer<T> = Map<T, List<MineralEvent>>;
 
 class EventManager {
   final EventContainer _events = {};
-  final controller = StreamController<Event>();
+  final StreamController<Event> controller = StreamController();
 
   EventContainer get events => _events;
 

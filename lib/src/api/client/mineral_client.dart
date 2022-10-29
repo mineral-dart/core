@@ -132,7 +132,7 @@ class MineralClient {
       url: "/applications/${_application.id}/guilds/${guild.id}/commands",
       payload: [
         ...commands.map((command) => command.toJson).toList(),
-        // ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
+        ...contextMenus.map((contextMenus) => contextMenus.builder.toJson).toList()
       ]
     );
   }

@@ -11,6 +11,7 @@ class SelectMenuInteraction extends Interaction {
 
   SelectMenuInteraction(
     super._id,
+    super._label,
     super._applicationId,
     super._version,
     super._type,
@@ -47,6 +48,7 @@ class SelectMenuInteraction extends Interaction {
   factory SelectMenuInteraction.from({ required Message? message, required dynamic payload }) {
     return SelectMenuInteraction(
       payload['id'],
+      null,
       payload['application_id'],
       payload['version'],
       payload['type'],

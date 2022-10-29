@@ -12,6 +12,7 @@ class CommandInteraction extends Interaction {
 
   CommandInteraction(
     super._id,
+    super._label,
     super._applicationId,
     super._version,
     super._typeId,
@@ -76,7 +77,6 @@ class CommandInteraction extends Interaction {
   /// String? str = interaction.getString('option_name');
   /// ```
   String? getString (String optionName) {
-    print(params);
     return params[optionName].toString();
   }
 
@@ -211,6 +211,7 @@ class CommandInteraction extends Interaction {
 
     return CommandInteraction(
       payload['id'],
+      payload['data']['name'],
       payload['application_id'],
       payload['version'],
       payload['type'],
