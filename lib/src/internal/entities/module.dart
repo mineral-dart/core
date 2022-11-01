@@ -1,24 +1,16 @@
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
-import 'package:mineral/src/internal/managers/store_manager.dart';
-
-class Module {
-  final String identifier;
-  final String label;
-  final String? description;
-
-  const Module({ required this.identifier, required this.label, this.description });
-}
+import 'package:mineral/src/internal/managers/state_manager.dart';
 
 abstract class MineralModule {
-  late final String identifier;
-  late final String label;
-  late final String? description;
+  abstract final String identifier;
+  abstract final String label;
+  abstract final String? description;
 
   late final EventManager events;
   late final CommandManager commands;
-  late final StoreManager stores;
+  late final StateManager states;
   late final ContextMenuManager contextMenus;
 
   Future<void> init ();

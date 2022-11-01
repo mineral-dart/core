@@ -1,5 +1,3 @@
-import 'dart:mirrors';
-
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/exceptions/already_exist.dart';
@@ -10,18 +8,11 @@ class ModuleManager {
 
   void register (List<MineralModule> mineralModules) {
     for (final moduleClass in mineralModules) {
-      Module moduleDecorator = reflect(moduleClass).type.metadata.first.reflectee;
-
-      moduleClass
-        ..identifier = moduleDecorator.identifier
-        ..label = moduleDecorator.label
-        ..description = moduleDecorator.description;
-
-      if (_modules.containsKey(moduleDecorator.identifier)) {
-        throw AlreadyExist(cause: 'Module ${moduleDecorator.identifier} is already registered, perhaps this is an error.');
+      if (_modules.containsKey(moduleClass.identifier)) {
+        throw AlreadyExist(cause: 'Module ${moduleClass.identifier} is already registered, perhaps this is an error.');
       }
 
-      _modules.putIfAbsent(moduleDecorator.identifier, () => moduleClass);
+      _modules.putIfAbsent(moduleClass.identifier, () => moduleClass);
     }
   }
 
@@ -31,7 +22,7 @@ class ModuleManager {
         ..commands = kernel.commands
         ..events = kernel.events
         ..contextMenus = kernel.contextMenus
-        ..stores = kernel.stores;
+        ..states = kernel.states;
 
       await module.init();
 

@@ -24,7 +24,7 @@ import 'package:path/path.dart';
 class Kernel {
   EventManager events = EventManager();
   CommandManager commands = CommandManager();
-  StateManager stores = StateManager();
+  StateManager states = StateManager();
   ModuleManager modules = ModuleManager();
   CliManager cli = CliManager();
   ContextMenuManager contextMenus = ContextMenuManager();
@@ -35,7 +35,7 @@ class Kernel {
   Kernel() {
     ioc.bind(namespace: Service.event, service: events);
     ioc.bind(namespace: Service.command, service: commands);
-    ioc.bind(namespace: Service.store, service: stores);
+    ioc.bind(namespace: Service.store, service: states);
     ioc.bind(namespace: Service.modules, service: modules);
     ioc.bind(namespace: Service.cli, service: cli);
     ioc.bind(namespace: Service.contextMenu, service: contextMenus);
