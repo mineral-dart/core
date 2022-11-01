@@ -1,4 +1,4 @@
-abstract class MineralStore<T> {
+abstract class MineralState<T> {
   abstract String name;
   abstract T state;
 }

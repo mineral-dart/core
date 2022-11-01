@@ -17,14 +17,14 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/module_manager.dart';
 import 'package:mineral/src/internal/managers/plugin_manager.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
-import 'package:mineral/src/internal/managers/store_manager.dart';
+import 'package:mineral/src/internal/managers/state_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:path/path.dart';
 
 class Kernel {
   EventManager events = EventManager();
   CommandManager commands = CommandManager();
-  StoreManager stores = StoreManager();
+  StateManager stores = StateManager();
   ModuleManager modules = ModuleManager();
   CliManager cli = CliManager();
   ContextMenuManager contextMenus = ContextMenuManager();

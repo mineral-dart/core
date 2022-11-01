@@ -2,12 +2,13 @@ import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/exceptions/already_exist.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
+import 'package:mineral/src/internal/entities/state.dart';
 
-class StoreManager {
-  final Map<String, MineralStore> _stores = {};
+class StateManager {
+  final Map<String, MineralState> _stores = {};
 
-  void register (List<MineralStore> mineralStores) {
-    for (final store in mineralStores) {
+  void register (List<MineralState> mineralStates) {
+    for (final store in mineralStates) {
       if (_stores.containsKey(store.name)) {
         throw AlreadyExist(cause: "A store named ${store.name} already exists.");
       }
