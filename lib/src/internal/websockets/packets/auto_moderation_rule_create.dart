@@ -1,13 +1,11 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 class AutoModerationRuleCreate implements WebsocketPacket {
-  @override
-  PacketType packetType = PacketType.autoModerationRuleCreate;
-
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventManager manager = ioc.singleton(Service.event);
@@ -20,10 +18,7 @@ class AutoModerationRuleCreate implements WebsocketPacket {
       ModerationRule moderationRule = ModerationRule.fromPayload(payload);
       guild.moderationRules.cache.set(moderationRule.id, moderationRule);
 
-      manager.emit(
-        event: Events.moderationRuleCreate,
-        params: [moderationRule]
-      );
+      manager.controller.add(ModerationRulesCreateEvent(moderationRule));
     }
   }
 }

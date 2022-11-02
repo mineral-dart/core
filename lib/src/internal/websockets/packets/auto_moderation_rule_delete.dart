@@ -1,14 +1,11 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_ioc/ioc.dart';
 
 class AutoModerationRuleDelete implements WebsocketPacket {
-  @override
-  PacketType packetType = PacketType.autoModerationRuleDelete;
-
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventManager manager = ioc.singleton(Service.event);
@@ -20,11 +17,7 @@ class AutoModerationRuleDelete implements WebsocketPacket {
     ModerationRule? moderationRule = guild?.moderationRules.cache.get(payload['id']);
 
     if (moderationRule != null) {
-      manager.emit(
-        event: Events.moderationRuleDelete,
-        params: [moderationRule]
-      );
-
+      manager.controller.add(ModerationRulesDeleteEvent(moderationRule));
       guild?.moderationRules.cache.remove(moderationRule.id);
     }
   }

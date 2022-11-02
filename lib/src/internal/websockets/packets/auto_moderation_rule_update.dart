@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/event.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -20,11 +21,7 @@ class AutoModerationRuleCreate implements WebsocketPacket {
       ModerationRule? before = guild.moderationRules.cache.get(payload['id']);
       ModerationRule after = ModerationRule.fromPayload(payload);
 
-      manager.emit(
-        event: Events.moderationRuleUpdate,
-        params: [before, after]
-      );
-
+      manager.controller.add(ModerationRulesUpdateEvent(before, after));
       guild.moderationRules.cache.set(after.id, after);
     }
   }
