@@ -19,7 +19,7 @@ class GuildScheduledEventDelete implements WebsocketPacket {
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     GuildScheduledEvent? event = guild?.scheduledEvents.cache.get(payload['id']);
 
-    if(event != null) {
+    if (event != null) {
       guild?.scheduledEvents.cache.remove(event.id);
       manager.emit(event: Events.guildScheduledEventDelete, params: [event]);
     }

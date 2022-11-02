@@ -18,8 +18,8 @@ class GuildScheduledEventUserAdd implements WebsocketPacket {
     final Snowflake eventId = payload['guild_scheduled_event_id'];
 
     final Guild? guild = payload['guild_id'] != null
-        ? client.guilds.cache.get(payload['guild_id'])
-        : client.guilds.cache.values.firstWhere((g) => g.scheduledEvents.cache.containsKey(eventId));
+      ? client.guilds.cache.get(payload['guild_id'])
+      : client.guilds.cache.values.firstWhere((g) => g.scheduledEvents.cache.containsKey(eventId));
 
     final User? user = client.users.cache.get(payload['user_id']);
 

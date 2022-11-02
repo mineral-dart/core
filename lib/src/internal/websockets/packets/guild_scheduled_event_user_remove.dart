@@ -7,9 +7,6 @@ import 'package:mineral_ioc/ioc.dart';
 
 class GuildScheduledEventUserRemove implements WebsocketPacket {
   @override
-  PacketType packetType = PacketType.guildScheduledEventUserRemove;
-
-  @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventManager manager = ioc.singleton(Service.event);
     MineralClient client = ioc.singleton(Service.client);
