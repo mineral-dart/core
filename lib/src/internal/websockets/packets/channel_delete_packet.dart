@@ -21,7 +21,6 @@ class ChannelDeletePacket implements WebsocketPacket {
     }
 
     eventManager.controller.add(ChannelDeleteEvent(channel));
-
     guild?.channels.cache.remove(payload['id']);
   }
 }
