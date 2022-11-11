@@ -1,7 +1,7 @@
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/partial_channel.dart';
+import 'package:mineral/src/api/builders/emoji_builder.dart';
 import 'package:mineral/src/api/guilds/guild_member_reaction.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/guild_member_reaction_manager.dart';

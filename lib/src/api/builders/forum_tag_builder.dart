@@ -1,4 +1,4 @@
-import 'package:mineral/api.dart';
+import 'package:mineral/src/api/builders/emoji_builder.dart';
 
 class ForumTagBuilder {
   final String label;

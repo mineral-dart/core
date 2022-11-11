@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/builders.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
-
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
 
 class PartialTextChannel extends GuildChannel {

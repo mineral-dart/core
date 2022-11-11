@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/builders.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 
 class CategoryChannel extends GuildChannel {

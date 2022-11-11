@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/builders.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/builders/emoji_builder.dart';
 
 enum ComponentType {
   actionRow(1),

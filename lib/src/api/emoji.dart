@@ -4,15 +4,6 @@ import 'package:mineral/core.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 
-class EmojiBuilder {
-  PartialEmoji emoji;
-
-  EmojiBuilder(this.emoji);
-
-  factory EmojiBuilder.fromUnicode(String label) => EmojiBuilder(PartialEmoji('', label, false));
-  factory EmojiBuilder.fromEmoji(Emoji emoji) => EmojiBuilder(emoji);
-}
-
 class PartialEmoji {
   final Snowflake _id;
   String _label;

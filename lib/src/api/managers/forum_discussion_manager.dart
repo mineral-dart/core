@@ -2,11 +2,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/channels/guild_channel.dart';
-import 'package:mineral/src/api/channels/thread_channel.dart';
-import 'package:mineral/src/api/managers/cache_manager.dart';
-
+import 'package:mineral/builders.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/channels/guild_channel.dart';
+import 'package:mineral/src/api/managers/cache_manager.dart';
 
 class ForumDiscussionManager extends CacheManager<ThreadChannel> {
   final Snowflake _channelId;

@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/api/builders/channel_builder.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 
 class GuildChannel extends PartialChannel {

@@ -2,9 +2,9 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/builders.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
-import 'package:mineral_ioc/ioc.dart';
 
 extension MineralClientExtension on MineralClient {
   Future<Response> sendMessage (PartialChannel channel, { String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, Map<String, Snowflake>? messageReference }) async {

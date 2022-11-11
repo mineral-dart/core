@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/builders.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
@@ -10,7 +11,6 @@ import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
 
 class Message extends PartialMessage<TextBasedChannel> {

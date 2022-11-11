@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/builders.dart';
 
 class ChannelBuilder {
   Map<String, dynamic> payload;
