@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/commands/create_project.dart';
 import 'package:mineral/src/commands/help.dart';
@@ -8,12 +9,11 @@ import 'package:mineral/src/commands/make_event.dart';
 import 'package:mineral/src/commands/make_module.dart';
 import 'package:mineral/src/commands/make_store.dart';
 import 'package:mineral/src/commands/start_project.dart';
-import 'package:mineral/src/internal/managers/intent_manager.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/src/internal/managers/intent_manager.dart';
 import 'package:mineral/src/internal/managers/module_manager.dart';
 import 'package:mineral/src/internal/managers/plugin_manager.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';

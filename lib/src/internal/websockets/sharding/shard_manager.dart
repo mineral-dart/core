@@ -1,13 +1,12 @@
 import 'dart:async';
 
 import 'package:http/http.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/src/exceptions/shard_exception.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-
-import 'package:mineral/api.dart';
 
 /// ShardManager is the bridge between the application and the shards [Shard].
 /// It manage shards launching, number of shards needed, identify queue (to avoid rate limiting).

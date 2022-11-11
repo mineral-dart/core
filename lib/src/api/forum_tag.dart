@@ -1,5 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/emoji.dart';
 
 class ForumTag {
   final Snowflake _id;
@@ -14,4 +13,8 @@ class ForumTag {
   Snowflake get id => _id;
   String get label => _label;
   bool get moderated => _moderated;
+
+  Snowflake get emojiId => _emojiId;
+  String get emojiLabel => _emojiLabel;
+  Snowflake get channelId => _channelId;
 }

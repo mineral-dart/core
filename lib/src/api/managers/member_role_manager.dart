@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
+import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
 
 class MemberRoleManager extends CacheManager<Role> {

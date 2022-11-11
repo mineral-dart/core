@@ -1,21 +1,20 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
-import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
+import 'package:mineral/src/exceptions/shard_exception.dart';
 import 'package:mineral/src/internal/websockets/heartbeat.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_handler.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_message.dart';
 import 'package:mineral/src/internal/websockets/websocket_dispatcher.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-
-import 'package:mineral/src/exceptions/shard_exception.dart';
-import 'package:collection/collection.dart';
 
 /// Represents a Discord Shard.
 /// A Shard is the object used to interact with the discord websocket.
