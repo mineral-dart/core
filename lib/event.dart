@@ -38,3 +38,4 @@ export './src/internal/websockets/events/voice_state_update_event.dart';
 export './src/internal/websockets/events/guild_scheduled_event_create_event.dart';
 export './src/internal/websockets/events/guild_scheduled_event_delete_event.dart';
 export './src/internal/websockets/events/guild_scheduled_event_update_event.dart';
+export './src/internal/websockets/events/guild_scheduled_event_user_add_event.dart';
