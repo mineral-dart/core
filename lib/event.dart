@@ -1,6 +1,6 @@
 library events;
 
-export './src/internal/entities/event.dart';
+export './src/internal/entities/event.dart' show MineralEvent, Event;
 export './src/internal/websockets/events/accept_rules_event.dart';
 export './src/internal/websockets/events/button_create_event.dart';
 export './src/internal/websockets/events/channel_create_event.dart';
@@ -35,3 +35,4 @@ export './src/internal/websockets/events/voice_join_event.dart';
 export './src/internal/websockets/events/voice_leave_event.dart';
 export './src/internal/websockets/events/voice_move_event.dart';
 export './src/internal/websockets/events/voice_state_update_event.dart';
+export './src/internal/websockets/events/guild_scheduled_event_create_event.dart';
