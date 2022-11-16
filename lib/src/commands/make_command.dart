@@ -59,7 +59,7 @@ class MakeCommand extends MineralCliCommand {
   }
 
   String getTemplate (String filename) => '''
-import 'package:mineral/core.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/core/api.dart';
 
 class ${filename.pascalCase} extends MineralCommand {

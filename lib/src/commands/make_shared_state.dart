@@ -3,16 +3,15 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:interact/interact.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/console.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:path/path.dart';
 
-class MakeStore extends MineralCliCommand {
+class MakeSharedState extends MineralCliCommand {
   @override
-  String name = 'make:store';
+  String name = 'make:state';
 
   @override
-  String description = 'Make a new store file';
+  String description = 'Make a new state file';
 
   @override
   Future<void> handle (ArgResults args) async {
@@ -59,7 +58,7 @@ class MakeStore extends MineralCliCommand {
   }
 
   String getTemplate (String filename) => '''
-import 'package:mineral/core.dart';
+import 'package:mineral/framework.dart';
 
 class ${filename.pascalCase} extends MineralState<String> {
   ${filename.pascalCase}(): super('${filename.pascalCase}', '${filename.pascalCase} description');

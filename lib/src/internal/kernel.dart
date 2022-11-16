@@ -7,7 +7,7 @@ import 'package:mineral/src/commands/help.dart';
 import 'package:mineral/src/commands/make_command.dart';
 import 'package:mineral/src/commands/make_event.dart';
 import 'package:mineral/src/commands/make_module.dart';
-import 'package:mineral/src/commands/make_store.dart';
+import 'package:mineral/src/commands/make_shared_state.dart';
 import 'package:mineral/src/commands/start_project.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:mineral/src/internal/managers/collector_manager.dart';
@@ -39,7 +39,7 @@ class Kernel with Container {
     cli.add(MakeCommand());
     cli.add(MakeEvent());
     cli.add(MakeModule());
-    cli.add(MakeStore());
+    cli.add(MakeSharedState());
     cli.add(CreateProject());
     cli.add(StartProject());
     cli.add(Help());

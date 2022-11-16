@@ -66,7 +66,7 @@ class MakeModule extends MineralCliCommand {
   }
 
   String getTemplate (String filename) => '''
-import 'package:mineral/core.dart';
+import 'package:mineral/framework.dart';
 
 class ${filename.pascalCase} extends MineralModule {
   ${filename.pascalCase} (): super('${filename.snakeCase}', '${filename.capitalCase}', '${filename.capitalCase} description');
