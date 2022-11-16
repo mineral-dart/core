@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/src/console.dart';
 import 'package:mineral/src/exceptions/shard_exception.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 

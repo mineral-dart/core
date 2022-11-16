@@ -1,4 +1,4 @@
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/sticker.dart';
 
 class MessageStickerItem {

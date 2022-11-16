@@ -1,4 +1,6 @@
 abstract class MineralState<T> {
-  abstract String name;
-  abstract T state;
+  String name;
+  T state;
+
+  MineralState(this.name, this.state);
 }

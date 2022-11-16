@@ -1,4 +1,4 @@
-import 'package:mineral/builders.dart';
+import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 
 class ModalBuilder extends ComponentBuilder {

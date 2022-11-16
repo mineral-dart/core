@@ -1,9 +1,10 @@
 import 'dart:core';
 
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class CommandInteraction extends Interaction {
+class CommandInteraction extends Interaction with Container {
   String _identifier;
   Snowflake? _channelId;
 
@@ -117,7 +118,7 @@ class CommandInteraction extends Interaction {
   /// User? user = interaction.getUser('option_name');
   /// ```
   User? getUser (String optionName) {
-    final MineralClient client = ioc.singleton(Service.client);
+    final MineralClient client = container.use<MineralClient>();
     return client.users.cache.get(params[optionName]);
   }
 
@@ -128,7 +129,7 @@ class CommandInteraction extends Interaction {
   /// final User user = interaction.getUserOrFail('option_name');
   /// ```
   User getUserOrFail (String optionName) {
-    final MineralClient client = ioc.singleton(Service.client);
+    final MineralClient client = container.use<MineralClient>();
     return client.users.cache.getOrFail(params[optionName]);
   }
 

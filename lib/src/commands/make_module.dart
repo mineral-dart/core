@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:interact/interact.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/console.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:path/path.dart';
 
@@ -38,9 +38,9 @@ class MakeModule extends MineralCliCommand {
         label: 'Where do you want to place your file ?',
         list: directories,
         items: directories.map((directory) => directory.path
-            .replaceAll(join(Directory.current.path, 'src'), 'App')
-            .replaceAll('\\', '/'))
-            .toList()
+          .replaceAll(join(Directory.current.path, 'src'), 'App')
+          .replaceAll('\\', '/'))
+          .toList()
       );
 
       directory = Directory(join(location.path, filename.snakeCase));
@@ -68,14 +68,14 @@ class MakeModule extends MineralCliCommand {
   String getTemplate (String filename) => '''
 import 'package:mineral/core.dart';
 
-@Module(identifier: '${filename.snakeCase}', label: '${filename.capitalCase} module')
 class ${filename.pascalCase} extends MineralModule {
+  ${filename.pascalCase} (): super('${filename.snakeCase}', '${filename.capitalCase}', '${filename.capitalCase} description');
   @override
   Future<void> init () async {
     commands.register([]);
     events.register([]);
     contextMenus.register([]);
-    stores.register([]);
+    states.register([]);
   }
 }
   ''';

@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:interact/interact.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/console.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:path/path.dart';
 
@@ -37,9 +37,9 @@ class MakeCommand extends MineralCliCommand {
         label: 'Where do you want to place your file ?',
         list: directories,
         items: directories.map((directory) => directory.path
-            .replaceAll(join(Directory.current.path, 'src'), 'App')
-            .replaceAll('\\', '/'))
-            .toList()
+          .replaceAll(join(Directory.current.path, 'src'), 'App')
+          .replaceAll('\\', '/'))
+          .toList()
       );
 
       file = File(join(location.path, '${filename.snakeCase}.dart'));
@@ -60,10 +60,12 @@ class MakeCommand extends MineralCliCommand {
 
   String getTemplate (String filename) => '''
 import 'package:mineral/core.dart';
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
 
-@Command(name: '${filename.toLowerCase()}', description: '${filename.capitalCase} command description', scope: 'GUILD')
 class ${filename.pascalCase} extends MineralCommand {
+  ${filename.pascalCase} () {
+    register(CommandBuilder('${filename.toLowerCase()}', '${filename.capitalCase} command description', scope: Scope.guild));
+  }
   Future<void> handle (CommandInteraction interaction) async {
     // Your code here
     await interaction.reply(content: 'Hello World ! 💪');

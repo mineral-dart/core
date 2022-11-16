@@ -1,23 +1,24 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/helper.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
+import 'package:mineral/src/helper.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class WebhookManager extends CacheManager<Webhook> {
+class WebhookManager extends CacheManager<Webhook> with Container {
   final Snowflake? _channelId;
   final Snowflake? _guildId;
 
   WebhookManager(this._guildId, this._channelId);
 
   /// Get [Guild] from [Ioc]
-  Guild get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(_guildId);
+  Guild get guild => container.use<MineralClient>().guilds.cache.getOrFail(_guildId);
 
   Future<Map<Snowflake, Webhook>> sync () async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.get(url: "/channels/$_channelId/webhooks");
+    Response response = await container.use<Http>().get(url: "/channels/$_channelId/webhooks");
 
     for (dynamic element in jsonDecode(response.body)) {
       Webhook webhook = Webhook.from(payload: element);
@@ -28,8 +29,7 @@ class WebhookManager extends CacheManager<Webhook> {
   }
 
   Future<Webhook?> create ({ required String label, String? avatar }) async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.post(url: "/channels/$_channelId/webhooks", payload: {
+    Response response = await container.use<Http>().post(url: "/channels/$_channelId/webhooks", payload: {
       'name': label,
       'avatar': avatar != null ? await Helper.getPicture(avatar) : null
     });

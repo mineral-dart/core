@@ -1,5 +1,5 @@
-import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class HttpException  implements Exception {
   int code;
@@ -9,7 +9,7 @@ class HttpException  implements Exception {
 
   @override
   String toString () {
-    ReporterManager? reporter = ioc.singleton(Service.reporter);
+    ReporterManager? reporter = ioc.use<ReporterManager>();
     if (reporter != null) {
       reporter.write('[ $code ] $cause');
     }

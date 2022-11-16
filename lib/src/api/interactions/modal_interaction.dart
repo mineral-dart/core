@@ -1,6 +1,7 @@
 import 'dart:core';
 
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 
 class ModalInteraction extends Interaction {
   Snowflake _customId;

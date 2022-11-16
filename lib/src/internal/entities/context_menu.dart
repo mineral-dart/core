@@ -1,5 +1,5 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 
 class ContextMenuBuilder {
   final String _label;

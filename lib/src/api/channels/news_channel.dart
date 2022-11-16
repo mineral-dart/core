@@ -1,12 +1,13 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
+import 'package:mineral/src/console.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class NewsChannel extends TextChannel {
+class NewsChannel extends TextChannel with Container {
   NewsChannel(
     super.description,
     super.lastPinTime,
@@ -33,8 +34,7 @@ class NewsChannel extends TextChannel {
       return;
     }
 
-    Http http = ioc.singleton(Service.http);
-    await http.post(url: '/channels/$id/followers', payload: {
+    await container.use<Http>().post(url: '/channels/$id/followers', payload: {
       'webhook_channel_id': webhookId
     });
   }

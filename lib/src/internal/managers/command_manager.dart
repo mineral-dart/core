@@ -1,10 +1,12 @@
 import 'dart:async';
 
-import 'package:mineral/api.dart';
-import 'package:mineral/event.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/events.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/internal/entities/command.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class CommandManager {
+class CommandManager extends MineralService {
   final Map<String, CommandBuilder> _commands = {};
   Map<String, CommandBuilder> get commands => _commands;
 
@@ -12,7 +14,7 @@ class CommandManager {
 
   StreamController<CommandCreateEvent> controller = StreamController();
 
-  CommandManager() {
+  CommandManager(): super(inject: true) {
     controller.stream.listen((event) async {
       final commandIdentifier = event.interaction.identifier;
       final command = _commands.get(commandIdentifier);

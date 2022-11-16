@@ -1,4 +1,5 @@
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/interactions/context_menu_interaction.dart';
 
 class ContextUserInteraction extends ContextMenuInteraction {

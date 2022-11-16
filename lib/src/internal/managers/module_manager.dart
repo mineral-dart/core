@@ -1,9 +1,13 @@
-import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/exceptions/already_exist.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class ModuleManager {
+class ModuleManager extends MineralService {
   final Map<String, MineralModule> _modules = {};
+
+  ModuleManager(): super(inject: true);
+
   Map<String, MineralModule> get modules => _modules;
 
   void register (List<MineralModule> mineralModules) {

@@ -1,10 +1,10 @@
 import 'package:collection/collection.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/channels/news_channel.dart';
 import 'package:mineral/src/api/channels/stage_channel.dart';
 import 'package:mineral/src/api/channels/thread_channel.dart';
+import 'package:mineral/src/console.dart';
 
 class PartialChannel {
   final Snowflake _id;

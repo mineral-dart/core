@@ -1,4 +1,4 @@
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
 
 class ForumTag {
   final Snowflake _id;

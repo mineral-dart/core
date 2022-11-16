@@ -1,5 +1,5 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/builders.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/builders/emoji_builder.dart';
 

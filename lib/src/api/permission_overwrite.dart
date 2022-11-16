@@ -1,5 +1,5 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/helper.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/src/helper.dart';
 
 enum PermissionOverwriteType {
   role(0),

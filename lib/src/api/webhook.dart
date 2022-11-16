@@ -1,8 +1,9 @@
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/builders.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/helper.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
+import 'package:mineral/src/helper.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 enum WebhookType {
   incoming(1),
@@ -50,8 +51,7 @@ class Webhook {
   /// await webhook.setLabel('My webhook name');
   /// ```
   Future<void> setLabel (String label) async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.patch(url: "/webhooks/$id", payload: { 'name': label });
+    Response response = await ioc.use<Http>().patch(url: "/webhooks/$id", payload: { 'name': label });
 
     if (response.statusCode == 200) {
       this.label = label;
@@ -65,9 +65,8 @@ class Webhook {
   /// await webhook.setAvatar('assets/images/my_picture.png');
   /// ```
   Future<void> setAvatar (String avatar) async {
-    Http http = ioc.singleton(Service.http);
     String path = await Helper.getPicture(avatar);
-    Response response = await http.patch(url: "/webhooks/$id", payload: { 'avatar': path });
+    Response response = await ioc.use<Http>().patch(url: "/webhooks/$id", payload: { 'avatar': path });
 
     if (response.statusCode == 200) {
       avatar = path;
@@ -82,12 +81,11 @@ class Webhook {
   /// await webhook.update(label: 'My webhook name', avatar: 'assets/images/my_picture.png');
   /// ```
   Future<void> update ({ String? label, String? avatar }) async {
-    Http http = ioc.singleton(Service.http);
     String? path = avatar != null
       ?  await Helper.getPicture(avatar)
       : this.label;
 
-    Response response = await http.patch(url: "/webhooks/$id", payload: {
+    Response response = await ioc.use<Http>().patch(url: "/webhooks/$id", payload: {
       'label': label ?? this.label,
       'avatar': path,
     });
@@ -104,7 +102,6 @@ class Webhook {
   /// await webhook.execute(content: 'Hello World !');
   /// ```
   Future<void> execute ({ String? content, String? username, String? avatarUrl, bool? tts, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? suppressEmbed }) async {
-    Http http = ioc.singleton(Service.http);
 
     List<dynamic> embedList = [];
     if (embeds != null) {
@@ -120,7 +117,7 @@ class Webhook {
       }
     }
 
-    await http.post(url: "/webhooks/$id/$token", payload: {
+    await ioc.use<Http>().post(url: "/webhooks/$id/$token", payload: {
       'username': username,
       'avatar_url': avatarUrl,
       'content': content,
@@ -138,8 +135,7 @@ class Webhook {
   /// await webhook.delete();
   /// ```
   Future<bool> delete () async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.destroy(url: "/webhooks/$id/$token");
+    Response response = await ioc.use<Http>().destroy(url: "/webhooks/$id/$token");
 
     return response.statusCode == 200;
   }

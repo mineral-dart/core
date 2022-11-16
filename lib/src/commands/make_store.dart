@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:args/args.dart';
 import 'package:interact/interact.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/console.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:path/path.dart';
 
@@ -37,9 +37,9 @@ class MakeStore extends MineralCliCommand {
         label: 'Where do you want to place your file ?',
         list: directories,
         items: directories.map((directory) => directory.path
-            .replaceAll(join(Directory.current.path, 'src'), 'App')
-            .replaceAll('\\', '/'))
-            .toList()
+          .replaceAll(join(Directory.current.path, 'src'), 'App')
+          .replaceAll('\\', '/'))
+          .toList()
       );
 
       file = File(join(location.path, '${filename.snakeCase}.dart'));
@@ -61,15 +61,10 @@ class MakeStore extends MineralCliCommand {
   String getTemplate (String filename) => '''
 import 'package:mineral/core.dart';
 
-@Store('${filename.snakeCase}')
-class ${filename.pascalCase} extends MineralStore<dynamic> {
-  @override
-  dynamic state = [];
+class ${filename.pascalCase} extends MineralState<String> {
+  ${filename.pascalCase}(): super('${filename.pascalCase}', '${filename.pascalCase} description');
   
   // Please define your shared methods below
-  void addState (value) {
-    state.add(value);
-  }
 }
   ''';
 }

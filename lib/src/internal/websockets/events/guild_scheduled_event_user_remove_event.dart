@@ -1,5 +1,5 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/event.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 
 class GuildScheduledEventUserRemoveEvent extends Event {
   final GuildScheduledEvent _scheduledEvent;

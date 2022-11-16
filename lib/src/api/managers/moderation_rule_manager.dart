@@ -1,12 +1,13 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/builders.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class ModerationRuleManager extends CacheManager<ModerationRule> {
+class ModerationRuleManager extends CacheManager<ModerationRule> with Container {
   final Snowflake _guildId;
 
   ModerationRuleManager(this._guildId);
@@ -27,9 +28,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule> {
   /// );
   /// ```
   Future<ModerationRule?> create (ModerationRulesBuilder builder) async {
-    Http http = ioc.singleton(Service.http);
-
-    Response response = await http.post(url: "/guilds/$_guildId/auto-moderation/rules", payload: {
+    Response response = await container.use<Http>().post(url: "/guilds/$_guildId/auto-moderation/rules", payload: {
       'name': builder.label,
       'event_type': builder.moderationEventType.value,
       'trigger_type': builder.moderationTriggerType.value,
@@ -50,8 +49,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule> {
   /// final rules = await guild.moderationRules.sync();
   /// ```
   Future<Map<Snowflake, ModerationRule>>sync () async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.get(url: "/guilds/$_guildId/auto-moderation/rules");
+    Response response = await container.use<Http>().get(url: "/guilds/$_guildId/auto-moderation/rules");
 
     for (final payload in jsonDecode(response.body)) {
       final ModerationRule rule = ModerationRule.fromPayload(payload);

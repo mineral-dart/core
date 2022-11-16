@@ -1,9 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/event.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/events.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -16,16 +17,17 @@ import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-class GuildCreatePacket implements WebsocketPacket {
+class GuildCreatePacket with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager eventManager = ioc.singleton(Service.event);
-    CommandManager commandManager = ioc.singleton(Service.command);
-    ContextMenuManager contextMenuManager = ioc.singleton(Service.contextMenu);
-    MineralClient client = ioc.singleton(Service.client);
+    EventManager eventManager = container.use<EventManager>();
+    CommandManager commandManager = container.use<CommandManager>();
+    ContextMenuManager contextMenuManager = container.use<ContextMenuManager>();
+    MineralClient client = container.use<MineralClient>();
 
     websocketResponse.payload['guild_id'] = websocketResponse.payload['id'];
 
@@ -136,8 +138,7 @@ class GuildCreatePacket implements WebsocketPacket {
   }
 
   Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.get(url: "/guilds/${guild.id}/auto-moderation/rules");
+    Response response = await container.use<Http>().get(url: "/guilds/${guild.id}/auto-moderation/rules");
 
     if (response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);

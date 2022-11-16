@@ -4,10 +4,10 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:collection/collection.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
+import 'package:mineral/src/console.dart';
 import 'package:mineral/src/exceptions/shard_exception.dart';
 import 'package:mineral/src/internal/websockets/heartbeat.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_handler.dart';

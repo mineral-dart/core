@@ -1,10 +1,10 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/builders.dart';
-import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
@@ -12,8 +12,9 @@ import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class Message extends PartialMessage<TextBasedChannel> {
+class Message extends PartialMessage<TextBasedChannel> with Container {
   Snowflake _authorId;
   final MessageMention _mentions;
 
@@ -45,9 +46,8 @@ class Message extends PartialMessage<TextBasedChannel> {
   MessageMention get mentions => _mentions;
 
   Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    Http http = ioc.singleton(Service.http);
 
-    Response response = await http.patch(
+    Response response = await container.use<Http>().patch(
       url: '/channels/${channel.id}/messages/$id',
       payload: {
         'content': content,
@@ -69,8 +69,7 @@ class Message extends PartialMessage<TextBasedChannel> {
       return;
     }
 
-    Http http = ioc.singleton(Service.http);
-    await http.post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
+    await container.use<Http>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
   }
 
   Future<void> pin (Snowflake webhookId) async {
@@ -79,8 +78,7 @@ class Message extends PartialMessage<TextBasedChannel> {
       return;
     }
 
-    Http http = ioc.singleton(Service.http);
-    await http.put(url: '/channels/${channel.id}/pins/$id', payload: {});
+    await container.use<Http>().put(url: '/channels/${channel.id}/pins/$id', payload: {});
   }
 
   Future<void> unpin () async {
@@ -89,12 +87,11 @@ class Message extends PartialMessage<TextBasedChannel> {
       return;
     }
 
-    Http http = ioc.singleton(Service.http);
-    await http.destroy(url: '/channels/${channel.id}/pins/$id');
+    await container.use<Http>().destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
   Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    MineralClient client = ioc.singleton(Service.client);
+    MineralClient client = container.use<MineralClient>();
 
     Response response = await client.sendMessage(channel,
       content: content,

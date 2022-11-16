@@ -1,12 +1,14 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/builders.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/messages/dm_message.dart';
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class User {
   Snowflake _id;
@@ -48,7 +50,7 @@ class User {
 
   /// Return [GuildMember] of [Guild] context for this
   GuildMember? toGuildMember (Snowflake guildId) {
-    MineralClient client = ioc.singleton(Service.client);
+    MineralClient client = ioc.use<MineralClient>();
     return client.guilds.cache.get(guildId)?.members.cache.get(_id);
   }
 
@@ -60,14 +62,12 @@ class User {
   /// await member.user.send(content: 'Hello World !');
   /// ```
   Future<DmMessage?> send ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    MineralClient client = ioc.singleton(Service.client);
-    Http http = ioc.singleton(Service.http);
-
+    MineralClient client = ioc.use<MineralClient>();
     DmChannel? channel = client.dmChannels.cache.get(_id);
 
     /// Get channel if exist or create
     if (channel == null) {
-      Response response = await http.post(url: '/users/@me/channels', payload: { 'recipient_id': _id });
+      Response response = await ioc.use<Http>().post(url: '/users/@me/channels', payload: { 'recipient_id': _id });
       if (response.statusCode == 200) {
         channel = DmChannel.fromPayload(jsonDecode(response.body));
         client.dmChannels.cache.putIfAbsent(channel.id, () => channel!);

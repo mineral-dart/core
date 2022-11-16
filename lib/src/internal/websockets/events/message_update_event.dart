@@ -1,5 +1,5 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/event.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 
 class MessageUpdateEvent extends Event {
   final Message? _before;

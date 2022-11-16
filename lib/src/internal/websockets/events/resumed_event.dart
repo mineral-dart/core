@@ -1,4 +1,4 @@
-import 'package:mineral/event.dart';
+import 'package:mineral/framework.dart';
 
 class ResumedEvent extends Event {
   final Map<String, dynamic> payload;

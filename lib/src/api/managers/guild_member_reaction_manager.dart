@@ -1,4 +1,4 @@
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/guilds/guild_member_reaction.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';

@@ -1,5 +1,5 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/helper.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/src/helper.dart';
 
 import '../../exceptions/missing_method_exception.dart';
 

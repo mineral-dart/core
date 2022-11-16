@@ -1,13 +1,15 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class MemberRoleManager extends CacheManager<Role> {
+class MemberRoleManager extends CacheManager<Role> with Container {
   late final Guild _guild;
   GuildRoleManager manager;
   Snowflake memberId;
@@ -33,9 +35,7 @@ class MemberRoleManager extends CacheManager<Role> {
   /// ```dart
   /// await member.roles.add('446556480850755604', reason: 'I love this user');
   /// ```
-  Future<void> add (Snowflake id, {String? reason}) async {
-    Http http = ioc.singleton(Service.http);
-    Role? role = manager.cache.get(id);
+  Future<void> add (Snowflake id, {String? reason}) async {    Role? role = manager.cache.get(id);
 
     if(role == null) {
       throw NotExist(prefix: 'role not exist', cause: 'You can\'t add a role that don\'t exist!');
@@ -46,7 +46,7 @@ class MemberRoleManager extends CacheManager<Role> {
       headers.putIfAbsent('X-Audit-Log-Reason', () => reason);
     }
 
-    Response response = await http.put(
+    Response response = await container.use<Http>().put(
       url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
       payload: {},
       headers: headers
@@ -75,14 +75,12 @@ class MemberRoleManager extends CacheManager<Role> {
   /// await member.roles.remove('446556480850755604', reason: 'Hello, World!');
   /// ```
   Future<void> remove (Snowflake id, {String? reason}) async {
-    Http http = ioc.singleton(Service.http);
-
     Map<String, String> headers = {};
     if(reason != null) {
       headers.putIfAbsent('X-Audit-Log-Reason', () => reason);
     }
 
-    Response response = await http.destroy(
+    Response response = await container.use<Http>().destroy(
       url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
       headers: headers
     );
@@ -116,9 +114,7 @@ class MemberRoleManager extends CacheManager<Role> {
   }
 
   Future<Map<Snowflake, Role>> sync () async {
-    Http http = ioc.singleton(Service.http);
-
-    Response response = await http.get(url: "/guilds/${manager.guild.id}/members/$memberId");
+    Response response = await container.use<Http>().get(url: "/guilds/${manager.guild.id}/members/$memberId");
     if(response.statusCode == 200) {
       cache.clear();
       dynamic payload = jsonDecode(response.body)['roles'];

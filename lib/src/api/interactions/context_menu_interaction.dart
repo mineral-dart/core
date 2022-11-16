@@ -1,4 +1,4 @@
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
 
 class ContextMenuInteraction extends Interaction {
   final int _type;

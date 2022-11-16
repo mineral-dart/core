@@ -1,5 +1,5 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class Footer {
   String text;
@@ -259,7 +259,7 @@ class EmbedBuilder {
   }
 
   factory EmbedBuilder.fromGuildPreview(GuildPreview preview) {
-    MineralClient client = ioc.singleton(Service.client);
+    MineralClient client = ioc.use<MineralClient>();
 
     final EmbedBuilder embed = EmbedBuilder(
       title: preview.label,

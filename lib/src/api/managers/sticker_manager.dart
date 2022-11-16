@@ -1,20 +1,20 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/helper.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
+import 'package:mineral/src/console.dart';
+import 'package:mineral/src/helper.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class StickerManager extends CacheManager<Sticker> {
+class StickerManager extends CacheManager<Sticker> with Container {
   late final Guild guild;
 
   Future<Sticker?> create ({ required String name, required String description, required String tags, required String filename }) async {
     if (guild.features.contains(GuildFeature.verified) || guild.features.contains(GuildFeature.partnered)) {
-      Http http = ioc.singleton(Service.http);
-      Response response = await http.post(url: "/guilds/${guild.id}/stickers", payload: {
+      Response response = await container.use<Http>().post(url: "/guilds/${guild.id}/stickers", payload: {
         'name': name,
         'description': description,
         'tags': tags,
@@ -39,10 +39,9 @@ class StickerManager extends CacheManager<Sticker> {
   }
 
   Future<Map<Snowflake, Sticker>> sync () async {
-    Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get(url: "/guilds/${guild.id}/stickers");
+    Response response = await container.use<Http>().get(url: "/guilds/${guild.id}/stickers");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {

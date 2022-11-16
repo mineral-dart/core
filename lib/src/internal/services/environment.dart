@@ -2,18 +2,21 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:interact/interact.dart';
-import 'package:mineral/console.dart';
+import 'package:mineral/src/console.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
+import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart' as path;
 
-class Environment {
+class Environment extends MineralService {
   final Map<String, String> _cache = Map.from(Platform.environment);
+
+  Environment(): super(inject: true);
 
   Future<Environment> load () async {
     File file = File(path.join(Directory.current.path, '.env'));
-
     if (!await file.exists()) {
       await createEnvironmentFile();
+      exit(0);
     }
 
     List<String> content = await file.readAsLines(encoding: utf8);
