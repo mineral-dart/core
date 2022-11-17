@@ -22,10 +22,11 @@ class MessageDeletePacket with Container implements WebsocketPacket {
     TextBasedChannel? channel = guild?.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['id']);
 
+    if (channel?.id == null) {
+      return;
+    }
+
     if (message == null) {
-      if (channel?.id == null) {
-        return;
-      }
       Response response = await container.use<Http>().get(url: "/channels/${channel?.id}/messages/${payload['id']}");
 
       if (response.statusCode == 200) {
