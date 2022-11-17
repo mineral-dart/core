@@ -23,6 +23,9 @@ class MessageDeletePacket with Container implements WebsocketPacket {
     Message? message = channel?.messages.cache.get(payload['id']);
 
     if (message == null) {
+      if (channel?.id == null) {
+        return;
+      }
       Response response = await container.use<Http>().get(url: "/channels/${channel?.id}/messages/${payload['id']}");
 
       if (response.statusCode == 200) {
