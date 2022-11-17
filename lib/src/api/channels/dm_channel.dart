@@ -1,8 +1,10 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class DmChannel extends PartialChannel {
+class DmChannel extends PartialChannel with Container {
   Snowflake? lastMessageId;
   MessageManager messages;
   Map<Snowflake, User> recipients;
@@ -15,12 +17,10 @@ class DmChannel extends PartialChannel {
   );
 
   factory DmChannel.fromPayload(dynamic payload) {
-    MineralClient client = ioc.singleton(Service.client);
-
     Map<Snowflake, User> users = {};
     if (payload['recipients'] != null) {
       for (dynamic element in payload['recipients']) {
-        User? user = client.users.cache.get(element['id']);
+        User? user = ioc.use<MineralClient>().users.cache.get(element['id']);
         user ??= User.from(element);
 
         users.putIfAbsent(user.id, () => user!);

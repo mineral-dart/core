@@ -1,22 +1,31 @@
-import 'dart:io';
-import 'dart:mirrors';
-
 import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral_package/mineral_package.dart';
 
-class PluginManager {
-  final List _plugins = [];
+abstract class PluginManager extends MineralService {
+  final Map<Type, MineralPackage> _plugins = {};
 
-  void use (List plugins) {
-    _plugins.addAll(plugins);
+  PluginManager(): super(inject: true);
+
+  T use<T extends MineralPackage> () {
+    final package =  _plugins[T];
+    if (package == null) {
+      throw Exception('The $T package was not registered');
+    }
+
+    return _plugins[T] as T;
+  }
+}
+
+class PluginManagerCraft extends PluginManager {
+  void register (List<MineralPackage> plugins) {
+    for (final plugin in plugins) {
+      _plugins.putIfAbsent(plugin.runtimeType, () => plugin);
+    }
   }
 
   Future<void> load () async {
-    for (final plugin in _plugins) {
-      final namespace = reflect(plugin).type.getField(Symbol('namespace'));
-      ioc.bind(namespace: namespace.reflectee, service: plugin);
-
-      plugin..root = Directory.current
-        ..init();
+    for (final plugin in _plugins.values) {
+      await plugin.init();
     }
   }
 }

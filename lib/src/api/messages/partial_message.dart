@@ -1,12 +1,14 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
 
-class PartialMessage<T extends PartialChannel> {
+class PartialMessage<T extends PartialChannel> with Container {
   final Snowflake _id;
   final String _content;
   final bool _tts;
@@ -65,8 +67,9 @@ class PartialMessage<T extends PartialChannel> {
 
   bool get isPinned => _pinned;
 
-  PartialChannel get channel => _guildId != null
-    ? ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(_guildId).channels.cache.getOrFail(_channelId)
-    : ioc.singleton<MineralClient>(Service.client).dmChannels.cache.getOrFail(_channelId);
+  dynamic get channel => _guildId != null
+    ? container.use<MineralClient>().guilds.cache.getOrFail(_guildId).channels.cache.getOrFail(_channelId)
+    : container.use<MineralClient>().dmChannels.cache.getOrFail(_channelId);
+
   MessageReactionManager get reactions => _reactions;
 }

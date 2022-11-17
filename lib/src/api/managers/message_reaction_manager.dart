@@ -1,13 +1,15 @@
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/src/api/channels/partial_channel.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/builders/emoji_builder.dart';
 import 'package:mineral/src/api/guilds/guild_member_reaction.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/guild_member_reaction_manager.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class MessageReactionManager<C extends PartialChannel, T extends PartialMessage> extends CacheManager {
+class MessageReactionManager<C extends PartialChannel, T extends PartialMessage> extends CacheManager with Container {
   Map<Snowflake, GuildMemberReactionManager> users = {};
 
   final C _channel;
@@ -16,14 +18,13 @@ class MessageReactionManager<C extends PartialChannel, T extends PartialMessage>
   MessageReactionManager(this._channel);
 
   Future<void> add (EmojiBuilder emojiBuilder) async {
-    Http http = ioc.singleton(Service.http);
-    MineralClient client = ioc.singleton(Service.client);
+    MineralClient client = container.use<MineralClient>();
 
     String _emoji = emojiBuilder.emoji is Emoji
       ? '${emojiBuilder.emoji.label}:${emojiBuilder.emoji.id}'
       : emojiBuilder.emoji.label;
 
-    Response response = await http.put(url: '/channels/${_channel.id}/messages/${message.id}/reactions/$_emoji/@me', payload: {});
+    Response response = await container.use<Http>().put(url: '/channels/${_channel.id}/messages/${message.id}/reactions/$_emoji/@me', payload: {});
 
     if (response.statusCode == 204) {
       final key = emojiBuilder.emoji.id != '' ? emojiBuilder.emoji.id : emojiBuilder.emoji.label;
@@ -47,9 +48,7 @@ class MessageReactionManager<C extends PartialChannel, T extends PartialMessage>
   }
 
   Future<void> removeAll () async {
-    Http http = ioc.singleton(Service.http);
-
-    Response response = await http.destroy(url: '/channels/${message.channel.id}/messages/${message.id}/reactions');
+    Response response = await container.use<Http>().destroy(url: '/channels/${message.channel.id}/messages/${message.id}/reactions');
     if (response.statusCode == 200) {
       cache.clear();
     }

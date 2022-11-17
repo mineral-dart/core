@@ -1,5 +1,5 @@
-import 'package:mineral/api.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
+import 'package:mineral/src/api/builders/emoji_builder.dart';
 
 enum ButtonStyle {
   primary(1),

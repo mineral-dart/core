@@ -9,7 +9,7 @@ class ApiException implements Exception {
 
   @override
   String toString () {
-    ReporterManager? reporter = ioc.singleton(Service.reporter);
+    ReporterManager? reporter = ioc.use<ReporterManager>();
     if (reporter != null) {
       reporter.write('[ $code ] $cause');
     }

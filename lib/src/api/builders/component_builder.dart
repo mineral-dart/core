@@ -1,6 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 enum ComponentType {
   actionRow(1),
@@ -21,7 +23,7 @@ abstract class ComponentBuilder {
   ComponentBuilder({ required this.type });
 
   static wrap (dynamic payload, Snowflake? guildId) {
-    final Guild? guild = ioc.singleton<MineralClient>(Service.client).guilds.cache.get(guildId);
+    final Guild? guild = ioc.use<MineralClient>().guilds.cache.get(guildId);
     final componentType = ComponentType.values.firstWhereOrNull((element) => element.value == payload['type']);
 
     if (componentType == null) {

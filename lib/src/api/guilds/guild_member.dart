@@ -1,9 +1,11 @@
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class GuildMember {
+class GuildMember with Container {
   User _user;
   String? _nickname;
   ImageFormater? _avatar;
@@ -51,9 +53,8 @@ class GuildMember {
   /// await member.setUsername('John Doe');
   /// ```
   Future<void> setUsername (String name) async {
-    Http http = ioc.singleton(Service.http);
 
-    Response response = await http.patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'nick': name });
+    Response response = await container.use<Http>().patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'nick': name });
     if (response.statusCode == 200) {
       _nickname = name;
     }
@@ -72,9 +73,8 @@ class GuildMember {
   /// ```
   Future<void> timeout (DateTime expiration) async {
     // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
-    Http http = ioc.singleton(Service.http);
 
-    Response response = await http.patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': expiration.toIso8601String() });
+    Response response = await container.use<Http>().patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': expiration.toIso8601String() });
     if (response.statusCode == 200 || response.statusCode == 204) {
       _timeoutDuration = expiration;
     }
@@ -87,9 +87,8 @@ class GuildMember {
   /// await member.removeTimeout();
   /// ```
   Future<void> removeTimeout () async {
-    Http http = ioc.singleton(Service.http);
 
-    Response response = await http.patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': null });
+    Response response = await container.use<Http>().patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': null });
     if (response.statusCode == 200 || response.statusCode == 204) {
       _timeoutDuration = null;
     }
@@ -108,9 +107,8 @@ class GuildMember {
   /// await member.ban(count: 7);
   /// ```
   Future<void> ban ({ int? count, String? reason }) async {
-    Http http = ioc.singleton(Service.http);
 
-    Response response = await http.put(url: "/guilds/${guild.id}/bans/${user.id}", payload: {
+    Response response = await container.use<Http>().put(url: "/guilds/${guild.id}/bans/${user.id}", payload: {
       'delete_message_days': count,
       'reason': reason
     });
@@ -127,8 +125,7 @@ class GuildMember {
   /// await member.removeTimeout();
   /// ```
   Future<void> kick ({ int? count, String? reason }) async {
-    Http http = ioc.singleton(Service.http);
-    await http.destroy(url: "/guilds/${guild.id}/members/${user.id}");
+    await container.use<Http>().destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
 
   /// ### Returns whether of this is a bot
