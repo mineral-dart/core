@@ -49,7 +49,7 @@ class Interaction with Container {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<void> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
+  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
     List<dynamic> embedList = [];
     if (embeds != null) {
       for (EmbedBuilder element in embeds) {
@@ -69,11 +69,13 @@ class Interaction with Container {
       'data': {
         'tts': tts ?? false,
         'content': content,
-        'embeds': embeds != null ? embedList : [],
-        'components': components != null ? componentList : [],
+        'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
+        'components': components != null ? components.map((e) => e.toJson()).toList() : [],
         'flags': private != null && private == true ? 1 << 6 : null,
       }
     });
+
+    return this;
   }
 
   /// ### Responds to this by an [ModalBuilder]
@@ -86,12 +88,39 @@ class Interaction with Container {
   ///
   /// await interaction.modal(modal);
   /// ```
-  Future<void> modal (ModalBuilder modal) async {
+  Future<Interaction> modal (ModalBuilder modal) async {
     await container.use<Http>().post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.modal.value,
       'data': modal.toJson(),
     });
+
+    return this;
   }
+
+  /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
+  Future<Interaction> deferredReply () async {
+    Http http = ioc.singleton(Service.http);
+
+    await http.post(url: "/interactions/$id/$token/callback", payload: {
+      'type': InteractionCallbackType.deferredChannelMessageWithSource.value
+    });
+
+    return this;
+  }
+
+  /// ### Edit original response to interaction
+  Future<Interaction> updateReply({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components }) async {
+    Http http = ioc.singleton(Service.http);
+
+    await http.patch(url: "/webhooks/$applicationId/$token/messages/@original", payload: {
+      'content': content,
+      'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
+      'components': components != null ? components.map((e) => e.toJson()).toList() : [],
+    });
+
+    return this;
+  }
+
 
   factory Interaction.from({ required dynamic payload }) {
     return Interaction(
