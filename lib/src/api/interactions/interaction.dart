@@ -99,9 +99,7 @@ class Interaction with Container {
 
   /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
   Future<Interaction> deferredReply () async {
-    Http http = ioc.singleton(Service.http);
-
-    await http.post(url: "/interactions/$id/$token/callback", payload: {
+    await container.use<Http>().post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.deferredChannelMessageWithSource.value
     });
 
@@ -110,9 +108,7 @@ class Interaction with Container {
 
   /// ### Edit original response to interaction
   Future<Interaction> updateReply({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components }) async {
-    Http http = ioc.singleton(Service.http);
-
-    await http.patch(url: "/webhooks/$applicationId/$token/messages/@original", payload: {
+    await container.use<Http>().patch(url: "/webhooks/$applicationId/$token/messages/@original", payload: {
       'content': content,
       'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
       'components': components != null ? components.map((e) => e.toJson()).toList() : [],
