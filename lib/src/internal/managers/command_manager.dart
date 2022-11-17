@@ -76,7 +76,11 @@ class CommandManager extends MineralService {
     }
   }
 
-  getGuildCommands (Guild guild) {
+  List<CommandBuilder> getGuildCommands (Guild guild) {
     return _commands.values.where((element) => element.scope?.mode == Scope.guild.mode || element.scope?.mode == guild.id).toList();
+  }
+
+  List<CommandBuilder> getGlobalCommands () {
+    return _commands.values.where((element) => element.scope?.mode == Scope.global.mode).toList();
   }
 }
