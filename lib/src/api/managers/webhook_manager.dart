@@ -34,16 +34,8 @@ class WebhookManager extends CacheManager<Webhook> with Container {
       'avatar': avatar != null ? await Helper.getPicture(avatar) : null
     });
 
-    if (response.statusCode == 200) {
-      dynamic payload = jsonDecode(response.body);
-
-      Webhook webhook = Webhook.from(payload: payload);
-      webhook..channel = guild.channels.cache.get(payload['guild_id'])
-        ..user = guild.members.cache.get(payload['user']['id'])
-        ..guild = guild;
-
-      return webhook;
-    }
-    return null;
+    return response.statusCode == 200
+      ? Webhook.from(payload: jsonDecode(response.body))
+      : null;
   }
 }

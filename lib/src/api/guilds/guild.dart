@@ -17,7 +17,6 @@ import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/sticker_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
-import 'package:mineral/src/console.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
@@ -30,6 +29,18 @@ enum VerificationLevel {
 
   final int value;
   const VerificationLevel(this.value);
+}
+
+class SourceGuild {
+  final Snowflake _id;
+  final String _label;
+  final ImageFormater _icon;
+
+  SourceGuild(this._id, this._label, this._icon);
+
+  Snowflake get id => _id;
+  String get label => _label;
+  ImageFormater? get icon => _icon;
 }
 
 class Guild with Container {
