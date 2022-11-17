@@ -1,4 +1,5 @@
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/managers/forum_discussion_manager.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 

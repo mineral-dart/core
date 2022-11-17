@@ -1,4 +1,4 @@
-import 'package:mineral/api.dart';
+import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 
 class RowBuilder extends ComponentBuilder {

@@ -1,7 +1,9 @@
- import 'package:http/http.dart';
-import 'package:mineral/api.dart';
+import 'package:http/http.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/sticker_manager.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 enum StickerType {
   standard(1),
@@ -62,43 +64,35 @@ class Sticker {
   int? get sortValue => _sortValue;
 
   Future<void> setName (String name) async {
-    Http http = ioc.singleton(Service.http);
-
-    Response response = await http.patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'name': name });
+    Response response = await ioc.use<Http>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'name': name });
     if (response.statusCode == 200) {
       _name = name;
     }
   }
 
   Future<void> setDescription (String description) async {
-    Http http = ioc.singleton(Service.http);
-
-    Response response = await http.patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'description': description });
+    Response response = await ioc.use<Http>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'description': description });
     if (response.statusCode == 200) {
       _description = description;
     }
   }
 
   Future<void> setTags (String tags) async {
-    Http http = ioc.singleton(Service.http);
-
-    Response response = await http.patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'tags': tags });
+    Response response = await ioc.use<Http>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'tags': tags });
     if (response.statusCode == 200) {
       _tags = tags;
     }
   }
 
   Future<void> delete () async {
-    Http http = ioc.singleton(Service.http);
-
-    Response response = await http.destroy(url: "/guilds/${guild.id}/stickers/$id");
+    Response response = await ioc.use<Http>().destroy(url: "/guilds/${guild.id}/stickers/$id");
     if (response.statusCode == 200) {
       manager.cache.remove(id);
     }
   }
 
   factory Sticker.from(dynamic payload) {
-    MineralClient client = ioc.singleton(Service.client);
+    MineralClient client = ioc.use<MineralClient>();
 
     Guild guild = client.guilds.cache.getOrFail(payload['guild_id']);
     GuildMember? member = guild.members.cache.get(payload['user']?['id']);

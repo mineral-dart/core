@@ -1,8 +1,8 @@
 import 'package:collection/collection.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/console.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class Help extends MineralCliCommand {
   @override
@@ -19,8 +19,7 @@ class Help extends MineralCliCommand {
           ? command.key.split(':').first
           : 'Available commands';
 
-      CliManager cli = ioc.singleton(Service.cli);
-      MineralCliCommand? mineralCommand = cli.commands.get(command.key);
+      MineralCliCommand? mineralCommand = ioc.use<CliManager>().commands.get(command.key);
 
       if (commands.containsKey(key)) {
         commands.get(key)?.add({ 'name': command.key, 'args': mineralCommand?.description });

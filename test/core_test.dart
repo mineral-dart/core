@@ -1,15 +1,17 @@
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/src/internal/services/event_emitter.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
+import 'package:mineral_ioc/ioc.dart';
 import 'package:test/scaffolding.dart';
+import 'package:test/test.dart';
 
 void main() {
   test('can get Http from ioc', () {
     String discordEndpoint = 'https://discord.com/api';
-    ioc.bind(namespace: Service.http, service: Http(baseUrl: discordEndpoint));
+    ioc.bind((_) => Http(baseUrl: discordEndpoint));
 
-    assert(ioc.singleton(Service.http) is Http);
+    expect(ioc.use<Http>().baseUrl, equals(discordEndpoint));
   });
 
   test('can emit with event emitter', () async {

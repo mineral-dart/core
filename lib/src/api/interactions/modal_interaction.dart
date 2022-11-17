@@ -1,6 +1,7 @@
 import 'dart:core';
 
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 
 class ModalInteraction extends Interaction {
   Snowflake _customId;
@@ -10,6 +11,7 @@ class ModalInteraction extends Interaction {
 
   ModalInteraction(
     super._id,
+    super._label,
     super._applicationId,
     super._version,
     super._typeId,
@@ -34,6 +36,7 @@ class ModalInteraction extends Interaction {
   factory ModalInteraction.from({ required dynamic payload }) {
     return ModalInteraction(
       payload['id'],
+      null,
       payload['application_id'],
       payload['version'],
       payload['type'],

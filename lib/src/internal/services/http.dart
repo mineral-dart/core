@@ -2,9 +2,10 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:mineral/exception.dart';
-import 'package:mineral/helper.dart';
+import 'package:mineral/src/helper.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class Http {
+class Http extends MineralService {
   String baseUrl;
   final Map<String, String> _headers = {};
 

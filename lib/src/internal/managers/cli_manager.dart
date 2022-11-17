@@ -1,10 +1,13 @@
 import 'dart:io';
 
 import 'package:args/args.dart';
+import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
 
-class CliManager {
+class CliManager extends MineralService {
   final Map<String, MineralCliCommand> _commands = {};
+
+  CliManager(): super(inject: true);
 
   Map<String, MineralCliCommand> get commands => _commands;
 

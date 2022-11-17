@@ -1,12 +1,12 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/internal/entities/command.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class CommandManager extends CacheManager<SlashCommand> {
+class CommandManager extends CacheManager<CommandBuilder> with Container {
   final Snowflake? _guildId;
 
   CommandManager(this._guildId);
 
-  Guild? get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.get(_guildId);
+  Guild? get guild => container.use<MineralClient>().guilds.cache.get(_guildId);
 }

@@ -19,7 +19,8 @@ dependencies:
   http: ^0.13.4
   interact: ^2.1.1
   collection: ^1.16.0
-  mineral_ioc: ^1.0.0
+  mineral_ioc: ^2.0.0
+  mineral_package: ^1.1.0
 
 dev_dependencies:
   lints: ^1.0.0

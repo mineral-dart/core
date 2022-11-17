@@ -1,4 +1,4 @@
-import 'package:mineral/console.dart';
+import 'package:mineral/src/console.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
 
@@ -10,7 +10,7 @@ class MissingFeatureException implements Exception {
 
   @override
   String toString () {
-    ReporterManager? reporter = ioc.singleton(Service.reporter);
+    ReporterManager? reporter = ioc.use<ReporterManager>();
     if (reporter != null) {
       reporter.write('[ $prefix ] $cause');
     }

@@ -1,4 +1,4 @@
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/src/exceptions/too_many.dart';
 
 class ModerationRulesBuilder {

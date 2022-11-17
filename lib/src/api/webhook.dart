@@ -1,7 +1,12 @@
+import 'package:mineral/framework.dart';
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
-import 'package:mineral/helper.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
+import 'package:mineral/src/api/channels/source_channel.dart';
+import 'package:mineral/src/api/guilds/guild.dart';
+import 'package:mineral/src/helper.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 enum WebhookType {
   incoming(1),
@@ -13,34 +18,46 @@ enum WebhookType {
 }
 
 class Webhook {
-  Snowflake id;
-  WebhookType type;
-  Snowflake? guildId;
-  late Guild? guild;
-  Snowflake? channelId;
-  late GuildChannel? channel;
-  User? user;
-  String? label;
-  String? avatar;
-  String token;
-  Snowflake? applicationId;
-  dynamic sourceGuild;
-  dynamic sourceChannel;
-  String? url;
+  Snowflake _id;
+  int _type;
+  Snowflake? _guildId;
+  Snowflake? _channelId;
+  Snowflake? _creatorId;
+  String? _label;
+  String? _avatar;
+  String _token;
+  Snowflake? _applicationId;
+  String? _url;
+  SourceChannel? _sourceChannel;
+  SourceGuild? _sourceGuild;
 
-  Webhook({
-    required this.id,
-    required this.type,
-    required this.guildId,
-    required this.channelId,
-    required this.label,
-    required this.avatar,
-    required this.token,
-    required this.applicationId,
-    required this.sourceGuild,
-    required this.sourceChannel,
-    required this.url,
-  });
+  Webhook(
+    this._id,
+    this._type,
+    this._guildId,
+    this._channelId,
+    this._creatorId,
+    this._label,
+    this._avatar,
+    this._token,
+    this._applicationId,
+    this._url,
+    this._sourceChannel,
+    this._sourceGuild,
+  );
+
+  Snowflake get id => _id;
+  WebhookType get type => WebhookType.values.firstWhere((element) => element.value == _type);
+  Guild? get guild => ioc.use<MineralClient>().guilds.cache.get(_guildId);
+  GuildChannel? get channel => guild?.channels.cache.get(_channelId);
+  User? get creator => guild?.members.cache.get(_creatorId);
+  String? get label => _label;
+  String? get avatar => _avatar;
+  String get token => _token;
+  Snowflake? get applicationId => _applicationId;
+  String? get url => _url;
+  SourceChannel? get sourceChannel => _sourceChannel;
+  SourceGuild? get sourceGuild => _sourceGuild;
 
   /// ### Update the label of this
   ///
@@ -49,11 +66,10 @@ class Webhook {
   /// await webhook.setLabel('My webhook name');
   /// ```
   Future<void> setLabel (String label) async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.patch(url: "/webhooks/$id", payload: { 'name': label });
+    Response response = await ioc.use<Http>().patch(url: "/webhooks/$id", payload: { 'name': label });
 
     if (response.statusCode == 200) {
-      this.label = label;
+      _label = label;
     }
   }
 
@@ -64,12 +80,25 @@ class Webhook {
   /// await webhook.setAvatar('assets/images/my_picture.png');
   /// ```
   Future<void> setAvatar (String avatar) async {
-    Http http = ioc.singleton(Service.http);
     String path = await Helper.getPicture(avatar);
-    Response response = await http.patch(url: "/webhooks/$id", payload: { 'avatar': path });
+    Response response = await ioc.use<Http>().patch(url: "/webhooks/$id", payload: { 'avatar': path });
 
     if (response.statusCode == 200) {
       avatar = path;
+    }
+  }
+
+  /// ### Update the avatar of this
+  ///
+  /// Example :
+  /// ```dart
+  /// await webhook.setChannel('xxxxxxx');
+  /// ```
+  Future<void> setChannel (Snowflake channelId) async {
+    Response response = await ioc.use<Http>().patch(url: "/webhooks/$id", payload: { 'channel_id': channelId });
+
+    if (response.statusCode == 200) {
+      _channelId = channelId;
     }
   }
 
@@ -81,19 +110,18 @@ class Webhook {
   /// await webhook.update(label: 'My webhook name', avatar: 'assets/images/my_picture.png');
   /// ```
   Future<void> update ({ String? label, String? avatar }) async {
-    Http http = ioc.singleton(Service.http);
     String? path = avatar != null
       ?  await Helper.getPicture(avatar)
       : this.label;
 
-    Response response = await http.patch(url: "/webhooks/$id", payload: {
+    Response response = await ioc.use<Http>().patch(url: "/webhooks/$id", payload: {
       'label': label ?? this.label,
       'avatar': path,
     });
 
     if (response.statusCode == 200) {
-      if (label != null) this.label = label;
-      if (avatar != null) this.avatar = path;
+      if (label != null) _label = label;
+      if (avatar != null) _avatar = path;
     }
   }
   /// ### Send a message from the webhook
@@ -103,7 +131,6 @@ class Webhook {
   /// await webhook.execute(content: 'Hello World !');
   /// ```
   Future<void> execute ({ String? content, String? username, String? avatarUrl, bool? tts, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? suppressEmbed }) async {
-    Http http = ioc.singleton(Service.http);
 
     List<dynamic> embedList = [];
     if (embeds != null) {
@@ -119,7 +146,7 @@ class Webhook {
       }
     }
 
-    await http.post(url: "/webhooks/$id/$token", payload: {
+    await ioc.use<Http>().post(url: "/webhooks/$id/$token", payload: {
       'username': username,
       'avatar_url': avatarUrl,
       'content': content,
@@ -137,25 +164,25 @@ class Webhook {
   /// await webhook.delete();
   /// ```
   Future<bool> delete () async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.destroy(url: "/webhooks/$id/$token");
+    Response response = await ioc.use<Http>().destroy(url: "/webhooks/$id/$token");
 
     return response.statusCode == 200;
   }
 
   factory Webhook.from ({ required dynamic payload }) {
     return Webhook(
-      id: payload['id'],
-      type: WebhookType.values.firstWhere((element) => element.value == payload['type']),
-      guildId: payload['guild_id'],
-      channelId: payload['channel_id'],
-      label: payload['name'],
-      avatar: payload['avatar'],
-      token: payload['token'],
-      applicationId: payload['application_id'],
-      sourceGuild: payload['source_guild'],
-      sourceChannel: payload['source_channel'],
-      url: payload['url']
+      payload['id'],
+      payload['type'],
+      payload['guild_id'],
+      payload['channel_id'],
+      payload['user']['id'],
+      payload['name'],
+      payload['avatar'],
+      payload['token'],
+      payload['application_id'],
+      payload['url'],
+      SourceChannel(payload['source_channel']['id'], payload['source_channel']['name']),
+      SourceGuild(payload['source_guild']['id'], payload['source_guild']['name'], ImageFormater(payload['source_channel']['icon'], 'icons/${payload['source_guild']['id']}'))
     );
   }
 }

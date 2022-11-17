@@ -1,6 +1,6 @@
 import 'package:args/args.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/framework.dart';
 
 Future<void> main (List<String> arguments) async {
   Kernel kernel = Kernel();
