@@ -1,8 +1,8 @@
-import 'package:mineral/framework.dart';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/channels/source_channel.dart';
 import 'package:mineral/src/api/guilds/guild.dart';
 import 'package:mineral/src/helper.dart';

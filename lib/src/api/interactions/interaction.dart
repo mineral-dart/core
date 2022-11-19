@@ -131,7 +131,6 @@ class Interaction with Container {
     await container.use<Http>().destroy(url: "/webhooks/$applicationId/$token/messages/@original");
   }
 
-
   factory Interaction.from({ required dynamic payload }) {
     return Interaction(
       payload['id'],
