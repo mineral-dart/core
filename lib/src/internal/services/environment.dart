@@ -8,6 +8,7 @@ import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
 
 abstract class EnvironmentContract {
+  /// Map including all environment variables
   Map<String, String> get data;
 
   /// Get environment key from .env file as [T]

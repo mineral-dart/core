@@ -1,3 +1,4 @@
+/// Includes classes for designing buttons, selection menus and more
 library builders;
 
 export '../src/api/builders/button_builder.dart' show ButtonBuilder, ButtonStyle;
