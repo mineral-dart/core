@@ -1,3 +1,14 @@
+## 2.0.0 - Release
+- Improve accessibility
+- Implement lasted Discord updates
+- Move decorators to fully generics
+- Improve collections key matching (thanks generics)
+- Move framework context to dedicated mixin `MineralContext`
+- Move ioc accessibility to dedicated mixin `Container`
+- Standardized packages entrypoints
+- Add executable compile feature
+- More..
+
 ## 1.2.1
 - Fix wrong userId key into interactions
 
