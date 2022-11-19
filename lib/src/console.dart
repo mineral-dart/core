@@ -43,7 +43,7 @@ class Console {
   static void log ({ required String message, String level = 'info'}) {
     if (level == 'debug') {
       final Environment environment = ioc.use<Environment>();
-      final String? logLevel = environment.getOr('LOG_LEVEL', defaultValue: 'info');
+      final String? logLevel = environment.get('LOG_LEVEL', defaultValue: 'info');
 
       if (logLevel != 'debug') return;
     }

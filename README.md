@@ -1,5 +1,5 @@
 ![License](https://img.shields.io/github/license/mineral-dart/core.svg)
-![Stars](https://img.shields.io/github/stars/mineral-dart/core.svg)
+![Stars](https://img.shields.io/github/stars/mineral-dart)
 ![Pull request](https://img.shields.io/github/issues-pr-closed/mineral-dart/core.svg)
 ![Made with](https://img.shields.io/badge/Made%20with-dart-0866a8.svg)
 
@@ -26,10 +26,14 @@ recurring features such as tickets, invitations or voice chancels on demand.
 
 They are the heart of any Discord application, events allow you to act at a point in your application's lifecycle when an action is performed on the Discord server where your application is present.
 ```dart
-@Event(Events.messageCreate)
-class RecievedMessages extends MineralEvent {
+import 'package:mineral/framework.dart';
+import 'package:mineral/core/events';
+
+class MessageReceived extends MineralEvent<MessageCreate> {
   Future<void> handle (Message message) async {
-    // Your code here
+    if (!message.author.isBot) {
+      await message.reply(content: 'Hello ${message.author} ! 👋');
+    }
   }
 }
 ```
@@ -44,82 +48,24 @@ final button = ButtonBuilder(
   style: ButtonStyle.primary   
 );
 ```
-The customId of the button is my-custom-id, if we want to perform an action, we can filter incoming events by specifying the customId in the decorator of your event file.
-
-```dart
-@Event(Events.messageCreate, customId: 'my-custom-id') 👈
-class RecievedMessages extends MineralEvent {
-  Future<void> handle (Message message) async {
-    // Your code for your button action
-  }
-}
-```
 
 ### The slash commands
 Since version 8 of the websocket, Discord have announced their willingness to migrate traditional commands designed with the MessageCreate event to dedicated components that we call clash commands.
 
 To simplify their design, we provide you with dedicated classes, please consider the examples below.
 ```dart
-@Command(label: 'hello', description: 'Say Hello World !', scope: 'GUILD')
+import 'package:mineral/framework.dart';
+import 'package:mineral/core/api.dart';
+
 class HelloCommand extends MineralCommand {
+  HelloCommand() {
+    register(CommandBuilder('hello', 'Say hello to everyone !', scope: Scope.guild));
+  }
+  
   Future<void> handle (CommandInteraction interaction) async {
-    await interaction.reply(content: 'Hello World !');
-  }
-}
-```
-
-A command that does not have an option is usually problematic depending on what you want to do with it. You can set options to your commands using a dedicated decorator which applies to both classes and methods, but we'll come back to that later.
-```dart
-@Command(label: 'hello', description: 'Say Hello World !', scope: 'GUILD')
-@Option(label: 'member', description: 'Target member', type: OptionType.member, required: true)
-class HelloCommand extends MineralCommand {
-  Future<void> handle (CommandInteraction interaction) async {
-    final GuildMember? member = interaction.data.getMember('member');
-    await interaction.reply(content: 'Hello $member !');
-  }
-}
-```
-
-
-### The sub-commands
-
-In the update implementing clash commands, Discord also gave us the possibility to design sub-commands and groups of sub-commands. Implementing them is generally complex to understand because it requires designing very large objects that are nested within each other...
-
-In order to improve the user experience but to cover as many cases as possible, we are allowing you to fully exploit the Discord API through new decorators, which you can discover below.
-```dart
-@Command(label: 'hello', description: 'Say Hello World !', scope: 'GUILD')
-class HelloCommand extends MineralCommand {
-  @Subcommand(label: 'subcommand', description: 'Subcommand description') 👈
-  Future<void> subcommand (CommandInteraction interaction) async {
-    await interaction.reply(content: 'Hello World !');
-  }
-}
-```
-
-It is important to note that the name of the method must be identical to the one defined in the label of your sub-command, otherwise it will simply fail.
-
-If you still want to set a different label to your method name, you can force the assignment using the bind parameter in the decorator of your sub-command.
-```dart
-@Command(label: 'hello', description: 'Say Hello World !', scope: 'GUILD')
-class HelloCommand extends MineralCommand {
-  @Subcommand(label: 'sub-command', description: '...', bind: 'sub')👈
-  Future<void> sub (CommandInteraction interaction) async {
-    await interaction.reply(content: 'Hello World !');
-  }
-}
-```
-
-
-### The sub-command groups
-
-Easily group your sub-commands into groups with your dedicated decorator.
-```dart
-@Command(label: 'hello', description: 'Say Hello World !', scope: 'GUILD')
-@CommandGroup(label: 'group', description: 'Group description') 👈
-class HelloCommand extends MineralCommand {
-  @Subcommand(group: 'group', label: 'subcommand', description: '...') 👈
-  Future<void> subcommand (CommandInteraction interaction) async {
-    await interaction.reply(content: 'Hello World !');
+    final Role everyone = interaction.guild?.roles.everyone;
+    
+    await interaction.reply(content: 'Hello $everyone');
   }
 }
 ```
@@ -129,15 +75,17 @@ Since the introduction of the new command management system, Discord has also in
 
 In order to fully exploit this functionality, a specific class is created.
 ```dart
-@ContextMenu(
-  name: 'my-message',
-  description: '...',
-  scope: 'GUILD',
-  type: ContextMenuType.message // 👈 Ou ContextMenuType.user
-)
-class MessageContext extends MineralContextMenu {
-  Future<void> handle (ContextMessageInteraction interaction) async {
-    await interaction.reply(content: interaction.message.content);
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
+
+class ContextMenu extends MineralContextMenu {
+  ContextMenu () {
+    register('message-context', ContextMenuType.message);
+  }
+
+  @override
+  Future<void> handle(Message message) async {
+    await message.reply(content: message.content);
   }
 }
 ```
@@ -155,15 +103,16 @@ The use of this architecture implies that it becomes difficult to share states a
 In order to facilitate this sharing, the framework offers you the possibility to design classes dedicated to this need thanks to the @Store decorator.
 
 ```dart
-@Store(name: 'my-store')
-class MyStore extends MineralStore<T extends String> {
-  List<T> state = [];
-  
+import 'package:mineral/framework.dart';
+
+class MyState extends MineralState<List<int>> {
+  MyState(): super('MyState', 'MyState description');
+
   // Add string to this
-  void addItem (T value) => state.add(value);
+  void addItem (int value) => state.add(value);
   
   // Verify if this contains given value
-  bool has (T value) => state.contains(value);
+  bool has (int value) => state.contains(value);
 }
 ```
 
@@ -174,8 +123,8 @@ When you register your class in your hand, your blind is accessible from any com
 Future<void> main () async {
   Kernel kernel = Kernel()
     ..intents.defined(all: true)
-    ..events.register([MessageCreate()])
-    ..stores.register([MyStore()]);
+    ..events.register([MessageReceived()])
+    ..stores.register([MyState()]);
   
   await kernel.init();
 }
@@ -183,18 +132,21 @@ Future<void> main () async {
 
 Now that your store is registered within your application, you can now access your shared state using the code below, we will illustrate the operation on the MessageCreate event.
 ```dart
-@Event(Events.messageCreate)
-class MessageCreate {
+import 'package:mineral/framework.dart';
+import 'package:mineral/core/events';
+
+class MessageCreate extends MineralEvent<MessageCreate> {
   Future<void> handle (Message message) async {
-    final store = stores.getStore<MyStore>('my-store');
-    store.addItem('Hello World !');
+    final myState = states.use<MyStore>();
+    myState.addItem(1);
     
-    Console.info(message: 'MyStore contains ${store.state.length} items.');
+    Console.info(message: 'MyState contains ${store.state.length} items.');
   }
 }
 ```
 
 Join our ranks and add your contribution to the best discord framework for Dart 💪
 
-[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/fH9UQDMZSn)
 [![Discord](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mineral-dart/core)
+[![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/fH9UQDMZSn)
+[![Tiktok](https://img.shields.io/badge/Tiktok-000000?style=for-the-badge&logo=tiktok&logoColor=white)]()

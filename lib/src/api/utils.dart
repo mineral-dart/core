@@ -164,7 +164,8 @@ enum GuildFeature {
   vipRegions('VIP_REGIONS'),
   welcomeScreen('WELCOME_SCREEN_ENABLED'),
   memberProfiles('MEMBER_PROFILES'),
-  sevenDayThreadArchive('SEVEN_DAY_THREAD_ARCHIVE');
+  sevenDayThreadArchive('SEVEN_DAY_THREAD_ARCHIVE'),
+  applicationCommandPermissionsV2('APPLICATION_COMMAND_PERMISSIONS_V2');
 
   final String value;
   const GuildFeature(this.value);

@@ -1,26 +1,40 @@
+import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:interact/interact.dart';
-import 'package:mineral/src/console.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/exceptions/not_exist.dart';
 import 'package:mineral_ioc/ioc.dart';
-import 'package:path/path.dart' as path;
+import 'package:path/path.dart';
 
-class Environment extends MineralService {
+abstract class EnvironmentContract {
+  Map<String, String> get data;
+
+  /// Get environment key from .env file as [T]
+  T get<T> (String key, { T? defaultValue });
+
+  /// Get environment key from .env file as T
+  T getOrFail<T> (String key, { String? message });
+}
+
+class Environment extends MineralService implements EnvironmentContract {
   final Map<String, String> _cache = Map.from(Platform.environment);
 
   Environment(): super(inject: true);
 
+  @override
+  Map<String, String> get data => _cache;
+
   Future<Environment> load () async {
-    File file = File(path.join(Directory.current.path, '.env'));
+    File file = File(join(Directory.current.path, '.env'));
     if (!await file.exists()) {
       await createEnvironmentFile();
       exit(0);
     }
 
     List<String> content = await file.readAsLines(encoding: utf8);
-
+    
     for (String line in content) {
       if (line.isNotEmpty) {
         List<String> content = line.split(':');
@@ -32,34 +46,24 @@ class Environment extends MineralService {
     }
 
     return this;
-
   }
 
-  /// Get environment key from .env file
-  String? get (String key) => _cache[key];
+  @override
+  T get<T> (String key, { T? defaultValue }) => (_cache.get(key) ?? defaultValue) as T;
 
-  /// Get environment key from .env file
-  String getOrFail (String key, { String? message }) {
+  @override
+  T getOrFail<T> (String key, { String? message }) {
     final result = get(key);
-    if (result == null) {
-      throw NotExist(prefix: 'Missing value', cause: message ?? 'No values are attached to $key key.');
-    }
+    _exist(key, result);
 
-    return result;
+    return result as T;
   }
 
-  T? getOr<T extends dynamic> (String key, { T? defaultValue }) {
-    T? result = get(key) as T?;
-    if (result == null) {
-      return defaultValue;
-    }
-    return result;
-  }
-
-  Environment add (String key, dynamic value) {
-    _cache.putIfAbsent(key, () => value);
-    return this;
-  }
+ void _exist<T> (String key, T result, { String? message }) {
+   if (result == null) {
+     throw NotExist(prefix: 'Missing value', cause: message ?? 'No values are attached to $key key.');
+   }
+ }
 
   Future<void> createEnvironmentFile () async {
     String token = '';
@@ -76,14 +80,9 @@ class Environment extends MineralService {
       token = Input(prompt: 'What is your token ?').interact();
     }
 
-    final environmentFile = File(path.join(Directory.current.path, '.env'));
+    final environmentFile = File(join(Directory.current.path, '.env'));
     final sink = environmentFile.openWrite();
-    sink.write('''
-  APP_NAME: My mineral application
-  APP_TOKEN: $token
-  LOG_LEVEL: info
-  REPORTER: debug
-    ''');
+    sink.write(['APP_NAME: My mineral application', 'APP_TOKEN: $token', 'LOG_LEVEL: info', 'REPORTER: debug'].join('\n'));
 
     await sink.flush();
     await sink.close();

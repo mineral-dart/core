@@ -580,7 +580,7 @@ class Guild with Container {
     List<GuildFeature> features = [];
     for (String element in payload['features']) {
       GuildFeature? feature = GuildFeature.values.firstWhereOrNull((feature) => feature.value == element);
-      if(feature == null) {
+      if (feature == null) {
         Console.warn(message: 'Guild feature $element don\'t exist! Please report this to our team.');
       } else {
         features.add(feature);
