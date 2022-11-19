@@ -117,6 +117,20 @@ class Interaction with Container {
     return this;
   }
 
+  /// ### Delete original response to interaction
+  ///
+  /// Example :
+  /// ```dart
+  /// await interaction.reply(content: 'Foo', private: true);
+  ///
+  /// await Future.delayed(Duration(seconds: 5), () async => {
+  ///   await interaction.delete();
+  /// });
+  /// ```
+  Future<void> delete () async {
+    await container.use<Http>().destroy(url: "/webhooks/$applicationId/$token/messages/@original");
+  }
+
 
   factory Interaction.from({ required dynamic payload }) {
     return Interaction(
