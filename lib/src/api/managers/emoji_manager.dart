@@ -1,20 +1,20 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
-import 'package:mineral/helper.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
+import 'package:mineral/src/helper.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class EmojiManager extends CacheManager<Emoji> {
+class EmojiManager extends CacheManager<Emoji> with Container {
   late final Guild guild;
 
   Future<Map<Snowflake, Emoji>> sync () async {
-    Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get(url: "/guilds/${guild.id}/emojis");
+    Response response = await container.use<Http>().get(url: "/guilds/${guild.id}/emojis");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -36,10 +36,9 @@ class EmojiManager extends CacheManager<Emoji> {
      throw EmptyParameterException(cause: 'Parameter "path" cannot be null or empty');
     }
 
-    Http http = ioc.singleton(Service.http);
     String image = await Helper.getPicture(path);
 
-    Response response = await http.post(url: "/guilds/${guild.id}/emojis", payload: {
+    Response response = await container.use<Http>().post(url: "/guilds/${guild.id}/emojis", payload: {
       'name': label,
       'image': image,
       'roles': roles ?? [],
@@ -47,7 +46,6 @@ class EmojiManager extends CacheManager<Emoji> {
 
     Emoji emoji = Emoji.from(
       memberManager: guild.members,
-      //roleManager: guild!.roles,
       emojiManager: this,
       payload: jsonDecode(response.body),
     );

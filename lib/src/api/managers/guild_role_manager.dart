@@ -1,14 +1,21 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
-import 'package:mineral/helper.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
+import 'package:mineral/src/helper.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class GuildRoleManager extends CacheManager<Role> {
-  late final Guild guild;
+class GuildRoleManager extends CacheManager<Role> with Container {
+  final Snowflake _guildId;
+
+  GuildRoleManager(this._guildId);
+
+  Guild get guild => container.use<MineralClient>().guilds.cache.getOrFail(_guildId);
+  Role get everyone => cache.findOrFail((role) => role.label == '@everyone');
 
   /// Synchronise the cache from the Discord API
   ///
@@ -17,10 +24,9 @@ class GuildRoleManager extends CacheManager<Role> {
   /// await guild.roles.sync();
   /// ```
   Future<Map<Snowflake, Role>> sync () async {
-    Http http = ioc.singleton(Service.http);
     cache.clear();
 
-    Response response = await http.get(url: "/guilds/${guild.id}/roles");
+    Response response = await container.use<Http>().get(url: "/guilds/$_guildId/roles");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -55,8 +61,7 @@ class GuildRoleManager extends CacheManager<Role> {
     String? _icon = icon != null ? await Helper.getPicture(icon) : null;
     int? _permissions = permissions != null ? Helper.reduceRolePermissions(permissions) : null;
 
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.post(url: "/guilds/${guild.id}/roles", payload: {
+    Response response = await container.use<Http>().post(url: "/guilds/$_guildId}/roles", payload: {
       'name': label,
       'color': color != null ? Helper.toRgbColor(color) : null,
       'hoist': hoist ?? false,

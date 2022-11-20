@@ -1,17 +1,10 @@
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
-
-class EmojiBuilder {
-  PartialEmoji emoji;
-
-  EmojiBuilder(this.emoji);
-
-  factory EmojiBuilder.fromUnicode(String label) => EmojiBuilder(PartialEmoji('', label, false));
-  factory EmojiBuilder.fromEmoji(Emoji emoji) => EmojiBuilder(emoji);
-}
+import 'package:mineral_ioc/ioc.dart';
 
 class PartialEmoji {
   final Snowflake _id;
@@ -66,8 +59,7 @@ class Emoji extends PartialEmoji {
   /// }
   /// ```
   Future<void> setLabel (String label) async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.patch(url: "/guilds/${manager.guild.id}/emojis/$id", payload: { 'name': label });
+    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/emojis/$id", payload: { 'name': label });
 
     if (response.statusCode == 200) {
       _label = label;
@@ -90,8 +82,7 @@ class Emoji extends PartialEmoji {
   /// await emoji.delete(reason: 'I will destroy this..');
   /// ```
   Future<void> delete () async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.destroy(url: "/guilds/${manager.guild.id}/emojis/$id");
+    Response response = await ioc.use<Http>().destroy(url: "/guilds/${manager.guild.id}/emojis/$id");
 
     if (response.statusCode == 200) {
       manager.cache.remove(id);

@@ -1,13 +1,16 @@
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
-import 'package:mineral/src/api/components/component.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class DmMessage extends PartialMessage<DmChannel> {
+class DmMessage extends PartialMessage<DmChannel> with Container {
   User author;
 
   DmMessage(
@@ -30,7 +33,7 @@ class DmMessage extends PartialMessage<DmChannel> {
   );
 
   factory DmMessage.from({ required DmChannel channel, required dynamic payload }) {
-    MineralClient client = ioc.singleton(Service.client);
+    MineralClient client = ioc.use<MineralClient>();
     User? user = client.users.cache.get(payload['author']['id']);
 
     List<EmbedBuilder> embeds = [];
@@ -87,10 +90,10 @@ class DmMessage extends PartialMessage<DmChannel> {
       }
     }
 
-    List<Component> components = [];
+    List<ComponentBuilder> components = [];
     if (payload['components'] != null) {
-      for (dynamic payload in payload['components']) {
-        Component component = Component.from(payload: payload);
+      for (dynamic element in payload['components']) {
+        ComponentBuilder component = ComponentBuilder.wrap(element, payload['guild_id']);
         components.add(component);
       }
     }

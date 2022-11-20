@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/src/api/channels/guild_channel.dart';
-import 'package:mineral/src/api/channels/thread_channel.dart';
-import 'package:mineral/src/api/managers/cache_manager.dart';
-
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
+import 'package:mineral/src/api/channels/guild_channel.dart';
+import 'package:mineral/src/api/managers/cache_manager.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class ForumDiscussionManager extends CacheManager<ThreadChannel> {
+class ForumDiscussionManager extends CacheManager<ThreadChannel> with Container {
   final Snowflake _channelId;
 
   ForumDiscussionManager(this._channelId);
@@ -17,9 +17,7 @@ class ForumDiscussionManager extends CacheManager<ThreadChannel> {
   /// Warning guild requires [GuildFeature.community] feature
   /// ```
   Future<ThreadChannel?> create (String label, MessageBuilder message, { int? archiveDuration, int? rateLimit, List<Snowflake>? tags, bool? pin }) async {
-    Http http = ioc.singleton(Service.http);
-
-    Response response = await http.post(url: '/channels/$_channelId/threads', payload: {
+    Response response = await container.use<Http>().post(url: '/channels/$_channelId/threads', payload: {
       'name': label,
       'auto_archive_duration': archiveDuration,
       'rate_limit_per_user': rateLimit,

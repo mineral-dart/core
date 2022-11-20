@@ -1,19 +1,18 @@
 import 'dart:async';
 
 import 'package:http/http.dart';
-import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
 import 'package:mineral/src/exceptions/shard_exception.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-
-import 'package:mineral/api.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 /// ShardManager is the bridge between the application and the shards [Shard].
 /// It manage shards launching, number of shards needed, identify queue (to avoid rate limiting).
 ///
 /// {@category Internal}
-class ShardManager {
+class ShardManager extends MineralService {
   final Http http;
   final List<Intent> intents;
   final String _token;
@@ -32,7 +31,7 @@ class ShardManager {
 
   /// Init new ShardManager instance.
   /// HTTP is needed to get websocket URL.
-  ShardManager(this.http, this._token, this.intents);
+  ShardManager(this.http, this._token, this.intents): super(inject: true);
 
   /// Define the number of shards to start.
   ///
@@ -48,8 +47,8 @@ class ShardManager {
     identifyTimeout = Duration(milliseconds: (5000 ~/ maxConcurrency));
 
     shardsCount != null
-        ? totalShards = shardsCount
-        : totalShards = response.shards;
+      ? totalShards = shardsCount
+      : totalShards = response.shards;
 
     while (totalShards > shards.length) {
       _startShard(shards.length, _gatewayURL);
@@ -79,8 +78,6 @@ class ShardManager {
 
   /// Start a new shard
   Future<void> _startShard(int id, String gatewayURL) async {
-    Console.debug(prefix: 'ShardManager', message: 'Starting shard #$id');
-
     final Shard shard = Shard(this, id, gatewayURL, _token);
     shards.putIfAbsent(id, () => shard);
   }

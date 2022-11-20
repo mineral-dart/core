@@ -1,47 +1,33 @@
-import 'dart:mirrors';
+import 'dart:async';
 
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class EventManager {
-  final Map<Events, List<Map<String, dynamic>>> _events = {};
+typedef EventContainer<T> = Map<T, List<MineralEvent>>;
 
-  Map<Events, List<Map<String, dynamic>>> getRegisteredEvents () => _events;
+class EventManager extends MineralService {
+  final EventContainer _events = {};
+  final StreamController<Event> controller = StreamController();
 
-  void register (List<MineralEvent> mineralEvent) {
-    for (final eventClass in mineralEvent) {
-      Event eventDecorator = reflect(eventClass).type.metadata.first.reflectee;
-      Events event = eventDecorator.event;
-      String? customId = eventDecorator.customId;
+  EventContainer get events => _events;
 
-      Map<String, dynamic> eventEntity = {
-        'mineralEvent': eventClass,
-        'customId': customId,
-      };
-
-      if (_events.containsKey(event)) {
-        List<Map<String, dynamic>>? events = _events.get(event);
-        events?.add(eventEntity);
-      } else {
-        _events.putIfAbsent(event, () => [eventEntity]);
+  EventManager(): super(inject: true) {
+    controller.stream.listen((_event) {
+      final events = _events.get(_event.runtimeType);
+      if (events != null) {
+        for (final event in events) {
+          event.handle(_event);
+        }
       }
-    }
+    });
   }
 
-  void emit ({ required Events event, String? customId, List<dynamic>? params }) {
-    List<Map<String, dynamic>>? events = _events.get(event);
-
-    if (events != null) {
-      for (Map<String, dynamic> event in events) {
-        if (customId != null) {
-          if (customId == event['customId']) {
-            reflect(event['mineralEvent']).invoke(Symbol('handle'), params ?? []);
-          }
-        } else {
-          if (event['customId'] == null) {
-            reflect(event['mineralEvent']).invoke(Symbol('handle'), params ?? []);
-          }
-        }
+  void register (List<MineralEvent> events) {
+    for (final event in events) {
+      if (_events.containsKey(event.listener)) {
+        _events.get(event.listener)?.add(event);
+      } else {
+        _events.putIfAbsent(event.listener, () => [event]);
       }
     }
   }

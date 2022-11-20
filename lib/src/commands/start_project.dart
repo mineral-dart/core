@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:args/args.dart';
-import 'package:mineral/console.dart';
+import 'package:mineral/src/console.dart';
 import 'package:mineral/src/exceptions/code_error_exception.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:path/path.dart';

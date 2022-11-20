@@ -1,34 +1,32 @@
-import 'dart:mirrors';
+import 'dart:async';
 
-import 'package:mineral/api.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/interactions/context_menu_interaction.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class ContextMenuManager {
+class ContextMenuManager extends MineralService {
   final Map<String, MineralContextMenu> _contextMenus = {};
   Map<String, MineralContextMenu> get contextMenus => _contextMenus;
 
+  final StreamController<ContextMenuInteraction> controller = StreamController();
+
+  ContextMenuManager(): super(inject: true) {
+    controller.stream.listen((event) async {
+      final contextMenu = _contextMenus.findOrFail((element) => element.builder.label == event.label);
+      await contextMenu.handle(event);
+    });
+  }
+
   void register (List<MineralContextMenu> mineralContextMenus) {
     for (final contextMenu in mineralContextMenus) {
-      ContextMenu decorator = reflect(contextMenu).type.metadata.first.reflectee;
-      contextMenu
-        ..name = decorator.name
-        ..description = decorator.description
-        ..type = decorator.type
-        ..everyone = decorator.everyone ?? false
-        ..scope = decorator.scope;
-
-      _contextMenus.putIfAbsent(contextMenu.name, () => contextMenu);
+      _contextMenus.putIfAbsent(contextMenu.builder.label, () => contextMenu);
     }
   }
 
   List<MineralContextMenu> getFromGuild (Guild guild) {
-    List<MineralContextMenu> commands = [];
-    _contextMenus.forEach((name, command) {
-      if (command.scope == guild.id || command.scope == 'GUILD') {
-        commands.add(command);
-      }
-    });
+    bool filter(MineralContextMenu element) => element.builder.scope.mode == Scope.guild.mode || element.builder.scope.mode == guild.id;
 
-    return commands;
+    return _contextMenus.where(filter).values.toList();
   }
 }

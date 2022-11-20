@@ -1,5 +1,8 @@
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
 enum InteractionCallbackType {
   pong(1),
@@ -14,8 +17,9 @@ enum InteractionCallbackType {
   const InteractionCallbackType(this.value);
 }
 
-class Interaction {
+class Interaction with Container {
   Snowflake _id;
+  String? _label;
   Snowflake _applicationId;
   int _version;
   int _typeId;
@@ -23,18 +27,19 @@ class Interaction {
   Snowflake? _userId;
   Snowflake? _guildId;
 
-  Interaction(this._id, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId);
+  Interaction(this._id, this._label, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId);
 
   Snowflake get id => _id;
+  String? get label => _label;
   Snowflake get applicationId => _applicationId;
   int get version => _version;
   InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
   String get token => _token;
-  Guild? get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.get(_guildId);
+  Guild? get guild => container.use<MineralClient>().guilds.cache.get(_guildId);
 
   User get user => _guildId != null
     ? guild!.members.cache.getOrFail(_userId).user
-    : ioc.singleton<MineralClient>(Service.client).users.cache.getOrFail(_userId);
+    : container.use<MineralClient>().users.cache.getOrFail(_userId);
 
   GuildMember? get member => guild?.members.cache.get(_userId);
 
@@ -44,9 +49,7 @@ class Interaction {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<void> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
-    Http http = ioc.singleton(Service.http);
-
+  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
     List<dynamic> embedList = [];
     if (embeds != null) {
       for (EmbedBuilder element in embeds) {
@@ -61,16 +64,18 @@ class Interaction {
       }
     }
 
-    await http.post(url: "/interactions/$id/$token/callback", payload: {
+    await container.use<Http>().post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.channelMessageWithSource.value,
       'data': {
         'tts': tts ?? false,
         'content': content,
-        'embeds': embeds != null ? embedList : [],
-        'components': components != null ? componentList : [],
+        'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
+        'components': components != null ? components.map((e) => e.toJson()).toList() : [],
         'flags': private != null && private == true ? 1 << 6 : null,
       }
     });
+
+    return this;
   }
 
   /// ### Responds to this by an [ModalBuilder]
@@ -83,18 +88,53 @@ class Interaction {
   ///
   /// await interaction.modal(modal);
   /// ```
-  Future<void> modal (ModalBuilder modal) async {
-    Http http = ioc.singleton(Service.http);
-
-    await http.post(url: "/interactions/$id/$token/callback", payload: {
+  Future<Interaction> modal (ModalBuilder modal) async {
+    await container.use<Http>().post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.modal.value,
       'data': modal.toJson(),
     });
+
+    return this;
+  }
+
+  /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
+  Future<Interaction> deferredReply () async {
+    await container.use<Http>().post(url: "/interactions/$id/$token/callback", payload: {
+      'type': InteractionCallbackType.deferredChannelMessageWithSource.value
+    });
+
+    return this;
+  }
+
+  /// ### Edit original response to interaction
+  Future<Interaction> updateReply({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components }) async {
+    await container.use<Http>().patch(url: "/webhooks/$applicationId/$token/messages/@original", payload: {
+      'content': content,
+      'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
+      'components': components != null ? components.map((e) => e.toJson()).toList() : [],
+    });
+
+    return this;
+  }
+
+  /// ### Delete original response to interaction
+  ///
+  /// Example :
+  /// ```dart
+  /// await interaction.reply(content: 'Foo', private: true);
+  ///
+  /// await Future.delayed(Duration(seconds: 5), () async => {
+  ///   await interaction.delete();
+  /// });
+  /// ```
+  Future<void> delete () async {
+    await container.use<Http>().destroy(url: "/webhooks/$applicationId/$token/messages/@original");
   }
 
   factory Interaction.from({ required dynamic payload }) {
     return Interaction(
       payload['id'],
+      null,
       payload['application_id'],
       payload['version'],
       payload['type'],

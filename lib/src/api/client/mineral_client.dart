@@ -1,10 +1,12 @@
-import 'package:mineral/api.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/managers/command_manager.dart';
 import 'package:mineral/src/api/managers/dm_channel_manager.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/user_manager.dart';
-import 'package:mineral/src/internal/entities/command.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 enum ClientStatus {
   online('online'),
@@ -29,7 +31,7 @@ class ClientActivity {
  Object toJson () => { 'name': name, 'type': type.value };
 }
 
-class MineralClient {
+class MineralClient extends MineralService {
   User _user;
   GuildManager _guilds;
   DmChannelManager _dmChannels;
@@ -37,6 +39,7 @@ class MineralClient {
   String _sessionId;
   Application _application;
   List<Intent> _intents;
+  CommandManager _commands;
   late DateTime uptime;
 
   MineralClient(
@@ -47,7 +50,8 @@ class MineralClient {
     this._sessionId,
     this._application,
     this._intents,
-  );
+    this._commands,
+  ): super(inject: true);
 
   User get user => _user;
   GuildManager get guilds => _guilds;
@@ -56,9 +60,12 @@ class MineralClient {
   String get sessionId => _sessionId;
   Application get application => _application;
   List<Intent> get intents => _intents;
+  ShardManager get _shards => ioc.use<ShardManager>();
 
   /// ### Returns the time the [MineralClient] is online
   Duration get uptimeDuration => DateTime.now().difference(uptime);
+
+  CommandManager get commands => _commands;
 
   /// ### Defines the presence that this should adopt
   ///
@@ -70,12 +77,33 @@ class MineralClient {
   /// );
   /// ```
   void setPresence ({ ClientActivity? activity, ClientStatus? status, bool? afk }) {
-    ShardManager manager = ioc.singleton(Service.shards);
-    manager.send(OpCode.statusUpdate, {
+    _shards.send(OpCode.statusUpdate, {
       'since': DateTime.now().millisecond,
       'activities': activity != null ? [activity.toJson()] : [],
       'status': status != null ? status.toString() : ClientStatus.online.toString(),
       'afk': afk ?? false,
+    });
+  }
+
+  /// Define activities of this
+  void setActivities (List<ClientActivity> activities) {
+    _shards.send(OpCode.statusUpdate, {
+      'activities': activities.map((activity) => activity.toJson()),
+    });
+  }
+
+  /// Define status of this
+  void setStatus (ClientStatus status) {
+    _shards.send(OpCode.statusUpdate, {
+      'status': status._value,
+    });
+  }
+
+
+  /// Define afk of this
+  void setAfk (bool afk) {
+    _shards.send(OpCode.statusUpdate, {
+      'afk': afk,
     });
   }
 
@@ -86,33 +114,27 @@ class MineralClient {
   /// final int latency = client.getLatency();
   /// ```
   int getLatency () {
-    ShardManager manager = ioc.singleton(Service.shards);
-    return manager.getLatency();
+    return ioc.use<ShardManager>().getLatency();
   }
 
-  Future<void> registerGlobalCommands ({ required List<SlashCommand> commands }) async {
-    Http http = ioc.singleton(Service.http);
-
-    await http.put(
+  Future<void> registerGlobalCommands ({ required List<CommandBuilder> commands }) async {
+    await ioc.use<Http>().put(
       url: "/applications/${_application.id}/commands",
-      payload: commands.map((command) => command.toJson()).toList()
+      payload: commands.map((command) => command.toJson).toList()
     );
   }
 
-  Future<void> registerGuildCommands ({ required Guild guild, required List<SlashCommand> commands, required List<MineralContextMenu> contextMenus }) async {
-    Http http = ioc.singleton(Service.http);
-    await http.put(
+  Future<void> registerGuildCommands ({ required Guild guild, required List<CommandBuilder> commands, required List<MineralContextMenu> contextMenus }) async {
+    await ioc.use<Http>().put(
       url: "/applications/${_application.id}/guilds/${guild.id}/commands",
       payload: [
-        ...commands.map((command) => command.toJson()).toList(),
-        ...contextMenus.map((contextMenus) => contextMenus.toJson()).toList()
+        ...commands.map((command) => command.toJson).toList(),
+        ...contextMenus.map((contextMenus) => contextMenus.builder.toJson).toList()
       ]
     );
   }
 
   factory MineralClient.from({ required dynamic payload }) {
-    ShardManager manager = ioc.singleton(Service.shards);
-
     return MineralClient(
       User.from(payload['user']),
       GuildManager(),
@@ -120,7 +142,8 @@ class MineralClient {
       UserManager(),
       payload['session_id'],
       Application.from(payload['application']),
-      manager.intents,
+      ioc.use<ShardManager>().intents,
+      CommandManager(null),
     );
   }
 }

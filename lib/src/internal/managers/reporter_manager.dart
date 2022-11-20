@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
 
-class ReporterManager {
+class ReporterManager extends MineralService {
   late String reportLevel = 'info';
   final Directory _reportDirectory;
   late File currentFile;

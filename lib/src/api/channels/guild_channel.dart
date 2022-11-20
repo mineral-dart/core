@@ -1,10 +1,13 @@
 import 'package:http/http.dart';
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
 import 'package:mineral/core.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/builders/channel_builder.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
+import 'package:mineral/src/console.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 
-class GuildChannel extends PartialChannel {
+class GuildChannel extends PartialChannel with Container {
   final Snowflake _guildId;
   final Snowflake? _parentId;
   final String _label;
@@ -16,7 +19,7 @@ class GuildChannel extends PartialChannel {
   GuildChannel(this._guildId, this._parentId, this._label, this._type, this._position, this._flags, this._permissions, super.id);
 
   /// Get [Guild] from [Ioc]
-  Guild get guild => ioc.singleton<MineralClient>(Service.client).guilds.cache.getOrFail(_guildId);
+  Guild get guild => container.use<MineralClient>().guilds.cache.getOrFail(_guildId);
 
   /// Get [CategoryChannel] or [TextChannel] parent
   GuildChannel? get parent => guild.channels.cache.get(_parentId);
@@ -54,8 +57,7 @@ class GuildChannel extends PartialChannel {
 
   Future<void> update (ChannelBuilder builder) async {
     if (_validate()) {
-      Http http = ioc.singleton(Service.http);
-      await http.patch(url: '/channels/$id', payload: builder.payload);
+      await container.use<Http>().patch(url: '/channels/$id', payload: builder.payload);
     }
   }
 
@@ -66,8 +68,7 @@ class GuildChannel extends PartialChannel {
   /// await channel.delete()
   /// ```
   Future<bool> delete () async {
-    Http http = ioc.singleton(Service.http);
-    Response response = await http.destroy(url: '/channels/$id');
+    Response response = await container.use<Http>().destroy(url: '/channels/$id');
 
     guild.channels.cache.remove(this);
     return response.statusCode == 200;

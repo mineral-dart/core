@@ -1,6 +1,7 @@
 import 'dart:core';
 
-import 'package:mineral/api.dart';
+import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 
 class SelectMenuInteraction extends Interaction {
   Message? _message;
@@ -11,6 +12,7 @@ class SelectMenuInteraction extends Interaction {
 
   SelectMenuInteraction(
     super._id,
+    super._label,
     super._applicationId,
     super._version,
     super._type,
@@ -47,6 +49,7 @@ class SelectMenuInteraction extends Interaction {
   factory SelectMenuInteraction.from({ required Message? message, required dynamic payload }) {
     return SelectMenuInteraction(
       payload['id'],
+      null,
       payload['application_id'],
       payload['version'],
       payload['type'],

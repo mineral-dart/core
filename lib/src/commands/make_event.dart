@@ -1,13 +1,11 @@
 
 import 'dart:io';
 
-import 'package:mineral/api.dart';
-import 'package:mineral/console.dart';
-import 'package:path/path.dart';
 import 'package:args/args.dart';
 import 'package:interact/interact.dart';
-import 'package:mineral/core.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/internal/managers/cli_manager.dart';
+import 'package:path/path.dart';
 
 class MakeEvent extends MineralCliCommand {
   @override
@@ -24,12 +22,6 @@ class MakeEvent extends MineralCliCommand {
     }
 
     String filename = args.arguments.elementAt(1).capitalCase;
-
-    final event = Console.cli.choice(
-      label: 'Which event would you like to use ?',
-      list: Events.values,
-      items: Events.values.map((e) => e.toString()).toList()
-    );
 
     final useExistLocation = Confirm(
       prompt: 'Do you want to use an existing location on your disk ?',
@@ -61,27 +53,19 @@ class MakeEvent extends MineralCliCommand {
     }
 
     await file.create(recursive: true);
-    await writeFileContent(file, getTemplate(filename, event));
+    await writeFileContent(file, getTemplate(filename));
 
     Console.cli.success(message: 'File created ${file.uri}');
   }
 
-  String getTemplate (String filename, Events event) {
-    List<String> params = [];
-    for (MapEntry<String, dynamic> param in event.params.entries) {
-      params.add('${param.value} ${param.key}');
-    }
+  String getTemplate (String filename) => '''
+import 'package:mineral/framework.dart';
+import 'package:mineral/core/events.dart';
 
-    return '''
-import 'package:mineral/core.dart';
-import 'package:mineral/api.dart';
-
-@Event(${event.toString()})
-class ${filename.pascalCase} extends MineralEvent {
-  Future<void> handle (${params.join(', ')}) async {
+class ${filename.pascalCase} extends MineralEvent<ReadyEvent> {
+  Future<void> handle (event) async {
     // Your code here
   }
 }
-    ''';
-  }
+''';
 }
