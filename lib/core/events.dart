@@ -1,3 +1,4 @@
+/// This package contains the events you can listen to from your Discord server
 library events;
 
 export '../src/internal/websockets/events/accept_rules_event.dart';

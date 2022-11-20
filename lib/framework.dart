@@ -1,3 +1,4 @@
+/// Contains the main services of the mineral framework as well as helper extensions
 library framework;
 
 export '../src/console.dart';
