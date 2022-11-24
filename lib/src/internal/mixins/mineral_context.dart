@@ -1,6 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/src/internal/managers/state_manager.dart';
-import 'package:mineral/src/internal/services/environment.dart';
+import 'package:mineral_environment/environment.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 mixin MineralContext {
@@ -11,5 +11,5 @@ mixin MineralContext {
   MineralStateContract get states => ioc.use<StateManager>();
 
   /// Access point to the environment variables of your application
-  EnvironmentContract get environment => ioc.use<Environment>();
+  EnvironmentContract get environment => ioc.use<MineralEnvironment>();
 }

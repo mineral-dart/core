@@ -13,6 +13,7 @@ import 'package:mineral/src/internal/managers/cli_manager.dart';
 import 'package:mineral/src/internal/managers/collector_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
+import 'package:mineral/src/internal/managers/environment_manager.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/managers/intent_manager.dart';
 import 'package:mineral/src/internal/managers/module_manager.dart';
@@ -24,7 +25,8 @@ import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:path/path.dart';
 
 class Kernel with Container {
-  final CollectorManager collectors = CollectorManager();
+  final CollectorManager _collectors = CollectorManager();
+  final EnvironmentManager _environment = EnvironmentManager();
   EventManager events = EventManager();
   CommandManager commands = CommandManager();
   StateManager states = StateManager();
@@ -33,7 +35,6 @@ class Kernel with Container {
   ContextMenuManager contextMenus = ContextMenuManager();
   IntentManager intents = IntentManager();
   PluginManagerCraft plugins = PluginManagerCraft();
-  Environment environment = Environment();
 
   void loadConsole () {
     cli.add(MakeCommand());
@@ -46,13 +47,13 @@ class Kernel with Container {
   }
 
   Future<void> init () async {
-    await environment.load();
+    await _environment.load();
 
     Http http = Http(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     container.bind((_) => http);
 
-    String? report = environment.get('REPORTER');
+    String? report = _environment.environment.get('REPORTER');
     if (report != null) {
       ReporterManager reporter = ReporterManager(Directory(join(Directory.current.path, 'logs')));
       reporter.reportLevel = report;
@@ -60,7 +61,7 @@ class Kernel with Container {
       container.bind((_) => reporter);
     }
 
-    String? token = environment.get('APP_TOKEN');
+    String? token = _environment.environment.get('APP_TOKEN');
     if (token == null) {
       throw TokenException(
         prefix: 'MISSING TOKEN',
@@ -71,7 +72,7 @@ class Kernel with Container {
     await modules.load(this);
     await plugins.load();
 
-    final String? shardsCount = environment.get('SHARDS_COUNT');
+    final String? shardsCount = _environment.environment.get('SHARDS_COUNT');
 
     ShardManager shardManager = ShardManager(http, token, intents.list);
     shardManager.start(shardsCount: (shardsCount != null ? int.tryParse(shardsCount) : null));

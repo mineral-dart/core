@@ -3,14 +3,14 @@ library console;
 
 import 'dart:io';
 
-import 'package:mineral/core.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
+import 'package:mineral_environment/environment.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class Cli {
   void log ({ required String message, String level = 'info'}) {
     if (level == 'debug') {
-      final Environment environment = ioc.use<Environment>();
+      final MineralEnvironment environment = ioc.use<MineralEnvironment>();
       final String? logLevel = environment.get('LOG_LEVEL');
 
       if (logLevel != 'debug') return;
@@ -42,7 +42,7 @@ class Console {
 
   static void log ({ required String message, String level = 'info'}) {
     if (level == 'debug') {
-      final Environment environment = ioc.use<Environment>();
+      final MineralEnvironment environment = ioc.use<MineralEnvironment>();
       final String? logLevel = environment.get('LOG_LEVEL', defaultValue: 'info');
 
       if (logLevel != 'debug') return;

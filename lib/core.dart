@@ -3,6 +3,5 @@ library core;
 
 export 'src/constants.dart';
 export 'src/internal/kernel.dart' show Kernel;
-export 'src/internal/services/environment.dart' show Environment;
 export 'src/internal/services/http.dart';
 

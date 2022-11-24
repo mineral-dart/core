@@ -116,4 +116,6 @@ extension Collection<K, V> on Map<K, V> {
 
     return result;
   }
+
+  Map<K, V> get clone => Map.from(this);
 }

@@ -1,3 +1,6 @@
+## 2.1.0
+- Migrate environment to dedicated package
+
 ## 2.0.0 - Release
 - Improve accessibility
 - Implement lasted Discord updates
