@@ -1,3 +1,6 @@
+## 2.2.0
+- Add plugins access to the `MineralContext`
+
 ## 2.1.0
 - Migrate environment to dedicated package
 
