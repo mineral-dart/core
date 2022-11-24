@@ -1,4 +1,5 @@
 import 'package:mineral/core/api.dart';
+import 'package:mineral/src/internal/managers/plugin_manager.dart';
 import 'package:mineral/src/internal/managers/state_manager.dart';
 import 'package:mineral_environment/environment.dart';
 import 'package:mineral_ioc/ioc.dart';
@@ -12,4 +13,7 @@ mixin MineralContext {
 
   /// Access point to the environment variables of your application
   EnvironmentContract get environment => ioc.use<MineralEnvironment>();
+
+  /// Access point to the registered plugins
+  PluginManagerContract plugins = ioc.use<PluginManagerCraft>();
 }
