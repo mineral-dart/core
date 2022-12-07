@@ -1,3 +1,7 @@
+## 2.3.0
+- Improve context menu declaration
+- Fix bad state matching
+
 ## 2.2.0
 - Add plugins access to the `MineralContext`
 
