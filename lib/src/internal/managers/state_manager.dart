@@ -20,7 +20,7 @@ class StateManager extends MineralService implements MineralStateContract {
       throw NotExist(cause: "The shared state named $T does not exist on your project.");
     }
 
-    return _states.getOrFail(T);
+    return _states[T] as T;
   }
 
   void register (List<MineralState> mineralStates) {
@@ -28,6 +28,8 @@ class StateManager extends MineralService implements MineralStateContract {
       if (_states.containsKey(store.runtimeType)) {
         throw AlreadyExist(cause: "A store named ${store.name} already exists.");
       }
+
+      print(store.runtimeType);
       _states.putIfAbsent(store.runtimeType, () => store);
     }
   }
