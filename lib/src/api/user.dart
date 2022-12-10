@@ -102,7 +102,7 @@ class User {
       payload['bot'] == true,
       payload['public_flags'] ?? 0,
       payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
-      payload['avatar_decoration'],
+      payload['avatar_decoration'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
       payload['locale'] ?? 'en-GB',
     );
   }

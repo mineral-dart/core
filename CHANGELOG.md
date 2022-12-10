@@ -1,3 +1,8 @@
+## 2.3.1
+- Fix bad User avatar decoration type
+- Improve `category.create()` return type
+- Make allow and deny to no required params
+
 ## 2.3.0
 - Improve context menu declaration
 - Fix bad state matching

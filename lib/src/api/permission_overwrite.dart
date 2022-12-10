@@ -1,4 +1,5 @@
 import 'package:mineral/core/api.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/src/helper.dart';
 
 enum PermissionOverwriteType {
@@ -12,22 +13,26 @@ enum PermissionOverwriteType {
 class PermissionOverwrite {
   Snowflake id;
   PermissionOverwriteType type;
-  List<Permission> allow;
-  List<Permission> deny;
+  List<Permission>? allow;
+  List<Permission>? deny;
 
   PermissionOverwrite({
     required this.id,
     required this.type,
-    required this.allow,
-    required this.deny
+    this.allow,
+    this.deny
   });
 
   dynamic toJSON() {
+    if (allow == null && deny == null) {
+      throw InvalidParameterException(cause: 'You must specify the authorisation or prohibition');
+    }
+    
     return {
       'id': id,
       'type': type.value,
-      'allow': Helper.reduceRolePermissions(allow).toString(),
-      'deny': Helper.reduceRolePermissions(deny).toString()
+      'allow': allow != null ? Helper.reduceRolePermissions(allow!).toString() : null,
+      'deny': deny != null ? Helper.reduceRolePermissions(deny!).toString() : null
     };
   }
 
@@ -35,8 +40,8 @@ class PermissionOverwrite {
     return PermissionOverwrite(
       id: payload['id'],
       type: payload['type'] is String
-          ? PermissionOverwriteType.values.firstWhere((element) => element.name == payload['type'])
-          : PermissionOverwriteType.values.firstWhere((element) => element.value == payload['type']),
+        ? PermissionOverwriteType.values.firstWhere((element) => element.name == payload['type'])
+        : PermissionOverwriteType.values.firstWhere((element) => element.value == payload['type']),
       allow: Helper.bitfieldToPermissions(payload['allow']),
       deny: Helper.bitfieldToPermissions(payload['deny']),
     );

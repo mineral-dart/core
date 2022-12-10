@@ -9,8 +9,8 @@ class CategoryChannel extends GuildChannel {
   /// Get children of this
   Map<Snowflake, GuildChannel> get children => guild.channels.cache.where((element) => element.parent?.id == id);
 
-  Future<GuildChannel> create (ChannelBuilder channel) async {
-    return super.guild.channels.create(channel) as GuildChannel;
+  Future<T?> create<T extends GuildChannel> (ChannelBuilder channel) async {
+    return super.guild.channels.create(channel);
   }
 
   factory CategoryChannel.fromPayload(dynamic payload) {
