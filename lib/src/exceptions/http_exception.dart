@@ -1,19 +1,15 @@
-import 'package:mineral/src/internal/managers/reporter_manager.dart';
-import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral/core/extras.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/internal/services/debugger_service.dart';
 
-class HttpException  implements Exception {
-  int code;
-  String cause;
+class HttpException with Container, Console implements Exception {
+  final String message;
 
-  HttpException({ required this.code, required this.cause });
+  HttpException(this.message) {
+    container.use<DebuggerService>()
+      .debug(message);
+  }
 
   @override
-  String toString () {
-    ReporterManager? reporter = ioc.use<ReporterManager>();
-    if (reporter != null) {
-      reporter.write('[ $code ] $cause');
-    }
-
-    return '[ $code ] $cause';
-  }
+  String toString () => message;
 }

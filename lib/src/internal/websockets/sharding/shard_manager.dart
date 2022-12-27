@@ -13,7 +13,7 @@ import 'package:mineral_ioc/ioc.dart';
 ///
 /// {@category Internal}
 class ShardManager extends MineralService {
-  final Http http;
+  final HttpService http;
   final List<Intent> intents;
   final String _token;
 
@@ -62,7 +62,7 @@ class ShardManager extends MineralService {
           final int shardId = identifyQueue[0];
 
           final Shard? shard = shards[shardId];
-          if(shard == null) throw ShardException(prefix: 'Shard #$shardId', cause: 'Shard must exist to be identified');
+          if(shard == null) throw ShardException('Shard #$shardId : shard must exist to be identified');
           shard.identify();
 
           identifyQueue.removeAt(0);

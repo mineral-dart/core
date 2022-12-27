@@ -20,7 +20,7 @@ class ChannelManager extends CacheManager<GuildChannel> with Container {
     final _cached = cache.clone;
     cache.clear();
 
-    Response response = await container.use<Http>().get(url: "/guilds/$_guildId/channels");
+    Response response = await container.use<HttpService>().get(url: "/guilds/$_guildId/channels");
     dynamic payload = jsonDecode(response.body);
 
     if (response.statusCode != 200) {
@@ -40,7 +40,7 @@ class ChannelManager extends CacheManager<GuildChannel> with Container {
   }
 
   Future<T?> create<T extends GuildChannel> (ChannelBuilder builder) async {
-    Response response = await container.use<Http>().post(url: '/guilds/$_guildId/channels', payload: builder.payload);
+    Response response = await container.use<HttpService>().post(url: '/guilds/$_guildId/channels', payload: builder.payload);
     dynamic payload = jsonDecode(response.body);
 
     final GuildChannel? channel = ChannelWrapper.create(payload);

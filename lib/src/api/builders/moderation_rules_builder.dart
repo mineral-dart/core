@@ -1,5 +1,5 @@
 import 'package:mineral/core/api.dart';
-import 'package:mineral/src/exceptions/too_many.dart';
+import 'package:mineral/src/exceptions/too_many_exception.dart';
 
 class ModerationRulesBuilder {
   final String label;
@@ -24,11 +24,11 @@ class ModerationRulesBuilder {
 
   factory ModerationRulesBuilder.spam ({ required String label, required List<ModerationAction> actions, List<Snowflake>? exemptRoles, List<Snowflake>? exemptChannels, bool enabled = true }) {
     if (exemptRoles != null && exemptRoles.length > 50) {
-      throw TooMany(cause: 'You cannot define more than 50 roles in the exclusion zone of the moderation rule.');
+      throw TooManyException('You cannot define more than 50 roles in the exclusion zone of the moderation rule.');
     }
 
     if (exemptChannels != null && exemptChannels.length > 20) {
-      throw TooMany(cause: 'You cannot define more than 20 channels in the exclusion zone of the moderation rule.');
+      throw TooManyException('You cannot define more than 20 channels in the exclusion zone of the moderation rule.');
     }
 
     return ModerationRulesBuilder(
@@ -45,11 +45,11 @@ class ModerationRulesBuilder {
 
   factory ModerationRulesBuilder.banKeywords ({ required String label, required List<ModerationAction> actions, required ModerationTriggerMetadata? triggerMetadata, List<Snowflake>? exemptRoles, List<Snowflake>? exemptChannels, bool enabled = true }) {
     if (exemptRoles != null && exemptRoles.length > 50) {
-      throw TooMany(cause: 'You cannot define more than 50 roles in the exclusion zone of the moderation rule.');
+      throw TooManyException('You cannot define more than 50 roles in the exclusion zone of the moderation rule.');
     }
 
     if (exemptChannels != null && exemptChannels.length > 20) {
-      throw TooMany(cause: 'You cannot define more than 20 channels in the exclusion zone of the moderation rule.');
+      throw TooManyException('You cannot define more than 20 channels in the exclusion zone of the moderation rule.');
     }
 
     return ModerationRulesBuilder(
@@ -66,11 +66,11 @@ class ModerationRulesBuilder {
 
   factory ModerationRulesBuilder.mentionSpam ({ required String label, required List<ModerationAction> actions, required ModerationTriggerMetadata? triggerMetadata, List<Snowflake>? exemptRoles, List<Snowflake>? exemptChannels, bool enabled = true }) {
     if (exemptRoles != null && exemptRoles.length > 50) {
-      throw TooMany(cause: 'You cannot define more than 50 roles in the exclusion zone of the moderation rule.');
+      throw TooManyException('You cannot define more than 50 roles in the exclusion zone of the moderation rule.');
     }
 
     if (exemptChannels != null && exemptChannels.length > 20) {
-      throw TooMany(cause: 'You cannot define more than 20 channels in the exclusion zone of the moderation rule.');
+      throw TooManyException('You cannot define more than 20 channels in the exclusion zone of the moderation rule.');
     }
 
     return ModerationRulesBuilder(

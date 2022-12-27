@@ -7,9 +7,9 @@ import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
-import 'package:mineral/src/internal/managers/command_manager.dart';
-import 'package:mineral/src/internal/managers/context_menu_manager.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/services/command_service.dart';
+import 'package:mineral/src/internal/services/context_menu_service.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -18,7 +18,7 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 class InteractionCreatePacket with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     MineralClient client = container.use<MineralClient>();
 
     dynamic payload = websocketResponse.payload;
@@ -52,19 +52,19 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
     if (member != null) {
       final Interaction interaction = Interaction.from(payload: payload);
-      eventManager.controller.add(InteractionCreateEvent(interaction));
+      eventService.controller.add(InteractionCreateEvent(interaction));
     }
   }
 
   _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
     CommandInteraction interaction = CommandInteraction.fromPayload(payload);
-    container.use<CommandManager>().controller.add(CommandCreateEvent(interaction));
+    container.use<CommandService>().controller.add(CommandCreateEvent(interaction));
   }
 
   _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {
     if (payload['data']?['type'] == ApplicationCommandType.user.value) {
       final interaction = ContextUserInteraction.from(payload: payload );
-      container.use<ContextMenuManager>().controller.add(interaction);
+      container.use<ContextMenuService>().controller.add(interaction);
     }
 
     if (payload['data']?['type'] == ApplicationCommandType.message.value) {
@@ -72,7 +72,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       Message? message = channel?.messages.cache.get(payload['data']?['target_id']);
 
       if (message == null) {
-        Response response = await container.use<Http>().get(url: '/channels/${payload['channel_id']}/messages/${payload['data']?['target_id']}');
+        Response response = await container.use<HttpService>().get(url: '/channels/${payload['channel_id']}/messages/${payload['data']?['target_id']}');
         if (response.statusCode == 200) {
           message = Message.from(channel: channel!, payload: jsonDecode(response.body));
           channel.messages.cache.putIfAbsent(message.id, () => message!);
@@ -80,7 +80,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       }
 
       final interaction = ContextMessageInteraction.from(message: message!, payload: payload);
-      container.use<ContextMenuManager>().controller.add(interaction);
+      container.use<ContextMenuService>().controller.add(interaction);
     }
   }
 
@@ -89,11 +89,11 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
         return;
     }
 
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
 
     dynamic channel = guild.channels.cache.get(payload['channel_id']);
     if (channel == null) {
-      final Response response = await container.use<Http>().get(url: '/channels/${payload['channel_id']}');
+      final Response response = await container.use<HttpService>().get(url: '/channels/${payload['channel_id']}');
       channel = ChannelWrapper.create(jsonDecode(response.body));
 
       guild.channels.cache.putIfAbsent(channel.id, () => channel);
@@ -101,18 +101,18 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
     Message? message = channel?.messages.cache[payload['message']['id']];
     if (message == null) {
-      final Response response = await container.use<Http>().get(url: '/channels/${payload['channel_id']}/messages/${payload['message']?['id']}');
+      final Response response = await container.use<HttpService>().get(url: '/channels/${payload['channel_id']}/messages/${payload['message']?['id']}');
       message = Message.from(channel: channel, payload: jsonDecode(response.body));
 
       channel.messages.cache.putIfAbsent(message.id, () => message!);
     }
 
     ButtonInteraction buttonInteraction = ButtonInteraction.fromPayload(payload);
-    eventManager.controller.add(ButtonCreateEvent(buttonInteraction));
+    eventService.controller.add(ButtonCreateEvent(buttonInteraction));
   }
 
   _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     ModalInteraction modalInteraction = ModalInteraction.from(payload: payload);
 
     for (dynamic row in payload['data']['components']) {
@@ -121,11 +121,11 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       }
     }
 
-    eventManager.controller.add(ModalCreateEvent(modalInteraction));
+    eventService.controller.add(ModalCreateEvent(modalInteraction));
   }
 
   void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
 
@@ -138,6 +138,6 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       interaction.data.add(value);
     }
 
-    eventManager.controller.add(SelectMenuCreateEvent(interaction));
+    eventService.controller.add(SelectMenuCreateEvent(interaction));
   }
 }

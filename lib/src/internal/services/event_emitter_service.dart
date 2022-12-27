@@ -1,7 +1,7 @@
 typedef EventCallback<T> = void Function(T context);
 typedef CallbackMap<T> = Set<EventCallback<T>>;
 
-class EventEmitter<T> {
+class EventEmitterService<T> {
   final Map<String, CallbackMap<T>> _listeners = <String, CallbackMap<T>>{};
 
   void on (String event, EventCallback<T> callback) {

@@ -3,7 +3,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/exceptions/too_many.dart';
+import 'package:mineral/src/exceptions/too_many_exception.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 enum ModerationEventType {
@@ -75,7 +75,7 @@ class ModerationTriggerMetadata {
 
   factory ModerationTriggerMetadata.mentions ({ required int maxMentions }) {
     if (maxMentions <= 0 || maxMentions > 50) {
-      throw InvalidParameterException(cause: 'The number of mentions must be between 1 and 50 per message ($maxMentions given).');
+      throw InvalidParameterException('The number of mentions must be between 1 and 50 per message ($maxMentions given).');
     }
 
     return ModerationTriggerMetadata(null, null, null, maxMentions);
@@ -162,7 +162,7 @@ class ModerationRule {
   /// await rule.setLabel('My label');
   /// ```
   Future<void> setLabel(String label) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'label': label });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'label': label });
 
     if (response.statusCode == 200) {
       this.label = label;
@@ -176,7 +176,7 @@ class ModerationRule {
   /// await rule.setEventType(ModerationEventType.messageSend);
   /// ```
   Future<void> setEventType(ModerationEventType event) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'event_type': event.value });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'event_type': event.value });
 
     if (response.statusCode == 200) {
       eventType = event;
@@ -195,7 +195,7 @@ class ModerationRule {
   /// await rule.setTriggerMetadata(metadata);
   /// ```
   Future<void> setTriggerMetadata(ModerationTriggerMetadata triggerMetadata) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'trigger_metadata': triggerMetadata.toJson() });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'trigger_metadata': triggerMetadata.toJson() });
 
     if (response.statusCode == 200) {
       this.triggerMetadata = triggerMetadata;
@@ -216,7 +216,7 @@ class ModerationRule {
   /// await rule.setActions([action]);
   /// ```
   Future<void> setActions(List<ModerationAction> actions) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
       'actions': actions.map((ModerationAction action) => action.toJson())
     });
 
@@ -232,7 +232,7 @@ class ModerationRule {
   /// await rule.setEnabled(true);
   /// ```
   Future<void> setEnabled(bool value) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'value': value });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'value': value });
 
     if (response.statusCode == 200) {
       enabled = value;
@@ -252,10 +252,10 @@ class ModerationRule {
   Future<void> setExemptRoles(List<Role> roles) async {
     int maxItems = 50;
     if (roles.length > maxItems) {
-      TooMany(cause: "The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
+      TooManyException("The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
     }
 
-    Response response = await ioc.use<Http>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
       'exempt_roles': roles.map((Role role) => role.id)
     });
 
@@ -277,10 +277,10 @@ class ModerationRule {
   Future<void> setExemptChannels(List<GuildChannel> channels) async {
     int maxItems = 50;
     if (channels.length > maxItems) {
-      TooMany(cause: "The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
+      TooManyException("The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
     }
 
-    Response response = await ioc.use<Http>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
       'exempt_roles': channels.map((GuildChannel channel) => channel.id)
     });
 
@@ -295,7 +295,7 @@ class ModerationRule {
   ///   await rule.delete();
   /// ```
   Future<bool> delete() async {
-    Response response = await ioc.use<Http>().destroy(url: "/guilds/$guildId/auto-moderation/rules/$id");
+    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/$guildId/auto-moderation/rules/$id");
 
     return response.statusCode == 204;
   }

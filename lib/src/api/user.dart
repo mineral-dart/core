@@ -7,7 +7,7 @@ import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/messages/dm_message.dart';
-import 'package:mineral/src/internal/extensions/mineral_client.dart';
+import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class User {
@@ -67,7 +67,7 @@ class User {
 
     /// Get channel if exist or create
     if (channel == null) {
-      Response response = await ioc.use<Http>().post(url: '/users/@me/channels', payload: { 'recipient_id': _id });
+      Response response = await ioc.use<HttpService>().post(url: '/users/@me/channels', payload: { 'recipient_id': _id });
       if (response.statusCode == 200) {
         channel = DmChannel.fromPayload(jsonDecode(response.body));
         client.dmChannels.cache.putIfAbsent(channel.id, () => channel!);

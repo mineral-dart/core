@@ -5,15 +5,15 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
 class MessageDeletePacket with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     MineralClient client = container.use<MineralClient>();
 
     dynamic payload = websocketResponse.payload;
@@ -27,7 +27,7 @@ class MessageDeletePacket with Container implements WebsocketPacket {
     }
 
     if (message == null) {
-      Response response = await container.use<Http>().get(url: "/channels/${channel?.id}/messages/${payload['id']}");
+      Response response = await container.use<HttpService>().get(url: "/channels/${channel?.id}/messages/${payload['id']}");
 
       if (response.statusCode == 200) {
         dynamic json = jsonDecode(response.body);
@@ -35,7 +35,7 @@ class MessageDeletePacket with Container implements WebsocketPacket {
       }
     }
 
-    eventManager.controller.add(MessageDeleteEvent(message!));
+    eventService.controller.add(MessageDeleteEvent(message!));
     channel?.messages.cache.remove(payload['id']);
   }
 }

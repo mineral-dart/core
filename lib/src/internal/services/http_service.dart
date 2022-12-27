@@ -5,11 +5,11 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class Http extends MineralService {
+class HttpService extends MineralService {
   String baseUrl;
   final Map<String, String> _headers = {};
 
-  Http({ required this.baseUrl });
+  HttpService({ required this.baseUrl });
 
   void defineHeader ({ required String header, required String value }) {
     _headers.putIfAbsent(header, () => value);
@@ -61,29 +61,22 @@ class Http extends MineralService {
       if (Helper.hasKey('components', payload)) {
         final List<int> components = payload['components'];
 
-        throw ApiException(
-          code: response.statusCode,
-          cause: payload['components'].length > 1
-            ? 'Components at ${components.join(', ')} positions are invalid'
-            : 'The component at position ${components.first} is invalid'
+        throw ApiException(payload['components'].length > 1
+          ? '$response.statusCode : components at ${components.join(', ')} positions are invalid'
+          : '$response.statusCode : the component at position ${components.first} is invalid'
         );
       }
 
       if (Helper.hasKey('embeds', payload)) {
         final List<int> components = payload['embeds'];
 
-        throw ApiException(
-          code: response.statusCode,
-          cause: payload['embeds'].length > 1
-            ? 'Embeds at ${components.join(', ')} positions are invalid'
-            : 'The embed at position ${components.first} is invalid'
+        throw ApiException(payload['embeds'].length > 1
+          ? '$response.statusCode embeds at ${components.join(', ')} positions are invalid'
+          : '$response.statusCode the embed at position ${components.first} is invalid'
         );
       }
 
-      throw HttpException(
-        code: response.statusCode,
-        cause: response.body,
-      );
+      throw HttpException('${response.statusCode} : ${response.body}');
     }
 
     return response;

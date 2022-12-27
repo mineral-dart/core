@@ -1,7 +1,7 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/managers/collector_manager.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/services/collector_service.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/events/message_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -10,7 +10,7 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 class MessageCreatePacket with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     MineralClient client = container.use<MineralClient>();
 
     dynamic payload = websocketResponse.payload;
@@ -25,8 +25,8 @@ class MessageCreatePacket with Container implements WebsocketPacket {
     Message message = Message.from(channel: channel, payload: payload);
     channel.messages.cache.putIfAbsent(message.id, () => message);
 
-    eventManager.controller.add(MessageCreateEvent(message));
+    eventService.controller.add(MessageCreateEvent(message));
 
-    container.use<CollectorManager>().emit(MessageCreateEvent, message);
+    container.use<CollectorService>().emit(MessageCreateEvent, message);
   }
 }

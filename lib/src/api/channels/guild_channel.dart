@@ -4,10 +4,9 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/channel_builder.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
-import 'package:mineral/src/console.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
-class GuildChannel extends PartialChannel with Container {
+class GuildChannel extends PartialChannel with Container, Console {
   final Snowflake _guildId;
   final Snowflake? _parentId;
   final String _label;
@@ -57,7 +56,7 @@ class GuildChannel extends PartialChannel with Container {
 
   Future<void> update (ChannelBuilder builder) async {
     if (_validate()) {
-      await container.use<Http>().patch(url: '/channels/$id', payload: builder.payload);
+      await container.use<HttpService>().patch(url: '/channels/$id', payload: builder.payload);
     }
   }
 
@@ -68,7 +67,7 @@ class GuildChannel extends PartialChannel with Container {
   /// await channel.delete()
   /// ```
   Future<bool> delete () async {
-    Response response = await container.use<Http>().destroy(url: '/channels/$id');
+    Response response = await container.use<HttpService>().destroy(url: '/channels/$id');
 
     guild.channels.cache.remove(this);
     return response.statusCode == 200;
@@ -86,12 +85,12 @@ class GuildChannel extends PartialChannel with Container {
 
   bool _validate () {
     if (type == ChannelType.guildCategory) {
-      Console.warn(message: 'A category channel cannot have a parent');
+      console.warn('A category channel cannot have a parent');
       return false;
     }
 
     if (type == ChannelType.guildPublicThread || type == ChannelType.private || type == ChannelType.guildNewsThread) {
-      Console.warn(message: 'A thread channel cannot change a parent');
+      console.warn('A thread channel cannot change a parent');
       return false;
     }
 

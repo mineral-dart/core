@@ -39,7 +39,7 @@ class MineralClient extends MineralService {
   String _sessionId;
   Application _application;
   List<Intent> _intents;
-  CommandManager _commands;
+  CommandService _commands;
   late DateTime uptime;
 
   MineralClient(
@@ -65,7 +65,7 @@ class MineralClient extends MineralService {
   /// ### Returns the time the [MineralClient] is online
   Duration get uptimeDuration => DateTime.now().difference(uptime);
 
-  CommandManager get commands => _commands;
+  CommandService get commands => _commands;
 
   /// ### Defines the presence that this should adopt
   ///
@@ -118,14 +118,14 @@ class MineralClient extends MineralService {
   }
 
   Future<void> registerGlobalCommands ({ required List<CommandBuilder> commands }) async {
-    await ioc.use<Http>().put(
+    await ioc.use<HttpService>().put(
       url: "/applications/${_application.id}/commands",
       payload: commands.map((command) => command.toJson).toList()
     );
   }
 
   Future<void> registerGuildCommands ({ required Guild guild, required List<CommandBuilder> commands, required List<MineralContextMenu> contextMenus }) async {
-    await ioc.use<Http>().put(
+    await ioc.use<HttpService>().put(
       url: "/applications/${_application.id}/guilds/${guild.id}/commands",
       payload: [
         ...commands.map((command) => command.toJson).toList(),
@@ -143,7 +143,7 @@ class MineralClient extends MineralService {
       payload['session_id'],
       Application.from(payload['application']),
       ioc.use<ShardManager>().intents,
-      CommandManager(null),
+      CommandService(null),
     );
   }
 }

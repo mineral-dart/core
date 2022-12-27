@@ -23,7 +23,7 @@ extension MineralClientExtension on MineralClient {
       }
     }
 
-    return await ioc.use<Http>().post(url: '/channels/${channel.id}/messages', payload: {
+    return await ioc.use<HttpService>().post(url: '/channels/${channel.id}/messages', payload: {
       'tts': tts ?? false,
       'content': content,
       'embeds': embeds != null ? embedList : [],
@@ -33,7 +33,7 @@ extension MineralClientExtension on MineralClient {
   }
 
   Future<T?> createChannel<T extends GuildChannel> (Snowflake guildId, ChannelBuilder builder) async {
-    Response response = await ioc.use<Http>().post(url: "/guilds/$guildId/channels", payload: builder.payload);
+    Response response = await ioc.use<HttpService>().post(url: "/guilds/$guildId/channels", payload: builder.payload);
     final payload = jsonDecode(response.body);
 
     final channel = ChannelWrapper.create(payload);

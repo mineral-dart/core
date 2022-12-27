@@ -62,7 +62,7 @@ class Role {
   /// ```
   Future<void> setLabel (String label) async {
 
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'name': label });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'name': label });
     if (response.statusCode == 200) {
       _label = label;
     }
@@ -82,7 +82,7 @@ class Role {
   Future<void> setPermissions (List<Permission> permissions) async {
 
     int _permissions = Helper.reduceRolePermissions(permissions);
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'permissions': _permissions });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'permissions': _permissions });
 
     if (response.statusCode == 200) {
       this._permissions = _permissions;
@@ -109,7 +109,7 @@ class Role {
   Future<void> setColor (Color color) async {
 
     int _color = Helper.toRgbColor(color);
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'color': _color });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'color': _color });
     if (response.statusCode == 200) {
       this._color = _color;
     }
@@ -126,7 +126,7 @@ class Role {
   /// ```
   Future<void> setHoist (bool hoist) async {
 
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'hoist': hoist });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'hoist': hoist });
     if (response.statusCode == 200) {
       _hoist = hoist;
     }
@@ -155,12 +155,12 @@ class Role {
   /// ```
   Future<void> setIcon (String path) async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
-      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+      throw MissingFeatureException("Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
     String icon = await Helper.getPicture(path);
 
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'icon': icon });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'icon': icon });
     if (response.statusCode == 200) {
       _icon = icon;
     }
@@ -183,10 +183,10 @@ class Role {
   /// ```
   Future<void> removeIcon () async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
-      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+      throw MissingFeatureException("Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'icon': null });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'icon': null });
     if (response.statusCode == 200) {
       _icon = null;
     }
@@ -209,10 +209,10 @@ class Role {
   /// ```
   Future<void> setUnicodeEmoji (String unicode) async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
-      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+      throw MissingFeatureException("Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'unicode_emoji': unicode });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'unicode_emoji': unicode });
     if (response.statusCode == 200) {
       _unicodeEmoji = unicode;
     }
@@ -228,7 +228,7 @@ class Role {
   /// }
   /// ```
   Future<void> setMentionable (bool mentionable) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'mentionable': mentionable });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'mentionable': mentionable });
 
     if (response.statusCode == 200) {
       _mentionable = mentionable;
@@ -257,7 +257,7 @@ class Role {
       return;
     }
 
-    Response response = await ioc.use<Http>().destroy(url: "/guilds/${manager.guild.id}/roles/$id");
+    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/${manager.guild.id}/roles/$id");
 
     if (response.statusCode == 200) {
       manager.cache.remove(id);

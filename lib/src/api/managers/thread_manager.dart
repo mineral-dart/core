@@ -6,7 +6,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/internal/extensions/mineral_client.dart';
+import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
 class ThreadManager extends CacheManager<ThreadChannel> with Container {
@@ -20,7 +20,7 @@ class ThreadManager extends CacheManager<ThreadChannel> with Container {
   Future<Map<Snowflake, ThreadChannel>> sync () async {
     cache.clear();
 
-    Response response = await container.use<Http>().get(url: "/guilds/$_guildId/threads/active");
+    Response response = await container.use<HttpService>().get(url: "/guilds/$_guildId/threads/active");
     dynamic payload = jsonDecode(response.body);
 
     for (dynamic element in payload) {

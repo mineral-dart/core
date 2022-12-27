@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:mineral/src/exceptions/not_exist.dart';
+import 'package:mineral/src/exceptions/not_exist_exception.dart';
 
 extension Collection<K, V> on Map<K, V> {
   /// Returns the value associated from the [K] parameter
@@ -65,7 +65,7 @@ extension Collection<K, V> on Map<K, V> {
   T getOrFail<T extends V> (K? key, { String? message }) {
     final T? result = get(key);
     if (result == null) {
-      throw NotExist(prefix: 'Invalid value', cause: message ?? 'No values are attached to $key key.');
+      throw NotExistException(message ?? 'No values are attached to $key key.');
     }
 
     return result;
@@ -100,7 +100,7 @@ extension Collection<K, V> on Map<K, V> {
   T findOrFail<T extends V> (bool Function(V element) callback, { String? message }) {
     final V? result = find(callback);
     if (result == null) {
-      throw NotExist(prefix: 'Invalid value', cause: message ?? 'No values were found.');
+      throw NotExistException(message ?? 'No values were found.');
     }
 
     return result as T;

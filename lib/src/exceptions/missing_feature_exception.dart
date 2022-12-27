@@ -1,20 +1,16 @@
-import 'package:mineral/src/console.dart';
-import 'package:mineral/src/internal/managers/reporter_manager.dart';
-import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral/core/extras.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/internal/services/debugger_service.dart';
 
-class MissingFeatureException implements Exception {
-  String prefix = 'MISSING FEATURE';
-  String cause;
+class MissingFeatureException with Container, Console implements Exception {
+  final String message;
 
-  MissingFeatureException({ required this.cause });
+  MissingFeatureException(this.message) {
+    container.use<DebuggerService>()
+      .debug(message);
+  }
 
   @override
-  String toString () {
-    ReporterManager? reporter = ioc.use<ReporterManager>();
-    if (reporter != null) {
-      reporter.write('[ $prefix ] $cause');
-    }
-
-    return Console.getErrorMessage(prefix: prefix, message: cause);
-  }
+  String toString () => message;
 }
+

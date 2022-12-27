@@ -6,22 +6,24 @@ import 'dart:isolate';
 import 'package:collection/collection.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/core/extras.dart';
 import 'package:mineral/exception.dart';
-import 'package:mineral/src/console.dart';
 import 'package:mineral/src/exceptions/shard_exception.dart';
+import 'package:mineral/src/internal/services/debugger_service.dart';
 import 'package:mineral/src/internal/websockets/heartbeat.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_handler.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_message.dart';
 import 'package:mineral/src/internal/websockets/websocket_dispatcher.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+import 'package:mineral_cli/mineral_cli.dart';
 
 /// Represents a Discord Shard.
 /// A Shard is the object used to interact with the discord websocket.
 /// The bot can have one or multiples shards.
 ///
 /// {@category Internal}
-class Shard {
+class Shard with Container {
   final ShardManager manager;
 
   final int id;
@@ -83,6 +85,7 @@ class Shard {
 
   /// Handle the websockets messages
   Future<void> _handle(dynamic message) async {
+    final debugger = container.use<DebuggerService>();
     message = message as ShardMessage;
 
     switch(message.command) {
@@ -91,12 +94,13 @@ class Shard {
         final WebsocketResponse data = message.data as WebsocketResponse;
 
         final OpCode? opCode = OpCode.values.firstWhereOrNull((element) => element.value == data.op);
-        Console.debug(message: '[DATA] ${opCode.toString()} | ${data.type ?? ''} ${jsonEncode(data.payload)}', prefix: 'Shard #$id');
+
+        debugger.debug('Shard #$id : ${opCode.toString()} | ${data.type ?? ''} ${jsonEncode(data.payload)}');
 
         switch(opCode) {
           case OpCode.heartbeat: return _heartbeat.reset();
           case OpCode.hello:
-            Console.debug(message: 'Connection initialized with websocket', prefix: 'Shard #$id');
+            debugger.debug('Shard #$id : Connection initialized with websocket');
 
             _pendingReconnect = false;
             if(_canResume) {
@@ -116,13 +120,15 @@ class Shard {
             latency = DateTime.now().millisecond - lastHeartbeat.millisecond;
             _heartbeat.ackMissing -= 1;
 
-            Console.debug(prefix: 'Shard #$id', message: 'Heartbeat ACK : ${latency}ms');
+            debugger.debug('Shard #$id : Heartbeat ACK : ${latency}ms');
             break;
           default:
         }
         break;
       case ShardCommand.error:
-        Console.error(prefix: 'Shard #$id', message: '${message.data['reason']} | ${message.data['code']}');
+        final String error = 'Shard #$id ${message.data['reason']} | ${message.data['code']}';
+        debugger.debug(error);
+        container.use<MineralCli>().console.error(error);
 
         final Map<int, Function> errors = {
           4000: () => reconnect(resume: true),
@@ -131,42 +137,56 @@ class Shard {
           4003: () => reconnect(resume: false),
           4004: () => {
             _terminate(),
-            throw TokenException(cause: 'APP_TOKEN is invalid, please modify it in .env file', prefix: 'INVALID TOKEN')
+            throw TokenException('INVALID TOKEN, please modify it in .env file')
           },
           4005: () => reconnect(resume: true),
           4007: () => reconnect(resume: false),
           4008: () => {
-            Console.warn(prefix: 'Shard #$id', message: 'You send to many packets!'),
+            container.use<MineralCli>().console.warn('Shard #$id : You send to many packets!'),
             reconnect(resume: false)
           },
           4009: () => reconnect(resume: true),
-          4010: () => throw ShardException(prefix: 'Shard #$id', cause: 'Invalid shard id sended to gateway'),
-          4011: () => throw ShardException(prefix: 'Shard #$id', cause: 'Sharding is necessary')
+          4010: () => throw ShardException('Shard #$id : invalid shard id sent to gateway'),
+          4011: () => throw ShardException('Shard #$id : sharding is necessary')
         };
 
         final Function? errorCallback = errors[message.data['code']];
-        if(errorCallback != null) return errorCallback();
-        Console.error(prefix: 'Shard #$id', message: 'No error callback');
+        if (errorCallback != null) {
+          return errorCallback();
+        }
+
+        container.use<MineralCli>().console.error('Shard #$id : No error callback');
         break;
       case ShardCommand.disconnected:
-        if(_pendingReconnect) return Console.debug(prefix: 'Shard #$id', message: 'Websocket disconnected for reconnection');
-        Console.warn(prefix: 'Shard #$id', message: 'Websocket disconnected without error, try to reconnect...');
+        if (_pendingReconnect) {
+          return debugger.debug('Shard #$id : Websocket disconnected for reconnection');
+        }
+
+        container.use<MineralCli>().console.warn('Shard #$id : Websocket disconnected without error, try to reconnect...');
         return reconnect(resume: true);
       case ShardCommand.terminateOk:
-        Console.debug(prefix: 'Shard #$id', message: 'Websocket connection terminated, restart...');
+        debugger.debug('Shard #$id : Websocket connection terminated, restart...');
         _streamSubscription.cancel();
         _isolate.kill();
         _spawn();
         break;
       default:
-        Console.error(prefix: 'Shard #$id', message: 'Unhandled message : ${message.command.name}');
+        final String error = 'Shard #$id : Websocket disconnected for reconnection';
+        container.use<MineralCli>().console.error('Shard #$id : Unhandled message : ${message.command.name}');
+        return debugger.debug(error);
     }
   }
 
   /// Send message to websocket
   void send(OpCode opCode, dynamic data, {bool canQueue = true}) {
-    if(initialized || canQueue == false) {
-      Console.debug(message: '[SEND] ${opCode.toString()} | $data', prefix: 'Shard #$id');
+    final debugger = container.use<DebuggerService>();
+
+    if (initialized || canQueue == false) {
+      if (opCode != OpCode.identify) {
+        debugger.debug('[SEND] Shard #$id : ${opCode.toString()} | $data');
+      } else {
+        debugger.debug('[SEND] Shard #$id : ${opCode.toString()}');
+      }
       final Map<String, dynamic> rawData = {
         'op': opCode.value,
         'd': data

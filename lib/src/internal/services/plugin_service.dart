@@ -1,14 +1,14 @@
 import 'package:mineral_ioc/ioc.dart';
 import 'package:mineral_package/mineral_package.dart';
 
-abstract class PluginManagerContract {
+abstract class PluginServiceContract {
   T use<T extends MineralPackage> ();
 }
 
-abstract class PluginManager extends MineralService implements PluginManagerContract {
+abstract class PluginService extends MineralService implements PluginServiceContract {
   final Map<Type, MineralPackage> _plugins = {};
 
-  PluginManager(): super(inject: true);
+  PluginService(): super(inject: true);
 
   @override
   T use<T extends MineralPackage> () {
@@ -21,7 +21,7 @@ abstract class PluginManager extends MineralService implements PluginManagerCont
   }
 }
 
-class PluginManagerCraft extends PluginManager {
+class PluginServiceCraft extends PluginService {
   void register (List<MineralPackage> plugins) {
     for (final plugin in plugins) {
       _plugins.putIfAbsent(plugin.runtimeType, () => plugin);

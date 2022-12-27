@@ -11,10 +11,10 @@ import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral/src/internal/extensions/mineral_client.dart';
+import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
-class Message extends PartialMessage<TextBasedChannel> with Container {
+class Message extends PartialMessage<TextBasedChannel> with Container, Console {
   Snowflake _authorId;
   final MessageMention _mentions;
 
@@ -47,7 +47,7 @@ class Message extends PartialMessage<TextBasedChannel> with Container {
 
   Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
 
-    Response response = await container.use<Http>().patch(
+    Response response = await container.use<HttpService>().patch(
       url: '/channels/${channel.id}/messages/$id',
       payload: {
         'content': content,
@@ -65,29 +65,29 @@ class Message extends PartialMessage<TextBasedChannel> with Container {
 
   Future<void> crossPost () async {
     if (channel.type != ChannelType.guildNews) {
-      Console.warn(message: 'Message $id cannot be cross-posted as it is not in an announcement channel');
+      console.warn('Message $id cannot be cross-posted as it is not in an announcement channel');
       return;
     }
 
-    await container.use<Http>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
+    await container.use<HttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
   }
 
   Future<void> pin (Snowflake webhookId) async {
     if (isPinned) {
-      Console.warn(message: 'Message $id is already pinned');
+      console.warn('Message $id is already pinned');
       return;
     }
 
-    await container.use<Http>().put(url: '/channels/${channel.id}/pins/$id', payload: {});
+    await container.use<HttpService>().put(url: '/channels/${channel.id}/pins/$id', payload: {});
   }
 
   Future<void> unpin () async {
     if (!isPinned) {
-      Console.warn(message: 'Message $id isn\'t pinned');
+      console.warn('Message $id isn\'t pinned');
       return;
     }
 
-    await container.use<Http>().destroy(url: '/channels/${channel.id}/pins/$id');
+    await container.use<HttpService>().destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
   Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
