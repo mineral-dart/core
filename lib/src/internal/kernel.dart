@@ -2,14 +2,13 @@ import 'dart:io';
 
 import 'package:mineral/core.dart';
 import 'package:mineral/exception.dart';
-import 'package:mineral/src/commands/create_project.dart';
+import 'package:mineral/src/commands/compile/exe.dart';
+import 'package:mineral/src/commands/compile/js.dart';
 import 'package:mineral/src/commands/help.dart';
-import 'package:mineral/src/commands/make_command.dart';
-import 'package:mineral/src/commands/make_event.dart';
-import 'package:mineral/src/commands/make_module.dart';
-import 'package:mineral/src/commands/make_shared_state.dart';
-import 'package:mineral/src/commands/start_project.dart';
-import 'package:mineral/src/internal/managers/cli_manager.dart';
+import 'package:mineral/src/commands/make/command.dart';
+import 'package:mineral/src/commands/make/event.dart';
+import 'package:mineral/src/commands/make/module.dart';
+import 'package:mineral/src/commands/make/shared_state.dart';
 import 'package:mineral/src/internal/managers/collector_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/managers/context_menu_manager.dart';
@@ -21,8 +20,10 @@ import 'package:mineral/src/internal/managers/plugin_manager.dart';
 import 'package:mineral/src/internal/managers/reporter_manager.dart';
 import 'package:mineral/src/internal/managers/state_manager.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral/src/internal/themes/mineral_theme.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:path/path.dart';
+import 'package:mineral_cli/mineral_cli.dart';
 
 class Kernel with Container {
   final CollectorManager _collectors = CollectorManager();
@@ -31,19 +32,24 @@ class Kernel with Container {
   CommandManager commands = CommandManager();
   StateManager states = StateManager();
   ModuleManager modules = ModuleManager();
-  CliManager cli = CliManager();
+  MineralCliContract cli = MineralCli(MineralTheme());
   ContextMenuManager contextMenus = ContextMenuManager();
   IntentManager intents = IntentManager();
   PluginManagerCraft plugins = PluginManagerCraft();
 
   void loadConsole () {
-    cli.add(MakeCommand());
-    cli.add(MakeEvent());
-    cli.add(MakeModule());
-    cli.add(MakeSharedState());
-    cli.add(CreateProject());
-    cli.add(StartProject());
-    cli.add(Help());
+    stdin.lineMode = true;
+    final console  = Console(theme: DefaultTheme());
+
+    cli.register([
+      MakeEvent(console),
+      MakeCommand(console),
+      MakeSharedState(console),
+      MakeModule(console),
+      CompileExecutable(console),
+      CompileJavascript(console),
+      Help(console, cli),
+    ]);
   }
 
   Future<void> init () async {
@@ -76,5 +82,9 @@ class Kernel with Container {
 
     ShardManager shardManager = ShardManager(http, token, intents.list);
     shardManager.start(shardsCount: (shardsCount != null ? int.tryParse(shardsCount) : null));
+  }
+
+  void defineConsoleTheme (Theme theme) {
+    cli.defineConsoleTheme(theme);
   }
 }

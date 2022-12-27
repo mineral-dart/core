@@ -14,7 +14,7 @@ import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral/src/internal/extensions/mineral_client.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
-class Message extends PartialMessage<TextBasedChannel> with Container {
+class Message extends PartialMessage<TextBasedChannel> with Container, Console {
   Snowflake _authorId;
   final MessageMention _mentions;
 
@@ -65,7 +65,7 @@ class Message extends PartialMessage<TextBasedChannel> with Container {
 
   Future<void> crossPost () async {
     if (channel.type != ChannelType.guildNews) {
-      Console.warn(message: 'Message $id cannot be cross-posted as it is not in an announcement channel');
+      console.warn('Message $id cannot be cross-posted as it is not in an announcement channel');
       return;
     }
 
@@ -74,7 +74,7 @@ class Message extends PartialMessage<TextBasedChannel> with Container {
 
   Future<void> pin (Snowflake webhookId) async {
     if (isPinned) {
-      Console.warn(message: 'Message $id is already pinned');
+      console.warn('Message $id is already pinned');
       return;
     }
 
@@ -83,7 +83,7 @@ class Message extends PartialMessage<TextBasedChannel> with Container {
 
   Future<void> unpin () async {
     if (!isPinned) {
-      Console.warn(message: 'Message $id isn\'t pinned');
+      console.warn('Message $id isn\'t pinned');
       return;
     }
 

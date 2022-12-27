@@ -1,3 +1,8 @@
+## 2.4.0
+- Redesign of the order guest 
+- Implemented the new CLI from `mineral_cli`.
+- Removing dependencies using `ffi`
+
 ## 2.3.1
 - Fix bad User avatar decoration type
 - Improve `category.create()` return type

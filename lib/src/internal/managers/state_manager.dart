@@ -29,7 +29,6 @@ class StateManager extends MineralService implements MineralStateContract {
         throw AlreadyExist(cause: "A store named ${store.name} already exists.");
       }
 
-      print(store.runtimeType);
       _states.putIfAbsent(store.runtimeType, () => store);
     }
   }

@@ -29,11 +29,6 @@ class ModuleManager extends MineralService {
         ..states = kernel.states;
 
       await module.init();
-
-      Console.debug(
-        prefix: 'Loading module',
-        message: '"${module.label}" is ready to use.'
-      );
     });
   }
 }
