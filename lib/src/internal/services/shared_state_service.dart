@@ -7,10 +7,10 @@ abstract class MineralStateContract {
   T use<T> ();
 }
 
-class StateManager extends MineralService implements MineralStateContract {
+class SharedStateService extends MineralService implements MineralStateContract {
   final Map<Type, MineralState> _states = {};
 
-  StateManager(): super(inject: true);
+  SharedStateService(): super(inject: true);
 
   Map<Type, MineralState> get states => _states;
 
