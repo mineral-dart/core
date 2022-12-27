@@ -32,7 +32,7 @@ class Kernel with Container {
   final CommandManager commands = CommandManager();
   final StateManager states = StateManager();
   final ModuleManager modules = ModuleManager();
-  final MineralCliContract cli = MineralCli(MineralTheme());
+  final MineralCliContract _cli = MineralCli(MineralTheme());
   final ContextMenuManager contextMenus = ContextMenuManager();
   final IntentManager intents = IntentManager();
   final PluginManagerCraft plugins = PluginManagerCraft();
@@ -41,14 +41,14 @@ class Kernel with Container {
     stdin.lineMode = true;
     final console  = Console(theme: DefaultTheme());
 
-    cli.register([
+    _cli.register([
       MakeEvent(console),
       MakeCommand(console),
       MakeSharedState(console),
       MakeModule(console),
       CompileExecutable(console),
       CompileJavascript(console),
-      Help(console, cli),
+      Help(console, _cli),
     ]);
   }
 
@@ -85,6 +85,6 @@ class Kernel with Container {
   }
 
   void defineConsoleTheme (Theme theme) {
-    cli.defineConsoleTheme(theme);
+    _cli.defineConsoleTheme(theme);
   }
 }
