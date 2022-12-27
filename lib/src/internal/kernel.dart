@@ -14,7 +14,7 @@ import 'package:mineral/src/internal/services/collector_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/managers/environment_service.dart';
 import 'package:mineral/src/internal/managers/intent_manager.dart';
-import 'package:mineral/src/internal/managers/plugin_manager.dart';
+import 'package:mineral/src/internal/services/plugin_service.dart';
 import 'package:mineral/src/internal/services/shared_state_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/debugger_service.dart';
@@ -34,7 +34,7 @@ class Kernel with Container {
   final MineralCliContract cli = MineralCli(MineralTheme());
   final ContextMenuService contextMenus = ContextMenuService();
   final IntentManager intents = IntentManager();
-  final PluginManagerCraft plugins = PluginManagerCraft();
+  final PluginServiceCraft plugins = PluginServiceCraft();
 
   Kernel () {
     CollectorService();
