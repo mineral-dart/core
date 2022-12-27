@@ -17,38 +17,42 @@ import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/managers/intent_manager.dart';
 import 'package:mineral/src/internal/managers/module_manager.dart';
 import 'package:mineral/src/internal/managers/plugin_manager.dart';
-import 'package:mineral/src/internal/managers/reporter_manager.dart';
 import 'package:mineral/src/internal/managers/state_manager.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral/src/internal/services/debugger.dart';
 import 'package:mineral/src/internal/themes/mineral_theme.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
-import 'package:path/path.dart';
 import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_console/mineral_console.dart';
 
 class Kernel with Container {
-  final CollectorManager _collectors = CollectorManager();
   final EnvironmentManager _environment = EnvironmentManager();
   final EventManager events = EventManager();
   final CommandManager commands = CommandManager();
   final StateManager states = StateManager();
   final ModuleManager modules = ModuleManager();
-  final MineralCliContract _cli = MineralCli(MineralTheme());
+  final MineralCliContract cli = MineralCli(MineralTheme());
   final ContextMenuManager contextMenus = ContextMenuManager();
   final IntentManager intents = IntentManager();
   final PluginManagerCraft plugins = PluginManagerCraft();
 
+  Kernel () {
+    CollectorManager();
+    Debugger('[ debug ]');
+  }
+
   void loadConsole () {
     stdin.lineMode = true;
-    final console  = Console(theme: DefaultTheme());
+    final console = Console(theme: DefaultTheme());
 
-    _cli.register([
+    cli.register([
       MakeEvent(console),
       MakeCommand(console),
       MakeSharedState(console),
       MakeModule(console),
       CompileExecutable(console),
       CompileJavascript(console),
-      Help(console, _cli),
+      Help(console, cli),
     ]);
   }
 
@@ -59,20 +63,9 @@ class Kernel with Container {
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     container.bind((_) => http);
 
-    String? report = _environment.environment.get('REPORTER');
-    if (report != null) {
-      ReporterManager reporter = ReporterManager(Directory(join(Directory.current.path, 'logs')));
-      reporter.reportLevel = report;
-
-      container.bind((_) => reporter);
-    }
-
     String? token = _environment.environment.get('APP_TOKEN');
     if (token == null) {
-      throw TokenException(
-        prefix: 'MISSING TOKEN',
-        cause: 'APP_TOKEN is not defined in your environment'
-      );
+      throw TokenException('APP_TOKEN is not defined in your environment');
     }
 
     await modules.load(this);
@@ -85,6 +78,6 @@ class Kernel with Container {
   }
 
   void defineConsoleTheme (Theme theme) {
-    _cli.defineConsoleTheme(theme);
+    cli.defineConsoleTheme(theme);
   }
 }

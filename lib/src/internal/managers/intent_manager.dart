@@ -34,7 +34,7 @@ enum Intent {
     }
 
     if (values.isEmpty) {
-      throw ShardException(prefix: 'Missing intents', cause: 'No intent was given, please define which ones are useful to you.');
+      throw ShardException('Missing intents : no intent was given, please define which ones are useful to you.');
     }
 
     return values.reduce((value, element) => value += element);

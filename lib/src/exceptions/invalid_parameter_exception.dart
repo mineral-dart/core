@@ -1,17 +1,15 @@
-import 'package:mineral/src/internal/managers/reporter_manager.dart';
-import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral/core/extras.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/internal/services/debugger.dart';
 
-class InvalidParameterException implements Exception {
-  String cause;
-  InvalidParameterException({ required this.cause });
+class InvalidParameterException with Container, Console implements Exception {
+  final String message;
+
+  InvalidParameterException(this.message) {
+    container.use<Debugger>()
+        .debug(message);
+  }
 
   @override
-  String toString () {
-    ReporterManager? reporter = ioc.use<ReporterManager>();
-    if (reporter != null) {
-      reporter.write('[ Invalid parameter ] $cause');
-    }
-
-    return '[ Invalid parameter ] $cause';
-  }
+  String toString () => message;
 }

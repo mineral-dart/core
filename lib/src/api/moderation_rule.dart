@@ -3,7 +3,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/exceptions/too_many.dart';
+import 'package:mineral/src/exceptions/too_many_exception.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 enum ModerationEventType {
@@ -75,7 +75,7 @@ class ModerationTriggerMetadata {
 
   factory ModerationTriggerMetadata.mentions ({ required int maxMentions }) {
     if (maxMentions <= 0 || maxMentions > 50) {
-      throw InvalidParameterException(cause: 'The number of mentions must be between 1 and 50 per message ($maxMentions given).');
+      throw InvalidParameterException('The number of mentions must be between 1 and 50 per message ($maxMentions given).');
     }
 
     return ModerationTriggerMetadata(null, null, null, maxMentions);
@@ -252,7 +252,7 @@ class ModerationRule {
   Future<void> setExemptRoles(List<Role> roles) async {
     int maxItems = 50;
     if (roles.length > maxItems) {
-      TooMany(cause: "The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
+      TooManyException("The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
     }
 
     Response response = await ioc.use<Http>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
@@ -277,7 +277,7 @@ class ModerationRule {
   Future<void> setExemptChannels(List<GuildChannel> channels) async {
     int maxItems = 50;
     if (channels.length > maxItems) {
-      TooMany(cause: "The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
+      TooManyException("The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
     }
 
     Response response = await ioc.use<Http>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {

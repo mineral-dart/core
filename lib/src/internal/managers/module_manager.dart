@@ -1,6 +1,6 @@
 import 'package:mineral/core.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/exceptions/already_exist.dart';
+import 'package:mineral/src/exceptions/already_exist_exception.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class ModuleManager extends MineralService {
@@ -13,7 +13,7 @@ class ModuleManager extends MineralService {
   void register (List<MineralModule> mineralModules) {
     for (final moduleClass in mineralModules) {
       if (_modules.containsKey(moduleClass.identifier)) {
-        throw AlreadyExist(cause: 'Module ${moduleClass.identifier} is already registered, perhaps this is an error.');
+        throw AlreadyExistException('Module ${moduleClass.identifier} is already registered, perhaps this is an error.');
       }
 
       _modules.putIfAbsent(moduleClass.identifier, () => moduleClass);

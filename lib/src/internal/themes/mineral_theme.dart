@@ -1,4 +1,4 @@
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_console/mineral_console.dart';
 
 class MineralTheme extends Theme {
   MineralTheme(): super(

@@ -25,7 +25,7 @@ class PermissionOverwrite {
 
   dynamic toJSON() {
     if (allow == null && deny == null) {
-      throw InvalidParameterException(cause: 'You must specify the authorisation or prohibition');
+      throw InvalidParameterException('You must specify the authorisation or prohibition');
     }
     
     return {

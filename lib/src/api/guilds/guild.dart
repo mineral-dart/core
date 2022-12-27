@@ -20,7 +20,7 @@ import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
-import 'package:mineral_cli/src/mineral_cli.dart';
+import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 enum VerificationLevel {
@@ -313,7 +313,7 @@ class Guild with Container, Console {
   /// ```
   Future<void> setSplash (String filename) async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.inviteSplash} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.inviteSplash} feature.');
     }
 
     String file = await Helper.getPicture(filename);
@@ -335,7 +335,7 @@ class Guild with Container, Console {
   /// ```
   Future<void> removeSplash () async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.inviteSplash} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.inviteSplash} feature.');
     }
 
     Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'splash': null });
@@ -355,7 +355,7 @@ class Guild with Container, Console {
   /// ```
   Future<void> setDiscoverySplash (String filename) async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.discoverable} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.discoverable} feature.');
     }
 
     String file = await Helper.getPicture(filename);
@@ -377,7 +377,7 @@ class Guild with Container, Console {
   /// ```
   Future<void> removeDiscoverySplash () async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.discoverable} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.discoverable} feature.');
     }
 
     Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'discovery_splash': null });
@@ -397,7 +397,7 @@ class Guild with Container, Console {
   /// ```
   Future<void> setBanner (String filename) async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.banner} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.banner} feature.');
     }
 
     String file = await Helper.getPicture(filename);
@@ -419,7 +419,7 @@ class Guild with Container, Console {
   /// ```
   Future<void> removeBanner () async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.banner} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.banner} feature.');
     }
 
     Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'banner': null });

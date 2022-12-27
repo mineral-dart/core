@@ -33,7 +33,7 @@ class EmojiManager extends CacheManager<Emoji> with Container {
 
   Future<Emoji> create ({ required String label, required String path, List<Snowflake>? roles }) async {
     if (path.isEmpty) {
-     throw EmptyParameterException(cause: 'Parameter "path" cannot be null or empty');
+     throw EmptyParameterException('Parameter "path" cannot be null or empty');
     }
 
     String image = await Helper.getPicture(path);

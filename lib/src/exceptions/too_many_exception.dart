@@ -2,14 +2,15 @@ import 'package:mineral/core/extras.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/internal/services/debugger.dart';
 
-class ApiException with Container, Console implements Exception {
+class TooManyException with Container, Console implements Exception {
   final String message;
 
-  ApiException(this.message) {
+  TooManyException(this.message) {
     container.use<Debugger>()
-      .debug(message);
+        .debug(message);
   }
 
   @override
   String toString () => message;
 }
+

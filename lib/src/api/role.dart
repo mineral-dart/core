@@ -155,7 +155,7 @@ class Role {
   /// ```
   Future<void> setIcon (String path) async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
-      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+      throw MissingFeatureException("Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
     String icon = await Helper.getPicture(path);
@@ -183,7 +183,7 @@ class Role {
   /// ```
   Future<void> removeIcon () async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
-      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+      throw MissingFeatureException("Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
     Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'icon': null });
@@ -209,7 +209,7 @@ class Role {
   /// ```
   Future<void> setUnicodeEmoji (String unicode) async {
     if (!manager.guild.features.contains(GuildFeature.roleIcons)) {
-      throw MissingFeatureException(cause: "Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
+      throw MissingFeatureException("Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
     Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/roles/$id", payload: { 'unicode_emoji': unicode });

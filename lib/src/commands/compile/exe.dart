@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_console/mineral_console.dart';
 import 'package:path/path.dart';
 
 class CompileExecutable extends CliCommand {

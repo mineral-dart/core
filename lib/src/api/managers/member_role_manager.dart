@@ -6,7 +6,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
-import 'package:mineral/src/exceptions/not_exist.dart';
+import 'package:mineral/src/exceptions/not_exist_exception.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
 class MemberRoleManager extends CacheManager<Role> with Container {
@@ -38,7 +38,7 @@ class MemberRoleManager extends CacheManager<Role> with Container {
   Future<void> add (Snowflake id, {String? reason}) async {    Role? role = manager.cache.get(id);
 
     if(role == null) {
-      throw NotExist(prefix: 'role not exist', cause: 'You can\'t add a role that don\'t exist!');
+      throw NotExistException('You can\'t add a role that don\'t exist!');
     }
 
     Map<String, String> headers = {};
