@@ -3,10 +3,10 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/exceptions/already_exist_exception.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class ModuleManager extends MineralService {
+class ModuleService extends MineralService {
   final Map<String, MineralModule> _modules = {};
 
-  ModuleManager(): super(inject: true);
+  ModuleService(): super(inject: true);
 
   Map<String, MineralModule> get modules => _modules;
 
