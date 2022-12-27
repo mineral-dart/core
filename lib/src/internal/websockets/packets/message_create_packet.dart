@@ -1,6 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/managers/collector_manager.dart';
+import 'package:mineral/src/internal/services/collector_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/events/message_create_event.dart';
@@ -27,6 +27,6 @@ class MessageCreatePacket with Container implements WebsocketPacket {
 
     eventService.controller.add(MessageCreateEvent(message));
 
-    container.use<CollectorManager>().emit(MessageCreateEvent, message);
+    container.use<CollectorService>().emit(MessageCreateEvent, message);
   }
 }

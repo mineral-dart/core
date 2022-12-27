@@ -9,8 +9,8 @@ import 'package:mineral/src/commands/make/command.dart';
 import 'package:mineral/src/commands/make/event.dart';
 import 'package:mineral/src/commands/make/module.dart';
 import 'package:mineral/src/commands/make/shared_state.dart';
-import 'package:mineral/src/internal/managers/collector_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/services/collector_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/managers/environment_service.dart';
 import 'package:mineral/src/internal/managers/intent_manager.dart';
@@ -37,7 +37,7 @@ class Kernel with Container {
   final PluginManagerCraft plugins = PluginManagerCraft();
 
   Kernel () {
-    CollectorManager();
+    CollectorService();
     DebuggerService('[ debug ]');
   }
 
