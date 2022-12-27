@@ -1,6 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
-import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard.dart';
@@ -19,7 +19,7 @@ class ReadyPacket with Container implements WebsocketPacket {
       MineralClient client = MineralClient.from(payload: websocketResponse.payload);
       client.uptime = DateTime.now();
 
-      await client.registerGlobalCommands(commands: container.use<CommandManager>().getGlobalCommands());
+      await client.registerGlobalCommands(commands: container.use<CommandService>().getGlobalCommands());
 
       final Shard shard = websocketResponse.payload['shard'] != null
         ? shardManager.shards[websocketResponse.payload['shard'][0]]!

@@ -9,7 +9,7 @@ import 'package:mineral/src/commands/make/command.dart';
 import 'package:mineral/src/commands/make/event.dart';
 import 'package:mineral/src/commands/make/module.dart';
 import 'package:mineral/src/commands/make/shared_state.dart';
-import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/collector_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/managers/environment_service.dart';
@@ -28,7 +28,7 @@ import 'package:mineral_console/mineral_console.dart';
 class Kernel with Container {
   final EnvironmentService _environment = EnvironmentService();
   final EventService events = EventService();
-  final CommandManager commands = CommandManager();
+  final CommandService commands = CommandService();
   final SharedStateService states = SharedStateService();
   final ModuleService modules = ModuleService();
   final MineralCliContract cli = MineralCli(MineralTheme());

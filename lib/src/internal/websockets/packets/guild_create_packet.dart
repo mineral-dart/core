@@ -14,7 +14,7 @@ import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
-import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
@@ -25,7 +25,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventService eventService = container.use<EventService>();
-    CommandManager commandManager = container.use<CommandManager>();
+    CommandService commandManager = container.use<CommandService>();
     ContextMenuService contextMenuService = container.use<ContextMenuService>();
     MineralClient client = container.use<MineralClient>();
 

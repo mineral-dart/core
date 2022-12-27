@@ -3,10 +3,10 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
-class CommandManager extends CacheManager<CommandBuilder> with Container {
+class CommandService extends CacheManager<CommandBuilder> with Container {
   final Snowflake? _guildId;
 
-  CommandManager(this._guildId);
+  CommandService(this._guildId);
 
   Guild? get guild => container.use<MineralClient>().guilds.cache.get(_guildId);
 }

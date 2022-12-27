@@ -7,7 +7,7 @@ import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
-import 'package:mineral/src/internal/managers/command_manager.dart';
+import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
@@ -58,7 +58,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
   _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
     CommandInteraction interaction = CommandInteraction.fromPayload(payload);
-    container.use<CommandManager>().controller.add(CommandCreateEvent(interaction));
+    container.use<CommandService>().controller.add(CommandCreateEvent(interaction));
   }
 
   _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {

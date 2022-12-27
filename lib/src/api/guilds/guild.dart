@@ -95,7 +95,7 @@ class Guild with Container, Console {
   ModerationRuleManager _moderationRules;
   GuildWebhookManager _webhooks;
   GuildScheduledEventService _scheduledEvents;
-  CommandManager _commands;
+  CommandService _commands;
 
   Guild(
     this._id,
@@ -190,7 +190,7 @@ class Guild with Container, Console {
   GuildWebhookManager get webhooks => _webhooks;
   GuildScheduledEventService get scheduledEvents => _scheduledEvents;
   Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot);
-  CommandManager get commands => _commands;
+  CommandService get commands => _commands;
 
   /// ### Modifies the [name] of this.
   ///
@@ -635,7 +635,7 @@ class Guild with Container, Console {
       moderationRuleManager,
       GuildWebhookManager.fromManager(webhookManager: webhookManager),
       guildScheduledEventService,
-      CommandManager(payload['id']),
+      CommandService(payload['id']),
     );
   }
 }
