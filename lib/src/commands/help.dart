@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:collection/collection.dart';
 import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_console/mineral_console.dart';
@@ -22,7 +24,7 @@ class Help extends CliCommand {
       }
     }
 
-    String display = '\n';
+    String display = '';
     _cli.commands.values.toList().sort((a, b) => a.arguments.length + b.arguments.length);
     int maxArgumentLength = _cli.commands.values.last.arguments.map((argument) => '<$argument>').join('').length;
 
@@ -38,10 +40,8 @@ class Help extends CliCommand {
 
         display += '  $commandName $arguments ${' ' * indent}$description\n';
       }
-
-      display += '\n';
     }
 
-    print(display);
+    stdout.writeln(display);
   }
 }
