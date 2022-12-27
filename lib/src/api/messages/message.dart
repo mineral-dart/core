@@ -11,7 +11,7 @@ import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral/src/internal/extensions/mineral_client.dart';
+import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
 class Message extends PartialMessage<TextBasedChannel> with Container, Console {
