@@ -44,7 +44,7 @@ enum Intent {
   String toString () => value.toString();
 }
 
-class IntentManager {
+class IntentService {
   List<Intent> list = [];
 
   void defined ({ List<Intent>? intents, bool? all }) {

@@ -12,8 +12,8 @@ import 'package:mineral/src/commands/make/shared_state.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/collector_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
-import 'package:mineral/src/internal/managers/environment_service.dart';
-import 'package:mineral/src/internal/managers/intent_manager.dart';
+import 'package:mineral/src/internal/services/environment_service.dart';
+import 'package:mineral/src/internal/services/intent_service.dart';
 import 'package:mineral/src/internal/services/plugin_service.dart';
 import 'package:mineral/src/internal/services/shared_state_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
@@ -33,7 +33,7 @@ class Kernel with Container {
   final ModuleService modules = ModuleService();
   final MineralCliContract cli = MineralCli(MineralTheme());
   final ContextMenuService contextMenus = ContextMenuService();
-  final IntentManager intents = IntentManager();
+  final IntentService intents = IntentService();
   final PluginServiceCraft plugins = PluginServiceCraft();
 
   Kernel () {
