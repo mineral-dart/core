@@ -47,7 +47,7 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
 
   Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
 
-    Response response = await container.use<Http>().patch(
+    Response response = await container.use<HttpService>().patch(
       url: '/channels/${channel.id}/messages/$id',
       payload: {
         'content': content,
@@ -69,7 +69,7 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
       return;
     }
 
-    await container.use<Http>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
+    await container.use<HttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
   }
 
   Future<void> pin (Snowflake webhookId) async {
@@ -78,7 +78,7 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
       return;
     }
 
-    await container.use<Http>().put(url: '/channels/${channel.id}/pins/$id', payload: {});
+    await container.use<HttpService>().put(url: '/channels/${channel.id}/pins/$id', payload: {});
   }
 
   Future<void> unpin () async {
@@ -87,7 +87,7 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
       return;
     }
 
-    await container.use<Http>().destroy(url: '/channels/${channel.id}/pins/$id');
+    await container.use<HttpService>().destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
   Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {

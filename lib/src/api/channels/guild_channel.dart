@@ -56,7 +56,7 @@ class GuildChannel extends PartialChannel with Container, Console {
 
   Future<void> update (ChannelBuilder builder) async {
     if (_validate()) {
-      await container.use<Http>().patch(url: '/channels/$id', payload: builder.payload);
+      await container.use<HttpService>().patch(url: '/channels/$id', payload: builder.payload);
     }
   }
 
@@ -67,7 +67,7 @@ class GuildChannel extends PartialChannel with Container, Console {
   /// await channel.delete()
   /// ```
   Future<bool> delete () async {
-    Response response = await container.use<Http>().destroy(url: '/channels/$id');
+    Response response = await container.use<HttpService>().destroy(url: '/channels/$id');
 
     guild.channels.cache.remove(this);
     return response.statusCode == 200;

@@ -6,10 +6,10 @@ import 'package:mineral_console/mineral_console.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
 
-class Debugger extends MineralService with Container {
+class DebuggerService extends MineralService with Container {
   final String prefix;
 
-  Debugger(this.prefix): super(inject: true);
+  DebuggerService(this.prefix): super(inject: true);
 
   void debug (String message) {
     final service =  container.use<EnvironmentManager>();

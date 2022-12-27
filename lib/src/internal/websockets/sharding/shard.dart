@@ -9,7 +9,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/extras.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/exceptions/shard_exception.dart';
-import 'package:mineral/src/internal/services/debugger.dart';
+import 'package:mineral/src/internal/services/debugger_service.dart';
 import 'package:mineral/src/internal/websockets/heartbeat.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_handler.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
@@ -85,7 +85,7 @@ class Shard with Container {
 
   /// Handle the websockets messages
   Future<void> _handle(dynamic message) async {
-    final debugger = container.use<Debugger>();
+    final debugger = container.use<DebuggerService>();
     message = message as ShardMessage;
 
     switch(message.command) {
@@ -179,7 +179,7 @@ class Shard with Container {
 
   /// Send message to websocket
   void send(OpCode opCode, dynamic data, {bool canQueue = true}) {
-    final debugger = container.use<Debugger>();
+    final debugger = container.use<DebuggerService>();
 
     if (initialized || canQueue == false) {
       debugger.debug('[SEND] Shard #$id : ${opCode.toString()} | $data');

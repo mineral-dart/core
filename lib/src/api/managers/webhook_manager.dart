@@ -18,7 +18,7 @@ class WebhookManager extends CacheManager<Webhook> with Container {
   Guild get guild => container.use<MineralClient>().guilds.cache.getOrFail(_guildId);
 
   Future<Map<Snowflake, Webhook>> sync () async {
-    Response response = await container.use<Http>().get(url: "/channels/$_channelId/webhooks");
+    Response response = await container.use<HttpService>().get(url: "/channels/$_channelId/webhooks");
 
     for (dynamic element in jsonDecode(response.body)) {
       Webhook webhook = Webhook.from(payload: element);
@@ -29,7 +29,7 @@ class WebhookManager extends CacheManager<Webhook> with Container {
   }
 
   Future<Webhook?> create ({ required String label, String? avatar }) async {
-    Response response = await container.use<Http>().post(url: "/channels/$_channelId/webhooks", payload: {
+    Response response = await container.use<HttpService>().post(url: "/channels/$_channelId/webhooks", payload: {
       'name': label,
       'avatar': avatar != null ? await Helper.getPicture(avatar) : null
     });

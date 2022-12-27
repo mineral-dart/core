@@ -13,7 +13,7 @@ import 'package:mineral_ioc/ioc.dart';
 ///
 /// {@category Internal}
 class ShardManager extends MineralService {
-  final Http http;
+  final HttpService http;
   final List<Intent> intents;
   final String _token;
 

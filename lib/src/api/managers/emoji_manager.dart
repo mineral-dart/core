@@ -14,7 +14,7 @@ class EmojiManager extends CacheManager<Emoji> with Container {
   Future<Map<Snowflake, Emoji>> sync () async {
     cache.clear();
 
-    Response response = await container.use<Http>().get(url: "/guilds/${guild.id}/emojis");
+    Response response = await container.use<HttpService>().get(url: "/guilds/${guild.id}/emojis");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -38,7 +38,7 @@ class EmojiManager extends CacheManager<Emoji> with Container {
 
     String image = await Helper.getPicture(path);
 
-    Response response = await container.use<Http>().post(url: "/guilds/${guild.id}/emojis", payload: {
+    Response response = await container.use<HttpService>().post(url: "/guilds/${guild.id}/emojis", payload: {
       'name': label,
       'image': image,
       'roles': roles ?? [],

@@ -19,7 +19,7 @@ import 'package:mineral/src/internal/managers/module_manager.dart';
 import 'package:mineral/src/internal/managers/plugin_manager.dart';
 import 'package:mineral/src/internal/managers/state_manager.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
-import 'package:mineral/src/internal/services/debugger.dart';
+import 'package:mineral/src/internal/services/debugger_service.dart';
 import 'package:mineral/src/internal/themes/mineral_theme.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral_cli/mineral_cli.dart';
@@ -38,7 +38,7 @@ class Kernel with Container {
 
   Kernel () {
     CollectorManager();
-    Debugger('[ debug ]');
+    DebuggerService('[ debug ]');
   }
 
   void loadConsole () {
@@ -59,7 +59,7 @@ class Kernel with Container {
   Future<void> init () async {
     await _environment.load();
 
-    Http http = Http(baseUrl: 'https://discord.com/api');
+    final HttpService http = HttpService(baseUrl: 'https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     container.bind((_) => http);
 

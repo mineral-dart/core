@@ -46,7 +46,7 @@ class MemberRoleManager extends CacheManager<Role> with Container {
       headers.putIfAbsent('X-Audit-Log-Reason', () => reason);
     }
 
-    Response response = await container.use<Http>().put(
+    Response response = await container.use<HttpService>().put(
       url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
       payload: {},
       headers: headers
@@ -80,7 +80,7 @@ class MemberRoleManager extends CacheManager<Role> with Container {
       headers.putIfAbsent('X-Audit-Log-Reason', () => reason);
     }
 
-    Response response = await container.use<Http>().destroy(
+    Response response = await container.use<HttpService>().destroy(
       url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
       headers: headers
     );
@@ -114,7 +114,7 @@ class MemberRoleManager extends CacheManager<Role> with Container {
   }
 
   Future<Map<Snowflake, Role>> sync () async {
-    Response response = await container.use<Http>().get(url: "/guilds/${manager.guild.id}/members/$memberId");
+    Response response = await container.use<HttpService>().get(url: "/guilds/${manager.guild.id}/members/$memberId");
     if(response.statusCode == 200) {
       cache.clear();
       dynamic payload = jsonDecode(response.body)['roles'];

@@ -5,11 +5,11 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class Http extends MineralService {
+class HttpService extends MineralService {
   String baseUrl;
   final Map<String, String> _headers = {};
 
-  Http({ required this.baseUrl });
+  HttpService({ required this.baseUrl });
 
   void defineHeader ({ required String header, required String value }) {
     _headers.putIfAbsent(header, () => value);

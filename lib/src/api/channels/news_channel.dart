@@ -34,7 +34,7 @@ class NewsChannel extends TextChannel with Container, Console {
       return;
     }
 
-    await container.use<Http>().post(url: '/channels/$id/followers', payload: {
+    await container.use<HttpService>().post(url: '/channels/$id/followers', payload: {
       'webhook_channel_id': webhookId
     });
   }

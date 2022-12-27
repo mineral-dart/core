@@ -39,7 +39,7 @@ class VoiceManager with Container, Console {
   /// }
   Future<void> setMute(bool value) async {
 
-    final Response response = await container.use<Http>().patch(
+    final Response response = await container.use<HttpService>().patch(
       url: '/guilds/$_guildId/members/$_memberId',
       payload: {'mute': value}
     );
@@ -62,7 +62,7 @@ class VoiceManager with Container, Console {
   ///   await member.setDeaf(true);
   /// }
   Future<void> setDeaf(bool value) async {
-    final Response response = await container.use<Http>().patch(
+    final Response response = await container.use<HttpService>().patch(
       url: '/guilds/$_guildId/members/$_memberId',
       payload: {'deaf': value}
     );
@@ -103,7 +103,7 @@ class VoiceManager with Container, Console {
   }
 
   Future<void> _updateChannel(Snowflake? channelId) async {
-    final Response response = await container.use<Http>().patch(
+    final Response response = await container.use<HttpService>().patch(
       url: '/guilds/$_guildId/members/$_memberId',
       payload: {'channel_id': channelId}
     );

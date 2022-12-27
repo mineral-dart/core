@@ -17,7 +17,7 @@ class ForumDiscussionManager extends CacheManager<ThreadChannel> with Container 
   /// Warning guild requires [GuildFeature.community] feature
   /// ```
   Future<ThreadChannel?> create (String label, MessageBuilder message, { int? archiveDuration, int? rateLimit, List<Snowflake>? tags, bool? pin }) async {
-    Response response = await container.use<Http>().post(url: '/channels/$_channelId/threads', payload: {
+    Response response = await container.use<HttpService>().post(url: '/channels/$_channelId/threads', payload: {
       'name': label,
       'auto_archive_duration': archiveDuration,
       'rate_limit_per_user': rateLimit,

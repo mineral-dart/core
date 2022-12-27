@@ -13,7 +13,7 @@ class MessageManager extends CacheManager<PartialMessage> with Container {
   Future<Map<Snowflake, PartialMessage>> sync () async {
     cache.clear();
 
-    Response response = await container.use<Http>().get(url: "/channels/${channel.id}/messages");
+    Response response = await container.use<HttpService>().get(url: "/channels/${channel.id}/messages");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {

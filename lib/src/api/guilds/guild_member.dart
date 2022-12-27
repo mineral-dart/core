@@ -54,7 +54,7 @@ class GuildMember with Container {
   /// ```
   Future<void> setUsername (String name) async {
 
-    Response response = await container.use<Http>().patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'nick': name });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'nick': name });
     if (response.statusCode == 200) {
       _nickname = name;
     }
@@ -74,7 +74,7 @@ class GuildMember with Container {
   Future<void> timeout (DateTime expiration) async {
     // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
 
-    Response response = await container.use<Http>().patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': expiration.toIso8601String() });
+    Response response = await container.use<HttpService>().patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': expiration.toIso8601String() });
     if (response.statusCode == 200 || response.statusCode == 204) {
       _timeoutDuration = expiration;
     }
@@ -88,7 +88,7 @@ class GuildMember with Container {
   /// ```
   Future<void> removeTimeout () async {
 
-    Response response = await container.use<Http>().patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': null });
+    Response response = await container.use<HttpService>().patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': null });
     if (response.statusCode == 200 || response.statusCode == 204) {
       _timeoutDuration = null;
     }
@@ -108,7 +108,7 @@ class GuildMember with Container {
   /// ```
   Future<void> ban ({ int? count, String? reason }) async {
 
-    Response response = await container.use<Http>().put(url: "/guilds/${guild.id}/bans/${user.id}", payload: {
+    Response response = await container.use<HttpService>().put(url: "/guilds/${guild.id}/bans/${user.id}", payload: {
       'delete_message_days': count,
       'reason': reason
     });
@@ -125,7 +125,7 @@ class GuildMember with Container {
   /// await member.removeTimeout();
   /// ```
   Future<void> kick ({ int? count, String? reason }) async {
-    await container.use<Http>().destroy(url: "/guilds/${guild.id}/members/${user.id}");
+    await container.use<HttpService>().destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
 
   /// ### Returns whether of this is a bot

@@ -20,7 +20,7 @@ class ThreadManager extends CacheManager<ThreadChannel> with Container {
   Future<Map<Snowflake, ThreadChannel>> sync () async {
     cache.clear();
 
-    Response response = await container.use<Http>().get(url: "/guilds/$_guildId/threads/active");
+    Response response = await container.use<HttpService>().get(url: "/guilds/$_guildId/threads/active");
     dynamic payload = jsonDecode(response.body);
 
     for (dynamic element in payload) {

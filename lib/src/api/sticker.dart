@@ -64,28 +64,28 @@ class Sticker {
   int? get sortValue => _sortValue;
 
   Future<void> setName (String name) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'name': name });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'name': name });
     if (response.statusCode == 200) {
       _name = name;
     }
   }
 
   Future<void> setDescription (String description) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'description': description });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'description': description });
     if (response.statusCode == 200) {
       _description = description;
     }
   }
 
   Future<void> setTags (String tags) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'tags': tags });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'tags': tags });
     if (response.statusCode == 200) {
       _tags = tags;
     }
   }
 
   Future<void> delete () async {
-    Response response = await ioc.use<Http>().destroy(url: "/guilds/${guild.id}/stickers/$id");
+    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/${guild.id}/stickers/$id");
     if (response.statusCode == 200) {
       manager.cache.remove(id);
     }

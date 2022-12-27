@@ -14,7 +14,7 @@ class StickerManager extends CacheManager<Sticker> with Container, Console {
 
   Future<Sticker?> create ({ required String name, required String description, required String tags, required String filename }) async {
     if (guild.features.contains(GuildFeature.verified) || guild.features.contains(GuildFeature.partnered)) {
-      Response response = await container.use<Http>().post(url: "/guilds/${guild.id}/stickers", payload: {
+      Response response = await container.use<HttpService>().post(url: "/guilds/${guild.id}/stickers", payload: {
         'name': name,
         'description': description,
         'tags': tags,
@@ -38,7 +38,7 @@ class StickerManager extends CacheManager<Sticker> with Container, Console {
   Future<Map<Snowflake, Sticker>> sync () async {
     cache.clear();
 
-    Response response = await container.use<Http>().get(url: "/guilds/${guild.id}/stickers");
+    Response response = await container.use<HttpService>().get(url: "/guilds/${guild.id}/stickers");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {

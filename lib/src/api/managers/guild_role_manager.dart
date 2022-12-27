@@ -26,7 +26,7 @@ class GuildRoleManager extends CacheManager<Role> with Container {
   Future<Map<Snowflake, Role>> sync () async {
     cache.clear();
 
-    Response response = await container.use<Http>().get(url: "/guilds/$_guildId/roles");
+    Response response = await container.use<HttpService>().get(url: "/guilds/$_guildId/roles");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -61,7 +61,7 @@ class GuildRoleManager extends CacheManager<Role> with Container {
     String? _icon = icon != null ? await Helper.getPicture(icon) : null;
     int? _permissions = permissions != null ? Helper.reduceRolePermissions(permissions) : null;
 
-    Response response = await container.use<Http>().post(url: "/guilds/$_guildId}/roles", payload: {
+    Response response = await container.use<HttpService>().post(url: "/guilds/$_guildId}/roles", payload: {
       'name': label,
       'color': color != null ? Helper.toRgbColor(color) : null,
       'hoist': hoist ?? false,

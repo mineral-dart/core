@@ -10,7 +10,7 @@ class GuildScheduledEventManager extends CacheManager<GuildScheduledEvent> with 
   late final Guild guild;
 
   Future<Map<Snowflake, GuildScheduledEvent>> sync() async {
-    Response response = await container.use<Http>().get(url: "/guilds/${guild.id}/scheduled-events");
+    Response response = await container.use<HttpService>().get(url: "/guilds/${guild.id}/scheduled-events");
     if (response.statusCode == 200) {
       cache.clear();
 
