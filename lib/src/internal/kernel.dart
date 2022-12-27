@@ -11,8 +11,8 @@ import 'package:mineral/src/commands/make/module.dart';
 import 'package:mineral/src/commands/make/shared_state.dart';
 import 'package:mineral/src/internal/managers/collector_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
-import 'package:mineral/src/internal/managers/context_menu_manager.dart';
-import 'package:mineral/src/internal/managers/environment_manager.dart';
+import 'package:mineral/src/internal/services/context_menu_service.dart';
+import 'package:mineral/src/internal/managers/environment_service.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/managers/intent_manager.dart';
 import 'package:mineral/src/internal/managers/module_manager.dart';
@@ -26,13 +26,13 @@ import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_console/mineral_console.dart';
 
 class Kernel with Container {
-  final EnvironmentManager _environment = EnvironmentManager();
+  final EnvironmentService _environment = EnvironmentService();
   final EventManager events = EventManager();
   final CommandManager commands = CommandManager();
   final StateManager states = StateManager();
   final ModuleManager modules = ModuleManager();
   final MineralCliContract cli = MineralCli(MineralTheme());
-  final ContextMenuManager contextMenus = ContextMenuManager();
+  final ContextMenuService contextMenus = ContextMenuService();
   final IntentManager intents = IntentManager();
   final PluginManagerCraft plugins = PluginManagerCraft();
 

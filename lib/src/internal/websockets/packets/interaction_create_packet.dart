@@ -8,7 +8,7 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
-import 'package:mineral/src/internal/managers/context_menu_manager.dart';
+import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
@@ -64,7 +64,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
   _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {
     if (payload['data']?['type'] == ApplicationCommandType.user.value) {
       final interaction = ContextUserInteraction.from(payload: payload );
-      container.use<ContextMenuManager>().controller.add(interaction);
+      container.use<ContextMenuService>().controller.add(interaction);
     }
 
     if (payload['data']?['type'] == ApplicationCommandType.message.value) {
@@ -80,7 +80,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       }
 
       final interaction = ContextMessageInteraction.from(message: message!, payload: payload);
-      container.use<ContextMenuManager>().controller.add(interaction);
+      container.use<ContextMenuService>().controller.add(interaction);
     }
   }
 

@@ -1,6 +1,6 @@
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
-import 'package:mineral/src/internal/managers/environment_manager.dart';
+import 'package:mineral/src/internal/managers/environment_service.dart';
 import 'package:mineral/src/internal/services/event_emitter_service.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
@@ -28,7 +28,7 @@ void main() {
     String discordEndpoint = 'https://discord.com/api';
     HttpService http = HttpService(baseUrl: discordEndpoint);
 
-    EnvironmentManager manager = EnvironmentManager();
+    EnvironmentService manager = EnvironmentService();
     manager.load();
 
     ShardManager shardManager = ShardManager(http, manager.environment.get("APP_TOKEN")!, [Intent.all]);

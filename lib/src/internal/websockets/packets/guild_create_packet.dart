@@ -15,7 +15,7 @@ import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
-import 'package:mineral/src/internal/managers/context_menu_manager.dart';
+import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -26,7 +26,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventManager eventManager = container.use<EventManager>();
     CommandManager commandManager = container.use<CommandManager>();
-    ContextMenuManager contextMenuManager = container.use<ContextMenuManager>();
+    ContextMenuService contextMenuService = container.use<ContextMenuService>();
     MineralClient client = container.use<MineralClient>();
 
     websocketResponse.payload['guild_id'] = websocketResponse.payload['id'];
@@ -131,7 +131,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
     await client.registerGuildCommands(
       guild: guild,
       commands: commandManager.getGuildCommands(guild),
-      contextMenus: contextMenuManager.getFromGuild(guild)
+      contextMenus: contextMenuService.getFromGuild(guild)
     );
 
     eventManager.controller.add(GuildCreateEvent(guild));

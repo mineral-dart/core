@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:mineral/core/extras.dart';
-import 'package:mineral/src/internal/managers/environment_manager.dart';
+import 'package:mineral/src/internal/managers/environment_service.dart';
 import 'package:mineral_console/mineral_console.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
@@ -12,7 +12,7 @@ class DebuggerService extends MineralService with Container {
   DebuggerService(this.prefix): super(inject: true);
 
   void debug (String message) {
-    final service =  container.use<EnvironmentManager>();
+    final service =  container.use<EnvironmentService>();
 
     if (service.environment.getFromStringKey('LOG_LEVEL') == 'debug') {
       stdout.writeln(prefix.grey() + ' $message');

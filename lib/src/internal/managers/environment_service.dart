@@ -6,10 +6,10 @@ import 'package:mineral_environment/environment.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
 
-class EnvironmentManager extends MineralService with Console {
+class EnvironmentService extends MineralService with Console {
   final MineralEnvironment environment = MineralEnvironment();
 
-  EnvironmentManager(): super(inject: true);
+  EnvironmentService(): super(inject: true);
 
   Future<MineralEnvironment> load () async {
     File file = File(join(Directory.current.path, '.env'));
