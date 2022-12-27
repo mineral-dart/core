@@ -28,14 +28,14 @@ import 'package:mineral_cli/mineral_cli.dart';
 class Kernel with Container {
   final CollectorManager _collectors = CollectorManager();
   final EnvironmentManager _environment = EnvironmentManager();
-  EventManager events = EventManager();
-  CommandManager commands = CommandManager();
-  StateManager states = StateManager();
-  ModuleManager modules = ModuleManager();
-  MineralCliContract cli = MineralCli(MineralTheme());
-  ContextMenuManager contextMenus = ContextMenuManager();
-  IntentManager intents = IntentManager();
-  PluginManagerCraft plugins = PluginManagerCraft();
+  final EventManager events = EventManager();
+  final CommandManager commands = CommandManager();
+  final StateManager states = StateManager();
+  final ModuleManager modules = ModuleManager();
+  final MineralCliContract cli = MineralCli(MineralTheme());
+  final ContextMenuManager contextMenus = ContextMenuManager();
+  final IntentManager intents = IntentManager();
+  final PluginManagerCraft plugins = PluginManagerCraft();
 
   void loadConsole () {
     stdin.lineMode = true;
