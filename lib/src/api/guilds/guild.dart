@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
@@ -19,6 +20,8 @@ import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_cli/src/mineral_cli.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 enum VerificationLevel {
   none(0),
@@ -43,7 +46,7 @@ class SourceGuild {
   ImageFormater? get icon => _icon;
 }
 
-class Guild with Container {
+class Guild with Container, Console {
   Snowflake _id;
   String _name;
   Snowflake _ownerId;
@@ -289,7 +292,7 @@ class Guild with Container {
     MineralClient client = container.use<MineralClient>();
 
     if (owner.id != client.user.id) {
-      Console.error(message: "You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
+      console.error("You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
       return;
     }
 
@@ -581,7 +584,7 @@ class Guild with Container {
     for (String element in payload['features']) {
       GuildFeature? feature = GuildFeature.values.firstWhereOrNull((feature) => feature.value == element);
       if (feature == null) {
-        Console.warn(message: 'Guild feature $element don\'t exist! Please report this to our team.');
+        ioc.use<MineralCli>().console.warn('Guild feature $element don\'t exist! Please report this to our team.');
       } else {
         features.add(feature);
       }

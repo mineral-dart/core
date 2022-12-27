@@ -2,10 +2,9 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/console.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
-class VoiceManager with Container {
+class VoiceManager with Container, Console {
   bool _isDeaf;
   bool _isMute;
   bool _isSelfMute;
@@ -50,7 +49,7 @@ class VoiceManager with Container {
       return;
     }
 
-    Console.error(message: 'Unable to ${value ? 'mute' : 'unmute'} user #$_memberId');
+    console.error('Unable to ${value ? 'mute' : 'unmute'} user #$_memberId');
   }
 
   /// ### Deafens or not a server member
@@ -73,7 +72,7 @@ class VoiceManager with Container {
       return;
     }
 
-    Console.error(message: 'Unable to ${value ? 'deaf' : 'undeaf'} user #$_memberId');
+    console.error('Unable to ${value ? 'deaf' : 'undeaf'} user #$_memberId');
   }
 
   /// ### Moves a member from one voice channel to another
@@ -114,7 +113,7 @@ class VoiceManager with Container {
       return;
     }
 
-    Console.error(message: 'Unable to move user $_memberId to $channelId');
+    console.error('Unable to move user $_memberId to $channelId');
   }
 
   factory VoiceManager.from(dynamic payload, Snowflake guildId) {
