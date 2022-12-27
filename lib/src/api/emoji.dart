@@ -59,7 +59,7 @@ class Emoji extends PartialEmoji {
   /// }
   /// ```
   Future<void> setLabel (String label) async {
-    Response response = await ioc.use<Http>().patch(url: "/guilds/${manager.guild.id}/emojis/$id", payload: { 'name': label });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id", payload: { 'name': label });
 
     if (response.statusCode == 200) {
       _label = label;
@@ -82,7 +82,7 @@ class Emoji extends PartialEmoji {
   /// await emoji.delete(reason: 'I will destroy this..');
   /// ```
   Future<void> delete () async {
-    Response response = await ioc.use<Http>().destroy(url: "/guilds/${manager.guild.id}/emojis/$id");
+    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/${manager.guild.id}/emojis/$id");
 
     if (response.statusCode == 200) {
       manager.cache.remove(id);

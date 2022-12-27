@@ -23,7 +23,7 @@ class ContextMenuBuilder {
 abstract class MineralContextMenu<T> {
   late ContextMenuBuilder builder;
 
-  void register(String label, ContextMenuType type, { Scope? scope, bool everyone = false }) {
+  MineralContextMenu(String label, ContextMenuType type, { Scope? scope, bool everyone = false }) {
     builder = ContextMenuBuilder(label, type, scope ?? Scope.guild, everyone);
   }
 

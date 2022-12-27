@@ -17,10 +17,16 @@ class ChannelManager extends CacheManager<GuildChannel> with Container {
   Guild get guild => container.use<MineralClient>().guilds.cache.getOrFail(_guildId);
 
   Future<Map<Snowflake, GuildChannel>> sync () async {
+    final _cached = cache.clone;
     cache.clear();
 
-    Response response = await container.use<Http>().get(url: "/guilds/$_guildId/channels");
+    Response response = await container.use<HttpService>().get(url: "/guilds/$_guildId/channels");
     dynamic payload = jsonDecode(response.body);
+
+    if (response.statusCode != 200) {
+      cache.addAll(_cached);
+      return cache;
+    }
 
     for (dynamic element in payload) {
       final GuildChannel? channel = ChannelWrapper.create(element);
@@ -34,7 +40,7 @@ class ChannelManager extends CacheManager<GuildChannel> with Container {
   }
 
   Future<T?> create<T extends GuildChannel> (ChannelBuilder builder) async {
-    Response response = await container.use<Http>().post(url: '/guilds/$_guildId/channels', payload: builder.payload);
+    Response response = await container.use<HttpService>().post(url: '/guilds/$_guildId/channels', payload: builder.payload);
     dynamic payload = jsonDecode(response.body);
 
     final GuildChannel? channel = ChannelWrapper.create(payload);

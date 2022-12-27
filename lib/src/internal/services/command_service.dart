@@ -6,7 +6,7 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/internal/entities/command.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class CommandManager extends MineralService {
+class CommandService extends MineralService {
   final Map<String, CommandBuilder> _commands = {};
   Map<String, CommandBuilder> get commands => _commands;
 
@@ -14,7 +14,7 @@ class CommandManager extends MineralService {
 
   StreamController<CommandCreateEvent> controller = StreamController();
 
-  CommandManager(): super(inject: true) {
+  CommandService(): super(inject: true) {
     controller.stream.listen((event) async {
       final commandIdentifier = event.interaction.identifier;
       final command = _commands.get(commandIdentifier);

@@ -14,9 +14,9 @@ import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
-import 'package:mineral/src/internal/managers/command_manager.dart';
-import 'package:mineral/src/internal/managers/context_menu_manager.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/services/command_service.dart';
+import 'package:mineral/src/internal/services/context_menu_service.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -24,9 +24,9 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 class GuildCreatePacket with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager eventManager = container.use<EventManager>();
-    CommandManager commandManager = container.use<CommandManager>();
-    ContextMenuManager contextMenuManager = container.use<ContextMenuManager>();
+    EventService eventService = container.use<EventService>();
+    CommandService commandManager = container.use<CommandService>();
+    ContextMenuService contextMenuService = container.use<ContextMenuService>();
     MineralClient client = container.use<MineralClient>();
 
     websocketResponse.payload['guild_id'] = websocketResponse.payload['id'];
@@ -57,7 +57,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
       emojiManager.cache.putIfAbsent(emoji.id, () => emoji);
     }
 
-    GuildScheduledEventManager guildScheduledManager = GuildScheduledEventManager();
+    GuildScheduledEventService guildScheduledManager = GuildScheduledEventService();
     for(dynamic payload in websocketResponse.payload['guild_scheduled_events']) {
       GuildScheduledEvent event = GuildScheduledEvent.from(
         channelManager: channelManager,
@@ -79,7 +79,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
       channelManager: channelManager,
       moderationRuleManager: moderationManager,
       webhookManager: webhookManager,
-      guildScheduledEventManager: guildScheduledManager,
+      guildScheduledEventService: guildScheduledManager,
       payload: websocketResponse.payload,
     );
 
@@ -131,14 +131,14 @@ class GuildCreatePacket with Container implements WebsocketPacket {
     await client.registerGuildCommands(
       guild: guild,
       commands: commandManager.getGuildCommands(guild),
-      contextMenus: contextMenuManager.getFromGuild(guild)
+      contextMenus: contextMenuService.getFromGuild(guild)
     );
 
-    eventManager.controller.add(GuildCreateEvent(guild));
+    eventService.controller.add(GuildCreateEvent(guild));
   }
 
   Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {
-    Response response = await container.use<Http>().get(url: "/guilds/${guild.id}/auto-moderation/rules");
+    Response response = await container.use<HttpService>().get(url: "/guilds/${guild.id}/auto-moderation/rules");
 
     if (response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);

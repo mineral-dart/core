@@ -5,13 +5,13 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/interactions/context_menu_interaction.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class ContextMenuManager extends MineralService {
+class ContextMenuService extends MineralService {
   final Map<String, MineralContextMenu> _contextMenus = {};
   Map<String, MineralContextMenu> get contextMenus => _contextMenus;
 
   final StreamController<ContextMenuInteraction> controller = StreamController();
 
-  ContextMenuManager(): super(inject: true) {
+  ContextMenuService(): super(inject: true) {
     controller.stream.listen((event) async {
       final contextMenu = _contextMenus.findOrFail((element) => element.builder.label == event.label);
       await contextMenu.handle(event);

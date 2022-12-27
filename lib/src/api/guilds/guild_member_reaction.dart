@@ -19,7 +19,7 @@ class GuildMemberReaction with Container {
       ? '${_partialEmoji.label}:${_partialEmoji.id}'
       : _partialEmoji.label;
 
-    Response response = await container.use<Http>().destroy(url: '/channels/${_message.channel.id}/messages/${_message.id}/reactions/$_emoji/${user.id}');
+    Response response = await container.use<HttpService>().destroy(url: '/channels/${_message.channel.id}/messages/${_message.id}/reactions/$_emoji/${user.id}');
     if (response.statusCode == 200) {
       _manager.reactions.remove(_emoji);
     }

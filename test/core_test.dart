@@ -1,21 +1,21 @@
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
-import 'package:mineral/src/internal/services/event_emitter.dart';
+import 'package:mineral/src/internal/services/environment_service.dart';
+import 'package:mineral/src/internal/services/event_emitter_service.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
-import 'package:test/scaffolding.dart';
 import 'package:test/test.dart';
 
 void main() {
-  test('can get Http from ioc', () {
+  test('can get HttpService from ioc', () {
     String discordEndpoint = 'https://discord.com/api';
-    ioc.bind((_) => Http(baseUrl: discordEndpoint));
+    ioc.bind((_) => HttpService(baseUrl: discordEndpoint));
 
-    expect(ioc.use<Http>().baseUrl, equals(discordEndpoint));
+    expect(ioc.use<HttpService>().baseUrl, equals(discordEndpoint));
   });
 
   test('can emit with event emitter', () async {
-    EventEmitter emitter = EventEmitter<Object?>();
+    EventEmitterService emitter = EventEmitterService<Object?>();
     String key = 'foo';
     emitter.on(key, (params) {
       assert(params['bar'] == 'bar');
@@ -26,12 +26,12 @@ void main() {
 
   test('can create websocket connection', () async {
     String discordEndpoint = 'https://discord.com/api';
-    Http http = Http(baseUrl: discordEndpoint);
+    HttpService http = HttpService(baseUrl: discordEndpoint);
 
-    Environment environment = Environment();
-    environment.load();
+    EnvironmentService manager = EnvironmentService();
+    manager.load();
 
-    ShardManager manager = ShardManager(http, environment.get("APP_TOKEN")!, [Intent.all]);
-    await manager.start(shardsCount: 1);
+    ShardManager shardManager = ShardManager(http, manager.environment.get("APP_TOKEN")!, [Intent.all]);
+    await shardManager.start(shardsCount: 1);
   });
 }

@@ -20,7 +20,7 @@ abstract class MineralCommand {
   }
 
   Future<void> handle (CommandInteraction interaction) async {
-    throw MissingMethodException(cause: 'The handle method does not exist on your command ${command.label}');
+    throw MissingMethodException('The handle method does not exist on your command ${command.label}');
   }
 }
 

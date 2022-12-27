@@ -8,7 +8,7 @@ import 'package:mineral/src/api/managers/guild_scheduled_event_manager.dart';
 import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -16,7 +16,7 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 class GuildUpdatePacket with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     MineralClient client = container.use<MineralClient>();
 
     Guild? before = client.guilds.cache.get(websocketResponse.payload['id']);
@@ -41,8 +41,8 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
     WebhookManager webhookManager = WebhookManager(before.id, null);
     webhookManager.cache.addAll(before.webhooks.cache);
 
-    GuildScheduledEventManager guildScheduledEventManager = GuildScheduledEventManager();
-    guildScheduledEventManager.cache.addAll(before.scheduledEvents.cache);
+    GuildScheduledEventService guildScheduledEventService = GuildScheduledEventService();
+    guildScheduledEventService.cache.addAll(before.scheduledEvents.cache);
 
     Guild after = Guild.from(
       emojiManager: emojiManager,
@@ -52,7 +52,7 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
       moderationRuleManager: moderationManager,
       webhookManager: webhookManager,
       payload: websocketResponse.payload,
-      guildScheduledEventManager: guildScheduledEventManager
+      guildScheduledEventService: guildScheduledEventService
     );
 
     after.stickers.guild = after;
@@ -67,7 +67,7 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
     after.publicUpdatesChannel = after.channels.cache.get<TextChannel>(after.publicUpdatesChannelId);
     after.emojis.guild = after;
 
-    eventManager.controller.add(GuildUpdateEvent(before, after));
+    eventService.controller.add(GuildUpdateEvent(before, after));
     client.guilds.cache.set(after.id, after);
   }
 }

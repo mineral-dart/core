@@ -42,7 +42,7 @@ In order to simplify the association between a component (buttons, selection men
 
 Consider the component displaying buttons below :
 ```dart
-final button = ButtonBuilder(
+final button = ButtonBuilder.fromButton(
   label: 'My buttton',
   customId: 'my-custom-id',
   style: ButtonStyle.primary   
@@ -135,12 +135,12 @@ Now that your store is registered within your application, you can now access yo
 import 'package:mineral/framework.dart';
 import 'package:mineral/core/events';
 
-class MessageCreate extends MineralEvent<MessageCreate> {
+class MessageCreate extends MineralEvent<MessageCreate> with Console {
   Future<void> handle (Message message) async {
     final myState = states.use<MyStore>();
     myState.addItem(1);
     
-    Console.info(message: 'MyState contains ${store.state.length} items.');
+    console.info(message: 'MyState contains ${store.state.length} items.');
   }
 }
 ```

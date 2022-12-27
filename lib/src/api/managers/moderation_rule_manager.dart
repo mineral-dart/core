@@ -28,7 +28,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule> with Container 
   /// );
   /// ```
   Future<ModerationRule?> create (ModerationRulesBuilder builder) async {
-    Response response = await container.use<Http>().post(url: "/guilds/$_guildId/auto-moderation/rules", payload: {
+    Response response = await container.use<HttpService>().post(url: "/guilds/$_guildId/auto-moderation/rules", payload: {
       'name': builder.label,
       'event_type': builder.moderationEventType.value,
       'trigger_type': builder.moderationTriggerType.value,
@@ -49,7 +49,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule> with Container 
   /// final rules = await guild.moderationRules.sync();
   /// ```
   Future<Map<Snowflake, ModerationRule>>sync () async {
-    Response response = await container.use<Http>().get(url: "/guilds/$_guildId/auto-moderation/rules");
+    Response response = await container.use<HttpService>().get(url: "/guilds/$_guildId/auto-moderation/rules");
 
     for (final payload in jsonDecode(response.body)) {
       final ModerationRule rule = ModerationRule.fromPayload(payload);

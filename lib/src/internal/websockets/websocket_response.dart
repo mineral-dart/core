@@ -33,10 +33,7 @@ class AuthenticationResponse {
 
   factory AuthenticationResponse.fromResponse (Response response) {
     if (response.statusCode == 401) {
-      throw TokenException(
-        prefix: 'INVALID TOKEN',
-        cause: 'APP_TOKEN isn\'t valid in your environment'
-      );
+      throw TokenException('APP_TOKEN isn\'t valid in your environment');
     }
 
     dynamic json = jsonDecode(response.body);

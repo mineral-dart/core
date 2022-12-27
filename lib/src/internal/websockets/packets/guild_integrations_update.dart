@@ -1,6 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -8,7 +8,7 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 class GuildIntegrationsUpdate with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager manager = container.use<EventManager>();
+    EventService manager = container.use<EventService>();
     MineralClient client = container.use<MineralClient>();
 
     dynamic payload = websocketResponse.payload;

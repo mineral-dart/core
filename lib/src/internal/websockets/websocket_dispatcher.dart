@@ -75,7 +75,7 @@ class WebsocketDispatcher {
 
     if (_packets.containsKey(packet)) {
       List<WebsocketPacket> packets = _packets[packet]!;
-      for (var packet in packets) {
+      for (final packet in packets) {
         await packet.handle(websocketResponse);
       }
     }

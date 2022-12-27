@@ -1,6 +1,7 @@
 abstract class MineralState<T> {
-  String name;
   T state;
 
-  MineralState(this.name, this.state);
+  MineralState(this.state);
+
+  String get name => runtimeType.toString();
 }

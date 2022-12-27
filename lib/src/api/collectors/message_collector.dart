@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/src/api/collectors/collector.dart';
-import 'package:mineral/src/internal/managers/collector_manager.dart';
+import 'package:mineral/src/internal/services/collector_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 
 class MessageCollector extends Collector with Container {
@@ -12,11 +12,13 @@ class MessageCollector extends Collector with Container {
 
   final bool Function(Message message) _filter;
   final int? _max;
-  Duration? _time;
+  final Duration? _time;
 
   MessageCollector (this._filter, this._max, this._time): super(MessageCreateEvent) {
-    container.use<CollectorManager>().subscribe(this);
+    container.use<CollectorService>().subscribe(this);
   }
+
+  Duration? get time => _time;
 
   @override
   Future<dynamic> collect () async {
@@ -36,7 +38,7 @@ class MessageCollector extends Collector with Container {
   }
 
   Future<void> _unsubscribe () async {
-    container.use<CollectorManager>().unsubscribe(this);
+    container.use<CollectorService>().unsubscribe(this);
     await subscription?.cancel();
   }
 }

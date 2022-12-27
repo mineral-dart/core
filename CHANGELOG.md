@@ -1,3 +1,25 @@
+## 2.4.0
+- Redesign of the order guest 
+- Implemented the new CLI from `mineral_cli`.
+- Removing dependencies using `ffi`
+- Refactor application
+- Move managers to services
+
+## 2.3.1
+- Fix bad User avatar decoration type
+- Improve `category.create()` return type
+- Make allow and deny to no required params
+
+## 2.3.0
+- Improve context menu declaration
+- Fix bad state matching
+
+## 2.2.0
+- Add plugins access to the `MineralContext`
+
+## 2.1.0
+- Migrate environment to dedicated package
+
 ## 2.0.0 - Release
 - Improve accessibility
 - Implement lasted Discord updates

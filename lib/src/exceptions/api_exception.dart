@@ -1,19 +1,15 @@
-import 'package:mineral/src/internal/managers/reporter_manager.dart';
-import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral/core/extras.dart';
+import 'package:mineral/framework.dart';
+import 'package:mineral/src/internal/services/debugger_service.dart';
 
-class ApiException implements Exception {
-  int code;
-  String cause;
+class ApiException with Container, Console implements Exception {
+  final String message;
 
-  ApiException({ required this.code, required this.cause });
+  ApiException(this.message) {
+    container.use<DebuggerService>()
+      .debug(message);
+  }
 
   @override
-  String toString () {
-    ReporterManager? reporter = ioc.use<ReporterManager>();
-    if (reporter != null) {
-      reporter.write('[ $code ] $cause');
-    }
-
-    return '[ $code ] $cause';
-  }
+  String toString () => message;
 }

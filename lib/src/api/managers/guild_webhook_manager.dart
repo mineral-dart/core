@@ -14,7 +14,7 @@ class GuildWebhookManager extends CacheManager<Webhook> with Container {
   GuildWebhookManager();
 
   Future<Map<Snowflake, Webhook>> sync () async {
-    Response response = await container.use<Http>().get(url: "/guilds/${guild.id}/webhooks");
+    Response response = await container.use<HttpService>().get(url: "/guilds/${guild.id}/webhooks");
 
     for (dynamic element in jsonDecode(response.body)) {
       Webhook webhook = Webhook.from(payload: element);

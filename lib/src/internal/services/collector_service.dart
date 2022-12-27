@@ -1,10 +1,10 @@
 import 'package:mineral/src/api/collectors/collector.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class CollectorManager extends MineralService {
+class CollectorService extends MineralService {
   final List<Collector> _collectors = [];
 
-  CollectorManager(): super(inject: true);
+  CollectorService(): super(inject: true);
 
   void subscribe (Collector collector) {
     _collectors.add(collector);

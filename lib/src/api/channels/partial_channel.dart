@@ -3,7 +3,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/channels/news_channel.dart';
 import 'package:mineral/src/api/channels/stage_channel.dart';
-import 'package:mineral/src/console.dart';
+import 'package:mineral_console/mineral_console.dart';
 
 class PartialChannel {
   final Snowflake _id;
@@ -44,7 +44,7 @@ class ChannelWrapper {
     final ChannelType? channelType = ChannelType.values.firstWhereOrNull((element) => element.value == payload['type']);
 
     if (channelType == null) {
-      Console.warn(message: "Guild channel ${payload['type']} don't exist! Please report this to our team.");
+      Console(theme: DefaultTheme()).warn("Guild channel ${payload['type']} don't exist! Please report this to our team.");
       return null;
     }
 
@@ -70,7 +70,7 @@ class ChannelWrapper {
       case ChannelType.guildForum:
         return ForumChannel.fromPayload(payload);
       default:
-        Console.warn(message: "$channelType is not supported");
+        Console(theme: DefaultTheme()).warn('$channelType is not supported');
     }
 
     return null;

@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
@@ -19,6 +20,8 @@ import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 enum VerificationLevel {
   none(0),
@@ -43,7 +46,7 @@ class SourceGuild {
   ImageFormater? get icon => _icon;
 }
 
-class Guild with Container {
+class Guild with Container, Console {
   Snowflake _id;
   String _name;
   Snowflake _ownerId;
@@ -91,8 +94,8 @@ class Guild with Container {
   EmojiManager _emojis;
   ModerationRuleManager _moderationRules;
   GuildWebhookManager _webhooks;
-  GuildScheduledEventManager _scheduledEvents;
-  CommandManager _commands;
+  GuildScheduledEventService _scheduledEvents;
+  CommandService _commands;
 
   Guild(
     this._id,
@@ -185,9 +188,9 @@ class Guild with Container {
   EmojiManager get emojis => _emojis;
   ModerationRuleManager get moderationRules => _moderationRules;
   GuildWebhookManager get webhooks => _webhooks;
-  GuildScheduledEventManager get scheduledEvents => _scheduledEvents;
+  GuildScheduledEventService get scheduledEvents => _scheduledEvents;
   Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot);
-  CommandManager get commands => _commands;
+  CommandService get commands => _commands;
 
   /// ### Modifies the [name] of this.
   ///
@@ -196,7 +199,7 @@ class Guild with Container {
   /// await guild.setName('Guild name');
   /// ```
   Future<void> setName (String name) async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'name': name });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'name': name });
 
     if (response.statusCode == 200) {
       _name = name;
@@ -212,7 +215,7 @@ class Guild with Container {
   /// await guild.setVerificationLevel(VerificationLevel.veryHigh);
   /// ```
   Future<void> setVerificationLevel (VerificationLevel level) async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'verification_level': level.value });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'verification_level': level.value });
 
     if (response.statusCode == 200) {
       _verificationLevel = level;
@@ -228,7 +231,7 @@ class Guild with Container {
   /// await guild.setMessageNotification(1);
   /// ```
   Future<void> setMessageNotification (int level) async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'default_message_notifications': level });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'default_message_notifications': level });
 
     if (response.statusCode == 200) {
       _defaultMessageNotifications = level;
@@ -246,7 +249,7 @@ class Guild with Container {
   /// await guild.setExplicitContentFilter(2);
   /// ```
   Future<void> setExplicitContentFilter (int level) async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'explicit_content_filter': level });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'explicit_content_filter': level });
 
     if (response.statusCode == 200) {
       _explicitContentFilter = level;
@@ -264,7 +267,7 @@ class Guild with Container {
   /// }
   /// ```
   Future<void> setAfkChannel (VoiceChannel channel) async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'afk_channel_id': channel.id });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'afk_channel_id': channel.id });
 
     if (response.statusCode == 200) {
       _afkChannelId = channel.id;
@@ -289,11 +292,11 @@ class Guild with Container {
     MineralClient client = container.use<MineralClient>();
 
     if (owner.id != client.user.id) {
-      Console.error(message: "You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
+      console.error("You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
       return;
     }
 
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'owner_id': guildMember.user.id });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'owner_id': guildMember.user.id });
 
     if (response.statusCode == 200) {
       _ownerId = guildMember.id;
@@ -310,12 +313,12 @@ class Guild with Container {
   /// ```
   Future<void> setSplash (String filename) async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.inviteSplash} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.inviteSplash} feature.');
     }
 
     String file = await Helper.getPicture(filename);
 
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'splash': file });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'splash': file });
 
     if (response.statusCode == 200) {
       _splash = ImageFormater(file, '');
@@ -332,10 +335,10 @@ class Guild with Container {
   /// ```
   Future<void> removeSplash () async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.inviteSplash} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.inviteSplash} feature.');
     }
 
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'splash': null });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'splash': null });
 
     if (response.statusCode == 200) {
       _splash = null;
@@ -352,12 +355,12 @@ class Guild with Container {
   /// ```
   Future<void> setDiscoverySplash (String filename) async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.discoverable} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.discoverable} feature.');
     }
 
     String file = await Helper.getPicture(filename);
 
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'discovery_splash': file });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'discovery_splash': file });
 
     if (response.statusCode == 200) {
       _discoverySplash = ImageFormater(file, '');
@@ -374,10 +377,10 @@ class Guild with Container {
   /// ```
   Future<void> removeDiscoverySplash () async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.discoverable} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.discoverable} feature.');
     }
 
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'discovery_splash': null });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'discovery_splash': null });
 
     if (response.statusCode == 200) {
       _discoverySplash = null;
@@ -394,12 +397,12 @@ class Guild with Container {
   /// ```
   Future<void> setBanner (String filename) async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.banner} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.banner} feature.');
     }
 
     String file = await Helper.getPicture(filename);
 
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'banner': file });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'banner': file });
 
     if (response.statusCode == 200) {
       _banner = ImageFormater(file, '');
@@ -416,10 +419,10 @@ class Guild with Container {
   /// ```
   Future<void> removeBanner () async {
     if (!features.contains(GuildFeature.banner)) {
-      throw MissingFeatureException(cause: "The $name guild does not have the ${GuildFeature.banner} feature.");
+      throw MissingFeatureException('The $name guild does not have the ${GuildFeature.banner} feature.');
     }
 
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'banner': null });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'banner': null });
 
     if (response.statusCode == 200) {
       _banner = null;
@@ -435,7 +438,7 @@ class Guild with Container {
   Future<void> setIcon (String filename) async {
     String file = await Helper.getPicture(filename);
 
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'icon': file });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'icon': file });
 
     if (response.statusCode == 200) {
       _icon = ImageFormater(file, '');
@@ -449,7 +452,7 @@ class Guild with Container {
   /// await guild.removeIcon();
   /// ```
   Future<void> removeIcon () async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'icon': null });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'icon': null });
 
     if (response.statusCode == 200) {
       _icon = null;
@@ -467,7 +470,7 @@ class Guild with Container {
   /// }
   /// ```
   Future<void> setSystemChannel (TextChannel channel) async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'system_channel_id': channel.id });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'system_channel_id': channel.id });
 
     if (response.statusCode == 200) {
       _systemChannelId = channel.id;
@@ -486,7 +489,7 @@ class Guild with Container {
   /// }
   /// ```
   Future<void> setRulesChannel (TextChannel channel) async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'rules_channel_id': channel.id });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'rules_channel_id': channel.id });
 
     if (response.statusCode == 200) {
       _rulesChannelId = channel.id;
@@ -505,7 +508,7 @@ class Guild with Container {
   /// }
   /// ```
   Future<void> setPublicUpdateChannel (TextChannel channel) async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': channel.id });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': channel.id });
 
     if (response.statusCode == 200) {
       _publicUpdatesChannelId = channel.id;
@@ -522,7 +525,7 @@ class Guild with Container {
   /// await guild.setPreferredLocale(Locale.fr); // 👈 Now you can use Lang enum
   /// ```
   Future<void> setPreferredLocale (Locale locale) async {
-    Response response = await container.use<Http>().patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': locale });
+    Response response = await container.use<HttpService>().patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': locale });
 
     if (response.statusCode == 200) {
       _preferredLocale = locale as String;
@@ -536,7 +539,7 @@ class Guild with Container {
   /// await guild.leave();
   /// ```
   Future<void> leave () async {
-    Response response = await container.use<Http>().destroy(url: '/users/@me/guilds/$id');
+    Response response = await container.use<HttpService>().destroy(url: '/users/@me/guilds/$id');
 
     if (response.statusCode == 204) {
       MineralClient client = container.use<MineralClient>();
@@ -545,7 +548,7 @@ class Guild with Container {
   }
 
   Future<GuildPreview> preview () async {
-    Response response = await container.use<Http>().get(url: '/guilds/$id/preview');
+    Response response = await container.use<HttpService>().get(url: '/guilds/$id/preview');
 
     return GuildPreview.from(
       guild: this,
@@ -560,7 +563,7 @@ class Guild with Container {
   /// await member.unban();
   /// ```
   Future<bool> ban (Snowflake memberId, { String? reason }) async {
-    Response response = await container.use<Http>().destroy(url: '/guilds/$id/bans/$memberId');
+    Response response = await container.use<HttpService>().destroy(url: '/guilds/$id/bans/$memberId');
 
     return response.statusCode == 200;
   }
@@ -572,7 +575,7 @@ class Guild with Container {
     required ChannelManager channelManager,
     required ModerationRuleManager moderationRuleManager,
     required WebhookManager webhookManager,
-    required GuildScheduledEventManager guildScheduledEventManager,
+    required GuildScheduledEventService guildScheduledEventService,
     required dynamic payload
   }) {
     StickerManager stickerManager = StickerManager();
@@ -581,7 +584,7 @@ class Guild with Container {
     for (String element in payload['features']) {
       GuildFeature? feature = GuildFeature.values.firstWhereOrNull((feature) => feature.value == element);
       if (feature == null) {
-        Console.warn(message: 'Guild feature $element don\'t exist! Please report this to our team.');
+        ioc.use<MineralCli>().console.warn('Guild feature $element don\'t exist! Please report this to our team.');
       } else {
         features.add(feature);
       }
@@ -631,8 +634,8 @@ class Guild with Container {
       features,
       moderationRuleManager,
       GuildWebhookManager.fromManager(webhookManager: webhookManager),
-      guildScheduledEventManager,
-      CommandManager(payload['id']),
+      guildScheduledEventService,
+      CommandService(payload['id']),
     );
   }
 }

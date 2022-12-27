@@ -5,13 +5,13 @@ import 'package:mineral_ioc/ioc.dart';
 
 typedef EventContainer<T> = Map<T, List<MineralEvent>>;
 
-class EventManager extends MineralService {
+class EventService extends MineralService {
   final EventContainer _events = {};
   final StreamController<Event> controller = StreamController();
 
   EventContainer get events => _events;
 
-  EventManager(): super(inject: true) {
+  EventService(): super(inject: true) {
     controller.stream.listen((_event) {
       final events = _events.get(_event.runtimeType);
       if (events != null) {
