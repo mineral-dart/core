@@ -36,17 +36,18 @@ class Heartbeat with Console {
   }
 
   void _send() {
-    console.info('Shard #${shard.id} Heartbeat called');
-
     ackMissing += 1;
 
-    if(ackMissing == 2) console.warn('Shard #${shard.id} Discord didn\'t receive last heartbeat');
-    if(ackMissing >= 3 && ackMissing <= 5) {
+    if (ackMissing == 2) {
+      console.warn('Shard #${shard.id} Discord didn\'t receive last heartbeat');
+    }
+
+    if (ackMissing >= 3 && ackMissing <= 5) {
       console.error('Shard #${shard.id} Discord didn\'t receive last ${ackMissing - 1} heartbeats, connection restart...');
       shard.reconnect(resume: true);
       return;
     }
-    if(ackMissing > 5) {
+    if (ackMissing > 5) {
       console.error('Shard #${shard.id} Discord didn\'t receive last ${ackMissing - 1} heartbeats, shutdown.');
       throw ShardException('Discord didn\'t receive ${ackMissing - 1} heartbeats');
     }

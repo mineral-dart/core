@@ -19,7 +19,7 @@ class DebuggerService extends MineralService with Container {
     }
 
     if (service.environment.getFromStringKey('DEBUGGER') == 'true') {
-      _write('$prefix $message');
+      _write(message);
     }
   }
 

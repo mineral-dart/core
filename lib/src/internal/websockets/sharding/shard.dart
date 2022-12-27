@@ -182,7 +182,11 @@ class Shard with Container {
     final debugger = container.use<DebuggerService>();
 
     if (initialized || canQueue == false) {
-      debugger.debug('[SEND] Shard #$id : ${opCode.toString()} | $data');
+      if (opCode != OpCode.identify) {
+        debugger.debug('[SEND] Shard #$id : ${opCode.toString()} | $data');
+      } else {
+        debugger.debug('[SEND] Shard #$id : ${opCode.toString()}');
+      }
       final Map<String, dynamic> rawData = {
         'op': opCode.value,
         'd': data
