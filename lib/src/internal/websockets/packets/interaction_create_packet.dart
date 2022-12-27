@@ -9,7 +9,7 @@ import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
@@ -18,7 +18,7 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 class InteractionCreatePacket with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     MineralClient client = container.use<MineralClient>();
 
     dynamic payload = websocketResponse.payload;
@@ -52,7 +52,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
     if (member != null) {
       final Interaction interaction = Interaction.from(payload: payload);
-      eventManager.controller.add(InteractionCreateEvent(interaction));
+      eventService.controller.add(InteractionCreateEvent(interaction));
     }
   }
 
@@ -89,7 +89,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
         return;
     }
 
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
 
     dynamic channel = guild.channels.cache.get(payload['channel_id']);
     if (channel == null) {
@@ -108,11 +108,11 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     ButtonInteraction buttonInteraction = ButtonInteraction.fromPayload(payload);
-    eventManager.controller.add(ButtonCreateEvent(buttonInteraction));
+    eventService.controller.add(ButtonCreateEvent(buttonInteraction));
   }
 
   _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     ModalInteraction modalInteraction = ModalInteraction.from(payload: payload);
 
     for (dynamic row in payload['data']['components']) {
@@ -121,11 +121,11 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       }
     }
 
-    eventManager.controller.add(ModalCreateEvent(modalInteraction));
+    eventService.controller.add(ModalCreateEvent(modalInteraction));
   }
 
   void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
     Message? message = channel?.messages.cache.get(payload['message']['id']);
 
@@ -138,6 +138,6 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       interaction.data.add(value);
     }
 
-    eventManager.controller.add(SelectMenuCreateEvent(interaction));
+    eventService.controller.add(SelectMenuCreateEvent(interaction));
   }
 }

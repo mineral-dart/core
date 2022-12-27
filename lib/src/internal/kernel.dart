@@ -13,13 +13,13 @@ import 'package:mineral/src/internal/managers/collector_manager.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/managers/environment_service.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
 import 'package:mineral/src/internal/managers/intent_manager.dart';
 import 'package:mineral/src/internal/managers/module_manager.dart';
 import 'package:mineral/src/internal/managers/plugin_manager.dart';
 import 'package:mineral/src/internal/managers/state_manager.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/debugger_service.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/themes/mineral_theme.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral_cli/mineral_cli.dart';
@@ -27,7 +27,7 @@ import 'package:mineral_console/mineral_console.dart';
 
 class Kernel with Container {
   final EnvironmentService _environment = EnvironmentService();
-  final EventManager events = EventManager();
+  final EventService events = EventService();
   final CommandManager commands = CommandManager();
   final StateManager states = StateManager();
   final ModuleManager modules = ModuleManager();

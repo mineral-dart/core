@@ -94,7 +94,7 @@ class Guild with Container, Console {
   EmojiManager _emojis;
   ModerationRuleManager _moderationRules;
   GuildWebhookManager _webhooks;
-  GuildScheduledEventManager _scheduledEvents;
+  GuildScheduledEventService _scheduledEvents;
   CommandManager _commands;
 
   Guild(
@@ -188,7 +188,7 @@ class Guild with Container, Console {
   EmojiManager get emojis => _emojis;
   ModerationRuleManager get moderationRules => _moderationRules;
   GuildWebhookManager get webhooks => _webhooks;
-  GuildScheduledEventManager get scheduledEvents => _scheduledEvents;
+  GuildScheduledEventService get scheduledEvents => _scheduledEvents;
   Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot);
   CommandManager get commands => _commands;
 
@@ -575,7 +575,7 @@ class Guild with Container, Console {
     required ChannelManager channelManager,
     required ModerationRuleManager moderationRuleManager,
     required WebhookManager webhookManager,
-    required GuildScheduledEventManager guildScheduledEventManager,
+    required GuildScheduledEventService guildScheduledEventService,
     required dynamic payload
   }) {
     StickerManager stickerManager = StickerManager();
@@ -634,7 +634,7 @@ class Guild with Container, Console {
       features,
       moderationRuleManager,
       GuildWebhookManager.fromManager(webhookManager: webhookManager),
-      guildScheduledEventManager,
+      guildScheduledEventService,
       CommandManager(payload['id']),
     );
   }

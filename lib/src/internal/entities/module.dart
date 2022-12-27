@@ -1,6 +1,6 @@
 import 'package:mineral/src/internal/managers/command_manager.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/managers/state_manager.dart';
 
 abstract class MineralModule {
@@ -10,7 +10,7 @@ abstract class MineralModule {
 
   MineralModule(this.identifier, this.label, this.description);
 
-  late final EventManager events;
+  late final EventService events;
   late final CommandManager commands;
   late final StateManager states;
   late final ContextMenuService contextMenus;

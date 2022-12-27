@@ -1,7 +1,7 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
@@ -9,7 +9,7 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 class GuildScheduledEventUserRemove with Container implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     MineralClient client = container.use<MineralClient>();
 
     dynamic payload = websocketResponse.payload;
@@ -25,7 +25,7 @@ class GuildScheduledEventUserRemove with Container implements WebsocketPacket {
       final GuildMember? member = payload['guild_id'] != null ? guild.members.cache.get(user.id) : null;
       GuildScheduledEvent event = guild.scheduledEvents.cache.get(eventId)!;
 
-      eventManager.controller.add(GuildScheduledEventUserRemoveEvent(event, user, member));
+      eventService.controller.add(GuildScheduledEventUserRemoveEvent(event, user, member));
     }
   }
 }

@@ -1,7 +1,7 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/src/internal/managers/command_manager.dart';
-import 'package:mineral/src/internal/managers/event_manager.dart';
+import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
@@ -11,7 +11,7 @@ import 'package:mineral/src/internal/websockets/websocket_response.dart';
 class ReadyPacket with Container implements WebsocketPacket {
   @override
   Future<void> handle (WebsocketResponse websocketResponse) async {
-    EventManager eventManager = container.use<EventManager>();
+    EventService eventService = container.use<EventService>();
     ShardManager shardManager = container.use<ShardManager>();
     try {
       container.use<MineralClient>();
@@ -29,7 +29,7 @@ class ReadyPacket with Container implements WebsocketPacket {
       shard.resumeURL = websocketResponse.payload['resume_gateway_url'];
       shard.initialize();
 
-      eventManager.controller.add(ReadyEvent(container.use<MineralClient>()));
+      eventService.controller.add(ReadyEvent(container.use<MineralClient>()));
     }
   }
 }
