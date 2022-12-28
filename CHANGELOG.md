@@ -1,3 +1,7 @@
+## 2.4.1
+- Fix wrong template (make:event)
+- Fix wrong template (make:state)
+
 ## 2.4.0
 - Redesign of the order guest 
 - Implemented the new CLI from `mineral_cli`.
