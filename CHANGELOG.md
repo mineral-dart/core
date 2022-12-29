@@ -1,3 +1,7 @@
+## 2.6.0
+- Remove mixins to public access
+- Add `createdAt` and `updatedAt` to `Message`
+
 ## 2.5.0
 - Add `make:service`
 - Add `<String>.equals(value)`

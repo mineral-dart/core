@@ -28,6 +28,8 @@ class DmMessage extends PartialMessage<DmChannel>  {
     super._guildId,
     super.channelId,
     super.reactions,
+    super.timestamp,
+    super.editedTimestamp,
     this.author,
   );
 
@@ -113,6 +115,8 @@ class DmMessage extends PartialMessage<DmChannel>  {
       null,
       channel.id,
       MessageReactionManager<DmChannel, DmMessage>(channel),
+      payload['timestamp'],
+      payload['edited_timestamp'],
       user!,
     );
 

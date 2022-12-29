@@ -23,6 +23,8 @@ class PartialMessage<T extends PartialChannel>  {
   final Snowflake? _guildId;
   final Snowflake _channelId;
   final MessageReactionManager _reactions;
+  final String _timestamp;
+  final String? _editedTimestamp;
 
   PartialMessage(
     this._id,
@@ -40,6 +42,8 @@ class PartialMessage<T extends PartialChannel>  {
     this._guildId,
     this._channelId,
     this._reactions,
+    this._timestamp,
+    this._editedTimestamp
   );
 
   Snowflake get id => _id;
@@ -71,4 +75,7 @@ class PartialMessage<T extends PartialChannel>  {
     : ioc.use<MineralClient>().dmChannels.cache.getOrFail(_channelId);
 
   MessageReactionManager get reactions => _reactions;
+
+  DateTime get createdAt => DateTime.parse(_timestamp);
+  DateTime? get updatedAt =>  _editedTimestamp != null ? DateTime.parse(_editedTimestamp!) : null;
 }

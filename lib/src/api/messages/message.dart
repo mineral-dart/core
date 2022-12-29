@@ -35,6 +35,8 @@ class Message extends PartialMessage<TextBasedChannel>  {
     super._guildId,
     super._channelId,
     super._reactions,
+    super.timestamp,
+    super.editedTimestamp,
     this._authorId,
     this._mentions,
   );
@@ -224,6 +226,8 @@ class Message extends PartialMessage<TextBasedChannel>  {
       payload['guild_id'],
       payload['channel_id'],
       MessageReactionManager<GuildChannel, Message>(channel),
+      payload['timestamp'],
+      payload['edited_timestamp'],
       payload['author']['id'],
       MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false)
     );
