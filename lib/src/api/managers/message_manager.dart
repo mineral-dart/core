@@ -7,19 +7,22 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class MessageManager extends CacheManager<PartialMessage>  {
+class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
   late final TextBasedChannel channel;
 
-  Future<Map<Snowflake, PartialMessage>> sync () async {
+  Future<Map<Snowflake, T>> fetch () async {
     cache.clear();
 
     Response response = await ioc.use<HttpService>().get(url: "/channels/${channel.id}/messages");
     dynamic payload = jsonDecode(response.body);
 
-    for(dynamic element in payload) {
-      // @Todo add DM case (guild not exist)
-      Message message = Message.from(channel: channel, payload: element);
-      cache.putIfAbsent(message.id, () => message);
+    if (payload['guild_id'] == null) {
+      // @Todo add DM case
+    } else {
+      for (final element in payload) {
+        Message message = Message.from(channel: channel, payload: element);
+        cache.putIfAbsent(message.id, () => message as T);
+      }
     }
 
     return cache;

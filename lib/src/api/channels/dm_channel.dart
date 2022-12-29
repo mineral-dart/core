@@ -1,11 +1,12 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
+import 'package:mineral/src/api/messages/dm_message.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class DmChannel extends PartialChannel {
   Snowflake? lastMessageId;
-  MessageManager messages;
+  MessageManager<DmMessage> messages;
   Map<Snowflake, User> recipients;
 
   DmChannel(
