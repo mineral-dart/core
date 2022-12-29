@@ -1,13 +1,13 @@
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
-import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class NewsChannel extends TextChannel with Container, Console {
+class NewsChannel extends TextChannel  {
   NewsChannel(
     super.description,
     super.lastPinTime,
@@ -30,11 +30,11 @@ class NewsChannel extends TextChannel with Container, Console {
   /// Follow this by an webhook application
   Future<void> follow (Snowflake webhookId) async {
     if (type != ChannelType.guildNews) {
-      console.warn('Impossible to follow the channel $id as it is not an announcement channel');
+      ioc.use<MineralCli>().console.warn('Impossible to follow the channel $id as it is not an announcement channel');
       return;
     }
 
-    await container.use<HttpService>().post(url: '/channels/$id/followers', payload: {
+    await ioc.use<HttpService>().post(url: '/channels/$id/followers', payload: {
       'webhook_channel_id': webhookId
     });
   }

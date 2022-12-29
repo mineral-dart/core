@@ -2,7 +2,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 enum InteractionCallbackType {
   pong(1),
@@ -17,7 +17,7 @@ enum InteractionCallbackType {
   const InteractionCallbackType(this.value);
 }
 
-class Interaction with Container {
+class Interaction  {
   Snowflake _id;
   String? _label;
   Snowflake _applicationId;
@@ -35,11 +35,11 @@ class Interaction with Container {
   int get version => _version;
   InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
   String get token => _token;
-  Guild? get guild => container.use<MineralClient>().guilds.cache.get(_guildId);
+  Guild? get guild => ioc.use<MineralClient>().guilds.cache.get(_guildId);
 
   User get user => _guildId != null
     ? guild!.members.cache.getOrFail(_userId).user
-    : container.use<MineralClient>().users.cache.getOrFail(_userId);
+    : ioc.use<MineralClient>().users.cache.getOrFail(_userId);
 
   GuildMember? get member => guild?.members.cache.get(_userId);
 
@@ -64,7 +64,7 @@ class Interaction with Container {
       }
     }
 
-    await container.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
+    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.channelMessageWithSource.value,
       'data': {
         'tts': tts ?? false,
@@ -89,7 +89,7 @@ class Interaction with Container {
   /// await interaction.modal(modal);
   /// ```
   Future<Interaction> modal (ModalBuilder modal) async {
-    await container.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
+    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.modal.value,
       'data': modal.toJson(),
     });
@@ -99,7 +99,7 @@ class Interaction with Container {
 
   /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
   Future<Interaction> deferredReply () async {
-    await container.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
+    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
       'type': InteractionCallbackType.deferredChannelMessageWithSource.value
     });
 
@@ -108,7 +108,7 @@ class Interaction with Container {
 
   /// ### Edit original response to interaction
   Future<Interaction> updateReply({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components }) async {
-    await container.use<HttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original", payload: {
+    await ioc.use<HttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original", payload: {
       'content': content,
       'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
       'components': components != null ? components.map((e) => e.toJson()).toList() : [],
@@ -128,7 +128,7 @@ class Interaction with Container {
   /// });
   /// ```
   Future<void> delete () async {
-    await container.use<HttpService>().destroy(url: "/webhooks/$applicationId/$token/messages/@original");
+    await ioc.use<HttpService>().destroy(url: "/webhooks/$applicationId/$token/messages/@original");
   }
 
   factory Interaction.from({ required dynamic payload }) {

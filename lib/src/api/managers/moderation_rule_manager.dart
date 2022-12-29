@@ -5,9 +5,9 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class ModerationRuleManager extends CacheManager<ModerationRule> with Container {
+class ModerationRuleManager extends CacheManager<ModerationRule>  {
   final Snowflake _guildId;
 
   ModerationRuleManager(this._guildId);
@@ -28,7 +28,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule> with Container 
   /// );
   /// ```
   Future<ModerationRule?> create (ModerationRulesBuilder builder) async {
-    Response response = await container.use<HttpService>().post(url: "/guilds/$_guildId/auto-moderation/rules", payload: {
+    Response response = await ioc.use<HttpService>().post(url: "/guilds/$_guildId/auto-moderation/rules", payload: {
       'name': builder.label,
       'event_type': builder.moderationEventType.value,
       'trigger_type': builder.moderationTriggerType.value,
@@ -49,7 +49,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule> with Container 
   /// final rules = await guild.moderationRules.sync();
   /// ```
   Future<Map<Snowflake, ModerationRule>>sync () async {
-    Response response = await container.use<HttpService>().get(url: "/guilds/$_guildId/auto-moderation/rules");
+    Response response = await ioc.use<HttpService>().get(url: "/guilds/$_guildId/auto-moderation/rules");
 
     for (final payload in jsonDecode(response.body)) {
       final ModerationRule rule = ModerationRule.fromPayload(payload);

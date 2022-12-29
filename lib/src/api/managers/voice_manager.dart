@@ -2,9 +2,10 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class VoiceManager with Container, Console {
+class VoiceManager  {
   bool _isDeaf;
   bool _isMute;
   bool _isSelfMute;
@@ -24,7 +25,7 @@ class VoiceManager with Container, Console {
   bool get hasVideo => _hasVideo;
   bool? get hasStream => _hasStream;
 
-  Guild get guild => container.use<MineralClient>().guilds.cache.getOrFail(_guildId);
+  Guild get guild => ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId);
   VoiceChannel? get channel => guild.channels.cache.get(_channelId);
   GuildMember get member => guild.members.cache.getOrFail(_memberId);
 
@@ -39,7 +40,7 @@ class VoiceManager with Container, Console {
   /// }
   Future<void> setMute(bool value) async {
 
-    final Response response = await container.use<HttpService>().patch(
+    final Response response = await ioc.use<HttpService>().patch(
       url: '/guilds/$_guildId/members/$_memberId',
       payload: {'mute': value}
     );
@@ -49,7 +50,7 @@ class VoiceManager with Container, Console {
       return;
     }
 
-    console.error('Unable to ${value ? 'mute' : 'unmute'} user #$_memberId');
+    ioc.use<MineralCli>().console.error('Unable to ${value ? 'mute' : 'unmute'} user #$_memberId');
   }
 
   /// ### Deafens or not a server member
@@ -62,7 +63,7 @@ class VoiceManager with Container, Console {
   ///   await member.setDeaf(true);
   /// }
   Future<void> setDeaf(bool value) async {
-    final Response response = await container.use<HttpService>().patch(
+    final Response response = await ioc.use<HttpService>().patch(
       url: '/guilds/$_guildId/members/$_memberId',
       payload: {'deaf': value}
     );
@@ -72,7 +73,7 @@ class VoiceManager with Container, Console {
       return;
     }
 
-    console.error('Unable to ${value ? 'deaf' : 'undeaf'} user #$_memberId');
+    ioc.use<MineralCli>().console.error('Unable to ${value ? 'deaf' : 'undeaf'} user #$_memberId');
   }
 
   /// ### Moves a member from one voice channel to another
@@ -103,7 +104,7 @@ class VoiceManager with Container, Console {
   }
 
   Future<void> _updateChannel(Snowflake? channelId) async {
-    final Response response = await container.use<HttpService>().patch(
+    final Response response = await ioc.use<HttpService>().patch(
       url: '/guilds/$_guildId/members/$_memberId',
       payload: {'channel_id': channelId}
     );
@@ -113,7 +114,7 @@ class VoiceManager with Container, Console {
       return;
     }
 
-    console.error('Unable to move user $_memberId to $channelId');
+    ioc.use<MineralCli>().console.error('Unable to move user $_memberId to $channelId');
   }
 
   factory VoiceManager.from(dynamic payload, Snowflake guildId) {

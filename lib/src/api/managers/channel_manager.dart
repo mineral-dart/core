@@ -7,20 +7,20 @@ import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class ChannelManager extends CacheManager<GuildChannel> with Container {
+class ChannelManager extends CacheManager<GuildChannel>  {
   final Snowflake _guildId;
 
   ChannelManager(this._guildId);
 
-  Guild get guild => container.use<MineralClient>().guilds.cache.getOrFail(_guildId);
+  Guild get guild => ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId);
 
   Future<Map<Snowflake, GuildChannel>> sync () async {
     final _cached = cache.clone;
     cache.clear();
 
-    Response response = await container.use<HttpService>().get(url: "/guilds/$_guildId/channels");
+    Response response = await ioc.use<HttpService>().get(url: "/guilds/$_guildId/channels");
     dynamic payload = jsonDecode(response.body);
 
     if (response.statusCode != 200) {
@@ -40,7 +40,7 @@ class ChannelManager extends CacheManager<GuildChannel> with Container {
   }
 
   Future<T?> create<T extends GuildChannel> (ChannelBuilder builder) async {
-    Response response = await container.use<HttpService>().post(url: '/guilds/$_guildId/channels', payload: builder.payload);
+    Response response = await ioc.use<HttpService>().post(url: '/guilds/$_guildId/channels', payload: builder.payload);
     dynamic payload = jsonDecode(response.body);
 
     final GuildChannel? channel = ChannelWrapper.create(payload);

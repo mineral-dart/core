@@ -5,15 +5,15 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class MessageManager extends CacheManager<PartialMessage> with Container {
+class MessageManager extends CacheManager<PartialMessage>  {
   late final TextBasedChannel channel;
 
   Future<Map<Snowflake, PartialMessage>> sync () async {
     cache.clear();
 
-    Response response = await container.use<HttpService>().get(url: "/channels/${channel.id}/messages");
+    Response response = await ioc.use<HttpService>().get(url: "/channels/${channel.id}/messages");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {

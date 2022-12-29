@@ -6,15 +6,15 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/helper.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class EmojiManager extends CacheManager<Emoji> with Container {
+class EmojiManager extends CacheManager<Emoji>  {
   late final Guild guild;
 
   Future<Map<Snowflake, Emoji>> sync () async {
     cache.clear();
 
-    Response response = await container.use<HttpService>().get(url: "/guilds/${guild.id}/emojis");
+    Response response = await ioc.use<HttpService>().get(url: "/guilds/${guild.id}/emojis");
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -38,7 +38,7 @@ class EmojiManager extends CacheManager<Emoji> with Container {
 
     String image = await Helper.getPicture(path);
 
-    Response response = await container.use<HttpService>().post(url: "/guilds/${guild.id}/emojis", payload: {
+    Response response = await ioc.use<HttpService>().post(url: "/guilds/${guild.id}/emojis", payload: {
       'name': label,
       'image': image,
       'roles': roles ?? [],

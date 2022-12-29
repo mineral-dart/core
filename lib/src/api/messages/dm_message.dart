@@ -7,10 +7,9 @@ import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class DmMessage extends PartialMessage<DmChannel> with Container {
+class DmMessage extends PartialMessage<DmChannel>  {
   User author;
 
   DmMessage(

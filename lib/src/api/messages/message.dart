@@ -12,9 +12,10 @@ import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class Message extends PartialMessage<TextBasedChannel> with Container, Console {
+class Message extends PartialMessage<TextBasedChannel>  {
   Snowflake _authorId;
   final MessageMention _mentions;
 
@@ -47,7 +48,7 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
 
   Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
 
-    Response response = await container.use<HttpService>().patch(
+    Response response = await ioc.use<HttpService>().patch(
       url: '/channels/${channel.id}/messages/$id',
       payload: {
         'content': content,
@@ -65,33 +66,33 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
 
   Future<void> crossPost () async {
     if (channel.type != ChannelType.guildNews) {
-      console.warn('Message $id cannot be cross-posted as it is not in an announcement channel');
+      ioc.use<MineralCli>().console.warn('Message $id cannot be cross-posted as it is not in an announcement channel');
       return;
     }
 
-    await container.use<HttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
+    await ioc.use<HttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
   }
 
   Future<void> pin (Snowflake webhookId) async {
     if (isPinned) {
-      console.warn('Message $id is already pinned');
+      ioc.use<MineralCli>().console.warn('Message $id is already pinned');
       return;
     }
 
-    await container.use<HttpService>().put(url: '/channels/${channel.id}/pins/$id', payload: {});
+    await ioc.use<HttpService>().put(url: '/channels/${channel.id}/pins/$id', payload: {});
   }
 
   Future<void> unpin () async {
     if (!isPinned) {
-      console.warn('Message $id isn\'t pinned');
+      ioc.use<MineralCli>().console.warn('Message $id isn\'t pinned');
       return;
     }
 
-    await container.use<HttpService>().destroy(url: '/channels/${channel.id}/pins/$id');
+    await ioc.use<HttpService>().destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
   Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    MineralClient client = container.use<MineralClient>();
+    MineralClient client = ioc.use<MineralClient>();
 
     Response response = await client.sendMessage(channel,
       content: content,

@@ -7,9 +7,9 @@ import 'package:mineral/core/collectors.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class PartialTextChannel extends GuildChannel with Container {
+class PartialTextChannel extends GuildChannel{
   final MessageManager _messages;
   final Snowflake? _lastMessageId;
 
@@ -27,7 +27,7 @@ class PartialTextChannel extends GuildChannel with Container {
   /// await channel.send(content: 'Hello world ! 🔥');
   /// ```
   Future<Message?> send ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    MineralClient client = container.use<MineralClient>();
+    MineralClient client = ioc.use<MineralClient>();
 
     Response response = await client.sendMessage(this,
       content: content,

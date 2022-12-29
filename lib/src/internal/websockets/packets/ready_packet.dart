@@ -1,8 +1,8 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';

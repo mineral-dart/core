@@ -7,9 +7,9 @@ import 'package:mineral/src/api/guilds/guild_member_reaction.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/guild_member_reaction_manager.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class MessageReactionManager<C extends PartialChannel, T extends PartialMessage> extends CacheManager with Container {
+class MessageReactionManager<C extends PartialChannel, T extends PartialMessage> extends CacheManager  {
   Map<Snowflake, GuildMemberReactionManager> users = {};
 
   final C _channel;
@@ -18,13 +18,13 @@ class MessageReactionManager<C extends PartialChannel, T extends PartialMessage>
   MessageReactionManager(this._channel);
 
   Future<void> add (EmojiBuilder emojiBuilder) async {
-    MineralClient client = container.use<MineralClient>();
+    MineralClient client = ioc.use<MineralClient>();
 
     String _emoji = emojiBuilder.emoji is Emoji
       ? '${emojiBuilder.emoji.label}:${emojiBuilder.emoji.id}'
       : emojiBuilder.emoji.label;
 
-    Response response = await container.use<HttpService>().put(url: '/channels/${_channel.id}/messages/${message.id}/reactions/$_emoji/@me', payload: {});
+    Response response = await ioc.use<HttpService>().put(url: '/channels/${_channel.id}/messages/${message.id}/reactions/$_emoji/@me', payload: {});
 
     if (response.statusCode == 204) {
       final key = emojiBuilder.emoji.id != '' ? emojiBuilder.emoji.id : emojiBuilder.emoji.label;
@@ -48,7 +48,7 @@ class MessageReactionManager<C extends PartialChannel, T extends PartialMessage>
   }
 
   Future<void> removeAll () async {
-    Response response = await container.use<HttpService>().destroy(url: '/channels/${message.channel.id}/messages/${message.id}/reactions');
+    Response response = await ioc.use<HttpService>().destroy(url: '/channels/${message.channel.id}/messages/${message.id}/reactions');
     if (response.statusCode == 200) {
       cache.clear();
     }
