@@ -8,4 +8,5 @@ class ButtonCreateEvent extends Event {
 
   ButtonInteraction get interaction => _interaction;
   GuildMember get sender => _interaction.member!;
+  TextBasedChannel get channel => _interaction.channel;
 }
