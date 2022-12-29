@@ -53,7 +53,7 @@ class NewsChannel extends TextChannel  {
       ThreadManager(payload['guild_id']) ,
       payload['nsfw'] ?? false,
       WebhookManager(payload['guild_id'], payload['id']),
-      MessageManager(),
+      MessageManager(payload['guild_id'], payload['id']),
       payload['last_message_id'],
       payload['guild_id'],
       payload['parent_id'],

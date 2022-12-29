@@ -59,11 +59,12 @@ class HttpService extends MineralService {
       final dynamic payload = jsonDecode(response.body);
 
       if (Helper.hasKey('components', payload)) {
-        final List<int> components = payload['components'];
+        print(payload);
+        final List components = payload['components'];
 
         throw ApiException(payload['components'].length > 1
-          ? '$response.statusCode : components at ${components.join(', ')} positions are invalid'
-          : '$response.statusCode : the component at position ${components.first} is invalid'
+          ? '${response.statusCode} : components at ${components.join(', ')} positions are invalid'
+          : '${response.statusCode} : the component at position ${components.first} is invalid'
         );
       }
 

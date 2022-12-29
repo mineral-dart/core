@@ -82,7 +82,7 @@ class VoiceChannel extends TextBasedChannel {
       payload['video_quality_mode'] ?? VideoQualityMode.auto.value,
       payload['nsfw'] ?? false,
       WebhookManager(payload['guild_id'], payload['id']),
-      MessageManager(),
+      MessageManager(payload['guild_id'], payload['id']),
       payload['last_message_id'],
       payload['guild_id'],
       payload['parent_id'],
