@@ -1,3 +1,7 @@
+## 2.6.1
+- Remove `late` keyword & refactor
+- Improve `ButtonInteration` access with getters
+
 ## 2.6.0
 - Remove mixins to public access
 - Add `createdAt` and `updatedAt` to `Message`
