@@ -29,7 +29,7 @@ class DmChannel extends PartialChannel {
 
     return DmChannel(
       payload['last_message_id'],
-      MessageManager(),
+      MessageManager(null, payload['id']),
       users,
       payload['id'],
     );

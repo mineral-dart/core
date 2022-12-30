@@ -223,7 +223,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
       messageAttachments,
       payload['flags'],
       payload['pinned'],
-      payload['guild_id'],
+      channel.guild.id,
       payload['channel_id'],
       MessageReactionManager<GuildChannel, Message>(channel),
       payload['timestamp'],

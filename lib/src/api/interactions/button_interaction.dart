@@ -25,7 +25,9 @@ class ButtonInteraction extends Interaction {
   Snowflake get customId => _customId;
   Snowflake? get mid => _messageId;
   Message? get message => (guild?.channels.cache.get(_channelId) as dynamic)?.messages.cache[_messageId];
-  GuildChannel? get channel => guild?.channels.cache.get<GuildChannel>(_channelId);
+  TextBasedChannel get channel => guild != null
+    ? guild!.channels.cache.getOrFail<TextBasedChannel>(_channelId)
+    : throw UnsupportedError('DM channel is not supported');
 
   factory ButtonInteraction.fromPayload(dynamic payload) {
     return ButtonInteraction(
