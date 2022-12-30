@@ -48,7 +48,7 @@ class PartialMessage<T extends PartialChannel>  {
 
   Snowflake get id => _id;
 
-  String? get content => _content;
+  String get content => _content;
 
   bool get tts => _tts;
 
