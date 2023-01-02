@@ -44,6 +44,16 @@ class HttpService extends MineralService {
     return responseWrapper(response);
   }
 
+  Future<http.Response> postWithFiles({ required String url, required List<http.MultipartFile> files, Map<String, String> fields = const {}, Map<String, String>? headers }) async {
+    final request = http.MultipartRequest('POST', Uri.parse("$baseUrl$url"))
+        ..files.addAll(files)
+        ..fields.addAll(fields)
+        ..headers.addAll(_getHeaders(headers));
+
+    final response = await request.send();
+    return responseWrapper(http.Response.bytes(await response.stream.toBytes(), response.statusCode));
+  }
+
   Map<String, String> _getHeaders (Map<String, String>? headers) {
     Map<String, String> map = Map.from(_headers);
 
