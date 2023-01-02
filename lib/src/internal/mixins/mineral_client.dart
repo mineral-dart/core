@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
@@ -6,9 +7,10 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral_ioc/ioc.dart';
+import 'package:path/path.dart';
 
 extension MineralClientExtension on MineralClient {
-  Future<Response> sendMessage (PartialChannel channel, { String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, Map<String, Snowflake>? messageReference }) async {
+  Future<Response> sendMessage (PartialChannel channel, { String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<MessageAttachmentBuilder>? attachments, bool? tts, Map<String, Snowflake>? messageReference }) async {
     List<dynamic> embedList = [];
     if (embeds != null) {
       for (EmbedBuilder element in embeds) {
@@ -23,13 +25,30 @@ extension MineralClientExtension on MineralClient {
       }
     }
 
-    return await ioc.use<HttpService>().post(url: '/channels/${channel.id}/messages', payload: {
-      'tts': tts ?? false,
-      'content': content,
-      'embeds': embeds != null ? embedList : [],
-      'components': components != null ? componentList : [],
-      'message_reference': messageReference != null ? { ...messageReference, 'fail_if_not_exists': true } : null,
-    });
+    dynamic payload = {
+        'tts': tts ?? false,
+        'content': content,
+        'embeds': embeds != null ? embedList : [],
+        'components': components != null ? componentList : [],
+        'message_reference': messageReference != null ? { ...messageReference, 'fail_if_not_exists': true } : null,
+    };
+
+    if (attachments != null) {
+      List<MultipartFile> files = [];
+      List<dynamic> attachmentList = [];
+
+      for (int i = 0; i < attachments.length; i++) {
+        files.add(await MultipartFile.fromPath("files[$i]", join(Directory.current.path, attachments[i].url)));
+        attachmentList.add(attachments[i].toJson(id: i));
+      }
+
+      payload['attachments'] = attachmentList;
+      Map<String, String> fields = {'payload_json': jsonEncode(payload)};
+
+      return await ioc.use<HttpService>().postWithFiles(url: '/channels/${channel.id}/messages', files: files, fields: fields);
+    }
+
+    return await ioc.use<HttpService>().post(url: '/channels/${channel.id}/messages', payload: payload);
   }
 
   Future<T?> createChannel<T extends GuildChannel> (Snowflake guildId, ChannelBuilder builder) async {
