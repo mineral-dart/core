@@ -43,9 +43,7 @@ extension MineralClientExtension on MineralClient {
       }
 
       payload['attachments'] = attachmentList;
-      Map<String, String> fields = {'payload_json': jsonEncode(payload)};
-
-      return await ioc.use<HttpService>().postWithFiles(url: '/channels/${channel.id}/messages', files: files, fields: fields);
+      return await ioc.use<HttpService>().postWithFiles(url: '/channels/${channel.id}/messages', files: files, payload: payload);
     }
 
     return await ioc.use<HttpService>().post(url: '/channels/${channel.id}/messages', payload: payload);

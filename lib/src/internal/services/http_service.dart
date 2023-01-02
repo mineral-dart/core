@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral_ioc/ioc.dart';
@@ -44,7 +45,10 @@ class HttpService extends MineralService {
     return responseWrapper(response);
   }
 
-  Future<http.Response> postWithFiles({ required String url, required List<http.MultipartFile> files, Map<String, String> fields = const {}, Map<String, String>? headers }) async {
+  Future<http.Response> postWithFiles({ required String url, required List<http.MultipartFile> files, dynamic payload, Map<String, String>? headers }) async {
+    Map<String, String> fields = {};
+    if(payload != null) fields.putIfAbsent("payload_json", () => jsonEncode(payload));
+
     final request = http.MultipartRequest('POST', Uri.parse("$baseUrl$url"))
         ..files.addAll(files)
         ..fields.addAll(fields)
