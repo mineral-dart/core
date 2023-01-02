@@ -26,13 +26,14 @@ class PartialTextChannel extends GuildChannel{
   /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
   /// await channel.send(content: 'Hello world ! 🔥');
   /// ```
-  Future<Message?> send ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
+  Future<Message?> send ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<MessageAttachmentBuilder>? attachments, bool? tts }) async {
     MineralClient client = ioc.use<MineralClient>();
 
     Response response = await client.sendMessage(this,
       content: content,
       embeds: embeds,
-      components: components
+      components: components,
+      attachments: attachments
     );
 
     if (response.statusCode == 200) {

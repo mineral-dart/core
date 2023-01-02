@@ -1,8 +1,12 @@
+import 'dart:io';
+
+import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral_ioc/ioc.dart';
+import 'package:path/path.dart';
 
 enum InteractionCallbackType {
   pong(1),
@@ -49,7 +53,7 @@ class Interaction  {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
+  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<MessageAttachmentBuilder>? attachments, bool? tts, bool? private }) async {
     List<dynamic> embedList = [];
     if (embeds != null) {
       for (EmbedBuilder element in embeds) {
@@ -64,7 +68,7 @@ class Interaction  {
       }
     }
 
-    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
+    dynamic payload = {
       'type': InteractionCallbackType.channelMessageWithSource.value,
       'data': {
         'tts': tts ?? false,
@@ -73,8 +77,25 @@ class Interaction  {
         'components': components != null ? components.map((e) => e.toJson()).toList() : [],
         'flags': private != null && private == true ? 1 << 6 : null,
       }
-    });
+    };
 
+    if(attachments != null) {
+      List<MultipartFile> files = [];
+      List<dynamic> attachmentList = [];
+
+      for (int i = 0; i < attachments.length; i++) {
+        files.add(await MultipartFile.fromPath("files[$i]", join(Directory.current.path, attachments[i].url)));
+        attachmentList.add(attachments[i].toJson(id: i));
+      }
+
+      payload['attachments'] = attachmentList;
+
+      print(payload);
+      await ioc.use<HttpService>().postWithFiles(url: "/interactions/$id/$token/callback", files: files, payload: payload);
+      return this;
+    }
+
+    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: payload);
     return this;
   }
 
