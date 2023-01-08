@@ -10,6 +10,7 @@ import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/channels/news_channel.dart';
 
 import 'package:mineral/src/api/channels/stage_channel.dart';
+import 'package:mineral/src/internal/websockets/events/dm_channel_create_event.dart';
 
 class ChannelCreatePacket with Container, Console implements WebsocketPacket {
   @override
@@ -27,9 +28,12 @@ class ChannelCreatePacket with Container, Console implements WebsocketPacket {
     if (channelType == null) {
       return null;
     }
-    
+
     guild?.channels.cache.set(channel.id, channel);
-    if(!channelType.equals(ChannelType.groupDm) && !channelType.equals(ChannelType.private)) {
+    
+    if(channelType.equals(ChannelType.private)) {
+      eventService.controller.add(DMChannelCreateEvent(channel));
+    } else {
       eventService.controller.add(ChannelCreateEvent(channel));
     }
   }
