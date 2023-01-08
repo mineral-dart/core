@@ -33,6 +33,7 @@ enum ChannelType {
 
   final int value;
   const ChannelType(this.value);
+  bool equals (dynamic value) => this == value;
 }
 
 class ChannelWrapper {
