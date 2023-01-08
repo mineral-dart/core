@@ -6,8 +6,12 @@ import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+import 'package:mineral/src/api/channels/dm_channel.dart';
+import 'package:mineral/src/api/channels/news_channel.dart';
 
-class ChannelCreatePacket with Container implements WebsocketPacket {
+import 'package:mineral/src/api/channels/stage_channel.dart';
+
+class ChannelCreatePacket with Container, Console implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {
     EventService eventService = container.use<EventService>();
@@ -15,11 +19,18 @@ class ChannelCreatePacket with Container implements WebsocketPacket {
 
     dynamic payload = websocketResponse.payload;
 
+    final ChannelType? channelType = ChannelType.values.firstWhere((element) => element.value == payload['type']);
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
-    GuildChannel channel = ChannelWrapper.create(payload);
 
+    final channel = ChannelWrapper.create(payload);
+
+    if (channelType == null) {
+      return null;
+    }
+    
     guild?.channels.cache.set(channel.id, channel);
-
-    eventService.controller.add(ChannelCreateEvent(channel));
+    if(!channelType.equals(ChannelType.groupDm) && !channelType.equals(ChannelType.private)) {
+      eventService.controller.add(ChannelCreateEvent(channel));
+    }
   }
 }
