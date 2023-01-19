@@ -53,7 +53,7 @@ class Interaction  {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<MessageAttachmentBuilder>? attachments, bool? tts, bool? private }) async {
+  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts, bool? private }) async {
     List<dynamic> embedList = [];
     if (embeds != null) {
       for (EmbedBuilder element in embeds) {
@@ -84,13 +84,13 @@ class Interaction  {
       List<dynamic> attachmentList = [];
 
       for (int i = 0; i < attachments.length; i++) {
-        files.add(await MultipartFile.fromPath("files[$i]", join(Directory.current.path, attachments[i].url)));
-        attachmentList.add(attachments[i].toJson(id: i));
+        AttachmentBuilder attachment = attachments[i];
+        attachmentList.add(attachment.toJson(id: i));
+        files.add(attachment.toFile(i));
       }
 
       payload['attachments'] = attachmentList;
 
-      print(payload);
       await ioc.use<HttpService>().postWithFiles(url: "/interactions/$id/$token/callback", files: files, payload: payload);
       return this;
     }
