@@ -1,3 +1,4 @@
+import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
@@ -49,7 +50,7 @@ class Interaction  {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
+  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts, bool? private }) async {
     List<dynamic> embedList = [];
     if (embeds != null) {
       for (EmbedBuilder element in embeds) {
@@ -64,7 +65,7 @@ class Interaction  {
       }
     }
 
-    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
+    dynamic payload = {
       'type': InteractionCallbackType.channelMessageWithSource.value,
       'data': {
         'tts': tts ?? false,
@@ -73,8 +74,25 @@ class Interaction  {
         'components': components != null ? components.map((e) => e.toJson()).toList() : [],
         'flags': private != null && private == true ? 1 << 6 : null,
       }
-    });
+    };
 
+    if(attachments != null) {
+      List<MultipartFile> files = [];
+      List<dynamic> attachmentList = [];
+
+      for (int i = 0; i < attachments.length; i++) {
+        AttachmentBuilder attachment = attachments[i];
+        attachmentList.add(attachment.toJson(id: i));
+        files.add(attachment.toFile(i));
+      }
+
+      payload['attachments'] = attachmentList;
+
+      await ioc.use<HttpService>().postWithFiles(url: "/interactions/$id/$token/callback", files: files, payload: payload);
+      return this;
+    }
+
+    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: payload);
     return this;
   }
 
