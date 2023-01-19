@@ -93,7 +93,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
     await ioc.use<HttpService>().destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
-  Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<MessageAttachmentBuilder>? attachments, bool? tts }) async {
+  Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     MineralClient client = ioc.use<MineralClient>();
 
     Response response = await client.sendMessage(channel,
