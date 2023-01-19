@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral_ioc/ioc.dart';
