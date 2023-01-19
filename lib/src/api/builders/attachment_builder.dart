@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:http/http.dart';
@@ -25,9 +26,13 @@ class AttachmentBuilder {
     return MultipartFile.fromBytes("files[$id]", content, filename: filename);
   }
 
-  factory AttachmentBuilder.file(String path, {String? description}) {
+  factory AttachmentBuilder.file(String path, {String? description, String? overrideFilename}) {
     File file = File(join(Directory.current.path, path));
     return AttachmentBuilder(file.readAsBytesSync(), filename: basename(file.path), description: description);
+  }
+
+  factory AttachmentBuilder.base64(String content, {required String filename, String? description}) {
+    return AttachmentBuilder(base64Decode(content), filename: filename, description: description);
   }
 
 }
