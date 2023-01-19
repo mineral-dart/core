@@ -26,11 +26,47 @@ class AttachmentBuilder {
     return MultipartFile.fromBytes("files[$id]", content, filename: filename);
   }
 
+  /// ### Create an attachment from a path
+  ///
+  /// Example :
+  /// ```dart
+  /// await interaction.reply(
+  ///   content: 'Hello World!',
+  ///   attachments: [AttachmentBuilder.file('assets/hello.png', description: 'Idk']
+  /// );
+  /// ```
+  ///
+  /// You can integrate image in embeds :
+  /// ```dart
+  /// await interaction.reply(
+  ///   content: 'Hello World!',
+  ///   attachments: [AttachmentBuilder.file('assets/hello.png', description: 'Idk'],
+  ///   embeds: [EmbedBuilder(title: 'How are you?', thumbnail: Thumbnail(url: 'attachment://hello.png'))]
+  /// );
+  /// ```
   factory AttachmentBuilder.file(String path, {String? description, String? overrideFilename}) {
     File file = File(join(Directory.current.path, path));
     return AttachmentBuilder(file.readAsBytesSync(), filename: basename(file.path), description: description);
   }
 
+  /// ### Create an attachment from a base64 string
+  ///
+  /// Example :
+  /// ```dart
+  /// await interaction.reply(
+  ///   content: 'Hello World!',
+  ///   attachments: [AttachmentBuilder.base64('BASE 64 ENCODED STRING', filename: 'hello.png', description: 'Use a file? Nah!']
+  /// );
+  /// ```
+  ///
+  /// You can integrate image in embeds :
+  /// ```dart
+  /// await interaction.reply(
+  ///   content: 'Hello World!',
+  ///   attachments: [AttachmentBuilder.base64('BASE 64 ENCODED STRING', filename: 'hello.png', description: 'Use a file? Nah!'],
+  ///   embeds: [EmbedBuilder(title: 'How are you?', thumbnail: Thumbnail(url: 'attachment://hello.png'))]
+  /// );
+  /// ```
   factory AttachmentBuilder.base64(String content, {required String filename, String? description}) {
     return AttachmentBuilder(base64Decode(content), filename: filename, description: description);
   }
