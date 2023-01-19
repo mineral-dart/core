@@ -1,3 +1,7 @@
+## 2.6.2
+- Fix bad guild id
+- Remove nullable content of `Message`
+
 ## 2.6.1
 - Remove `late` keyword & refactor
 - Improve `ButtonInteration` access with getters
