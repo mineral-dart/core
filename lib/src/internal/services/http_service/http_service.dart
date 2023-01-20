@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/helper.dart';
+import 'package:mineral/src/internal/services/http_service/http_method.dart';
+import 'package:mineral/src/internal/services/http_service/request_builder.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class HttpService extends MineralService {
@@ -71,68 +73,5 @@ class HttpService extends MineralService {
     }
 
     return response;
-  }
-}
-
-enum HttpMethod {
-  get('GET'),
-  post('POST'),
-  put('PUT'),
-  patch('PATCH'),
-  destroy('DELETE');
-
-  final String uid;
-  const HttpMethod(this.uid);
-}
-
-class RequestBuilder {
-  final HttpMethod _method;
-  final String _baseUrl;
-  final String _url;
-  final List<http.MultipartFile> _files = [];
-  dynamic _payload;
-  final Map<String, String> _headers;
-
-  final dynamic Function(http.Response response) _responseWrapper;
-
-  RequestBuilder(this._method, this._baseUrl, this._url, this._headers, this._responseWrapper);
-
-  RequestBuilder payload (dynamic fields) {
-    _payload = fields;
-    return this;
-  }
-
-  RequestBuilder files (List<http.MultipartFile> files) {
-    _files.addAll(files);
-    return this;
-  }
-
-  RequestBuilder headers (Map<String, String> headers) {
-    _headers.addAll(headers);
-    return this;
-  }
-
-  Future<http.Response> build () async {
-    final Map<String, String> fields = {};
-    http.StreamedResponse response;
-
-    if (_files.isNotEmpty) {
-      fields.putIfAbsent('payload_json', () => jsonEncode(_payload));
-
-      final request = http.MultipartRequest(_method.uid, Uri.parse('$_baseUrl$_url'))
-        ..files.addAll(_files)
-        ..fields.addAll(fields)
-        ..headers.addAll(_headers);
-
-      response = await request.send();
-    } else {
-      final request = http.Request(_method.uid, Uri.parse('$_baseUrl$_url'))
-        ..body = jsonEncode(_payload)
-        ..headers.addAll(_headers);
-
-      response = await request.send();
-    }
-
-    return _responseWrapper(http.Response.bytes(await response.stream.toBytes(), response.statusCode));
   }
 }
