@@ -32,10 +32,7 @@ class HttpService extends MineralService {
 
   RequestBuilder patch ({ required String url }) => RequestBuilder(HttpMethod.patch, baseUrl, url, _headers, (http.Response response) => responseWrapper(response));
 
-  Future<http.Response> destroy ({ required String url, Map<String, String>? headers }) async {
-    final response = await http.delete(Uri.parse("$baseUrl$url"), headers: _getHeaders(headers));
-    return responseWrapper(response);
-  }
+  RequestBuilder destroy ({ required String url, Map<String, String>? headers }) => RequestBuilder(HttpMethod.destroy, baseUrl, url, _headers, (http.Response response) => responseWrapper(response));
 
   Map<String, String> _getHeaders (Map<String, String>? headers) {
     Map<String, String> map = Map.from(_headers);

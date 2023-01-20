@@ -42,16 +42,12 @@ class MemberRoleManager extends CacheManager<Role>  {
       throw NotExistException('You can\'t add a role that don\'t exist!');
     }
 
-    Map<String, String> headers = {};
-    if(reason != null) {
-      headers.putIfAbsent('X-Audit-Log-Reason', () => reason);
-    }
-
-    Response response = await ioc.use<HttpService>().put(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
-      .headers(headers)
+    Response response = await ioc.use<HttpService>()
+      .put(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
+      .auditLog(reason)
       .build();
 
-    if(response.statusCode == 204) {
+    if (response.statusCode == 204) {
       cache.putIfAbsent(id, () => role);
     }
   }
@@ -74,17 +70,11 @@ class MemberRoleManager extends CacheManager<Role>  {
   /// await member.roles.remove('446556480850755604', reason: 'Hello, World!');
   /// ```
   Future<void> remove (Snowflake id, {String? reason}) async {
-    Map<String, String> headers = {};
-    if(reason != null) {
-      headers.putIfAbsent('X-Audit-Log-Reason', () => reason);
-    }
+    Response response = await ioc.use<HttpService>().destroy(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
+      .auditLog(reason)
+      .build();
 
-    Response response = await ioc.use<HttpService>().destroy(
-      url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
-      headers: headers
-    );
-
-    if(response.statusCode == 204) {
+    if (response.statusCode == 204) {
       cache.remove(id);
     }
   }
@@ -108,19 +98,19 @@ class MemberRoleManager extends CacheManager<Role>  {
   /// ```
   Future<void> toggle (Snowflake id, {String? reason}) async {
     return cache.containsKey(id)
-        ? remove(id, reason: reason)
-        : add(id, reason: reason);
+      ? remove(id, reason: reason)
+      : add(id, reason: reason);
   }
 
   Future<Map<Snowflake, Role>> sync () async {
     Response response = await ioc.use<HttpService>().get(url: "/guilds/${manager.guild.id}/members/$memberId");
-    if(response.statusCode == 200) {
+    if (response.statusCode == 200) {
       cache.clear();
       dynamic payload = jsonDecode(response.body)['roles'];
 
-      for(dynamic element in payload) {
+      for (final element in payload) {
         final Role? role = manager.cache.get(element);
-        if(role != null) {
+        if (role != null) {
           cache.putIfAbsent(role.id, () => role);
         }
       }

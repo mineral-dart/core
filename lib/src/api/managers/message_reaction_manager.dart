@@ -49,7 +49,10 @@ class MessageReactionManager<C extends PartialChannel, T extends PartialMessage>
   }
 
   Future<void> removeAll () async {
-    Response response = await ioc.use<HttpService>().destroy(url: '/channels/${message.channel.id}/messages/${message.id}/reactions');
+    Response response = await ioc.use<HttpService>()
+      .destroy(url: '/channels/${message.channel.id}/messages/${message.id}/reactions')
+      .build();
+
     if (response.statusCode == 200) {
       cache.clear();
     }

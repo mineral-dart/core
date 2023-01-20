@@ -65,9 +65,10 @@ class Webhook {
   /// ```dart
   /// await webhook.setLabel('My webhook name');
   /// ```
-  Future<void> setLabel (String label) async {
+  Future<void> setLabel (String label, { String? reason }) async {
     Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
       .payload({ 'name': label })
+      .auditLog(reason)
       .build();
 
     if (response.statusCode == 200) {
@@ -81,10 +82,11 @@ class Webhook {
   /// ```dart
   /// await webhook.setAvatar('assets/images/my_picture.png');
   /// ```
-  Future<void> setAvatar (String avatar) async {
+  Future<void> setAvatar (String avatar, { String? reason }) async {
     String path = await Helper.getPicture(avatar);
     Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
       .payload({ 'avatar': path })
+      .auditLog(reason)
       .build();
 
     if (response.statusCode == 200) {
@@ -98,9 +100,10 @@ class Webhook {
   /// ```dart
   /// await webhook.setChannel('xxxxxxx');
   /// ```
-  Future<void> setChannel (Snowflake channelId) async {
+  Future<void> setChannel (Snowflake channelId, { String? reason }) async {
     Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
       .payload({ 'channel_id': channelId })
+      .auditLog(reason)
       .build();
 
     if (response.statusCode == 200) {
@@ -115,13 +118,14 @@ class Webhook {
   /// ```dart
   /// await webhook.update(label: 'My webhook name', avatar: 'assets/images/my_picture.png');
   /// ```
-  Future<void> update ({ String? label, String? avatar }) async {
+  Future<void> update ({ String? label, String? avatar, String? reason }) async {
     String? path = avatar != null
       ?  await Helper.getPicture(avatar)
       : this.label;
 
     Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
       .payload({ 'label': label ?? this.label, 'avatar': path })
+      .auditLog(reason)
       .build();
 
     if (response.statusCode == 200) {
@@ -136,7 +140,6 @@ class Webhook {
   /// await webhook.execute(content: 'Hello World !');
   /// ```
   Future<void> execute ({ String? content, String? username, String? avatarUrl, bool? tts, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? suppressEmbed }) async {
-
     List<dynamic> embedList = [];
     if (embeds != null) {
       for (EmbedBuilder element in embeds) {
@@ -169,8 +172,10 @@ class Webhook {
   /// ```dart
   /// await webhook.delete();
   /// ```
-  Future<bool> delete () async {
-    Response response = await ioc.use<HttpService>().destroy(url: "/webhooks/$id/$token");
+  Future<bool> delete ({ String? reason }) async {
+    Response response = await ioc.use<HttpService>().destroy(url: "/webhooks/$id/$token")
+      .auditLog(reason)
+      .build();
 
     return response.statusCode == 200;
   }

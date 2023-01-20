@@ -573,7 +573,7 @@ class Guild {
   /// await guild.leave();
   /// ```
   Future<void> leave () async {
-    Response response = await ioc.use<HttpService>().destroy(url: '/users/@me/guilds/$id');
+    Response response = await ioc.use<HttpService>().destroy(url: '/users/@me/guilds/$id').build();
 
     if (response.statusCode == 204) {
       MineralClient client = ioc.use<MineralClient>();
@@ -597,7 +597,9 @@ class Guild {
   /// await member.unban();
   /// ```
   Future<bool> ban (Snowflake memberId, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().destroy(url: '/guilds/$id/bans/$memberId');
+    Response response = await ioc.use<HttpService>().destroy(url: '/guilds/$id/bans/$memberId')
+      .auditLog(reason)
+      .build();
 
     return response.statusCode == 200;
   }

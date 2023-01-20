@@ -30,6 +30,13 @@ class RequestBuilder {
     return this;
   }
 
+  RequestBuilder auditLog (String? value) {
+    if (value != null) {
+      _headers.putIfAbsent('X-Audit-Log-Reason', () => value);
+    }
+    return this;
+  }
+
   Future<Response> build () async {
     final Map<String, String> fields = {};
     StreamedResponse response;

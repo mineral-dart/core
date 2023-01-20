@@ -63,9 +63,10 @@ class Sticker {
   FormatType get format => _format;
   int? get sortValue => _sortValue;
 
-  Future<void> setName (String name) async {
+  Future<void> setName (String name, { String? reason }) async {
     Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
       .payload({ 'name': name })
+      .auditLog(reason)
       .build();
 
     if (response.statusCode == 200) {
@@ -73,9 +74,10 @@ class Sticker {
     }
   }
 
-  Future<void> setDescription (String description) async {
+  Future<void> setDescription (String description, { String? reason }) async {
     Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
       .payload({ 'description': description })
+      .auditLog(reason)
       .build();
 
     if (response.statusCode == 200) {
@@ -83,9 +85,10 @@ class Sticker {
     }
   }
 
-  Future<void> setTags (String tags) async {
+  Future<void> setTags (String tags, { String? reason }) async {
     Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
       .payload({ 'tags': tags })
+      .auditLog(reason)
       .build();
 
     if (response.statusCode == 200) {
@@ -93,8 +96,11 @@ class Sticker {
     }
   }
 
-  Future<void> delete () async {
-    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/${guild.id}/stickers/$id");
+  Future<void> delete ({ String? reason }) async {
+    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/${guild.id}/stickers/$id")
+      .auditLog(reason)
+      .build();
+    
     if (response.statusCode == 200) {
       manager.cache.remove(id);
     }
