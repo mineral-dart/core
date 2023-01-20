@@ -38,11 +38,9 @@ class EmojiManager extends CacheManager<Emoji>  {
 
     String image = await Helper.getPicture(path);
 
-    Response response = await ioc.use<HttpService>().post(url: "/guilds/${guild.id}/emojis", payload: {
-      'name': label,
-      'image': image,
-      'roles': roles ?? [],
-    });
+    Response response = await ioc.use<HttpService>().post(url: "/guilds/${guild.id}/emojis")
+      .payload({ 'name': label, 'image': image, 'roles': roles ?? [] })
+      .build();
 
     Emoji emoji = Emoji.from(
       memberManager: guild.members,

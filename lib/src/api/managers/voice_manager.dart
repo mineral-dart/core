@@ -40,10 +40,9 @@ class VoiceManager  {
   /// }
   Future<void> setMute(bool value) async {
 
-    final Response response = await ioc.use<HttpService>().patch(
-      url: '/guilds/$_guildId/members/$_memberId',
-      payload: {'mute': value}
-    );
+    final Response response = await ioc.use<HttpService>().patch(url: '/guilds/$_guildId/members/$_memberId')
+      .payload({'mute': value})
+      .build();
 
     if (response.statusCode == 204 || response.statusCode == 200) {
       _isMute = value;
@@ -63,10 +62,9 @@ class VoiceManager  {
   ///   await member.setDeaf(true);
   /// }
   Future<void> setDeaf(bool value) async {
-    final Response response = await ioc.use<HttpService>().patch(
-      url: '/guilds/$_guildId/members/$_memberId',
-      payload: {'deaf': value}
-    );
+    final Response response = await ioc.use<HttpService>().patch(url: '/guilds/$_guildId/members/$_memberId')
+    .payload({'deaf': value})
+    .build();
 
     if (response.statusCode == 204 || response.statusCode == 200) {
       _isDeaf = value;
@@ -104,10 +102,9 @@ class VoiceManager  {
   }
 
   Future<void> _updateChannel(Snowflake? channelId) async {
-    final Response response = await ioc.use<HttpService>().patch(
-      url: '/guilds/$_guildId/members/$_memberId',
-      payload: {'channel_id': channelId}
-    );
+    final Response response = await ioc.use<HttpService>().patch(url: '/guilds/$_guildId/members/$_memberId')
+      .payload({'channel_id': channelId})
+      .build();
 
     if (response.statusCode == 204 || response.statusCode == 200) {
       _channelId = _channelId;

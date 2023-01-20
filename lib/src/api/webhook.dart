@@ -66,7 +66,9 @@ class Webhook {
   /// await webhook.setLabel('My webhook name');
   /// ```
   Future<void> setLabel (String label) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id", payload: { 'name': label });
+    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
+      .payload({ 'name': label })
+      .build();
 
     if (response.statusCode == 200) {
       _label = label;
@@ -81,7 +83,9 @@ class Webhook {
   /// ```
   Future<void> setAvatar (String avatar) async {
     String path = await Helper.getPicture(avatar);
-    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id", payload: { 'avatar': path });
+    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
+      .payload({ 'avatar': path })
+      .build();
 
     if (response.statusCode == 200) {
       avatar = path;
@@ -95,7 +99,9 @@ class Webhook {
   /// await webhook.setChannel('xxxxxxx');
   /// ```
   Future<void> setChannel (Snowflake channelId) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id", payload: { 'channel_id': channelId });
+    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
+      .payload({ 'channel_id': channelId })
+      .build();
 
     if (response.statusCode == 200) {
       _channelId = channelId;
@@ -114,10 +120,9 @@ class Webhook {
       ?  await Helper.getPicture(avatar)
       : this.label;
 
-    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id", payload: {
-      'label': label ?? this.label,
-      'avatar': path,
-    });
+    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
+      .payload({ 'label': label ?? this.label, 'avatar': path })
+      .build();
 
     if (response.statusCode == 200) {
       if (label != null) _label = label;
@@ -146,15 +151,16 @@ class Webhook {
       }
     }
 
-    await ioc.use<HttpService>().post(url: "/webhooks/$id/$token", payload: {
-      'username': username,
-      'avatar_url': avatarUrl,
-      'content': content,
-      'embeds': embeds != null ? embedList : [],
-      'components': components != null ? componentList : [],
-      'tts': tts ?? false,
-      'flags': suppressEmbed != null ? MessageFlag.suppressEmbeds.value : null
-    });
+    await ioc.use<HttpService>().post(url: "/webhooks/$id/$token")
+      .payload({
+        'username': username,
+        'avatar_url': avatarUrl,
+        'content': content,
+        'embeds': embeds != null ? embedList : [],
+        'components': components != null ? componentList : [],
+        'tts': tts ?? false,
+        'flags': suppressEmbed != null ? MessageFlag.suppressEmbeds.value : null
+      }).build();
   }
 
   /// ### Delete this

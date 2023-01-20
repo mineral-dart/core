@@ -35,7 +35,8 @@ class MemberRoleManager extends CacheManager<Role>  {
   /// ```dart
   /// await member.roles.add('446556480850755604', reason: 'I love this user');
   /// ```
-  Future<void> add (Snowflake id, {String? reason}) async {    Role? role = manager.cache.get(id);
+  Future<void> add (Snowflake id, {String? reason}) async {
+    Role? role = manager.cache.get(id);
 
     if(role == null) {
       throw NotExistException('You can\'t add a role that don\'t exist!');
@@ -46,11 +47,9 @@ class MemberRoleManager extends CacheManager<Role>  {
       headers.putIfAbsent('X-Audit-Log-Reason', () => reason);
     }
 
-    Response response = await ioc.use<HttpService>().put(
-      url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
-      payload: {},
-      headers: headers
-    );
+    Response response = await ioc.use<HttpService>().put(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
+      .headers(headers)
+      .build();
 
     if(response.statusCode == 204) {
       cache.putIfAbsent(id, () => role);

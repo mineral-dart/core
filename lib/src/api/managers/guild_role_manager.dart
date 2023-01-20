@@ -61,15 +61,16 @@ class GuildRoleManager extends CacheManager<Role>  {
     String? _icon = icon != null ? await Helper.getPicture(icon) : null;
     int? _permissions = permissions != null ? Helper.reduceRolePermissions(permissions) : null;
 
-    Response response = await ioc.use<HttpService>().post(url: "/guilds/$_guildId}/roles", payload: {
-      'name': label,
-      'color': color != null ? Helper.toRgbColor(color) : null,
-      'hoist': hoist ?? false,
-      'mentionable': mentionable ?? false,
-      'unicode_emoji': unicode,
-      'icon': _icon,
-      'permissions': _permissions
-    });
+    Response response = await ioc.use<HttpService>().post(url: "/guilds/$_guildId}/roles")
+      .payload({
+        'name': label,
+        'color': color != null ? Helper.toRgbColor(color) : null,
+        'hoist': hoist ?? false,
+        'mentionable': mentionable ?? false,
+        'unicode_emoji': unicode,
+        'icon': _icon,
+        'permissions': _permissions
+      }).build();
 
     Role role = Role.from(
       roleManager: this,

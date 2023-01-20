@@ -34,9 +34,9 @@ class NewsChannel extends TextChannel  {
       return;
     }
 
-    await ioc.use<HttpService>().post(url: '/channels/$id/followers', payload: {
-      'webhook_channel_id': webhookId
-    });
+    await ioc.use<HttpService>().post(url: '/channels/$id/followers')
+      .payload({ 'webhook_channel_id': webhookId })
+      .build();
   }
 
   factory NewsChannel.fromPayload(dynamic payload) {

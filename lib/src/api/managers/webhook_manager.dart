@@ -29,10 +29,9 @@ class WebhookManager extends CacheManager<Webhook>  {
   }
 
   Future<Webhook?> create ({ required String label, String? avatar }) async {
-    Response response = await ioc.use<HttpService>().post(url: "/channels/$_channelId/webhooks", payload: {
-      'name': label,
-      'avatar': avatar != null ? await Helper.getPicture(avatar) : null
-    });
+    Response response = await ioc.use<HttpService>().post(url: "/channels/$_channelId/webhooks")
+      .payload({ 'name': label, 'avatar': avatar != null ? await Helper.getPicture(avatar) : null })
+      .build();
 
     return response.statusCode == 200
       ? Webhook.from(payload: jsonDecode(response.body))

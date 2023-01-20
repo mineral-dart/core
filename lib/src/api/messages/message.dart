@@ -50,16 +50,14 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
 
-    Response response = await ioc.use<HttpService>().patch(
-      url: '/channels/${channel.id}/messages/$id',
-      payload: {
+    Response response = await ioc.use<HttpService>().patch(url: '/channels/${channel.id}/messages/$id')
+      .payload({
         'content': content,
         'embeds': embeds,
         'flags': flags,
         'allowed_mentions': allowMentions,
         'components': components,
-      }
-    );
+      }).build();
 
     return response.statusCode == 200
       ? Message.from(channel: channel, payload: jsonDecode(response.body))
@@ -72,7 +70,8 @@ class Message extends PartialMessage<TextBasedChannel>  {
       return;
     }
 
-    await ioc.use<HttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
+    await ioc.use<HttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost')
+      .build();
   }
 
   Future<void> pin (Snowflake webhookId) async {
@@ -81,7 +80,8 @@ class Message extends PartialMessage<TextBasedChannel>  {
       return;
     }
 
-    await ioc.use<HttpService>().put(url: '/channels/${channel.id}/pins/$id', payload: {});
+    await ioc.use<HttpService>().put(url: '/channels/${channel.id}/pins/$id')
+      .build();
   }
 
   Future<void> unpin () async {

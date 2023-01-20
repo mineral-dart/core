@@ -162,7 +162,9 @@ class ModerationRule {
   /// await rule.setLabel('My label');
   /// ```
   Future<void> setLabel(String label) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'label': label });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'label': label })
+      .build();
 
     if (response.statusCode == 200) {
       this.label = label;
@@ -176,7 +178,9 @@ class ModerationRule {
   /// await rule.setEventType(ModerationEventType.messageSend);
   /// ```
   Future<void> setEventType(ModerationEventType event) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'event_type': event.value });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'event_type': event.value })
+      .build();
 
     if (response.statusCode == 200) {
       eventType = event;
@@ -195,7 +199,9 @@ class ModerationRule {
   /// await rule.setTriggerMetadata(metadata);
   /// ```
   Future<void> setTriggerMetadata(ModerationTriggerMetadata triggerMetadata) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'trigger_metadata': triggerMetadata.toJson() });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'trigger_metadata': triggerMetadata.toJson() })
+      .build();
 
     if (response.statusCode == 200) {
       this.triggerMetadata = triggerMetadata;
@@ -216,9 +222,9 @@ class ModerationRule {
   /// await rule.setActions([action]);
   /// ```
   Future<void> setActions(List<ModerationAction> actions) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
-      'actions': actions.map((ModerationAction action) => action.toJson())
-    });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'actions': actions.map((ModerationAction action) => action.toJson()) })
+      .build();
 
     if (response.statusCode == 200) {
       this.actions = actions;
@@ -232,7 +238,9 @@ class ModerationRule {
   /// await rule.setEnabled(true);
   /// ```
   Future<void> setEnabled(bool value) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'value': value });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload( { 'value': value })
+      .build();
 
     if (response.statusCode == 200) {
       enabled = value;
@@ -255,9 +263,9 @@ class ModerationRule {
       TooManyException("The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
-      'exempt_roles': roles.map((Role role) => role.id)
-    });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'exempt_roles': roles.map((Role role) => role.id) })
+      .build();
 
     if (response.statusCode == 200) {
       exemptRoles = roles;
@@ -280,9 +288,9 @@ class ModerationRule {
       TooManyException("The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
-      'exempt_roles': channels.map((GuildChannel channel) => channel.id)
-    });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'exempt_roles': channels.map((GuildChannel channel) => channel.id) })
+      .build();
 
     if (response.statusCode == 200) {
       exemptChannels = channels;

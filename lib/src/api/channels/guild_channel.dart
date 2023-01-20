@@ -57,7 +57,9 @@ class GuildChannel extends PartialChannel {
 
   Future<void> update (ChannelBuilder builder) async {
     if (_validate()) {
-      await ioc.use<HttpService>().patch(url: '/channels/$id', payload: builder.payload);
+      await ioc.use<HttpService>().patch(url: '/channels/$id')
+      .payload(builder.payload)
+      .build();
     }
   }
 

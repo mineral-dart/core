@@ -64,21 +64,30 @@ class Sticker {
   int? get sortValue => _sortValue;
 
   Future<void> setName (String name) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'name': name });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
+      .payload({ 'name': name })
+      .build();
+
     if (response.statusCode == 200) {
       _name = name;
     }
   }
 
   Future<void> setDescription (String description) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'description': description });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
+      .payload({ 'description': description })
+      .build();
+
     if (response.statusCode == 200) {
       _description = description;
     }
   }
 
   Future<void> setTags (String tags) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id", payload: { 'tags': tags });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
+      .payload({ 'tags': tags })
+      .build();
+
     if (response.statusCode == 200) {
       _tags = tags;
     }

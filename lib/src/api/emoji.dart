@@ -59,7 +59,9 @@ class Emoji extends PartialEmoji {
   /// }
   /// ```
   Future<void> setLabel (String label) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id", payload: { 'name': label });
+    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id")
+      .payload({ 'name': label })
+      .build();
 
     if (response.statusCode == 200) {
       _label = label;

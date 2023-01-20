@@ -40,7 +40,10 @@ class ChannelManager extends CacheManager<GuildChannel>  {
   }
 
   Future<T?> create<T extends GuildChannel> (ChannelBuilder builder) async {
-    Response response = await ioc.use<HttpService>().post(url: '/guilds/$_guildId/channels', payload: builder.payload);
+    Response response = await ioc.use<HttpService>().post(url: '/guilds/$_guildId/channels')
+      .payload(builder.payload)
+      .build();
+
     dynamic payload = jsonDecode(response.body);
 
     final GuildChannel? channel = ChannelWrapper.create(payload);

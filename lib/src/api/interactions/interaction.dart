@@ -76,7 +76,7 @@ class Interaction  {
       }
     };
 
-    if(attachments != null) {
+    if (attachments != null) {
       List<MultipartFile> files = [];
       List<dynamic> attachmentList = [];
 
@@ -88,11 +88,18 @@ class Interaction  {
 
       payload['attachments'] = attachmentList;
 
-      await ioc.use<HttpService>().postWithFiles(url: "/interactions/$id/$token/callback", files: files, payload: payload);
+      await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback")
+        .payload(payload)
+        .files(files)
+        .build();
+
       return this;
     }
 
-    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: payload);
+    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback")
+      .payload(payload)
+      .build();
+
     return this;
   }
 
@@ -107,30 +114,31 @@ class Interaction  {
   /// await interaction.modal(modal);
   /// ```
   Future<Interaction> modal (ModalBuilder modal) async {
-    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
-      'type': InteractionCallbackType.modal.value,
-      'data': modal.toJson(),
-    });
+    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback")
+      .payload({ 'type': InteractionCallbackType.modal.value, 'data': modal.toJson() })
+      .build();
 
     return this;
   }
 
   /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
   Future<Interaction> deferredReply () async {
-    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
-      'type': InteractionCallbackType.deferredChannelMessageWithSource.value
-    });
+    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback")
+      .payload({ 'type': InteractionCallbackType.deferredChannelMessageWithSource.value })
+      .build();
 
     return this;
   }
 
   /// ### Edit original response to interaction
   Future<Interaction> updateReply({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components }) async {
-    await ioc.use<HttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original", payload: {
-      'content': content,
-      'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
-      'components': components != null ? components.map((e) => e.toJson()).toList() : [],
-    });
+    await ioc.use<HttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original")
+      .payload({
+        'content': content,
+        'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
+        'components': components != null ? components.map((e) => e.toJson()).toList() : [],
+      })
+      .build();
 
     return this;
   }

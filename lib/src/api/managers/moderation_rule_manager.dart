@@ -28,16 +28,17 @@ class ModerationRuleManager extends CacheManager<ModerationRule>  {
   /// );
   /// ```
   Future<ModerationRule?> create (ModerationRulesBuilder builder) async {
-    Response response = await ioc.use<HttpService>().post(url: "/guilds/$_guildId/auto-moderation/rules", payload: {
-      'name': builder.label,
-      'event_type': builder.moderationEventType.value,
-      'trigger_type': builder.moderationTriggerType.value,
-      'trigger_metadata': builder.triggerMetadata?.toJson(),
-      'actions': builder.actions.map((action) => action.toJson()).toList(),
-      'enabled': builder.enabled,
-      'exempt_roles': builder.exemptRoles,
-      'exempt_channels': builder.exemptChannels,
-    });
+    Response response = await ioc.use<HttpService>().post(url: "/guilds/$_guildId/auto-moderation/rules")
+      .payload({
+        'name': builder.label,
+        'event_type': builder.moderationEventType.value,
+        'trigger_type': builder.moderationTriggerType.value,
+        'trigger_metadata': builder.triggerMetadata?.toJson(),
+        'actions': builder.actions.map((action) => action.toJson()).toList(),
+        'enabled': builder.enabled,
+        'exempt_roles': builder.exemptRoles,
+        'exempt_channels': builder.exemptChannels,
+      }).build();
 
     return response.statusCode == 200
       ? ModerationRule.fromPayload(jsonDecode(response.body))
