@@ -198,8 +198,8 @@ class Guild {
   /// ```
   Future<void> setName (String name) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
-    .payload({ 'name': name })
-    .build();
+      .payload({ 'name': name })
+      .build();
 
     if (response.statusCode == 200) {
       _name = name;

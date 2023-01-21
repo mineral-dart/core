@@ -1,36 +1,36 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
+import 'package:mineral/core/services/http.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/helper.dart';
-import 'package:mineral/src/internal/services/http_service/adapters/discord_api/destroy_discord_request_builder_adapter.dart';
-import 'package:mineral/src/internal/services/http_service/adapters/discord_api/get_discord_request_builder_adapter.dart';
-import 'package:mineral/src/internal/services/http_service/adapters/discord_api/post_discord_request_builder_adapter.dart';
-import 'package:mineral/src/internal/services/http_service/http_method.dart';
-import 'package:mineral/src/internal/services/http_service/http_service.dart';
+
+import 'http_service/adapters/discord_api/destroy_discord_request_builder_adapter.dart';
+import 'http_service/adapters/discord_api/get_discord_request_builder_adapter.dart';
+import 'http_service/adapters/discord_api/post_discord_request_builder_adapter.dart';
 
 class DiscordApiHttpService extends HttpService<GetDiscordRequestBuilderAdapter, PostDiscordRequestBuilderAdapter, DestroyDiscordRequestBuilderAdapter> {
   DiscordApiHttpService(super.baseUrl);
 
   @override
   GetDiscordRequestBuilderAdapter get ({ required String url }) =>
-      GetDiscordRequestBuilderAdapter(HttpMethod.get, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
+    GetDiscordRequestBuilderAdapter(HttpMethod.get, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
 
   @override
   PostDiscordRequestBuilderAdapter post ({ required String url }) =>
-      PostDiscordRequestBuilderAdapter(HttpMethod.post, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
+    PostDiscordRequestBuilderAdapter(HttpMethod.post, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
 
   @override
   PostDiscordRequestBuilderAdapter put ({ required String url }) =>
-      PostDiscordRequestBuilderAdapter(HttpMethod.put, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
+    PostDiscordRequestBuilderAdapter(HttpMethod.put, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
 
   @override
   PostDiscordRequestBuilderAdapter patch ({ required String url }) =>
-      PostDiscordRequestBuilderAdapter(HttpMethod.patch, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
+    PostDiscordRequestBuilderAdapter(HttpMethod.patch, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
 
   @override
   DestroyDiscordRequestBuilderAdapter destroy ({ required String url }) =>
-      DestroyDiscordRequestBuilderAdapter(HttpMethod.destroy, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
+    DestroyDiscordRequestBuilderAdapter(HttpMethod.destroy, baseUrl, url, headers, (http.Response response) => responseWrapper(response));
 
   http.Response responseWrapper<T> (http.Response response) {
     if (response.statusCode == 400) {
