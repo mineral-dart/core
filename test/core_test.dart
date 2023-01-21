@@ -9,9 +9,9 @@ import 'package:test/test.dart';
 void main() {
   test('can get HttpService from ioc', () {
     String discordEndpoint = 'https://discord.com/api';
-    ioc.bind((_) => HttpService(baseUrl: discordEndpoint));
+    ioc.bind((_) => DiscordApiHttpService(discordEndpoint));
 
-    expect(ioc.use<HttpService>().baseUrl, equals(discordEndpoint));
+    expect(ioc.use<DiscordApiHttpService>().baseUrl, equals(discordEndpoint));
   });
 
   test('can emit with event emitter', () async {
@@ -26,7 +26,7 @@ void main() {
 
   test('can create websocket connection', () async {
     String discordEndpoint = 'https://discord.com/api';
-    HttpService http = HttpService(baseUrl: discordEndpoint);
+    DiscordApiHttpService http = DiscordApiHttpService(discordEndpoint);
 
     EnvironmentService manager = EnvironmentService();
     manager.load();

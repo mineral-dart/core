@@ -57,7 +57,9 @@ class GuildChannel extends PartialChannel {
 
   Future<void> update (ChannelBuilder builder) async {
     if (_validate()) {
-      await ioc.use<HttpService>().patch(url: '/channels/$id', payload: builder.payload);
+      await ioc.use<DiscordApiHttpService>().patch(url: '/channels/$id')
+      .payload(builder.payload)
+      .build();
     }
   }
 
@@ -67,8 +69,10 @@ class GuildChannel extends PartialChannel {
   /// final GuildChannel channel = guild.channels.cache.getOrFail('240561194958716924');
   /// await channel.delete()
   /// ```
-  Future<bool> delete () async {
-    Response response = await ioc.use<HttpService>().destroy(url: '/channels/$id');
+  Future<bool> delete ({ String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: '/channels/$id')
+      .auditLog(reason)
+      .build();
 
     guild.channels.cache.remove(this);
     return response.statusCode == 200;

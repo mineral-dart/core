@@ -14,12 +14,13 @@ class StickerManager extends CacheManager<Sticker>  {
 
   Future<Sticker?> create ({ required String name, required String description, required String tags, required String filename }) async {
     if (guild.features.contains(GuildFeature.verified) || guild.features.contains(GuildFeature.partnered)) {
-      Response response = await ioc.use<HttpService>().post(url: "/guilds/${guild.id}/stickers", payload: {
-        'name': name,
-        'description': description,
-        'tags': tags,
-        'file': Helper.getPicture(filename)
-      });
+      Response response = await ioc.use<DiscordApiHttpService>().post(url: "/guilds/${guild.id}/stickers")
+        .payload({
+          'name': name,
+          'description': description,
+          'tags': tags,
+          'file': Helper.getPicture(filename)
+        }).build();
 
       dynamic payload = jsonDecode(response.body);
 
@@ -38,7 +39,10 @@ class StickerManager extends CacheManager<Sticker>  {
   Future<Map<Snowflake, Sticker>> sync () async {
     cache.clear();
 
-    Response response = await ioc.use<HttpService>().get(url: "/guilds/${guild.id}/stickers");
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/guilds/${guild.id}/stickers")
+      .build();
+
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {

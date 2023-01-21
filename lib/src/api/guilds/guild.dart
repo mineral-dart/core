@@ -197,7 +197,9 @@ class Guild {
   /// await guild.setName('Guild name');
   /// ```
   Future<void> setName (String name) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'name': name });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'name': name })
+      .build();
 
     if (response.statusCode == 200) {
       _name = name;
@@ -213,7 +215,9 @@ class Guild {
   /// await guild.setVerificationLevel(VerificationLevel.veryHigh);
   /// ```
   Future<void> setVerificationLevel (VerificationLevel level) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'verification_level': level.value });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'verification_level': level.value })
+      .build();
 
     if (response.statusCode == 200) {
       _verificationLevel = level;
@@ -229,7 +233,9 @@ class Guild {
   /// await guild.setMessageNotification(1);
   /// ```
   Future<void> setMessageNotification (int level) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'default_message_notifications': level });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'default_message_notifications': level })
+      .build();
 
     if (response.statusCode == 200) {
       _defaultMessageNotifications = level;
@@ -247,7 +253,9 @@ class Guild {
   /// await guild.setExplicitContentFilter(2);
   /// ```
   Future<void> setExplicitContentFilter (int level) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'explicit_content_filter': level });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'explicit_content_filter': level })
+      .build();
 
     if (response.statusCode == 200) {
       _explicitContentFilter = level;
@@ -265,7 +273,9 @@ class Guild {
   /// }
   /// ```
   Future<void> setAfkChannel (VoiceChannel channel) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'afk_channel_id': channel.id });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'afk_channel_id': channel.id })
+      .build();
 
     if (response.statusCode == 200) {
       _afkChannelId = channel.id;
@@ -294,7 +304,9 @@ class Guild {
       return;
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'owner_id': guildMember.user.id });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'owner_id': guildMember.user.id })
+      .build();
 
     if (response.statusCode == 200) {
       _ownerId = guildMember.id;
@@ -316,7 +328,9 @@ class Guild {
 
     String file = await Helper.getPicture(filename);
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'splash': file });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'splash': file })
+      .build();
 
     if (response.statusCode == 200) {
       _splash = ImageFormater(file, '');
@@ -336,7 +350,9 @@ class Guild {
       throw MissingFeatureException('The $name guild does not have the ${GuildFeature.inviteSplash} feature.');
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'splash': null });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'splash': null })
+      .build();
 
     if (response.statusCode == 200) {
       _splash = null;
@@ -358,7 +374,9 @@ class Guild {
 
     String file = await Helper.getPicture(filename);
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'discovery_splash': file });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'discovery_splash': file })
+      .build();
 
     if (response.statusCode == 200) {
       _discoverySplash = ImageFormater(file, '');
@@ -378,7 +396,9 @@ class Guild {
       throw MissingFeatureException('The $name guild does not have the ${GuildFeature.discoverable} feature.');
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'discovery_splash': null });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'discovery_splash': null })
+      .build();
 
     if (response.statusCode == 200) {
       _discoverySplash = null;
@@ -400,7 +420,9 @@ class Guild {
 
     String file = await Helper.getPicture(filename);
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'banner': file });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'banner': file })
+      .build();
 
     if (response.statusCode == 200) {
       _banner = ImageFormater(file, '');
@@ -420,7 +442,9 @@ class Guild {
       throw MissingFeatureException('The $name guild does not have the ${GuildFeature.banner} feature.');
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'banner': null });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'banner': null })
+      .build();
 
     if (response.statusCode == 200) {
       _banner = null;
@@ -436,7 +460,9 @@ class Guild {
   Future<void> setIcon (String filename) async {
     String file = await Helper.getPicture(filename);
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'icon': file });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'icon': file })
+      .build();
 
     if (response.statusCode == 200) {
       _icon = ImageFormater(file, '');
@@ -450,7 +476,9 @@ class Guild {
   /// await guild.removeIcon();
   /// ```
   Future<void> removeIcon () async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'icon': null });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'icon': null })
+      .build();
 
     if (response.statusCode == 200) {
       _icon = null;
@@ -468,7 +496,9 @@ class Guild {
   /// }
   /// ```
   Future<void> setSystemChannel (TextChannel channel) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'system_channel_id': channel.id });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'system_channel_id': channel.id })
+      .build();
 
     if (response.statusCode == 200) {
       _systemChannelId = channel.id;
@@ -487,7 +517,9 @@ class Guild {
   /// }
   /// ```
   Future<void> setRulesChannel (TextChannel channel) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'rules_channel_id': channel.id });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'rules_channel_id': channel.id })
+      .build();
 
     if (response.statusCode == 200) {
       _rulesChannelId = channel.id;
@@ -506,7 +538,9 @@ class Guild {
   /// }
   /// ```
   Future<void> setPublicUpdateChannel (TextChannel channel) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': channel.id });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'public_updates_channel_id': channel.id })
+      .build();
 
     if (response.statusCode == 200) {
       _publicUpdatesChannelId = channel.id;
@@ -523,7 +557,9 @@ class Guild {
   /// await guild.setPreferredLocale(Locale.fr); // 👈 Now you can use Lang enum
   /// ```
   Future<void> setPreferredLocale (Locale locale) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$id", payload: { 'public_updates_channel_id': locale });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
+      .payload({ 'public_updates_channel_id': locale })
+      .build();
 
     if (response.statusCode == 200) {
       _preferredLocale = locale as String;
@@ -537,7 +573,7 @@ class Guild {
   /// await guild.leave();
   /// ```
   Future<void> leave () async {
-    Response response = await ioc.use<HttpService>().destroy(url: '/users/@me/guilds/$id');
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: '/users/@me/guilds/$id').build();
 
     if (response.statusCode == 204) {
       MineralClient client = ioc.use<MineralClient>();
@@ -546,7 +582,9 @@ class Guild {
   }
 
   Future<GuildPreview> preview () async {
-    Response response = await ioc.use<HttpService>().get(url: '/guilds/$id/preview');
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: '/guilds/$id/preview')
+      .build();
 
     return GuildPreview.from(
       guild: this,
@@ -561,7 +599,9 @@ class Guild {
   /// await member.unban();
   /// ```
   Future<bool> ban (Snowflake memberId, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().destroy(url: '/guilds/$id/bans/$memberId');
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: '/guilds/$id/bans/$memberId')
+      .auditLog(reason)
+      .build();
 
     return response.statusCode == 200;
   }

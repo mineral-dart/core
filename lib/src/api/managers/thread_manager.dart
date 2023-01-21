@@ -20,7 +20,10 @@ class ThreadManager extends CacheManager<ThreadChannel>  {
   Future<Map<Snowflake, ThreadChannel>> sync () async {
     cache.clear();
 
-    Response response = await ioc.use<HttpService>().get(url: "/guilds/$_guildId/threads/active");
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/guilds/$_guildId/threads/active")
+      .build();
+
     dynamic payload = jsonDecode(response.body);
 
     for (dynamic element in payload) {

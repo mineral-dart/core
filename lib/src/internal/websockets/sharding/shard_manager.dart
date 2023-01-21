@@ -13,7 +13,7 @@ import 'package:mineral_ioc/ioc.dart';
 ///
 /// {@category Internal}
 class ShardManager extends MineralService {
-  final HttpService http;
+  final DiscordApiHttpService http;
   final List<Intent> intents;
   final String _token;
 
@@ -72,7 +72,7 @@ class ShardManager extends MineralService {
   }
 
   Future<AuthenticationResponse> getBotGateway(int version) async {
-    Response response = await http.get(url: '/v$version/gateway/bot');
+    Response response = await http.get(url: '/v$version/gateway/bot').build();
     return AuthenticationResponse.fromResponse(response);
   }
 

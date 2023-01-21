@@ -18,7 +18,9 @@ class WebhookManager extends CacheManager<Webhook>  {
   Guild get guild => ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId);
 
   Future<Map<Snowflake, Webhook>> sync () async {
-    Response response = await ioc.use<HttpService>().get(url: "/channels/$_channelId/webhooks");
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/channels/$_channelId/webhooks")
+      .build();
 
     for (dynamic element in jsonDecode(response.body)) {
       Webhook webhook = Webhook.from(payload: element);
@@ -29,10 +31,9 @@ class WebhookManager extends CacheManager<Webhook>  {
   }
 
   Future<Webhook?> create ({ required String label, String? avatar }) async {
-    Response response = await ioc.use<HttpService>().post(url: "/channels/$_channelId/webhooks", payload: {
-      'name': label,
-      'avatar': avatar != null ? await Helper.getPicture(avatar) : null
-    });
+    Response response = await ioc.use<DiscordApiHttpService>().post(url: "/channels/$_channelId/webhooks")
+      .payload({ 'name': label, 'avatar': avatar != null ? await Helper.getPicture(avatar) : null })
+      .build();
 
     return response.statusCode == 200
       ? Webhook.from(payload: jsonDecode(response.body))

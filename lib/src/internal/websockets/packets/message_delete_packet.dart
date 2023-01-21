@@ -27,7 +27,9 @@ class MessageDeletePacket with Container implements WebsocketPacket {
     }
 
     if (message == null) {
-      Response response = await container.use<HttpService>().get(url: "/channels/${channel?.id}/messages/${payload['id']}");
+      Response response = await container.use<DiscordApiHttpService>()
+        .get(url: "/channels/${channel?.id}/messages/${payload['id']}")
+        .build();
 
       if (response.statusCode == 200) {
         dynamic json = jsonDecode(response.body);

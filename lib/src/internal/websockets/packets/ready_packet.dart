@@ -19,7 +19,10 @@ class ReadyPacket with Container implements WebsocketPacket {
       MineralClient client = MineralClient.from(payload: websocketResponse.payload);
       client.uptime = DateTime.now();
 
-      await client.registerGlobalCommands(commands: container.use<CommandService>().getGlobalCommands());
+      final globalCommands = container.use<CommandService>().getGlobalCommands();
+      if (globalCommands.isNotEmpty) {
+        await client.registerGlobalCommands(commands: globalCommands);
+      }
 
       final Shard shard = websocketResponse.payload['shard'] != null
         ? shardManager.shards[websocketResponse.payload['shard'][0]]!

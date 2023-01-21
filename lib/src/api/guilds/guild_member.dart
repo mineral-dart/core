@@ -54,7 +54,10 @@ class GuildMember  {
   /// ```
   Future<void> setUsername (String name) async {
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/members/${user.id}", payload: { 'nick': name });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${guild.id}/members/${user.id}")
+      .payload({ 'nick': name })
+      .build();
+
     if (response.statusCode == 200) {
       _nickname = name;
     }
@@ -74,7 +77,10 @@ class GuildMember  {
   Future<void> timeout (DateTime expiration) async {
     // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
 
-    Response response = await ioc.use<HttpService>().patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': expiration.toIso8601String() });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/guilds/${guild.id}/members/${user.id}')
+      .payload({ 'communication_disabled_until': expiration.toIso8601String() })
+      .build();
+
     if (response.statusCode == 200 || response.statusCode == 204) {
       _timeoutDuration = expiration;
     }
@@ -88,7 +94,10 @@ class GuildMember  {
   /// ```
   Future<void> removeTimeout () async {
 
-    Response response = await ioc.use<HttpService>().patch(url: '/guilds/${guild.id}/members/${user.id}', payload: { 'communication_disabled_until': null });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/guilds/${guild.id}/members/${user.id}')
+      .payload({ 'communication_disabled_until': null })
+      .build();
+
     if (response.statusCode == 200 || response.statusCode == 204) {
       _timeoutDuration = null;
     }
@@ -108,10 +117,9 @@ class GuildMember  {
   /// ```
   Future<void> ban ({ int? count, String? reason }) async {
 
-    Response response = await ioc.use<HttpService>().put(url: "/guilds/${guild.id}/bans/${user.id}", payload: {
-      'delete_message_days': count,
-      'reason': reason
-    });
+    Response response = await ioc.use<DiscordApiHttpService>().put(url: "/guilds/${guild.id}/bans/${user.id}")
+      .payload({ 'delete_message_days': count, 'reason': reason })
+      .build();
 
     if (response.statusCode == 200) {
       _timeoutDuration = null;
@@ -125,7 +133,7 @@ class GuildMember  {
   /// await member.removeTimeout();
   /// ```
   Future<void> kick ({ int? count, String? reason }) async {
-    await ioc.use<HttpService>().destroy(url: "/guilds/${guild.id}/members/${user.id}");
+    await ioc.use<DiscordApiHttpService>().destroy(url: "/guilds/${guild.id}/members/${user.id}");
   }
 
   /// ### Returns whether of this is a bot

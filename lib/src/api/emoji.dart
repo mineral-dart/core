@@ -58,12 +58,22 @@ class Emoji extends PartialEmoji {
   ///   await emoji.setLabel('New label');
   /// }
   /// ```
-  Future<void> setLabel (String label) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id", payload: { 'name': label });
+  Future<void> setLabel (String label, { String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id")
+      .payload({ 'name': label })
+      .auditLog(reason)
+      .build();
 
     if (response.statusCode == 200) {
       _label = label;
     }
+  }
+
+  Future<void> setAllowedRoles (List<Snowflake> roles, { String? reason }) async {
+    await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id")
+      .payload({ 'name': label })
+      .auditLog(reason)
+      .build();
   }
 
   /// ### Removes the current this from the [EmojiManager]'s cache
@@ -81,8 +91,10 @@ class Emoji extends PartialEmoji {
   /// ```dart
   /// await emoji.delete(reason: 'I will destroy this..');
   /// ```
-  Future<void> delete () async {
-    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/${manager.guild.id}/emojis/$id");
+  Future<void> delete ({ String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: "/guilds/${manager.guild.id}/emojis/$id")
+      .auditLog(reason)
+      .build();
 
     if (response.statusCode == 200) {
       manager.cache.remove(id);

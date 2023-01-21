@@ -161,8 +161,11 @@ class ModerationRule {
   /// ```dart
   /// await rule.setLabel('My label');
   /// ```
-  Future<void> setLabel(String label) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'label': label });
+  Future<void> setLabel(String label, { String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'label': label })
+      .auditLog(reason)
+      .build();
 
     if (response.statusCode == 200) {
       this.label = label;
@@ -175,8 +178,11 @@ class ModerationRule {
   /// ```dart
   /// await rule.setEventType(ModerationEventType.messageSend);
   /// ```
-  Future<void> setEventType(ModerationEventType event) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'event_type': event.value });
+  Future<void> setEventType(ModerationEventType event, { String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'event_type': event.value })
+      .auditLog(reason)
+      .build();
 
     if (response.statusCode == 200) {
       eventType = event;
@@ -194,8 +200,11 @@ class ModerationRule {
   ///
   /// await rule.setTriggerMetadata(metadata);
   /// ```
-  Future<void> setTriggerMetadata(ModerationTriggerMetadata triggerMetadata) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'trigger_metadata': triggerMetadata.toJson() });
+  Future<void> setTriggerMetadata(ModerationTriggerMetadata triggerMetadata, { String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'trigger_metadata': triggerMetadata.toJson() })
+      .auditLog(reason)
+      .build();
 
     if (response.statusCode == 200) {
       this.triggerMetadata = triggerMetadata;
@@ -215,10 +224,11 @@ class ModerationRule {
   ///
   /// await rule.setActions([action]);
   /// ```
-  Future<void> setActions(List<ModerationAction> actions) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
-      'actions': actions.map((ModerationAction action) => action.toJson())
-    });
+  Future<void> setActions(List<ModerationAction> actions, { String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'actions': actions.map((ModerationAction action) => action.toJson()) })
+      .auditLog(reason)
+      .build();
 
     if (response.statusCode == 200) {
       this.actions = actions;
@@ -231,8 +241,11 @@ class ModerationRule {
   /// ```dart
   /// await rule.setEnabled(true);
   /// ```
-  Future<void> setEnabled(bool value) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: { 'value': value });
+  Future<void> setEnabled(bool value, { String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload( { 'value': value })
+      .auditLog(reason)
+      .build();
 
     if (response.statusCode == 200) {
       enabled = value;
@@ -249,15 +262,16 @@ class ModerationRule {
   ///   await rule.setExemptRoles([role]);
   /// }
   /// ```
-  Future<void> setExemptRoles(List<Role> roles) async {
+  Future<void> setExemptRoles(List<Role> roles, { String? reason }) async {
     int maxItems = 50;
     if (roles.length > maxItems) {
       TooManyException("The list of roles cannot exceed $maxItems items (currently ${roles.length} given)");
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
-      'exempt_roles': roles.map((Role role) => role.id)
-    });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'exempt_roles': roles.map((Role role) => role.id) })
+      .auditLog(reason)
+      .build();
 
     if (response.statusCode == 200) {
       exemptRoles = roles;
@@ -274,15 +288,16 @@ class ModerationRule {
   ///   await rule.setExemptChannels([channel]);
   /// }
   /// ```
-  Future<void> setExemptChannels(List<GuildChannel> channels) async {
+  Future<void> setExemptChannels(List<GuildChannel> channels, { String? reason }) async {
     int maxItems = 50;
     if (channels.length > maxItems) {
       TooManyException("The list of channels cannot exceed $maxItems items (currently ${channels.length} given)");
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id", payload: {
-      'exempt_roles': channels.map((GuildChannel channel) => channel.id)
-    });
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .payload({ 'exempt_roles': channels.map((GuildChannel channel) => channel.id) })
+      .auditLog(reason)
+      .build();
 
     if (response.statusCode == 200) {
       exemptChannels = channels;
@@ -294,8 +309,10 @@ class ModerationRule {
   /// ```dart
   ///   await rule.delete();
   /// ```
-  Future<bool> delete() async {
-    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/$guildId/auto-moderation/rules/$id");
+  Future<bool> delete({ String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: "/guilds/$guildId/auto-moderation/rules/$id")
+      .auditLog(reason)
+      .build();
 
     return response.statusCode == 204;
   }
