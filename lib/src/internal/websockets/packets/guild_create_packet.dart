@@ -142,7 +142,9 @@ class GuildCreatePacket with Container implements WebsocketPacket {
   }
 
   Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {
-    Response response = await container.use<HttpService>().get(url: "/guilds/${guild.id}/auto-moderation/rules");
+    Response response = await container.use<DiscordApiHttpService>()
+      .get(url: "/guilds/${guild.id}/auto-moderation/rules")
+      .build();
 
     if (response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);

@@ -42,19 +42,19 @@ extension MineralClientExtension on MineralClient {
       }
 
       payload['attachments'] = attachmentList;
-      return await ioc.use<HttpService>().post(url: '/channels/${channel.id}/messages')
+      return await ioc.use<DiscordApiHttpService>().post(url: '/channels/${channel.id}/messages')
         .payload(payload)
         .files(files)
         .build();
     }
 
-    return await ioc.use<HttpService>().post(url: '/channels/${channel.id}/messages')
+    return await ioc.use<DiscordApiHttpService>().post(url: '/channels/${channel.id}/messages')
       .payload(payload)
       .build();
   }
 
   Future<T?> createChannel<T extends GuildChannel> (Snowflake guildId, ChannelBuilder builder) async {
-    Response response = await ioc.use<HttpService>().post(url: "/guilds/$guildId/channels")
+    Response response = await ioc.use<DiscordApiHttpService>().post(url: "/guilds/$guildId/channels")
       .payload(builder.payload)
       .build();
 

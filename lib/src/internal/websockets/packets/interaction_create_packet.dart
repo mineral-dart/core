@@ -72,7 +72,10 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       Message? message = channel?.messages.cache.get(payload['data']?['target_id']);
 
       if (message == null) {
-        Response response = await container.use<HttpService>().get(url: '/channels/${payload['channel_id']}/messages/${payload['data']?['target_id']}');
+        Response response = await container.use<DiscordApiHttpService>()
+          .get(url: '/channels/${payload['channel_id']}/messages/${payload['data']?['target_id']}')
+          .build();
+
         if (response.statusCode == 200) {
           message = Message.from(channel: channel!, payload: jsonDecode(response.body));
           channel.messages.cache.putIfAbsent(message.id, () => message!);
@@ -93,7 +96,10 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
     dynamic channel = guild.channels.cache.get(payload['channel_id']);
     if (channel == null) {
-      final Response response = await container.use<HttpService>().get(url: '/channels/${payload['channel_id']}');
+      final Response response = await container.use<DiscordApiHttpService>()
+        .get(url: '/channels/${payload['channel_id']}')
+        .build();
+
       channel = ChannelWrapper.create(jsonDecode(response.body));
 
       guild.channels.cache.putIfAbsent(channel.id, () => channel);
@@ -101,7 +107,10 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
     Message? message = channel?.messages.cache[payload['message']['id']];
     if (message == null) {
-      final Response response = await container.use<HttpService>().get(url: '/channels/${payload['channel_id']}/messages/${payload['message']?['id']}');
+      final Response response = await container.use<DiscordApiHttpService>()
+        .get(url: '/channels/${payload['channel_id']}/messages/${payload['message']?['id']}')
+        .build();
+
       message = Message.from(channel: channel, payload: jsonDecode(response.body));
 
       channel.messages.cache.putIfAbsent(message.id, () => message!);

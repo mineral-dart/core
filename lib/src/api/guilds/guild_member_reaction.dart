@@ -19,7 +19,7 @@ class GuildMemberReaction  {
       ? '${_partialEmoji.label}:${_partialEmoji.id}'
       : _partialEmoji.label;
 
-    Response response = await ioc.use<HttpService>()
+    Response response = await ioc.use<DiscordApiHttpService>()
       .destroy(url: '/channels/${_message.channel.id}/messages/${_message.id}/reactions/$_emoji/${user.id}')
       .build();
 

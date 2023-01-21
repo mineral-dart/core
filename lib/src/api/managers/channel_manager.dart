@@ -20,7 +20,10 @@ class ChannelManager extends CacheManager<GuildChannel>  {
     final _cached = cache.clone;
     cache.clear();
 
-    Response response = await ioc.use<HttpService>().get(url: "/guilds/$_guildId/channels");
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/guilds/$_guildId/channels")
+      .build();
+
     dynamic payload = jsonDecode(response.body);
 
     if (response.statusCode != 200) {
@@ -40,7 +43,7 @@ class ChannelManager extends CacheManager<GuildChannel>  {
   }
 
   Future<T?> create<T extends GuildChannel> (ChannelBuilder builder) async {
-    Response response = await ioc.use<HttpService>().post(url: '/guilds/$_guildId/channels')
+    Response response = await ioc.use<DiscordApiHttpService>().post(url: '/guilds/$_guildId/channels')
       .payload(builder.payload)
       .build();
 

@@ -61,7 +61,7 @@ class Role {
   /// }
   /// ```
   Future<void> setLabel (String label, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
       .payload({ 'name': label })
       .auditLog(reason)
       .build();
@@ -85,7 +85,7 @@ class Role {
   Future<void> setPermissions (List<Permission> permissions, { String? reason }) async {
 
     int _permissions = Helper.reduceRolePermissions(permissions);
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
       .payload({ 'permissions': _permissions })
       .auditLog(reason)
       .build();
@@ -116,7 +116,7 @@ class Role {
   Future<void> setColor (Color color, { String? reason }) async {
 
     int _color = Helper.toRgbColor(color);
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
       .payload({ 'color': _color })
       .auditLog(reason)
       .build();
@@ -136,7 +136,7 @@ class Role {
   /// }
   /// ```
   Future<void> setHoist (bool hoist, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
       .payload({ 'hoist': hoist })
       .auditLog(reason)
       .build();
@@ -174,7 +174,7 @@ class Role {
 
     String icon = await Helper.getPicture(path);
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
       .payload({ 'icon': icon })
       .auditLog(reason)
       .build();
@@ -204,7 +204,7 @@ class Role {
       throw MissingFeatureException("Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
       .payload({ 'icon': null })
       .auditLog(reason)
       .build();
@@ -234,7 +234,7 @@ class Role {
       throw MissingFeatureException("Guild ${manager.guild.name} has no 'ROLE_ICONS' feature.");
     }
 
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
       .payload({ 'unicode_emoji': unicode })
       .auditLog(reason)
       .build();
@@ -254,7 +254,7 @@ class Role {
   /// }
   /// ```
   Future<void> setMentionable (bool mentionable, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")
       .payload({ 'mentionable': mentionable })
       .auditLog(reason)
       .build();
@@ -286,7 +286,7 @@ class Role {
       return;
     }
 
-    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/${manager.guild.id}/roles/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: "/guilds/${manager.guild.id}/roles/$id")
       .auditLog(reason)
       .build();
 

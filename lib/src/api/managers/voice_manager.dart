@@ -40,7 +40,7 @@ class VoiceManager  {
   /// }
   Future<void> setMute(bool value) async {
 
-    final Response response = await ioc.use<HttpService>().patch(url: '/guilds/$_guildId/members/$_memberId')
+    final Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/guilds/$_guildId/members/$_memberId')
       .payload({'mute': value})
       .build();
 
@@ -62,7 +62,7 @@ class VoiceManager  {
   ///   await member.setDeaf(true);
   /// }
   Future<void> setDeaf(bool value) async {
-    final Response response = await ioc.use<HttpService>().patch(url: '/guilds/$_guildId/members/$_memberId')
+    final Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/guilds/$_guildId/members/$_memberId')
     .payload({'deaf': value})
     .build();
 
@@ -102,7 +102,7 @@ class VoiceManager  {
   }
 
   Future<void> _updateChannel(Snowflake? channelId) async {
-    final Response response = await ioc.use<HttpService>().patch(url: '/guilds/$_guildId/members/$_memberId')
+    final Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/guilds/$_guildId/members/$_memberId')
       .payload({'channel_id': channelId})
       .build();
 

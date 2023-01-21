@@ -14,7 +14,9 @@ class GuildWebhookManager extends CacheManager<Webhook>  {
   GuildWebhookManager();
 
   Future<Map<Snowflake, Webhook>> sync () async {
-    Response response = await ioc.use<HttpService>().get(url: "/guilds/${guild.id}/webhooks");
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/guilds/${guild.id}/webhooks")
+      .build();
 
     for (dynamic element in jsonDecode(response.body)) {
       Webhook webhook = Webhook.from(payload: element);

@@ -12,7 +12,10 @@ class MemberManager extends CacheManager<GuildMember>  {
   Guild get guild => _guild;
 
   Future<Map<Snowflake, GuildMember>> sync () async {
-    Response response = await ioc.use<HttpService>().get(url: "/guilds/${_guild.id}/members");
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/guilds/${_guild.id}/members")
+      .build();
+
     if(response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);
       final Map<Snowflake, VoiceManager> voiceStateCache = cache.map((key, value) => MapEntry(key, value.voice));

@@ -118,13 +118,13 @@ class MineralClient extends MineralService {
   }
 
   Future<void> registerGlobalCommands ({ required List<CommandBuilder> commands }) async {
-    await ioc.use<HttpService>().put(url: "/applications/${_application.id}/commands")
+    await ioc.use<DiscordApiHttpService>().put(url: "/applications/${_application.id}/commands")
       .payload(commands.map((command) => command.toJson).toList())
       .build();
   }
 
   Future<void> registerGuildCommands ({ required Guild guild, required List<CommandBuilder> commands, required List<MineralContextMenu> contextMenus }) async {
-    await ioc.use<HttpService>().put(url: "/applications/${_application.id}/guilds/${guild.id}/commands")
+    await ioc.use<DiscordApiHttpService>().put(url: "/applications/${_application.id}/guilds/${guild.id}/commands")
       .payload([
         ...commands.map((command) => command.toJson).toList(),
         ...contextMenus.map((contextMenus) => contextMenus.builder.toJson).toList()

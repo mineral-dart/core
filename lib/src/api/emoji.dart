@@ -59,7 +59,7 @@ class Emoji extends PartialEmoji {
   /// }
   /// ```
   Future<void> setLabel (String label, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id")
       .payload({ 'name': label })
       .auditLog(reason)
       .build();
@@ -70,7 +70,7 @@ class Emoji extends PartialEmoji {
   }
 
   Future<void> setAllowedRoles (List<Snowflake> roles, { String? reason }) async {
-    await ioc.use<HttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id")
+    await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id")
       .payload({ 'name': label })
       .auditLog(reason)
       .build();
@@ -92,7 +92,7 @@ class Emoji extends PartialEmoji {
   /// await emoji.delete(reason: 'I will destroy this..');
   /// ```
   Future<void> delete ({ String? reason }) async {
-    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/${manager.guild.id}/emojis/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: "/guilds/${manager.guild.id}/emojis/$id")
       .auditLog(reason)
       .build();
 

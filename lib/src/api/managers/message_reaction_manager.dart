@@ -24,7 +24,7 @@ class MessageReactionManager<C extends PartialChannel, T extends PartialMessage>
       ? '${emojiBuilder.emoji.label}:${emojiBuilder.emoji.id}'
       : emojiBuilder.emoji.label;
 
-    Response response = await ioc.use<HttpService>().put(url: '/channels/${_channel.id}/messages/${message.id}/reactions/$_emoji/@me')
+    Response response = await ioc.use<DiscordApiHttpService>().put(url: '/channels/${_channel.id}/messages/${message.id}/reactions/$_emoji/@me')
       .build();
 
     if (response.statusCode == 204) {
@@ -49,7 +49,7 @@ class MessageReactionManager<C extends PartialChannel, T extends PartialMessage>
   }
 
   Future<void> removeAll () async {
-    Response response = await ioc.use<HttpService>()
+    Response response = await ioc.use<DiscordApiHttpService>()
       .destroy(url: '/channels/${message.channel.id}/messages/${message.id}/reactions')
       .build();
 

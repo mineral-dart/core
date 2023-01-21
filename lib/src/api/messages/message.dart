@@ -50,7 +50,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
 
-    Response response = await ioc.use<HttpService>().patch(url: '/channels/${channel.id}/messages/$id')
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/channels/${channel.id}/messages/$id')
       .payload({
         'content': content,
         'embeds': embeds,
@@ -70,7 +70,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
       return;
     }
 
-    await ioc.use<HttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost')
+    await ioc.use<DiscordApiHttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost')
       .build();
   }
 
@@ -80,7 +80,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
       return;
     }
 
-    await ioc.use<HttpService>().put(url: '/channels/${channel.id}/pins/$id')
+    await ioc.use<DiscordApiHttpService>().put(url: '/channels/${channel.id}/pins/$id')
       .build();
   }
 
@@ -90,7 +90,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
       return;
     }
 
-    await ioc.use<HttpService>().destroy(url: '/channels/${channel.id}/pins/$id');
+    await ioc.use<DiscordApiHttpService>().destroy(url: '/channels/${channel.id}/pins/$id');
   }
 
   Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {

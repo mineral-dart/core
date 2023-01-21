@@ -15,6 +15,7 @@ import 'package:mineral/src/internal/services/collector_service.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/services/debugger_service.dart';
+import 'package:mineral/src/internal/services/discord_api_http_service.dart';
 import 'package:mineral/src/internal/services/environment_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/services/intent_service.dart';
@@ -61,7 +62,7 @@ class Kernel with Container {
   Future<void> init () async {
     await _environment.load();
 
-    final HttpService http = HttpService(baseUrl: 'https://discord.com/api');
+    final DiscordApiHttpService http = DiscordApiHttpService('https://discord.com/api');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     container.bind((_) => http);
 

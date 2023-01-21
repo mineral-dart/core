@@ -88,7 +88,7 @@ class Interaction  {
 
       payload['attachments'] = attachmentList;
 
-      await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback")
+      await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
         .payload(payload)
         .files(files)
         .build();
@@ -96,7 +96,7 @@ class Interaction  {
       return this;
     }
 
-    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback")
+    await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
       .payload(payload)
       .build();
 
@@ -114,7 +114,7 @@ class Interaction  {
   /// await interaction.modal(modal);
   /// ```
   Future<Interaction> modal (ModalBuilder modal) async {
-    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback")
+    await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
       .payload({ 'type': InteractionCallbackType.modal.value, 'data': modal.toJson() })
       .build();
 
@@ -123,7 +123,7 @@ class Interaction  {
 
   /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
   Future<Interaction> deferredReply () async {
-    await ioc.use<HttpService>().post(url: "/interactions/$id/$token/callback")
+    await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
       .payload({ 'type': InteractionCallbackType.deferredChannelMessageWithSource.value })
       .build();
 
@@ -132,7 +132,7 @@ class Interaction  {
 
   /// ### Edit original response to interaction
   Future<Interaction> updateReply({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components }) async {
-    await ioc.use<HttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original")
+    await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original")
       .payload({
         'content': content,
         'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
@@ -154,7 +154,7 @@ class Interaction  {
   /// });
   /// ```
   Future<void> delete () async {
-    await ioc.use<HttpService>().destroy(url: "/webhooks/$applicationId/$token/messages/@original");
+    await ioc.use<DiscordApiHttpService>().destroy(url: "/webhooks/$applicationId/$token/messages/@original");
   }
 
   factory Interaction.from({ required dynamic payload }) {

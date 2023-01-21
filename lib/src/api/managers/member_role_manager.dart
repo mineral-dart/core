@@ -42,7 +42,7 @@ class MemberRoleManager extends CacheManager<Role>  {
       throw NotExistException('You can\'t add a role that don\'t exist!');
     }
 
-    Response response = await ioc.use<HttpService>()
+    Response response = await ioc.use<DiscordApiHttpService>()
       .put(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
       .auditLog(reason)
       .build();
@@ -70,7 +70,7 @@ class MemberRoleManager extends CacheManager<Role>  {
   /// await member.roles.remove('446556480850755604', reason: 'Hello, World!');
   /// ```
   Future<void> remove (Snowflake id, {String? reason}) async {
-    Response response = await ioc.use<HttpService>().destroy(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
       .auditLog(reason)
       .build();
 
@@ -103,7 +103,10 @@ class MemberRoleManager extends CacheManager<Role>  {
   }
 
   Future<Map<Snowflake, Role>> sync () async {
-    Response response = await ioc.use<HttpService>().get(url: "/guilds/${manager.guild.id}/members/$memberId");
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/guilds/${manager.guild.id}/members/$memberId")
+      .build();
+
     if (response.statusCode == 200) {
       cache.clear();
       dynamic payload = jsonDecode(response.body)['roles'];

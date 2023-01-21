@@ -34,7 +34,7 @@ class NewsChannel extends TextChannel  {
       return;
     }
 
-    await ioc.use<HttpService>().post(url: '/channels/$id/followers')
+    await ioc.use<DiscordApiHttpService>().post(url: '/channels/$id/followers')
       .payload({ 'webhook_channel_id': webhookId })
       .build();
   }

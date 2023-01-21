@@ -17,7 +17,7 @@ class ForumDiscussionManager extends CacheManager<ThreadChannel>  {
   /// Warning guild requires [GuildFeature.community] feature
   /// ```
   Future<ThreadChannel?> create (String label, MessageBuilder message, { int? archiveDuration, int? rateLimit, List<Snowflake>? tags, bool? pin }) async {
-    Response response = await ioc.use<HttpService>().post(url: '/channels/$_channelId/threads')
+    Response response = await ioc.use<DiscordApiHttpService>().post(url: '/channels/$_channelId/threads')
       .payload({
         'name': label,
         'auto_archive_duration': archiveDuration,

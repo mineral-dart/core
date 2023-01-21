@@ -66,7 +66,7 @@ class Webhook {
   /// await webhook.setLabel('My webhook name');
   /// ```
   Future<void> setLabel (String label, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$id")
       .payload({ 'name': label })
       .auditLog(reason)
       .build();
@@ -84,7 +84,7 @@ class Webhook {
   /// ```
   Future<void> setAvatar (String avatar, { String? reason }) async {
     String path = await Helper.getPicture(avatar);
-    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$id")
       .payload({ 'avatar': path })
       .auditLog(reason)
       .build();
@@ -101,7 +101,7 @@ class Webhook {
   /// await webhook.setChannel('xxxxxxx');
   /// ```
   Future<void> setChannel (Snowflake channelId, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$id")
       .payload({ 'channel_id': channelId })
       .auditLog(reason)
       .build();
@@ -123,7 +123,7 @@ class Webhook {
       ?  await Helper.getPicture(avatar)
       : this.label;
 
-    Response response = await ioc.use<HttpService>().patch(url: "/webhooks/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$id")
       .payload({ 'label': label ?? this.label, 'avatar': path })
       .auditLog(reason)
       .build();
@@ -154,7 +154,7 @@ class Webhook {
       }
     }
 
-    await ioc.use<HttpService>().post(url: "/webhooks/$id/$token")
+    await ioc.use<DiscordApiHttpService>().post(url: "/webhooks/$id/$token")
       .payload({
         'username': username,
         'avatar_url': avatarUrl,
@@ -173,7 +173,7 @@ class Webhook {
   /// await webhook.delete();
   /// ```
   Future<bool> delete ({ String? reason }) async {
-    Response response = await ioc.use<HttpService>().destroy(url: "/webhooks/$id/$token")
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: "/webhooks/$id/$token")
       .auditLog(reason)
       .build();
 

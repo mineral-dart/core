@@ -64,7 +64,7 @@ class Sticker {
   int? get sortValue => _sortValue;
 
   Future<void> setName (String name, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
       .payload({ 'name': name })
       .auditLog(reason)
       .build();
@@ -75,7 +75,7 @@ class Sticker {
   }
 
   Future<void> setDescription (String description, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
       .payload({ 'description': description })
       .auditLog(reason)
       .build();
@@ -86,7 +86,7 @@ class Sticker {
   }
 
   Future<void> setTags (String tags, { String? reason }) async {
-    Response response = await ioc.use<HttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
       .payload({ 'tags': tags })
       .auditLog(reason)
       .build();
@@ -97,7 +97,7 @@ class Sticker {
   }
 
   Future<void> delete ({ String? reason }) async {
-    Response response = await ioc.use<HttpService>().destroy(url: "/guilds/${guild.id}/stickers/$id")
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: "/guilds/${guild.id}/stickers/$id")
       .auditLog(reason)
       .build();
     

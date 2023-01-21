@@ -67,7 +67,7 @@ class User {
 
     /// Get channel if exist or create
     if (channel == null) {
-      Response response = await ioc.use<HttpService>().post(url: '/users/@me/channels')
+      Response response = await ioc.use<DiscordApiHttpService>().post(url: '/users/@me/channels')
         .payload({ 'recipient_id': _id })
         .build();
 
