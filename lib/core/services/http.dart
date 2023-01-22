@@ -1,3 +1,4 @@
+/// Service used to call any HTTP APIs
 library http;
 
 export '../../src/internal/services/http_service/http_service.dart';
