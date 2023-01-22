@@ -15,6 +15,8 @@ import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+import 'message_parser.dart';
+
 class Message extends PartialMessage<TextBasedChannel>  {
   Snowflake _authorId;
   final MessageMention _mentions;
@@ -48,16 +50,17 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   MessageMention get mentions => _mentions;
 
-  Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
+  Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
+    dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
 
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/channels/${channel.id}/messages/$id')
+      .files(messagePayload['files'])
       .payload({
-        'content': content,
-        'embeds': embeds,
+        ...messagePayload['payload'],
         'flags': flags,
-        'allowed_mentions': allowMentions,
-        'components': components,
-      }).build();
+        'allowed_mentions': allowMentions
+      })
+      .build();
 
     return response.statusCode == 200
       ? Message.from(channel: channel, payload: jsonDecode(response.body))
@@ -90,7 +93,9 @@ class Message extends PartialMessage<TextBasedChannel>  {
       return;
     }
 
-    await ioc.use<DiscordApiHttpService>().destroy(url: '/channels/${channel.id}/pins/$id');
+    await ioc.use<DiscordApiHttpService>()
+      .destroy(url: '/channels/${channel.id}/pins/$id')
+      .build();
   }
 
   Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
