@@ -3,6 +3,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/messages/message_parser.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 enum InteractionCallbackType {
@@ -51,52 +52,18 @@ class Interaction  {
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
   Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts, bool? private }) async {
-    List<dynamic> embedList = [];
-    if (embeds != null) {
-      for (EmbedBuilder element in embeds) {
-        embedList.add(element.toJson());
-      }
-    }
-
-    List<dynamic> componentList = [];
-    if (components != null) {
-      for (RowBuilder element in components) {
-        componentList.add(element.toJson());
-      }
-    }
+    dynamic messagePayload = MessageParser(content, embeds, components, attachments, tts).toJson();
 
     dynamic payload = {
       'type': InteractionCallbackType.channelMessageWithSource.value,
       'data': {
-        'tts': tts ?? false,
-        'content': content,
-        'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
-        'components': components != null ? components.map((e) => e.toJson()).toList() : [],
-        'flags': private != null && private == true ? 1 << 6 : null,
+        ...messagePayload['payload'],
+        'flags': private != null && private == true ? 1 << 6 : null
       }
     };
 
-    if (attachments != null) {
-      List<MultipartFile> files = [];
-      List<dynamic> attachmentList = [];
-
-      for (int i = 0; i < attachments.length; i++) {
-        AttachmentBuilder attachment = attachments[i];
-        attachmentList.add(attachment.toJson(id: i));
-        files.add(attachment.toFile(i));
-      }
-
-      payload['attachments'] = attachmentList;
-
-      await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
-        .payload(payload)
-        .files(files)
-        .build();
-
-      return this;
-    }
-
     await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
+      .files(messagePayload['files'])
       .payload(payload)
       .build();
 
@@ -131,13 +98,17 @@ class Interaction  {
   }
 
   /// ### Edit original response to interaction
-  Future<Interaction> updateReply({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components }) async {
+  ///
+  /// Example :
+  /// ```dart
+  /// await interaction.updateReply(content: 'Hello ${interaction.user.username}');
+  /// ```
+  Future<Interaction> updateReply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments }) async {
+    dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
+
     await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original")
-      .payload({
-        'content': content,
-        'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
-        'components': components != null ? components.map((e) => e.toJson()).toList() : [],
-      })
+      .files(messagePayload['files'])
+      .payload(messagePayload['payload'])
       .build();
 
     return this;
@@ -154,7 +125,9 @@ class Interaction  {
   /// });
   /// ```
   Future<void> delete () async {
-    await ioc.use<DiscordApiHttpService>().destroy(url: "/webhooks/$applicationId/$token/messages/@original");
+    await ioc.use<DiscordApiHttpService>()
+      .destroy(url: "/webhooks/$applicationId/$token/messages/@original")
+      .build();
   }
 
   factory Interaction.from({ required dynamic payload }) {
