@@ -27,7 +27,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     GuildMember? member = guild?.members.cache.get(payload['member']['user']['id']);
 
     if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.chatInput.value) {
-      _executeCommandInteraction(guild!, member!, payload);
+      _executeCommandInteraction(payload);
     }
 
     if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.user.value) {
@@ -56,9 +56,9 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
   }
 
-  _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
+  _executeCommandInteraction (dynamic payload) {
     CommandInteraction interaction = CommandInteraction.fromPayload(payload);
-    container.use<CommandService>().controller.add(CommandCreateEvent(interaction));
+    container.use<CommandService>().controller.add(CommandCreateEvent(interaction, payload));
   }
 
   _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {
