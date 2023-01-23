@@ -23,6 +23,8 @@ export '../src/api/guilds/guild_scheduled_event.dart' show ScheduledEventStatus,
 export '../src/api/image_formater.dart' show ImageFormater;
 export '../src/api/interactions/button_interaction.dart' show ButtonInteraction;
 export '../src/api/interactions/command_interaction.dart' show CommandInteraction;
+export '../src/api/interactions/global_command_interaction.dart' show GlobalCommandInteraction;
+export '../src/api/interactions/guild_command_interaction.dart' show GuildCommandInteraction;
 export '../src/api/interactions/context_message_interaction.dart' show ContextMessageInteraction;
 export '../src/api/interactions/context_user_interaction.dart' show ContextUserInteraction;
 export '../src/api/interactions/interaction.dart' show Interaction;
