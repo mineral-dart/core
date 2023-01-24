@@ -8,6 +8,7 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/messages/dm_message.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
+import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
