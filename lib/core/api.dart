@@ -33,6 +33,7 @@ export '../src/api/interactions/select_menu_interaction.dart' show SelectMenuInt
 export '../src/api/managers/member_role_manager.dart' show MemberRoleManager;
 export '../src/api/managers/voice_manager.dart' show VoiceManager;
 export '../src/api/messages/message.dart' show Message;
+export '../src/api/messages/dm_message.dart' show DmMessage;
 export '../src/api/moderation_rule.dart' show ModerationEventType, ModerationTriggerType, ModerationPresetType, ModerationActionType, ModerationTriggerMetadata, ModerationActionMetadata, ModerationAction, ModerationRule;
 export '../src/api/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
 export '../src/api/role.dart' show Role;
