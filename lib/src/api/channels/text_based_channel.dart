@@ -5,25 +5,24 @@ import 'package:http/http.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/api/managers/message_manager.dart';
 
 class TextBasedChannel extends PartialTextChannel {
   final bool _nsfw;
   final WebhookManager _webhooks;
 
-  TextBasedChannel(
-    this._nsfw,
-    this._webhooks,
-    super.messages,
-    super.lastMessageId,
-    super.guildId,
-    super.parentId,
-    super.label,
-    super.type,
-    super.position,
-    super.flags,
-    super.permissions,
-    super.id
-  );
+  TextBasedChannel(this._nsfw,
+      this._webhooks,
+      super.messages,
+      super.lastMessageId,
+      super.guildId,
+      super.parentId,
+      super.label,
+      super.type,
+      super.position,
+      super.flags,
+      super.permissions,
+      super.id);
 
   /// Is channel allow nsfw
   bool get isNsfw => _nsfw;
@@ -32,28 +31,37 @@ class TextBasedChannel extends PartialTextChannel {
   WebhookManager get webhooks => _webhooks;
 
   /// Allow or disallow nsfw of this
-  Future<void> setNsfw (bool value) async {
-    await update(ChannelBuilder({ 'nsfw': value }));
+  Future<void> setNsfw(bool value) async {
+    await update(ChannelBuilder({ 'nsfw': value}));
   }
 
-  Future<void> bulkDelete(double number) async {
-    if  (number > 200) {
-      return ioc.use<MineralCli>().console.error('The number $number is too high, and exceeds the limit of 200 maximum messages');
-    }
+  // bulk deletes messages in this channel
+  Future<void> bulkDelete(int number) async {
+    final int max_messages = 200;
+    final int min_messages = 2;
+    
+    if (number >= max_messages || number <= min_messages) return ioc.use<MineralCli>().console.error('Provided too few or too many messages to delete. Must provide at least $min_messages and at most $max_messages messages to delete. Action canceled');
 
-    final Map<Snowflake, Message> messagesFetch = await messages.fetch();
+    Map<Snowflake, Message> messagesFetch = await messages.fetch();
     List<Snowflake> msg = [];
+    int i = 1;
 
-    int i = 0;
+    // check if the cache message is empty
+
+    // add messages id to msg Array
     for (Message message in messagesFetch.values) {
-      if(i <= number - 1) {
+      if (i <= number) {
         msg.add(message.id);
         i++;
       }
     }
 
-    await ioc.use<HttpService>().post(url: "/channels/${id}/messages/bulk-delete", payload: {
-      'messages': msg
-    });
+    // send the request to discord API
+    await ioc.use<HttpService>().post(
+        url: "/channels/${id}/messages/bulk-delete",
+        payload: {
+          'messages': msg
+        }
+    );
   }
 }
