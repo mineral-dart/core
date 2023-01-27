@@ -39,11 +39,14 @@ class TextBasedChannel extends PartialTextChannel {
   Future<void> bulkDelete(int number) async {
     final int max_messages = 200;
     final int min_messages = 2;
-    
+
     if (number >= max_messages || number <= min_messages) return ioc.use<MineralCli>().console.error('Provided too few or too many messages to delete. Must provide at least $min_messages and at most $max_messages messages to delete. Action canceled');
 
-    Map<Snowflake, Message> messagesFetch = await messages.fetch();
-    List<Snowflake> msg = [];
+    Map<Snowflake, Message> messagesFetch = await messages.cache; // developper need to fetch if there is an error
+
+    if(messagesFetch.values.length <= 0) messagesFetch = await messages.fetch();
+
+    List<Snowflake> messageIds = [];
     int i = 1;
 
     // check if the cache message is empty
@@ -51,7 +54,7 @@ class TextBasedChannel extends PartialTextChannel {
     // add messages id to msg Array
     for (Message message in messagesFetch.values) {
       if (i <= number) {
-        msg.add(message.id);
+        messageIds.add(message.id);
         i++;
       }
     }
@@ -60,7 +63,7 @@ class TextBasedChannel extends PartialTextChannel {
     await ioc.use<HttpService>().post(
         url: "/channels/${id}/messages/bulk-delete",
         payload: {
-          'messages': msg
+          'messages': messageIds
         }
     );
   }
