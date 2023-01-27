@@ -58,7 +58,8 @@ class CommandInteraction extends Interaction  {
   /// int? value = interaction.getInteger('option_name');
   /// ```
   int? getInteger (String optionName) {
-    return params[optionName];
+    double integer = params[optionName];
+    return integer.toInt();
   }
 
   /// ### Returns an [int] or null if the command has the designed option
@@ -68,7 +69,8 @@ class CommandInteraction extends Interaction  {
   /// final int value = interaction.getIntegerOrFail('option_name');
   /// ```
   int getIntegerOrFail (String optionName) {
-    return params[optionName];
+    double integer = params[optionName];
+    return integer.toInt();
   }
 
   /// ### Returns an [String] or null if the command has the designed option
