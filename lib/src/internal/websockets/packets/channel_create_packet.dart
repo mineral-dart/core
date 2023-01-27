@@ -31,7 +31,7 @@ class ChannelCreatePacket with Container, Console implements WebsocketPacket {
 
     guild?.channels.cache.set(channel.id, channel);
     
-    if(channelType.equals(ChannelType.private)) {
+    if(channelType is ChannelType.private) {
       eventService.controller.add(DMChannelCreateEvent(channel));
     } else {
       eventService.controller.add(ChannelCreateEvent(channel));
