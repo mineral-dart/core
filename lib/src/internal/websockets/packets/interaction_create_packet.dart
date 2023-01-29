@@ -49,7 +49,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['type'] == InteractionType.modalSubmit.value) {
-      _executeModalInteraction(guild!, member!, payload);
+      _executeModalInteraction(payload);
     }
 
     if (member != null) {
@@ -108,7 +108,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     eventService.controller.add(ButtonCreateEvent(buttonInteraction));
   }
 
-  _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
+  _executeModalInteraction (dynamic payload) {
     EventService eventService = container.use<EventService>();
     ModalInteraction modalInteraction = ModalInteraction.from(payload: payload);
 
