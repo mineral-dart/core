@@ -49,7 +49,7 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
     }
 
     final Response response = await ioc.use<DiscordApiHttpService>()
-        .get(url: '/channels/${_channelId}/messages/$id')
+        .get(url: '/channels/$_channelId/messages/$id')
         .build();
 
     if(response.statusCode == 200) {
