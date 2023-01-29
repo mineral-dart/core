@@ -7,8 +7,6 @@ import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
-import 'package:mineral/src/api/channels/partial_channel.dart';
-import 'package:mineral/src/api/messages/dm_message.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
@@ -17,6 +15,7 @@ import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+import 'package:mineral_cli/mineral_cli.dart';
 
 class InteractionCreatePacket with Container implements WebsocketPacket {
   @override
@@ -93,44 +92,16 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
   _executeButtonInteraction (Guild? guild, dynamic payload) async {
     EventService eventService = container.use<EventService>();
 
-    dynamic channel;
+    PartialChannel? channel = payload['guild_id'] != null
+      ? await guild?.channels.get(payload['channel_id'])
+      : await container.use<MineralClient>().dmChannels.get(payload['channel_id']);
 
-    if (payload['guild_id'] != null) {
-      channel = guild?.channels.cache.get(payload['channel_id']);
-      if (channel == null) {
-        final Response response = await container.use<DiscordApiHttpService>()
-            .get(url: '/channels/${payload['channel_id']}')
-            .build();
-
-        channel = ChannelWrapper.create(jsonDecode(response.body));
-        if(channel != null) guild?.channels.cache.putIfAbsent(channel.id, () => channel as TextBasedChannel);
-      }
-    } else {
-      channel = container.use<MineralClient>().dmChannels.cache.get(payload['channel_id']);
-      if (channel == null) {
-        final Response response = await container.use<DiscordApiHttpService>()
-            .get(url: '/channels/${payload['channel_id']}')
-            .build();
-
-        channel = ChannelWrapper.create(jsonDecode(response.body));
-        if(channel != null) container.use<MineralClient>().dmChannels.cache.putIfAbsent(channel.id, () => channel as DmChannel);
-      }
-    }
-
-    PartialMessage<PartialChannel>? message = channel?.messages.cache[payload['message']['id']];
-    if (message == null) {
-      final Response response = await container.use<DiscordApiHttpService>()
-        .get(url: '/channels/${payload['channel_id']}/messages/${payload['message']?['id']}')
-        .build();
-
-      if(channel is DmChannel) {
-        message = DmMessage.from(channel: channel, payload: jsonDecode(response.body));
-        channel.messages.cache.putIfAbsent(message.id, () => message as DmMessage);
-        print(message.id);
-      } else if (channel is TextBasedChannel){
-        message = Message.from(channel: channel, payload: jsonDecode(response.body));
-        channel.messages.cache.putIfAbsent(message.id, () => message as Message);
-      }
+    if(channel is DmChannel) {
+      DmMessage message = await channel.messages.get(payload['message']['id']);
+      channel.messages.cache.putIfAbsent(message.id, () => message);
+    } else if(channel is PartialTextChannel) {
+      Message message = await channel.messages.get(payload['message']['id']);
+      channel.messages.cache.putIfAbsent(message.id, () => message);
     }
 
     ButtonInteraction buttonInteraction = ButtonInteraction.fromPayload(payload);
