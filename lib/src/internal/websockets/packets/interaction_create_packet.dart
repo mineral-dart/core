@@ -45,7 +45,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['type'] == InteractionType.messageComponent.value && payload['data']['component_type'] == ComponentType.selectMenu.value) {
-      _executeSelectMenuInteraction(guild!, member!, payload);
+      _executeSelectMenuInteraction(guild, payload);
     }
 
     if (payload['type'] == InteractionType.modalSubmit.value) {
@@ -121,13 +121,23 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     eventService.controller.add(ModalCreateEvent(modalInteraction));
   }
 
-  void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
+  void _executeSelectMenuInteraction (Guild? guild, dynamic payload) async {
     EventService eventService = container.use<EventService>();
-    TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['message']['id']);
+
+
+    PartialChannel? channel = payload['guild_id'] != null
+        ? await guild?.channels.get(payload['channel_id'])
+        : await container.use<MineralClient>().dmChannels.get(payload['channel_id']);
+
+    if(channel is DmChannel) {
+      DmMessage message = await channel.messages.get(payload['message']['id']);
+      channel.messages.cache.putIfAbsent(message.id, () => message);
+    } else if(channel is PartialTextChannel) {
+      Message message = await channel.messages.get(payload['message']['id']);
+      channel.messages.cache.putIfAbsent(message.id, () => message);
+    }
 
     SelectMenuInteraction interaction = SelectMenuInteraction.from(
-      message: message,
       payload: payload,
     );
 
