@@ -11,18 +11,20 @@ class TextBasedChannel extends PartialTextChannel {
   final bool _nsfw;
   final WebhookManager _webhooks;
 
-  TextBasedChannel(this._nsfw,
-      this._webhooks,
-      super.messages,
-      super.lastMessageId,
-      super.guildId,
-      super.parentId,
-      super.label,
-      super.type,
-      super.position,
-      super.flags,
-      super.permissions,
-      super.id);
+  TextBasedChannel(
+    this._nsfw,
+    this._webhooks,
+    super.messages,
+    super.lastMessageId,
+    super.guildId,
+    super.parentId,
+    super.label,
+    super.type,
+    super.position,
+    super.flags,
+    super.permissions,
+    super.id
+  );
 
   /// Is channel allow nsfw
   bool get isNsfw => _nsfw;
