@@ -84,4 +84,27 @@ class GuildRoleManager extends CacheManager<Role>  {
 
     return role;
   }
+
+  Future<Role> get (Snowflake id) async {
+    if(cache.containsKey(id)) {
+      return cache.getOrFail(id);
+    }
+
+    final Response response = await ioc.use<DiscordApiHttpService>()
+        .get(url: '/guilds/$_guildId/roles/$id')
+        .build();
+
+    if(response.statusCode == 200) {
+      dynamic payload = jsonDecode(response.body);
+      final Role role = Role.from(
+        roleManager: this,
+        payload: payload,
+      );
+
+      cache.putIfAbsent(role.id, () => role);
+      return role;
+    }
+
+    throw ApiException('Unable to fetch role!');
+  }
 }

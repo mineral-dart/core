@@ -76,6 +76,7 @@ class EmojiManager extends CacheManager<Emoji>  {
       );
 
       cache.putIfAbsent(emoji.id, () => emoji);
+      return emoji;
     }
 
     throw ApiException('Unable to fetch emoji!');
