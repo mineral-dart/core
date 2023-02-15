@@ -97,11 +97,11 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       : await container.use<MineralClient>().dmChannels.get(payload['channel_id']);
 
     if(channel is DmChannel) {
-      DmMessage message = await channel.messages.get(payload['message']['id']);
-      channel.messages.cache.putIfAbsent(message.id, () => message);
+      DmMessage? message = await channel.messages.get(payload['message']['id']);
+      if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
     } else if(channel is PartialTextChannel) {
-      Message message = await channel.messages.get(payload['message']['id']);
-      channel.messages.cache.putIfAbsent(message.id, () => message);
+      Message? message = await channel.messages.get(payload['message']['id']);
+      if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
     }
 
     ButtonInteraction buttonInteraction = ButtonInteraction.fromPayload(payload);
@@ -130,11 +130,11 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
         : await container.use<MineralClient>().dmChannels.get(payload['channel_id']);
 
     if(channel is DmChannel) {
-      DmMessage message = await channel.messages.get(payload['message']['id']);
-      channel.messages.cache.putIfAbsent(message.id, () => message);
+      DmMessage? message = await channel.messages.get(payload['message']['id']);
+      if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
     } else if(channel is PartialTextChannel) {
-      Message message = await channel.messages.get(payload['message']['id']);
-      channel.messages.cache.putIfAbsent(message.id, () => message);
+      Message? message = await channel.messages.get(payload['message']['id']);
+      if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
     }
 
     SelectMenuInteraction interaction = SelectMenuInteraction.from(
