@@ -7,9 +7,6 @@ import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
 
-import '../../../../core/api.dart';
-import '../../../../core/api.dart';
-
 class ChannelCreatePacket with Container, Console implements WebsocketPacket {
   @override
   Future<void> handle(WebsocketResponse websocketResponse) async {

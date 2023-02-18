@@ -133,7 +133,9 @@ class GuildMember  {
   /// await member.removeTimeout();
   /// ```
   Future<void> kick ({ int? count, String? reason }) async {
-    await ioc.use<DiscordApiHttpService>().destroy(url: "/guilds/${guild.id}/members/${user.id}");
+    await ioc.use<DiscordApiHttpService>()
+      .destroy(url: "/guilds/${guild.id}/members/${user.id}")
+      .build();
   }
 
   /// ### Returns whether of this is a bot
