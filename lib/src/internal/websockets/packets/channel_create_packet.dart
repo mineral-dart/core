@@ -6,11 +6,9 @@ import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral/src/api/channels/dm_channel.dart';
-import 'package:mineral/src/api/channels/news_channel.dart';
 
-import 'package:mineral/src/api/channels/stage_channel.dart';
-import 'package:mineral/src/internal/websockets/events/dm_channel_create_event.dart';
+import '../../../../core/api.dart';
+import '../../../../core/api.dart';
 
 class ChannelCreatePacket with Container, Console implements WebsocketPacket {
   @override
@@ -25,16 +23,16 @@ class ChannelCreatePacket with Container, Console implements WebsocketPacket {
 
     final channel = ChannelWrapper.create(payload);
 
-    if (channelType == null) {
-      return null;
+    if (channelType == null || channelType == ChannelType.groupDm) {
+      return;
     }
 
     guild?.channels.cache.set(channel.id, channel);
     
-    if(channelType is ChannelType.private) {
-      eventService.controller.add(DMChannelCreateEvent(channel));
-    } else {
+    // if (channelType is ChannelType.private) {
+    //   eventService.controller.add(DMChannelCreateEvent(channel));
+    // } else {
       eventService.controller.add(ChannelCreateEvent(channel));
-    }
+    // }
   }
 }

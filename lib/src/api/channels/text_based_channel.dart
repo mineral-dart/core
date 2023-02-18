@@ -1,4 +1,5 @@
 import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/channel_builder.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:http/http.dart';
@@ -37,36 +38,25 @@ class TextBasedChannel extends PartialTextChannel {
     await update(ChannelBuilder({ 'nsfw': value}));
   }
 
-  // bulk deletes messages in this channel
-  Future<void> bulkDelete(int number) async {
-    final int max_messages = 200;
-    final int min_messages = 2;
+  /// Bulk deletes messages in this channel
+  Future<void> bulkDelete(int amount) async {
+    final int maxMessages = 200;
+    final int minMessages = 2;
 
-    if (number >= max_messages || number <= min_messages) return ioc.use<MineralCli>().console.error('Provided too few or too many messages to delete. Must provide at least $min_messages and at most $max_messages messages to delete. Action canceled');
-
-    Map<Snowflake, Message> messagesFetch = await messages.cache; // developper need to fetch if there is an error
-
-    if(messagesFetch.values.length <= 0) messagesFetch = await messages.fetch();
-
-    List<Snowflake> messageIds = [];
-    int i = 1;
-
-    // check if the cache message is empty
-
-    // add messages id to msg Array
-    for (Message message in messagesFetch.values) {
-      if (i <= number) {
-        messageIds.add(message.id);
-        i++;
-      }
+    if (amount >= maxMessages || amount <= minMessages) {
+      return ioc.use<MineralCli>()
+        .console.error('Provided too few or too many messages to delete. Must provide at least $minMessages and at most $maxMessages messages to delete. Action canceled');
     }
 
-    // send the request to discord API
-    await ioc.use<HttpService>().post(
-        url: "/channels/${id}/messages/bulk-delete",
-        payload: {
-          'messages': messageIds
-        }
-    );
+    Map<Snowflake, Message> fetchedMessages = messages.cache.clone;
+
+    if (fetchedMessages.values.isEmpty || messages.cache.length < amount) {
+      fetchedMessages = await messages.fetch();
+    }
+
+    await ioc.use<DiscordApiHttpService>()
+      .post(url: '/channels/$id/messages/bulk-delete')
+      .payload({ 'messages': fetchedMessages.keys.toList() })
+      .build();
   }
 }
