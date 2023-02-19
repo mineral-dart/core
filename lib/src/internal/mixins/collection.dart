@@ -24,7 +24,8 @@ extension Collection<K, V> on Map<K, V> {
     if (result == null) {
       return defaultValue;
     }
-    return result as T;
+
+    return result as T?;
   }
 
   /// Inserts or replaces data in the collection

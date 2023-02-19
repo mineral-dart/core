@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/helper.dart';
@@ -28,6 +29,26 @@ class WebhookManager extends CacheManager<Webhook>  {
     }
 
     return cache;
+  }
+
+  Future<Webhook> resolve (Snowflake id) async {
+    if(cache.containsKey(id)) {
+      return cache.getOrFail(id);
+    }
+
+    final Response response = await ioc.use<DiscordApiHttpService>()
+        .get(url: '/webhooks/$id')
+        .build();
+
+    if(response.statusCode == 200) {
+      dynamic payload = jsonDecode(response.body);
+      final Webhook webhook = Webhook.from(payload: payload);
+
+      cache.putIfAbsent(webhook.id, () => webhook);
+      return webhook;
+    }
+
+    throw ApiException('Unable to fetch webhook with id #$id');
   }
 
   Future<Webhook?> create ({ required String label, String? avatar }) async {
