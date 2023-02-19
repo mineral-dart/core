@@ -17,7 +17,12 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
 
   MessageManager(this._guildId, this._channelId);
 
+  @Deprecated('Use `sync` method instead')
   Future<Map<Snowflake, T>> fetch () async {
+    return sync();
+  }
+
+  Future<Map<Snowflake, T>> sync () async {
     cache.clear();
 
     Response response = await ioc.use<DiscordApiHttpService>()
