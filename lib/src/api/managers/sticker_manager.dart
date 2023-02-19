@@ -56,7 +56,7 @@ class StickerManager extends CacheManager<Sticker>  {
     return cache;
   }
 
-  Future<Sticker> get (Snowflake id) async {
+  Future<Sticker?> get (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -73,6 +73,6 @@ class StickerManager extends CacheManager<Sticker>  {
       return sticker;
     }
 
-    throw ApiException('Unable to fetch sticker!');
+    return null;
   }
 }

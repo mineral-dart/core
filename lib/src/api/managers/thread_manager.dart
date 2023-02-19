@@ -44,13 +44,13 @@ class ThreadManager extends CacheManager<ThreadChannel>  {
     }));
   }
 
-  Future<ThreadChannel> get (Snowflake id) async {
+  Future<ThreadChannel?> get (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
 
     final Response response = await ioc.use<DiscordApiHttpService>()
-        .get(url: '/guilds/${guild.id}/channels/$id')
+        .get(url: '/guilds/$_guildId/channels/$id')
         .build();
 
     if(response.statusCode == 200) {
@@ -61,6 +61,6 @@ class ThreadManager extends CacheManager<ThreadChannel>  {
       return thread;
     }
 
-    throw ApiException('Unable to fetch thread!');
+    return null;
   }
 }

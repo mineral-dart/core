@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
 
@@ -49,7 +50,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule>  {
   /// ```dart
   /// final rules = await guild.moderationRules.sync();
   /// ```
-  Future<Map<Snowflake, ModerationRule>>sync () async {
+  Future<Map<Snowflake, ModerationRule>> sync () async {
     Response response = await ioc.use<DiscordApiHttpService>()
       .get(url: "/guilds/$_guildId/auto-moderation/rules")
       .build();
@@ -62,5 +63,24 @@ class ModerationRuleManager extends CacheManager<ModerationRule>  {
     return cache;
   }
 
+  Future<ModerationRule?> get (Snowflake id) async {
+    if(cache.containsKey(id)) {
+      return cache.getOrFail(id);
+    }
+
+    final Response response = await ioc.use<DiscordApiHttpService>()
+        .get(url: '/guilds/$_guildId/webhooks/$id')
+        .build();
+
+    if(response.statusCode == 200) {
+      dynamic payload = jsonDecode(response.body);
+      final ModerationRule rule = ModerationRule.fromPayload(payload);
+
+      cache.putIfAbsent(rule.id, () => rule);
+      return rule;
+    }
+
+    return null;
+  }
 
 }

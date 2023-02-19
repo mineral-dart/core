@@ -27,14 +27,7 @@ class GuildWebhookManager extends CacheManager<Webhook>  {
     return cache;
   }
 
-  factory GuildWebhookManager.fromManager({ required WebhookManager webhookManager }) {
-    final guildWebhookManager = GuildWebhookManager();
-    guildWebhookManager.cache.addAll(webhookManager.cache);
-
-    return guildWebhookManager;
-  }
-
-  Future<Webhook> get (Snowflake id) async {
+  Future<Webhook?> get (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -51,6 +44,13 @@ class GuildWebhookManager extends CacheManager<Webhook>  {
       return webhook;
     }
 
-    throw ApiException('Unable to fetch webhook!');
+    return null;
+  }
+
+  factory GuildWebhookManager.fromManager({ required WebhookManager webhookManager }) {
+    final guildWebhookManager = GuildWebhookManager();
+    guildWebhookManager.cache.addAll(webhookManager.cache);
+
+    return guildWebhookManager;
   }
 }

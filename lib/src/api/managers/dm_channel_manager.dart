@@ -12,7 +12,7 @@ import 'package:mineral_ioc/ioc.dart';
 
 class DmChannelManager extends CacheManager<DmChannel> {
 
-  Future<DmChannel> get (Snowflake id) async {
+  Future<DmChannel?> get (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -31,7 +31,7 @@ class DmChannelManager extends CacheManager<DmChannel> {
       }
     }
 
-    throw ApiException('Unable to fetch channel!');
+    return null;
   }
 
 }

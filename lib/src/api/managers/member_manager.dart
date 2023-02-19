@@ -38,4 +38,29 @@ class MemberManager extends CacheManager<GuildMember>  {
 
     return cache;
   }
+
+  Future<GuildMember?> get (Snowflake id) async {
+    if(cache.containsKey(id)) {
+      return cache.getOrFail(id);
+    }
+
+    final Response response = await ioc.use<DiscordApiHttpService>()
+        .get(url: '/guilds/${_guild.id}/members/$id')
+        .build();
+
+    if(response.statusCode == 200) {
+      dynamic payload = jsonDecode(response.body);
+      final GuildMember guildMember = GuildMember.from(
+          user: User.from(payload['user']),
+          roles: _guild.roles,
+          guild: _guild,
+          voice: VoiceManager.empty(payload['deaf'], payload['mute'], payload['user']['id'], _guild.id)
+      );
+
+      cache.putIfAbsent(guildMember.user.id, () => guildMember);
+      return guildMember;
+    }
+
+    return null;
+  }
 }

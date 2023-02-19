@@ -123,12 +123,12 @@ class MemberRoleManager extends CacheManager<Role>  {
     return cache;
   }
 
-  Future<Role> get (Snowflake id) async {
+  Future<Role?> get (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
 
     await sync();
-    return cache.getOr(id, () => throw ApiException('Unable to fetch member role!'))!;
+    return cache.get(id);
   }
 }

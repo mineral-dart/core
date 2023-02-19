@@ -48,7 +48,7 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
     return cache;
   }
 
-  Future<T> get (Snowflake id) async {
+  Future<T?> get (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -80,6 +80,6 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
       }
     }
 
-    throw ApiException('Unable to fetch message!');
+    return null;
   }
 }

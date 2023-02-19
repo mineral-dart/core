@@ -43,7 +43,7 @@ class ChannelManager extends CacheManager<GuildChannel>  {
     return cache;
   }
 
-  Future<GuildChannel> get (Snowflake id) async {
+  Future<GuildChannel?> get (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -62,7 +62,7 @@ class ChannelManager extends CacheManager<GuildChannel>  {
       }
     }
 
-    throw ApiException('Unable to fetch channel!');
+    return null;
   }
 
   Future<T?> create<T extends GuildChannel> (ChannelBuilder builder) async {

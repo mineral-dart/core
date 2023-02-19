@@ -32,7 +32,7 @@ class WebhookManager extends CacheManager<Webhook>  {
     return cache;
   }
 
-  Future<Webhook> get (Snowflake id) async {
+  Future<Webhook?> get (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -49,7 +49,7 @@ class WebhookManager extends CacheManager<Webhook>  {
       return webhook;
     }
 
-    throw ApiException('Unable to fetch webhook!');
+    return null;
   }
 
   Future<Webhook?> create ({ required String label, String? avatar }) async {

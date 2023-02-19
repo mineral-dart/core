@@ -34,7 +34,7 @@ class GuildScheduledEventService extends CacheManager<GuildScheduledEvent>  {
     return cache;
   }
 
-  Future<GuildScheduledEvent> get (Snowflake id) async {
+  Future<GuildScheduledEvent?> get (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -55,6 +55,6 @@ class GuildScheduledEventService extends CacheManager<GuildScheduledEvent>  {
       return event;
     }
 
-    throw ApiException('Unable to fetch guild scheduled event!');
+    return null;
   }
 }
