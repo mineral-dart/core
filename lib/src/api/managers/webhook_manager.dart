@@ -8,6 +8,8 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+import '../../../exception.dart';
+
 class WebhookManager extends CacheManager<Webhook>  {
   final Snowflake? _channelId;
   final Snowflake? _guildId;
@@ -28,6 +30,26 @@ class WebhookManager extends CacheManager<Webhook>  {
     }
 
     return cache;
+  }
+
+  Future<Webhook> get (Snowflake id) async {
+    if(cache.containsKey(id)) {
+      return cache.getOrFail(id);
+    }
+
+    final Response response = await ioc.use<DiscordApiHttpService>()
+        .get(url: '/channels/$_channelId/webhooks/$id')
+        .build();
+
+    if(response.statusCode == 200) {
+      dynamic payload = jsonDecode(response.body);
+      final Webhook webhook = Webhook.from(payload: payload);
+
+      cache.putIfAbsent(webhook.id, () => webhook);
+      return webhook;
+    }
+
+    throw ApiException('Unable to fetch webhook!');
   }
 
   Future<Webhook?> create ({ required String label, String? avatar }) async {
