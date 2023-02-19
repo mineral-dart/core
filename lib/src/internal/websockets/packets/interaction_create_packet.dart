@@ -123,16 +123,14 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     EventService eventService = container.use<EventService>();
 
 
-    PartialChannel? channel = payload['guild_id'] != null
-        ? await guild?.channels.resolve(payload['channel_id'])
+    PartialChannel channel = payload['guild_id'] != null && guild != null
+        ? await guild.channels.resolve(payload['channel_id'])
         : await container.use<MineralClient>().dmChannels.resolve(payload['channel_id']);
 
-    if(channel is DmChannel) {
-      DmMessage? message = await channel.messages.resolve(payload['message']['id']);
-      if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
-    } else if(channel is PartialTextChannel) {
-      Message? message = await channel.messages.resolve(payload['message']['id']);
-      if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
+    if (channel is DmChannel || channel is PartialTextChannel) {
+      try {
+        await (channel as dynamic).messages.resolve(payload['message']['id']);
+      } catch(_) { }
     }
 
     SelectMenuInteraction interaction = SelectMenuInteraction.from(
