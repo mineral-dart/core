@@ -69,7 +69,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule>  {
     }
 
     final Response response = await ioc.use<DiscordApiHttpService>()
-        .get(url: '/guilds/$_guildId/webhooks/$id')
+        .get(url: '/guilds/$_guildId/auto-moderation/rules/$id')
         .build();
 
     if(response.statusCode == 200) {

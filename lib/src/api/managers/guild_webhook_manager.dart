@@ -33,7 +33,7 @@ class GuildWebhookManager extends CacheManager<Webhook>  {
     }
 
     final Response response = await ioc.use<DiscordApiHttpService>()
-        .get(url: '/guilds/${guild.id}/webhooks/$id')
+        .get(url: '/webhooks/$id')
         .build();
 
     if(response.statusCode == 200) {
