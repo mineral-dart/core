@@ -63,7 +63,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule>  {
     return cache;
   }
 
-  Future<ModerationRule?> get (Snowflake id) async {
+  Future<ModerationRule?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

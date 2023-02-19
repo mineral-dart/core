@@ -43,7 +43,7 @@ class ChannelManager extends CacheManager<GuildChannel>  {
     return cache;
   }
 
-  Future<GuildChannel?> get (Snowflake id) async {
+  Future<GuildChannel?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

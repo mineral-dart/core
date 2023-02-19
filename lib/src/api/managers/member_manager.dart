@@ -39,7 +39,7 @@ class MemberManager extends CacheManager<GuildMember>  {
     return cache;
   }
 
-  Future<GuildMember?> get (Snowflake id) async {
+  Future<GuildMember?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

@@ -56,7 +56,7 @@ class StickerManager extends CacheManager<Sticker>  {
     return cache;
   }
 
-  Future<Sticker?> get (Snowflake id) async {
+  Future<Sticker?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

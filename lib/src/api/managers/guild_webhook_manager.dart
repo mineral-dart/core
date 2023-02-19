@@ -27,7 +27,7 @@ class GuildWebhookManager extends CacheManager<Webhook>  {
     return cache;
   }
 
-  Future<Webhook?> get (Snowflake id) async {
+  Future<Webhook?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

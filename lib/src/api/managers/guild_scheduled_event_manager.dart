@@ -34,7 +34,7 @@ class GuildScheduledEventService extends CacheManager<GuildScheduledEvent>  {
     return cache;
   }
 
-  Future<GuildScheduledEvent?> get (Snowflake id) async {
+  Future<GuildScheduledEvent?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

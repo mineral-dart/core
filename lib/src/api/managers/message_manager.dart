@@ -48,7 +48,7 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
     return cache;
   }
 
-  Future<T?> get (Snowflake id) async {
+  Future<T?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

@@ -85,7 +85,7 @@ class GuildRoleManager extends CacheManager<Role>  {
     return role;
   }
 
-  Future<Role?> get (Snowflake id) async {
+  Future<Role?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

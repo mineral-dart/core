@@ -123,7 +123,7 @@ class MemberRoleManager extends CacheManager<Role>  {
     return cache;
   }
 
-  Future<Role?> get (Snowflake id) async {
+  Future<Role?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

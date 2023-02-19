@@ -44,7 +44,7 @@ class ThreadManager extends CacheManager<ThreadChannel>  {
     }));
   }
 
-  Future<ThreadChannel?> get (Snowflake id) async {
+  Future<ThreadChannel?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }

@@ -57,7 +57,7 @@ class EmojiManager extends CacheManager<Emoji>  {
     return emoji;
   }
 
-  Future<Emoji?> get (Snowflake id) async {
+  Future<Emoji?> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
