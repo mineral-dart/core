@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
@@ -55,7 +56,7 @@ class StickerManager extends CacheManager<Sticker>  {
     return cache;
   }
 
-  Future<Sticker?> resolve (Snowflake id) async {
+  Future<Sticker> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -72,6 +73,6 @@ class StickerManager extends CacheManager<Sticker>  {
       return sticker;
     }
 
-    return null;
+    throw ApiException('Unable to fetch sticker with id #$id');
   }
 }

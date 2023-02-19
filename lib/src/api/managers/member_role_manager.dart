@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
@@ -122,12 +123,16 @@ class MemberRoleManager extends CacheManager<Role>  {
     return cache;
   }
 
-  Future<Role?> resolve (Snowflake id) async {
+  Future<Role> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
 
     await sync();
-    return cache.get(id);
+    if (!cache.containsKey(id)) {
+      throw ApiException('Unable to fetch role with id #$id');
+    }
+
+    return cache.getOrFail(id);
   }
 }

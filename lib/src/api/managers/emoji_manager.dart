@@ -57,7 +57,7 @@ class EmojiManager extends CacheManager<Emoji>  {
     return emoji;
   }
 
-  Future<Emoji?> resolve (Snowflake id) async {
+  Future<Emoji> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -79,6 +79,6 @@ class EmojiManager extends CacheManager<Emoji>  {
       return emoji;
     }
 
-    return null;
+    throw ApiException('Unable to fetch emoji with id #$id');
   }
 }

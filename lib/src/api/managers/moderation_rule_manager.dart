@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
@@ -63,7 +64,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule>  {
     return cache;
   }
 
-  Future<ModerationRule?> resolve (Snowflake id) async {
+  Future<ModerationRule> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -80,7 +81,7 @@ class ModerationRuleManager extends CacheManager<ModerationRule>  {
       return rule;
     }
 
-    return null;
+    throw ApiException('Unable to fetch moderation rule with id #$id');
   }
 
 }

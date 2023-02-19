@@ -85,12 +85,16 @@ class GuildRoleManager extends CacheManager<Role>  {
     return role;
   }
 
-  Future<Role?> resolve (Snowflake id) async {
+  Future<Role> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
 
     await sync();
-    return cache.get(id);
+    if (!cache.containsKey(id)) {
+      throw ApiException('Unable to fetch role with id #$id');
+    }
+
+    return cache.getOrFail(id);
   }
 }

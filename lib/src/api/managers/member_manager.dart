@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
@@ -39,7 +40,7 @@ class MemberManager extends CacheManager<GuildMember>  {
     return cache;
   }
 
-  Future<GuildMember?> resolve (Snowflake id) async {
+  Future<GuildMember> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -61,6 +62,6 @@ class MemberManager extends CacheManager<GuildMember>  {
       return guildMember;
     }
 
-    return null;
+    throw ApiException('Unable to fetch guild member with id #$id');
   }
 }

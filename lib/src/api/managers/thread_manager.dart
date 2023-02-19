@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
@@ -43,7 +44,7 @@ class ThreadManager extends CacheManager<ThreadChannel>  {
     }));
   }
 
-  Future<ThreadChannel?> resolve (Snowflake id) async {
+  Future<ThreadChannel> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -60,6 +61,6 @@ class ThreadManager extends CacheManager<ThreadChannel>  {
       return thread;
     }
 
-    return null;
+    throw ApiException('Unable to fetch thread with id #$id');
   }
 }

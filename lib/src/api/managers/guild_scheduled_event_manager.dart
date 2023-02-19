@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
@@ -33,7 +34,7 @@ class GuildScheduledEventService extends CacheManager<GuildScheduledEvent>  {
     return cache;
   }
 
-  Future<GuildScheduledEvent?> resolve (Snowflake id) async {
+  Future<GuildScheduledEvent> resolve (Snowflake id) async {
     if(cache.containsKey(id)) {
       return cache.getOrFail(id);
     }
@@ -54,6 +55,6 @@ class GuildScheduledEventService extends CacheManager<GuildScheduledEvent>  {
       return event;
     }
 
-    return null;
+    throw ApiException('Unable to fetch scheduled event with id #$id');
   }
 }
