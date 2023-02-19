@@ -8,8 +8,6 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-import '../../../exception.dart';
-
 class WebhookManager extends CacheManager<Webhook>  {
   final Snowflake? _channelId;
   final Snowflake? _guildId;
