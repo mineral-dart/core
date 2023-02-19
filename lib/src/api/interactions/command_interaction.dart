@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class CommandInteraction extends Interaction  {
@@ -27,7 +28,9 @@ class CommandInteraction extends Interaction  {
   );
 
   String get identifier => _identifier;
-  TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId);
+  PartialChannel? get channel => guild != null
+    ? guild!.channels.cache.get(_channelId)
+    : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
   Map<String, dynamic> get data => _data;
   Map<String, dynamic> get params => _params;
 
@@ -219,7 +222,7 @@ class CommandInteraction extends Interaction  {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['member']?['user']?['id'],
+      payload['guild_id'] == null ? payload['user']['id'] : payload['member']?['user']?['id'],
       payload['guild_id'],
       payload['data']['name'],
       payload['channel_id'],

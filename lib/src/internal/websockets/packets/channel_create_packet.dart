@@ -15,21 +15,13 @@ class ChannelCreatePacket with Container, Console implements WebsocketPacket {
 
     dynamic payload = websocketResponse.payload;
 
-    final ChannelType? channelType = ChannelType.values.firstWhere((element) => element.value == payload['type']);
-    Guild? guild = client.guilds.cache.get(payload['guild_id']);
+    PartialChannel channel = ChannelWrapper.create(payload);
 
-    final channel = ChannelWrapper.create(payload);
-
-    if (channelType == null || channelType == ChannelType.groupDm) {
-      return;
+    if(payload['guild_id'] != null) {
+      Guild? guild = client.guilds.cache.get(payload['guild_id']);
+      guild?.channels.cache.set(channel.id, channel as GuildChannel);
     }
 
-    guild?.channels.cache.set(channel.id, channel);
-    
-    // if (channelType is ChannelType.private) {
-    //   eventService.controller.add(DMChannelCreateEvent(channel));
-    // } else {
-      eventService.controller.add(ChannelCreateEvent(channel));
-    // }
+    eventService.controller.add(ChannelCreateEvent(channel));
   }
 }

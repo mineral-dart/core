@@ -10,7 +10,8 @@ class CommandService extends MineralService {
   final Map<String, CommandBuilder> _commands = {};
   Map<String, CommandBuilder> get commands => _commands;
 
-  final Map<String, Function> _handlers = {};
+  final Map<String, Function> _guildHandlers = {};
+  final Map<String, Function> _globalHandlers = {};
 
   StreamController<CommandCreateEvent> controller = StreamController();
 
@@ -42,8 +43,15 @@ class CommandService extends MineralService {
         test(event.interaction.data['options']);
       }
 
-      Function function = _handlers.getOrFail(identifier);
-      await function(event.interaction);
+      final Scope scope = command.scope ?? Scope.guild;
+
+      if(scope.isGuild) {
+        Function function = _guildHandlers.getOrFail(identifier);
+        await function(event.getInteraction<GuildCommandInteraction>(Scope.guild));
+      } else {
+        Function function = _globalHandlers.getOrFail(identifier);
+        await function(event.getInteraction<GlobalCommandInteraction>(Scope.global));
+      }
     });
   }
 
@@ -52,17 +60,22 @@ class CommandService extends MineralService {
       final command = mineralCommand.command;
       _commands.putIfAbsent(mineralCommand.command.label, () => mineralCommand.command);
 
+      final Scope scope = command.scope ?? Scope.guild;
       if (command.subcommands.isEmpty && command.groups.isEmpty) {
-        _handlers.putIfAbsent(command.label, () => mineralCommand.handle);
+        if(scope.isGuild) {
+          _guildHandlers.putIfAbsent(command.label, () => mineralCommand.handle);
+        } else {
+          _globalHandlers.putIfAbsent(command.label, () => mineralCommand.handle);
+        }
       }
 
       if (command.subcommands.isNotEmpty) {
-        _registerSubCommands(mineralCommand.command.label, command.subcommands);
+        _registerSubCommands(mineralCommand.command.label, scope, command.subcommands);
       }
 
       if (command.groups.isNotEmpty) {
         for (final group in command.groups) {
-          _registerSubCommands(mineralCommand.command.label + '.' + group.label, group.subcommands);
+          _registerSubCommands(mineralCommand.command.label + '.' + group.label, command.scope ?? Scope.guild, group.subcommands);
         }
       }
 
@@ -70,9 +83,13 @@ class CommandService extends MineralService {
     }
   }
 
-  void _registerSubCommands (String identifier, List<SubCommandBuilder> commands) {
+  void _registerSubCommands (String identifier, Scope scope, List<SubCommandBuilder> commands) {
     for (final subcommand in commands) {
-      _handlers.putIfAbsent(identifier + '.' + subcommand.label, () => subcommand.handle);
+      if(scope.isGlobal) {
+        _globalHandlers.putIfAbsent(identifier + '.' + subcommand.label, () => subcommand.handle);
+      } else {
+        _guildHandlers.putIfAbsent(identifier + '.' + subcommand.label, () => subcommand.handle);
+      }
     }
   }
 

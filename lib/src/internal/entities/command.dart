@@ -9,17 +9,20 @@ class Scope {
   static Scope get guild => Scope('GUILD');
   static Scope get global => Scope('GLOBAL');
 
+  bool get isGlobal => mode == 'GLOBAL';
+  bool get isGuild => !isGlobal;
+
   Scope(this.mode);
 }
 
-abstract class MineralCommand {
+abstract class MineralCommand<T extends CommandInteraction> {
   late final CommandBuilder command;
 
   void register(CommandBuilder builder) {
     command = builder;
   }
 
-  Future<void> handle (CommandInteraction interaction) async {
+  Future<void> handle (T interaction) async {
     throw MissingMethodException('The handle method does not exist on your command ${command.label}');
   }
 }

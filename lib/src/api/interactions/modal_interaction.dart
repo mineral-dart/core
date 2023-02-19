@@ -2,6 +2,7 @@ import 'dart:core';
 
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class ModalInteraction extends Interaction {
   Snowflake _customId;
@@ -23,7 +24,9 @@ class ModalInteraction extends Interaction {
   );
 
   Snowflake get customId => _customId;
-  TextChannel? get channel => guild?.channels.cache.get(_channelId);
+  PartialChannel? get channel => guild != null
+    ? guild?.channels.cache.get(_channelId)
+    : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
 
   /// ### Return an [String] if the modal has the designed field
   ///
