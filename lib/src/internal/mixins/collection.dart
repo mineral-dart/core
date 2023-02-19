@@ -19,12 +19,13 @@ extension Collection<K, V> on Map<K, V> {
   /// Channel? secondChannel = guild.channels.cache.getOr('991686152585232404', defaultValue: firstChannel );
   /// print(secondChannel);
   /// ```
-  T? getOr<T extends V?> (K? key, Never Function() param1, { T? defaultValue }) {
+  T? getOr<T extends V?> (K? key, { T? defaultValue }) {
     V? result = get(key);
-    if (result == null && defaultValue != null) {
+    if (result == null) {
       return defaultValue;
     }
-    return result as T;
+
+    return result as T?;
   }
 
   /// Inserts or replaces data in the collection
