@@ -93,14 +93,14 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     EventService eventService = container.use<EventService>();
 
     PartialChannel? channel = payload['guild_id'] != null
-      ? await guild?.channels.get(payload['channel_id'])
-      : await container.use<MineralClient>().dmChannels.get(payload['channel_id']);
+      ? await guild?.channels.resolve(payload['channel_id'])
+      : await container.use<MineralClient>().dmChannels.resolve(payload['channel_id']);
 
     if(channel is DmChannel) {
-      DmMessage? message = await channel.messages.get(payload['message']['id']);
+      DmMessage? message = await channel.messages.resolve(payload['message']['id']);
       if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
     } else if(channel is PartialTextChannel) {
-      Message? message = await channel.messages.get(payload['message']['id']);
+      Message? message = await channel.messages.resolve(payload['message']['id']);
       if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
     }
 
@@ -126,14 +126,14 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
 
     PartialChannel? channel = payload['guild_id'] != null
-        ? await guild?.channels.get(payload['channel_id'])
-        : await container.use<MineralClient>().dmChannels.get(payload['channel_id']);
+        ? await guild?.channels.resolve(payload['channel_id'])
+        : await container.use<MineralClient>().dmChannels.resolve(payload['channel_id']);
 
     if(channel is DmChannel) {
-      DmMessage? message = await channel.messages.get(payload['message']['id']);
+      DmMessage? message = await channel.messages.resolve(payload['message']['id']);
       if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
     } else if(channel is PartialTextChannel) {
-      Message? message = await channel.messages.get(payload['message']['id']);
+      Message? message = await channel.messages.resolve(payload['message']['id']);
       if(message != null) channel.messages.cache.putIfAbsent(message.id, () => message);
     }
 
