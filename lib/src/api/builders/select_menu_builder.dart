@@ -44,11 +44,11 @@ class EmojiOption {
 
 class SelectMenuOption<T> {
   String label;
-  String description;
+  String? description;
   T value;
   EmojiBuilder? emoji;
 
-  SelectMenuOption({ required this.label, required this.description, required this.value, this.emoji });
+  SelectMenuOption({ required this.label, this.description, required this.value, this.emoji });
 
   toJson () {
     return {
