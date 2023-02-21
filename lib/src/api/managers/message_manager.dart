@@ -17,6 +17,14 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
 
   MessageManager(this._guildId, this._channelId);
 
+  /// ### Bulk delete [Message] in channel ([PartialTextChannel], [DmChannel])
+  ///
+  /// Example :
+  /// ```dart
+  /// final TextChannel channel = await guild.channels.resolve('240561194958716924');
+  /// await channel.bulkDelete.amount(100);
+  /// await channel.bulkDelete.ids(["1077565703416193125", "1077383535477927977"]);
+  /// ```
   BulkDeleteBuilder get bulkDelete => BulkDeleteBuilder(this);
 
   @Deprecated('Use `sync` method instead')
@@ -94,6 +102,14 @@ class BulkDeleteBuilder<T extends PartialMessage> {
 
   BulkDeleteBuilder(this._manager);
 
+  /// ### Delete a specified [amount] of [Message]
+  /// Amount **must be** between 2 and 200.
+  ///
+  /// Example :
+  /// ```dart
+  /// final TextChannel channel = await guild.channels.resolve('240561194958716924');
+  /// await channel.bulkDelete.amount(100, reason: 'Too many messages in this channel');
+  ///
   Future<void> amount(int amount, {String? reason}) async {
     if (amount >= maxMessages || amount <= minMessages) {
       return ioc.use<MineralCli>()
@@ -109,10 +125,24 @@ class BulkDeleteBuilder<T extends PartialMessage> {
     return messages(cache.reversed.take(amount).toList(), reason: reason);
   }
 
+  /// ### Delete some specified [Message]
+  ///
+  /// Example :
+  /// ```dart
+  /// final TextChannel channel = await guild.channels.resolve('240561194958716924');
+  /// await channel.bulkDelete.messages([channel.messages.cache.values.first, channel.messages.cache.values.last]);
+  ///
   Future<void> messages(List<T> messages, {String? reason}) async {
     return ids(messages.map((e) => e.id).toList(), reason: reason);
   }
 
+  /// ### Delete [Message] with their ids
+  ///
+  /// Example :
+  /// ```dart
+  /// final TextChannel channel = await guild.channels.resolve('240561194958716924');
+  /// await channel.bulkDelete.ids(["1077565703416193125", "1077383535477927977"]);
+  ///
   Future<void> ids(List<Snowflake> ids, {String? reason}) async {
     Response response = await ioc.use<DiscordApiHttpService>()
       .post(url: '/channels/${_manager._channelId}/messages/bulk-delete')
