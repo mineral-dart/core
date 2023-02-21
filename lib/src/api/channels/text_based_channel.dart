@@ -35,26 +35,4 @@ class TextBasedChannel extends PartialTextChannel {
   Future<void> setNsfw(bool value) async {
     await update(ChannelBuilder({ 'nsfw': value}));
   }
-
-  /// Bulk deletes messages in this channel
-  Future<void> bulkDelete(int amount) async {
-    final int maxMessages = 200;
-    final int minMessages = 2;
-
-    if (amount >= maxMessages || amount <= minMessages) {
-      return ioc.use<MineralCli>()
-        .console.error('Provided too few or too many messages to delete. Must provide at least $minMessages and at most $maxMessages messages to delete. Action canceled');
-    }
-
-    Map<Snowflake, Message> fetchedMessages = messages.cache.clone;
-
-    if (fetchedMessages.values.isEmpty || messages.cache.length < amount) {
-      fetchedMessages = await messages.fetch();
-    }
-
-    await ioc.use<DiscordApiHttpService>()
-      .post(url: '/channels/$id/messages/bulk-delete')
-      .payload({ 'messages': fetchedMessages.keys.toList() })
-      .build();
-  }
 }
