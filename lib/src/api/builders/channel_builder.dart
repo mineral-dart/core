@@ -20,7 +20,7 @@ class ChannelBuilder {
       'topic': description,
       'parent_id': parentId,
       'position': position,
-      'permission_overwrites': permissions?.map((permission) => permission.toJSON()).toList(),
+      'permission_overwrites': permissions?.map((permission) => permission.toJson()).toList(),
       'nsfw': nsfw,
       'rate_limit_per_user': rateLimitPerUser
     });
@@ -31,7 +31,7 @@ class ChannelBuilder {
       'type': ChannelType.guildCategory.value,
       'name': label,
       'position': position,
-      'permission_overwrites': permissions?.map((permission) => permission.toJSON()).toList(),
+      'permission_overwrites': permissions?.map((permission) => permission.toJson()).toList(),
     });
   }
 
@@ -51,7 +51,7 @@ class ChannelBuilder {
       'name': label,
       'parent_id': parentId,
       'position': position,
-      'permission_overwrites': permissions?.map((permission) => permission.toJSON()).toList(),
+      'permission_overwrites': permissions?.map((permission) => permission.toJson()).toList(),
       'nsfw': nsfw,
       'bitrate': bitrate,
       'user_limit': userLimit,
