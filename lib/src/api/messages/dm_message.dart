@@ -55,6 +55,14 @@ class DmMessage extends PartialMessage<DmChannel>  {
         : null;
   }
 
+  /// Delete this
+  Future<void> delete ({ String? reason }) async {
+    await ioc.use<DiscordApiHttpService>()
+      .destroy(url: '/channels/${channel.id}/messages/$id')
+      .auditLog(reason)
+      .build();
+  }
+
   factory DmMessage.from({ required DmChannel channel, required dynamic payload }) {
     MineralClient client = ioc.use<MineralClient>();
     User? user = client.users.cache.get(payload['author']['id']);

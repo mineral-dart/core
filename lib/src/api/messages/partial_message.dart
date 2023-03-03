@@ -78,4 +78,6 @@ class PartialMessage<T extends PartialChannel>  {
 
   DateTime get createdAt => DateTime.parse(_timestamp);
   DateTime? get updatedAt =>  _editedTimestamp != null ? DateTime.parse(_editedTimestamp!) : null;
+
+
 }

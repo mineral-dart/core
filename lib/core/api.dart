@@ -40,7 +40,7 @@ export '../src/api/moderation_rule.dart' show ModerationEventType, ModerationTri
 export '../src/api/permission_overwrite.dart' show PermissionOverwrite, PermissionOverwriteType;
 export '../src/api/role.dart' show Role;
 export '../src/api/status.dart' show Status, StatusType;
-export '../src/api/user.dart' show User;
+export '../src/api/users/user.dart' show User;
 export '../src/api/utils.dart';
 export '../src/api/webhook.dart' show Webhook;
 export '../src/internal/services/intent_service.dart' show Intent;
