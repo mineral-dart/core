@@ -150,8 +150,12 @@ class BulkDeleteBuilder<T extends PartialMessage> {
       .auditLog(reason)
       .build();
 
-    if(response.statusCode != 204) {
+    if (response.statusCode != 204) {
       throw ApiException("Unable to delete messages : ${response.statusCode} - ${response.body}");
+    }
+
+    for (final id in ids) {
+      _manager.cache.remove(id);
     }
   }
 }
