@@ -1,7 +1,3 @@
-import 'dart:convert';
-
-import 'package:http/http.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
@@ -20,24 +16,14 @@ class MessageDeletePacket with Container implements WebsocketPacket {
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     TextBasedChannel? channel = guild?.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['id']);
 
     if (channel?.id == null) {
       return;
     }
 
-    if (message == null) {
-      Response response = await container.use<DiscordApiHttpService>()
-        .get(url: "/channels/${channel?.id}/messages/${payload['id']}")
-        .build();
+    Message message = await channel!.messages.resolve(payload['id']);
 
-      if (response.statusCode == 200) {
-        dynamic json = jsonDecode(response.body);
-        message = Message.from(channel: channel!, payload: json);
-      }
-    }
-
-    eventService.controller.add(MessageDeleteEvent(message!));
-    channel?.messages.cache.remove(payload['id']);
+    channel.messages.cache.remove(payload['id']);
+    eventService.controller.add(MessageDeleteEvent(message));
   }
 }
