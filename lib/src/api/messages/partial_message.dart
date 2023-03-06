@@ -80,9 +80,10 @@ class PartialMessage<T extends PartialChannel>  {
   DateTime get createdAt => DateTime.parse(_timestamp);
   DateTime? get updatedAt =>  _editedTimestamp != null ? DateTime.parse(_editedTimestamp!) : null;
 
-  Future<void> delete () async {
+  Future<void> delete ({ String? reason }) async {
     await ioc.use<DiscordApiHttpService>()
       .destroy(url: '/channels/$_channelId/messages/$id')
+      .auditLog(reason)
       .build();
   }
 }
