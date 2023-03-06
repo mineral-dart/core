@@ -33,13 +33,12 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
   }
 
   Future<Map<Snowflake, T>> sync () async {
-    cache.clear();
-
     Response response = await ioc.use<DiscordApiHttpService>()
       .get(url: "/channels/$_channelId/messages")
       .build();
 
     dynamic payload = jsonDecode(response.body);
+    cache.clear();
 
     for (final element in payload) {
       if (_guildId != null) {

@@ -1,3 +1,4 @@
+import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
@@ -79,5 +80,9 @@ class PartialMessage<T extends PartialChannel>  {
   DateTime get createdAt => DateTime.parse(_timestamp);
   DateTime? get updatedAt =>  _editedTimestamp != null ? DateTime.parse(_editedTimestamp!) : null;
 
-
+  Future<void> delete () async {
+    await ioc.use<DiscordApiHttpService>()
+      .destroy(url: '/channels/$_channelId/messages/$id')
+      .build();
+  }
 }
