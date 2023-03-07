@@ -46,5 +46,6 @@ export '../src/api/webhook.dart' show Webhook;
 export '../src/internal/services/intent_service.dart' show Intent;
 export '../src/api/users/premium_type.dart' show PremiumType;
 export '../src/api/users/user_decoration.dart' show UserDecoration;
+export '../src/api/users/user_flags/user_flag_contract.dart' show UserFlagContract;
 
 typedef Snowflake = String;

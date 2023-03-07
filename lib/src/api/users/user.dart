@@ -5,6 +5,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/users/user_flag.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_ioc/ioc.dart';
@@ -14,7 +15,9 @@ class User {
   String _username;
   String _discriminator;
   bool _bot;
-  int _publicFlags;
+  bool _system;
+  List<UserFlagContract> _publicFlags;
+  List<UserFlagContract> _flags;
   UserDecoration _decoration;
   String _lang;
   PremiumType premiumType;
@@ -25,7 +28,9 @@ class User {
     this._username,
     this._discriminator,
     this._bot,
+    this._system,
     this._publicFlags,
+    this._flags,
     this._decoration,
     this._lang,
     this.premiumType
@@ -35,7 +40,9 @@ class User {
   String get username => _username;
   String get discriminator => _discriminator;
   bool get isBot => _bot;
-  int get publicFlags => _publicFlags;
+  bool get isSystem => _system;
+  List<UserFlagContract> get publicFlags => _publicFlags;
+  List<UserFlagContract> get flags => _flags;
   UserDecoration get decoration => _decoration;
   String get tag => '$_username#$_discriminator';
   Locale get lang => Locale.values.firstWhere((element) => element.locale == _lang);
@@ -93,12 +100,32 @@ class User {
   String toString () => "<@$_id>";
 
   factory User.from(dynamic payload) {
+    final List<UserFlagContract> publicFlags = [];
+    if (payload['public_flags'] != null) {
+      for (int element in UserFlag.values) {
+        if ((payload['public_flags'] & element) == element) {
+          publicFlags.add(UserFlag.find(element));
+        }
+      }
+    }
+
+    final List<UserFlagContract> flags = [];
+    if (payload['flags'] != null) {
+      for (int element in UserFlag.values) {
+        if ((payload['flags'] & element) == element) {
+          flags.add(UserFlag.find(element));
+        }
+      }
+    }
+
     return User(
       payload['id'],
       payload['username'],
       payload['discriminator'],
       payload['bot'] == true,
-      payload['public_flags'] ?? 0,
+      payload['system'] == true,
+      publicFlags,
+      flags,
       UserDecoration(
         payload['discriminator'],
         payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,

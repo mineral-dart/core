@@ -74,6 +74,9 @@ class Constants {
   // Discord API host
   static const String host = "discord.com";
 
+  // Discord API host
+  static const String assets = 'https://$host/assets';
+
   // Base API uri
   static const String baseUri = "/api/v$apiVersion";
 
