@@ -14,6 +14,7 @@ class DmUser extends User {
     super._avatar,
     super._avatarDecoration,
     super._lang,
+    super.premiumType,
     this._channelId
   );
 
@@ -33,7 +34,8 @@ class DmUser extends User {
       user.avatar,
       user.avatarDecoration,
       user.lang.locale,
-      channelId
+      user.premiumType,
+      channelId,
     );
   }
 }
