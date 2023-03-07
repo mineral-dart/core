@@ -11,10 +11,9 @@ class DmUser extends User {
     super._discriminator,
     super._bot,
     super._publicFlags,
-    super._avatar,
-    super._avatarDecoration,
-    super._lang,
+    super._decoration,
     super.premiumType,
+    super._lang,
     this._channelId
   );
 
@@ -31,8 +30,7 @@ class DmUser extends User {
       user.discriminator,
       user.bot,
       user.publicFlags,
-      user.avatar,
-      user.avatarDecoration,
+      user.decoration,
       user.lang.locale,
       user.premiumType,
       channelId,

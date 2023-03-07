@@ -20,7 +20,7 @@ class PresenceUpdatePacket with Container implements WebsocketPacket {
     GuildMember? beforeMember = guild?.members.cache.get(userId)?.clone();
     GuildMember? afterMember = guild?.members.cache.get(userId);
 
-    afterMember?.user.status = Status.from(guild: guild!, payload: payload);
+    // afterMember?.user.status = Status.from(guild: guild!, payload: payload);
 
     eventService.controller.add(PresenceUpdateEvent(beforeMember, afterMember));
   }

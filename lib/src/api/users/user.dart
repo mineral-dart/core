@@ -5,8 +5,6 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/channels/dm_channel.dart';
-import 'package:mineral/src/api/messages/dm_message.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral_ioc/ioc.dart';
 
@@ -16,8 +14,7 @@ class User {
   String _discriminator;
   bool _bot;
   int _publicFlags;
-  ImageFormater? _avatar;
-  ImageFormater? _avatarDecoration;
+  UserDecoration _decoration;
   String _lang;
   PremiumType premiumType;
   // late Status status;
@@ -28,8 +25,7 @@ class User {
     this._discriminator,
     this._bot,
     this._publicFlags,
-    this._avatar,
-    this._avatarDecoration,
+    this._decoration,
     this._lang,
     this.premiumType
   );
@@ -39,16 +35,9 @@ class User {
   String get discriminator => _discriminator;
   bool get bot => _bot;
   int get publicFlags => _publicFlags;
-  ImageFormater? get avatar => _avatar;
-  ImageFormater? get avatarDecoration => _avatarDecoration;
+  UserDecoration get decoration => _decoration;
   String get tag => '$_username#$_discriminator';
   Locale get lang => Locale.values.firstWhere((element) => element.locale == _lang);
-
-
-  /// ### Returns the absolute url to the user's avatar
-  String get defaultAvatar => _avatar != null
-      ? '${Constants.cdnUrl}/avatars/$_id/${_avatar?.url}'
-      : '${Constants.cdnUrl}/embed/avatars/${int.parse(_discriminator) % 5 }.png';
 
   /// Return [GuildMember] of [Guild] context for this
   GuildMember? toGuildMember (Snowflake guildId) {
@@ -107,8 +96,12 @@ class User {
       payload['discriminator'],
       payload['bot'] == true,
       payload['public_flags'] ?? 0,
-      payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
-      payload['avatar_decoration'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
+      UserDecoration(
+        payload['id'],
+        payload['discriminator'],
+        payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
+        payload['avatar_decoration'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
+      ),
       payload['locale'] ?? 'en-GB',
       payload['premium_type'] != null
         ? PremiumType.values.firstWhere((element) => element.value == payload['premium_type'])
