@@ -44,5 +44,6 @@ export '../src/api/users/user.dart' show User;
 export '../src/api/utils.dart';
 export '../src/api/webhook.dart' show Webhook;
 export '../src/internal/services/intent_service.dart' show Intent;
+export '../src/api/users/premium_type.dart' show PremiumType;
 
 typedef Snowflake = String;

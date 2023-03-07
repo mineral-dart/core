@@ -19,7 +19,8 @@ class User {
   ImageFormater? _avatar;
   ImageFormater? _avatarDecoration;
   String _lang;
-  late Status status;
+  PremiumType premiumType;
+  // late Status status;
 
   User(
     this._id,
@@ -30,6 +31,7 @@ class User {
     this._avatar,
     this._avatarDecoration,
     this._lang,
+    this.premiumType
   );
 
   Snowflake get id => _id;
@@ -108,6 +110,9 @@ class User {
       payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
       payload['avatar_decoration'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
       payload['locale'] ?? 'en-GB',
+      payload['premium_type'] != null
+        ? PremiumType.values.firstWhere((element) => element.value == payload['premium_type'])
+        : PremiumType.none
     );
   }
 }
