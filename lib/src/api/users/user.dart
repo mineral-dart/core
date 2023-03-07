@@ -6,6 +6,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
+import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class User {
@@ -33,7 +34,7 @@ class User {
   Snowflake get id => _id;
   String get username => _username;
   String get discriminator => _discriminator;
-  bool get bot => _bot;
+  bool get isBot => _bot;
   int get publicFlags => _publicFlags;
   UserDecoration get decoration => _decoration;
   String get tag => '$_username#$_discriminator';
@@ -75,14 +76,16 @@ class User {
       attachments: attachments
     );
 
-    if (response.statusCode == 200) {
-      dynamic payload = jsonDecode(response.body);
+    final payload = jsonDecode(response.body);
 
+    if (response.statusCode == 200) {
       DmMessage message = DmMessage.from(channel: channel, payload: payload);
       channel.messages.cache.putIfAbsent(message.id, () => message);
 
       return message;
     }
+
+    ioc.use<MineralCli>().console.warn(payload['message']);
     return null;
   }
 

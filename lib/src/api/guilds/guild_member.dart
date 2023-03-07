@@ -144,7 +144,7 @@ class GuildMember  {
   /// ```dart
   /// print(member.isBot());
   /// ```
-  bool get isBot => user.bot;
+  bool get isBot => user.isBot;
 
   /// ### Returns whether of this is pending
   ///

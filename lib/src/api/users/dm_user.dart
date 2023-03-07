@@ -28,7 +28,7 @@ class DmUser extends User {
       user.id,
       user.username,
       user.discriminator,
-      user.bot,
+      user.isBot,
       user.publicFlags,
       user.decoration,
       user.lang.locale,
