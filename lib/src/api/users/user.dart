@@ -97,7 +97,6 @@ class User {
       payload['bot'] == true,
       payload['public_flags'] ?? 0,
       UserDecoration(
-        payload['id'],
         payload['discriminator'],
         payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
         payload['avatar_decoration'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
