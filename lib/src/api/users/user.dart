@@ -5,9 +5,9 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/channels/dm_channel.dart';
-import 'package:mineral/src/api/messages/dm_message.dart';
+import 'package:mineral/src/api/users/user_flag.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
+import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class User {
@@ -15,38 +15,37 @@ class User {
   String _username;
   String _discriminator;
   bool _bot;
-  int _publicFlags;
-  ImageFormater? _avatar;
-  ImageFormater? _avatarDecoration;
+  bool _system;
+  List<UserFlagContract> _publicFlags;
+  List<UserFlagContract> _flags;
+  UserDecoration _decoration;
   String _lang;
-  late Status status;
+  PremiumType premiumType;
+  // late Status status;
 
   User(
     this._id,
     this._username,
     this._discriminator,
     this._bot,
+    this._system,
     this._publicFlags,
-    this._avatar,
-    this._avatarDecoration,
+    this._flags,
+    this._decoration,
     this._lang,
+    this.premiumType
   );
 
   Snowflake get id => _id;
   String get username => _username;
   String get discriminator => _discriminator;
-  bool get bot => _bot;
-  int get publicFlags => _publicFlags;
-  ImageFormater? get avatar => _avatar;
-  ImageFormater? get avatarDecoration => _avatarDecoration;
+  bool get isBot => _bot;
+  bool get isSystem => _system;
+  List<UserFlagContract> get publicFlags => _publicFlags;
+  List<UserFlagContract> get flags => _flags;
+  UserDecoration get decoration => _decoration;
   String get tag => '$_username#$_discriminator';
   Locale get lang => Locale.values.firstWhere((element) => element.locale == _lang);
-
-
-  /// ### Returns the absolute url to the user's avatar
-  String get defaultAvatar => _avatar != null
-      ? '${Constants.cdnUrl}/avatars/$_id/${_avatar?.url}'
-      : '${Constants.cdnUrl}/embed/avatars/${int.parse(_discriminator) % 5 }.png';
 
   /// Return [GuildMember] of [Guild] context for this
   GuildMember? toGuildMember (Snowflake guildId) {
@@ -84,14 +83,16 @@ class User {
       attachments: attachments
     );
 
-    if (response.statusCode == 200) {
-      dynamic payload = jsonDecode(response.body);
+    final payload = jsonDecode(response.body);
 
+    if (response.statusCode == 200) {
       DmMessage message = DmMessage.from(channel: channel, payload: payload);
       channel.messages.cache.putIfAbsent(message.id, () => message);
 
       return message;
     }
+
+    ioc.use<MineralCli>().console.warn(payload['message']);
     return null;
   }
 
@@ -99,15 +100,41 @@ class User {
   String toString () => "<@$_id>";
 
   factory User.from(dynamic payload) {
+    final List<UserFlagContract> publicFlags = [];
+    if (payload['public_flags'] != null) {
+      for (int element in UserFlag.values) {
+        if ((payload['public_flags'] & element) == element) {
+          publicFlags.add(UserFlag.find(element));
+        }
+      }
+    }
+
+    final List<UserFlagContract> flags = [];
+    if (payload['flags'] != null) {
+      for (int element in UserFlag.values) {
+        if ((payload['flags'] & element) == element) {
+          flags.add(UserFlag.find(element));
+        }
+      }
+    }
+
     return User(
       payload['id'],
       payload['username'],
       payload['discriminator'],
       payload['bot'] == true,
-      payload['public_flags'] ?? 0,
-      payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
-      payload['avatar_decoration'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
+      payload['system'] == true,
+      publicFlags,
+      flags,
+      UserDecoration(
+        payload['discriminator'],
+        payload['avatar'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
+        payload['avatar_decoration'] != null ? ImageFormater(payload['avatar'], 'avatars/${payload['id']}') : null,
+      ),
       payload['locale'] ?? 'en-GB',
+      payload['premium_type'] != null
+        ? PremiumType.values.firstWhere((element) => element.value == payload['premium_type'])
+        : PremiumType.none
     );
   }
 }

@@ -268,7 +268,7 @@ class EmbedBuilder {
       image: preview.discoverySplash != null ? Image(url: preview.discoverySplash!) : null,
       color: Color.invisible,
       timestamp: DateTime.now(),
-      author: Author(name: client.user.username, iconUrl: client.user.defaultAvatar)
+      author: Author(name: client.user.username, iconUrl: client.user.decoration.defaultAvatarUrl)
     );
 
     embed.addField(name: 'Identifier', value: preview.id);
