@@ -1,3 +1,18 @@
+## 3.0.0
+- Implement cli & refactor
+- Implement new features
+- Assign true templates
+- Improve core
+- Add commands git
+- Implement Attachments
+- Channel not initialized
+- Implement http builder & split http service
+- Edit attachments in messages 
+- Implement message bulk delete
+- Improve cache 
+- Interaction and commands in dm channels 
+- Improve users
+
 ## 2.6.2
 - Fix bad guild id
 - Remove nullable content of `Message`
