@@ -4,17 +4,21 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/helper.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class EmojiManager extends CacheManager<Emoji> with Container {
+class EmojiManager extends CacheManager<Emoji>  {
   late final Guild guild;
 
   Future<Map<Snowflake, Emoji>> sync () async {
     cache.clear();
 
-    Response response = await container.use<HttpService>().get(url: "/guilds/${guild.id}/emojis");
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/guilds/${guild.id}/emojis")
+      .build();
+
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -38,11 +42,9 @@ class EmojiManager extends CacheManager<Emoji> with Container {
 
     String image = await Helper.getPicture(path);
 
-    Response response = await container.use<HttpService>().post(url: "/guilds/${guild.id}/emojis", payload: {
-      'name': label,
-      'image': image,
-      'roles': roles ?? [],
-    });
+    Response response = await ioc.use<DiscordApiHttpService>().post(url: "/guilds/${guild.id}/emojis")
+      .payload({ 'name': label, 'image': image, 'roles': roles ?? [] })
+      .build();
 
     Emoji emoji = Emoji.from(
       memberManager: guild.members,
@@ -53,5 +55,30 @@ class EmojiManager extends CacheManager<Emoji> with Container {
     cache.putIfAbsent(emoji.id, () => emoji);
 
     return emoji;
+  }
+
+  Future<Emoji> resolve (Snowflake id) async {
+    if(cache.containsKey(id)) {
+      return cache.getOrFail(id);
+    }
+
+    final Response response = await ioc.use<DiscordApiHttpService>()
+        .get(url: '/guilds/${guild.id}/emojis/$id')
+        .build();
+
+    if(response.statusCode == 200) {
+      dynamic payload = jsonDecode(response.body);
+      final Emoji emoji = Emoji.from(
+          memberManager: guild.members,
+          //roleManager: guild!.roles,
+          emojiManager: this,
+          payload: payload
+      );
+
+      cache.putIfAbsent(emoji.id, () => emoji);
+      return emoji;
+    }
+
+    throw ApiException('Unable to fetch emoji with id #$id');
   }
 }

@@ -6,14 +6,16 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_builder.dart';
-import 'package:mineral/src/api/channels/partial_channel.dart';
+import 'package:mineral/src/api/channels/dm_channel.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
+import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+import 'package:mineral_cli/mineral_cli.dart';
 
 class InteractionCreatePacket with Container implements WebsocketPacket {
   @override
@@ -27,7 +29,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     GuildMember? member = guild?.members.cache.get(payload['member']['user']['id']);
 
     if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.chatInput.value) {
-      _executeCommandInteraction(guild!, member!, payload);
+      _executeCommandInteraction(payload);
     }
 
     if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.user.value) {
@@ -39,15 +41,15 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['type'] == InteractionType.messageComponent.value && payload['data']['component_type'] == ComponentType.button.value) {
-      _executeButtonInteraction(guild!, member!, payload);
+      _executeButtonInteraction(guild, payload);
     }
 
     if (payload['type'] == InteractionType.messageComponent.value && payload['data']['component_type'] == ComponentType.selectMenu.value) {
-      _executeSelectMenuInteraction(guild!, member!, payload);
+      _executeSelectMenuInteraction(guild, payload);
     }
 
     if (payload['type'] == InteractionType.modalSubmit.value) {
-      _executeModalInteraction(guild!, member!, payload);
+      _executeModalInteraction(payload);
     }
 
     if (member != null) {
@@ -56,9 +58,9 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
   }
 
-  _executeCommandInteraction (Guild guild, GuildMember member, dynamic payload) {
+  _executeCommandInteraction (dynamic payload) {
     CommandInteraction interaction = CommandInteraction.fromPayload(payload);
-    container.use<CommandService>().controller.add(CommandCreateEvent(interaction));
+    container.use<CommandService>().controller.add(CommandCreateEvent(interaction, payload));
   }
 
   _executeContextMenuInteraction (Guild guild, GuildMember member, dynamic payload) async {
@@ -72,7 +74,10 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       Message? message = channel?.messages.cache.get(payload['data']?['target_id']);
 
       if (message == null) {
-        Response response = await container.use<HttpService>().get(url: '/channels/${payload['channel_id']}/messages/${payload['data']?['target_id']}');
+        Response response = await container.use<DiscordApiHttpService>()
+          .get(url: '/channels/${payload['channel_id']}/messages/${payload['data']?['target_id']}')
+          .build();
+
         if (response.statusCode == 200) {
           message = Message.from(channel: channel!, payload: jsonDecode(response.body));
           channel.messages.cache.putIfAbsent(message.id, () => message!);
@@ -84,34 +89,24 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
   }
 
-  _executeButtonInteraction (Guild guild, GuildMember member, dynamic payload) async {
-    if (payload['guild_id'] == null) {
-        return;
-    }
-
+  _executeButtonInteraction (Guild? guild, dynamic payload) async {
     EventService eventService = container.use<EventService>();
 
-    dynamic channel = guild.channels.cache.get(payload['channel_id']);
-    if (channel == null) {
-      final Response response = await container.use<HttpService>().get(url: '/channels/${payload['channel_id']}');
-      channel = ChannelWrapper.create(jsonDecode(response.body));
+    PartialChannel? channel = payload['guild_id'] != null
+      ? await guild?.channels.resolve(payload['channel_id'])
+      : await container.use<MineralClient>().dmChannels.resolve(payload['channel_id']);
 
-      guild.channels.cache.putIfAbsent(channel.id, () => channel);
-    }
-
-    Message? message = channel?.messages.cache[payload['message']['id']];
-    if (message == null) {
-      final Response response = await container.use<HttpService>().get(url: '/channels/${payload['channel_id']}/messages/${payload['message']?['id']}');
-      message = Message.from(channel: channel, payload: jsonDecode(response.body));
-
-      channel.messages.cache.putIfAbsent(message.id, () => message!);
+    if (channel is DmChannel || channel is PartialTextChannel) {
+      try {
+        await (channel as dynamic).messages.resolve(payload['message']['id']);
+      } catch(_) { }
     }
 
     ButtonInteraction buttonInteraction = ButtonInteraction.fromPayload(payload);
     eventService.controller.add(ButtonCreateEvent(buttonInteraction));
   }
 
-  _executeModalInteraction (Guild guild, GuildMember member, dynamic payload) {
+  _executeModalInteraction (dynamic payload) {
     EventService eventService = container.use<EventService>();
     ModalInteraction modalInteraction = ModalInteraction.from(payload: payload);
 
@@ -124,13 +119,21 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     eventService.controller.add(ModalCreateEvent(modalInteraction));
   }
 
-  void _executeSelectMenuInteraction (Guild guild, GuildMember member, dynamic payload) {
+  void _executeSelectMenuInteraction (Guild? guild, dynamic payload) async {
     EventService eventService = container.use<EventService>();
-    TextBasedChannel? channel = guild.channels.cache.get(payload['channel_id']);
-    Message? message = channel?.messages.cache.get(payload['message']['id']);
+
+
+    PartialChannel channel = payload['guild_id'] != null && guild != null
+        ? await guild.channels.resolve(payload['channel_id'])
+        : await container.use<MineralClient>().dmChannels.resolve(payload['channel_id']);
+
+    if (channel is DmChannel || channel is PartialTextChannel) {
+      try {
+        await (channel as dynamic).messages.resolve(payload['message']['id']);
+      } catch(_) { }
+    }
 
     SelectMenuInteraction interaction = SelectMenuInteraction.from(
-      message: message,
       payload: payload,
     );
 

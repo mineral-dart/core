@@ -61,7 +61,7 @@ class ThreadChannel extends PartialTextChannel {
       payload['thread_metadata']['locked'],
       payload['thread_metadata']['invitable'],
       payload['thread_metadata']['create_timestamp'],
-      MessageManager(),
+      MessageManager(payload['guild_id'], payload['id']),
       payload['last_message_id'],
       payload['guild_id'],
       payload['parent_id'],

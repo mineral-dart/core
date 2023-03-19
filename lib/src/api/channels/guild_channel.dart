@@ -4,9 +4,10 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/channel_builder.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class GuildChannel extends PartialChannel with Container, Console {
+class GuildChannel extends PartialChannel {
   final Snowflake _guildId;
   final Snowflake? _parentId;
   final String _label;
@@ -18,7 +19,7 @@ class GuildChannel extends PartialChannel with Container, Console {
   GuildChannel(this._guildId, this._parentId, this._label, this._type, this._position, this._flags, this._permissions, super.id);
 
   /// Get [Guild] from [Ioc]
-  Guild get guild => container.use<MineralClient>().guilds.cache.getOrFail(_guildId);
+  Guild get guild => ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId);
 
   /// Get [CategoryChannel] or [TextChannel] parent
   GuildChannel? get parent => guild.channels.cache.get(_parentId);
@@ -51,12 +52,14 @@ class GuildChannel extends PartialChannel with Container, Console {
   }
 
   Future<void> setPermissionsOverwrite (List<PermissionOverwrite> permissions) async {
-    await update(ChannelBuilder({ 'permission_overwrites': permissions }));
+    await update(ChannelBuilder({ 'permission_overwrites': permissions.map((permission) => permission.toJson()) }));
   }
 
   Future<void> update (ChannelBuilder builder) async {
     if (_validate()) {
-      await container.use<HttpService>().patch(url: '/channels/$id', payload: builder.payload);
+      await ioc.use<DiscordApiHttpService>().patch(url: '/channels/$id')
+      .payload(builder.payload)
+      .build();
     }
   }
 
@@ -66,8 +69,10 @@ class GuildChannel extends PartialChannel with Container, Console {
   /// final GuildChannel channel = guild.channels.cache.getOrFail('240561194958716924');
   /// await channel.delete()
   /// ```
-  Future<bool> delete () async {
-    Response response = await container.use<HttpService>().destroy(url: '/channels/$id');
+  Future<bool> delete ({ String? reason }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: '/channels/$id')
+      .auditLog(reason)
+      .build();
 
     guild.channels.cache.remove(this);
     return response.statusCode == 200;
@@ -85,12 +90,12 @@ class GuildChannel extends PartialChannel with Container, Console {
 
   bool _validate () {
     if (type == ChannelType.guildCategory) {
-      console.warn('A category channel cannot have a parent');
+      ioc.use<MineralCli>().console.warn('A category channel cannot have a parent');
       return false;
     }
 
     if (type == ChannelType.guildPublicThread || type == ChannelType.private || type == ChannelType.guildNewsThread) {
-      console.warn('A thread channel cannot change a parent');
+      ioc.use<MineralCli>().console.warn('A thread channel cannot change a parent');
       return false;
     }
 

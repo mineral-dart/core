@@ -1,3 +1,21 @@
+## 2.6.2
+- Fix bad guild id
+- Remove nullable content of `Message`
+
+## 2.6.1
+- Remove `late` keyword & refactor
+- Improve `ButtonInteration` access with getters
+
+## 2.6.0
+- Remove mixins to public access
+- Add `createdAt` and `updatedAt` to `Message`
+- Add correct message type from `fetch()`
+
+## 2.5.0
+- Add `make:service`
+- Add `<String>.equals(value)`
+- Remove String formatters and implement Recase
+
 ## 2.4.1
 - Fix wrong template (make:event)
 - Fix wrong template (make:state)

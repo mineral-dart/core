@@ -2,6 +2,8 @@ import 'dart:core';
 
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class ButtonInteraction extends Interaction {
   Snowflake _customId;
@@ -24,8 +26,12 @@ class ButtonInteraction extends Interaction {
 
   Snowflake get customId => _customId;
   Snowflake? get mid => _messageId;
-  Message? get message => (guild?.channels.cache.get(_channelId) as dynamic)?.messages.cache[_messageId];
-  GuildChannel? get channel => guild?.channels.cache.get<GuildChannel>(_channelId);
+  PartialMessage? get message => guild != null
+    ? (guild?.channels.cache.get(_channelId) as dynamic)?.messages.cache[_messageId]
+    : ioc.use<MineralClient>().dmChannels.cache.get(_channelId)?.messages.cache.getOrFail(_messageId);
+  PartialChannel get channel => guild != null
+    ? guild!.channels.cache.getOrFail<TextBasedChannel>(_channelId)
+    : throw UnsupportedError('DM channel is not supported');
 
   factory ButtonInteraction.fromPayload(dynamic payload) {
     return ButtonInteraction(

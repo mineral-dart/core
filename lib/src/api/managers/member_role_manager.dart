@@ -3,13 +3,14 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/exceptions/not_exist_exception.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class MemberRoleManager extends CacheManager<Role> with Container {
+class MemberRoleManager extends CacheManager<Role>  {
   late final Guild _guild;
   GuildRoleManager manager;
   Snowflake memberId;
@@ -35,24 +36,19 @@ class MemberRoleManager extends CacheManager<Role> with Container {
   /// ```dart
   /// await member.roles.add('446556480850755604', reason: 'I love this user');
   /// ```
-  Future<void> add (Snowflake id, {String? reason}) async {    Role? role = manager.cache.get(id);
+  Future<void> add (Snowflake id, {String? reason}) async {
+    Role? role = manager.cache.get(id);
 
     if(role == null) {
       throw NotExistException('You can\'t add a role that don\'t exist!');
     }
 
-    Map<String, String> headers = {};
-    if(reason != null) {
-      headers.putIfAbsent('X-Audit-Log-Reason', () => reason);
-    }
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .put(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
+      .auditLog(reason)
+      .build();
 
-    Response response = await container.use<HttpService>().put(
-      url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
-      payload: {},
-      headers: headers
-    );
-
-    if(response.statusCode == 204) {
+    if (response.statusCode == 204) {
       cache.putIfAbsent(id, () => role);
     }
   }
@@ -75,17 +71,11 @@ class MemberRoleManager extends CacheManager<Role> with Container {
   /// await member.roles.remove('446556480850755604', reason: 'Hello, World!');
   /// ```
   Future<void> remove (Snowflake id, {String? reason}) async {
-    Map<String, String> headers = {};
-    if(reason != null) {
-      headers.putIfAbsent('X-Audit-Log-Reason', () => reason);
-    }
+    Response response = await ioc.use<DiscordApiHttpService>().destroy(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
+      .auditLog(reason)
+      .build();
 
-    Response response = await container.use<HttpService>().destroy(
-      url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id',
-      headers: headers
-    );
-
-    if(response.statusCode == 204) {
+    if (response.statusCode == 204) {
       cache.remove(id);
     }
   }
@@ -109,19 +99,22 @@ class MemberRoleManager extends CacheManager<Role> with Container {
   /// ```
   Future<void> toggle (Snowflake id, {String? reason}) async {
     return cache.containsKey(id)
-        ? remove(id, reason: reason)
-        : add(id, reason: reason);
+      ? remove(id, reason: reason)
+      : add(id, reason: reason);
   }
 
   Future<Map<Snowflake, Role>> sync () async {
-    Response response = await container.use<HttpService>().get(url: "/guilds/${manager.guild.id}/members/$memberId");
-    if(response.statusCode == 200) {
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/guilds/${manager.guild.id}/members/$memberId")
+      .build();
+
+    if (response.statusCode == 200) {
       cache.clear();
       dynamic payload = jsonDecode(response.body)['roles'];
 
-      for(dynamic element in payload) {
+      for (final element in payload) {
         final Role? role = manager.cache.get(element);
-        if(role != null) {
+        if (role != null) {
           cache.putIfAbsent(role.id, () => role);
         }
       }
@@ -130,4 +123,16 @@ class MemberRoleManager extends CacheManager<Role> with Container {
     return cache;
   }
 
+  Future<Role> resolve (Snowflake id) async {
+    if(cache.containsKey(id)) {
+      return cache.getOrFail(id);
+    }
+
+    await sync();
+    if (!cache.containsKey(id)) {
+      throw ApiException('Unable to fetch role with id #$id');
+    }
+
+    return cache.getOrFail(id);
+  }
 }

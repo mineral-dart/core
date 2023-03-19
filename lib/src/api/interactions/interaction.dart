@@ -2,7 +2,8 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral/src/api/messages/message_parser.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 enum InteractionCallbackType {
   pong(1),
@@ -17,7 +18,7 @@ enum InteractionCallbackType {
   const InteractionCallbackType(this.value);
 }
 
-class Interaction with Container {
+class Interaction  {
   Snowflake _id;
   String? _label;
   Snowflake _applicationId;
@@ -35,11 +36,11 @@ class Interaction with Container {
   int get version => _version;
   InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
   String get token => _token;
-  Guild? get guild => container.use<MineralClient>().guilds.cache.get(_guildId);
+  Guild? get guild => ioc.use<MineralClient>().guilds.cache.get(_guildId);
 
   User get user => _guildId != null
     ? guild!.members.cache.getOrFail(_userId).user
-    : container.use<MineralClient>().users.cache.getOrFail(_userId);
+    : ioc.use<MineralClient>().users.cache.getOrFail(_userId);
 
   GuildMember? get member => guild?.members.cache.get(_userId);
 
@@ -49,31 +50,21 @@ class Interaction with Container {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts, bool? private }) async {
-    List<dynamic> embedList = [];
-    if (embeds != null) {
-      for (EmbedBuilder element in embeds) {
-        embedList.add(element.toJson());
-      }
-    }
+  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts, bool? private }) async {
+    dynamic messagePayload = MessageParser(content, embeds, components, attachments, tts).toJson();
 
-    List<dynamic> componentList = [];
-    if (components != null) {
-      for (RowBuilder element in components) {
-        componentList.add(element.toJson());
-      }
-    }
-
-    await container.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
+    dynamic payload = {
       'type': InteractionCallbackType.channelMessageWithSource.value,
       'data': {
-        'tts': tts ?? false,
-        'content': content,
-        'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
-        'components': components != null ? components.map((e) => e.toJson()).toList() : [],
-        'flags': private != null && private == true ? 1 << 6 : null,
+        ...messagePayload['payload'],
+        'flags': private != null && private == true ? 1 << 6 : null
       }
-    });
+    };
+
+    await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
+      .files(messagePayload['files'])
+      .payload(payload)
+      .build();
 
     return this;
   }
@@ -89,30 +80,35 @@ class Interaction with Container {
   /// await interaction.modal(modal);
   /// ```
   Future<Interaction> modal (ModalBuilder modal) async {
-    await container.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
-      'type': InteractionCallbackType.modal.value,
-      'data': modal.toJson(),
-    });
+    await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
+      .payload({ 'type': InteractionCallbackType.modal.value, 'data': modal.toJson() })
+      .build();
 
     return this;
   }
 
   /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
   Future<Interaction> deferredReply () async {
-    await container.use<HttpService>().post(url: "/interactions/$id/$token/callback", payload: {
-      'type': InteractionCallbackType.deferredChannelMessageWithSource.value
-    });
+    await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
+      .payload({ 'type': InteractionCallbackType.deferredChannelMessageWithSource.value })
+      .build();
 
     return this;
   }
 
   /// ### Edit original response to interaction
-  Future<Interaction> updateReply({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components }) async {
-    await container.use<HttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original", payload: {
-      'content': content,
-      'embeds': embeds != null ? embeds.map((e) => e.toJson()).toList() : [],
-      'components': components != null ? components.map((e) => e.toJson()).toList() : [],
-    });
+  ///
+  /// Example :
+  /// ```dart
+  /// await interaction.updateReply(content: 'Hello ${interaction.user.username}');
+  /// ```
+  Future<Interaction> updateReply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments }) async {
+    dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
+
+    await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original")
+      .files(messagePayload['files'])
+      .payload(messagePayload['payload'])
+      .build();
 
     return this;
   }
@@ -128,7 +124,9 @@ class Interaction with Container {
   /// });
   /// ```
   Future<void> delete () async {
-    await container.use<HttpService>().destroy(url: "/webhooks/$applicationId/$token/messages/@original");
+    await ioc.use<DiscordApiHttpService>()
+      .destroy(url: "/webhooks/$applicationId/$token/messages/@original")
+      .build();
   }
 
   factory Interaction.from({ required dynamic payload }) {

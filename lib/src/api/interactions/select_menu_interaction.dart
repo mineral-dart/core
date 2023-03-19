@@ -2,9 +2,11 @@ import 'dart:core';
 
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class SelectMenuInteraction extends Interaction {
-  Message? _message;
+  Snowflake? _messageId;
   Snowflake _customId;
   Snowflake _channelId;
 
@@ -19,14 +21,18 @@ class SelectMenuInteraction extends Interaction {
     super._token,
     super._user,
     super._guild,
-    this._message,
+    this._messageId,
     this._customId,
     this._channelId,
   );
 
-  Message? get message => _message;
+  PartialMessage? get message => guild != null
+    ? (guild?.channels.cache.get(_channelId) as dynamic)?.messages.cache[_messageId]
+    : ioc.use<MineralClient>().dmChannels.cache.get(_channelId)?.messages.cache.getOrFail(_messageId);
   Snowflake get customId => _customId;
-  TextBasedChannel? get channel => guild?.channels.cache.get(_channelId);
+  PartialChannel? get channel => guild != null
+      ? guild?.channels.cache.get(_channelId)
+      : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
 
   /// ### Return an [List] of [T] if this has the designed field
   ///
@@ -46,7 +52,7 @@ class SelectMenuInteraction extends Interaction {
   /// ```
   T getValue<T> () => data.first as T;
 
-  factory SelectMenuInteraction.from({ required Message? message, required dynamic payload }) {
+  factory SelectMenuInteraction.from({ required dynamic payload }) {
     return SelectMenuInteraction(
       payload['id'],
       null,
@@ -56,7 +62,7 @@ class SelectMenuInteraction extends Interaction {
       payload['token'],
       payload['member']?['user']?['id'],
       payload['guild_id'],
-      message,
+      payload['message']?['id'],
       payload['data']['custom_id'],
       payload['channel_id'],
     );

@@ -7,14 +7,14 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/helper.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class GuildRoleManager extends CacheManager<Role> with Container {
+class GuildRoleManager extends CacheManager<Role>  {
   final Snowflake _guildId;
 
   GuildRoleManager(this._guildId);
 
-  Guild get guild => container.use<MineralClient>().guilds.cache.getOrFail(_guildId);
+  Guild get guild => ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId);
   Role get everyone => cache.findOrFail((role) => role.label == '@everyone');
 
   /// Synchronise the cache from the Discord API
@@ -26,7 +26,10 @@ class GuildRoleManager extends CacheManager<Role> with Container {
   Future<Map<Snowflake, Role>> sync () async {
     cache.clear();
 
-    Response response = await container.use<HttpService>().get(url: "/guilds/$_guildId/roles");
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .get(url: "/guilds/$_guildId/roles")
+      .build();
+
     dynamic payload = jsonDecode(response.body);
 
     for(dynamic element in payload) {
@@ -61,15 +64,16 @@ class GuildRoleManager extends CacheManager<Role> with Container {
     String? _icon = icon != null ? await Helper.getPicture(icon) : null;
     int? _permissions = permissions != null ? Helper.reduceRolePermissions(permissions) : null;
 
-    Response response = await container.use<HttpService>().post(url: "/guilds/$_guildId}/roles", payload: {
-      'name': label,
-      'color': color != null ? Helper.toRgbColor(color) : null,
-      'hoist': hoist ?? false,
-      'mentionable': mentionable ?? false,
-      'unicode_emoji': unicode,
-      'icon': _icon,
-      'permissions': _permissions
-    });
+    Response response = await ioc.use<DiscordApiHttpService>().post(url: "/guilds/$_guildId}/roles")
+      .payload({
+        'name': label,
+        'color': color != null ? Helper.toRgbColor(color) : null,
+        'hoist': hoist ?? false,
+        'mentionable': mentionable ?? false,
+        'unicode_emoji': unicode,
+        'icon': _icon,
+        'permissions': _permissions
+      }).build();
 
     Role role = Role.from(
       roleManager: this,
@@ -79,5 +83,18 @@ class GuildRoleManager extends CacheManager<Role> with Container {
     cache.putIfAbsent(role.id, () => role);
 
     return role;
+  }
+
+  Future<Role> resolve (Snowflake id) async {
+    if(cache.containsKey(id)) {
+      return cache.getOrFail(id);
+    }
+
+    await sync();
+    if (!cache.containsKey(id)) {
+      throw ApiException('Unable to fetch role with id #$id');
+    }
+
+    return cache.getOrFail(id);
   }
 }

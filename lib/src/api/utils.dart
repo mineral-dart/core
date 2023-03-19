@@ -78,13 +78,6 @@ class NsfwLevel {
   static int veryHigh = 4;
 }
 
-class PremiumTier {
-  static int none = 0;
-  static int firstTier = 1;
-  static int secondTier = 2;
-  static int thirdTier = 3;
-}
-
 class SuppressChannelFlag {
   static int joinNotification = 1 << 0;
   static int premiumSubscriptions = 1 << 1;

@@ -12,9 +12,12 @@ import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class Message extends PartialMessage<TextBasedChannel> with Container, Console {
+import 'message_parser.dart';
+
+class Message extends PartialMessage<TextBasedChannel>  {
   Snowflake _authorId;
   final MessageMention _mentions;
 
@@ -34,6 +37,8 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
     super._guildId,
     super._channelId,
     super._reactions,
+    super.timestamp,
+    super.editedTimestamp,
     this._authorId,
     this._mentions,
   );
@@ -45,18 +50,17 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
 
   MessageMention get mentions => _mentions;
 
-  Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
+  Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
+    dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
 
-    Response response = await container.use<HttpService>().patch(
-      url: '/channels/${channel.id}/messages/$id',
-      payload: {
-        'content': content,
-        'embeds': embeds,
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/channels/${channel.id}/messages/$id')
+      .files(messagePayload['files'])
+      .payload({
+        ...messagePayload['payload'],
         'flags': flags,
-        'allowed_mentions': allowMentions,
-        'components': components,
-      }
-    );
+        'allowed_mentions': allowMentions
+      })
+      .build();
 
     return response.statusCode == 200
       ? Message.from(channel: channel, payload: jsonDecode(response.body))
@@ -65,33 +69,37 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
 
   Future<void> crossPost () async {
     if (channel.type != ChannelType.guildNews) {
-      console.warn('Message $id cannot be cross-posted as it is not in an announcement channel');
+      ioc.use<MineralCli>().console.warn('Message $id cannot be cross-posted as it is not in an announcement channel');
       return;
     }
 
-    await container.use<HttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost', payload: {});
+    await ioc.use<DiscordApiHttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/crosspost')
+      .build();
   }
 
   Future<void> pin (Snowflake webhookId) async {
     if (isPinned) {
-      console.warn('Message $id is already pinned');
+      ioc.use<MineralCli>().console.warn('Message $id is already pinned');
       return;
     }
 
-    await container.use<HttpService>().put(url: '/channels/${channel.id}/pins/$id', payload: {});
+    await ioc.use<DiscordApiHttpService>().put(url: '/channels/${channel.id}/pins/$id')
+      .build();
   }
 
   Future<void> unpin () async {
     if (!isPinned) {
-      console.warn('Message $id isn\'t pinned');
+      ioc.use<MineralCli>().console.warn('Message $id isn\'t pinned');
       return;
     }
 
-    await container.use<HttpService>().destroy(url: '/channels/${channel.id}/pins/$id');
+    await ioc.use<DiscordApiHttpService>()
+      .destroy(url: '/channels/${channel.id}/pins/$id')
+      .build();
   }
 
-  Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, bool? tts }) async {
-    MineralClient client = container.use<MineralClient>();
+  Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
+    MineralClient client = ioc.use<MineralClient>();
 
     Response response = await client.sendMessage(channel,
       content: content,
@@ -101,7 +109,8 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
         'guild_id': channel.guild.id,
         'channel_id': channel.id,
         'message_id': id,
-      }
+      },
+      attachments: attachments
     );
 
     if (response.statusCode == 200) {
@@ -220,9 +229,11 @@ class Message extends PartialMessage<TextBasedChannel> with Container, Console {
       messageAttachments,
       payload['flags'],
       payload['pinned'],
-      payload['guild_id'],
+      channel.guild.id,
       payload['channel_id'],
       MessageReactionManager<GuildChannel, Message>(channel),
+      payload['timestamp'],
+      payload['edited_timestamp'],
       payload['author']['id'],
       MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false)
     );

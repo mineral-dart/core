@@ -1,3 +1,7 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
+import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
@@ -5,12 +9,12 @@ import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
+import 'package:mineral/src/api/messages/message_parser.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class DmMessage extends PartialMessage<DmChannel> with Container {
+class DmMessage extends PartialMessage<DmChannel>  {
   User author;
 
   DmMessage(
@@ -29,8 +33,35 @@ class DmMessage extends PartialMessage<DmChannel> with Container {
     super._guildId,
     super.channelId,
     super.reactions,
+    super.timestamp,
+    super.editedTimestamp,
     this.author,
   );
+
+  Future<DmMessage?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
+    dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
+
+    Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/channels/${channel.id}/messages/$id')
+        .files(messagePayload['files'])
+        .payload({
+      ...messagePayload['payload'],
+      'flags': flags,
+      'allowed_mentions': allowMentions
+    })
+        .build();
+
+    return response.statusCode == 200
+        ? DmMessage.from(channel: channel, payload: jsonDecode(response.body))
+        : null;
+  }
+
+  /// Delete this
+  Future<void> delete ({ String? reason }) async {
+    await ioc.use<DiscordApiHttpService>()
+      .destroy(url: '/channels/${channel.id}/messages/$id')
+      .auditLog(reason)
+      .build();
+  }
 
   factory DmMessage.from({ required DmChannel channel, required dynamic payload }) {
     MineralClient client = ioc.use<MineralClient>();
@@ -114,6 +145,8 @@ class DmMessage extends PartialMessage<DmChannel> with Container {
       null,
       channel.id,
       MessageReactionManager<DmChannel, DmMessage>(channel),
+      payload['timestamp'],
+      payload['edited_timestamp'],
       user!,
     );
 

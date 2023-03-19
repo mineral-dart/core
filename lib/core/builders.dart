@@ -13,3 +13,4 @@ export '../src/api/builders/moderation_rules_builder.dart' show ModerationRulesB
 export '../src/api/builders/row_builder.dart' show RowBuilder;
 export '../src/api/builders/select_menu_builder.dart' show SelectMenuBuilder, SelectMenuOption, EmojiOption;
 export '../src/api/builders/text_input_builder.dart' show TextInputBuilder, TextInputStyle;
+export '../src/api/builders/attachment_builder.dart' show AttachmentBuilder;

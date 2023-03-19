@@ -2,9 +2,10 @@ import 'dart:core';
 
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class CommandInteraction extends Interaction with Container {
+class CommandInteraction extends Interaction  {
   String _identifier;
   Snowflake? _channelId;
 
@@ -27,7 +28,9 @@ class CommandInteraction extends Interaction with Container {
   );
 
   String get identifier => _identifier;
-  TextBasedChannel? get channel => guild?.channels.cache.get<TextBasedChannel>(_channelId);
+  PartialChannel? get channel => guild != null
+    ? guild!.channels.cache.get(_channelId)
+    : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
   Map<String, dynamic> get data => _data;
   Map<String, dynamic> get params => _params;
 
@@ -58,7 +61,8 @@ class CommandInteraction extends Interaction with Container {
   /// int? value = interaction.getInteger('option_name');
   /// ```
   int? getInteger (String optionName) {
-    return params[optionName];
+    double integer = params[optionName];
+    return integer.toInt();
   }
 
   /// ### Returns an [int] or null if the command has the designed option
@@ -68,7 +72,8 @@ class CommandInteraction extends Interaction with Container {
   /// final int value = interaction.getIntegerOrFail('option_name');
   /// ```
   int getIntegerOrFail (String optionName) {
-    return params[optionName];
+    double integer = params[optionName];
+    return integer.toInt();
   }
 
   /// ### Returns an [String] or null if the command has the designed option
@@ -118,7 +123,7 @@ class CommandInteraction extends Interaction with Container {
   /// User? user = interaction.getUser('option_name');
   /// ```
   User? getUser (String optionName) {
-    final MineralClient client = container.use<MineralClient>();
+    final MineralClient client = ioc.use<MineralClient>();
     return client.users.cache.get(params[optionName]);
   }
 
@@ -129,7 +134,7 @@ class CommandInteraction extends Interaction with Container {
   /// final User user = interaction.getUserOrFail('option_name');
   /// ```
   User getUserOrFail (String optionName) {
-    final MineralClient client = container.use<MineralClient>();
+    final MineralClient client = ioc.use<MineralClient>();
     return client.users.cache.getOrFail(params[optionName]);
   }
 
@@ -217,7 +222,7 @@ class CommandInteraction extends Interaction with Container {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['member']?['user']?['id'],
+      payload['guild_id'] == null ? payload['user']['id'] : payload['member']?['user']?['id'],
       payload['guild_id'],
       payload['data']['name'],
       payload['channel_id'],
