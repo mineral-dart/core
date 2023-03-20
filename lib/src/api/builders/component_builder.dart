@@ -37,18 +37,22 @@ abstract class ComponentBuilder {
           ? EmojiBuilder.fromEmoji(guild.emojis.cache.getOrFail(payload['id']))
           : EmojiBuilder.fromUnicode(payload['emoji']?['name']);
 
-        return ButtonBuilder(payload['custom_id'], payload['label'], style, emojiBuilder, payload['disabled'], payload['url']);
+        final button = ButtonBuilder(payload['custom_id'], style)
+          ..setLabel( payload['label'])
+          ..setDisabled(payload['disabled'])
+          ..setEmoji(emojiBuilder);
+
+        button.url = payload['url'];
+        return button;
+
       case ComponentType.actionRow:
         return RowBuilder();
       case ComponentType.selectMenu:
-        return SelectMenuBuilder(
-          customId: payload['custom_id'],
-          options: [],
-          placeholder: payload['placeholder'],
-          disabled: payload['disabled'],
-          minValues: payload['min_values'],
-          maxValues: payload['max_values'],
-        );
+        return SelectMenuBuilder(payload['custom_id'])
+          ..setPlaceholder(payload['placeholder'])
+          ..setDisabled(payload['disabled'])
+          ..setMinValues(payload['min_values'])
+          ..setMaxValues(payload['max_values']);
       case ComponentType.textInput:
         return TextInputBuilder(
           customId: payload['custom_id'],
