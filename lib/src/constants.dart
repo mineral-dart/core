@@ -21,6 +21,7 @@ enum PacketType {
   ready('READY'),
   guildCreate('GUILD_CREATE'),
   guildUpdate('GUILD_UPDATE'),
+  guildDelete('GUILD_DELETE'),
 
   guildIntegrationsUpdate('GUILD_INTEGRATIONS_UPDATE'),
 
