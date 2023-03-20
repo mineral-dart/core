@@ -5,9 +5,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/builders/component_builder.dart';
-import 'package:mineral/src/api/channels/dm_channel.dart';
-import 'package:mineral/src/api/messages/partial_message.dart';
+import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
@@ -15,7 +13,6 @@ import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_cli/mineral_cli.dart';
 
 class InteractionCreatePacket with Container implements WebsocketPacket {
   @override

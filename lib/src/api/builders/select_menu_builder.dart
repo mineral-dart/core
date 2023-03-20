@@ -1,13 +1,13 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
-import 'package:mineral/src/api/builders/component_builder.dart';
+import 'package:mineral/src/api/builders/component_wrapper.dart';
 
-class SelectMenuBuilder extends ComponentBuilder {
+class SelectMenuBuilder extends ComponentWrapper {
   final String _customId;
   final List<SelectMenuOption> _options = [];
   String? _placeholder;
-  int _minValues = 1;
-  int _maxValues = 25;
+  int? _minValues;
+  int? _maxValues;
   bool _disabled = false;
 
   SelectMenuBuilder(this._customId) : super (type: ComponentType.selectMenu);
@@ -24,7 +24,7 @@ class SelectMenuBuilder extends ComponentBuilder {
     _options.add(SelectMenuOption(label: label, description: description, value: value, emoji: emoji));
   }
 
-  RowBuilder toRow () => RowBuilder.fromComponents([this]);
+  RowBuilder toRow () => RowBuilder([this]);
 
   @override
   Object toJson () {

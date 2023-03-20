@@ -1,71 +1,35 @@
-import 'package:collection/collection.dart';
-import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
-import 'package:mineral/framework.dart';
-import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral/src/api/builders/component_wrapper.dart';
+import 'package:mineral/src/exceptions/too_many_exception.dart';
 
-enum ComponentType {
-  actionRow(1),
-  button(2),
-  selectMenu(3),
-  textInput(4);
+import 'buttons/contracts/button_contract.dart';
 
-  final int value;
-  const ComponentType(this.value);
+class ComponentBuilder {
+  final List<RowBuilder> rows = [];
 
-  @override
-  String toString () => value.toString();
-}
+  ComponentBuilder();
 
-abstract class ComponentBuilder {
-  ComponentType type;
-
-  ComponentBuilder({ required this.type });
-
-  static wrap (dynamic payload, Snowflake? guildId) {
-    final Guild? guild = ioc.use<MineralClient>().guilds.cache.get(guildId);
-    final componentType = ComponentType.values.firstWhereOrNull((element) => element.value == payload['type']);
-
-    if (componentType == null) {
-      return;
-    }
-
-    switch (componentType) {
-      case ComponentType.button:
-        final ButtonStyle style = ButtonStyle.values.firstWhere((element) => element.value == payload['style']);
-        final EmojiBuilder? emojiBuilder = guild != null && payload['id'] != null
-          ? EmojiBuilder.fromEmoji(guild.emojis.cache.getOrFail(payload['id']))
-          : EmojiBuilder.fromUnicode(payload['emoji']?['name']);
-
-        final button = ButtonBuilder(payload['custom_id'], style)
-          ..setLabel( payload['label'])
-          ..setDisabled(payload['disabled'])
-          ..setEmoji(emojiBuilder);
-
-        button.url = payload['url'];
-        return button;
-
-      case ComponentType.actionRow:
-        return RowBuilder();
-      case ComponentType.selectMenu:
-        return SelectMenuBuilder(payload['custom_id'])
-          ..setPlaceholder(payload['placeholder'])
-          ..setDisabled(payload['disabled'])
-          ..setMinValues(payload['min_values'])
-          ..setMaxValues(payload['max_values']);
-      case ComponentType.textInput:
-        return TextInputBuilder(
-          customId: payload['custom_id'],
-          label: payload['label'],
-          style: TextInputStyle.values.firstWhere((element) => element.value == payload['style']),
-          placeholder: payload['placeholder'],
-          required: payload['required'],
-          maxLength: payload['max_length'],
-          minLength: payload['min_length'],
-          value: payload['value'],
-        );
-    }
+  void withSelectMenu (SelectMenuBuilder menu) {
+    rows.add(RowBuilder([menu]));
   }
 
-  dynamic toJson ();
+  ButtonWrapper get withButton => ButtonWrapper(this);
+}
+
+class ButtonWrapper {
+  final ComponentBuilder _builder;
+
+  ButtonWrapper(this._builder);
+
+  void only<T extends ButtonContract> (T builder) {
+    _builder.rows.add(RowBuilder([builder as ComponentWrapper]));
+  }
+
+  void many<T extends ButtonContract> (List<T> builders) {
+    if (builders.length > 5) {
+      throw TooManyException("You can't define more than 5 embeds in the same action-row");
+    }
+    
+    _builder.rows.add(RowBuilder(builders));
+  }
 }

@@ -1,6 +1,7 @@
 /// Includes classes for designing buttons, selection menus and more
 library builders;
 
+export '../src/api/builders/component_builder.dart' show ComponentBuilder;
 export '../src/api/builders/buttons/button_builder.dart' show ButtonBuilder;
 export '../src/api/builders/buttons/button_style.dart' show ButtonStyle;
 export '../src/api/builders/channel_builder.dart' show ChannelBuilder;
