@@ -1,7 +1,10 @@
+import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 
 class GuildDeleteEvent extends Event {
-  final String _id;
+  final Guild _guild;
 
-  GuildDeleteEvent(this._id);
+  GuildDeleteEvent(this._guild);
+
+  Guild get guild => _guild;
 }
