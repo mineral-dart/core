@@ -13,12 +13,10 @@ class GuildRemovePacket with Container implements WebsocketPacket {
 
     dynamic payload = websocketResponse.payload;
 
-    Guild? guild = client.guilds.cache.get(payload['guild_id']);
+    Guild? guild = client.guilds.cache.getOrFail(payload['guild_id']);
 
-    if (guild != null) {
-      eventService.controller.add(GuildDeleteEvent(guild));
-      client.guilds.cache.remove(guild.id);
-    }
+    eventService.controller.add(GuildDeleteEvent(guild));
+    client.guilds.cache.remove(guild.id);
   }
 
 }
