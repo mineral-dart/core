@@ -2,7 +2,6 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
@@ -15,7 +14,7 @@ class PartialMessage<T extends PartialChannel>  {
   final List<EmbedBuilder> _embeds;
   final bool _allowMentions;
   final PartialMessage? _reference;
-  final List<ComponentBuilder> _components;
+  final ComponentBuilder _components;
   final List<MessageStickerItem> _stickers;
   final dynamic _payload;
   final List<MessageAttachment> _attachments;
@@ -59,7 +58,7 @@ class PartialMessage<T extends PartialChannel>  {
 
   List<MessageStickerItem> get stickers => _stickers;
 
-  List<ComponentBuilder> get components => _components;
+  ComponentBuilder get components => _components;
 
   List<EmbedBuilder> get embeds => _embeds;
 

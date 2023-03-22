@@ -5,8 +5,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/builders/component_builder.dart';
-import 'package:mineral/src/api/channels/dm_channel.dart';
+import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
 import 'package:mineral/src/api/messages/message_parser.dart';
@@ -38,7 +37,7 @@ class DmMessage extends PartialMessage<DmChannel>  {
     this.author,
   );
 
-  Future<DmMessage?> edit ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
+  Future<DmMessage?> edit ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
 
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/channels/${channel.id}/messages/$id')
@@ -121,11 +120,10 @@ class DmMessage extends PartialMessage<DmChannel>  {
       }
     }
 
-    List<ComponentBuilder> components = [];
+    ComponentBuilder componentBuilder = ComponentBuilder();
     if (payload['components'] != null) {
       for (dynamic element in payload['components']) {
-        ComponentBuilder component = ComponentBuilder.wrap(element, payload['guild_id']);
-        components.add(component);
+        componentBuilder.rows.add(ComponentWrapper.wrap(element, payload['guild_id']));
       }
     }
 
@@ -136,7 +134,7 @@ class DmMessage extends PartialMessage<DmChannel>  {
       embeds,
       payload['allow_mentions'] ?? false,
       payload['reference'],
-      components,
+      componentBuilder,
       stickers,
       payload['payload'],
       messageAttachments,
