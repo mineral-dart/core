@@ -14,7 +14,7 @@ export '../src/api/builders/modal_builder.dart' show ModalBuilder;
 export '../src/api/builders/moderation_rules_builder.dart' show ModerationRulesBuilder;
 export '../src/api/builders/row_builder.dart' show RowBuilder;
 
-export '../src/api/builders/menus/string_select_menu_builder.dart' show StringSelectMenuBuilder, SelectMenuOption, EmojiOption;
+export '../src/api/builders/menus/dynamic_select_menu_builder.dart' show DynamicSelectMenuBuilder, SelectMenuOption, EmojiOption;
 export '../src/api/builders/menus/user_select_menu_builder.dart' show UserSelectMenuBuilder;
 export '../src/api/builders/menus/role_select_menu_builder.dart' show RoleSelectMenuBuilder;
 export '../src/api/builders/menus/channel_select_menu_builder.dart' show ChannelSelectMenuBuilder;

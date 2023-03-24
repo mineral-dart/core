@@ -14,7 +14,7 @@ import 'package:mineral_ioc/ioc.dart';
 enum ComponentType {
   actionRow(1),
   button(2),
-  stringSelect(3),
+  dynamicSelect(3),
   textInput(4),
   userSelect(5),
   roleSelect(6),
@@ -37,8 +37,6 @@ abstract class ComponentWrapper {
     final Guild? guild = ioc.use<MineralClient>().guilds.cache.get(guildId);
     final componentType = ComponentType.values.firstWhereOrNull((element) => element.value == payload['type']);
 
-    print(componentType);
-
     if (componentType == null) {
       return;
     }
@@ -58,8 +56,8 @@ abstract class ComponentWrapper {
       case ComponentType.actionRow:
         return RowBuilder([]);
 
-      case ComponentType.stringSelect:
-        return StringSelectMenuBuilder(payload['custom_id'])
+      case ComponentType.dynamicSelect:
+        return DynamicSelectMenuBuilder(payload['custom_id'])
           ..setPlaceholder(payload['placeholder'])
           ..setDisabled(payload['disabled'])
           ..setMinValues(payload['min_values'])
@@ -87,7 +85,7 @@ abstract class ComponentWrapper {
           ..setMaxValues(payload['max_values']);
 
       case ComponentType.mentionableSelect:
-        return StringSelectMenuBuilder(payload['custom_id'])
+        return MentionableSelectMenuBuilder(payload['custom_id'])
           ..setPlaceholder(payload['placeholder'])
           ..setDisabled(payload['disabled'])
           ..setMinValues(payload['min_values'])

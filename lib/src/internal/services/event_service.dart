@@ -32,7 +32,6 @@ class EventService extends MineralService {
       if (_events.containsKey(event.listener)) {
         _events.get(event.listener)?.add(event);
       } else {
-        print(event.listener);
         _events.putIfAbsent(event.listener, () => [event]);
       }
     }

@@ -3,10 +3,10 @@ import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/builders/menus/select_menu_builder.dart';
 
-class StringSelectMenuBuilder extends SelectMenuBuilder {
+class DynamicSelectMenuBuilder extends SelectMenuBuilder {
   final List<SelectMenuOption> _options = [];
 
-  StringSelectMenuBuilder(String customId) : super (customId, ComponentType.stringSelect);
+  DynamicSelectMenuBuilder(String customId) : super (customId, ComponentType.dynamicSelect);
 
   void addOption<T> ({ required String label, String? description, required T value, EmojiBuilder? emoji }) {
     _options.add(SelectMenuOption(label: label, description: description, value: value, emoji: emoji));

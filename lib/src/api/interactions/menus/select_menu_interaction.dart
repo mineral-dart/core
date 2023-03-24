@@ -24,15 +24,15 @@ class SelectMenuInteraction extends Interaction {
     this._channelId,
   );
 
-  PartialMessage? get message => guild != null
-    ? (guild?.channels.cache.get(_channelId) as dynamic)?.messages.cache[_messageId]
-    : ioc.use<MineralClient>().dmChannels.cache.get(_channelId)?.messages.cache.getOrFail(_messageId);
+  PartialMessage get message => guild != null
+    ? guild!.channels.cache.getOrFail(_channelId).cast<dynamic>().messages.cache[_messageId]
+    : ioc.use<MineralClient>().dmChannels.cache.getOrFail(_channelId).messages.cache.getOrFail(_messageId);
 
   Snowflake get customId => _customId;
 
-  PartialChannel? get channel => guild != null
-      ? guild?.channels.cache.get(_channelId)
-      : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
+  PartialChannel get channel => guild != null
+    ? guild!.channels.cache.getOrFail(_channelId)
+    : ioc.use<MineralClient>().dmChannels.cache.getOrFail(_channelId);
 
   factory SelectMenuInteraction.from({ required dynamic payload }) {
     return SelectMenuInteraction(

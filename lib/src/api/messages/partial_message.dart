@@ -70,9 +70,9 @@ class PartialMessage<T extends PartialChannel>  {
 
   bool get isPinned => _pinned;
 
-  dynamic get channel => _guildId != null
-    ? ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId).channels.cache.getOrFail(_channelId)
-    : ioc.use<MineralClient>().dmChannels.cache.getOrFail(_channelId);
+  T get channel => _guildId != null
+    ? ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId).channels.cache.getOrFail(_channelId) as T
+    : ioc.use<MineralClient>().dmChannels.cache.getOrFail(_channelId) as T;
 
   MessageReactionManager get reactions => _reactions;
 

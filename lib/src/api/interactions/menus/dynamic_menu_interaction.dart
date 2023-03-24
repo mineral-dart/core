@@ -1,9 +1,9 @@
 import 'package:mineral/src/api/interactions/menus/select_menu_interaction.dart';
 
-class DynamicMenu extends SelectMenuInteraction {
+class DynamicMenuInteraction extends SelectMenuInteraction {
   final MenuBucket _menu;
 
-  DynamicMenu(
+  DynamicMenuInteraction(
     super.id,
     super.label,
     super.applicationId,
@@ -20,7 +20,7 @@ class DynamicMenu extends SelectMenuInteraction {
 
   MenuBucket get menu => _menu;
 
-  factory DynamicMenu.from(dynamic payload) => DynamicMenu(
+  factory DynamicMenuInteraction.from(dynamic payload) => DynamicMenuInteraction(
     payload['id'],
     null,
     payload['application_id'],
