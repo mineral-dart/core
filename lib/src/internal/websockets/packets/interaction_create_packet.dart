@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
@@ -41,7 +42,9 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       _executeButtonInteraction(guild, payload);
     }
 
-    if (payload['type'] == InteractionType.messageComponent.value && payload['data']['component_type'] == ComponentType.selectMenu.value) {
+    final ComponentType? isSelectMenu = ComponentType.values.firstWhereOrNull((element) => element.value == payload['data']['component_type']);
+
+    if (payload['type'] == InteractionType.messageComponent.value && isSelectMenu != null) {
       _executeSelectMenuInteraction(guild, payload);
     }
 
@@ -118,7 +121,6 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
   void _executeSelectMenuInteraction (Guild? guild, dynamic payload) async {
     EventService eventService = container.use<EventService>();
-
 
     PartialChannel channel = payload['guild_id'] != null && guild != null
         ? await guild.channels.resolve(payload['channel_id'])
