@@ -1,11 +1,15 @@
 import 'dart:convert';
 
+import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
+import 'package:mineral/src/api/interactions/menus/channel_menu_interaction.dart';
+import 'package:mineral/src/api/interactions/menus/mentionable_menu_interaction.dart';
+import 'package:mineral/src/api/interactions/menus/role_menu_interaction.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
@@ -41,7 +45,9 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       _executeButtonInteraction(guild, payload);
     }
 
-    if (payload['type'] == InteractionType.messageComponent.value && payload['data']['component_type'] == ComponentType.selectMenu.value) {
+    final ComponentType? isSelectMenu = ComponentType.values.firstWhereOrNull((element) => element.value == payload['data']['component_type']);
+
+    if (payload['type'] == InteractionType.messageComponent.value && isSelectMenu != null) {
       _executeSelectMenuInteraction(guild, payload);
     }
 
@@ -119,7 +125,6 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
   void _executeSelectMenuInteraction (Guild? guild, dynamic payload) async {
     EventService eventService = container.use<EventService>();
 
-
     PartialChannel channel = payload['guild_id'] != null && guild != null
         ? await guild.channels.resolve(payload['channel_id'])
         : await container.use<MineralClient>().dmChannels.resolve(payload['channel_id']);
@@ -130,14 +135,27 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       } catch(_) { }
     }
 
-    SelectMenuInteraction interaction = SelectMenuInteraction.from(
-      payload: payload,
-    );
-
-    for (dynamic value in payload['data']['values']) {
-      interaction.data.add(value);
+    late dynamic interaction;
+    if (payload['data']['component_type'] == ComponentType.dynamicSelect.value) {
+      interaction = DynamicMenuCreateEvent(DynamicMenuInteraction.from(payload));
     }
 
-    eventService.controller.add(SelectMenuCreateEvent(interaction));
+    if (payload['data']['component_type'] == ComponentType.userSelect.value) {
+      interaction = UserMenuCreateEvent(UserMenuInteraction.from(payload));
+    }
+
+    if (payload['data']['component_type'] == ComponentType.channelSelect.value) {
+      interaction = ChannelMenuCreateEvent(ChannelMenuInteraction.from(payload));
+    }
+
+    if (payload['data']['component_type'] == ComponentType.roleSelect.value) {
+      interaction = RoleMenuCreateEvent(RoleMenuInteraction.from(payload));
+    }
+
+    if (payload['data']['component_type'] == ComponentType.mentionableSelect.value) {
+      interaction = MentionableMenuCreateEvent(MentionableMenuInteraction.from(payload));
+    }
+
+    eventService.controller.add(interaction);
   }
 }

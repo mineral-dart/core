@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral_ioc/ioc.dart';
 
@@ -13,9 +14,13 @@ class EventService extends MineralService {
 
   EventService(): super(inject: true) {
     controller.stream.listen((_event) {
-      final events = _events.get(_event.runtimeType);
+      final regexp = RegExp(r'^([a-zA-Z0-9_]+)<.*>$|^([a-zA-Z0-9_]+)$');
+      final match = regexp.firstMatch(_event.runtimeType.toString());
+      final eventType = match?.group(1) ?? match?.group(2);
+
+      final events = _events.entries.firstWhereOrNull((event) => event.key.toString().startsWith(eventType.toString()));
       if (events != null) {
-        for (final event in events) {
+        for (final event in events.value) {
           event.handle(_event);
         }
       }

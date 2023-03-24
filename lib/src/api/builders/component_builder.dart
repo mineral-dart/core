@@ -1,5 +1,6 @@
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
+import 'package:mineral/src/api/builders/menus/select_menu_builder.dart';
 import 'package:mineral/src/exceptions/too_many_exception.dart';
 
 import 'buttons/contracts/button_contract.dart';
@@ -9,7 +10,7 @@ class ComponentBuilder {
 
   ComponentBuilder();
 
-  void withSelectMenu (SelectMenuBuilder menu) {
+  void withSelectMenu<T extends SelectMenuBuilder> (T menu) {
     rows.add(RowBuilder([menu]));
   }
 

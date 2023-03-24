@@ -13,6 +13,8 @@ class PartialChannel {
   /// Get id of this
   Snowflake get id => _id;
 
+  T cast<T>() => this as T;
+
   @override
   String toString () => '<#$id>';
 }

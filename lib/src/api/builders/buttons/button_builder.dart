@@ -44,7 +44,7 @@ class ButtonBuilder extends ComponentWrapper implements ButtonContract {
 
   @override
   Map<String, dynamic> toJson() => {
-    'type': type.value,
+    'type': type?.value,
     'custom_id': _customId,
     'label': _label,
     'style': _style.value,

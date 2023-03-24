@@ -46,7 +46,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
   GuildMember? get author => channel.guild.members.cache.get(_authorId);
 
   @override
-  PartialTextChannel get channel => super.channel;
+  TextBasedChannel get channel => super.channel;
 
   MessageMention get mentions => _mentions;
 
