@@ -40,6 +40,7 @@ export '../src/internal/websockets/events/dynamic_menu_create_event.dart';
 export '../src/internal/websockets/events/user_menu_create_event.dart';
 export '../src/internal/websockets/events/channel_menu_create_event.dart';
 export '../src/internal/websockets/events/role_menu_create_event.dart';
+export '../src/internal/websockets/events/mentionable_menu_create_event.dart';
 export '../src/internal/websockets/events/voice_join_event.dart';
 export '../src/internal/websockets/events/voice_leave_event.dart';
 export '../src/internal/websockets/events/voice_move_event.dart';
