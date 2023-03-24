@@ -8,6 +8,7 @@ import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/interactions/menus/channel_menu_interaction.dart';
+import 'package:mineral/src/api/interactions/menus/role_menu_interaction.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
@@ -144,6 +145,10 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
     if (payload['data']['component_type'] == ComponentType.channelSelect.value) {
       interaction = ChannelMenuCreateEvent(ChannelMenuInteraction.from(payload));
+    }
+
+    if (payload['data']['component_type'] == ComponentType.roleSelect.value) {
+      interaction = RoleMenuCreateEvent(RoleMenuInteraction.from(payload));
     }
 
     eventService.controller.add(interaction);
