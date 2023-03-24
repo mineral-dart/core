@@ -54,6 +54,7 @@ enum PacketType {
   memberJoinRequest('GUILD_JOIN_REQUEST_UPDATE'),
 
   voiceStateUpdate('VOICE_STATE_UPDATE'),
+  voiceServerUpdate('VOICE_SERVER_UPDATE'),
 
   resumed('RESUMED');
 

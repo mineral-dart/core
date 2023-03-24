@@ -41,3 +41,4 @@ export '../src/internal/websockets/events/voice_leave_event.dart';
 export '../src/internal/websockets/events/voice_move_event.dart';
 export '../src/internal/websockets/events/voice_state_update_event.dart';
 export '../src/internal/websockets/events/webhook_update_event.dart';
+export '../src/internal/websockets/events/voice_server_update_event.dart';
