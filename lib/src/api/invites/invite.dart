@@ -1,7 +1,9 @@
+import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/invites/invite_target_type.dart';
 import 'package:mineral/src/api/invites/wrapped_inviter.dart';
+import 'package:mineral/src/constants.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class Invite {
@@ -13,10 +15,10 @@ class Invite {
   final Snowflake? _inviterId;
   final Snowflake? _targetUserId;
   final Snowflake? _guildId;
-  final String _expiresAt;
+  final String? _expiresAt;
   final String _createdAt;
   final String _code;
-  final Snowflake _channelId;
+  final Snowflake? _channelId;
   final int? _targetType;
 
   Invite(
@@ -35,7 +37,7 @@ class Invite {
     this._targetType,
   );
 
-  Guild? get guild => ioc.use<MineralClient>().guilds.cache.get(_guildId);
+  Guild get guild => ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId);
 
   int get type => _type;
 
@@ -47,13 +49,15 @@ class Invite {
 
   DateTime get maxAge => DateTime.fromMillisecondsSinceEpoch(_maxAge);
 
-  DateTime get expiresAt => DateTime.parse(_expiresAt);
+  DateTime? get expiresAt => _expiresAt != null
+    ? DateTime.parse(_expiresAt!)
+    : null;
 
   DateTime get createdAt => DateTime.parse(_createdAt);
 
   String get code => _code;
 
-  Snowflake get channelId => _channelId;
+  GuildChannel? get channel => guild.channels.cache.get(_channelId);
 
   InviteTargetType get targetType => InviteTargetType.values.firstWhere((element) => element.value == _targetType);
 
@@ -64,6 +68,18 @@ class Invite {
   Future<User>? getTargetUser () => _targetUserId != null
     ? ioc.use<MineralClient>().users.resolve(_targetUserId!)
     : null;
+
+  String get url => '${Constants.discordInviteHost}/$_code';
+
+  Future<void> delete ({ String? reason }) async {
+    await ioc.use<DiscordApiHttpService>()
+      .destroy(url: '/invites/$_code')
+      .auditLog(reason)
+      .build();
+  }
+
+  @override
+  String toString () => url;
 
   factory Invite.from(dynamic payload) => Invite(
     payload['type'],

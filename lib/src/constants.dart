@@ -49,6 +49,7 @@ enum PacketType {
   interactionCreate('INTERACTION_CREATE'),
 
   inviteCreate('INVITE_CREATE'),
+  inviteUpdate('INVITE_CREATE'),
 
   memberUpdate('GUILD_MEMBER_UPDATE'),
   memberRemove('GUILD_MEMBER_REMOVE'),
@@ -68,6 +69,7 @@ enum PacketType {
 }
 
 class Constants {
+  static const String discordInviteHost = 'https://discord.gg';
   // Discord CDN host
   static const String cdnHost = "discordapp.com";
 
