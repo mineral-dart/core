@@ -12,12 +12,12 @@ class Invite {
   final int _maxAge;
   final Snowflake? _inviterId;
   final Snowflake? _targetUserId;
-  final Snowflake _guildId;
+  final Snowflake? _guildId;
   final String _expiresAt;
   final String _createdAt;
   final String _code;
   final Snowflake _channelId;
-  final int _targetType;
+  final int? _targetType;
 
   Invite(
     this._type,
@@ -57,8 +57,8 @@ class Invite {
 
   InviteTargetType get targetType => InviteTargetType.values.firstWhere((element) => element.value == _targetType);
 
-  WrappedInviter? getInviter () => _inviterId != null
-    ? WrappedInviter(_guildId, _inviterId!)
+  WrappedInviter? getInviter () => _inviterId != null && _guildId != null
+    ? WrappedInviter(_guildId!, _inviterId!)
     : null;
 
   Future<User>? getTargetUser () => _targetUserId != null
@@ -74,8 +74,8 @@ class Invite {
     payload['inviter']?['id'],
     payload['target_user']?['id'],
     payload['guild_id'],
-    payload['expiresAt'],
-    payload['createdAt'],
+    payload['expires_at'],
+    payload['created_at'],
     payload['code'],
     payload['channel_id'],
     payload['target_type']
