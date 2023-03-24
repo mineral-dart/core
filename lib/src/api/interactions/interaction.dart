@@ -50,7 +50,7 @@ class Interaction  {
   /// ```dart
   /// await interaction.reply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts, bool? private }) async {
+  Future<Interaction> reply ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts, bool? private }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, tts).toJson();
 
     dynamic payload = {
@@ -102,7 +102,7 @@ class Interaction  {
   /// ```dart
   /// await interaction.updateReply(content: 'Hello ${interaction.user.username}');
   /// ```
-  Future<Interaction> updateReply ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments }) async {
+  Future<Interaction> updateReply ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
 
     await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original")

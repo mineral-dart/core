@@ -1,7 +1,7 @@
 import 'package:mineral/core/builders.dart';
-import 'package:mineral/src/api/builders/component_builder.dart';
+import 'package:mineral/src/api/builders/component_wrapper.dart';
 
-class ModalBuilder extends ComponentBuilder {
+class ModalBuilder extends ComponentWrapper {
   String label;
   String customId;
 
@@ -47,7 +47,7 @@ class ModalBuilder extends ComponentBuilder {
       value: value,
     );
 
-    components?.add(RowBuilder.fromComponents([input]));
+    components?.add(RowBuilder([input]));
   }
 
   @override
