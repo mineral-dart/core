@@ -2,13 +2,24 @@ import 'package:collection/collection.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/builders/menus/channel_select_menu_builder.dart';
+import 'package:mineral/src/api/builders/menus/role_select_menu_builder.dart';
+import 'package:mineral/src/api/builders/menus/user_select_menu_builder.dart';
+import 'package:mineral/src/api/builders/modal/input_builder.dart';
+import 'package:mineral/src/api/builders/modal/paragraph_builder.dart';
+import 'package:mineral/src/api/builders/modal/text_builder.dart';
+import 'package:mineral/src/api/builders/modal/text_input_style.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 enum ComponentType {
   actionRow(1),
   button(2),
-  selectMenu(3),
-  textInput(4);
+  stringSelect(3),
+  textInput(4),
+  userSelect(5),
+  roleSelect(6),
+  mentionableSelect(7),
+  channelSelect(8);
 
   final int value;
   const ComponentType(this.value);
@@ -18,9 +29,9 @@ enum ComponentType {
 }
 
 abstract class ComponentWrapper {
-  ComponentType type;
+  ComponentType? type;
 
-  ComponentWrapper({ required this.type });
+  ComponentWrapper({ this.type });
 
   static wrap (dynamic payload, Snowflake? guildId) {
     final Guild? guild = ioc.use<MineralClient>().guilds.cache.get(guildId);
@@ -46,23 +57,62 @@ abstract class ComponentWrapper {
 
       case ComponentType.actionRow:
         return RowBuilder([]);
-      case ComponentType.selectMenu:
-        return SelectMenuBuilder(payload['custom_id'])
+
+      case ComponentType.stringSelect:
+        return StringSelectMenuBuilder(payload['custom_id'])
           ..setPlaceholder(payload['placeholder'])
           ..setDisabled(payload['disabled'])
           ..setMinValues(payload['min_values'])
           ..setMaxValues(payload['max_values']);
+
+      case ComponentType.userSelect:
+        return UserSelectMenuBuilder(payload['custom_id'])
+          ..setPlaceholder(payload['placeholder'])
+          ..setDisabled(payload['disabled'])
+          ..setMinValues(payload['min_values'])
+          ..setMaxValues(payload['max_values']);
+
+      case ComponentType.roleSelect:
+        return RoleSelectMenuBuilder(payload['custom_id'])
+          ..setPlaceholder(payload['placeholder'])
+          ..setDisabled(payload['disabled'])
+          ..setMinValues(payload['min_values'])
+          ..setMaxValues(payload['max_values']);
+
+      case ComponentType.channelSelect:
+        return ChannelSelectMenuBuilder(payload['custom_id'])
+          ..setPlaceholder(payload['placeholder'])
+          ..setDisabled(payload['disabled'])
+          ..setMinValues(payload['min_values'])
+          ..setMaxValues(payload['max_values']);
+
+      case ComponentType.mentionableSelect:
+        return StringSelectMenuBuilder(payload['custom_id'])
+          ..setPlaceholder(payload['placeholder'])
+          ..setDisabled(payload['disabled'])
+          ..setMinValues(payload['min_values'])
+          ..setMaxValues(payload['max_values']);
+
       case ComponentType.textInput:
-        return TextInputBuilder(
-          customId: payload['custom_id'],
-          label: payload['label'],
-          style: TextInputStyle.values.firstWhere((element) => element.value == payload['style']),
-          placeholder: payload['placeholder'],
-          required: payload['required'],
-          maxLength: payload['max_length'],
-          minLength: payload['min_length'],
-          value: payload['value'],
-        );
+        late InputBuilder builder;
+
+        switch (payload['style']) {
+          case TextInputStyle.input:
+            builder = TextBuilder(payload['custom_id']);
+            break;
+          case TextInputStyle.paragraph:
+            builder = ParagraphBuilder(payload['custom_id']);
+            break;
+        }
+
+        builder
+          ..setLabel(payload['label'])
+          ..setPlaceholder(payload['placeholder'])
+          ..setMaxLength(payload['max_length'])
+          ..setMinLength(payload['min_length'])
+          ..setRequired(payload['required']);
+
+        builder.value = payload['value'];
     }
   }
 
