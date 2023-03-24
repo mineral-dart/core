@@ -57,5 +57,5 @@ class MenuBucket {
   /// String? field = event.interaction.menu.getValue<String>();
   /// int? field = event.interaction.menu.getValue<int>();
   /// ```
-  T getValue<T>({ int index = 0 }) => _data[index];
+  T? getValue<T>({ int index = 0 }) => _data[index];
 }

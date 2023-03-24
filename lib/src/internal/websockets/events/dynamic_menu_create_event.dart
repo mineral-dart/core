@@ -2,7 +2,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/exceptions/bad_context_exception.dart';
 
-class DynamicMenuCreateEvent<T> extends Event {
+class DynamicMenuCreateEvent extends Event {
   final DynamicMenuInteraction _interaction;
 
   DynamicMenuCreateEvent(this._interaction);

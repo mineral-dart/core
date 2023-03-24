@@ -138,7 +138,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['data']['component_type'] == ComponentType.userSelect.value) {
-      interaction = DynamicMenuCreateEvent(DynamicMenuInteraction.from(payload));
+      interaction = UserMenuCreateEvent(UserMenuInteraction.from(payload));
     }
 
     eventService.controller.add(interaction);

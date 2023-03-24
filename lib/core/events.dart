@@ -37,6 +37,7 @@ export '../src/internal/websockets/events/moderation_rules_update_event.dart';
 export '../src/internal/websockets/events/presence_update_event.dart';
 export '../src/internal/websockets/events/ready_event.dart';
 export '../src/internal/websockets/events/dynamic_menu_create_event.dart';
+export '../src/internal/websockets/events/user_menu_create_event.dart';
 export '../src/internal/websockets/events/voice_join_event.dart';
 export '../src/internal/websockets/events/voice_leave_event.dart';
 export '../src/internal/websockets/events/voice_move_event.dart';
