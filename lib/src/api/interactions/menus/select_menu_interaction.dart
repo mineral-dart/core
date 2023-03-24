@@ -10,8 +10,6 @@ class SelectMenuInteraction extends Interaction {
   Snowflake _customId;
   Snowflake _channelId;
 
-  final List<String> data = [];
-
   SelectMenuInteraction(
     super._id,
     super._label,
@@ -29,28 +27,12 @@ class SelectMenuInteraction extends Interaction {
   PartialMessage? get message => guild != null
     ? (guild?.channels.cache.get(_channelId) as dynamic)?.messages.cache[_messageId]
     : ioc.use<MineralClient>().dmChannels.cache.get(_channelId)?.messages.cache.getOrFail(_messageId);
+
   Snowflake get customId => _customId;
+
   PartialChannel? get channel => guild != null
       ? guild?.channels.cache.get(_channelId)
       : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
-
-  /// ### Return an [List] of [T] if this has the designed field
-  ///
-  /// Example :
-  /// ```dart
-  /// List<String>? fields = interaction.getValues<String>();
-  /// List<int>? fields = interaction.getValues<int>();
-  /// ```
-  List<T> getValues<T> () => data as List<T>;
-
-  /// ### Return the first [T] if this has the designed field
-  ///
-  /// Example :
-  /// ```dart
-  /// String? field = interaction.getValue<String>();
-  /// int? field = interaction.getValue<int>();
-  /// ```
-  T getValue<T> () => data.first as T;
 
   factory SelectMenuInteraction.from({ required dynamic payload }) {
     return SelectMenuInteraction(

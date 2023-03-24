@@ -1,5 +1,3 @@
-
-
 abstract class Event {}
 
 abstract class MineralEvent<Event> {
@@ -8,5 +6,3 @@ abstract class MineralEvent<Event> {
 
   Future<void> handle (Event event);
 }
-
-class GuildUpdate extends Event {}
