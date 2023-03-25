@@ -132,6 +132,21 @@ class MineralClient extends MineralService {
       .build();
   }
 
+  Uri createInvitation ({ List<ClientPermission> permissions = const [], List<ClientScope> scope = const [] }) {
+    int _permissions = permissions.fold(0, (acc, element) => acc += element.value);
+
+    return Uri(
+      host: 'discord.com',
+      scheme: 'https',
+      path: '/api/oauth2/authorize',
+      queryParameters: {
+        'client_id': user.id,
+        'permissions': _permissions.toString(),
+        'scope': scope.map((scope) => scope.value).join(' ')
+      }
+    );
+  }
+
   factory MineralClient.from({ required dynamic payload }) {
     return MineralClient(
       User.from(payload['user']),

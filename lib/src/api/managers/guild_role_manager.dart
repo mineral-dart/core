@@ -56,7 +56,7 @@ class GuildRoleManager extends CacheManager<Role>  {
   ///   hoist: true,
   /// );
   /// ```
-  Future<Role> create ({ required String label, Color? color, bool? hoist, String? icon, String? unicode, bool? mentionable, List<Permission>? permissions }) async {
+  Future<Role> create ({ required String label, Color? color, bool? hoist, String? icon, String? unicode, bool? mentionable, List<ClientPermission>? permissions }) async {
     if ((icon != null || unicode != null) && !guild.features.contains(GuildFeature.roleIcons)) {
       throw MissingFeatureException("Guild ${guild.name} has no 'ROLE_ICONS' feature.");
     }

@@ -113,7 +113,7 @@ class CommandBuilder extends AbstractCommand {
   final List<CommandGroupBuilder> _group = [];
   final List<Option> _options = [];
 
-  final List<Permission>? permissions;
+  final List<ClientPermission>? permissions;
   final bool everyone;
 
   CommandBuilder(String label, String description, { Scope? scope, this.permissions, this.everyone = false }): super(label, description, scope ?? Scope.guild);
@@ -137,7 +137,7 @@ class CommandBuilder extends AbstractCommand {
 
   @override
   Object get toJson {
-    final List<Permission> _permissions = permissions ?? [];
+    final List<ClientPermission> _permissions = permissions ?? [];
     return {
       'name': _label.toLowerCase(),
       'description': _description,
