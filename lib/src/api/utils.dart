@@ -123,7 +123,7 @@ enum Locale {
   const Locale(this._locale, this._normalize);
 
   String get locale => _locale;
-  String? get normalize => _normalize ?? _locale;
+  String get normalize => _normalize ?? _locale;
 
   @override
   String toString() => locale;
