@@ -24,3 +24,5 @@ export '../src/api/builders/modal/text_builder.dart' show TextBuilder;
 export '../src/api/builders/modal/paragraph_builder.dart' show ParagraphBuilder;
 
 export '../src/api/builders/attachment_builder.dart' show AttachmentBuilder;
+export '../src/api/builders/markdown/markdown.dart' show Md;
+export '../src/api/builders/markdown/timestamp_style.dart' show TimestampStyle;
