@@ -77,7 +77,6 @@ class WebsocketDispatcher {
   }
 
   Future<void> dispatch (WebsocketResponse websocketResponse) async {
-    print(websocketResponse.type);
     PacketType? packet = PacketType.values.firstWhereOrNull((element) => element.toString() == websocketResponse.type);
     if (_packets.containsKey(packet)) {
       List<WebsocketPacket> packets = _packets[packet]!;
