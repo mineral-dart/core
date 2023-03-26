@@ -11,7 +11,7 @@ class GuildMemberPresence {
 
   GuildMemberPresence(this._guildId, this._status, this._premiumSince, this._clientStatus, this._activities);
 
-  String get status => _status;
+  StatusType get status => StatusType.values.firstWhere((element) => element.value == _status);
   DateTime? get premiumSince => _premiumSince != null
     ? DateTime.parse(_premiumSince!)
     : null;
