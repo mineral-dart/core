@@ -21,7 +21,6 @@ class User {
   UserDecoration _decoration;
   String _lang;
   PremiumType premiumType;
-  // late Status status;
 
   User(
     this._id,
