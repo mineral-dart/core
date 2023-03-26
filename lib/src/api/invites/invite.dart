@@ -3,7 +3,6 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/invites/invite_target_type.dart';
 import 'package:mineral/src/api/invites/wrapped_inviter.dart';
-import 'package:mineral/src/constants.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class Invite {

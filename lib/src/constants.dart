@@ -49,7 +49,7 @@ enum PacketType {
   interactionCreate('INTERACTION_CREATE'),
 
   inviteCreate('INVITE_CREATE'),
-  inviteUpdate('INVITE_CREATE'),
+  inviteDelete('INVITE_DELETE'),
 
   memberUpdate('GUILD_MEMBER_UPDATE'),
   memberRemove('GUILD_MEMBER_REMOVE'),
