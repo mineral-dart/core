@@ -11,9 +11,7 @@ class GuildRemovePacket with Container implements WebsocketPacket {
     EventService eventService = container.use<EventService>();
     MineralClient client = container.use<MineralClient>();
 
-    dynamic payload = websocketResponse.payload;
-
-    Guild? guild = client.guilds.cache.getOrFail(payload['guild_id']);
+    Guild guild = client.guilds.cache.getOrFail(websocketResponse.payload['id']);
 
     eventService.controller.add(GuildDeleteEvent(guild));
     client.guilds.cache.remove(guild.id);
