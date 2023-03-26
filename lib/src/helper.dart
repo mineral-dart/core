@@ -30,19 +30,19 @@ class Helper {
     return int.parse(color.toString().replaceAll('#', ''), radix: 16);
   }
 
-  static int reduceRolePermissions (List<Permission> permissions) {
+  static int reduceRolePermissions (List<ClientPermission> permissions) {
     int _permissions = 0;
 
-    for (Permission permission in permissions) {
+    for (final permission in permissions) {
       _permissions += permission.value;
     }
 
     return _permissions;
   }
 
-  static List<Permission> bitfieldToPermissions (int bitfield) {
-    List<Permission> permissions = [];
-    for (Permission element in Permission.values) {
+  static List<ClientPermission> bitfieldToPermissions (int bitfield) {
+    List<ClientPermission> permissions = [];
+    for (final element in ClientPermission.values) {
       if((bitfield & element.value) == element.value) permissions.add(element);
     }
     return permissions;

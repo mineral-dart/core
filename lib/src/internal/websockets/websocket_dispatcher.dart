@@ -15,6 +15,8 @@ import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_us
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_user_remove.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_update_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/interaction_create_packet.dart';
+import 'package:mineral/src/internal/websockets/packets/invite_create_packet.dart';
+import 'package:mineral/src/internal/websockets/packets/invite_delete_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/member_join_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/member_join_request.dart';
 import 'package:mineral/src/internal/websockets/packets/member_remove_packet.dart';
@@ -61,6 +63,8 @@ class WebsocketDispatcher {
     register(PacketType.webhookUpdate, WebhookUpdate());
     register(PacketType.guildIntegrationsUpdate, GuildIntegrationsUpdate());
     register(PacketType.voiceStateUpdate, VoiceStateUpdatePacket());
+    register(PacketType.inviteCreate, InviteCreatePacket());
+    register(PacketType.inviteDelete, InviteDeletePacket());
   }
 
   void register (PacketType type, WebsocketPacket packet) {
@@ -74,7 +78,6 @@ class WebsocketDispatcher {
 
   Future<void> dispatch (WebsocketResponse websocketResponse) async {
     PacketType? packet = PacketType.values.firstWhereOrNull((element) => element.toString() == websocketResponse.type);
-
     if (_packets.containsKey(packet)) {
       List<WebsocketPacket> packets = _packets[packet]!;
       for (final packet in packets) {

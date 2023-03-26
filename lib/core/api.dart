@@ -48,5 +48,7 @@ export '../src/internal/services/intent_service.dart' show Intent;
 export '../src/api/users/premium_type.dart' show PremiumType;
 export '../src/api/users/user_decoration.dart' show UserDecoration;
 export '../src/api/users/user_flags/user_flag_contract.dart' show UserFlagContract;
+export '../src/api/client/client_scope.dart' show ClientScope;
+export '../src/api/client/client_permission.dart' show ClientPermission;
 
 typedef Snowflake = String;
