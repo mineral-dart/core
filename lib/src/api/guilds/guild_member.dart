@@ -2,6 +2,7 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/guilds/guild_member_presence.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
 
@@ -17,6 +18,7 @@ class GuildMember  {
   MemberRoleManager _roles;
   VoiceManager voice;
   Guild _guild;
+  GuildMemberPresence? presence;
 
   GuildMember(
     this._user,
@@ -30,6 +32,7 @@ class GuildMember  {
     this._roles,
     this.voice,
     this._guild,
+    this.presence,
   );
 
   Snowflake get id => _user.id;
@@ -157,7 +160,7 @@ class GuildMember  {
   @override
   String toString () => '<@${_nickname != null ? '!' : ''}${user.id}>';
 
-  GuildMember clone () => GuildMember(user, nickname, avatar, joinedAt, premiumSince, permissions, pending, timeoutDuration, roles, voice, guild);
+  GuildMember clone () => GuildMember(user, nickname, avatar, joinedAt, premiumSince, permissions, pending, timeoutDuration, roles, voice, guild, presence);
 
   factory GuildMember.from({ required user, required GuildRoleManager roles, required Guild guild, dynamic member, required VoiceManager voice }) {
     MemberRoleManager memberRoleManager = MemberRoleManager(manager: roles, memberId: user.id);
@@ -179,7 +182,8 @@ class GuildMember  {
       member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
       memberRoleManager,
       voice,
-      guild
+      guild,
+      null,
     );
   }
 }
