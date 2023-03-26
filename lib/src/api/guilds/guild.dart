@@ -175,7 +175,7 @@ class Guild {
   ImageFormater? get banner => _banner;
   int get premiumTier => _premiumTier;
   int get premiumSubscriptionCount => _premiumSubscriptionCount;
-  String get preferredLocale => _preferredLocale;
+  Locale get preferredLocale => Locale.values.firstWhere((lang) => lang.locale == _preferredLocale);
   Snowflake? get publicUpdatesChannelId => _publicUpdatesChannelId;
   int get maxVideoChannelUsers => _maxVideoChannelUsers;
   int? get approximateMemberCount => _approximateMemberCount;
