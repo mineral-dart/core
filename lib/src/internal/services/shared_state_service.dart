@@ -2,15 +2,14 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/exceptions/already_exist_exception.dart';
 import 'package:mineral/src/exceptions/not_exist_exception.dart';
 import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 
-abstract class MineralStateContract {
-  T use<T> ();
-}
-
-class SharedStateService extends MineralService implements MineralStateContract {
+class SharedStateService extends MineralService implements SharedStateServiceContract {
   final Map<Type, MineralState> _states = {};
 
-  SharedStateService(): super(inject: true);
+  SharedStateService(List<MineralState> states): super(inject: true) {
+    register(states);
+  }
 
   Map<Type, MineralState> get states => _states;
 
