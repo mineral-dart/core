@@ -9,7 +9,7 @@ import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class PartialTextChannel extends GuildChannel{
+class PartialTextChannel extends GuildChannel {
   final MessageManager<Message> _messages;
   final Snowflake? _lastMessageId;
 

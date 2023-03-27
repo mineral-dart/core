@@ -48,6 +48,9 @@ enum PacketType {
 
   interactionCreate('INTERACTION_CREATE'),
 
+  inviteCreate('INVITE_CREATE'),
+  inviteDelete('INVITE_DELETE'),
+
   memberUpdate('GUILD_MEMBER_UPDATE'),
   memberRemove('GUILD_MEMBER_REMOVE'),
   memberAdd('GUILD_MEMBER_ADD'),
@@ -67,6 +70,7 @@ enum PacketType {
 }
 
 class Constants {
+  static const String discordInviteHost = 'https://discord.gg';
   // Discord CDN host
   static const String cdnHost = "discordapp.com";
 
@@ -74,10 +78,10 @@ class Constants {
   static const String cdnUrl = "https://cdn.${Constants.cdnHost}";
 
   // Discord API host
-  static const String host = "discord.com";
+  static const String host = "https://discord.com";
 
   // Discord API host
-  static const String assets = 'https://$host/assets';
+  static const String assets = '$host/assets';
 
   // Base API uri
   static const String baseUri = "/api/v$apiVersion";

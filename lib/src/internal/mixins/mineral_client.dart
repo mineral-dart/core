@@ -12,8 +12,6 @@ extension MineralClientExtension on MineralClient {
   Future<Response> sendMessage (PartialChannel channel, { String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts, Map<String, Snowflake>? messageReference }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, tts).toJson();
 
-    print(jsonEncode(messagePayload));
-
     return await ioc.use<DiscordApiHttpService>().post(url: "/channels/${channel.id}/messages")
         .files(messagePayload['files'])
         .payload({

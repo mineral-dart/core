@@ -25,6 +25,6 @@ class UserManager extends CacheManager<User> {
       return user;
     }
 
-    throw ApiException('Unable to fetch channel with id #$id');
+    throw ApiException('Unable to fetch user with id #$id');
   }
 }
