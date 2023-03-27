@@ -1,5 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 
 class ContextMenuBuilder {
   final String _label;
@@ -20,12 +21,13 @@ class ContextMenuBuilder {
   };
 }
 
-abstract class MineralContextMenu<T> {
+abstract class MineralContextMenu<T> extends ContextMenuServiceContract<T> {
   late ContextMenuBuilder builder;
 
   MineralContextMenu(String label, ContextMenuType type, { Scope? scope, bool everyone = false }) {
     builder = ContextMenuBuilder(label, type, scope ?? Scope.guild, everyone);
   }
 
+  @override
   Future<void> handle (T event);
 }
