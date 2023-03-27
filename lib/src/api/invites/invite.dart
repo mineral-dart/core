@@ -88,7 +88,7 @@ class Invite {
     payload['max_age'],
     payload['inviter']?['id'],
     payload['target_user']?['id'],
-    payload['guild_id'],
+    payload['guild']['id'],
     payload['expires_at'],
     payload['created_at'],
     payload['code'],
