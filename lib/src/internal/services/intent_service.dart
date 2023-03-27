@@ -47,14 +47,14 @@ enum Intent {
 class IntentService {
   List<Intent> list = [];
 
-  void defined ({ List<Intent>? intents, bool? all }) {
+  IntentService({ List<Intent>? only, bool? all }) {
     if (all == true) {
       list = [Intent.all];
       return;
     }
 
-    if (intents != null) {
-      list.addAll(intents);
+    if (only != null) {
+      list.addAll(only);
     }
   }
 }
