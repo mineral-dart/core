@@ -13,8 +13,8 @@ enum PermissionOverwriteType {
 class PermissionOverwrite {
   Snowflake id;
   PermissionOverwriteType type;
-  List<Permission>? allow;
-  List<Permission>? deny;
+  List<ClientPermission>? allow;
+  List<ClientPermission>? deny;
 
   PermissionOverwrite({
     required this.id,

@@ -1,5 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/src/helper.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 
 import '../../exceptions/missing_method_exception.dart';
 
@@ -15,7 +16,7 @@ class Scope {
   Scope(this.mode);
 }
 
-abstract class MineralCommand<T extends CommandInteraction> {
+abstract class MineralCommand<T extends CommandInteraction> extends MineralCommandContract {
   late final CommandBuilder command;
 
   void register(CommandBuilder builder) {
@@ -113,7 +114,7 @@ class CommandBuilder extends AbstractCommand {
   final List<CommandGroupBuilder> _group = [];
   final List<Option> _options = [];
 
-  final List<Permission>? permissions;
+  final List<ClientPermission>? permissions;
   final bool everyone;
 
   CommandBuilder(String label, String description, { Scope? scope, this.permissions, this.everyone = false }): super(label, description, scope ?? Scope.guild);
@@ -137,7 +138,7 @@ class CommandBuilder extends AbstractCommand {
 
   @override
   Object get toJson {
-    final List<Permission> _permissions = permissions ?? [];
+    final List<ClientPermission> _permissions = permissions ?? [];
     return {
       'name': _label.toLowerCase(),
       'description': _description,

@@ -8,7 +8,7 @@ import 'package:mineral_ioc/ioc.dart';
 
 class PartialEmoji {
   final Snowflake _id;
-  String _label;
+  final String _label;
   final bool _animated;
 
   PartialEmoji(this._id, this._label, this._animated);
@@ -59,14 +59,10 @@ class Emoji extends PartialEmoji {
   /// }
   /// ```
   Future<void> setLabel (String label, { String? reason }) async {
-    Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id")
+    await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/emojis/$id")
       .payload({ 'name': label })
       .auditLog(reason)
       .build();
-
-    if (response.statusCode == 200) {
-      _label = label;
-    }
   }
 
   Future<void> setAllowedRoles (List<Snowflake> roles, { String? reason }) async {

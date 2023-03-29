@@ -9,10 +9,10 @@ class MessageParser {
   bool? _tts;
 
 
-  MessageParser(String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts) {
+  MessageParser(String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts) {
     _content = content;
     _embeds = embeds ?? _embeds;
-    _components = components ?? _components;
+    _components = components?.rows ?? _components;
     _attachments = attachments;
     _tts = tts;
   }

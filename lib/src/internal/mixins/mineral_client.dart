@@ -9,7 +9,7 @@ import 'package:mineral/src/api/messages/message_parser.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 extension MineralClientExtension on MineralClient {
-  Future<Response> sendMessage (PartialChannel channel, { String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts, Map<String, Snowflake>? messageReference }) async {
+  Future<Response> sendMessage (PartialChannel channel, { String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts, Map<String, Snowflake>? messageReference }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, tts).toJson();
 
     return await ioc.use<DiscordApiHttpService>().post(url: "/channels/${channel.id}/messages")

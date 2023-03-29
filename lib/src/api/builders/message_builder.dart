@@ -1,11 +1,10 @@
 import 'package:mineral/core/builders.dart';
-import 'package:mineral/src/api/builders/component_builder.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 
 class MessageBuilder {
   final String? content;
   final List<EmbedBuilder>? embeds;
-  final List<ComponentBuilder>? components;
+  final ComponentBuilder? components;
   final List<MessageStickerItem>? stickers;
 
   MessageBuilder({ this.content, this.embeds, this.components, this.stickers });
@@ -19,8 +18,8 @@ class MessageBuilder {
     }
 
     final List<dynamic> _components = [];
-    if (components != null) {
-      for (final component in components!) {
+    if (components?.rows != null) {
+      for (final component in components!.rows) {
         _components.add(component.toJson());
       }
     }

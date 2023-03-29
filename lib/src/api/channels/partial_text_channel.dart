@@ -9,7 +9,7 @@ import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class PartialTextChannel extends GuildChannel{
+class PartialTextChannel extends GuildChannel {
   final MessageManager<Message> _messages;
   final Snowflake? _lastMessageId;
 
@@ -26,7 +26,7 @@ class PartialTextChannel extends GuildChannel{
   /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
   /// await channel.send(content: 'Hello world ! 🔥');
   /// ```
-  Future<Message?> send ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
+  Future<Message?> send ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     MineralClient client = ioc.use<MineralClient>();
 
     Response response = await client.sendMessage(this,

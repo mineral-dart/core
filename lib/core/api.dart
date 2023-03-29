@@ -30,7 +30,8 @@ export '../src/api/interactions/context_message_interaction.dart' show ContextMe
 export '../src/api/interactions/context_user_interaction.dart' show ContextUserInteraction;
 export '../src/api/interactions/interaction.dart' show Interaction;
 export '../src/api/interactions/modal_interaction.dart' show ModalInteraction;
-export '../src/api/interactions/select_menu_interaction.dart' show SelectMenuInteraction;
+export '../src/api/interactions/menus/dynamic_menu_interaction.dart' show DynamicMenuInteraction;
+export '../src/api/interactions/menus/user_menu_interaction.dart' show UserMenuInteraction;
 export '../src/api/managers/member_role_manager.dart' show MemberRoleManager;
 export '../src/api/managers/voice_manager.dart' show VoiceManager;
 export '../src/api/managers/message_manager.dart' show MessageManager, BulkDeleteBuilder;
@@ -47,5 +48,8 @@ export '../src/internal/services/intent_service.dart' show Intent;
 export '../src/api/users/premium_type.dart' show PremiumType;
 export '../src/api/users/user_decoration.dart' show UserDecoration;
 export '../src/api/users/user_flags/user_flag_contract.dart' show UserFlagContract;
+export '../src/api/client/client_scope.dart' show ClientScope;
+export '../src/api/client/client_permission.dart' show ClientPermission;
+export '../src/api/guilds/activities/activity_type.dart' show ActivityType;
 
 typedef Snowflake = String;

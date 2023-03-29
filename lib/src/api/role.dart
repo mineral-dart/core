@@ -82,7 +82,7 @@ class Role {
   ///   await role.setPermissions([Permission.kickMembers, Permission.banMembers]);
   /// }
   ///
-  Future<void> setPermissions (List<Permission> permissions, { String? reason }) async {
+  Future<void> setPermissions (List<ClientPermission> permissions, { String? reason }) async {
 
     int _permissions = Helper.reduceRolePermissions(permissions);
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${manager.guild.id}/roles/$id")

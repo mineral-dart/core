@@ -7,11 +7,8 @@ enum StatusType {
   doNotDisturb('dnd'),
   offline('offline');
 
-  final String _value;
-  const StatusType(this._value);
-
-  @override
-  String toString () => _value;
+  final String value;
+  const StatusType(this.value);
 }
 
 class Status {

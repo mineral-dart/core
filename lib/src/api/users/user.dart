@@ -21,7 +21,6 @@ class User {
   UserDecoration _decoration;
   String _lang;
   PremiumType premiumType;
-  // late Status status;
 
   User(
     this._id,
@@ -60,7 +59,7 @@ class User {
   /// GuildMember? member = guild.members.cache.get('240561194958716924');
   /// await member.user.send(content: 'Hello World !');
   /// ```
-  Future<DmMessage?> send ({ String? content, List<EmbedBuilder>? embeds, List<RowBuilder>? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
+  Future<DmMessage?> send ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     MineralClient client = ioc.use<MineralClient>();
     DmChannel? channel = client.dmChannels.cache.get(_id);
 
