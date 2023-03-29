@@ -28,6 +28,5 @@ abstract class MineralContextMenu<T> extends ContextMenuServiceContract<T> {
     builder = ContextMenuBuilder(label, type, scope ?? Scope.guild, everyone);
   }
 
-  @override
   Future<void> handle (T event);
 }

@@ -22,8 +22,9 @@ class SharedStateService extends MineralService implements SharedStateServiceCon
     return _states[T] as T;
   }
 
-  void register (List<MineralState> mineralStates) {
-    for (final store in mineralStates) {
+  @override
+  void register (List<MineralStateContract> mineralStates) {
+    for (final store in List<MineralState>.from(mineralStates)) {
       if (_states.containsKey(store.runtimeType)) {
         throw AlreadyExistException('A shared state named ${store.name} already exists.');
       }

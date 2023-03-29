@@ -46,10 +46,10 @@ class Kernel with Container {
     PackageService? packages,
     ContextMenuService? contextMenus,
   }) {
-    this.events = events ?? EventService([]);
+    this.states = states ?? SharedStateService([]);
     this.commands = commands ?? CommandService([]);
     this.contextMenus = contextMenus ?? ContextMenuService([]);
-    this.states = states ?? SharedStateService([]);
+    this.events = events ?? EventService([]);
     this.packages = packages ?? PackageService([]);
 
     CollectorService();

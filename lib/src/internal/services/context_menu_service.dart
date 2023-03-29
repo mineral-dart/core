@@ -6,7 +6,7 @@ import 'package:mineral/src/api/interactions/context_menu_interaction.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 
-class ContextMenuService extends MineralService {
+class ContextMenuService extends MineralService implements ContextMenuServiceContract {
   final Map<String, MineralContextMenu> _contextMenus = {};
   Map<String, MineralContextMenu> get contextMenus => _contextMenus;
 
@@ -21,8 +21,9 @@ class ContextMenuService extends MineralService {
     });
   }
 
-  void register (List<ContextMenuServiceContract> mineralContextMenus) {
-    for (final contextMenu in List<MineralContextMenu>.from(mineralContextMenus)) {
+  @override
+  void register(List<MineralContextMenuContract> contextMenus) {
+    for (final contextMenu in List<MineralContextMenu>.from(contextMenus)) {
       _contextMenus.putIfAbsent(contextMenu.builder.label, () => contextMenu);
     }
   }
