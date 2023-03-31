@@ -20,7 +20,7 @@ class GuildInviteManager extends CacheManager<Invite>  {
       .build();
 
     for (dynamic element in jsonDecode(response.body)) {
-      Invite invite = Invite.from(element);
+      Invite invite = Invite.from(element['guild']?['id'], element);
       cache.set(invite.code, invite);
     }
 
@@ -37,7 +37,8 @@ class GuildInviteManager extends CacheManager<Invite>  {
       .build();
 
     if(response.statusCode == 200) {
-      final Invite invite = Invite.from(jsonDecode(response.body));
+      final payload = jsonDecode(response.body);
+      final Invite invite = Invite.from(payload['guild']?['id'], payload);
 
       cache.putIfAbsent(invite.code, () => invite);
       return invite;

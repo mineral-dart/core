@@ -19,8 +19,7 @@ import 'package:mineral/src/internal/services/discord_api_http_service.dart';
 import 'package:mineral/src/internal/services/environment_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/services/intent_service.dart';
-import 'package:mineral/src/internal/services/module_service.dart';
-import 'package:mineral/src/internal/services/plugin_service.dart';
+import 'package:mineral/src/internal/services/package_service.dart';
 import 'package:mineral/src/internal/services/shared_state_service.dart';
 import 'package:mineral/src/internal/themes/mineral_theme.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
@@ -28,17 +27,31 @@ import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_console/mineral_console.dart';
 
 class Kernel with Container {
-  final EnvironmentService _environment = EnvironmentService();
-  final EventService events = EventService();
-  final CommandService commands = CommandService();
-  final SharedStateService states = SharedStateService();
-  final ModuleService modules = ModuleService();
-  final MineralCliContract cli = MineralCli(MineralTheme());
-  final ContextMenuService contextMenus = ContextMenuService();
-  final IntentService intents = IntentService();
-  final PluginServiceCraft plugins = PluginServiceCraft();
+  final IntentService intents;
 
-  Kernel () {
+  final EnvironmentService _environment = EnvironmentService();
+  final MineralCliContract cli = MineralCli(MineralTheme());
+
+  late EventService events;
+  late CommandService commands;
+  late SharedStateService states;
+  late ContextMenuService contextMenus;
+  late PackageService packages;
+
+  Kernel ({
+    required this.intents,
+    EventService? events,
+    CommandService? commands,
+    SharedStateService? states,
+    PackageService? packages,
+    ContextMenuService? contextMenus,
+  }) {
+    this.states = states ?? SharedStateService([]);
+    this.commands = commands ?? CommandService([]);
+    this.contextMenus = contextMenus ?? ContextMenuService([]);
+    this.events = events ?? EventService([]);
+    this.packages = packages ?? PackageService([]);
+
     CollectorService();
     DebuggerService('[ debug ]');
   }
@@ -71,8 +84,7 @@ class Kernel with Container {
       throw TokenException('APP_TOKEN is not defined in your environment');
     }
 
-    await modules.load(this);
-    await plugins.load();
+    await packages.load();
 
     final String? shardsCount = _environment.environment.get('SHARDS_COUNT');
 

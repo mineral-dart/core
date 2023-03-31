@@ -13,7 +13,8 @@ class InviteCreatePacket with Container implements WebsocketPacket {
     MineralClient client = container.use<MineralClient>();
     EventService eventService = container.use<EventService>();
 
-    final invite = Invite.from(websocketResponse.payload);
+    final payload = websocketResponse.payload;
+    final invite = Invite.from(payload['guild_id'], payload);
 
     final Guild guild = client.guilds.cache.getOrFail(invite.guild.id);
     guild.invites.cache.putIfAbsent(invite.code, () => invite);

@@ -80,7 +80,7 @@ class Invite {
   @override
   String toString () => url;
 
-  factory Invite.from(dynamic payload) => Invite(
+  factory Invite.from(Snowflake guildId, dynamic payload) => Invite(
     payload['type'],
     payload['uses'],
     payload['temporary'],

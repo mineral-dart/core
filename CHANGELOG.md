@@ -1,3 +1,12 @@
+## 3.1.0
+- Implement Invites
+- Implement invite packets (create, delete)
+- Implement many select menus (dynamic, user, role, channel, mentionable)
+- Migrate of Discord component to builders (wait next release to allow constructor declaration)
+- Improve `main.dart` file entrypoint
+- Implement new package concept
+- Fix message delete issue (no message when resolving from message id)
+
 ## 3.0.0
 - Implement cli & refactor
 - Implement new features

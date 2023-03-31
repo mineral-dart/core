@@ -1,5 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/src/helper.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 
 import '../../exceptions/missing_method_exception.dart';
 
@@ -15,7 +16,7 @@ class Scope {
   Scope(this.mode);
 }
 
-abstract class MineralCommand<T extends CommandInteraction> {
+abstract class MineralCommand<T extends CommandInteraction> extends MineralCommandContract {
   late final CommandBuilder command;
 
   void register(CommandBuilder builder) {

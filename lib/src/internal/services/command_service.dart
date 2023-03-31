@@ -5,8 +5,9 @@ import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/internal/entities/command.dart';
 import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 
-class CommandService extends MineralService {
+class CommandService extends MineralService implements CommandServiceContract {
   final Map<String, CommandBuilder> _commands = {};
   Map<String, CommandBuilder> get commands => _commands;
 
@@ -15,7 +16,9 @@ class CommandService extends MineralService {
 
   StreamController<CommandCreateEvent> controller = StreamController();
 
-  CommandService(): super(inject: true) {
+  CommandService(List<MineralCommandContract> commands): super(inject: true) {
+    register(commands);
+
     controller.stream.listen((event) async {
       final commandIdentifier = event.interaction.identifier;
       final command = _commands.get(commandIdentifier);
@@ -55,8 +58,9 @@ class CommandService extends MineralService {
     });
   }
 
-  void register (List<MineralCommand> mineralCommands) {
-    for (final mineralCommand in mineralCommands) {
+  @override
+  void register (List<MineralCommandContract> commands) {
+    for (final mineralCommand in List<MineralCommand>.from(commands)) {
       final command = mineralCommand.command;
       _commands.putIfAbsent(mineralCommand.command.label, () => mineralCommand.command);
 
