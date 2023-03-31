@@ -2,7 +2,6 @@ import 'dart:core';
 
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class CommandInteraction extends Interaction  {
@@ -13,24 +12,24 @@ class CommandInteraction extends Interaction  {
   Map<String, dynamic> _params = {};
 
   CommandInteraction(
-    super._id,
-    super._label,
-    super._applicationId,
-    super._version,
-    super._typeId,
-    super._token,
-    super._userId,
-    super._guildId,
-    this._identifier,
-    this._channelId,
-    this._data,
-    this._params,
-  );
+      super._id,
+      super._label,
+      super._applicationId,
+      super._version,
+      super._typeId,
+      super._token,
+      super._userId,
+      super._guildId,
+      this._identifier,
+      this._channelId,
+      this._data,
+      this._params,
+      );
 
   String get identifier => _identifier;
   PartialChannel? get channel => guild != null
-    ? guild!.channels.cache.get(_channelId)
-    : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
+      ? guild!.channels.cache.get(_channelId)
+      : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
   Map<String, dynamic> get data => _data;
   Map<String, dynamic> get params => _params;
 
@@ -61,8 +60,7 @@ class CommandInteraction extends Interaction  {
   /// int? value = interaction.getInteger('option_name');
   /// ```
   int? getInteger (String optionName) {
-    double integer = params[optionName];
-    return integer.toInt();
+    return params[optionName];
   }
 
   /// ### Returns an [int] or null if the command has the designed option
@@ -72,8 +70,7 @@ class CommandInteraction extends Interaction  {
   /// final int value = interaction.getIntegerOrFail('option_name');
   /// ```
   int getIntegerOrFail (String optionName) {
-    double integer = params[optionName];
-    return integer.toInt();
+    return params[optionName];
   }
 
   /// ### Returns an [String] or null if the command has the designed option
@@ -216,18 +213,18 @@ class CommandInteraction extends Interaction  {
     }
 
     return CommandInteraction(
-      payload['id'],
-      payload['data']['name'],
-      payload['application_id'],
-      payload['version'],
-      payload['type'],
-      payload['token'],
-      payload['guild_id'] == null ? payload['user']['id'] : payload['member']?['user']?['id'],
-      payload['guild_id'],
-      payload['data']['name'],
-      payload['channel_id'],
-      payload['data'],
-      params
+        payload['id'],
+        payload['data']['name'],
+        payload['application_id'],
+        payload['version'],
+        payload['type'],
+        payload['token'],
+        payload['guild_id'] == null ? payload['user']['id'] : payload['member']?['user']?['id'],
+        payload['guild_id'],
+        payload['data']['name'],
+        payload['channel_id'],
+        payload['data'],
+        params
     );
   }
 }
