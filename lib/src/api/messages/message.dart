@@ -8,6 +8,7 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
+import 'package:mineral/src/api/messages/message_author.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
@@ -18,8 +19,8 @@ import 'package:mineral_ioc/ioc.dart';
 import 'message_parser.dart';
 
 class Message extends PartialMessage<TextBasedChannel>  {
-  Snowflake _authorId;
   final MessageMention _mentions;
+  final MessageAuthor _author;
 
   Message(
     super._id,
@@ -39,14 +40,11 @@ class Message extends PartialMessage<TextBasedChannel>  {
     super._reactions,
     super.timestamp,
     super.editedTimestamp,
-    this._authorId,
     this._mentions,
+    this._author,
   );
 
-  GuildMember? get author => channel.guild.members.cache.get(_authorId);
-
-  /// Return
-  Future<User> get user => ioc.use<MineralClient>().users.resolve(_authorId);
+  MessageAuthor get author => _author;
 
   @override
   TextBasedChannel get channel => super.channel;
@@ -236,8 +234,8 @@ class Message extends PartialMessage<TextBasedChannel>  {
       MessageReactionManager<GuildChannel, Message>(channel),
       payload['timestamp'],
       payload['edited_timestamp'],
-      payload['author']['id'],
-      MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false)
+      MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false),
+      MessageAuthor(channel.guild.id, payload['author']['id'])
     );
 
     message.reactions.message = message;
