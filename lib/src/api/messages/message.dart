@@ -45,6 +45,9 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   GuildMember? get author => channel.guild.members.cache.get(_authorId);
 
+  /// Return
+  Future<User> get user => ioc.use<MineralClient>().users.resolve(_authorId);
+
   @override
   TextBasedChannel get channel => super.channel;
 
