@@ -12,5 +12,5 @@ class MessageAuthor {
 
   User? get user => _guild.members.cache.get(_userId)?.user;
   
-  GuildMember get member => _guild.members.cache.getOrFail(_userId);
+  GuildMember? get member => _guild.members.cache.get(_userId);
 }
