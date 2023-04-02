@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
@@ -31,7 +32,9 @@ class PresenceUpdatePacket with Container implements WebsocketPacket {
     GuildMember afterMember = guild.members.cache.getOrFail(payload['user']['id']);
 
     final List<GuildMemberActivity> activities = List.from(payload['activities']).map((activity) {
-      switch (activity['type']) {
+      final activityType = ActivityType.values.firstWhereOrNull((type) => activity['type'] == type.value);
+
+      switch (activityType) {
         case ActivityType.custom:
           return CustomActivity.from(payload['guild_id'], activity);
         case ActivityType.game:
