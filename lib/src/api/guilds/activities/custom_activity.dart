@@ -29,7 +29,7 @@ class CustomActivity extends GuildMemberActivity {
     payload['name'],
     payload['id'],
     payload['state'],
-    payload['emoji']['id'] != null
+    payload['emoji']?['id'] != null
       ? PartialEmoji(payload['emoji']['id'], payload['emoji']['name'], payload['emoji']['animated'])
       : null,
     payload['created_at'],
