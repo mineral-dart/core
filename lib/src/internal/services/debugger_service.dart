@@ -14,11 +14,11 @@ class DebuggerService extends MineralService with Container {
   void debug (String message) {
     final service =  container.use<EnvironmentService>();
 
-    if (service.environment.getFromStringKey('LOG_LEVEL') == 'debug') {
+    if (service.get('LOG_LEVEL') == 'debug') {
       stdout.writeln(prefix.grey() + ' $message');
     }
 
-    if (service.environment.getFromStringKey('DEBUGGER') == 'true') {
+    if (service.get('DEBUGGER') == 'true') {
       _write(message);
     }
   }
