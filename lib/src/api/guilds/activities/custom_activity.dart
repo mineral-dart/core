@@ -7,7 +7,7 @@ class CustomActivity extends GuildMemberActivity {
   final String _id;
   final String? _state;
   final PartialEmoji? _emoji;
-  final String _createdAt;
+  final int _createdAt;
   final SecretActivity _secrets;
 
   CustomActivity(
@@ -22,14 +22,14 @@ class CustomActivity extends GuildMemberActivity {
   String get id => _id;
   String? get state => _state;
   PartialEmoji? get emoji => _emoji;
-  String get createdAt => _createdAt;
+  DateTime get createdAt => DateTime.fromMillisecondsSinceEpoch(_createdAt);
   SecretActivity get secrets => _secrets;
 
   factory CustomActivity.from(Snowflake guildId, dynamic payload) => CustomActivity(
     payload['name'],
     payload['id'],
     payload['state'],
-    payload['emoji'] != null
+    payload['emoji']?['id'] != null
       ? PartialEmoji(payload['emoji']['id'], payload['emoji']['name'], payload['emoji']['animated'])
       : null,
     payload['created_at'],

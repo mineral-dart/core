@@ -1,8 +1,9 @@
+import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/builders/modal/text_input_style.dart';
 
 class InputBuilder {
   final String _customId;
-  TextInputStyle _style;
+  final TextInputStyle _style;
   String _label = '';
   bool _required = false;
   int? _minLength;
@@ -25,4 +26,15 @@ class InputBuilder {
   void setMinLength(int value) => _minLength = value;
   void setMaxLength(int value) => _maxLength = value;
   void setPlaceholder(String value) => _placeholder = value;
+
+  Map<String, dynamic> toJson () => {
+    'label': _label,
+    'type': ComponentType.textInput.value,
+    'style': _style.value,
+    'required': _required,
+    'custom_id': _customId,
+    'min_length': _minLength,
+    'max_length': _maxLength,
+    'placeholder': _placeholder
+  };
 }

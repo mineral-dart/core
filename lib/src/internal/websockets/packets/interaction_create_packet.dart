@@ -135,27 +135,24 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       } catch(_) { }
     }
 
-    late dynamic interaction;
     if (payload['data']['component_type'] == ComponentType.dynamicSelect.value) {
-      interaction = DynamicMenuCreateEvent(DynamicMenuInteraction.from(payload));
+      eventService.controller.add(DynamicMenuCreateEvent(DynamicMenuInteraction.from(payload)));
     }
 
     if (payload['data']['component_type'] == ComponentType.userSelect.value) {
-      interaction = UserMenuCreateEvent(UserMenuInteraction.from(payload));
+      eventService.controller.add(UserMenuCreateEvent(UserMenuInteraction.from(payload)));
     }
 
     if (payload['data']['component_type'] == ComponentType.channelSelect.value) {
-      interaction = ChannelMenuCreateEvent(ChannelMenuInteraction.from(payload));
+      eventService.controller.add(ChannelMenuCreateEvent(ChannelMenuInteraction.from(payload)));
     }
 
     if (payload['data']['component_type'] == ComponentType.roleSelect.value) {
-      interaction = RoleMenuCreateEvent(RoleMenuInteraction.from(payload));
+      eventService.controller.add(RoleMenuCreateEvent(RoleMenuInteraction.from(payload)));
     }
 
     if (payload['data']['component_type'] == ComponentType.mentionableSelect.value) {
-      interaction = MentionableMenuCreateEvent(MentionableMenuInteraction.from(payload));
+      eventService.controller.add(MentionableMenuCreateEvent(MentionableMenuInteraction.from(payload)));
     }
-
-    eventService.controller.add(interaction);
   }
 }

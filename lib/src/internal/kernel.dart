@@ -79,14 +79,14 @@ class Kernel with Container {
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     container.bind((_) => http);
 
-    String? token = _environment.environment.get('APP_TOKEN');
+    String? token = _environment.get('APP_TOKEN');
     if (token == null) {
       throw TokenException('APP_TOKEN is not defined in your environment');
     }
 
     await packages.load();
 
-    final String? shardsCount = _environment.environment.get('SHARDS_COUNT');
+    final String? shardsCount = _environment.get('SHARDS_COUNT');
 
     ShardManager shardManager = ShardManager(http, token, intents.list);
     shardManager.start(shardsCount: (shardsCount != null ? int.tryParse(shardsCount) : null));
