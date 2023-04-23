@@ -7,4 +7,6 @@ class MemberLeaveEvent extends Event {
   MemberLeaveEvent(this._member);
 
   GuildMember get member => _member;
+  Guild get guild => _member.guild;
+  User get user => _member.user;
 }
