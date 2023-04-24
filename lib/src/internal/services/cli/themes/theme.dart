@@ -1,4 +1,5 @@
-import 'package:mineral_console/mineral_console.dart';
+import 'package:mineral/src/internal/services/console/theme.dart';
+import 'package:tint/tint.dart';
 
 class MineralTheme extends Theme {
   MineralTheme(): super(
