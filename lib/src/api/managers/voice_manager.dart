@@ -2,7 +2,7 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class VoiceManager  {
@@ -49,7 +49,7 @@ class VoiceManager  {
       return;
     }
 
-    ioc.use<MineralCli>().console.error('Unable to ${value ? 'mute' : 'unmute'} user #$_memberId');
+    ioc.use<ConsoleService>().error('Unable to ${value ? 'mute' : 'unmute'} user #$_memberId');
   }
 
   /// ### Deafens or not a server member
@@ -71,7 +71,7 @@ class VoiceManager  {
       return;
     }
 
-    ioc.use<MineralCli>().console.error('Unable to ${value ? 'deaf' : 'undeaf'} user #$_memberId');
+    ioc.use<ConsoleService>().error('Unable to ${value ? 'deaf' : 'undeaf'} user #$_memberId');
   }
 
   /// ### Moves a member from one voice channel to another
@@ -111,7 +111,7 @@ class VoiceManager  {
       return;
     }
 
-    ioc.use<MineralCli>().console.error('Unable to move user $_memberId to $channelId');
+    ioc.use<ConsoleService>().error('Unable to move user $_memberId to $channelId');
   }
 
   factory VoiceManager.from(dynamic payload, Snowflake guildId) {

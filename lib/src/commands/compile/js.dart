@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:mineral_cli/mineral_cli.dart';
-import 'package:mineral_console/mineral_console.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 import 'package:path/path.dart';
 
-class CompileJavascript extends CliCommand {
-  CompileJavascript(Console console): super(console, 'compile:js', 'Compile your application to an javascript file', []);
+class CompileJavascript extends CliCommandContract {
+  CompileJavascript(ConsoleService console): super(console, 'compile:js', 'Compile your application to an javascript file', []);
 
   @override
   Future<void> handle(args) async {

@@ -11,7 +11,7 @@ import 'package:mineral/src/api/messages/message_author.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
 
@@ -69,7 +69,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   Future<void> crossPost () async {
     if (channel.type != ChannelType.guildNews) {
-      ioc.use<MineralCli>().console.warn('Message $id cannot be cross-posted as it is not in an announcement channel');
+      ioc.use<ConsoleService>().warn('Message $id cannot be cross-posted as it is not in an announcement channel');
       return;
     }
 
@@ -79,7 +79,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   Future<void> pin (Snowflake webhookId) async {
     if (isPinned) {
-      ioc.use<MineralCli>().console.warn('Message $id is already pinned');
+      ioc.use<ConsoleService>().warn('Message $id is already pinned');
       return;
     }
 
@@ -89,7 +89,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   Future<void> unpin () async {
     if (!isPinned) {
-      ioc.use<MineralCli>().console.warn('Message $id isn\'t pinned');
+      ioc.use<ConsoleService>().warn('Message $id isn\'t pinned');
       return;
     }
 

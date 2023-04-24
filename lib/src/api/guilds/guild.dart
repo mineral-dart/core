@@ -19,7 +19,7 @@ import 'package:mineral/src/api/managers/sticker_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/welcome_screen.dart';
 import 'package:mineral/src/helper.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 enum VerificationLevel {
@@ -304,7 +304,7 @@ class Guild {
     MineralClient client = ioc.use<MineralClient>();
 
     if (owner.id != client.user.id) {
-      ioc.use<MineralCli>().console.error("You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
+      ioc.use<ConsoleService>().error("You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
       return;
     }
 
@@ -626,7 +626,7 @@ class Guild {
     for (String element in payload['features']) {
       GuildFeature? feature = GuildFeature.values.firstWhereOrNull((feature) => feature.value == element);
       if (feature == null) {
-        ioc.use<MineralCli>().console.warn('Guild feature $element don\'t exist! Please report this to our team.');
+        ioc.use<ConsoleService>().warn('Guild feature $element don\'t exist! Please report this to our team.');
       } else {
         features.add(feature);
       }

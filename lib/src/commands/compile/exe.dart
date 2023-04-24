@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:mineral_cli/mineral_cli.dart';
-import 'package:mineral_console/mineral_console.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 import 'package:path/path.dart';
 
-class CompileExecutable extends CliCommand {
-  CompileExecutable(Console console): super(console, 'compile:exe', 'Compile your application to an executable file', []);
+class CompileExecutable extends CliCommandContract {
+  CompileExecutable(ConsoleService console): super(console, 'compile:exe', 'Compile your application to an executable file', []);
 
   @override
   Future<void> handle(args) async {
