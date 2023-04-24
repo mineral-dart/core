@@ -1,17 +1,18 @@
 import 'dart:io';
+import 'package:mineral_contract/mineral_contract.dart';
+import 'package:prompts/prompts.dart' as prompts;
 
 import 'package:mineral/src/commands/templates/shared_state.dart';
-import 'package:mineral_cli/mineral_cli.dart';
-import 'package:mineral_console/mineral_console.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:path/path.dart';
 import 'package:recase/recase.dart';
 
-class MakeSharedState extends CliCommand {
-  MakeSharedState(Console console): super(console, 'make:state', 'Create new shared state file', ['name']);
+class MakeSharedState extends CliCommandContract {
+  MakeSharedState(ConsoleService console): super(console, 'make:state', 'Create new shared state file', ['name']);
 
   @override
   Future<void> handle(Map args) async {
-    final placeInRootFolder = Confirm('Would you like to change the location of your ?', defaultValue: false).build();
+    final placeInRootFolder = prompts.getBool('Would you like to change the location of your ?', defaultsTo: false);
 
     if (!placeInRootFolder) {
       final file = File(join(Directory.current.path, 'src', '${ReCase(args['name']).snakeCase}.dart'));
@@ -19,7 +20,7 @@ class MakeSharedState extends CliCommand {
       return;
     }
 
-    final location = Ask('Where do you want to create your command file ?').build();
+    final location = prompts.get('Where do you want to create your state file ?');
     final file = File(join(Directory.current.path, 'src', location, '${ReCase(args['name']).snakeCase}.dart'));
 
     await _createFile(file, args);

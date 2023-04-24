@@ -26,7 +26,7 @@ class CommandLineInterface extends CliServiceContract {
       MakeEvent(_console),
       MakeCommand(_console),
       MakeSharedState(_console),
-      MakeModule(_console),
+      MakePackage(_console),
       MakeService(_console),
       CompileExecutable(_console),
       CompileJavascript(_console),
