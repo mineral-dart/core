@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:mineral/core/extras.dart';
 import 'package:mineral/src/internal/services/environment_service.dart';
-import 'package:mineral_console/mineral_console.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
+import 'package:tint/tint.dart';
 
 class DebuggerService extends MineralService with Container {
   final String prefix;

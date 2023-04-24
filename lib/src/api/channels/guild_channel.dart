@@ -4,7 +4,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/channel_builder.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class GuildChannel extends PartialChannel {
@@ -90,12 +90,12 @@ class GuildChannel extends PartialChannel {
 
   bool _validate () {
     if (type == ChannelType.guildCategory) {
-      ioc.use<MineralCli>().console.warn('A category channel cannot have a parent');
+      ioc.use<ConsoleService>().warn('A category channel cannot have a parent');
       return false;
     }
 
     if (type == ChannelType.guildPublicThread || type == ChannelType.private || type == ChannelType.guildNewsThread) {
-      ioc.use<MineralCli>().console.warn('A thread channel cannot change a parent');
+      ioc.use<ConsoleService>().warn('A thread channel cannot change a parent');
       return false;
     }
 
