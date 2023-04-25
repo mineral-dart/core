@@ -15,16 +15,16 @@ extension MineralClientExtension on MineralClient {
     return await ioc.use<DiscordApiHttpService>().post(url: "/channels/${channel.id}/messages")
         .files(messagePayload['files'])
         .payload({
-          ...messagePayload['payload'],
-          'message_reference': messageReference != null ? { ...messageReference, 'fail_if_not_exists': true } : null,
-        })
+      ...messagePayload['payload'],
+      'message_reference': messageReference != null ? { ...messageReference, 'fail_if_not_exists': true } : null,
+    })
         .build();
   }
 
   Future<T?> createChannel<T extends GuildChannel> (Snowflake guildId, ChannelBuilder builder) async {
     Response response = await ioc.use<DiscordApiHttpService>().post(url: "/guilds/$guildId/channels")
-      .payload(builder.payload)
-      .build();
+        .payload(builder.payload)
+        .build();
 
     final payload = jsonDecode(response.body);
 

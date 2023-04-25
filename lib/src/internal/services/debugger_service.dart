@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:mineral/core/extras.dart';
 import 'package:mineral/src/internal/services/environment_service.dart';
-import 'package:mineral_console/mineral_console.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
+import 'package:tint/tint.dart';
 
 class DebuggerService extends MineralService with Container {
   final String prefix;
@@ -14,11 +14,11 @@ class DebuggerService extends MineralService with Container {
   void debug (String message) {
     final service =  container.use<EnvironmentService>();
 
-    if (service.environment.getFromStringKey('LOG_LEVEL') == 'debug') {
+    if (service.get('LOG_LEVEL') == 'debug') {
       stdout.writeln(prefix.grey() + ' $message');
     }
 
-    if (service.environment.getFromStringKey('DEBUGGER') == 'true') {
+    if (service.get('DEBUGGER') == 'true') {
       _write(message);
     }
   }

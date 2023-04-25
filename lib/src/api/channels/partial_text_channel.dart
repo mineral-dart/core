@@ -5,7 +5,6 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/core/collectors.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral_ioc/ioc.dart';
 

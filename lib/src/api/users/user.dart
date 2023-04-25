@@ -7,7 +7,7 @@ import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/users/user_flag.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class User {
@@ -91,7 +91,7 @@ class User {
       return message;
     }
 
-    ioc.use<MineralCli>().console.warn(payload['message']);
+    ioc.use<ConsoleService>().warn(payload['message']);
     return null;
   }
 

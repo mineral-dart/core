@@ -4,22 +4,22 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
-import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
+import 'package:mineral/src/api/messages/message_author.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral/src/internal/mixins/mineral_client.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral/src/internal/mixins/mineral_client.dart';
 
 import 'message_parser.dart';
 
 class Message extends PartialMessage<TextBasedChannel>  {
-  Snowflake _authorId;
   final MessageMention _mentions;
+  final MessageAuthor _author;
 
   Message(
     super._id,
@@ -39,11 +39,11 @@ class Message extends PartialMessage<TextBasedChannel>  {
     super._reactions,
     super.timestamp,
     super.editedTimestamp,
-    this._authorId,
     this._mentions,
+    this._author,
   );
 
-  GuildMember? get author => channel.guild.members.cache.get(_authorId);
+  MessageAuthor get author => _author;
 
   @override
   TextBasedChannel get channel => super.channel;
@@ -69,7 +69,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   Future<void> crossPost () async {
     if (channel.type != ChannelType.guildNews) {
-      ioc.use<MineralCli>().console.warn('Message $id cannot be cross-posted as it is not in an announcement channel');
+      ioc.use<ConsoleService>().warn('Message $id cannot be cross-posted as it is not in an announcement channel');
       return;
     }
 
@@ -79,7 +79,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   Future<void> pin (Snowflake webhookId) async {
     if (isPinned) {
-      ioc.use<MineralCli>().console.warn('Message $id is already pinned');
+      ioc.use<ConsoleService>().warn('Message $id is already pinned');
       return;
     }
 
@@ -89,7 +89,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   Future<void> unpin () async {
     if (!isPinned) {
-      ioc.use<MineralCli>().console.warn('Message $id isn\'t pinned');
+      ioc.use<ConsoleService>().warn('Message $id isn\'t pinned');
       return;
     }
 
@@ -233,8 +233,8 @@ class Message extends PartialMessage<TextBasedChannel>  {
       MessageReactionManager<GuildChannel, Message>(channel),
       payload['timestamp'],
       payload['edited_timestamp'],
-      payload['author']['id'],
-      MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false)
+      MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false),
+      MessageAuthor(channel.guild.id, payload['author']['id'])
     );
 
     message.reactions.message = message;
