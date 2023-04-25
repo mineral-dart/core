@@ -13,7 +13,7 @@ class StreamingActivity extends GuildMemberActivity {
     this._url,
   ): super(ActivityType.streaming, name);
 
-  String get state => _state;
+  String? get state => _state;
   String? get details => _details;
   String get url => _url;
 
