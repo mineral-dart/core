@@ -2,7 +2,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/guilds/activities/guild_member_activity.dart';
 
 class StreamingActivity extends GuildMemberActivity {
-  final String _state;
+  final String? _state;
   final String? _details;
   final String _url;
 
@@ -13,7 +13,7 @@ class StreamingActivity extends GuildMemberActivity {
     this._url,
   ): super(ActivityType.streaming, name);
 
-  String get state => _state;
+  String? get state => _state;
   String? get details => _details;
   String get url => _url;
 
