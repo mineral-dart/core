@@ -1,4 +1,5 @@
 import 'package:args/args.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/commands/compile/exe.dart';
 import 'package:mineral/src/commands/compile/js.dart';
 import 'package:mineral/src/commands/help.dart';
@@ -10,6 +11,7 @@ import 'package:mineral/src/commands/make/shared_state.dart';
 import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral/src/internal/services/console/themes/console_theme.dart';
 import 'package:mineral/src/internal/services/console/themes/default_theme.dart';
+import 'package:mineral/src/internal/services/environment_service.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 import 'package:mineral_ioc/ioc.dart';
 
@@ -21,6 +23,8 @@ class CommandLineInterface extends CliServiceContract {
 
   CommandLineInterface({ this.packages = const [] }) {
     ioc.bind((ioc) => ConsoleService(theme: ConsoleTheme()));
+    ioc.bind((ioc) => EnvironmentService());
+
 
     register([
       MakeEvent(_console),
@@ -34,6 +38,7 @@ class CommandLineInterface extends CliServiceContract {
     ]);
 
     for (final package in packages) {
+      ioc.bind((ioc) => package);
       register(package.injectCommands());
     }
   }
@@ -59,21 +64,28 @@ class CommandLineInterface extends CliServiceContract {
 
   @override
   Future<void> handle (List<String> arguments) async {
+    final environment = EnvironmentService();
+    await environment.load();
+
+    ioc.bind((ioc) => environment);
+
     ArgResults results = _parser.parse(arguments);
-    final command = _commands[results.command?.name ?? 'help'];
+    final command = _commands.getOrFail(results.command?.name ?? 'help');
 
-    if (command != null) {
-      if (command.arguments.isNotEmpty && results.arguments.length - 1 != command.arguments.length) {
-        command.console.error('Please provide ${command.arguments.map((e) => '<$e>').join(', ')} params.');
-        return;
-      }
+    if (command.arguments.isNotEmpty && results.arguments.length - 1 != command.arguments.length) {
+      final params = command.arguments
+        .map((e) => '<$e>')
+        .join(', ');
 
-      final params = {};
-      for (int i = 0; i < command.arguments.length; i++) {
-        params.putIfAbsent(command.arguments[i], () => results.arguments[i + 1]);
-      }
-
-      return await command.handle(params);
+      command.console.error('Please provide $params params.');
+      return;
     }
+
+    final params = {};
+    for (int i = 0; i < command.arguments.length; i++) {
+      params.putIfAbsent(command.arguments[i], () => results.arguments[i + 1]);
+    }
+
+    return await command.handle(params);
   }
 }
