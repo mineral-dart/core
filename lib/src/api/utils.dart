@@ -158,7 +158,8 @@ enum GuildFeature {
   welcomeScreen('WELCOME_SCREEN_ENABLED'),
   memberProfiles('MEMBER_PROFILES'),
   sevenDayThreadArchive('SEVEN_DAY_THREAD_ARCHIVE'),
-  applicationCommandPermissionsV2('APPLICATION_COMMAND_PERMISSIONS_V2');
+  applicationCommandPermissionsV2('APPLICATION_COMMAND_PERMISSIONS_V2'),
+  soundboard('SOUNDBOARD');
 
   final String value;
   const GuildFeature(this.value);
