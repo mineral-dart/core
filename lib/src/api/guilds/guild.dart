@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
@@ -321,13 +322,7 @@ class Guild {
     }
   }
 
-  /// ### Defines the explicit content level of this
-  /// - 0 → Disabled
-  /// - 1 → Members without roles
-  /// - 2 → All members
-  ///
-  ///
-  /// Example :
+  /// Defines the explicit content level of this
   /// ```dart
   /// await guild.setExplicitContentFilter(2);
   /// ```
@@ -341,15 +336,11 @@ class Guild {
     }
   }
 
-  /// ### Update the afk channel
+  /// Update the afk channel
   ///
-  /// Example :
   /// ```dart
-  /// final voiceChannel = guild.channels.cache.get('240561194958716924');
-  ///
-  /// if (voiceChannel != null) {
-  ///   await guild.setAfkChannel(2);
-  /// }
+  /// final voiceChannel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await guild.setAfkChannel(2);
   /// ```
   Future<void> setAfkChannel (VoiceChannel channel) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -361,19 +352,13 @@ class Guild {
     }
   }
 
-  /// ### Update the owner of this
+  /// Update the owner of this
   ///
-  /// Warning : This method only works if the server was created via a discord bot and the bot is the current owner
-  ///
-  /// See [documentation](https://discord.com/developers/docs/resources/guild#modify-guild)
-  ///
-  /// Example :
+  /// Warning : This method only works if the server was created via a discord bot and the bot is the current owner,
+  /// see [documentation](https://discord.com/developers/docs/resources/guild#modify-guild).
   /// ```dart
-  /// final member = guild.members.cache.get('240561194958716924');
-  ///
-  /// if (member != null) {
-  ///   await guild.setOwner(member);
-  /// }
+  /// final member = guild.members.cache.getOrFail('240561194958716924');
+  /// await guild.setOwner(member);
   /// ```
   Future<void> setOwner (GuildMember guildMember) async {
     MineralClient client = ioc.use<MineralClient>();
@@ -392,11 +377,9 @@ class Guild {
     }
   }
 
-  /// ### Update the splash banner of this
+  /// Update the splash banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.setSplash('assets/images/my_splash_banner.png');
   /// ```
@@ -416,11 +399,9 @@ class Guild {
     }
   }
 
-  /// ### Remove the splash banner of this
+  /// Remove the splash banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.removeSplash();
   /// ```
@@ -438,11 +419,9 @@ class Guild {
     }
   }
 
-  /// ### Update the discovery splash banner of this
+  /// Update the discovery splash banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.setDiscoverySplash('assets/images/my_splash_discovery_banner.png');
   /// ```
@@ -462,11 +441,9 @@ class Guild {
     }
   }
 
-  /// ### Remove the discovery splash banner of this
+  /// Remove the discovery splash banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.removeDiscoverySplash();
   /// ```
@@ -484,11 +461,9 @@ class Guild {
     }
   }
 
-  /// ### Update the banner of this
+  /// Update the banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.setBanner('assets/images/my_banner.png');
   /// ```
@@ -508,11 +483,9 @@ class Guild {
     }
   }
 
-  /// ### Remove the banner of this
+  /// Remove the banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.removeBanner();
   /// ```
@@ -530,9 +503,8 @@ class Guild {
     }
   }
 
-  /// ### Update the icon of this
+  /// Update the icon of this.
   ///
-  /// Example :
   /// ```dart
   /// await guild.setIcon('assets/images/my_guild_icon.png');
   /// ```
@@ -548,9 +520,8 @@ class Guild {
     }
   }
 
-  /// ### Remove the icon of this
-  ///
-  /// Example :
+  /// Remove the icon of this
+
   /// ```dart
   /// await guild.removeIcon();
   /// ```
@@ -564,15 +535,11 @@ class Guild {
     }
   }
 
-  /// ### Update system channel of this
+  /// Update system channel of this
   ///
-  /// Example :
   /// ```dart
-  /// final channel = guild.channels.cache.get('240561194958716924');
-  ///
-  /// if (channel != null) {
-  ///   await guild.setSystemChannel(channel);
-  /// }
+  /// final channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await guild.setSystemChannel(channel);
   /// ```
   Future<void> setSystemChannel (TextChannel channel) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -585,15 +552,11 @@ class Guild {
     }
   }
 
-  /// ### Update rules channel of this
+  /// Update rules channel of this
   ///
-  /// Example :
   /// ```dart
-  /// final channel = guild.channels.cache.get('240561194958716924');
-  ///
-  /// if (channel != null) {
-  ///   await guild.setRulesChannel(channel);
-  /// }
+  /// final channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await guild.setRulesChannel(channel);
   /// ```
   Future<void> setRulesChannel (TextChannel channel) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -606,15 +569,11 @@ class Guild {
     }
   }
 
-  /// ### Update public updates channel of this
+  /// Update public updates channel of this
   ///
-  /// Example :
   /// ```dart
-  /// final channel = guild.channels.cache.get('240561194958716924');
-  ///
-  /// if (channel != null) {
-  ///   await guild.setPublicUpdateChannel(channel);
-  /// }
+  /// final channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await guild.setPublicUpdateChannel(channel);
   /// ```
   Future<void> setPublicUpdateChannel (TextChannel channel) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -627,13 +586,10 @@ class Guild {
     }
   }
 
-  /// ### Update preferred language of this
+  /// Update preferred language of this
   ///
-  /// Example :
   /// ```dart
-  /// import 'package:mineral/api.dart';
-  ///
-  /// await guild.setPreferredLocale(Locale.fr); // 👈 Now you can use Lang enum
+  /// await guild.setPreferredLocale(Locale.fr);
   /// ```
   Future<void> setPreferredLocale (Locale locale) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -645,9 +601,8 @@ class Guild {
     }
   }
 
-  /// ### Remove the discord client of this
+  /// Remove the discord client of this
   ///
-  /// Example :
   /// ```dart
   /// await guild.leave();
   /// ```
@@ -660,6 +615,7 @@ class Guild {
     }
   }
 
+  /// Get [Guild] as [EmbedBuilder] format.
   Future<GuildPreview> preview () async {
     Response response = await ioc.use<DiscordApiHttpService>()
       .get(url: '/guilds/$id/preview')
@@ -671,9 +627,8 @@ class Guild {
     );
   }
 
-  /// ### Unbanned this from the [Guild] and deleted its messages for a given period
+  /// Unbanned this from the [Guild] and deleted its messages for a given period
   ///
-  /// Example :
   /// ```dart
   /// await member.unban();
   /// ```
