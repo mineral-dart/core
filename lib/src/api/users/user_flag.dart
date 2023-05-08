@@ -29,13 +29,13 @@ class UserFlag {
   static get bugHunterLevel1 => BugHunterLevel1Flag();
 
   /// The user is a HypeSquad member from House Bravery Squad.
-  static get hypeSquadOnlineHouse1 => HypeSquadOnlineHouse1Flag();
+  static get braveryHouseMember => HypeSquadBraveryHouseMember();
 
   /// The user is a HypeSquad member from House Brilliance Squad.
-  static get hypeSquadOnlineHouse2 => HypeSquadOnlineHouse2Flag();
+  static get brillanceHouseMember => HypeSquadBrillanceHouseMember();
 
   /// The user is a HypeSquad member from House Balance Squad.
-  static get hypeSquadOnlineHouse3 => HypeSquadOnlineHouse3Flag();
+  static get balanceHouseMember => HypeSquadBalanceHouseMember();
 
   /// The user has purchased Nitro before it was renamed to Nitro Classic.
   static get premiumEarlySupporter => PremiumEarlySupporterFlag();
@@ -66,9 +66,9 @@ class UserFlag {
     UserFlag.partner,
     UserFlag.hypeSquad,
     UserFlag.bugHunterLevel1,
-    UserFlag.hypeSquadOnlineHouse1,
-    UserFlag.hypeSquadOnlineHouse2,
-    UserFlag.hypeSquadOnlineHouse3,
+    UserFlag.braveryHouseMember,
+    UserFlag.brillanceHouseMember,
+    UserFlag.balanceHouseMember,
     UserFlag.premiumEarlySupporter,
     UserFlag.teamPseudoUser,
     UserFlag.bugHunterLevel2,
