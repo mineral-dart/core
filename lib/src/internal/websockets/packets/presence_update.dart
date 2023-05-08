@@ -28,8 +28,10 @@ class PresenceUpdatePacket with Container implements WebsocketPacket {
 
     Guild? guild = client.guilds.cache.getOrFail(payload['guild_id']);
 
-    GuildMember beforeMember = guild.members.cache.getOrFail(payload['user']['id']).clone();
-    GuildMember afterMember = guild.members.cache.getOrFail(payload['user']['id']);
+    GuildMember? beforeMember = guild.members.cache.get(payload['user']['id'])?.clone();
+    GuildMember? afterMember = guild.members.cache.get(payload['user']['id']);
+
+    if(afterMember == null) return;
 
     final List<GuildMemberActivity> activities = List.from(payload['activities']).map((activity) {
       final activityType = ActivityType.values.firstWhereOrNull((type) => activity['type'] == type.value);
