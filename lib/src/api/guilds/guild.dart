@@ -135,57 +135,150 @@ class Guild {
     this._invites,
   );
 
+  /// The [Guild]'s id.
   Snowflake get id => _id;
+
+  /// The [Guild]'s name.
   String get name => _name;
+
+  /// The [Guild]'s owner.
   GuildMember get owner => members.cache.getOrFail(_ownerId);
+
+  /// The [Guild]'s icon.
   ImageFormater? get icon => _icon;
+
+  /// The [Guild]'s icon hash.
   String? get iconHash => _iconHash;
+
+  /// The [Guild]'s splash.
   ImageFormater? get splash => _splash;
+
+  /// The [Guild]'s discovery splash.
   ImageFormater? get discoverySplash => _discoverySplash;
+
+  /// The [Guild]'s permissions.
   int? get permissions => _permissions;
+
+  /// The [Guild]'s afk channel.
   Snowflake? get afkChannelId => _afkChannelId;
+
+  /// The [Guild]'s afk timeout.
   int get afkTimeout => _afkTimeout;
+
+  /// The [Guild]'s widget enabled.
   bool get widgetEnabled => _widgetEnabled;
+
+  /// The [Guild]'s widget channel.
   Snowflake? get widgetChannelId => _widgetChannelId;
+
+  /// The [Guild]'s verification level.
   VerificationLevel get verificationLevel => _verificationLevel;
-  int get defaultMessageNotifications => _defaultMessageNotifications;
+
+  /// The [Guild]'s default message notifications.
+  NotificationLevel get defaultMessageNotifications => NotificationLevel.values.firstWhere((element) => element.value == _defaultMessageNotifications);
+
+  /// The [Guild]'s explicit content filter.
   int get explicitContentFilter => _explicitContentFilter;
+
+  /// The [Guild]'s roles.
   GuildRoleManager get roles => _roles;
+
+  /// The [Guild]'s features.
   List<GuildFeature> get features => _features;
+
+  /// The [Guild]'s mfa level.
   int get mfaLevel => _mfaLevel;
+
+  /// The [Guild]'s application id.
   Snowflake? get applicationId => _applicationId;
+
+  /// The [Guild]'s system channel id.
   Snowflake? get systemChannelId => _systemChannelId;
+
+  /// The [Guild]'s system channel.
   int get systemChannelFlags => _systemChannelFlags;
+
+  /// The [Guild]'s rules channel id.
   Snowflake? get rulesChannelId => _rulesChannelId;
+
+  /// The [Guild]'s max presences.
   int? get maxPresences => _maxPresences;
+
+  /// The [Guild]'s max members.
   int get maxMembers => _maxMembers;
+
+
+  /// The [Guild]'s vanity url code.
   String? get vanityUrlCode => _vanityUrlCode;
+
+  /// The [Guild]'s description.
   String? get description => _description;
+
+  /// The [Guild]'s banner.
   ImageFormater? get banner => _banner;
+
+  /// The [Guild]'s premium tier.
   int get premiumTier => _premiumTier;
+
+  /// The [Guild]'s premium subscription count.
   int get premiumSubscriptionCount => _premiumSubscriptionCount;
+
+  /// The [Guild]'s preferred locale.
   Locale get preferredLocale => Locale.values.firstWhere((lang) => lang.locale == _preferredLocale);
+
+  /// The [Guild]'s public updates channel id.
   Snowflake? get publicUpdatesChannelId => _publicUpdatesChannelId;
+
+  /// The [Guild]'s max video channel users.
   int get maxVideoChannelUsers => _maxVideoChannelUsers;
+
+  /// The [Guild]'s approximate member count.
   int? get approximateMemberCount => _approximateMemberCount;
+
+  /// The [Guild]'s approximate presence count.
   int? get approximatePresenceCount => _approximatePresenceCount;
+
+  /// The [Guild]'s welcome screen.
   WelcomeScreen? get welcomeScreen => _welcomeScreen;
+
+  /// The [Guild]'s nsfw level.
   int get nsfwLevel => _nsfwLevel;
+
+  /// The [Guild]'s stickers.
   StickerManager get stickers => _stickers;
+
+  /// The [Guild]'s premium progress bar enabled.
   bool get premiumProgressBarEnabled => _premiumProgressBarEnabled;
+
+  /// The [Guild]'s members manager.
   MemberManager get members => _members;
+
+  /// The [Guild]'s channels manager.
   ChannelManager get channels => _channels;
+
+  /// The [Guild]'s emojis manager.
   EmojiManager get emojis => _emojis;
+
+  /// The [Guild]'s moderation rules manager.
   ModerationRuleManager get moderationRules => _moderationRules;
+
+  /// The [Guild]'s webhooks manager.
   GuildWebhookManager get webhooks => _webhooks;
+
+  /// The [Guild]'s scheduled events manager.
   GuildScheduledEventService get scheduledEvents => _scheduledEvents;
+
+  /// The [Guild]'s bot members.
   Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot);
+
+  /// The [Guild]'s commands manager.
   CommandService get commands => _commands;
+
+  /// The [Guild]'s invites manager.
   GuildInviteManager get invites => _invites;
 
-  /// ### Modifies the [name] of this.
+  /// Used to update the name of this
   ///
-  /// Example :
   /// ```dart
   /// await guild.setName('Guild name');
   /// ```
@@ -199,12 +292,9 @@ class Guild {
     }
   }
 
-  /// ### Modifies the [verificationLevel] of the current [Guild].
+  /// Modifies the [VerificationLevel] of this.
   ///
-  /// Example :
   /// ```dart
-  /// import 'package:mineral/api.dart'; 👈 // then you can use VerificationLevel enum
-  ///
   /// await guild.setVerificationLevel(VerificationLevel.veryHigh);
   /// ```
   Future<void> setVerificationLevel (VerificationLevel level) async {
@@ -217,21 +307,17 @@ class Guild {
     }
   }
 
-  /// ### Defines the notification level of this
-  /// - 0 → All messages
-  /// - 1 → Only mentions
-  ///
-  /// Example :
+  /// Defines the notification level of this
   /// ```dart
-  /// await guild.setMessageNotification(1);
+  /// await guild.setMessageNotification(NotificationLevel.onlyMentions);
   /// ```
-  Future<void> setMessageNotification (int level) async {
+  Future<void> setMessageNotification (NotificationLevel level) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
-      .payload({ 'default_message_notifications': level })
+      .payload({ 'default_message_notifications': level.value })
       .build();
 
     if (response.statusCode == 200) {
-      _defaultMessageNotifications = level;
+      _defaultMessageNotifications = level.value;
     }
   }
 
