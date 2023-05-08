@@ -64,10 +64,7 @@ class CommandLineInterface extends CliServiceContract {
 
   @override
   Future<void> handle (List<String> arguments) async {
-    final environment = EnvironmentService();
-    await environment.load();
-
-    ioc.bind((ioc) => environment);
+    await ioc.use<EnvironmentService>().load();
 
     ArgResults results = _parser.parse(arguments);
     final command = _commands.getOrFail(results.command?.name ?? 'help');
