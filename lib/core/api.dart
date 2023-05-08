@@ -52,5 +52,6 @@ export '../src/api/client/client_scope.dart' show ClientScope;
 export '../src/api/client/client_permission.dart' show ClientPermission;
 export '../src/api/guilds/activities/activity_type.dart' show ActivityType;
 export '../src/api/guilds/verification_level.dart' show VerificationLevel;
+export '../src/api/guilds/notification_level.dart' show NotificationLevel;
 
 typedef Snowflake = String;
