@@ -6,15 +6,16 @@ import 'package:mineral/src/api/guilds/guild_member_presence.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+/// Represents a member of a [Guild] context.
 class GuildMember  {
   User _user;
   String? _nickname;
-  ImageFormater? _avatar;
+  String? _avatar;
   DateTime _joinedAt;
-  DateTime? _premiumSince;
+  String? _premiumSince;
   String? _permissions;
   bool _pending;
-  DateTime? _timeoutDuration;
+  String? _timeoutDuration;
   MemberRoleManager _roles;
   VoiceManager voice;
   Guild _guild;
@@ -35,28 +36,63 @@ class GuildMember  {
     this.presence,
   );
 
+  /// Get the guild id.
   Snowflake get id => _user.id;
+
+  /// Get the user of an [Guild] context.
   User get user => _user;
+
+  /// Get the username of an [Guild] context.
   String get nickname => _nickname ?? _user.username;
-  ImageFormater? get avatar => _avatar;
+
+  /// Get the avatar of an [Guild] context.
+  ImageFormater? get avatar => _avatar != null
+      ? ImageFormater(_avatar, 'guilds/${guild.id}/users/${user.id}/avatars')
+      : null;
+
+  /// Get the [DateTime] of this joined at.
   DateTime get joinedAt => _joinedAt;
-  DateTime? get premiumSince => _premiumSince;
+
+  /// Get the [DateTime] of this premium since.
+  DateTime? get premiumSince => _premiumSince != null
+    ? DateTime.parse(_premiumSince!)
+    : null;
+
+  /// Get the permissions of this.
   String? get permissions => _permissions;
+
+  /// Get the pending status of this.
   bool get pending => _pending;
-  DateTime? get timeoutDuration => _timeoutDuration;
+
+  /// Get the [DateTime] timeout duration of this.
+  DateTime? get timeoutDuration => _timeoutDuration != null
+    ? DateTime.parse(_timeoutDuration!)
+    : null;
+
+  /// Get the roles manager of this.
   MemberRoleManager get roles => _roles;
+
+  /// Get the [Guild] of this.
   Guild get guild => _guild;
+
+  /// This has an avatar.
   bool get hasGuildAvatar => avatar != null;
+
+  /// Get the [Locale] of this.
   Locale get lang => _user.lang;
 
-  /// ### Update the username of this
+  /// Returns whether of this is a bot
+  bool get isBot => user.isBot;
+
+  /// Returns whether of this is pending
+  bool isPending () => pending;
+
+  /// Update the username of this
   ///
-  /// Example :
   /// ```dart
   /// await member.setUsername('John Doe');
   /// ```
   Future<void> setUsername (String name) async {
-
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${guild.id}/members/${user.id}")
       .payload({ 'nick': name })
       .build();
@@ -66,37 +102,32 @@ class GuildMember  {
     }
   }
 
-  /// ### Excludes this for a pre-defined period
+  /// Excludes this for a pre-defined period.
   ///
-  /// Note: An exclusion cannot exceed 28 days
+  /// Note: An exclusion cannot exceed 28 days.
   ///
   /// See [documentation](https://discord.com/developers/docs/resources/guild#modify-guild-member)
   ///
-  /// Example :
   /// ```dart
   /// final DateTime = DateTime.now().add(Duration(days: 28));
   /// await member.timeout(DateTime);
   /// ```
   Future<void> timeout (DateTime expiration) async {
-    // @Todo add ADMINISTRATOR permission or is the owner of the guild constraint
-
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/guilds/${guild.id}/members/${user.id}')
       .payload({ 'communication_disabled_until': expiration.toIso8601String() })
       .build();
 
     if (response.statusCode == 200 || response.statusCode == 204) {
-      _timeoutDuration = expiration;
+      _timeoutDuration = expiration.toIso8601String();
     }
   }
 
-  /// ### Cancels the exclusion of this
+  /// Cancels the exclusion of this
   ///
-  /// Example :
   /// ```dart
   /// await member.removeTimeout();
   /// ```
   Future<void> removeTimeout () async {
-
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: '/guilds/${guild.id}/members/${user.id}')
       .payload({ 'communication_disabled_until': null })
       .build();
@@ -106,20 +137,17 @@ class GuildMember  {
     }
   }
 
-  /// ### banned this from the [Guild] and deleted its messages for a given period
+  /// banned this from the [Guild] and deleted its messages for a given period
   ///
-  /// Example :
   /// ```dart
   /// await member.ban();
   /// ```
   /// With the deletion of his messages for 7 days
   ///
-  /// Example :
   /// ```dart
   /// await member.ban(count: 7);
   /// ```
   Future<void> ban ({ int? count, String? reason }) async {
-
     Response response = await ioc.use<DiscordApiHttpService>().put(url: "/guilds/${guild.id}/bans/${user.id}")
       .payload({ 'delete_message_days': count, 'reason': reason })
       .build();
@@ -129,9 +157,8 @@ class GuildMember  {
     }
   }
 
-  /// ### Kick this of [Guild]
+  /// Kick this of [Guild]
   ///
-  /// Example :
   /// ```dart
   /// await member.removeTimeout();
   /// ```
@@ -141,26 +168,12 @@ class GuildMember  {
       .build();
   }
 
-  /// ### Returns whether of this is a bot
-  ///
-  /// Example :
-  /// ```dart
-  /// print(member.isBot());
-  /// ```
-  bool get isBot => user.isBot;
-
-  /// ### Returns whether of this is pending
-  ///
-  /// Example :
-  /// ```dart
-  /// print(member.isPending());
-  /// ```
-  bool isPending () => pending;
-
+  /// Returns a taggable [String] representation of this.
   @override
   String toString () => '<@${_nickname != null ? '!' : ''}${user.id}>';
 
-  GuildMember clone () => GuildMember(user, nickname, avatar, joinedAt, premiumSince, permissions, pending, timeoutDuration, roles, voice, guild, presence);
+  /// Returns a clone of this
+  GuildMember clone () => GuildMember(user, nickname, _avatar, joinedAt, _premiumSince, permissions, pending, _timeoutDuration, roles, voice, guild, presence);
 
   factory GuildMember.from({ required user, required GuildRoleManager roles, required Guild guild, dynamic member, required VoiceManager voice }) {
     MemberRoleManager memberRoleManager = MemberRoleManager(manager: roles, memberId: user.id);
@@ -174,12 +187,12 @@ class GuildMember  {
     return GuildMember(
       user,
       member['nick'],
-      member['avatar'] != null ? ImageFormater(member['avatar'], 'guilds/${guild.id}/users/${user.id}/avatars') : null,
+      member['avatar'],
       DateTime.parse(member['joined_at']),
-      member['premium_since'] != null ? DateTime.parse(member['premium_since']) : null,
+      member['premium_since'],
       member['permissions'],
       member['pending'] == true,
-      member['communication_disabled_until'] != null ? DateTime.parse(member['communication_disabled_until']) : null,
+      member['communication_disabled_until'],
       memberRoleManager,
       voice,
       guild,
