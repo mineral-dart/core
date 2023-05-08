@@ -62,14 +62,6 @@ enum SystemChannelFlags {
   String toString() => _value.toString();
 }
 
-class VerificationLevel {
-  static int none = 0;
-  static int low = 1;
-  static int medium = 2;
-  static int high = 3;
-  static int veryHigh = 4;
-}
-
 class NsfwLevel {
   static int initial = 0;
   static int explicit = 1;

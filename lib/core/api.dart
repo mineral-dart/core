@@ -51,5 +51,6 @@ export '../src/api/users/user_flags/user_flag_contract.dart' show UserFlagContra
 export '../src/api/client/client_scope.dart' show ClientScope;
 export '../src/api/client/client_permission.dart' show ClientPermission;
 export '../src/api/guilds/activities/activity_type.dart' show ActivityType;
+export '../src/api/guilds/verification_level.dart' show VerificationLevel;
 
 typedef Snowflake = String;
