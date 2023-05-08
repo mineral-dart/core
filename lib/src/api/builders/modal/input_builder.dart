@@ -13,20 +13,43 @@ class InputBuilder {
 
   InputBuilder(this._customId, this._style);
 
+  /// Gets the label of this.
   String get customId => _customId;
+
+  /// Gets the [TextInputStyle] of this.
   TextInputStyle get style => _style;
+
+  /// Gets the label of this.
   String get label => _label;
+
+  /// Gets the required state of this.
   bool get required => _required;
+
+  /// Gets the minimum length of this.
   int? get minLength => _minLength;
+
+  /// Gets the maximum length of this.
   int? get maxLength => _maxLength;
+
+  /// Gets the placeholder of this.
   String? get placeholder => _placeholder;
 
+  /// Sets the label of this.
   void setLabel(String value) => _label = value;
+
+  /// Sets the required state of this.
   void setRequired(bool value) => _required = value;
+
+  /// Sets the minimum length of this.
   void setMinLength(int value) => _minLength = value;
+
+  /// Sets the maximum length of this.
   void setMaxLength(int value) => _maxLength = value;
+
+  /// Sets the placeholder of this.
   void setPlaceholder(String value) => _placeholder = value;
 
+  /// Serialize this component to a JSON object.
   Map<String, dynamic> toJson () => {
     'label': _label,
     'type': ComponentType.textInput.value,
