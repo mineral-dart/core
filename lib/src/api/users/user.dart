@@ -63,7 +63,6 @@ class User {
     MineralClient client = ioc.use<MineralClient>();
     DmChannel? channel = client.dmChannels.cache.get(_id);
 
-    /// Get channel if exist or create
     if (channel == null) {
       Response response = await ioc.use<DiscordApiHttpService>().post(url: '/users/@me/channels')
         .payload({ 'recipient_id': _id })

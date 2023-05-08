@@ -46,6 +46,10 @@ class PartialTextChannel extends GuildChannel {
   }
 
   MessageCollector createMessageCollector (bool Function(Message message) filter, { int? max, Duration? duration }) {
-    return MessageCollector(filter, max, duration);
+    return MessageCollector<Message>(
+      filter: filter,
+      max: max,
+      time: duration
+    );
   }
 }
