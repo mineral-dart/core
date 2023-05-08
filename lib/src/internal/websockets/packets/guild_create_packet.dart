@@ -43,7 +43,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
       voices.putIfAbsent(voiceMember['user_id'], () => voiceManager);
     }
 
-    MemberManager memberManager = MemberManager();
+    MemberManager memberManager = MemberManager(websocketResponse.payload['id']);
     ChannelManager channelManager = ChannelManager(websocketResponse.payload['id']);
 
     EmojiManager emojiManager = EmojiManager();

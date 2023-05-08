@@ -46,11 +46,11 @@ class DiscordApiHttpService extends HttpService<GetDiscordRequestBuilderAdapter,
       }
 
       if (Helper.hasKey('embeds', payload)) {
-        final List<int> components = payload['embeds'];
+        final List embeds = payload['embeds'];
 
         throw ApiException(payload['embeds'].length > 1
-          ? '${response.statusCode} embeds at ${components.join(', ')} positions are invalid'
-          : '${response.statusCode} the embed at position ${components.first} is invalid'
+          ? '${response.statusCode} embeds at ${embeds.join(', ')} positions are invalid'
+          : '${response.statusCode} the embed at position ${embeds.first} is invalid'
         );
       }
 
