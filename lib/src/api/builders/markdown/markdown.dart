@@ -1,5 +1,6 @@
 import 'package:mineral/core/builders.dart';
 
+/// Markdown helper
 class Md {
   Md._();
 
