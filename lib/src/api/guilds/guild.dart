@@ -35,6 +35,7 @@ class SourceGuild {
   ImageFormater? get icon => _icon;
 }
 
+/// Represent Discord serveur as Class.
 class Guild {
   Snowflake _id;
   String _name;
