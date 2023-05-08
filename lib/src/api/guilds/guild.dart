@@ -652,15 +652,14 @@ class Guild {
   }) {
     StickerManager stickerManager = StickerManager();
 
-    List<GuildFeature> features = [];
-    for (String element in payload['features']) {
+    final List<GuildFeature> features = List<GuildFeature>.from(payload['features'].map((element) {
       GuildFeature? feature = GuildFeature.values.firstWhereOrNull((feature) => feature.value == element);
-      if (feature == null) {
-        ioc.use<ConsoleService>().warn('Guild feature $element don\'t exist! Please report this to our team.');
-      } else {
-        features.add(feature);
+      if (feature != null) {
+        return feature;
       }
-    }
+
+      ioc.use<ConsoleService>().warn('Guild feature $element don\'t exist! Please report this to our team.');
+    }));
 
     return Guild(
       payload['id'],
