@@ -3,6 +3,7 @@ import 'package:mineral/src/api/guilds/activities/assets_activity.dart';
 import 'package:mineral/src/api/guilds/activities/guild_member_activity.dart';
 import 'package:mineral/src/api/guilds/activities/secret_activity.dart';
 
+/// Represents a game [Activity].
 class GameActivity extends GuildMemberActivity {
   final String _id;
   final String? _state;
@@ -27,24 +28,35 @@ class GameActivity extends GuildMemberActivity {
     this._secrets,
   ): super(ActivityType.game, name);
 
+  /// The id of this.
   String get id => _id;
 
+  /// The state of this.
   String? get state => _state;
 
-  int? get startingAt => _startingAt;
-
-  DateTime? get endAt => _endAt != null
-    ? DateTime.fromMicrosecondsSinceEpoch(_endAt!)
+  /// The starting date of this.
+  DateTime? get startingAt => _startingAt != null
+    ? DateTime.fromMillisecondsSinceEpoch(_startingAt!)
     : null;
 
-  DateTime get createdAt => DateTime.fromMicrosecondsSinceEpoch(_createdAt);
+  /// The ending date of this.
+  DateTime? get endAt => _endAt != null
+    ? DateTime.fromMillisecondsSinceEpoch(_endAt!)
+    : null;
 
+  /// The creation date of this.
+  DateTime get createdAt => DateTime.fromMillisecondsSinceEpoch(_createdAt);
+
+  /// The details of this.
   String? get details => _details;
 
+  /// The application id of this.
   String? get applicationId => _applicationId;
 
+  /// The assets of this.
   AssetsActivity get assets => _assets;
 
+  /// The secrets of this.
   SecretActivity get secrets => _secrets;
 
   factory GameActivity.from(Snowflake guildId, dynamic payload) => GameActivity(
