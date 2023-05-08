@@ -1,8 +1,11 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 
+/// A builder for [Channel] Class.
 class ChannelBuilder {
+  /// The payload of this.
   Map<String, dynamic> payload;
+
   ChannelBuilder(this.payload);
 
   factory ChannelBuilder.fromTextChannel ({
