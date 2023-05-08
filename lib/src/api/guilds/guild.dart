@@ -178,7 +178,7 @@ class Guild {
   NotificationLevel get defaultMessageNotifications => NotificationLevel.values.firstWhere((element) => element.value == _defaultMessageNotifications);
 
   /// The [Guild]'s explicit content filter.
-  int get explicitContentFilter => _explicitContentFilter;
+  ExplicitContentLevel get explicitContentFilter => ExplicitContentLevel.values.firstWhere((element) => element.value == _explicitContentFilter);
 
   /// The [Guild]'s roles.
   GuildRoleManager get roles => _roles;
@@ -331,13 +331,13 @@ class Guild {
   /// ```dart
   /// await guild.setExplicitContentFilter(2);
   /// ```
-  Future<void> setExplicitContentFilter (int level) async {
+  Future<void> setExplicitContentFilter (ExplicitContentLevel level) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
-      .payload({ 'explicit_content_filter': level })
+      .payload({ 'explicit_content_filter': level.value })
       .build();
 
     if (response.statusCode == 200) {
-      _explicitContentFilter = level;
+      _explicitContentFilter = level.value;
     }
   }
 

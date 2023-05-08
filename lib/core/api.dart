@@ -53,5 +53,6 @@ export '../src/api/client/client_permission.dart' show ClientPermission;
 export '../src/api/guilds/activities/activity_type.dart' show ActivityType;
 export '../src/api/guilds/verification_level.dart' show VerificationLevel;
 export '../src/api/guilds/notification_level.dart' show NotificationLevel;
+export '../src/api/guilds/explicit_content_level.dart' show ExplicitContentLevel;
 
 typedef Snowflake = String;
