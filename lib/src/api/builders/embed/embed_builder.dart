@@ -2,16 +2,45 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+/// Embed builder component used into [Message].
+///
+/// You can use this builder to extends extends your class like this.
+/// ```dart
+/// class MyEmbed extends EmbedBuilder {
+///   MyEmbed(String title): super(
+///     title: title,
+///     color: Color.invisible
+///   );
+/// }
 class EmbedBuilder {
+  /// Title of this.
   String? title;
+
+  /// Description of this.
   String? description;
+
+  /// Url of this.
   String? url;
+
+  /// Timestamp of this.
   DateTime? timestamp;
+
+  /// Footer of this.
   EmbedFooter? footer;
+
+  /// Image of this.
   EmbedImage? image;
+
+  /// Thumbnail of this.
   EmbedThumbnail? thumbnail;
+
+  /// Author of this.
   EmbedAuthor? author;
+
+  /// Fields of this.
   List<EmbedField>? fields;
+
+  /// Color of this.
   Color? color;
 
   EmbedBuilder({
@@ -27,9 +56,7 @@ class EmbedBuilder {
     this.color,
   });
 
-  /// ### Set the [title] field and return this
-  ///
-  /// Example :
+  /// Set the [title] field and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setTitle('My title');
@@ -39,9 +66,7 @@ class EmbedBuilder {
     return this;
   }
 
-  /// ### Set the [description] field and return this
-  ///
-  /// Example :
+  /// Set the [description] field and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setDescription('My description');
@@ -51,9 +76,7 @@ class EmbedBuilder {
     return this;
   }
 
-  /// ### Set the [footer] field and return this
-  ///
-  /// Example :
+  /// Set the [footer] field and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setFooter(text: 'My title');
@@ -63,9 +86,7 @@ class EmbedBuilder {
     return this;
   }
 
-  /// ### Set the [image] field and return this
-  ///
-  /// Example :
+  /// Set the [image] field and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setImage(url: 'https://..../images/my_picture.png');
@@ -75,9 +96,7 @@ class EmbedBuilder {
     return this;
   }
 
-  /// ### Set the [thumbnail] field and return this
-  ///
-  /// Example :
+  /// Set the [thumbnail] field and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setThumbnail(url: 'https://..../images/my_picture.png');
@@ -87,9 +106,7 @@ class EmbedBuilder {
     return this;
   }
 
-  /// ### Set the [author] field and return this
-  ///
-  /// Example :
+  /// Set the [author] field and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setAuthor(name: 'John Doe');
@@ -99,16 +116,12 @@ class EmbedBuilder {
     return this;
   }
 
-  /// ### Set the [color] field and return this
-  ///
-  /// Example :
+  /// Set the [color] field and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setColor(Color.cyan_600);
   /// ```
   /// Or with your custom color
-  ///
-  /// Example :
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setColor(Color('#FFFFFF'));
@@ -118,14 +131,13 @@ class EmbedBuilder {
     return this;
   }
 
-  /// ### Set the [timestamp] field and return this
-  ///
-  /// Example :
+  /// Set the [timestamp] field and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setTimestamp();
   /// ```
   /// You can define an older or future timestamp
+  /// ```dart
   /// DateTime date = DateTime.now().add(DateTime(days: 5));
   /// final embed = EmbedBuilder()
   ///   .setTimestamp(dateTime: date);
@@ -135,9 +147,7 @@ class EmbedBuilder {
     return this;
   }
 
-  /// ### Set the [url] field and return this
-  ///
-  /// Example :
+  /// Set the [url] field and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .setUrl('https://.....com');
@@ -147,9 +157,7 @@ class EmbedBuilder {
     return this;
   }
 
-  /// ### Add an field into [fields] and return this
-  ///
-  /// Example :
+  /// Add an field into [fields] and return this
   /// ```dart
   /// final embed = EmbedBuilder()
   ///   .addField(name: 'My field', value: 'My custom value');
@@ -161,9 +169,9 @@ class EmbedBuilder {
     return this;
   }
 
+  /// Converts the [EmbedBuilder] to a [Map] that can be serialized to JSON.
   Object toJson () {
     List<dynamic> fields = [];
-
     if (this.fields != null) {
       for (final field in this.fields!) {
         fields.add(field.toJson());
@@ -176,13 +184,16 @@ class EmbedBuilder {
       'footer': footer?.toJson(),
       'timestamp': timestamp?.toIso8601String(),
       'fields': fields,
-      'color': color != null ? int.parse(color.toString().replaceAll('#', ''), radix: 16) : null,
+      'color': color != null
+        ? int.parse(color.toString().replaceAll('#', ''), radix: 16)
+        : null,
       'image': image?.toJson(),
       'thumbnail': thumbnail?.toJson(),
       'author': author?.toJson(),
     };
   }
 
+  /// Create new instance of this to build an embed from a [GuildPreview]
   factory EmbedBuilder.fromGuildPreview(GuildPreview preview) {
     MineralClient client = ioc.use<MineralClient>();
 
