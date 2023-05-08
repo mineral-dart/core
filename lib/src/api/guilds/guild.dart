@@ -30,8 +30,13 @@ class SourceGuild {
 
   SourceGuild(this._id, this._label, this._icon);
 
+  /// Get the guild id.
   Snowflake get id => _id;
+
+  /// Get the guild name.
   String get label => _label;
+
+  /// Get the guild icon.
   ImageFormater? get icon => _icon;
 }
 
