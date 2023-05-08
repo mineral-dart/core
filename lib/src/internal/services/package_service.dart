@@ -1,5 +1,5 @@
-import 'package:mineral_ioc/ioc.dart';
 import 'package:mineral_contract/mineral_contract.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 abstract class PluginServiceContract {}
 

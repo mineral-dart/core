@@ -11,9 +11,9 @@ import 'package:mineral/src/api/messages/message_author.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
+import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
-import 'package:mineral/src/internal/mixins/mineral_client.dart';
 
 import 'message_parser.dart';
 
@@ -117,11 +117,11 @@ class Message extends PartialMessage<TextBasedChannel>  {
       Message message = Message.from(channel: channel, payload: jsonDecode(response.body));
 
       if (channel is CategoryChannel) {
-        (channel as TextBasedChannel).messages.cache.putIfAbsent(message.id, () => message);
+        channel.messages.cache.putIfAbsent(message.id, () => message);
       }
 
       if (channel is PartialTextChannel) {
-        (channel as PartialTextChannel).messages.cache.putIfAbsent(message.id, () => message);
+        channel.messages.cache.putIfAbsent(message.id, () => message);
       }
 
       return message;

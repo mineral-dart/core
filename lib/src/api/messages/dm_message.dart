@@ -55,6 +55,7 @@ class DmMessage extends PartialMessage<DmChannel>  {
   }
 
   /// Delete this
+  @override
   Future<void> delete ({ String? reason }) async {
     await ioc.use<DiscordApiHttpService>()
       .destroy(url: '/channels/${channel.id}/messages/$id')

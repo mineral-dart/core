@@ -1,10 +1,10 @@
 import 'dart:io';
-import 'package:mineral_contract/mineral_contract.dart';
-import 'package:prompts/prompts.dart' as prompts;
 
 import 'package:mineral/src/commands/templates/shared_state.dart';
 import 'package:mineral/src/internal/services/console/console_service.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 import 'package:path/path.dart';
+import 'package:prompts/prompts.dart' as prompts;
 import 'package:recase/recase.dart';
 
 class MakeSharedState extends CliCommandContract {
