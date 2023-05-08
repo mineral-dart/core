@@ -44,10 +44,10 @@ class User {
   /// Returns the username of the user as a [String].
   String get discriminator => _discriminator;
 
-  /// Returns a [boolean] indicating whether the user is a bot.
+  /// Returns a [bool] indicating whether the user is a bot.
   bool get isBot => _bot;
 
-  /// Returns a [boolean] indicating whether the user is a system user.
+  /// Returns a [bool] indicating whether the user is a system user.
   bool get isSystem => _system;
 
   /// Returns a list of public user flags as a list of [UserFlagContract].
