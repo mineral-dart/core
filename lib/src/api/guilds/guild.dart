@@ -22,17 +22,6 @@ import 'package:mineral/src/helper.dart';
 import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-enum VerificationLevel {
-  none(0),
-  low(1),
-  medium(2),
-  high(3),
-  veryHigh(4);
-
-  final int value;
-  const VerificationLevel(this.value);
-}
-
 class SourceGuild {
   final Snowflake _id;
   final String _label;
