@@ -69,11 +69,14 @@ class DmMessage extends PartialMessage<DmChannel>  {
 
     List<EmbedBuilder> embeds = [];
     for (dynamic element in payload['embeds']) {
-      List<Field> fields = [];
+      List<EmbedField> fields = [];
       if (element['fields'] != null) {
         for (dynamic item in element['fields']) {
-          Field field = Field(name: item['name'], value: item['value'], inline: item['inline'] ?? false);
-          fields.add(field);
+          fields.add(EmbedField(
+            name: item['name'],
+            value: item['value'],
+            inline: item['inline'] ?? false
+          ));
         }
       }
 
@@ -82,18 +85,18 @@ class DmMessage extends PartialMessage<DmChannel>  {
         description: element['description'],
         url: element['url'],
         timestamp: element['timestamp'] != null ? DateTime.parse(element['timestamp']) : null,
-        footer: element['footer'] != null ? Footer(
+        footer: element['footer'] != null ? EmbedFooter(
           text: element['footer']['text'],
           iconUrl: element['footer']['icon_url'],
           proxyIconUrl: element['footer']['proxy_icon_url'],
         ) : null,
-        image: element['image'] != null ? Image(
+        image: element['image'] != null ? EmbedImage(
           url: element['image']['url'],
           proxyUrl: element['image']['proxy_url'],
           height: element['image']['height'],
           width: element['image']['width'],
         ) : null,
-        author: element['author'] != null ? Author(
+        author: element['author'] != null ? EmbedAuthor(
           name: element['author']['name'],
           url: element['author']['url'],
           proxyIconUrl: element['author']['proxy_icon_url'],

@@ -1,3 +1,6 @@
+import 'package:mineral/core/builders.dart';
+
+/// An image for an [EmbedBuilder].
 class EmbedThumbnail {
   /// The source url of the thumbnail
   String url;

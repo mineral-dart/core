@@ -1,92 +1,17 @@
 import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
 import 'package:mineral_ioc/ioc.dart';
-
-class Footer {
-  String text;
-  String? iconUrl;
-  String? proxyIconUrl;
-
-  Footer({ required this.text, this.iconUrl, this.proxyIconUrl });
-
-  Object toJson () => {
-    'text': text,
-    'icon_url': iconUrl,
-    'proxy_icon_url': proxyIconUrl,
-  };
-}
-
-class Image {
-  String url;
-  String? proxyUrl;
-  int? width;
-  int? height;
-
-  Image({ required this.url, this.proxyUrl, this.width, this.height });
-
-  Object toJson () => {
-    'url': url,
-    'proxy_url': proxyUrl,
-    'width': width,
-    'height': height,
-  };
-}
-
-class Thumbnail {
-  String url;
-  String? proxyUrl;
-  int? height;
-  int? width;
-
-  Thumbnail({ required this.url, this.proxyUrl, this.height, this.width });
-
-  Object toJson () => {
-    'url': url,
-    'proxy_url': proxyUrl,
-    'width': width,
-    'height': height,
-  };
-}
-
-class Author {
-  String name;
-  String? url;
-  String? iconUrl;
-  String? proxyIconUrl;
-
-  Author({ required this.name, this.url, this.iconUrl, this.proxyIconUrl });
-
-  Object toJson () => {
-    'name': name,
-    'url': url,
-    'icon_url': iconUrl,
-    'proxy_icon_url': proxyIconUrl,
-  };
-}
-
-class Field {
-  String name;
-  String value;
-  bool? inline;
-
-  Field({ required this.name, required this.value, this.inline });
-
-  Object toJson () => {
-    'name': name,
-    'value': value,
-    'inline': inline ?? false,
-  };
-}
 
 class EmbedBuilder {
   String? title;
   String? description;
   String? url;
   DateTime? timestamp;
-  Footer? footer;
-  Image? image;
-  Thumbnail? thumbnail;
-  Author? author;
-  List<Field>? fields;
+  EmbedFooter? footer;
+  EmbedImage? image;
+  EmbedThumbnail? thumbnail;
+  EmbedAuthor? author;
+  List<EmbedField>? fields;
   Color? color;
 
   EmbedBuilder({
@@ -134,7 +59,7 @@ class EmbedBuilder {
   ///   .setFooter(text: 'My title');
   /// ```
   EmbedBuilder setFooter ({ required String text, String? iconUrl, String? proxyIconUrl }) {
-    footer = Footer(text: text, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
+    footer = EmbedFooter(text: text, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
     return this;
   }
 
@@ -146,7 +71,7 @@ class EmbedBuilder {
   ///   .setImage(url: 'https://..../images/my_picture.png');
   /// ```
   EmbedBuilder setImage ({ required String url, String? proxyUrl, int? width, int? height }) {
-    image = Image(url: url, proxyUrl: proxyUrl, width: width, height: height);
+    image = EmbedImage(url: url, proxyUrl: proxyUrl, width: width, height: height);
     return this;
   }
 
@@ -158,7 +83,7 @@ class EmbedBuilder {
   ///   .setThumbnail(url: 'https://..../images/my_picture.png');
   /// ```
   EmbedBuilder setThumbnail ({ required String url, String? proxyUrl, int? width, int? height }) {
-    thumbnail = Thumbnail(url: url, proxyUrl: proxyUrl, width: width, height: height);
+    thumbnail = EmbedThumbnail(url: url, proxyUrl: proxyUrl, width: width, height: height);
     return this;
   }
 
@@ -170,7 +95,7 @@ class EmbedBuilder {
   ///   .setAuthor(name: 'John Doe');
   /// ```
   EmbedBuilder setAuthor ({ required String name, String? url, String? iconUrl, String? proxyIconUrl }) {
-    author = Author(name: name, url: url, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
+    author = EmbedAuthor(name: name, url: url, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
     return this;
   }
 
@@ -232,7 +157,7 @@ class EmbedBuilder {
   EmbedBuilder addField ({ required String name, required String value, bool? inline }) {
     fields ??= [];
 
-    fields?.add(Field(name: name, value: value, inline: inline));
+    fields?.add(EmbedField(name: name, value: value, inline: inline));
     return this;
   }
 
@@ -240,7 +165,7 @@ class EmbedBuilder {
     List<dynamic> fields = [];
 
     if (this.fields != null) {
-      for (Field field in this.fields!) {
+      for (final field in this.fields!) {
         fields.add(field.toJson());
       }
     }
@@ -264,11 +189,11 @@ class EmbedBuilder {
     final EmbedBuilder embed = EmbedBuilder(
       title: preview.label,
       description: preview.description,
-      thumbnail: preview.icon != null ? Thumbnail(url: preview.icon!) : null,
-      image: preview.discoverySplash != null ? Image(url: preview.discoverySplash!) : null,
+      thumbnail: preview.icon != null ? EmbedThumbnail(url: preview.icon!) : null,
+      image: preview.discoverySplash != null ? EmbedImage(url: preview.discoverySplash!) : null,
       color: Color.invisible,
       timestamp: DateTime.now(),
-      author: Author(name: client.user.username, iconUrl: client.user.decoration.defaultAvatarUrl)
+      author: EmbedAuthor(name: client.user.username, iconUrl: client.user.decoration.defaultAvatarUrl)
     );
 
     embed.addField(name: 'Identifier', value: preview.id);
