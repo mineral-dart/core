@@ -1,6 +1,7 @@
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/builders/modal/text_input_style.dart';
 
+/// A builder for input component.
 class InputBuilder {
   final String _customId;
   final TextInputStyle _style;
