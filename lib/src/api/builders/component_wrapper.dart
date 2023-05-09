@@ -2,37 +2,47 @@ import 'package:collection/collection.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/builders/menus/channel_select_menu_builder.dart';
-import 'package:mineral/src/api/builders/menus/role_select_menu_builder.dart';
-import 'package:mineral/src/api/builders/menus/user_select_menu_builder.dart';
 import 'package:mineral/src/api/builders/modal/input_builder.dart';
-import 'package:mineral/src/api/builders/modal/paragraph_builder.dart';
-import 'package:mineral/src/api/builders/modal/text_builder.dart';
 import 'package:mineral/src/api/builders/modal/text_input_style.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+/// A wrapper for [ComponentBuilder] entry class.
 enum ComponentType {
+  /// A row of components
   actionRow(1),
+
+  /// A button
   button(2),
+
+  /// A dynamic select menu
   dynamicSelect(3),
+
+  /// A text input
   textInput(4),
+
+  /// A user select menu
   userSelect(5),
+
+  /// A role select menu
   roleSelect(6),
+
+  /// A channel select menu
   mentionableSelect(7),
+
+  /// A channel select menu
   channelSelect(8);
 
   final int value;
   const ComponentType(this.value);
-
-  @override
-  String toString () => value.toString();
 }
 
+/// A wrapper for [ComponentBuilder] entry class.
 abstract class ComponentWrapper {
   ComponentType? type;
 
   ComponentWrapper({ this.type });
 
+  /// Wrap a payload into a [ComponentBuilder] instance.
   static wrap (dynamic payload, Snowflake? guildId) {
     final Guild? guild = ioc.use<MineralClient>().guilds.cache.get(guildId);
     final componentType = ComponentType.values.firstWhereOrNull((element) => element.value == payload['type']);

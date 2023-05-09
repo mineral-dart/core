@@ -1,9 +1,9 @@
 import 'dart:io';
-import 'package:mineral_contract/mineral_contract.dart';
-import 'package:tint/tint.dart';
 
 import 'package:collection/collection.dart';
 import 'package:mineral/src/internal/services/console/console_service.dart';
+import 'package:mineral_contract/mineral_contract.dart';
+import 'package:tint/tint.dart';
 
 class Help extends CliCommandContract {
   final Map<String, CliCommandContract> _commands;

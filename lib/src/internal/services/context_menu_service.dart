@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/interactions/context_menu_interaction.dart';
-import 'package:mineral_ioc/ioc.dart';
 import 'package:mineral_contract/mineral_contract.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class ContextMenuService extends MineralService implements ContextMenuServiceContract {
   final Map<String, MineralContextMenu> _contextMenus = {};

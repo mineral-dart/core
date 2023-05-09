@@ -11,9 +11,9 @@ import 'package:mineral/src/api/messages/message_author.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
+import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
-import 'package:mineral/src/internal/mixins/mineral_client.dart';
 
 import 'message_parser.dart';
 
@@ -117,11 +117,11 @@ class Message extends PartialMessage<TextBasedChannel>  {
       Message message = Message.from(channel: channel, payload: jsonDecode(response.body));
 
       if (channel is CategoryChannel) {
-        (channel as TextBasedChannel).messages.cache.putIfAbsent(message.id, () => message);
+        channel.messages.cache.putIfAbsent(message.id, () => message);
       }
 
       if (channel is PartialTextChannel) {
-        (channel as PartialTextChannel).messages.cache.putIfAbsent(message.id, () => message);
+        channel.messages.cache.putIfAbsent(message.id, () => message);
       }
 
       return message;
@@ -134,11 +134,14 @@ class Message extends PartialMessage<TextBasedChannel>  {
     List<EmbedBuilder> embeds = [];
     if (payload['embeds'] != null) {
       for (dynamic element in payload['embeds']) {
-        List<Field> fields = [];
+        List<EmbedField> fields = [];
         if (element['fields'] != null) {
           for (dynamic item in element['fields']) {
-            Field field = Field(name: item['name'], value: item['value'], inline: item['inline'] ?? false);
-            fields.add(field);
+            fields.add(EmbedField(
+              name: item['name'],
+              value: item['value'],
+              inline: item['inline'] ?? false
+            ));
           }
         }
 
@@ -147,18 +150,18 @@ class Message extends PartialMessage<TextBasedChannel>  {
           description: element['description'],
           url: element['url'],
           timestamp: element['timestamp'] != null ? DateTime.parse(element['timestamp']) : null,
-          footer: element['footer'] != null ? Footer(
+          footer: element['footer'] != null ? EmbedFooter(
             text: element['footer']['text'],
             iconUrl: element['footer']['icon_url'],
             proxyIconUrl: element['footer']['proxy_icon_url'],
           ) : null,
-          image: element['image'] != null ? Image(
+          image: element['image'] != null ? EmbedImage(
             url: element['image']['url'],
             proxyUrl: element['image']['proxy_url'],
             height: element['image']['height'],
             width: element['image']['width'],
           ) : null,
-          author: element['author'] != null ? Author(
+          author: element['author'] != null ? EmbedAuthor(
             name: element['author']['name'],
             url: element['author']['url'],
             proxyIconUrl: element['author']['proxy_icon_url'],

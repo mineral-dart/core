@@ -15,16 +15,34 @@ import 'package:mineral/src/internal/services/environment_service.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+/// The command line interface service is used to inject the CLI commands of your applications and packages used by the cli.
+/// ```dart
+/// final cli = CommandLineInterface(packages: [
+///   SomePackage()
+/// ]);
+///
+/// await cli.handle(arguments);
+/// ```
+///
+/// NOTE : All commands are automatically registered into the help command.
+///
+/// NOTE : Used packages should extend the [MineralPackageContract](https://pub.dev/packages/mineral_contract) contracts.
 class CommandLineInterface extends CliServiceContract {
+  /// List of packages used by the cli
   final List<MineralPackageContract> packages;
+
+  /// The [ArgParser] used to parse the arguments
   final ArgParser _parser = ArgParser();
+
+  /// The [Map] of [CliCommandContract] used by this
   final Map<String, CliCommandContract> _commands = {};
+
+  /// The [ConsoleService] used to display messages in this
   final ConsoleService _console = ConsoleService(theme: DefaultTheme());
 
   CommandLineInterface({ this.packages = const [] }) {
     ioc.bind((ioc) => ConsoleService(theme: ConsoleTheme()));
     ioc.bind((ioc) => EnvironmentService());
-
 
     register([
       MakeEvent(_console),
@@ -43,9 +61,13 @@ class CommandLineInterface extends CliServiceContract {
     }
   }
 
+  /// The [ConsoleService] used to display messages in the console
   @override
   ConsoleService get console => _console;
 
+  /// Register your commands into the command line interface service.
+  ///
+  /// Automatically register into the help command.
   @override
   void register (List<CliCommandContract> commands) {
     for (final command in commands) {
@@ -62,6 +84,7 @@ class CommandLineInterface extends CliServiceContract {
     }
   }
 
+  /// Handle the command line arguments to execute the given entry command.
   @override
   Future<void> handle (List<String> arguments) async {
     await ioc.use<EnvironmentService>().load();

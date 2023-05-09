@@ -35,15 +35,34 @@ class User {
     this.premiumType
   );
 
+  /// Returns the unique identifier of the user as a [Snowflake].
   Snowflake get id => _id;
+
+  /// Returns the username of the user as a [String].
   String get username => _username;
+
+  /// Returns the username of the user as a [String].
   String get discriminator => _discriminator;
+
+  /// Returns a [bool] indicating whether the user is a bot.
   bool get isBot => _bot;
+
+  /// Returns a [bool] indicating whether the user is a system user.
   bool get isSystem => _system;
+
+  /// Returns a list of public user flags as a list of [UserFlagContract].
   List<UserFlagContract> get publicFlags => _publicFlags;
+
+  /// Returns a list of user flags as a list of [UserFlagContract].
   List<UserFlagContract> get flags => _flags;
+
+  /// Returns the decoration of the user as a [UserDecoration].
   UserDecoration get decoration => _decoration;
+
+  /// Returns the user's tag as a [String].
   String get tag => '$_username#$_discriminator';
+
+  /// Returns the user's locale as a [Locale] enum value based on the value of language
   Locale get lang => Locale.values.firstWhere((element) => element.locale == _lang);
 
   /// Return [GuildMember] of [Guild] context for this
@@ -52,18 +71,16 @@ class User {
     return client.guilds.cache.get(guildId)?.members.cache.get(_id);
   }
 
-  /// ### Envoie un message en DM à l'utilisateur
+  /// This function sends a DM message to the user that corresponds to the instance of the [User].
   ///
-  /// Example :
   /// ```dart
-  /// GuildMember? member = guild.members.cache.get('240561194958716924');
+  /// GuildMember member = guild.members.cache.getOrFail('240561194958716924');
   /// await member.user.send(content: 'Hello World !');
   /// ```
   Future<DmMessage?> send ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     MineralClient client = ioc.use<MineralClient>();
     DmChannel? channel = client.dmChannels.cache.get(_id);
 
-    /// Get channel if exist or create
     if (channel == null) {
       Response response = await ioc.use<DiscordApiHttpService>().post(url: '/users/@me/channels')
         .payload({ 'recipient_id': _id })
@@ -95,8 +112,9 @@ class User {
     return null;
   }
 
+  /// Returns a taggable [String] representation of the user.
   @override
-  String toString () => "<@$_id>";
+  String toString () => '<@$_id>';
 
   factory User.from(dynamic payload) {
     final List<UserFlagContract> publicFlags = [];

@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/core/builders.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
@@ -22,17 +23,6 @@ import 'package:mineral/src/helper.dart';
 import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-enum VerificationLevel {
-  none(0),
-  low(1),
-  medium(2),
-  high(3),
-  veryHigh(4);
-
-  final int value;
-  const VerificationLevel(this.value);
-}
-
 class SourceGuild {
   final Snowflake _id;
   final String _label;
@@ -40,11 +30,17 @@ class SourceGuild {
 
   SourceGuild(this._id, this._label, this._icon);
 
+  /// Get the guild id.
   Snowflake get id => _id;
+
+  /// Get the guild name.
   String get label => _label;
+
+  /// Get the guild icon.
   ImageFormater? get icon => _icon;
 }
 
+/// Represent Discord serveur as Class.
 class Guild {
   Snowflake _id;
   String _name;
@@ -146,57 +142,150 @@ class Guild {
     this._invites,
   );
 
+  /// The [Guild]'s id.
   Snowflake get id => _id;
+
+  /// The [Guild]'s name.
   String get name => _name;
+
+  /// The [Guild]'s owner.
   GuildMember get owner => members.cache.getOrFail(_ownerId);
+
+  /// The [Guild]'s icon.
   ImageFormater? get icon => _icon;
+
+  /// The [Guild]'s icon hash.
   String? get iconHash => _iconHash;
+
+  /// The [Guild]'s splash.
   ImageFormater? get splash => _splash;
+
+  /// The [Guild]'s discovery splash.
   ImageFormater? get discoverySplash => _discoverySplash;
+
+  /// The [Guild]'s permissions.
   int? get permissions => _permissions;
+
+  /// The [Guild]'s afk channel.
   Snowflake? get afkChannelId => _afkChannelId;
+
+  /// The [Guild]'s afk timeout.
   int get afkTimeout => _afkTimeout;
+
+  /// The [Guild]'s widget enabled.
   bool get widgetEnabled => _widgetEnabled;
+
+  /// The [Guild]'s widget channel.
   Snowflake? get widgetChannelId => _widgetChannelId;
+
+  /// The [Guild]'s verification level.
   VerificationLevel get verificationLevel => _verificationLevel;
-  int get defaultMessageNotifications => _defaultMessageNotifications;
-  int get explicitContentFilter => _explicitContentFilter;
+
+  /// The [Guild]'s default message notifications.
+  NotificationLevel get defaultMessageNotifications => NotificationLevel.values.firstWhere((element) => element.value == _defaultMessageNotifications);
+
+  /// The [Guild]'s explicit content filter.
+  ExplicitContentLevel get explicitContentFilter => ExplicitContentLevel.values.firstWhere((element) => element.value == _explicitContentFilter);
+
+  /// The [Guild]'s roles.
   GuildRoleManager get roles => _roles;
+
+  /// The [Guild]'s features.
   List<GuildFeature> get features => _features;
+
+  /// The [Guild]'s mfa level.
   int get mfaLevel => _mfaLevel;
+
+  /// The [Guild]'s application id.
   Snowflake? get applicationId => _applicationId;
+
+  /// The [Guild]'s system channel id.
   Snowflake? get systemChannelId => _systemChannelId;
+
+  /// The [Guild]'s system channel.
   int get systemChannelFlags => _systemChannelFlags;
+
+  /// The [Guild]'s rules channel id.
   Snowflake? get rulesChannelId => _rulesChannelId;
+
+  /// The [Guild]'s max presences.
   int? get maxPresences => _maxPresences;
+
+  /// The [Guild]'s max members.
   int get maxMembers => _maxMembers;
+
+
+  /// The [Guild]'s vanity url code.
   String? get vanityUrlCode => _vanityUrlCode;
+
+  /// The [Guild]'s description.
   String? get description => _description;
+
+  /// The [Guild]'s banner.
   ImageFormater? get banner => _banner;
+
+  /// The [Guild]'s premium tier.
   int get premiumTier => _premiumTier;
+
+  /// The [Guild]'s premium subscription count.
   int get premiumSubscriptionCount => _premiumSubscriptionCount;
+
+  /// The [Guild]'s preferred locale.
   Locale get preferredLocale => Locale.values.firstWhere((lang) => lang.locale == _preferredLocale);
+
+  /// The [Guild]'s public updates channel id.
   Snowflake? get publicUpdatesChannelId => _publicUpdatesChannelId;
+
+  /// The [Guild]'s max video channel users.
   int get maxVideoChannelUsers => _maxVideoChannelUsers;
+
+  /// The [Guild]'s approximate member count.
   int? get approximateMemberCount => _approximateMemberCount;
+
+  /// The [Guild]'s approximate presence count.
   int? get approximatePresenceCount => _approximatePresenceCount;
+
+  /// The [Guild]'s welcome screen.
   WelcomeScreen? get welcomeScreen => _welcomeScreen;
+
+  /// The [Guild]'s nsfw level.
   int get nsfwLevel => _nsfwLevel;
+
+  /// The [Guild]'s stickers.
   StickerManager get stickers => _stickers;
+
+  /// The [Guild]'s premium progress bar enabled.
   bool get premiumProgressBarEnabled => _premiumProgressBarEnabled;
+
+  /// The [Guild]'s members manager.
   MemberManager get members => _members;
+
+  /// The [Guild]'s channels manager.
   ChannelManager get channels => _channels;
+
+  /// The [Guild]'s emojis manager.
   EmojiManager get emojis => _emojis;
+
+  /// The [Guild]'s moderation rules manager.
   ModerationRuleManager get moderationRules => _moderationRules;
+
+  /// The [Guild]'s webhooks manager.
   GuildWebhookManager get webhooks => _webhooks;
+
+  /// The [Guild]'s scheduled events manager.
   GuildScheduledEventService get scheduledEvents => _scheduledEvents;
+
+  /// The [Guild]'s bot members.
   Map<Snowflake, GuildMember> get bots => _members.cache.where((element) => element.isBot);
+
+  /// The [Guild]'s commands manager.
   CommandService get commands => _commands;
+
+  /// The [Guild]'s invites manager.
   GuildInviteManager get invites => _invites;
 
-  /// ### Modifies the [name] of this.
+  /// Used to update the name of this
   ///
-  /// Example :
   /// ```dart
   /// await guild.setName('Guild name');
   /// ```
@@ -210,12 +299,9 @@ class Guild {
     }
   }
 
-  /// ### Modifies the [verificationLevel] of the current [Guild].
+  /// Modifies the [VerificationLevel] of this.
   ///
-  /// Example :
   /// ```dart
-  /// import 'package:mineral/api.dart'; 👈 // then you can use VerificationLevel enum
-  ///
   /// await guild.setVerificationLevel(VerificationLevel.veryHigh);
   /// ```
   Future<void> setVerificationLevel (VerificationLevel level) async {
@@ -228,53 +314,39 @@ class Guild {
     }
   }
 
-  /// ### Defines the notification level of this
-  /// - 0 → All messages
-  /// - 1 → Only mentions
-  ///
-  /// Example :
+  /// Defines the notification level of this
   /// ```dart
-  /// await guild.setMessageNotification(1);
+  /// await guild.setMessageNotification(NotificationLevel.onlyMentions);
   /// ```
-  Future<void> setMessageNotification (int level) async {
+  Future<void> setMessageNotification (NotificationLevel level) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
-      .payload({ 'default_message_notifications': level })
+      .payload({ 'default_message_notifications': level.value })
       .build();
 
     if (response.statusCode == 200) {
-      _defaultMessageNotifications = level;
+      _defaultMessageNotifications = level.value;
     }
   }
 
-  /// ### Defines the explicit content level of this
-  /// - 0 → Disabled
-  /// - 1 → Members without roles
-  /// - 2 → All members
-  ///
-  ///
-  /// Example :
+  /// Defines the explicit content level of this
   /// ```dart
   /// await guild.setExplicitContentFilter(2);
   /// ```
-  Future<void> setExplicitContentFilter (int level) async {
+  Future<void> setExplicitContentFilter (ExplicitContentLevel level) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
-      .payload({ 'explicit_content_filter': level })
+      .payload({ 'explicit_content_filter': level.value })
       .build();
 
     if (response.statusCode == 200) {
-      _explicitContentFilter = level;
+      _explicitContentFilter = level.value;
     }
   }
 
-  /// ### Update the afk channel
+  /// Update the afk channel
   ///
-  /// Example :
   /// ```dart
-  /// final voiceChannel = guild.channels.cache.get('240561194958716924');
-  ///
-  /// if (voiceChannel != null) {
-  ///   await guild.setAfkChannel(2);
-  /// }
+  /// final voiceChannel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await guild.setAfkChannel(2);
   /// ```
   Future<void> setAfkChannel (VoiceChannel channel) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -286,19 +358,13 @@ class Guild {
     }
   }
 
-  /// ### Update the owner of this
+  /// Update the owner of this
   ///
-  /// Warning : This method only works if the server was created via a discord bot and the bot is the current owner
-  ///
-  /// See [documentation](https://discord.com/developers/docs/resources/guild#modify-guild)
-  ///
-  /// Example :
+  /// Warning : This method only works if the server was created via a discord bot and the bot is the current owner,
+  /// see [documentation](https://discord.com/developers/docs/resources/guild#modify-guild).
   /// ```dart
-  /// final member = guild.members.cache.get('240561194958716924');
-  ///
-  /// if (member != null) {
-  ///   await guild.setOwner(member);
-  /// }
+  /// final member = guild.members.cache.getOrFail('240561194958716924');
+  /// await guild.setOwner(member);
   /// ```
   Future<void> setOwner (GuildMember guildMember) async {
     MineralClient client = ioc.use<MineralClient>();
@@ -317,11 +383,9 @@ class Guild {
     }
   }
 
-  /// ### Update the splash banner of this
+  /// Update the splash banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.setSplash('assets/images/my_splash_banner.png');
   /// ```
@@ -341,11 +405,9 @@ class Guild {
     }
   }
 
-  /// ### Remove the splash banner of this
+  /// Remove the splash banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.removeSplash();
   /// ```
@@ -363,11 +425,9 @@ class Guild {
     }
   }
 
-  /// ### Update the discovery splash banner of this
+  /// Update the discovery splash banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.setDiscoverySplash('assets/images/my_splash_discovery_banner.png');
   /// ```
@@ -387,11 +447,9 @@ class Guild {
     }
   }
 
-  /// ### Remove the discovery splash banner of this
+  /// Remove the discovery splash banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.removeDiscoverySplash();
   /// ```
@@ -409,11 +467,9 @@ class Guild {
     }
   }
 
-  /// ### Update the banner of this
+  /// Update the banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.setBanner('assets/images/my_banner.png');
   /// ```
@@ -433,11 +489,9 @@ class Guild {
     }
   }
 
-  /// ### Remove the banner of this
+  /// Remove the banner of this
   ///
-  /// This method requires the feature [GuildFeature.banner] of this
-  ///
-  /// Example :
+  /// This method requires the feature [GuildFeature.banner] of this.
   /// ```dart
   /// await guild.removeBanner();
   /// ```
@@ -455,9 +509,8 @@ class Guild {
     }
   }
 
-  /// ### Update the icon of this
+  /// Update the icon of this.
   ///
-  /// Example :
   /// ```dart
   /// await guild.setIcon('assets/images/my_guild_icon.png');
   /// ```
@@ -473,9 +526,8 @@ class Guild {
     }
   }
 
-  /// ### Remove the icon of this
-  ///
-  /// Example :
+  /// Remove the icon of this
+
   /// ```dart
   /// await guild.removeIcon();
   /// ```
@@ -489,15 +541,11 @@ class Guild {
     }
   }
 
-  /// ### Update system channel of this
+  /// Update system channel of this
   ///
-  /// Example :
   /// ```dart
-  /// final channel = guild.channels.cache.get('240561194958716924');
-  ///
-  /// if (channel != null) {
-  ///   await guild.setSystemChannel(channel);
-  /// }
+  /// final channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await guild.setSystemChannel(channel);
   /// ```
   Future<void> setSystemChannel (TextChannel channel) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -510,15 +558,11 @@ class Guild {
     }
   }
 
-  /// ### Update rules channel of this
+  /// Update rules channel of this
   ///
-  /// Example :
   /// ```dart
-  /// final channel = guild.channels.cache.get('240561194958716924');
-  ///
-  /// if (channel != null) {
-  ///   await guild.setRulesChannel(channel);
-  /// }
+  /// final channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await guild.setRulesChannel(channel);
   /// ```
   Future<void> setRulesChannel (TextChannel channel) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -531,15 +575,11 @@ class Guild {
     }
   }
 
-  /// ### Update public updates channel of this
+  /// Update public updates channel of this
   ///
-  /// Example :
   /// ```dart
-  /// final channel = guild.channels.cache.get('240561194958716924');
-  ///
-  /// if (channel != null) {
-  ///   await guild.setPublicUpdateChannel(channel);
-  /// }
+  /// final channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// await guild.setPublicUpdateChannel(channel);
   /// ```
   Future<void> setPublicUpdateChannel (TextChannel channel) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -552,13 +592,10 @@ class Guild {
     }
   }
 
-  /// ### Update preferred language of this
+  /// Update preferred language of this
   ///
-  /// Example :
   /// ```dart
-  /// import 'package:mineral/api.dart';
-  ///
-  /// await guild.setPreferredLocale(Locale.fr); // 👈 Now you can use Lang enum
+  /// await guild.setPreferredLocale(Locale.fr);
   /// ```
   Future<void> setPreferredLocale (Locale locale) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -570,9 +607,8 @@ class Guild {
     }
   }
 
-  /// ### Remove the discord client of this
+  /// Remove the discord client of this
   ///
-  /// Example :
   /// ```dart
   /// await guild.leave();
   /// ```
@@ -585,6 +621,7 @@ class Guild {
     }
   }
 
+  /// Get [Guild] as [EmbedBuilder] format.
   Future<GuildPreview> preview () async {
     Response response = await ioc.use<DiscordApiHttpService>()
       .get(url: '/guilds/$id/preview')
@@ -596,9 +633,8 @@ class Guild {
     );
   }
 
-  /// ### Unbanned this from the [Guild] and deleted its messages for a given period
+  /// Unbanned this from the [Guild] and deleted its messages for a given period
   ///
-  /// Example :
   /// ```dart
   /// await member.unban();
   /// ```
@@ -622,15 +658,14 @@ class Guild {
   }) {
     StickerManager stickerManager = StickerManager();
 
-    List<GuildFeature> features = [];
-    for (String element in payload['features']) {
+    final List<GuildFeature> features = List<GuildFeature>.from(payload['features'].map((element) {
       GuildFeature? feature = GuildFeature.values.firstWhereOrNull((feature) => feature.value == element);
-      if (feature == null) {
-        ioc.use<ConsoleService>().warn('Guild feature $element don\'t exist! Please report this to our team.');
-      } else {
-        features.add(feature);
+      if (feature != null) {
+        return feature;
       }
-    }
+
+      ioc.use<ConsoleService>().warn('Guild feature $element don\'t exist! Please report this to our team.');
+    }));
 
     return Guild(
       payload['id'],

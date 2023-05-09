@@ -4,8 +4,8 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/internal/entities/command.dart';
-import 'package:mineral_ioc/ioc.dart';
 import 'package:mineral_contract/mineral_contract.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class CommandService extends MineralService implements CommandServiceContract {
   final Map<String, CommandBuilder> _commands = {};

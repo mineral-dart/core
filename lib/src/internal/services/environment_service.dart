@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:mineral/core/extras.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 import 'package:path/path.dart';

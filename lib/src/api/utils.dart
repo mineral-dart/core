@@ -26,17 +26,6 @@ enum ApplicationCommandType {
   const ApplicationCommandType(this.value);
 }
 
-enum NotificationLevel {
-  allMessages(0),
-  onlyMentions(1);
-
-  final int _value;
-  const NotificationLevel(this._value);
-
-  @override
-  String toString() => _value.toString();
-}
-
 enum ExplicitContentFilterLevel {
   disabled(0),
   membersWithoutRoles(1),
@@ -60,14 +49,6 @@ enum SystemChannelFlags {
 
   @override
   String toString() => _value.toString();
-}
-
-class VerificationLevel {
-  static int none = 0;
-  static int low = 1;
-  static int medium = 2;
-  static int high = 3;
-  static int veryHigh = 4;
 }
 
 class NsfwLevel {

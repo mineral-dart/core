@@ -15,15 +15,27 @@ import 'package:mineral/src/internal/services/package_service.dart';
 import 'package:mineral/src/internal/services/shared_state_service.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 
+/// The kernel is the core initor of the framework.
 class Kernel with Container {
-  final IntentService intents;
-
   final EnvironmentService _environment = EnvironmentService();
   final ConsoleService _console = ConsoleService(theme: ConsoleTheme());
+
+  /// Intent service used to register intents.
+  final IntentService intents;
+
+  /// Event service used to emit and listen events.
   late EventService events;
+
+  /// Command service used to register and listen commands.
   late CommandService commands;
+
+  /// Shared state service used to share data between commands and events.
   late SharedStateService states;
+
+  /// Context menu service used to register and listen context menus.
   late ContextMenuService contextMenus;
+
+  /// Package service used to register and listen packages.
   late PackageService packages;
 
   Kernel ({
@@ -44,6 +56,7 @@ class Kernel with Container {
     DebuggerService('[ debug ]');
   }
 
+  /// Initialize the kernel.
   Future<void> init () async {
     container.bind((_) => _console);
     await _environment.load();

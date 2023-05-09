@@ -3,6 +3,7 @@ import 'package:mineral/src/api/emoji.dart';
 import 'package:mineral/src/api/guilds/activities/guild_member_activity.dart';
 import 'package:mineral/src/api/guilds/activities/secret_activity.dart';
 
+/// Represents a custom [Activity].
 class CustomActivity extends GuildMemberActivity {
   final String _id;
   final String? _state;
@@ -19,10 +20,19 @@ class CustomActivity extends GuildMemberActivity {
     this._secrets,
   ): super(ActivityType.custom, name);
 
+  /// Returns the id of this.
   String get id => _id;
+
+  /// Returns the state of this.
   String? get state => _state;
+
+  /// Returns the emoji of this.
   PartialEmoji? get emoji => _emoji;
+
+  /// Returns the creation date of this.
   DateTime get createdAt => DateTime.fromMillisecondsSinceEpoch(_createdAt);
+
+  /// Returns the secrets of this.
   SecretActivity get secrets => _secrets;
 
   factory CustomActivity.from(Snowflake guildId, dynamic payload) => CustomActivity(
