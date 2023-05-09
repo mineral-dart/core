@@ -56,7 +56,7 @@ class GuildChannel extends PartialChannel {
   }
 
   Future<void> update (ChannelBuilder builder) async {
-    if (_validate()) {
+    if (_validate(builder.payload)) {
       await ioc.use<DiscordApiHttpService>().patch(url: '/channels/$id')
       .payload(builder.payload)
       .build();
@@ -88,15 +88,18 @@ class GuildChannel extends PartialChannel {
     return flags;
   }
 
-  bool _validate () {
-    if (type == ChannelType.guildCategory) {
-      ioc.use<ConsoleService>().warn('A category channel cannot have a parent');
-      return false;
-    }
+  bool _validate (dynamic payload) {
+    Map<String, Function> checks = {
+      'You can\'t send empty channel update': (element, GuildChannel channel) => element.isEmpty,
+      'A category channel can\'t have a parent': (element, GuildChannel channel) => element['parent_id'] != null && channel.type == ChannelType.guildCategory,
+      'A thread channel can\'t change its parent': (element, GuildChannel channel) => element['parent_id'] != null && [ChannelType.guildPublicThread, ChannelType.guildPrivateThread, ChannelType.guildNewsThread].contains(channel.type)
+    };
 
-    if (type == ChannelType.guildPublicThread || type == ChannelType.private || type == ChannelType.guildNewsThread) {
-      ioc.use<ConsoleService>().warn('A thread channel cannot change a parent');
-      return false;
+    for(MapEntry<String, Function> check in checks.entries) {
+      if(check.value(payload, this)) {
+        ioc.use<ConsoleService>().warn(check.key);
+        return false;
+      }
     }
 
     return true;

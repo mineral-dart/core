@@ -181,6 +181,7 @@ class EmbedBuilder {
     return {
       'title': title,
       'description': description,
+      'url': url,
       'footer': footer?.toJson(),
       'timestamp': timestamp?.toIso8601String(),
       'fields': fields,
