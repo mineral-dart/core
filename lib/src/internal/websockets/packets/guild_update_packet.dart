@@ -27,7 +27,7 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
       roleManager.cache.putIfAbsent(role.id, () => role);
     }
 
-    MemberManager memberManager = MemberManager();
+    MemberManager memberManager = MemberManager(websocketResponse.payload['id']);
     memberManager.cache.addAll(before!.members.cache);
 
     ChannelManager channelManager = ChannelManager(before.id);
