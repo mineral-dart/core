@@ -6,6 +6,8 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
+import 'package:mineral/src/api/guilds/activities/guild_member_activity.dart';
+import 'package:mineral/src/api/guilds/guild_member_presence.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
@@ -20,6 +22,8 @@ import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+
+import '../../../api/guilds/client_status_bucket.dart';
 
 class GuildCreatePacket with Container implements WebsocketPacket {
   @override
@@ -49,9 +53,9 @@ class GuildCreatePacket with Container implements WebsocketPacket {
     EmojiManager emojiManager = EmojiManager();
     for(dynamic payload in websocketResponse.payload['emojis']) {
       Emoji emoji = Emoji.from(
-        memberManager: memberManager,
-        emojiManager: emojiManager,
-        payload: payload
+          memberManager: memberManager,
+          emojiManager: emojiManager,
+          payload: payload
       );
 
       emojiManager.cache.putIfAbsent(emoji.id, () => emoji);
@@ -60,9 +64,9 @@ class GuildCreatePacket with Container implements WebsocketPacket {
     GuildScheduledEventService guildScheduledManager = GuildScheduledEventService();
     for(dynamic payload in websocketResponse.payload['guild_scheduled_events']) {
       GuildScheduledEvent event = GuildScheduledEvent.from(
-        channelManager: channelManager,
-        memberManager: memberManager,
-        payload: payload
+          channelManager: channelManager,
+          memberManager: memberManager,
+          payload: payload
       );
 
       guildScheduledManager.cache.putIfAbsent(event.id, () => event);
@@ -93,13 +97,13 @@ class GuildCreatePacket with Container implements WebsocketPacket {
     for (dynamic member in websocketResponse.payload['members']) {
       User user = User.from(member['user']);
       GuildMember guildMember = GuildMember.from(
-        roles: roleManager,
-        user: user,
-        member: member,
-        guild: guild,
-        voice: voices.containsKey(user.id)
-          ? voices.get(user.id)!
-          : VoiceManager.empty(member['deaf'], member['mute'], user.id, websocketResponse.payload['guild_id'])
+          roles: roleManager,
+          user: user,
+          member: member,
+          guild: guild,
+          voice: voices.containsKey(user.id)
+              ? voices.get(user.id)!
+              : VoiceManager.empty(member['deaf'], member['mute'], user.id, websocketResponse.payload['guild_id'])
       );
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
@@ -113,6 +117,20 @@ class GuildCreatePacket with Container implements WebsocketPacket {
       if (channel != null) {
         channelManager.cache.putIfAbsent(channel.id, () => channel);
       }
+    }
+
+    for (dynamic payload in websocketResponse.payload['presences']) {
+      payload['guild_id'] = websocketResponse.payload['id'];
+      GuildMember member = await guild.members.resolve(payload['user']['id']);
+      ClientStatusBucket clientStatusBucket = ClientStatusBucket(payload['client_status']['desktop'], payload['client_status']['mobile'], payload['client_status']['web']);
+
+      List<GuildMemberActivity> activities = [];
+      for(dynamic activity in payload['activities']) {
+        activities.add(GuildMemberActivity(ActivityType.values.firstWhere((element) => element.value == activity['type']), activity['name']));
+      }
+
+      GuildMemberPresence guildMemberPresence = GuildMemberPresence(payload['guild_id'], payload['status'], null, clientStatusBucket, activities);
+      member.presence = guildMemberPresence;
     }
 
     guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
@@ -143,8 +161,8 @@ class GuildCreatePacket with Container implements WebsocketPacket {
 
   Future<Map<Snowflake, ModerationRule>?> getAutoModerationRules (Guild guild) async {
     Response response = await container.use<DiscordApiHttpService>()
-      .get(url: "/guilds/${guild.id}/auto-moderation/rules")
-      .build();
+        .get(url: "/guilds/${guild.id}/auto-moderation/rules")
+        .build();
 
     if (response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);
