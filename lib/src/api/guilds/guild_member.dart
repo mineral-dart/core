@@ -62,6 +62,7 @@ class GuildMember  {
 
   /// Get the permissions of this.
   PermissionBitField get permissions => PermissionBitField(
+    this,
     _roles.cache.values.map((e) => e.permissions).toList(),
     guild.owner.id == id
   );
