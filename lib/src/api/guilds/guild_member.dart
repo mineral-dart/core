@@ -193,6 +193,13 @@ class GuildMember  {
   /// ```
   bool get isBannable => isManageable && permissions.has(ClientPermission.banMembers);
 
+  /// Returns weather of this is a [Guild] owner.
+  /// ```dart
+  /// final member = member.isOwner;
+  /// print(member);
+  /// ```
+  bool get isOwner => guild.owner.id == user.id;
+
   /// Returns a taggable [String] representation of this.
   @override
   String toString () => '<@${_nickname != null ? '!' : ''}${user.id}>';
