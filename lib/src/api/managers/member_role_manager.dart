@@ -19,10 +19,8 @@ class MemberRoleManager extends CacheManager<Role>  {
 
   Guild get guild => _guild;
 
-  Role? get highest => cache.values.fold(null, (previousValue, element) {
-    if (previousValue == null) return element;
+  Role get highest => cache.values.fold(_guild.roles.everyone, (previousValue, element) {
     if (element.position > previousValue.position) return element;
-
     return previousValue;
   });
 

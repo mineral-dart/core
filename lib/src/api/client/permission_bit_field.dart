@@ -21,8 +21,6 @@ class PermissionBitField {
     if (_member.user.id == ioc.use<MineralClient>().user.id) return false;
     if (ioc.use<MineralClient>().user.id == _member.guild.owner.id) return true;
 
-    return _member.roles.highest != null
-      ? ioc.use<MineralClient>().user.toGuildMember(_member.id)!.roles.highest!.position < _member.roles.highest!.position
-      : true;
+    return _member.guild.members.me.roles.highest.position < _member.roles.highest.position;
   }
 }
