@@ -14,6 +14,9 @@ class MemberManager extends CacheManager<GuildMember>  {
 
   MemberManager(this._guildId);
 
+  /// Get the [GuildMember] of the [MineralClient]
+  GuildMember get me => ioc.use<MineralClient>().user.toGuildMember(_guildId)!;
+
   Future<Map<Snowflake, GuildMember>> sync () async {
     Response response = await ioc.use<DiscordApiHttpService>()
       .get(url: "/guilds/$_guildId/members")
