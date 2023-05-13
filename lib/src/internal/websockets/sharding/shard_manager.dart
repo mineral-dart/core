@@ -39,7 +39,7 @@ class ShardManager extends MineralService {
   /// number is provided, we use [Discord recommendations](https://discord.com/developers/docs/topics/gateway#get-gateway-bot)
   Future<void> start ({ int? shardsCount }) async {
     http.defineHeader(header: 'Authorization', value: 'Bot $_token');
-    AuthenticationResponse response = await getBotGateway(Constants.apiVersion);
+    AuthenticationResponse response = await getBotGateway();
 
     _gatewayURL = response.url;
     maxConcurrency = response.maxConcurrency;
@@ -71,8 +71,8 @@ class ShardManager extends MineralService {
     }
   }
 
-  Future<AuthenticationResponse> getBotGateway(int version) async {
-    Response response = await http.get(url: '/v$version/gateway/bot').build();
+  Future<AuthenticationResponse> getBotGateway() async {
+    Response response = await http.get(url: '/gateway/bot').build();
     return AuthenticationResponse.fromResponse(response);
   }
 
