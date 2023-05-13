@@ -62,7 +62,6 @@ class GuildMember  {
 
   /// Get the permissions of this.
   PermissionBitField get permissions => PermissionBitField(
-    this,
     _roles.cache.values.map((e) => e.permissions).toList(),
     guild.owner.id == id
   );
@@ -173,6 +172,26 @@ class GuildMember  {
       .destroy(url: "/guilds/${guild.id}/members/${user.id}")
       .build();
   }
+
+  /// Returns whether of this has a given is manageable]
+  /// ```dart
+  /// final member = member.isManageable;
+  /// print(member);
+  /// ```
+  bool get isManageable {
+    if (user.id == guild.owner.id) return false;
+    if (user.id == ioc.use<MineralClient>().user.id) return false;
+    if (ioc.use<MineralClient>().user.id == guild.owner.id) return true;
+
+    return guild.members.me.roles.highest.position < roles.highest.position;
+  }
+
+  /// Returns whether of this has a given can be banned
+  /// ```dart
+  /// final member = member.isBannable;
+  /// print(member);
+  /// ```
+  bool get isBannable => isManageable && permissions.has(ClientPermission.banMembers);
 
   /// Returns a taggable [String] representation of this.
   @override
