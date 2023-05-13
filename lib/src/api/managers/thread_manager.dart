@@ -35,13 +35,16 @@ class ThreadManager extends CacheManager<ThreadChannel>  {
     return cache;
   }
 
-  Future<ThreadChannel?> create<T extends GuildChannel> ({ Snowflake? messageId, String? label }) async {
-    MineralClient client = ioc.use<MineralClient>();
-    return await client.createChannel(_guildId, ChannelBuilder({
-      'name': label,
-      'auto_archive_duration': '60',
-      'type': ChannelType.guildPublicThread.value
-    }));
+  Future<ThreadChannel?> create ({ required String label, required TextBasedChannel channel, int autoArchiveDuration = 60, bool isPrivate = false }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().post(url: '/channels/${channel.id}/threads')
+        .payload({
+          'name': label,
+          'auto_archive_duration': autoArchiveDuration,
+          'type': isPrivate ? ChannelType.guildPrivateThread.value : ChannelType.guildPublicThread.value,
+          'invitable': isPrivate,
+         }).build();
+
+    return ThreadChannel.fromPayload(jsonDecode(response.body));
   }
 
   Future<ThreadChannel> resolve (Snowflake id) async {
