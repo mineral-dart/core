@@ -77,6 +77,17 @@ class Message extends PartialMessage<TextBasedChannel>  {
       .build();
   }
 
+  Future<ThreadChannel?> createThread ({ required String label, int archiveDuration = 60}) async {
+     Response respose = await ioc.use<DiscordApiHttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/threads')
+        .payload({
+          'name': label,
+          'auto_archive_duration': archiveDuration,
+        })
+        .build();
+
+    return ThreadChannel.fromPayload(jsonDecode(respose.body));
+  }
+
   Future<void> pin (Snowflake webhookId) async {
     if (isPinned) {
       ioc.use<ConsoleService>().warn('Message $id is already pinned');
