@@ -20,7 +20,7 @@ dependencies:
   collection: ^1.16.0
   mineral_ioc: ^2.0.0
   recase: ^4.1.0
-  mineral_contract: ^1.4.0
+  mineral_contract: ^1.5.0
   prompts: ^2.0.0
   tint: ^2.0.1
 
