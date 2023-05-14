@@ -30,3 +30,4 @@ export '../src/api/builders/modal/text_builder.dart' show TextBuilder;
 export '../src/api/builders/modal_builder.dart' show ModalBuilder;
 export '../src/api/builders/moderation_rules_builder.dart' show ModerationRulesBuilder;
 export '../src/api/builders/row_builder.dart' show RowBuilder;
+export '../src/api/builders/guild_builder.dart' show GuildBuilder;
