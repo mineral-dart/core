@@ -14,7 +14,6 @@ class GuildManager extends CacheManager<Guild> {
       throw Exception('You can\'t create more than 10 guilds');
     }
 
-    print(jsonEncode(builder.toJson));
     final response = await ioc.use<DiscordApiHttpService>()
       .post(url: '/guilds')
       .payload(builder.toJson)

@@ -6,3 +6,4 @@ export '../src/internal/mixins/console.dart' show Console;
 export '../src/internal/mixins/container.dart' show Container;
 export '../src/internal/mixins/environment.dart' show Environment;
 export '../src/internal/mixins/state.dart' show State;
+export '../src/internal/mixins/component.dart' show Component;

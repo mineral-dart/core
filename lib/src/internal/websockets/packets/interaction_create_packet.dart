@@ -5,12 +5,14 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
+import 'package:mineral/core/services.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/interactions/menus/channel_menu_interaction.dart';
 import 'package:mineral/src/api/interactions/menus/mentionable_menu_interaction.dart';
 import 'package:mineral/src/api/interactions/menus/role_menu_interaction.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral/src/internal/services/collector_service.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
@@ -105,8 +107,11 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       } catch(_) { }
     }
 
-    ButtonInteraction buttonInteraction = ButtonInteraction.fromPayload(payload);
-    eventService.controller.add(ButtonCreateEvent(buttonInteraction));
+    final buttonInteraction = ButtonInteraction.fromPayload(payload);
+    final event = ButtonCreateEvent(buttonInteraction);
+    eventService.controller.add(event);
+    container.use<CollectorService>().emit(ButtonCreateEvent, event);
+    container.use<ComponentService>().emit(buttonInteraction.customId, event);
   }
 
   _executeModalInteraction (dynamic payload) {
