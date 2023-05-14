@@ -367,10 +367,8 @@ class Guild {
   /// await guild.setOwner(member);
   /// ```
   Future<void> setOwner (GuildMember guildMember) async {
-    MineralClient client = ioc.use<MineralClient>();
-
-    if (owner.id != client.user.id) {
-      ioc.use<ConsoleService>().error("You cannot change the owner of the server because it does not belong to the ${client.user.username} client.");
+    if (owner != guildMember.guild.members.me) {
+      ioc.use<ConsoleService>().error("You cannot change the owner of the server because it does not belong to the ${guildMember.guild.members.me.nickname} client.");
       return;
     }
 
