@@ -646,6 +646,19 @@ class Guild {
     return response.statusCode == 200;
   }
 
+  /// Delete this
+  ///
+  /// ```dart
+  /// await guild.delete();
+  /// ```
+  Future<bool> delete () async {
+    Response response = await ioc.use<DiscordApiHttpService>()
+      .destroy(url: '/guilds/$id')
+      .build();
+
+    return response.statusCode == 200;
+  }
+
   factory Guild.from({
     required EmojiManager emojiManager,
     required MemberManager memberManager,
