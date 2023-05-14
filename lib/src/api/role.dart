@@ -317,7 +317,9 @@ class Role {
       payload['icon'],
       payload['unicode_emoji'],
       payload['position'],
-      payload['permissions'],
+      payload['permissions'] is String
+        ? int.parse(payload['permissions'])
+        : payload['permissions'],
       payload['managed'] ?? false,
       payload['mentionable'] ?? false,
       payload['tags'] != null ? Tag.from(payload: payload['tags']) : null,
