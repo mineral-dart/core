@@ -29,6 +29,13 @@ class ComponentService extends MineralService implements ComponentServiceContrac
   }
 
   @override
+  void register (List<InteractiveComponentContract> components) {
+    for (final component in List<InteractiveComponent>.from(components)) {
+      _collectors.putIfAbsent(component.runtimeType, () => component);
+    }
+  }
+
+  @override
   T get<T extends InteractiveComponentContract> () {
     if (!_collectors.containsKey(T)) {
       throw NotExistException('The component named $T does not exist on your project.');
