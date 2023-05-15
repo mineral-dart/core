@@ -124,7 +124,8 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       }
     }
 
-    eventService.controller.add(ModalCreateEvent(modalInteraction));
+    final event = ModalCreateEvent(modalInteraction);
+    eventService.controller.add(event);
   }
 
   void _executeSelectMenuInteraction (Guild? guild, dynamic payload) async {
@@ -141,7 +142,11 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['data']['component_type'] == ComponentType.dynamicSelect.value) {
-      eventService.controller.add(DynamicMenuCreateEvent(DynamicMenuInteraction.from(payload)));
+      final event = DynamicMenuCreateEvent(DynamicMenuInteraction.from(payload));
+
+      eventService.controller.add(event);
+      container.use<CollectorService>().emit(DynamicMenuCreateEvent, event);
+      container.use<ComponentService>().emit(event.interaction.customId, event);
     }
 
     if (payload['data']['component_type'] == ComponentType.userSelect.value) {

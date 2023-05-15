@@ -24,6 +24,11 @@ class InteractionCollector<T extends Event> extends Collector  {
         await _unsubscribe();
         completer.complete(event as T);
       }
+
+      if (event is DynamicMenuCreateEvent && event.interaction.customId == _customId) {
+        await _unsubscribe();
+        completer.complete(event as T);
+      }
     });
 
     return completer.future;
