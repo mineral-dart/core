@@ -53,15 +53,16 @@ abstract class ComponentWrapper {
 
     switch (componentType) {
       case ComponentType.button:
-        final ButtonStyle style = ButtonStyle.values.firstWhere((element) => element.value == payload['style']);
-        final EmojiBuilder? emojiBuilder = guild != null && payload['id'] != null
-          ? EmojiBuilder.fromEmoji(guild.emojis.cache.getOrFail(payload['id']))
-          : EmojiBuilder.fromUnicode(payload['emoji']?['name']);
-
-        return ButtonBuilder(payload['custom_id'], payload['url'], style)
-          ..setLabel( payload['label'])
-          ..setDisabled(payload['disabled'])
-          ..setEmoji(emojiBuilder);
+        return ButtonBuilder(
+          payload['custom_id'],
+          label: payload['label'],
+          style: ButtonStyle.values.firstWhere((element) => element.value == payload['style']),
+          disabled: payload['disabled'],
+          url: payload['url'],
+          emoji: guild != null && payload['id'] != null
+            ? EmojiBuilder.fromEmoji(guild.emojis.cache.getOrFail(payload['id']))
+            : EmojiBuilder.fromUnicode(payload['emoji']?['name'])
+        );
 
       case ComponentType.actionRow:
         return RowBuilder([]);
