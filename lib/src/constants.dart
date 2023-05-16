@@ -1,3 +1,5 @@
+import 'package:mineral_ioc/ioc.dart';
+
 enum OpCode {
   dispatch(0),
   heartbeat(1),
@@ -89,11 +91,11 @@ class Constants {
   static const int apiVersion = 10;
 
   // Name of Minéral
-  static const String name = "Minéral";
+  static const String name = "Mineral";
 
   // Git of Minéral
   static const String githubURL = "https://github.com/mineral-dart";
 
   // Version of Minéral
-  static const String version = "3.1.0";
+  static const String version = "NO VERSION";
 }
