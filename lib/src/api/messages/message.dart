@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
@@ -78,14 +79,14 @@ class Message extends PartialMessage<TextBasedChannel>  {
   }
 
   Future<ThreadChannel?> createThread ({ required String label, int archiveDuration = 60}) async {
-     Response respose = await ioc.use<DiscordApiHttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/threads')
+     Response response = await ioc.use<DiscordApiHttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/threads')
         .payload({
           'name': label,
           'auto_archive_duration': archiveDuration,
         })
         .build();
 
-    return ThreadChannel.fromPayload(jsonDecode(respose.body));
+    return channel.guild.channels.cache.getOrFail(jsonDecode(response.body)['id']);
   }
 
   Future<void> pin (Snowflake webhookId) async {

@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
-import 'package:mineral/core/builders.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class ThreadManager extends CacheManager<ThreadChannel>  {
@@ -44,7 +42,7 @@ class ThreadManager extends CacheManager<ThreadChannel>  {
           'invitable': isPrivate,
          }).build();
 
-    return ThreadChannel.fromPayload(jsonDecode(response.body));
+    return ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId).channels.cache.getOrFail(jsonDecode(response.body)['id']);
   }
 
   Future<ThreadChannel> resolve (Snowflake id) async {
