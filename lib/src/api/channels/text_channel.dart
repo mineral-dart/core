@@ -59,10 +59,6 @@ class TextChannel extends TextBasedChannel {
     await update(ChannelBuilder({ 'rate_limit': limit }));
   }
 
-  Future<ThreadChannel?> createGlobalThread({ required String label, int autoArchiveDuration = 60, bool isPrivate = false}) async {
-    return await _threads.create(label: label, channel: this, autoArchiveDuration: autoArchiveDuration, isPrivate: isPrivate);
-  }
-
   @override
   CategoryChannel? get parent => super.parent as CategoryChannel?;
 
