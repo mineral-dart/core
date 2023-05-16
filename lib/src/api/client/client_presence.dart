@@ -59,14 +59,23 @@ class ClientPresence {
     this._flags,
   );
 
+  /// Get label of this
   String? get label => _label;
+  /// Get type of this
   GamePresence get type => GamePresence.values.firstWhere((type) => type.value == _type);
+  /// Get url of this
   String? get url => _url;
+  /// Get created time of this
   DateTime get createdAt => DateTime.parse(_createdAt);
+  /// Get timestamps of this
   Timestamp? get timestamps =>  _timestamps != null ? Timestamp.from(payload: _timestamps) : null;
+  /// Get application id of this
   Snowflake? get applicationId => _applicationId;
+  /// Get details of this
   String? get details => _details;
+  /// Get state of this
   String? get state => _state;
+  /// Get flags of this
   int? get flags => _flags;
 
   factory ClientPresence.from({ required dynamic payload }) {

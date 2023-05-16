@@ -16,6 +16,7 @@ class GuildCommandInteraction extends CommandInteraction {
     super.params
   );
 
+  /// Get channel [TextBasedChannel] of this
   @override
   TextBasedChannel? get channel => super.channel as TextBasedChannel;
 

@@ -41,7 +41,7 @@ class ThreadChannel extends PartialTextChannel {
   /// Get birthday of this
   DateTime get createdAt => DateTime.parse(_createdAt);
 
-  /// Get parent of this
+  /// Get parent [CategoryChannel] of this
   @override
   TextChannel get parent => super.parent as TextChannel;
 

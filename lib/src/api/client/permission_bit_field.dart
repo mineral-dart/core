@@ -1,6 +1,5 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/src/helper.dart';
-import 'package:mineral_ioc/ioc.dart';
 
 class PermissionBitField {
   final List<int> _permissions;
