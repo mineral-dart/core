@@ -158,7 +158,11 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['data']['component_type'] == ComponentType.roleSelect.value) {
-      eventService.controller.add(RoleMenuCreateEvent(RoleMenuInteraction.from(payload)));
+      final event = RoleMenuCreateEvent(RoleMenuInteraction.from(payload));
+
+      eventService.controller.add(event);
+      container.use<CollectorService>().emit(DynamicMenuCreateEvent, event);
+      container.use<ComponentService>().emit(event.interaction.customId, event);
     }
 
     if (payload['data']['component_type'] == ComponentType.mentionableSelect.value) {

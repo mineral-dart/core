@@ -9,6 +9,7 @@ export '../src/internal/entities/state.dart' show MineralState;
 export 'src/internal/entities/interactive_components/interactive_component.dart';
 export 'src/internal/entities/interactive_components/interactive_button.dart';
 export 'src/internal/entities/interactive_components/interactive_dynamic_menu.dart';
+export 'src/internal/entities/interactive_components/interactive_role_menu.dart';
 
 export 'src/internal/mixins/collection.dart';
 export 'src/internal/mixins/string.dart';
