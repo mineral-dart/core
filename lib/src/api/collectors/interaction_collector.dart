@@ -29,6 +29,31 @@ class InteractionCollector<T extends Event> extends Collector  {
         await _unsubscribe();
         completer.complete(event as T);
       }
+
+      if (event is ChannelMenuCreateEvent && event.interaction.customId == _customId) {
+        await _unsubscribe();
+        completer.complete(event as T);
+      }
+
+      if (event is UserMenuCreateEvent && event.interaction.customId == _customId) {
+        await _unsubscribe();
+        completer.complete(event as T);
+      }
+
+      if (event is MentionableMenuCreateEvent && event.interaction.customId == _customId) {
+        await _unsubscribe();
+        completer.complete(event as T);
+      }
+
+      if (event is RoleMenuCreateEvent && event.interaction.customId == _customId) {
+        await _unsubscribe();
+        completer.complete(event as T);
+      }
+
+      if (event is ModalCreateEvent && event.interaction.customId == _customId) {
+        await _unsubscribe();
+        completer.complete(event as T);
+      }
     });
 
     return completer.future;

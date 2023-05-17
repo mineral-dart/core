@@ -13,6 +13,7 @@ export 'src/internal/entities/interactive_components/interactive_role_menu.dart'
 export 'src/internal/entities/interactive_components/interactive_channel_menu.dart';
 export 'src/internal/entities/interactive_components/interactive_mentionable_menu.dart';
 export 'src/internal/entities/interactive_components/interactive_user_menu.dart';
+export 'src/internal/entities/interactive_components/interactive_modal.dart';
 
 
 export 'src/internal/mixins/collection.dart';

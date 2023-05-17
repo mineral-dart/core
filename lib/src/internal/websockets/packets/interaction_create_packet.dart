@@ -109,6 +109,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
     final buttonInteraction = ButtonInteraction.fromPayload(payload);
     final event = ButtonCreateEvent(buttonInteraction);
+
     eventService.controller.add(event);
     container.use<CollectorService>().emit(ButtonCreateEvent, event);
     container.use<ComponentService>().emit(buttonInteraction.customId, event);
@@ -125,7 +126,10 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     final event = ModalCreateEvent(modalInteraction);
+
     eventService.controller.add(event);
+    container.use<CollectorService>().emit(ModalCreateEvent, event);
+    container.use<ComponentService>().emit(event.interaction.customId, event);
   }
 
   void _executeSelectMenuInteraction (Guild? guild, dynamic payload) async {
