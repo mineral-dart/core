@@ -150,23 +150,35 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['data']['component_type'] == ComponentType.userSelect.value) {
-      eventService.controller.add(UserMenuCreateEvent(UserMenuInteraction.from(payload)));
+      final event = UserMenuCreateEvent(UserMenuInteraction.from(payload));
+
+      eventService.controller.add(event);
+      container.use<CollectorService>().emit(UserMenuInteraction, event);
+      container.use<ComponentService>().emit(event.interaction.customId, event);
     }
 
     if (payload['data']['component_type'] == ComponentType.channelSelect.value) {
-      eventService.controller.add(ChannelMenuCreateEvent(ChannelMenuInteraction.from(payload)));
+      final event = ChannelMenuCreateEvent(ChannelMenuInteraction.from(payload));
+
+      eventService.controller.add(event);
+      container.use<CollectorService>().emit(ChannelMenuInteraction, event);
+      container.use<ComponentService>().emit(event.interaction.customId, event);
     }
 
     if (payload['data']['component_type'] == ComponentType.roleSelect.value) {
       final event = RoleMenuCreateEvent(RoleMenuInteraction.from(payload));
 
       eventService.controller.add(event);
-      container.use<CollectorService>().emit(DynamicMenuCreateEvent, event);
+      container.use<CollectorService>().emit(RoleMenuCreateEvent, event);
       container.use<ComponentService>().emit(event.interaction.customId, event);
     }
 
     if (payload['data']['component_type'] == ComponentType.mentionableSelect.value) {
-      eventService.controller.add(MentionableMenuCreateEvent(MentionableMenuInteraction.from(payload)));
+      final event = MentionableMenuCreateEvent(MentionableMenuInteraction.from(payload));
+
+      eventService.controller.add(event);
+      container.use<CollectorService>().emit(MentionableMenuCreateEvent, event);
+      container.use<ComponentService>().emit(event.interaction.customId, event);
     }
   }
 }
