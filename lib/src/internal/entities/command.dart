@@ -3,6 +3,7 @@ import 'package:mineral/src/helper.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 
 import '../../exceptions/missing_method_exception.dart';
+import 'command_permissions.dart';
 
 class Scope {
   final String mode;
@@ -123,10 +124,11 @@ class CommandBuilder extends AbstractCommand {
   final List<CommandGroupBuilder> _group = [];
   final List<Option> _options = [];
 
-  final List<ClientPermission>? permissions;
+  final List<ClientPermission>? guildPermissions;
+  final List<CommandPermission>? permissions;
   final bool everyone;
 
-  CommandBuilder(String label, String description, { Scope? scope, this.permissions, this.everyone = false }): super(label, description, scope ?? Scope.guild);
+  CommandBuilder(String label, String description, { Scope? scope, this.guildPermissions, this.everyone = false, this.permissions }): super(label, description, scope ?? Scope.guild);
 
   List<MineralSubCommand> get subcommands => _subcommands;
   List<CommandGroupBuilder> get groups => _group;
@@ -147,7 +149,9 @@ class CommandBuilder extends AbstractCommand {
 
   @override
   Object get toJson {
-    final List<ClientPermission> _permissions = permissions ?? [];
+    final List<ClientPermission> _guildPermissions = guildPermissions ?? [];
+    final List<CommandPermission> _permissions = permissions ?? [];
+
     return {
       'name': _label.toLowerCase(),
       'description': _description,
@@ -161,10 +165,11 @@ class CommandBuilder extends AbstractCommand {
           ? [..._options.map((option) => option.toJson)]
           : [],
       'default_member_permissions': !everyone
-        ? _permissions.isNotEmpty
-          ? Helper.toBitfield(_permissions.map((e) => e.value).toList()).toString()
+        ? _guildPermissions.isNotEmpty
+          ? Helper.toBitfield(_guildPermissions.map((e) => e.value).toList()).toString()
           : null
         : 0,
+      'permissions': _permissions.isNotEmpty ? [..._permissions.map((e) => e.toJson())] : null
     };
   }
 }
