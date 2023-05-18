@@ -8,9 +8,12 @@ class MessageAuthor {
 
   MessageAuthor(this._guildId, this._userId);
 
+  /// Get guild [Guild] of this
   Guild get _guild => ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId);
 
+  /// Get user [User] of this
   User? get user => _guild.members.cache.get(_userId)?.user;
-  
+
+  /// Get member [GuildMember] of this
   GuildMember? get member => _guild.members.cache.get(_userId);
 }

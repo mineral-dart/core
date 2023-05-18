@@ -20,7 +20,9 @@ class ContextMessageInteraction extends ContextMenuInteraction {
     super._guildId,
   );
 
+  /// Get message [Message] of this
   Message get message => _message;
+  /// Get channel [TextBasedChannel] of this
   TextBasedChannel get channel => guild!.channels.cache.get(_channelId)!;
 
   factory ContextMessageInteraction.from({ required Message message, required dynamic payload }) {

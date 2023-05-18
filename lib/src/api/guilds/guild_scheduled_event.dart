@@ -6,9 +6,13 @@ import 'package:mineral_ioc/ioc.dart';
 
 /// Represents a [GuildScheduledEvent] status of a [User].
 enum ScheduledEventStatus {
+  /// The event is scheduled.
   scheduled(1),
+  /// The event is active.
   active(2),
+  /// The event is completed.
   completed(3),
+  /// The event is canceled.
   canceled(4);
 
   final int value;
@@ -17,8 +21,11 @@ enum ScheduledEventStatus {
 
 /// Represents a [GuildScheduledEvent] of a [Guild].
 enum ScheduledEventEntityType {
+  /// The event is a stage instance.
   stageInstance(1),
+  /// The event is a voice channel.
   voice(2),
+  /// The event is a external stream.
   external(3);
 
   final int value;
