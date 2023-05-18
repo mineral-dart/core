@@ -4,6 +4,7 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
+import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
@@ -85,7 +86,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
         })
         .build();
 
-    return ThreadChannel.fromPayload(jsonDecode(response.body));
+    return channel.guild.channels.cache.getOrFail(jsonDecode(response.body)['id']);
   }
 
   Future<void> pin (Snowflake webhookId) async {
