@@ -6,6 +6,8 @@ import 'package:mineral/src/api/guilds/guild_member_presence.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+import '../client/permission_bit_field.dart';
+
 /// Represents a member of a [Guild] context.
 class GuildMember  {
   User _user;
@@ -59,7 +61,10 @@ class GuildMember  {
     : null;
 
   /// Get the permissions of this.
-  String? get permissions => _permissions;
+  PermissionBitField get permissions => PermissionBitField(
+    _roles.cache.values.map((e) => e.permissions).toList(),
+    guild.owner.id == id
+  );
 
   /// Get the pending status of this.
   bool get pending => _pending;
@@ -168,12 +173,39 @@ class GuildMember  {
       .build();
   }
 
+  /// Returns whether of this has a given is manageable]
+  /// ```dart
+  /// final member = member.isManageable;
+  /// print(member);
+  /// ```
+  bool get isManageable {
+    if (user.id == guild.owner.id) return false;
+    if (user.id == ioc.use<MineralClient>().user.id) return false;
+    if (ioc.use<MineralClient>().user.id == guild.owner.id) return true;
+
+    return guild.members.me.roles.highest.position < roles.highest.position;
+  }
+
+  /// Returns whether of this has a given can be banned
+  /// ```dart
+  /// final member = member.isBannable;
+  /// print(member);
+  /// ```
+  bool get isBannable => isManageable && permissions.has(ClientPermission.banMembers);
+
+  /// Returns weather of this is a [Guild] owner.
+  /// ```dart
+  /// final member = member.isOwner;
+  /// print(member);
+  /// ```
+  bool get isOwner => guild.owner.id == user.id;
+
   /// Returns a taggable [String] representation of this.
   @override
   String toString () => '<@${_nickname != null ? '!' : ''}${user.id}>';
 
   /// Returns a clone of this
-  GuildMember clone () => GuildMember(user, nickname, _avatar, joinedAt, _premiumSince, permissions, pending, _timeoutDuration, roles, voice, guild, presence);
+  GuildMember clone () => GuildMember(user, nickname, _avatar, joinedAt, _premiumSince, _permissions, pending, _timeoutDuration, roles, voice, guild, presence);
 
   factory GuildMember.from({ required user, required GuildRoleManager roles, required Guild guild, dynamic member, required VoiceManager voice }) {
     MemberRoleManager memberRoleManager = MemberRoleManager(manager: roles, memberId: user.id);
