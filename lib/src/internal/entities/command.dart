@@ -28,6 +28,18 @@ abstract class MineralCommand<T extends CommandInteraction> extends MineralComma
   }
 }
 
+abstract class MineralSubCommand<T extends CommandInteraction> extends MineralCommandContract {
+  late final SubCommandBuilder command;
+
+  void register(SubCommandBuilder builder) {
+    command = builder;
+  }
+
+  Future<void> handle (T interaction) async {
+    throw MissingMethodException('The handle method does not exist on your command ${command.label}');
+  }
+}
+
 class AbstractCommand {
   final String _label;
   final String _description;
@@ -67,13 +79,13 @@ enum OptionType {
 }
 
 class CommandGroupBuilder extends AbstractCommand {
-  final List<SubCommandBuilder> _subcommands = [];
+  final List<MineralSubCommand> _subcommands = [];
 
   CommandGroupBuilder(String label, String description): super(label, description, null);
 
-  List<SubCommandBuilder> get subcommands => _subcommands;
+  List<MineralSubCommand> get subcommands => _subcommands;
 
-  void addSubcommand (SubCommandBuilder builder) {
+  void addSubcommand (MineralSubCommand builder) {
     _subcommands.add(builder);
   }
 
@@ -82,18 +94,15 @@ class CommandGroupBuilder extends AbstractCommand {
     'name': _label.toLowerCase(),
     'description': _description,
     'type': CommandType.group.type,
-    'options': _subcommands.map((option) => option.toJson).toList(),
+    'options': _subcommands.map((option) => option.command.toJson).toList(),
   };
 }
 
 class SubCommandBuilder extends AbstractCommand {
-  final Function _method;
   final List<Option> _options = [];
   final CommandType _type = CommandType.subcommand;
 
-  SubCommandBuilder(String label, String description, this._method): super(label, description, null);
-
-  Function get handle => _method;
+  SubCommandBuilder(String label, String description): super(label, description, null);
 
   void addOption(Option option) {
     _options.add(option);
@@ -110,7 +119,7 @@ class SubCommandBuilder extends AbstractCommand {
 
 class CommandBuilder extends AbstractCommand {
   int? _type = 1;
-  final List<SubCommandBuilder> _subcommands = [];
+  final List<MineralSubCommand> _subcommands = [];
   final List<CommandGroupBuilder> _group = [];
   final List<Option> _options = [];
 
@@ -119,7 +128,7 @@ class CommandBuilder extends AbstractCommand {
 
   CommandBuilder(String label, String description, { Scope? scope, this.permissions, this.everyone = false }): super(label, description, scope ?? Scope.guild);
 
-  List<SubCommandBuilder> get subcommands => _subcommands;
+  List<MineralSubCommand> get subcommands => _subcommands;
   List<CommandGroupBuilder> get groups => _group;
 
   void addGroup (CommandGroupBuilder builder) {
@@ -127,7 +136,7 @@ class CommandBuilder extends AbstractCommand {
     _group.add(builder);
   }
 
-  void addSubcommand (SubCommandBuilder command) {
+  void addSubcommand (MineralSubCommand command) {
     _type = null;
     _subcommands.add(command);
   }
@@ -146,7 +155,7 @@ class CommandBuilder extends AbstractCommand {
       'options': _subcommands.isNotEmpty || _group.isNotEmpty
         ? [
           ..._group.map((group) => group.toJson).toList(),
-          ..._subcommands.map((command) => command.toJson).toList()
+          ..._subcommands.map((command) => command.command.toJson).toList()
         ]
         : _options.isNotEmpty
           ? [..._options.map((option) => option.toJson)]
