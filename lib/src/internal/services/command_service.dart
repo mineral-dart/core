@@ -88,7 +88,7 @@ class CommandService extends MineralService implements CommandServiceContract {
   }
 
   void _registerSubCommands (String identifier, Scope scope, List<MineralSubCommand> commands) {
-    for (final subcommand in commands) {
+    for (final MineralSubCommand subcommand in commands) {
       if(scope.isGlobal) {
         _globalHandlers.putIfAbsent(identifier + '.' + subcommand.command.label, () => subcommand.handle);
       } else {
