@@ -87,12 +87,12 @@ class CommandService extends MineralService implements CommandServiceContract {
     }
   }
 
-  void _registerSubCommands (String identifier, Scope scope, List<SubCommandBuilder> commands) {
-    for (final subcommand in commands) {
+  void _registerSubCommands (String identifier, Scope scope, List<MineralSubCommand> commands) {
+    for (final MineralSubCommand subcommand in commands) {
       if(scope.isGlobal) {
-        _globalHandlers.putIfAbsent(identifier + '.' + subcommand.label, () => subcommand.handle);
+        _globalHandlers.putIfAbsent(identifier + '.' + subcommand.command.label, () => subcommand.handle);
       } else {
-        _guildHandlers.putIfAbsent(identifier + '.' + subcommand.label, () => subcommand.handle);
+        _guildHandlers.putIfAbsent(identifier + '.' + subcommand.command.label, () => subcommand.handle);
       }
     }
   }
