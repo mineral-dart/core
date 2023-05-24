@@ -52,7 +52,7 @@ class GuildChannel extends PartialChannel {
   }
 
   Future<void> setPermissionsOverwrite (List<PermissionOverwrite> permissions) async {
-    await update(ChannelBuilder({ 'permission_overwrites': permissions.map((permission) => permission.toJson()) }));
+    await update(ChannelBuilder({ 'permission_overwrites': permissions.map((permission) => permission.toJson()).toList() }));
   }
 
   Future<void> update (ChannelBuilder builder) async {
