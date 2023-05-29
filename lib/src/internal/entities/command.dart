@@ -117,18 +117,17 @@ class SubCommandBuilder extends AbstractCommand {
   };
 }
 
-class CommandBuilder extends AbstractCommand {
+class CommandBuilder<T> extends AbstractCommand {
   int? _type = 1;
-  final List<MineralSubCommand> _subcommands = [];
+  final List<MineralSubCommand> subcommands;
   final List<CommandGroupBuilder> _group = [];
   final List<Option> _options = [];
 
   final List<ClientPermission>? permissions;
   final bool everyone;
 
-  CommandBuilder(String label, String description, { Scope? scope, this.permissions, this.everyone = false }): super(label, description, scope ?? Scope.guild);
+  CommandBuilder(String label, String description, { Scope? scope, this.permissions, this.everyone = false, this.subcommands = const []}): super(label, description, scope ?? Scope.guild);
 
-  List<MineralSubCommand> get subcommands => _subcommands;
   List<CommandGroupBuilder> get groups => _group;
 
   void addGroup (CommandGroupBuilder builder) {
@@ -138,7 +137,7 @@ class CommandBuilder extends AbstractCommand {
 
   void addSubcommand (MineralSubCommand command) {
     _type = null;
-    _subcommands.add(command);
+    subcommands.add(command);
   }
 
   void addOption(Option option) {
@@ -152,10 +151,10 @@ class CommandBuilder extends AbstractCommand {
       'name': _label.toLowerCase(),
       'description': _description,
       'type': _type,
-      'options': _subcommands.isNotEmpty || _group.isNotEmpty
+      'options': subcommands.isNotEmpty || _group.isNotEmpty
         ? [
           ..._group.map((group) => group.toJson).toList(),
-          ..._subcommands.map((command) => command.command.toJson).toList()
+          ...subcommands.map((command) => command.command.toJson).toList()
         ]
         : _options.isNotEmpty
           ? [..._options.map((option) => option.toJson)]
@@ -222,6 +221,10 @@ class Option {
 
   factory Option.choice(String name, String description, OptionType type, List<OptionChoice> choices, { bool? required = false }) {
     return Option(name: name, description: description, type: type, choices: choices, required: required);
+  }
+
+  factory Option.attachement(String name, String description, { bool? required = false }) {
+    return Option(name: name, description: description, type: OptionType.attachment, required: required);
   }
 }
 
