@@ -119,15 +119,18 @@ class SubCommandBuilder extends AbstractCommand {
 
 class CommandBuilder<T> extends AbstractCommand {
   int? _type = 1;
-  final List<MineralSubCommand> subcommands;
+  final List<MineralSubCommand> _subcommands = [];
   final List<CommandGroupBuilder> _group = [];
   final List<Option> _options = [];
 
   final List<ClientPermission>? permissions;
   final bool everyone;
 
-  CommandBuilder(String label, String description, { Scope? scope, this.permissions, this.everyone = false, this.subcommands = const []}): super(label, description, scope ?? Scope.guild);
+  CommandBuilder(String label, String description, { Scope? scope, this.permissions, this.everyone = false, List<MineralSubCommand> subcommands = const []}): super(label, description, scope ?? Scope.guild) {
+    this._subcommands.addAll(subcommands);
+  }
 
+  List<MineralSubCommand> get subcommands => _subcommands;
   List<CommandGroupBuilder> get groups => _group;
 
   void addGroup (CommandGroupBuilder builder) {
@@ -137,7 +140,7 @@ class CommandBuilder<T> extends AbstractCommand {
 
   void addSubcommand (MineralSubCommand command) {
     _type = null;
-    subcommands.add(command);
+    _subcommands.add(command);
   }
 
   void addOption(Option option) {
@@ -151,10 +154,10 @@ class CommandBuilder<T> extends AbstractCommand {
       'name': _label.toLowerCase(),
       'description': _description,
       'type': _type,
-      'options': subcommands.isNotEmpty || _group.isNotEmpty
+      'options': _subcommands.isNotEmpty || _group.isNotEmpty
         ? [
           ..._group.map((group) => group.toJson).toList(),
-          ...subcommands.map((command) => command.command.toJson).toList()
+          ..._subcommands.map((command) => command.command.toJson).toList()
         ]
         : _options.isNotEmpty
           ? [..._options.map((option) => option.toJson)]
