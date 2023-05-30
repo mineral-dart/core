@@ -7,6 +7,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/invites/vanity_invite.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/command_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -69,7 +70,7 @@ class Guild {
   late TextChannel? rulesChannel;
   int? _maxPresences;
   int _maxMembers;
-  String? _vanityUrlCode;
+  VanityInvite? _vanityInvite;
   String? _description;
   ImageFormater? _banner;
   int _premiumTier;
@@ -117,7 +118,7 @@ class Guild {
     this._rulesChannelId,
     this._maxPresences,
     this._maxMembers,
-    this._vanityUrlCode,
+    this._vanityInvite,
     this._description,
     this._banner,
     this._premiumTier,
@@ -216,7 +217,7 @@ class Guild {
 
 
   /// The [Guild]'s vanity url code.
-  String? get vanityUrlCode => _vanityUrlCode;
+  VanityInvite? get vanity => _vanityInvite;
 
   /// The [Guild]'s description.
   String? get description => _description;
@@ -654,6 +655,7 @@ class Guild {
     required ModerationRuleManager moderationRuleManager,
     required WebhookManager webhookManager,
     required GuildScheduledEventService guildScheduledEventService,
+    required VanityInvite? vanityInvite,
     required dynamic payload
   }) {
     StickerManager stickerManager = StickerManager();
@@ -691,7 +693,7 @@ class Guild {
       payload['rules_channel_id'],
       payload['max_presences'],
       payload['max_members'],
-      payload['vanity_url_code'],
+      vanityInvite,
       payload['description'],
       payload['banner'] != null ? ImageFormater(payload['banner'], 'banners/${payload['id']}') : null,
       payload['premium_tier'],
