@@ -8,6 +8,7 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/guilds/activities/guild_member_activity.dart';
 import 'package:mineral/src/api/guilds/guild_member_presence.dart';
+import 'package:mineral/src/api/invites/vanity_invite.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
@@ -75,6 +76,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
     ModerationRuleManager moderationManager = ModerationRuleManager(websocketResponse.payload['guild_id']);
 
     WebhookManager webhookManager = WebhookManager(websocketResponse.payload['id'], null);
+    VanityInvite? vanityInvite = await VanityInvite.sync(websocketResponse.payload['id']);
 
     Guild guild = Guild.from(
       emojiManager: emojiManager,
@@ -84,6 +86,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
       moderationRuleManager: moderationManager,
       webhookManager: webhookManager,
       guildScheduledEventService: guildScheduledManager,
+      vanityInvite: vanityInvite,
       payload: websocketResponse.payload,
     );
 
@@ -132,6 +135,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
       GuildMemberPresence guildMemberPresence = GuildMemberPresence(payload['guild_id'], payload['status'], null, clientStatusBucket, activities);
       member.presence = guildMemberPresence;
     }
+
 
     guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
     guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);
