@@ -89,7 +89,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
     return channel.guild.channels.cache.getOrFail(jsonDecode(response.body)['id']);
   }
 
-  Future<void> pin (Snowflake webhookId) async {
+  Future<void> pin () async {
     if (isPinned) {
       ioc.use<ConsoleService>().warn('Message $id is already pinned');
       return;
