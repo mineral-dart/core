@@ -12,13 +12,15 @@ class MineralCommand extends AbstractCommand implements MineralCommandContract {
   final bool everyone;
 
   MineralCommand(String label, String description, {
+    Translate? labelTranslation,
+    Translate? descriptionTranslation,
     CommandScope? scope,
     this.options = const [],
     this.subcommands = const [],
     this.groups = const [],
     this.permissions = const [],
     this.everyone = false,
-  }) : super(label, description, scope ?? CommandScope.guild);
+  }) : super(label, description, labelTranslation, descriptionTranslation, scope ?? CommandScope.guild);
 
   @override
   Map<String, dynamic> get serialize => {

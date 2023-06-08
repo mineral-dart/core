@@ -56,6 +56,7 @@ export '../src/api/webhook.dart' show Webhook;
 export '../src/internal/services/intent_service.dart' show Intent;
 export '../src/api/invites/invite.dart' show Invite;
 export '../src/api/invites/vanity_invite.dart' show VanityInvite;
+export '../src/api/lang.dart' show Lang;
 
 
 typedef Snowflake = String;
