@@ -10,7 +10,7 @@ class CommandCreateEvent extends Event {
   CommandInteraction get interaction => _interaction;
   GuildMember get sender => _interaction.member!;
 
-  T? getInteraction<T extends CommandInteraction>(Scope scope) {
+  T getInteraction<T extends CommandInteraction>(CommandScope scope) {
     return scope.isGuild
         ? GuildCommandInteraction.fromPayload(_payload) as T
         : GlobalCommandInteraction.fromPayload(_payload) as T;
