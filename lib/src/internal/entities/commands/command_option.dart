@@ -1,4 +1,5 @@
 import 'package:mineral/core/api.dart';
+import 'package:mineral/framework.dart';
 
 enum OptionType {
   string(3),
@@ -27,6 +28,8 @@ class OptionChoice {
 class CommandOption {
   final String name;
   final String description;
+  final Translate? labelTranslation;
+  final Translate? descriptionTranslation;
   final OptionType type;
   final bool? required;
   final List<ChannelType>? channels;
@@ -34,11 +37,24 @@ class CommandOption {
   final int? max;
   final List<OptionChoice>? choices;
 
-  CommandOption ({ required this.name, required this.description, required this.type, this.required, this.channels, this.min, this.max, this.choices });
+  CommandOption ({
+    required this.name,
+    required this.description,
+    required this.type,
+    this.labelTranslation,
+    this.descriptionTranslation,
+    this.required,
+    this.channels,
+    this.min,
+    this.max,
+    this.choices
+  });
 
   Map<String, dynamic> get serialize => {
     'name': name,
     'description': description,
+    'name_localizations': labelTranslation?.serialize,
+    'description_localizations': descriptionTranslation?.serialize,
     'type': type.value,
     'required': required ?? false,
     'channel_types': channels?.map((channel) => channel.value).toList(),
