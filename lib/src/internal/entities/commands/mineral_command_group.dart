@@ -1,8 +1,4 @@
-import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/exceptions/missing_method_exception.dart';
-import 'package:mineral/src/internal/entities/commands/abstract_command.dart';
-import 'package:mineral/src/internal/entities/commands/command_type.dart';
 
 class MineralCommandGroup extends AbstractCommand {
   List<MineralSubcommand> subcommands;

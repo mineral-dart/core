@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/entities/commands/abstract_command.dart';
-import 'package:mineral/src/internal/entities/commands/command_type.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';

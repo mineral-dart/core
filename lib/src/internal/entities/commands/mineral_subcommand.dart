@@ -2,7 +2,6 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/src/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/internal/entities/commands/abstract_command.dart';
 import 'package:mineral/src/internal/entities/commands/command_option.dart';
-import 'package:mineral/src/internal/entities/commands/command_scope.dart';
 import 'package:mineral/src/internal/entities/commands/command_type.dart';
 
 class MineralSubcommand<T extends CommandInteraction> extends AbstractCommand<T> {
