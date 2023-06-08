@@ -23,7 +23,9 @@ class ModalInteraction extends Interaction {
     this._channelId,
   );
 
+  /// Get custom id [Snowflake] of this
   Snowflake get customId => _customId;
+  /// Get channel [PartialChannel] of this
   PartialChannel? get channel => guild != null
     ? guild?.channels.cache.get(_channelId)
     : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);

@@ -16,6 +16,7 @@ class GlobalCommandInteraction extends CommandInteraction {
     super.params
   );
 
+  /// Get channel [PartialChannel] of this
   @override
   PartialChannel? get channel => super.channel as PartialChannel;
 

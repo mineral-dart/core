@@ -20,7 +20,9 @@ class ContextUserInteraction extends ContextMenuInteraction {
     super._guild,
   );
 
+  /// Get target [GuildMember] of this
   GuildMember? get target => guild?.members.cache.get(_targetId);
+  /// Get channel [GuildChannel] of this
   GuildChannel? get channel => guild?.channels.cache.get(_channelId);
 
   factory ContextUserInteraction.from({ required dynamic payload }) {

@@ -59,6 +59,7 @@ class TextChannel extends TextBasedChannel {
     await update(ChannelBuilder({ 'rate_limit': limit }));
   }
 
+  /// Get parent [CategoryChannel] of this
   @override
   CategoryChannel? get parent => super.parent as CategoryChannel?;
 

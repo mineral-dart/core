@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/internal/entities/commands/abstract_command.dart';
+import 'package:mineral/src/internal/entities/commands/command_type.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 import 'package:mineral_ioc/ioc.dart';
 import 'package:path/path.dart';
@@ -22,8 +24,8 @@ class CommandService extends MineralService implements CommandServiceContract {
       final command = _handlers.getOrFail(_buildIdentifier(event.interaction.data));
 
       await command.handle(command.scope!.isGlobal
-        ? event.getInteraction<GlobalCommandInteraction>(CommandScope.global)
-        : event.getInteraction<GuildCommandInteraction>(CommandScope.guild));
+          ? event.getInteraction<GlobalCommandInteraction>(CommandScope.global)
+          : event.getInteraction<GuildCommandInteraction>(CommandScope.guild));
     });
   }
 
@@ -47,7 +49,7 @@ class CommandService extends MineralService implements CommandServiceContract {
   void _registerSubCommands (String identifier, CommandScope scope, List<MineralSubcommand> commands, MineralCommandGroup? group) {
     for (final subcommand in commands) {
       final location = join(identifier, group?.label, subcommand.label)
-        .replaceAll(separator, '.');
+          .replaceAll(separator, '.');
 
       _handlers.putIfAbsent(location, () => subcommand);
     }

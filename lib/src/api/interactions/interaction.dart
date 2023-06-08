@@ -5,6 +5,15 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/messages/message_parser.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+/// ### Interaction Type
+///  - [ping] : A ping
+///  - [channelMessageWithSource] : A message component
+///  - [deferredChannelMessageWithSource] : A deferred message component
+///  - [deferredUpdateMessage] : A deferred message update
+///  - [updateMessage] : A message update
+///  - [applicationCommandAutocompleteResult] : A command autocomplete result
+///  - [modal] : A modal
+///
 enum InteractionCallbackType {
   pong(1),
   channelMessageWithSource(4),
@@ -30,18 +39,27 @@ class Interaction  {
 
   Interaction(this._id, this._label, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId);
 
+  /// Get id [Snowflake] of this
   Snowflake get id => _id;
+  /// Get label [String] of this
   String? get label => _label;
+  /// Get application id [Snowflake] of this
   Snowflake get applicationId => _applicationId;
+  /// Get version [int] of this
   int get version => _version;
+  /// Get type [InteractionType] of this
   InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
+  /// Get token [String] of this
   String get token => _token;
+  /// Get guild [Guild] of this
   Guild? get guild => ioc.use<MineralClient>().guilds.cache.get(_guildId);
 
+  /// Get user [User] of this
   User get user => _guildId != null
     ? guild!.members.cache.getOrFail(_userId).user
     : ioc.use<MineralClient>().users.cache.getOrFail(_userId);
 
+  /// Get member [GuildMember] of this
   GuildMember? get member => guild?.members.cache.get(_userId);
 
   /// ### Responds to this by an [Message]

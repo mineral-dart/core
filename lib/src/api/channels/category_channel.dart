@@ -9,6 +9,10 @@ class CategoryChannel extends GuildChannel {
   /// Get children of this
   Map<Snowflake, GuildChannel> get children => guild.channels.cache.where((element) => element.parent?.id == id);
 
+  /// Create a Category channel
+  /// ```dart
+  /// final CategoryChannel category = await guild.channels.create(ChannelBuilder.fromCategoryChannel(label: "Lorem", position: 0, permissions: []));
+  /// ```
   Future<T?> create<T extends GuildChannel> (ChannelBuilder channel) async {
     return super.guild.channels.create(channel);
   }
@@ -21,14 +25,14 @@ class CategoryChannel extends GuildChannel {
     }
 
     return CategoryChannel(
-      payload['guild_id'],
-      payload['parent_id'],
-      payload['name'],
-      payload['type'],
-      payload['position'],
-      payload['flags'],
-      permissionOverwriteManager,
-      payload['id']
+        payload['guild_id'],
+        payload['parent_id'],
+        payload['name'],
+        payload['type'],
+        payload['position'],
+        payload['flags'],
+        permissionOverwriteManager,
+        payload['id']
     );
   }
 }
