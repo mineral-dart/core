@@ -63,39 +63,104 @@ class CommandOption {
     'max_value': max,
   };
 
-  factory CommandOption.string(String name, String description, { bool? required = false }) {
-    return CommandOption(name: name, description: description, type: OptionType.string, required: required);
+  factory CommandOption.string(String name, String description, { Translate? labelTranslation, Translate? descriptionTranslation, bool? required = false }) {
+    return CommandOption(
+      name: name,
+      description: description,
+      labelTranslation: labelTranslation,
+      descriptionTranslation: descriptionTranslation,
+      type: OptionType.string,
+      required: required
+    );
   }
 
-  factory CommandOption.number(String name, String description, { bool? required = false }) {
-    return CommandOption(name: name, description: description, type: OptionType.number, required: required);
+  factory CommandOption.number(String name, String description, { Translate? labelTranslation, Translate? descriptionTranslation, bool? required = false }) {
+    return CommandOption(
+      name: name,
+      description: description,
+      labelTranslation: labelTranslation,
+      descriptionTranslation: descriptionTranslation,
+      type: OptionType.number,
+      required: required
+    );
   }
 
-  factory CommandOption.user(String name, String description, { bool? required = false }) {
-    return CommandOption(name: name, description: description, type: OptionType.user, required: required);
+  factory CommandOption.user(String name, String description, { Translate? labelTranslation, Translate? descriptionTranslation, bool? required = false }) {
+    return CommandOption(
+      name: name,
+      description: description,
+      labelTranslation: labelTranslation,
+      descriptionTranslation: descriptionTranslation,
+      type: OptionType.user,
+      required: required
+    );
   }
 
-  factory CommandOption.channel(String name, String description, { List<ChannelType>? channels, bool? required = false }) {
-    return CommandOption(name: name, description: description, type: OptionType.channel, channels: channels, required: required);
+  factory CommandOption.channel(String name, String description, { Translate? labelTranslation, Translate? descriptionTranslation, List<ChannelType>? channels, bool? required = false }) {
+    return CommandOption(
+      name: name,
+      description: description,
+      labelTranslation: labelTranslation,
+      descriptionTranslation: descriptionTranslation,
+      type: OptionType.channel,
+      channels: channels,
+      required: required
+    );
   }
 
-  factory CommandOption.bool(String name, String description, { bool? required = false }) {
-    return CommandOption(name: name, description: description, type: OptionType.boolean, required: required);
+  factory CommandOption.bool(String name, String description, { Translate? labelTranslation, Translate? descriptionTranslation, bool? required = false }) {
+    return CommandOption(
+      name: name,
+      description: description,
+      labelTranslation: labelTranslation,
+      descriptionTranslation: descriptionTranslation,
+      type: OptionType.boolean,
+      required: required
+    );
   }
 
-  factory CommandOption.mentionable(String name, String description, { bool? required = false }) {
-    return CommandOption(name: name, description: description, type: OptionType.mentionable, required: required);
+  factory CommandOption.mentionable(String name, String description, { Translate? labelTranslation, Translate? descriptionTranslation, bool? required = false }) {
+    return CommandOption(
+      name: name,
+      description: description,
+      labelTranslation: labelTranslation,
+      descriptionTranslation: descriptionTranslation,
+      type: OptionType.mentionable,
+      required: required
+    );
   }
 
-  factory CommandOption.role(String name, String description, { bool? required = false }) {
-    return CommandOption(name: name, description: description, type: OptionType.role, required: required);
+  factory CommandOption.role(String name, String description, { Translate? labelTranslation, Translate? descriptionTranslation, bool? required = false }) {
+    return CommandOption(
+      name: name,
+      description: description,
+      labelTranslation: labelTranslation,
+      descriptionTranslation: descriptionTranslation,
+      type: OptionType.role,
+      required: required
+    );
   }
 
-  factory CommandOption.choice(String name, String description, OptionType type, List<OptionChoice> choices, { bool? required = false }) {
-    return CommandOption(name: name, description: description, type: type, choices: choices, required: required);
+  factory CommandOption.choice(String name, String description, OptionType type, List<OptionChoice> choices, { Translate? labelTranslation, Translate? descriptionTranslation, bool? required = false }) {
+    return CommandOption(
+      name: name,
+      description: description,
+      labelTranslation: labelTranslation,
+      descriptionTranslation: descriptionTranslation,
+      type: type,
+      choices: choices,
+      required: required
+    );
   }
 
-  factory CommandOption.attachement(String name, String description, { bool? required = false }) {
-    return CommandOption(name: name, description: description, type: OptionType.attachment, required: required);
+  factory CommandOption.attachement(String name, String description, { Translate? labelTranslation, Translate? descriptionTranslation, bool? required = false }) {
+    return CommandOption(
+      name: name,
+      description: description,
+      labelTranslation: labelTranslation,
+      descriptionTranslation: descriptionTranslation,
+      type: OptionType.attachment,
+      required: required
+    );
   }
 }
