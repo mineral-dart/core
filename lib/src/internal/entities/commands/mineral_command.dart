@@ -10,6 +10,7 @@ class MineralCommand extends AbstractCommand implements MineralCommandContract {
 
   final List<ClientPermission>? permissions;
   final bool everyone;
+  final bool nsfw;
 
   MineralCommand(String label, String description, {
     Translate? labelTranslation,
@@ -20,6 +21,7 @@ class MineralCommand extends AbstractCommand implements MineralCommandContract {
     this.groups = const [],
     this.permissions = const [],
     this.everyone = false,
+    this.nsfw = false,
   }) : super(label, description, labelTranslation, descriptionTranslation, scope ?? CommandScope.guild);
 
   @override
@@ -39,5 +41,6 @@ class MineralCommand extends AbstractCommand implements MineralCommandContract {
         ? Helper.toBitfield(permissions!.map((e) => e.value).toList()).toString()
         : null
       : 0,
+    'nsfw': nsfw
   };
 }
