@@ -75,7 +75,6 @@ class Message extends PartialMessage<TextBasedChannel>  {
       : null;
   }
 
-
   Future<void> crossPost () async {
     if (channel.type != ChannelType.guildNews) {
       ioc.use<ConsoleService>().warn('Message $id cannot be cross-posted as it is not in an announcement channel');
