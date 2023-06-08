@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
@@ -5,6 +7,7 @@ import 'package:mineral/src/api/managers/command_manager.dart';
 import 'package:mineral/src/api/managers/dm_channel_manager.dart';
 import 'package:mineral/src/api/managers/guild_manager.dart';
 import 'package:mineral/src/api/managers/user_manager.dart';
+import 'package:mineral/src/internal/entities/commands/abstract_command.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
 
@@ -117,16 +120,16 @@ class MineralClient extends MineralService {
     return ioc.use<ShardManager>().getLatency();
   }
 
-  Future<void> registerGlobalCommands ({ required List<CommandBuilder> commands }) async {
+  Future<void> registerGlobalCommands ({ required List<AbstractCommand> commands }) async {
     await ioc.use<DiscordApiHttpService>().put(url: "/applications/${_application.id}/commands")
-      .payload(commands.map((command) => command.toJson).toList())
+      .payload(commands.map((command) => command.serialize).toList())
       .build();
   }
 
-  Future<void> registerGuildCommands ({ required Guild guild, required List<CommandBuilder> commands, required List<MineralContextMenu> contextMenus }) async {
+  Future<void> registerGuildCommands ({ required Guild guild, required List<AbstractCommand> commands, required List<MineralContextMenu> contextMenus }) async {
     await ioc.use<DiscordApiHttpService>().put(url: "/applications/${_application.id}/guilds/${guild.id}/commands")
       .payload([
-        ...commands.map((command) => command.toJson).toList(),
+        ...commands.map((command) => command.serialize).toList(),
         ...contextMenus.map((contextMenus) => contextMenus.builder.toJson).toList()
       ])
       .build();
