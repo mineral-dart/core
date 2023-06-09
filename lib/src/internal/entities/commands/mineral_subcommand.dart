@@ -9,7 +9,7 @@ import 'package:mineral/src/internal/entities/commands/display.dart';
 class MineralSubcommand<T extends CommandInteraction> extends AbstractCommand<T> {
   List<CommandOption> options;
 
-  MineralSubcommand(Display label, Display description, { this.options = const [] })
+  MineralSubcommand({ required Display label, required Display description, this.options = const [] })
     : super(label, description, null);
 
   @override
