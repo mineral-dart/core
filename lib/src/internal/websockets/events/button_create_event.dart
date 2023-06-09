@@ -7,6 +7,6 @@ class ButtonCreateEvent<T extends PartialChannel> extends Event {
   ButtonCreateEvent(this._interaction);
 
   ButtonInteraction get interaction => _interaction;
-  GuildMember get sender => _interaction.member!;
+  GuildMember? get sender => _interaction.member!;
   T get channel => _interaction.channel as T;
 }
