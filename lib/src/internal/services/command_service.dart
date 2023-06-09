@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
@@ -46,10 +47,8 @@ class CommandService extends MineralService implements CommandServiceContract {
 
   void _registerSubCommands (String identifier, CommandScope scope, List<MineralSubcommand> commands, MineralCommandGroup? group) {
     for (final subcommand in commands) {
-      final location = join(identifier, group?.label.uid, subcommand.label.uid)
-          .replaceAll(separator, '.');
-
-      _handlers.putIfAbsent(location, () => subcommand);
+      final List<String?> fragments = [identifier, group?.label.uid, subcommand.label.uid];
+      _handlers.putIfAbsent(fragments.whereNotNull().join('.'), () => subcommand);
     }
   }
 
