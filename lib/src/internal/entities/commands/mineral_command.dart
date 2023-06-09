@@ -1,6 +1,7 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/helper.dart';
+import 'package:mineral/src/internal/entities/commands/display.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 
 class MineralCommand extends AbstractCommand implements MineralCommandContract {
@@ -12,9 +13,7 @@ class MineralCommand extends AbstractCommand implements MineralCommandContract {
   final bool everyone;
   final bool nsfw;
 
-  MineralCommand(String label, String description, {
-    Translate? labelTranslation,
-    Translate? descriptionTranslation,
+  MineralCommand(Display label, Display description, {
     CommandScope? scope,
     this.options = const [],
     this.subcommands = const [],
@@ -22,7 +21,7 @@ class MineralCommand extends AbstractCommand implements MineralCommandContract {
     this.permissions = const [],
     this.everyone = false,
     this.nsfw = false,
-  }) : super(label, description, labelTranslation, descriptionTranslation, scope ?? CommandScope.guild);
+  }) : super(label, description, scope ?? CommandScope.guild);
 
   @override
   Map<String, dynamic> get serialize => {

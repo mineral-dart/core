@@ -1,15 +1,15 @@
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/internal/entities/commands/display.dart';
 
 class OptionChoice {
-  final String label;
+  final Display label;
   final String value;
-  final Translate? labelTranslation;
 
-  const OptionChoice({ required this.label, required this.value, this.labelTranslation });
+  const OptionChoice({ required this.label, required this.value });
 
   Map<String, dynamic> get serialize => {
-    'name': label,
-    'name_localizations': labelTranslation != null ? labelTranslation!.serialize : null,
+    'name': label.uid,
+    'name_localizations': label.serialize,
     'value': value
   };
 }

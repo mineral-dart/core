@@ -30,15 +30,15 @@ class CommandService extends MineralService implements CommandServiceContract {
   @override
   void register (List<MineralCommandContract> commands) {
     for (final command in List<MineralCommand>.from(commands)) {
-      _commands.putIfAbsent(command.label, () => command);
+      _commands.putIfAbsent(command.label.uid, () => command);
 
       if (command.subcommands.isNotEmpty) {
-        _registerSubCommands(command.label, command.scope ?? CommandScope.guild, command.subcommands, null);
+        _registerSubCommands(command.label.uid, command.scope ?? CommandScope.guild, command.subcommands, null);
       }
 
       if (command.groups.isNotEmpty) {
         for (final group in command.groups) {
-          _registerSubCommands(command.label, command.scope ?? CommandScope.guild, group.subcommands, group);
+          _registerSubCommands(command.label.uid, command.scope ?? CommandScope.guild, group.subcommands, group);
         }
       }
     }
@@ -46,7 +46,7 @@ class CommandService extends MineralService implements CommandServiceContract {
 
   void _registerSubCommands (String identifier, CommandScope scope, List<MineralSubcommand> commands, MineralCommandGroup? group) {
     for (final subcommand in commands) {
-      final location = join(identifier, group?.label, subcommand.label)
+      final location = join(identifier, group?.label.uid, subcommand.label.uid)
           .replaceAll(separator, '.');
 
       _handlers.putIfAbsent(location, () => subcommand);

@@ -1,12 +1,10 @@
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/internal/entities/commands/display.dart';
 
 class MineralCommandGroup extends AbstractCommand {
   List<MineralSubcommand> subcommands;
 
-  MineralCommandGroup(String label, String description, this.subcommands, {
-    Translate? labelTranslation,
-    Translate? descriptionTranslation,
-  }): super(label, description, labelTranslation, descriptionTranslation, null);
+  MineralCommandGroup(Display label, Display description, this.subcommands): super(label, description, null);
 
   @override
   Map<String, dynamic> get serialize => {
