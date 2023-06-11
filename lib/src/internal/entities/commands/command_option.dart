@@ -77,6 +77,15 @@ class CommandOption {
     );
   }
 
+  factory CommandOption.integer(Display label, Display description, { bool? required = false }) {
+    return CommandOption(
+        label: label,
+        description: description,
+        type: OptionType.integer,
+        required: required
+    );
+  }
+
   factory CommandOption.user(Display label, Display description, { bool? required = false }) {
     return CommandOption(
       label: label,
