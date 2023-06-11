@@ -24,7 +24,7 @@ class AbstractCommand<T extends CommandInteraction> {
   Map<String, dynamic> get serialize => {
     'name': _label.uid,
     'name_localizations': _label.serialize,
-    'description': _label.uid,
-    'description_localizations': _label.serialize,
+    'description': _description.uid,
+    'description_localizations': _description.serialize,
   };
 }
