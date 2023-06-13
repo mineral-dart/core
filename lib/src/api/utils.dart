@@ -31,11 +31,8 @@ enum ExplicitContentFilterLevel {
   membersWithoutRoles(1),
   allMembers(2);
 
-  final int _value;
-  const ExplicitContentFilterLevel(this._value);
-
-  @override
-  String toString() => _value.toString();
+  final int value;
+  const ExplicitContentFilterLevel(this.value);
 }
 
 enum SystemChannelFlags {
@@ -44,11 +41,8 @@ enum SystemChannelFlags {
   suppressGuildReminderNotifications(1 << 2),
   suppressJoinNotificationReplies(1 << 3);
 
-  final int _value;
-  const SystemChannelFlags(this._value);
-
-  @override
-  String toString() => _value.toString();
+  final int value;
+  const SystemChannelFlags(this.value);
 }
 
 class NsfwLevel {

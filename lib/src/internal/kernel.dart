@@ -3,6 +3,7 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/collector_service.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
+import 'package:mineral/src/internal/services/component_service.dart';
 import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral/src/internal/services/console/themes/console_theme.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
@@ -38,26 +39,31 @@ class Kernel with Container {
   /// Package service used to register and listen packages.
   late PackageService packages;
 
+  late ComponentService components;
+
   Kernel ({
     required this.intents,
     EventService? events,
     CommandService? commands,
     SharedStateService? states,
+    ComponentService? components,
     PackageService? packages,
     ContextMenuService? contextMenus,
   }) {
     this.states = states ?? SharedStateService([]);
     this.commands = commands ?? CommandService([]);
     this.contextMenus = contextMenus ?? ContextMenuService([]);
+    this.components = components ?? ComponentService([]);
     this.events = events ?? EventService([]);
     this.packages = packages ?? PackageService([]);
 
-    CollectorService();
     DebuggerService('[ debug ]');
   }
 
   /// Initialize the kernel.
   Future<void> init () async {
+    CollectorService();
+
     container.bind((_) => _console);
     await _environment.load();
 

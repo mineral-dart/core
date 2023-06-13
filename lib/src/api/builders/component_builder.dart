@@ -1,9 +1,6 @@
 import 'package:mineral/core/builders.dart';
-import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/builders/menus/select_menu_builder.dart';
 import 'package:mineral/src/exceptions/too_many_exception.dart';
-
-import 'buttons/contracts/button_contract.dart';
 
 /// A builder for component entry class.
 class ComponentBuilder {
@@ -27,12 +24,12 @@ class ButtonWrapper {
   ButtonWrapper(this._builder);
 
   /// Add one button to the component.
-  void only<T extends ButtonContract> (T builder) {
-    _builder.rows.add(RowBuilder([builder as ComponentWrapper]));
+  void only<T extends ButtonBuilder> (T builder) {
+    _builder.rows.add(RowBuilder([builder]));
   }
 
   /// Add many buttons to the component.
-  void many<T extends ButtonContract> (List<T> builders) {
+  void many<T extends ButtonBuilder> (List<T> builders) {
     if (builders.length > 5) {
       throw TooManyException("You can't define more than 5 embeds in the same action-row");
     }

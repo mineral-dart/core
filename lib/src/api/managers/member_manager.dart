@@ -57,10 +57,10 @@ class MemberManager extends CacheManager<GuildMember>  {
     if(response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);
       final GuildMember guildMember = GuildMember.from(
-          user: User.from(payload['user']),
-          roles: guild.roles,
-          guild: guild,
-          voice: VoiceManager.empty(payload['deaf'], payload['mute'], payload['user']['id'], _guildId)
+        user: User.from(payload['user']),
+        roles: guild.roles,
+        guild: guild,
+        voice: VoiceManager.empty(payload['deaf'], payload['mute'], payload['user']['id'], _guildId)
       );
 
       cache.putIfAbsent(guildMember.user.id, () => guildMember);

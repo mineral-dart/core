@@ -1,9 +1,6 @@
-import 'dart:convert';
-
-import 'package:http/http.dart';
-import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
+
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/guilds/activities/guild_member_activity.dart';
@@ -17,7 +14,9 @@ import 'package:mineral/src/api/managers/member_manager.dart';
 import 'package:mineral/src/api/managers/moderation_rule_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
+
 import 'package:mineral/src/internal/mixins/container.dart';
+import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
@@ -35,6 +34,7 @@ class GuildCreatePacket with Container implements WebsocketPacket {
     MineralClient client = container.use<MineralClient>();
 
     websocketResponse.payload['guild_id'] = websocketResponse.payload['id'];
+    final Guild guild = await client.makeGuild(client, websocketResponse.payload);
 
     GuildRoleManager roleManager = GuildRoleManager(websocketResponse.payload['guild_id']);
     for (dynamic item in websocketResponse.payload['roles']) {
