@@ -17,6 +17,12 @@ import 'package:mineral/src/api/messages/message_parser.dart';
 import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+import '../../../core/services.dart';
+import '../../api/guilds/activities/guild_member_activity.dart';
+import '../../api/guilds/client_status_bucket.dart';
+import '../../api/guilds/guild_member_presence.dart';
+import '../services/context_menu_service.dart';
+
 extension MineralClientExtension on MineralClient {
   Future<Response> sendMessage (PartialChannel channel, { String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts, Map<String, Snowflake>? messageReference }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, tts).toJson();
@@ -41,51 +47,53 @@ extension MineralClientExtension on MineralClient {
     return channel as T?;
   }
 
-  Future<Guild> makeGuild (MineralClient client, dynamic payload) async {
-    MemberManager memberManager = MemberManager(payload['id']);
-    ChannelManager channelManager = ChannelManager(payload['id']);
-    GuildRoleManager roleManager = GuildRoleManager(payload['guild_id']);
+  Future<Guild> makeGuild (dynamic websocketPayload) async {
+    CommandService commandManager = container.use<CommandService>();
+    ContextMenuService contextMenuService = container.use<ContextMenuService>();
 
-    for (dynamic item in payload['roles']) {
+    websocketPayload['guild_id'] = websocketPayload['id'];
+
+    GuildRoleManager roleManager = GuildRoleManager(websocketPayload['guild_id']);
+    for (dynamic item in websocketPayload['roles']) {
       Role role = Role.from(roleManager: roleManager, payload: item);
       roleManager.cache.putIfAbsent(role.id, () => role);
     }
 
     Map<Snowflake, VoiceManager> voices = {};
-    if (payload['voice_states'] != null) {
-      for(dynamic voiceMember in payload['voice_states']) {
-        final VoiceManager voiceManager = VoiceManager.from(voiceMember, payload['guild_id']);
-        voices.putIfAbsent(voiceMember['user_id'], () => voiceManager);
-      }
+    for(dynamic voiceMember in websocketPayload['voice_states']) {
+      final VoiceManager voiceManager = VoiceManager.from(voiceMember, websocketPayload['guild_id']);
+      voices.putIfAbsent(voiceMember['user_id'], () => voiceManager);
     }
 
+    MemberManager memberManager = MemberManager(websocketPayload['id']);
+    ChannelManager channelManager = ChannelManager(websocketPayload['id']);
+
     EmojiManager emojiManager = EmojiManager();
-    for(dynamic payload in payload['emojis']) {
+    for(dynamic payload in websocketPayload['emojis']) {
       Emoji emoji = Emoji.from(
-        memberManager: memberManager,
-        emojiManager: emojiManager,
-        payload: payload
+          memberManager: memberManager,
+          emojiManager: emojiManager,
+          payload: payload
       );
 
       emojiManager.cache.putIfAbsent(emoji.id, () => emoji);
     }
 
     GuildScheduledEventService guildScheduledManager = GuildScheduledEventService();
-    if (payload['guild_scheduled_events'] != null) {
-      for(dynamic payload in payload['guild_scheduled_events']) {
-        GuildScheduledEvent event = GuildScheduledEvent.from(
+    for(dynamic payload in websocketPayload['guild_scheduled_events']) {
+      GuildScheduledEvent event = GuildScheduledEvent.from(
           channelManager: channelManager,
           memberManager: memberManager,
           payload: payload
-        );
+      );
 
-        guildScheduledManager.cache.putIfAbsent(event.id, () => event);
-      }
+      guildScheduledManager.cache.putIfAbsent(event.id, () => event);
     }
 
-    ModerationRuleManager moderationManager = ModerationRuleManager(payload['guild_id']);
+    ModerationRuleManager moderationManager = ModerationRuleManager(websocketPayload['guild_id']);
 
-    WebhookManager webhookManager = WebhookManager(payload['id'], null);
+    WebhookManager webhookManager = WebhookManager(websocketPayload['id'], null);
+    VanityInvite? vanityInvite = await VanityInvite.sync(websocketPayload['id']);
 
     Guild guild = Guild.from(
       emojiManager: emojiManager,
@@ -95,44 +103,56 @@ extension MineralClientExtension on MineralClient {
       moderationRuleManager: moderationManager,
       webhookManager: webhookManager,
       guildScheduledEventService: guildScheduledManager,
-      payload: payload,
+      vanityInvite: vanityInvite,
+      payload: websocketPayload,
     );
 
-    client.guilds.cache[guild.id] = guild;
+    this.guilds.cache.putIfAbsent(guild.id, () => guild);
 
-    for (dynamic element in payload['stickers']) {
+    for (dynamic element in websocketPayload['stickers']) {
       Sticker sticker = Sticker.from(element);
       guild.stickers.cache.putIfAbsent(sticker.id, () => sticker);
     }
 
-    if (payload['members'] != null) {
-      for (dynamic member in payload['members']) {
-        User user = User.from(member['user']);
-        GuildMember guildMember = GuildMember.from(
+    for (dynamic member in websocketPayload['members']) {
+      User user = User.from(member['user']);
+      GuildMember guildMember = GuildMember.from(
           roles: roleManager,
           user: user,
           member: member,
           guild: guild,
           voice: voices.containsKey(user.id)
-            ? voices.get(user.id)!
-            : VoiceManager.empty(member['deaf'], member['mute'], user.id, payload['guild_id'])
-        );
+              ? voices.get(user.id)!
+              : VoiceManager.empty(member['deaf'], member['mute'], user.id, websocketPayload['guild_id'])
+      );
 
-        memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
-        client.users.cache.putIfAbsent(user.id, () => user);
+      memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
+      this.users.cache.putIfAbsent(user.id, () => user);
+    }
+
+    for(dynamic payload in websocketPayload['channels']) {
+      payload['guild_id'] = websocketPayload['id'];
+      final GuildChannel? channel = ChannelWrapper.create(payload);
+
+      if (channel != null) {
+        channelManager.cache.putIfAbsent(channel.id, () => channel);
       }
     }
 
-    if (payload['channels'] != null) {
-      for (final element in payload['channels']) {
-        element['guild_id'] = payload['id'];
-        final GuildChannel? channel = ChannelWrapper.create(element);
+    for (dynamic payload in websocketPayload['presences']) {
+      payload['guild_id'] = websocketPayload['id'];
+      GuildMember member = await guild.members.resolve(payload['user']['id']);
+      ClientStatusBucket clientStatusBucket = ClientStatusBucket(payload['client_status']['desktop'], payload['client_status']['mobile'], payload['client_status']['web']);
 
-        if (channel != null) {
-          channelManager.cache.putIfAbsent(channel.id, () => channel);
-        }
+      List<GuildMemberActivity> activities = [];
+      for(dynamic activity in payload['activities']) {
+        activities.add(GuildMemberActivity(ActivityType.values.firstWhere((element) => element.value == activity['type']), activity['name']));
       }
+
+      GuildMemberPresence guildMemberPresence = GuildMemberPresence(payload['guild_id'], payload['status'], null, clientStatusBucket, activities);
+      member.presence = guildMemberPresence;
     }
+
 
     guild.afkChannel = guild.channels.cache.get<VoiceChannel>(guild.afkChannelId);
     guild.systemChannel = guild.channels.cache.get<TextChannel>(guild.systemChannelId);
@@ -145,6 +165,16 @@ extension MineralClientExtension on MineralClient {
     Map<Snowflake, ModerationRule>? autoModerationRules = await getAutoModerationRules(guild);
     if (autoModerationRules != null) {
       guild.moderationRules.cache.addAll(autoModerationRules);
+    }
+
+    final commands = commandManager.getGuildCommands(guild);
+    final contextMenus = contextMenuService.getFromGuild(guild);
+    if (commands.isNotEmpty || contextMenus.isNotEmpty) {
+      await this.registerGuildCommands(
+        guild: guild,
+        commands: commands,
+        contextMenus: contextMenus,
+      );
     }
 
     return guild;
