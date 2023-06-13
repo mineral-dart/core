@@ -69,6 +69,7 @@ class Kernel with Container {
 
     final DiscordApiHttpService http = DiscordApiHttpService('https://discord.com/api/v${Constants.apiVersion}');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
+    http.defineHeader(header: 'User-Agent', value: '${Constants.name} (${Constants.githubURL}, ${Constants.version})');
     container.bind((_) => http);
 
     String? token = _environment.get('APP_TOKEN');

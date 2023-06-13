@@ -20,7 +20,10 @@ class ContextMessageInteraction extends ContextMenuInteraction {
     super._guildId,
   );
 
+  /// Get message [Message] of this
   Message get message => _message;
+
+  /// Get channel [TextBasedChannel] of this
   TextBasedChannel get channel => guild!.channels.cache.get(_channelId)!;
 
   factory ContextMessageInteraction.from({ required Message message, required dynamic payload }) {
@@ -34,7 +37,7 @@ class ContextMessageInteraction extends ContextMenuInteraction {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['member']?['user']?['id'],
+      payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
     );
   }

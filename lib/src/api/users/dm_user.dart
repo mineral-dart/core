@@ -9,6 +9,7 @@ class DmUser extends User {
   DmUser(
     super._id,
     super._username,
+    super._globalName,
     super._discriminator,
     super._bot,
     super._system,
@@ -39,6 +40,7 @@ class DmUser extends User {
     return DmUser(
       user.id,
       user.username,
+      user.globalName,
       user.discriminator,
       user.isBot,
       user.isSystem,

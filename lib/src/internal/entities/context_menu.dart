@@ -4,14 +4,14 @@ import 'package:mineral_contract/mineral_contract.dart';
 
 class ContextMenuBuilder {
   final String _label;
-  final Scope _scope;
+  final CommandScope _scope;
   final ContextMenuType _type;
   final bool _everyone;
 
   ContextMenuBuilder(this._label, this._type, this._scope, this._everyone);
 
   String get label => _label;
-  Scope get scope => _scope;
+  CommandScope get scope => _scope;
   ContextMenuType get type => _type;
   bool get everyone => _everyone;
 
@@ -24,8 +24,8 @@ class ContextMenuBuilder {
 abstract class MineralContextMenu<T> extends ContextMenuServiceContract<T> {
   late ContextMenuBuilder builder;
 
-  MineralContextMenu(String label, ContextMenuType type, { Scope? scope, bool everyone = false }) {
-    builder = ContextMenuBuilder(label, type, scope ?? Scope.guild, everyone);
+  MineralContextMenu(String label, ContextMenuType type, { CommandScope? scope, bool everyone = false }) {
+    builder = ContextMenuBuilder(label, type, scope ?? CommandScope.guild, everyone);
   }
 
   Future<void> handle (T event);

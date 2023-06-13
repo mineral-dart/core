@@ -42,8 +42,8 @@ class PermissionOverwrite {
       type: payload['type'] is String
         ? PermissionOverwriteType.values.firstWhere((element) => element.name == payload['type'])
         : PermissionOverwriteType.values.firstWhere((element) => element.value == payload['type']),
-      allow: Helper.bitfieldToPermissions(payload['allow']),
-      deny: Helper.bitfieldToPermissions(payload['deny']),
+      allow: Helper.bitfieldToPermissions(int.parse(payload['allow'].toString())),
+      deny: Helper.bitfieldToPermissions(int.parse(payload['deny'].toString())),
     );
   }
 }

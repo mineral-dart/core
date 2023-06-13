@@ -16,6 +16,7 @@ class GuildCommandInteraction extends CommandInteraction {
     super.params
   );
 
+  /// Get channel [TextBasedChannel] of this
   @override
   TextBasedChannel? get channel => super.channel as TextBasedChannel;
 
@@ -42,7 +43,7 @@ class GuildCommandInteraction extends CommandInteraction {
         payload['version'],
         payload['type'],
         payload['token'],
-        payload['guild_id'] == null ? payload['user']['id'] : payload['member']?['user']?['id'],
+        payload['member']?['user']?['id'] ?? payload['user']?['id'],
         payload['guild_id'],
         payload['data']['name'],
         payload['channel_id'],

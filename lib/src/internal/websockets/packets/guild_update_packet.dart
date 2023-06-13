@@ -1,6 +1,7 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/invites/vanity_invite.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
@@ -44,6 +45,8 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
     GuildScheduledEventService guildScheduledEventService = GuildScheduledEventService();
     guildScheduledEventService.cache.addAll(before.scheduledEvents.cache);
 
+    VanityInvite? vanityInvite = await VanityInvite.sync(websocketResponse.payload['id']);
+
     Guild after = Guild.from(
       emojiManager: emojiManager,
       memberManager: memberManager,
@@ -52,6 +55,7 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
       moderationRuleManager: moderationManager,
       webhookManager: webhookManager,
       payload: websocketResponse.payload,
+      vanityInvite: vanityInvite,
       guildScheduledEventService: guildScheduledEventService
     );
 

@@ -7,6 +7,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/src/api/invites/vanity_invite.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/command_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -69,7 +70,7 @@ class Guild {
   late TextChannel? rulesChannel;
   int? _maxPresences;
   int _maxMembers;
-  String? _vanityUrlCode;
+  VanityInvite? _vanityInvite;
   String? _description;
   ImageFormater? _banner;
   int _premiumTier;
@@ -117,7 +118,7 @@ class Guild {
     this._rulesChannelId,
     this._maxPresences,
     this._maxMembers,
-    this._vanityUrlCode,
+    this._vanityInvite,
     this._description,
     this._banner,
     this._premiumTier,
@@ -216,7 +217,7 @@ class Guild {
 
 
   /// The [Guild]'s vanity url code.
-  String? get vanityUrlCode => _vanityUrlCode;
+  VanityInvite? get vanity => _vanityInvite;
 
   /// The [Guild]'s description.
   String? get description => _description;
@@ -330,7 +331,7 @@ class Guild {
 
   /// Defines the explicit content level of this
   /// ```dart
-  /// await guild.setExplicitContentFilter(2);
+  /// await guild.setExplicitContentFilter(ExplicitContentLevel.allMembers);
   /// ```
   Future<void> setExplicitContentFilter (ExplicitContentLevel level) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -346,7 +347,7 @@ class Guild {
   ///
   /// ```dart
   /// final voiceChannel = guild.channels.cache.getOrFail('240561194958716924');
-  /// await guild.setAfkChannel(2);
+  /// await guild.setAfkChannel(voiceChannel);
   /// ```
   Future<void> setAfkChannel (VoiceChannel channel) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/$id")
@@ -542,7 +543,7 @@ class Guild {
   /// Update system channel of this
   ///
   /// ```dart
-  /// final channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
   /// await guild.setSystemChannel(channel);
   /// ```
   Future<void> setSystemChannel (TextChannel channel) async {
@@ -559,7 +560,7 @@ class Guild {
   /// Update rules channel of this
   ///
   /// ```dart
-  /// final channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
   /// await guild.setRulesChannel(channel);
   /// ```
   Future<void> setRulesChannel (TextChannel channel) async {
@@ -576,7 +577,7 @@ class Guild {
   /// Update public updates channel of this
   ///
   /// ```dart
-  /// final channel = guild.channels.cache.getOrFail('240561194958716924');
+  /// final TextChannel channel = guild.channels.cache.getOrFail('240561194958716924');
   /// await guild.setPublicUpdateChannel(channel);
   /// ```
   Future<void> setPublicUpdateChannel (TextChannel channel) async {
@@ -631,12 +632,12 @@ class Guild {
     );
   }
 
-  /// Unbanned this from the [Guild] and deleted its messages for a given period
+  /// Unbanned member from this.
   ///
   /// ```dart
-  /// await member.unban();
+  /// await member.unban("670642326661496866", reason: "Lorem ipsum dolor sit amet");
   /// ```
-  Future<bool> ban (Snowflake memberId, { String? reason }) async {
+  Future<bool> unban (Snowflake memberId, { String? reason }) async {
     Response response = await ioc.use<DiscordApiHttpService>().destroy(url: '/guilds/$id/bans/$memberId')
       .auditLog(reason)
       .build();
@@ -665,17 +666,19 @@ class Guild {
     required ModerationRuleManager moderationRuleManager,
     required WebhookManager webhookManager,
     required GuildScheduledEventService guildScheduledEventService,
+    required VanityInvite? vanityInvite,
     required dynamic payload
   }) {
     StickerManager stickerManager = StickerManager();
 
-    final List<GuildFeature> features = List<GuildFeature>.from(payload['features'].map((element) {
+    final List<GuildFeature> features = List<GuildFeature>.from(payload['features'].fold([], (acc, element) {
       GuildFeature? feature = GuildFeature.values.firstWhereOrNull((feature) => feature.value == element);
       if (feature != null) {
-        return feature;
+        return acc..add(feature);
       }
 
       ioc.use<ConsoleService>().warn('Guild feature $element don\'t exist! Please report this to our team.');
+      return acc;
     }));
 
     return Guild(
@@ -702,7 +705,7 @@ class Guild {
       payload['rules_channel_id'],
       payload['max_presences'],
       payload['max_members'],
-      payload['vanity_url_code'],
+      vanityInvite,
       payload['description'],
       payload['banner'] != null ? ImageFormater(payload['banner'], 'banners/${payload['id']}') : null,
       payload['premium_tier'],
