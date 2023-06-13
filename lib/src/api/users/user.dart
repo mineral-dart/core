@@ -13,7 +13,8 @@ import 'package:mineral_ioc/ioc.dart';
 class User {
   Snowflake _id;
   String _username;
-  String _discriminator;
+  String _globalName;
+  String? _discriminator;
   bool _bot;
   bool _system;
   List<UserFlagContract> _publicFlags;
@@ -25,6 +26,7 @@ class User {
   User(
     this._id,
     this._username,
+    this._globalName,
     this._discriminator,
     this._bot,
     this._system,
@@ -41,8 +43,10 @@ class User {
   /// Returns the username of the user as a [String].
   String get username => _username;
 
+  String get globalName => _globalName;
+
   /// Returns the username of the user as a [String].
-  String get discriminator => _discriminator;
+  String? get discriminator => _discriminator;
 
   /// Returns a [bool] indicating whether the user is a bot.
   bool get isBot => _bot;
@@ -138,6 +142,7 @@ class User {
     return User(
       payload['id'],
       payload['username'],
+      payload['global_name'],
       payload['discriminator'],
       payload['bot'] == true,
       payload['system'] == true,
