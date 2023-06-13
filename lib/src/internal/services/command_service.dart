@@ -1,13 +1,11 @@
 import 'dart:async';
 
+import 'package:collection/collection.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/internal/entities/commands/abstract_command.dart';
-import 'package:mineral/src/internal/entities/commands/command_type.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 import 'package:mineral_ioc/ioc.dart';
-import 'package:path/path.dart';
 
 class CommandService extends MineralService implements CommandServiceContract {
   final Map<String, AbstractCommand> _commands = {};
@@ -32,35 +30,60 @@ class CommandService extends MineralService implements CommandServiceContract {
   @override
   void register (List<MineralCommandContract> commands) {
     for (final command in List<MineralCommand>.from(commands)) {
-      _commands.putIfAbsent(command.label, () => command);
+      _commands.putIfAbsent(command.label.uid, () => command);
 
       if (command.subcommands.isNotEmpty) {
-        _registerSubCommands(command.label, command.scope ?? CommandScope.guild, command.subcommands, null);
+        _registerSubCommands(command.label.uid, command.scope ?? CommandScope.guild, command.subcommands, null);
       }
 
       if (command.groups.isNotEmpty) {
         for (final group in command.groups) {
-          _registerSubCommands(command.label, command.scope ?? CommandScope.guild, group.subcommands, group);
+          _registerSubCommands(command.label.uid, command.scope ?? CommandScope.guild, group.subcommands, group);
         }
+      }
+
+      if(command.groups.isEmpty && command.subcommands.isEmpty) {
+        _handlers.putIfAbsent(command.label.uid, () => command);
       }
     }
   }
 
   void _registerSubCommands (String identifier, CommandScope scope, List<MineralSubcommand> commands, MineralCommandGroup? group) {
     for (final subcommand in commands) {
-      final location = join(identifier, group?.label, subcommand.label)
-          .replaceAll(separator, '.');
-
-      _handlers.putIfAbsent(location, () => subcommand);
+      final List<String?> fragments = [identifier, group?.label.uid, subcommand.label.uid];
+      _handlers.putIfAbsent(fragments.whereNotNull().join('.'), () => subcommand);
     }
   }
 
   String _buildIdentifier (Map<String, dynamic> payload) {
-    if (payload['type'] == CommandType.subcommand.type && payload['id'] == null) {
+
+    if(_containsSubOrGroup(payload)) {
+      return payload['name'] += '.' + _buildIdentifier(payload['options'][0]);
+    }
+
+    if(payload['type'] == CommandType.subcommand.type) {
       return payload['name'];
     }
 
-    return payload['name'] += '.' + _buildIdentifier(payload['options'][0]);
+    if(payload['type'] == CommandType.group.type) {
+      return payload['name'];
+    }
+
+    return payload['name'];
+  }
+
+  bool _containsSubOrGroup (Map<String, dynamic> payload) {
+    bool contains = false;
+    if(payload['options'] == null) {
+      return false;
+    }
+     for(final option in payload['options']) {
+       if (option['type'] == CommandType.subcommand.type || option['type'] == CommandType.group.type) {
+         contains = true;
+       }
+     }
+
+     return contains;
   }
 
   List<AbstractCommand> getGuildCommands (Guild guild) {

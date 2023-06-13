@@ -10,8 +10,11 @@ export '../src/internal/entities/commands/mineral_command_group.dart' show Miner
 export '../src/internal/entities/commands/mineral_subcommand.dart' show MineralSubcommand;
 export '../src/internal/entities/commands/option_choice.dart' show OptionChoice;
 export '../src/internal/entities/commands/option_type.dart' show OptionType;
+export '../src/internal/entities/commands/display.dart' show Display;
+
 export '../src/internal/entities/context_menu.dart' show MineralContextMenu;
 export '../src/internal/entities/event.dart' show MineralEvent, Event;
 export '../src/internal/entities/state.dart' show MineralState;
+
 export 'src/internal/mixins/collection.dart';
 export 'src/internal/mixins/string.dart';

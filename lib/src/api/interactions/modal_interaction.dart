@@ -25,6 +25,7 @@ class ModalInteraction extends Interaction {
 
   /// Get custom id [Snowflake] of this
   Snowflake get customId => _customId;
+  
   /// Get channel [PartialChannel] of this
   PartialChannel? get channel => guild != null
     ? guild?.channels.cache.get(_channelId)
@@ -46,7 +47,7 @@ class ModalInteraction extends Interaction {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['member']?['user']?['id'],
+      payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
       payload['data']['custom_id'],
       payload['channel_id'],

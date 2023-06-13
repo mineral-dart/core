@@ -28,6 +28,7 @@ class CommandInteraction extends Interaction  {
 
   /// Get identifier of this
   String get identifier => _identifier;
+
   /// Get channel [PartialChannel] of this
   PartialChannel? get channel => guild != null
     ? guild!.channels.cache.get(_channelId)
@@ -132,7 +133,7 @@ class CommandInteraction extends Interaction  {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['guild_id'] == null ? payload['user']['id'] : payload['member']?['user']?['id'],
+      payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
       payload['data']['name'],
       payload['channel_id'],
