@@ -46,7 +46,7 @@ class ModalInteraction extends Interaction {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['member']?['user']?['id'],
+      payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
       payload['data']['custom_id'],
       payload['channel_id'],
