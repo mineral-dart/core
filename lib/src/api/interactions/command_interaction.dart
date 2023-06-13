@@ -26,12 +26,17 @@ class CommandInteraction extends Interaction  {
     this._params,
   );
 
+  /// Get identifier of this
   String get identifier => _identifier;
+
+  /// Get channel [PartialChannel] of this
   PartialChannel? get channel => guild != null
     ? guild!.channels.cache.get(_channelId)
     : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
 
+  /// Get data of this
   Map<String, dynamic> get data => _data;
+  /// Get params of this
   Map<String, dynamic> get params => _params;
 
   /// Returns an instance of [T] or null if the command has the designed option
@@ -128,7 +133,7 @@ class CommandInteraction extends Interaction  {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['guild_id'] == null ? payload['user']['id'] : payload['member']?['user']?['id'],
+      payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
       payload['data']['name'],
       payload['channel_id'],

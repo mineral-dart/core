@@ -140,7 +140,8 @@ enum GuildFeature {
   memberProfiles('MEMBER_PROFILES'),
   sevenDayThreadArchive('SEVEN_DAY_THREAD_ARCHIVE'),
   applicationCommandPermissionsV2('APPLICATION_COMMAND_PERMISSIONS_V2'),
-  soundboard('SOUNDBOARD');
+  soundboard('SOUNDBOARD'),
+  channelIconEmojisGenerated('CHANNEL_ICON_EMOJIS_GENERATED');
 
   final String value;
   const GuildFeature(this.value);

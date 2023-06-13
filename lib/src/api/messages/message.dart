@@ -44,13 +44,20 @@ class Message extends PartialMessage<TextBasedChannel>  {
     this._author,
   );
 
+  /// Get author of this
   MessageAuthor get author => _author;
 
+  /// Get channel of this
   @override
   TextBasedChannel get channel => super.channel;
 
+  /// Get all mentions of this
   MessageMention get mentions => _mentions;
 
+  /// Edit this message
+  /// ```dart
+  /// await message.edit(content: 'Hello world!');
+  /// ```
   Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
 
@@ -78,6 +85,10 @@ class Message extends PartialMessage<TextBasedChannel>  {
       .build();
   }
 
+  /// Create a thread from this message
+  /// ```dart
+  /// ThreadChannel? thread = await message.createThread(label: 'My thread');
+  /// ```
   Future<ThreadChannel?> createThread ({ required String label, int archiveDuration = 60}) async {
      Response response = await ioc.use<DiscordApiHttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/threads')
         .payload({
@@ -89,7 +100,11 @@ class Message extends PartialMessage<TextBasedChannel>  {
     return channel.guild.channels.cache.getOrFail(jsonDecode(response.body)['id']);
   }
 
-  Future<void> pin (Snowflake webhookId) async {
+  /// Pin this message
+  /// ```dart
+  /// await message.pin();
+  /// ```
+  Future<void> pin () async {
     if (isPinned) {
       ioc.use<ConsoleService>().warn('Message $id is already pinned');
       return;
@@ -99,6 +114,10 @@ class Message extends PartialMessage<TextBasedChannel>  {
       .build();
   }
 
+  /// Unpin this message
+  /// ```dart
+  /// await message.unpin();
+  /// ```
   Future<void> unpin () async {
     if (!isPinned) {
       ioc.use<ConsoleService>().warn('Message $id isn\'t pinned');
@@ -110,6 +129,10 @@ class Message extends PartialMessage<TextBasedChannel>  {
       .build();
   }
 
+  /// Reply to this message
+  /// ```dart
+  /// await message.reply(content: 'Hello world!');
+  /// ```
   Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     MineralClient client = ioc.use<MineralClient>();
 

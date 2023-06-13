@@ -31,9 +31,9 @@ class MemberUpdatePacket with Container implements WebsocketPacket {
         voice: voice
       );
 
-      eventService.controller.add(MemberUpdateEvent(before!, after));
+      eventService.controller.add(MemberUpdateEvent(before, after));
 
-      if (before.roles.cache.length != after.roles.cache.length) {
+      if (before?.roles.cache.length != after.roles.cache.length) {
         eventService.controller.add(MemberRoleUpdateEvent(before, after));
       }
 

@@ -46,39 +46,59 @@ class PartialMessage<T extends PartialChannel>  {
     this._editedTimestamp
   );
 
+  /// Get id [Snowflake] of this
   Snowflake get id => _id;
 
+  /// Get content [String] of this
   String get content => _content;
 
+  /// Get if this is tts [bool]
   bool get tts => _tts;
 
+  /// Get allow mentions [bool] of this
   bool get allowMentions => _allowMentions;
 
+  /// Get reference [PartialMessage] of this
   PartialMessage? get reference => _reference;
 
+  /// Get stickers [MessageStickerItem] of this
   List<MessageStickerItem> get stickers => _stickers;
 
+  /// Get components [ComponentBuilder] of this
   ComponentBuilder get components => _components;
 
+  /// Get embeds [EmbedBuilder] of this
   List<EmbedBuilder> get embeds => _embeds;
 
-  dynamic get payload => _payload;
-
+  /// Get attachments [MessageAttachment] of this
   List<MessageAttachment> get attachments => _attachments;
 
+  /// Get flags [int] of this
   int? get flags => _flags;
 
+  /// Get if this is pinned [bool]
   bool get isPinned => _pinned;
 
+  /// Get channel of this [T]
   T get channel => _guildId != null
     ? ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId).channels.cache.getOrFail(_channelId) as T
     : ioc.use<MineralClient>().dmChannels.cache.getOrFail(_channelId) as T;
 
+  /// Get reactions [MessageReactionManager] of this
   MessageReactionManager get reactions => _reactions;
 
+  /// Get created at [DateTime] of this
   DateTime get createdAt => DateTime.parse(_timestamp);
+
+  /// Get edited at [DateTime] of this
   DateTime? get updatedAt =>  _editedTimestamp != null ? DateTime.parse(_editedTimestamp!) : null;
 
+  dynamic get payload => _payload;
+
+  /// Delete this
+  /// ```dart
+  /// await message.delete(reason: 'Lorem ipsum dolor sit amet');
+  /// ```
   Future<void> delete ({ String? reason }) async {
     await ioc.use<DiscordApiHttpService>()
       .destroy(url: '/channels/$_channelId/messages/$id')

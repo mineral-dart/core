@@ -29,7 +29,7 @@ class ContextMenuService extends MineralService implements ContextMenuServiceCon
   }
 
   List<MineralContextMenu> getFromGuild (Guild guild) {
-    bool filter(MineralContextMenu element) => element.builder.scope.mode == Scope.guild.mode || element.builder.scope.mode == guild.id;
+    bool filter(MineralContextMenu element) => element.builder.scope.mode == CommandScope.guild.mode || element.builder.scope.mode == guild.id;
 
     return _contextMenus.where(filter).values.toList();
   }

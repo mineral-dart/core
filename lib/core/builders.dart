@@ -7,14 +7,12 @@ export '../src/api/builders/buttons/button_style.dart' show ButtonStyle;
 export '../src/api/builders/channel_builder.dart' show ChannelBuilder;
 export '../src/api/builders/code_builder.dart' show CodeBuilder;
 export '../src/api/builders/component_builder.dart' show ComponentBuilder;
-
+export '../src/api/builders/embed/embed_author.dart' show EmbedAuthor;
 export '../src/api/builders/embed/embed_builder.dart' show EmbedBuilder;
+export '../src/api/builders/embed/embed_field.dart' show EmbedField;
 export '../src/api/builders/embed/embed_footer.dart' show EmbedFooter;
 export '../src/api/builders/embed/embed_image.dart' show EmbedImage;
 export '../src/api/builders/embed/embed_thumbnail.dart' show EmbedThumbnail;
-export '../src/api/builders/embed/embed_author.dart' show EmbedAuthor;
-export '../src/api/builders/embed/embed_field.dart' show EmbedField;
-
 export '../src/api/builders/emoji_builder.dart' show EmojiBuilder;
 export '../src/api/builders/forum_tag_builder.dart' show ForumTagBuilder;
 export '../src/api/builders/markdown/markdown.dart' show Md;
