@@ -13,7 +13,7 @@ import 'package:mineral_ioc/ioc.dart';
 class User {
   Snowflake _id;
   String _username;
-  String _globalName;
+  String? _globalName;
   String? _discriminator;
   bool _bot;
   bool _system;
@@ -43,7 +43,7 @@ class User {
   /// Returns the username of the user as a [String].
   String get username => _username;
 
-  String get globalName => _globalName;
+  String? get globalName => _globalName;
 
   /// Returns the username of the user as a [String].
   String? get discriminator => _discriminator;
