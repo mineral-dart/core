@@ -28,6 +28,7 @@ class CommandInteraction extends Interaction  {
 
   /// Get identifier of this
   String get identifier => _identifier;
+
   /// Get channel [PartialChannel] of this
   PartialChannel? get channel => guild != null
     ? guild!.channels.cache.get(_channelId)

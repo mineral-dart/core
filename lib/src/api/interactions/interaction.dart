@@ -41,16 +41,22 @@ class Interaction  {
 
   /// Get id [Snowflake] of this
   Snowflake get id => _id;
+
   /// Get label [String] of this
   String? get label => _label;
+
   /// Get application id [Snowflake] of this
   Snowflake get applicationId => _applicationId;
+
   /// Get version [int] of this
   int get version => _version;
+
   /// Get type [InteractionType] of this
   InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
+
   /// Get token [String] of this
   String get token => _token;
+
   /// Get guild [Guild] of this
   Guild? get guild => ioc.use<MineralClient>().guilds.cache.get(_guildId);
 

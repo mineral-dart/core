@@ -22,6 +22,7 @@ class ContextMessageInteraction extends ContextMenuInteraction {
 
   /// Get message [Message] of this
   Message get message => _message;
+
   /// Get channel [TextBasedChannel] of this
   TextBasedChannel get channel => guild!.channels.cache.get(_channelId)!;
 

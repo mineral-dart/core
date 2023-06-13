@@ -26,12 +26,15 @@ class ButtonInteraction extends Interaction {
 
   /// Get custom id of this
   Snowflake get customId => _customId;
+
   /// Get message id of this
   Snowflake? get mid => _messageId;
+
   /// Get message [PartialMessage] of this
   PartialMessage? get message => guild != null
     ? (guild?.channels.cache.get(_channelId) as dynamic)?.messages.cache[_messageId]
     : ioc.use<MineralClient>().dmChannels.cache.get(_channelId)?.messages.cache.getOrFail(_messageId);
+
   /// Get channel [PartialChannel] of this
   PartialChannel get channel => guild != null
     ? guild!.channels.cache.getOrFail<TextBasedChannel>(_channelId)
