@@ -1,6 +1,8 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/src/internal/entities/commands/display.dart';
 
+import '../../../../framework.dart';
+
 enum OptionType {
   string(3),
   integer(4),
@@ -14,15 +16,6 @@ enum OptionType {
 
   final int value;
   const OptionType(this.value);
-}
-
-class OptionChoice {
-  final Display label;
-  final String value;
-
-  const OptionChoice({ required this.label, required this.value });
-
-  Object toJson () => { 'name': label, 'value': value };
 }
 
 class CommandOption {
@@ -54,7 +47,7 @@ class CommandOption {
     'type': type.value,
     'required': required ?? false,
     'channel_types': channels?.map((channel) => channel.value).toList(),
-    'choices': choices?.map((choice) => choice.toJson()).toList(),
+    'choices': choices?.map((choice) => choice.serialize).toList(),
     'min_value': min,
     'max_value': max,
   };
@@ -132,11 +125,11 @@ class CommandOption {
     );
   }
 
-  factory CommandOption.choice(Display label, Display description, OptionType type, List<OptionChoice> choices, { bool? required = false }) {
+  factory CommandOption.choice(Display label, Display description, List<OptionChoice> choices, { bool? required = false }) {
     return CommandOption(
       label: label,
       description: description,
-      type: type,
+      type: OptionType.string,
       choices: choices,
       required: required
     );
