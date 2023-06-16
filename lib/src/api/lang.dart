@@ -1,3 +1,5 @@
+/// Instance of Langs
+/// You can use it for Display class
 enum Lang {
   id('id', 'Indonesian'),
   da('da', 'Danish'),

@@ -39,22 +39,27 @@ class GuildChannel extends PartialChannel {
   /// Get [PermissionOverwrite] manager
   PermissionOverwriteManager? get permissions => _permissions;
 
+  /// Set label of this
   Future<void> setLabel (String value) async {
     await update(ChannelBuilder({ 'name': value }));
   }
 
+  /// Set parents of this
   Future<void> setParentId (Snowflake id) async {
     await update(ChannelBuilder({ 'parent_id': id }));
   }
 
+  /// Set parents of this
   Future<void> setParent (CategoryChannel channel) async {
     await update(ChannelBuilder({ 'parent_id': channel.id }));
   }
 
+  /// Set permissions of this
   Future<void> setPermissionsOverwrite (List<PermissionOverwrite> permissions) async {
     await update(ChannelBuilder({ 'permission_overwrites': permissions.map((permission) => permission.toJson()).toList() }));
   }
 
+  /// Update this
   Future<void> update (ChannelBuilder builder) async {
     if (_validate(builder.payload)) {
       await ioc.use<DiscordApiHttpService>().patch(url: '/channels/$id')
