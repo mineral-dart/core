@@ -14,6 +14,7 @@ class User {
   Snowflake _id;
   String _username;
   String? _globalName;
+  @deprecated
   String? _discriminator;
   bool _bot;
   bool _system;
@@ -46,6 +47,7 @@ class User {
   String? get globalName => _globalName;
 
   /// Returns the username of the user as a [String].
+  @deprecated
   String? get discriminator => _discriminator;
 
   /// Returns a [bool] indicating whether the user is a bot.
@@ -64,6 +66,7 @@ class User {
   UserDecoration get decoration => _decoration;
 
   /// Returns the user's tag as a [String].
+  @deprecated
   String get tag => '$_username#$_discriminator';
 
   /// Returns the user's locale as a [Locale] enum value based on the value of language
