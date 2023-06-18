@@ -33,7 +33,7 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
 
   Future<Map<Snowflake, T>> sync () async {
     Response response = await ioc.use<DiscordApiHttpService>()
-      .get(url: "/channels/$_channelId/messages")
+      .get(url: "/channels/$_channelId/messages?limit=100")
       .build();
 
     dynamic payload = jsonDecode(response.body);
@@ -50,6 +50,7 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
         cache.putIfAbsent(message.id, () => message as T);
       } else {
         // @Todo add DM case
+
       }
     }
 
