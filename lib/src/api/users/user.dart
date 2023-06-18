@@ -72,6 +72,8 @@ class User {
   /// Returns the user's locale as a [Locale] enum value based on the value of language
   Locale get lang => Locale.values.firstWhere((element) => element.locale == _lang);
 
+  bool get isMigrated => _discriminator == '0';
+
   /// Return [GuildMember] of [Guild] context for this
   GuildMember? toGuildMember (Snowflake guildId) {
     MineralClient client = ioc.use<MineralClient>();
