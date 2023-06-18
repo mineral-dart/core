@@ -1,10 +1,11 @@
 import 'dart:core';
 
 import 'package:mineral/core/api.dart';
+import 'package:mineral/core/extras.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class CommandInteraction extends Interaction  {
+class CommandInteraction extends Interaction with Client  {
   String _identifier;
   Snowflake? _channelId;
 
@@ -46,7 +47,7 @@ class CommandInteraction extends Interaction  {
   /// final double value = getValue<double>('key', defaultValue: 0.0);
   /// final String value = getValue<String?>('key', defaultValue: 'Hello World');
   /// ```
-  T getValue<T>(String key, { T? defaultValue }) => params[key] ?? defaultValue;
+  T getValue<T>(String key, { T? defaultValue }) => params[key] ?? defaultValue as T;
 
   /// Returns an instance of [PartialTextChannel] or null if the command has the designed option
   ///
@@ -55,7 +56,7 @@ class CommandInteraction extends Interaction  {
   /// Channel? channel = interaction.getChannel('option_name');
   /// ```
   T? getChannel<T extends PartialTextChannel> (String optionName) {
-    return guild?.channels.cache.get(params[optionName]);
+    return guild?.channels.cache.get(params[optionName]) as T;
   }
 
   /// Returns an instance of [GuildMember] if the command has the designed option
@@ -64,8 +65,8 @@ class CommandInteraction extends Interaction  {
   /// ```dart
   /// GuildMember? member = interaction.getMember('option_name');
   /// ```
-  GuildMember? getMember (String optionName) {
-    return guild?.members.cache.get(params[optionName]);
+  T getMember<T extends GuildMember> (String optionName) {
+    return guild?.members.cache.get(params[optionName]) as T;
   }
 
   /// Returns an instance of [User] or null if the command has the designed option
@@ -74,9 +75,8 @@ class CommandInteraction extends Interaction  {
   /// ```dart
   /// User? user = interaction.getUser('option_name');
   /// ```
-  User? getUser (String optionName) {
-    final MineralClient client = ioc.use<MineralClient>();
-    return client.users.cache.get(params[optionName]);
+  T getUser<T extends User> (String optionName) {
+    return client.users.cache.get(params[optionName]) as T;
   }
 
   /// Returns an instance of [Role] or null if the command has the designed option
@@ -85,8 +85,8 @@ class CommandInteraction extends Interaction  {
   /// ```dart
   /// Role? role = interaction.getRole('option_name');
   /// ```
-  Role? getRole (String optionName) {
-    return guild?.roles.cache.get(params[optionName]);
+  T getRole<T extends Role> (String optionName) {
+    return guild?.roles.cache.get(params[optionName]) as T;
   }
 
   /// Returns an [T] if the command has the designed option
