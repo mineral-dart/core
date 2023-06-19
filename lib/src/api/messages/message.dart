@@ -272,7 +272,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
       payload['timestamp'],
       payload['edited_timestamp'],
       MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false),
-      MessageAuthor(channel.guild.id, payload['author']['id'])
+      MessageAuthor(channel.guild.id, User.from(payload['author']))
     );
 
     message.reactions.message = message;

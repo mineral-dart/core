@@ -170,7 +170,7 @@ extension MineralClientExtension on MineralClient {
     final commands = commandManager.getGuildCommands(guild);
     final contextMenus = contextMenuService.getFromGuild(guild);
     if (commands.isNotEmpty || contextMenus.isNotEmpty) {
-      await this.registerGuildCommands(
+      await registerGuildCommands(
         guild: guild,
         commands: commands,
         contextMenus: contextMenus,

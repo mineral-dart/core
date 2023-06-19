@@ -67,7 +67,7 @@ class Kernel with Container {
     container.bind((_) => _console);
     await _environment.load();
 
-    final DiscordApiHttpService http = DiscordApiHttpService('https://discord.com/api/v${Constants.apiVersion}');
+    final DiscordApiHttpService http = DiscordApiHttpService('${Constants.host}${Constants.baseUri}');
     http.defineHeader(header: 'Content-Type', value: 'application/json');
     http.defineHeader(header: 'User-Agent', value: '${Constants.name} (${Constants.githubURL}, ${Constants.version})');
     container.bind((_) => http);
