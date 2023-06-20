@@ -27,3 +27,4 @@ export 'src/internal/entities/interactive_components/interactive_modal.dart';
 
 export 'src/internal/mixins/collection.dart';
 export 'src/internal/mixins/string.dart';
+export 'src/internal/mixins/snowflake_timestamp.dart';

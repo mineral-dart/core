@@ -146,6 +146,9 @@ class Guild {
   /// The [Guild]'s id.
   Snowflake get id => _id;
 
+  /// The [Guild]'s creation date.
+  DateTime get createdAt => _id.dateTime;
+
   /// The [Guild]'s name.
   String get name => _name;
 

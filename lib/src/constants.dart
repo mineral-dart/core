@@ -90,6 +90,9 @@ class Constants {
   // Version of API
   static const int apiVersion = 10;
 
+  // Discord epoch
+  static const int discordEpoch = 1420070400000;
+
   // Name of Minéral
   static const String name = "Mineral";
 

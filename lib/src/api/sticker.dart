@@ -62,6 +62,7 @@ class Sticker {
   StickerType get type => _type;
   FormatType get format => _format;
   int? get sortValue => _sortValue;
+  DateTime get createdAt => _id.dateTime;
 
   /// Set name of this
   ///

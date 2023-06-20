@@ -4,6 +4,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/helper.dart';
+import 'package:mineral/src/internal/mixins/snowflake_timestamp.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class Tag {
@@ -50,6 +51,7 @@ class Role {
   bool get isMentionable => _mentionable;
   Tag? get tags => _tags;
   GuildRoleManager get manager => _manager;
+  DateTime get createdAt => _id.dateTime;
 
   /// ### Modifies the [label] of the role.
   ///

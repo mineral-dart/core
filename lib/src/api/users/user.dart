@@ -41,6 +41,9 @@ class User {
   /// Returns the unique identifier of the user as a [Snowflake].
   Snowflake get id => _id;
 
+  /// Returns the creation date of the user as a [DateTime].
+  DateTime get createdAt => _id.dateTime;
+
   /// Returns the username of the user as a [String].
   String get username => _username;
 
@@ -72,6 +75,7 @@ class User {
   /// Returns the user's locale as a [Locale] enum value based on the value of language
   Locale get lang => Locale.values.firstWhere((element) => element.locale == _lang);
 
+  /// Returns a [bool] indicating whether the user use the new Discord username system.
   bool get isMigrated => _discriminator == '0';
 
   /// Return [GuildMember] of [Guild] context for this
