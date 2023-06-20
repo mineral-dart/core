@@ -3,6 +3,8 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/interactions/menus/select_menu_interaction.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+import '../../messages/partial_message.dart';
+
 class RoleMenuInteraction extends SelectMenuInteraction {
   final MenuBucket _menu;
 
@@ -15,15 +17,15 @@ class RoleMenuInteraction extends SelectMenuInteraction {
     super.token,
     super.user,
     super.guild,
-    super.messageId,
+    super.message,
     super.customId,
-    super.channelId,
+    super.channel,
     this._menu,
   );
 
   MenuBucket get menu => _menu;
 
-  factory RoleMenuInteraction.from(dynamic payload) => RoleMenuInteraction(
+  factory RoleMenuInteraction.from(dynamic payload, PartialChannel channel) => RoleMenuInteraction(
     payload['id'],
     null,
     payload['application_id'],
@@ -32,9 +34,9 @@ class RoleMenuInteraction extends SelectMenuInteraction {
     payload['token'],
     payload['member']?['user']?['id'],
     payload['guild_id'],
-    payload['message']?['id'],
+    (payload['guild_id'] != null ? Message.from(channel: channel as GuildChannel, payload: payload['message']) : DmMessage.from(channel: channel as DmChannel, payload: payload['message'])) as PartialMessage<PartialChannel>?,
     payload['data']['custom_id'],
-    payload['channel_id'],
+    channel,
     MenuBucket(payload['guild_id'], List<String>.from(payload['data']['values'])),
   );
 }
