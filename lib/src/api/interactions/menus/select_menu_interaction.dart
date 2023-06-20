@@ -6,9 +6,9 @@ import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class SelectMenuInteraction extends Interaction {
-  Snowflake? _messageId;
+  PartialMessage? _message;
   Snowflake _customId;
-  Snowflake _channelId;
+  PartialChannel _channel;
 
   SelectMenuInteraction(
     super._id,
@@ -19,22 +19,18 @@ class SelectMenuInteraction extends Interaction {
     super._token,
     super._user,
     super._guild,
-    this._messageId,
+    this._message,
     this._customId,
-    this._channelId,
+    this._channel,
   );
 
-  PartialMessage get message => guild != null
-    ? guild!.channels.cache.getOrFail(_channelId).cast<dynamic>().messages.cache[_messageId]
-    : ioc.use<MineralClient>().dmChannels.cache.getOrFail(_channelId).messages.cache.getOrFail(_messageId);
+  PartialMessage? get message => _message;
 
   Snowflake get customId => _customId;
 
-  PartialChannel get channel => guild != null
-    ? guild!.channels.cache.getOrFail(_channelId)
-    : ioc.use<MineralClient>().dmChannels.cache.getOrFail(_channelId);
+  PartialChannel get channel => _channel;
 
-  factory SelectMenuInteraction.from({ required dynamic payload }) {
+  factory SelectMenuInteraction.from({ required dynamic payload, required PartialChannel channel }) {
     return SelectMenuInteraction(
       payload['id'],
       null,
@@ -44,9 +40,9 @@ class SelectMenuInteraction extends Interaction {
       payload['token'],
       payload['member']?['user']?['id'],
       payload['guild_id'],
-      payload['message']?['id'],
+      (payload['guild_id'] != null ? Message.from(channel: channel as GuildChannel, payload: payload['message']) : DmMessage.from(channel: channel as DmChannel, payload: payload['message'])) as PartialMessage<PartialChannel>?,
       payload['data']['custom_id'],
-      payload['channel_id'],
+      channel,
     );
   }
 }

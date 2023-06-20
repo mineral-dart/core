@@ -146,7 +146,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['data']['component_type'] == ComponentType.dynamicSelect.value) {
-      final event = DynamicMenuCreateEvent(DynamicMenuInteraction.from(payload));
+      final event = DynamicMenuCreateEvent(DynamicMenuInteraction.from(payload, channel));
 
       eventService.controller.add(event);
       container.use<CollectorService>().emit(DynamicMenuCreateEvent, event);
@@ -154,7 +154,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['data']['component_type'] == ComponentType.userSelect.value) {
-      final event = UserMenuCreateEvent(UserMenuInteraction.from(payload));
+      final event = UserMenuCreateEvent(UserMenuInteraction.from(payload, channel));
 
       eventService.controller.add(event);
       container.use<CollectorService>().emit(UserMenuInteraction, event);
@@ -162,7 +162,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['data']['component_type'] == ComponentType.channelSelect.value) {
-      final event = ChannelMenuCreateEvent(ChannelMenuInteraction.from(payload));
+      final event = ChannelMenuCreateEvent(ChannelMenuInteraction.from(payload, channel));
 
       eventService.controller.add(event);
       container.use<CollectorService>().emit(ChannelMenuInteraction, event);
@@ -170,7 +170,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['data']['component_type'] == ComponentType.roleSelect.value) {
-      final event = RoleMenuCreateEvent(RoleMenuInteraction.from(payload));
+      final event = RoleMenuCreateEvent(RoleMenuInteraction.from(payload, channel));
 
       eventService.controller.add(event);
       container.use<CollectorService>().emit(RoleMenuCreateEvent, event);
@@ -178,7 +178,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (payload['data']['component_type'] == ComponentType.mentionableSelect.value) {
-      final event = MentionableMenuCreateEvent(MentionableMenuInteraction.from(payload));
+      final event = MentionableMenuCreateEvent(MentionableMenuInteraction.from(payload, channel));
 
       eventService.controller.add(event);
       container.use<CollectorService>().emit(MentionableMenuCreateEvent, event);
