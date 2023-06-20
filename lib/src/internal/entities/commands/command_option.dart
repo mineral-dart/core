@@ -61,7 +61,7 @@ class CommandOption {
     );
   }
 
-  factory CommandOption.number(Display label, Display description, { bool? required = false }) {
+  factory CommandOption.double(Display label, Display description, { bool? required = false }) {
     return CommandOption(
       label: label,
       description: description,
