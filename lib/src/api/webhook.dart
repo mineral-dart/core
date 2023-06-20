@@ -58,6 +58,7 @@ class Webhook {
   String? get url => _url;
   SourceChannel? get sourceChannel => _sourceChannel;
   SourceGuild? get sourceGuild => _sourceGuild;
+  DateTime get createdAt => _id.dateTime;
 
   /// ### Update the label of this
   ///

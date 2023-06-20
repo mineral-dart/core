@@ -80,6 +80,9 @@ class GuildScheduledEvent {
   /// Get the id of this.
   Snowflake get id => _id;
 
+  /// Get the creation date of this.
+  DateTime get createdAt => _id.dateTime;
+
   /// Get the [Guild] of this.
   Guild? get guild => ioc.use<MineralClient>().guilds.cache.get(_guildId);
 
