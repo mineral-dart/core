@@ -55,8 +55,8 @@ class CommandInteraction extends Interaction with Client  {
   /// ```dart
   /// Channel? channel = interaction.getChannel('option_name');
   /// ```
-  T? getChannel<T extends GuildChannel>(String optionName) {
-    return guild?.channels.cache.get(params[optionName]);
+  T getChannel<T extends GuildChannel>(String optionName) {
+    return guild?.channels.cache.get(params[optionName]) as T;
   }
 
   /// Returns an instance of [GuildMember] if the command has the designed option
