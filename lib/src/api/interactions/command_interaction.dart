@@ -55,7 +55,7 @@ class CommandInteraction extends Interaction with Client  {
   /// ```dart
   /// Channel? channel = interaction.getChannel('option_name');
   /// ```
-  T? getChannel<T extends PartialTextChannel> (String optionName) {
+  T getChannel<T extends GuildChannel>(String optionName) {
     return guild?.channels.cache.get(params[optionName]) as T;
   }
 
@@ -65,8 +65,8 @@ class CommandInteraction extends Interaction with Client  {
   /// ```dart
   /// GuildMember? member = interaction.getMember('option_name');
   /// ```
-  T getMember<T extends GuildMember> (String optionName) {
-    return guild?.members.cache.get(params[optionName]) as T;
+  GuildMember? getMember (String optionName) {
+    return guild?.members.cache.get(params[optionName]);
   }
 
   /// Returns an instance of [User] or null if the command has the designed option
@@ -75,8 +75,8 @@ class CommandInteraction extends Interaction with Client  {
   /// ```dart
   /// User? user = interaction.getUser('option_name');
   /// ```
-  T getUser<T extends User> (String optionName) {
-    return client.users.cache.get(params[optionName]) as T;
+  User? getUser (String optionName) {
+    return client.users.cache.get(params[optionName]);
   }
 
   /// Returns an instance of [Role] or null if the command has the designed option
@@ -85,8 +85,8 @@ class CommandInteraction extends Interaction with Client  {
   /// ```dart
   /// Role? role = interaction.getRole('option_name');
   /// ```
-  T getRole<T extends Role> (String optionName) {
-    return guild?.roles.cache.get(params[optionName]) as T;
+  Role? getRole(String optionName) {
+    return guild?.roles.cache.get(params[optionName]);
   }
 
   /// Returns an [T] if the command has the designed option
