@@ -97,7 +97,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
         })
         .build();
 
-    return channel.guild.channels.cache.getOrFail(jsonDecode(response.body)['id']);
+    return await channel.guild.channels.resolve(jsonDecode(response.body)['id']) as ThreadChannel?;
   }
 
   /// Pin this message
