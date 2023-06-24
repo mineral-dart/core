@@ -89,13 +89,6 @@ class MemberRoleManager extends CacheManager<Role> with Container {
       .auditLog(reason)
       .build();
 
-    final payload = jsonDecode(response.body);
-
-    if(payload['code'] == DiscordErrorsCode.missingPermissions.value) {
-      container.use<ConsoleService>().warn('Bot don\'t have permissions to add or remove roles !');
-      return;
-    }
-
     if (response.statusCode == 204) {
       cache.remove(id);
     }
