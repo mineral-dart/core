@@ -43,6 +43,10 @@ enum PacketType {
   messageCreate('MESSAGE_CREATE'),
   messageUpdate('MESSAGE_UPDATE'),
   messageDelete('MESSAGE_DELETE'),
+  messageReactionAdd('MESSAGE_REACTION_ADD'),
+  messageReactionRemove('MESSAGE_REACTION_REMOVE'),
+  messageReactionRemoveAll('MESSAGE_REACTION_REMOVE_ALL'),
+  messageReactionRemoveEmoji('MESSAGE_REACTION_REMOVE_EMOJI'),
 
   channelCreate('CHANNEL_CREATE'),
   channelUpdate('CHANNEL_UPDATE'),
