@@ -3,14 +3,16 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/core/extras.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/exceptions/not_exist_exception.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class MemberRoleManager extends CacheManager<Role>  {
+class MemberRoleManager extends CacheManager<Role> with Container {
   late final Guild _guild;
   GuildRoleManager manager;
   Snowflake memberId;
@@ -53,6 +55,13 @@ class MemberRoleManager extends CacheManager<Role>  {
       .auditLog(reason)
       .build();
 
+    final payload = jsonDecode(response.body);
+
+    if(payload['code'] == DiscordErrorsCode.missingPermissions.value) {
+      container.use<ConsoleService>().warn('Bot don\'t have permissions to add or remove roles !');
+      return;
+    }
+
     if (response.statusCode == 204) {
       cache.putIfAbsent(id, () => role);
     }
@@ -79,6 +88,13 @@ class MemberRoleManager extends CacheManager<Role>  {
     Response response = await ioc.use<DiscordApiHttpService>().destroy(url: '/guilds/${manager.guild.id}/members/$memberId/roles/$id')
       .auditLog(reason)
       .build();
+
+    final payload = jsonDecode(response.body);
+
+    if(payload['code'] == DiscordErrorsCode.missingPermissions.value) {
+      container.use<ConsoleService>().warn('Bot don\'t have permissions to add or remove roles !');
+      return;
+    }
 
     if (response.statusCode == 204) {
       cache.remove(id);
