@@ -4,18 +4,26 @@ import 'package:mineral/framework.dart';
 import '../../../../core/builders.dart';
 
 class MessageReactionAddEvent extends Event {
-  final Guild? guild;
-  final TextBasedChannel? channel;
-  final Message message;
-  final User user;
-  final GuildMember? member;
-  final EmojiBuilder emoji;
+  final Guild? _guild;
+  final TextBasedChannel? _channel;
+  final Message _message;
+  final User _user;
+  final GuildMember? _member;
+  final EmojiBuilder _emoji;
 
   MessageReactionAddEvent(
-    this.guild,
-    this.channel,
-    this.message,
-    this.user,
-    this.member,
-    this.emoji,);
+    this._guild,
+    this._channel,
+    this._message,
+    this._user,
+    this._member,
+    this._emoji,);
+
+
+  Guild? get guild => _guild;
+  TextBasedChannel? get channel => _channel;
+  Message get message => _message;
+  User get user => _user;
+  GuildMember? get member => _member;
+  EmojiBuilder get emoji => _emoji;
 }
