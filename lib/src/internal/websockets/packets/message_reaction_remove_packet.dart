@@ -3,16 +3,16 @@ import 'package:mineral/core/builders.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/emoji.dart';
-import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
+import 'package:mineral_ioc/ioc.dart';
 
-class MessageReactionRemovePacket with Container implements WebsocketPacket {
+class MessageReactionRemovePacket implements WebsocketPacket {
   @override
   Future<void> handle (WebsocketResponse websocketResponse) async {
-    EventService eventService = container.use<EventService>();
-    MineralClient client = container.use<MineralClient>();
+    EventService eventService = ioc.use<EventService>();
+    MineralClient client = ioc.use<MineralClient>();
 
     dynamic payload = websocketResponse.payload;
 
