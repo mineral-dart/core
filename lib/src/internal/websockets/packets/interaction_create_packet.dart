@@ -107,7 +107,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
       } catch(_) { }
     }
 
-    final buttonInteraction = ButtonInteraction.fromPayload(payload);
+    final buttonInteraction = ButtonInteraction.fromPayload(channel as GuildChannel, payload);
     final event = ButtonCreateEvent(buttonInteraction);
 
     eventService.controller.add(event);
