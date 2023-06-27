@@ -1,13 +1,16 @@
 import 'dart:core';
 
+import 'package:http/http.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+import '../../../core.dart';
+
 class ButtonInteraction extends Interaction {
   Snowflake _customId;
-  Snowflake? _messageId;
+  PartialMessage? _message;
   Snowflake _channelId;
 
   ButtonInteraction(
@@ -19,7 +22,7 @@ class ButtonInteraction extends Interaction {
     super.token,
     super._userId,
     super._guildId,
-    this._messageId,
+    this._message,
     this._customId,
     this._channelId,
   );
@@ -27,20 +30,24 @@ class ButtonInteraction extends Interaction {
   /// Get custom id of this
   Snowflake get customId => _customId;
 
-  /// Get message id of this
-  Snowflake? get mid => _messageId;
-
   /// Get message [PartialMessage] of this
-  PartialMessage? get message => guild != null
-    ? (guild?.channels.cache.get(_channelId) as dynamic)?.messages.cache[_messageId]
-    : ioc.use<MineralClient>().dmChannels.cache.get(_channelId)?.messages.cache.getOrFail(_messageId);
+  PartialMessage? get message => _message;
 
   /// Get channel [PartialChannel] of this
   PartialChannel get channel => guild != null
     ? guild!.channels.cache.getOrFail<TextBasedChannel>(_channelId)
     : throw UnsupportedError('DM channel is not supported');
 
-  factory ButtonInteraction.fromPayload(dynamic payload) {
+  @override
+  Future<void> delete () async {
+    String mid = message?.id ?? "@original";
+
+    await ioc.use<DiscordApiHttpService>()
+       .destroy(url: "/webhooks/$applicationId/$token/messages/$mid")
+       .build();
+  }
+
+  factory ButtonInteraction.fromPayload(GuildChannel channel, dynamic payload) {
     return ButtonInteraction(
       payload['id'],
       null,
@@ -50,7 +57,7 @@ class ButtonInteraction extends Interaction {
       payload['token'],
       payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
-      payload['message']?['id'],
+      (payload['guild_id'] != null ? Message.from(channel: channel as GuildChannel, payload: payload['message']) : DmMessage.from(channel: channel as DmChannel, payload: payload['message'])) as PartialMessage<PartialChannel>?,
       payload['data']['custom_id'],
       payload['channel_id'],
     );
