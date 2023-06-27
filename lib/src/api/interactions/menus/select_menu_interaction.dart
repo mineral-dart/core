@@ -1,9 +1,10 @@
 import 'dart:core';
 
 import 'package:mineral/core/api.dart';
-import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral_ioc/ioc.dart';
+
+import '../../../../core.dart';
 
 class SelectMenuInteraction extends Interaction {
   PartialMessage? _message;
@@ -29,6 +30,15 @@ class SelectMenuInteraction extends Interaction {
   Snowflake get customId => _customId;
 
   PartialChannel get channel => _channel;
+
+  @override
+  Future<void> delete () async {
+    String mid = message?.id ?? "@original";
+
+    await ioc.use<DiscordApiHttpService>()
+        .destroy(url: "/webhooks/$applicationId/$token/messages/$mid")
+        .build();
+  }
 
   factory SelectMenuInteraction.from({ required dynamic payload, required PartialChannel channel }) {
     return SelectMenuInteraction(
