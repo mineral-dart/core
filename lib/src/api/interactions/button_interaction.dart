@@ -1,12 +1,11 @@
 import 'dart:core';
 
-import 'package:http/http.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-import '../../../core.dart';
+import 'package:mineral/core.dart';
 
 class ButtonInteraction extends Interaction {
   Snowflake _customId;
@@ -43,11 +42,11 @@ class ButtonInteraction extends Interaction {
     String mid = message?.id ?? "@original";
 
     await ioc.use<DiscordApiHttpService>()
-       .destroy(url: "/webhooks/$applicationId/$token/messages/$mid")
-       .build();
+     .destroy(url: "/webhooks/$applicationId/$token/messages/$mid")
+     .build();
   }
 
-  factory ButtonInteraction.fromPayload(GuildChannel channel, dynamic payload) {
+  factory ButtonInteraction.fromPayload(PartialChannel channel, dynamic payload) {
     return ButtonInteraction(
       payload['id'],
       null,
