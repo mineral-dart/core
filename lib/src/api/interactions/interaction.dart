@@ -112,9 +112,14 @@ class Interaction  {
   }
 
   /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
-  Future<Interaction> deferredReply () async {
+  Future<Interaction> deferredReply ({ bool private = false }) async {
     await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
-      .payload({ 'type': InteractionCallbackType.deferredChannelMessageWithSource.value })
+      .payload({
+          'type': InteractionCallbackType.deferredChannelMessageWithSource.value,
+          'data': {
+            'flags': private ? 1 << 6 : null
+          }
+    })
       .build();
 
     return this;
