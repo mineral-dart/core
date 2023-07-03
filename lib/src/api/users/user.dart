@@ -47,7 +47,7 @@ class User {
   /// Returns the username of the user as a [String].
   String get username => _username;
 
-  String? get globalName => _globalName;
+  String? get globalName => _globalName ?? _username;
 
   /// Returns the username of the user as a [String].
   @deprecated
