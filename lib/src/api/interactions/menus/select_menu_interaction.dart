@@ -36,8 +36,8 @@ class SelectMenuInteraction extends Interaction {
     String mid = message?.id ?? "@original";
 
     await ioc.use<DiscordApiHttpService>()
-        .destroy(url: "/webhooks/$applicationId/$token/messages/$mid")
-        .build();
+      .destroy(url: "/webhooks/$applicationId/$token/messages/$mid")
+      .build();
   }
 
   factory SelectMenuInteraction.from({ required dynamic payload, required PartialChannel channel }) {
