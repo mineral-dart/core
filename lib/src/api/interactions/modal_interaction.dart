@@ -19,6 +19,7 @@ class ModalInteraction extends Interaction {
     super._token,
     super._userId,
     super._guildId,
+    super._message,
     this._customId,
     this._channelId,
   );
@@ -49,6 +50,7 @@ class ModalInteraction extends Interaction {
       payload['token'],
       payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
+      null,
       payload['data']['custom_id'],
       payload['channel_id'],
     );

@@ -18,6 +18,7 @@ class ContextUserInteraction extends ContextMenuInteraction {
     super._token,
     super._user,
     super._guild,
+    super._message,
   );
 
   /// Get target [GuildMember] of this
@@ -39,6 +40,7 @@ class ContextUserInteraction extends ContextMenuInteraction {
       payload['token'],
       payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
+      null,
     );
   }
 }

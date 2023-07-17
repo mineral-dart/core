@@ -3,6 +3,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/messages/message_parser.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 /// ### Interaction Type
@@ -36,8 +37,9 @@ class Interaction  {
   String _token;
   Snowflake? _userId;
   Snowflake? _guildId;
+  PartialMessage? _message;
 
-  Interaction(this._id, this._label, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId);
+  Interaction(this._id, this._label, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId, this._message);
 
   /// Get id [Snowflake] of this
   Snowflake get id => _id;
@@ -59,6 +61,9 @@ class Interaction  {
 
   /// Get guild [Guild] of this
   Guild? get guild => ioc.use<MineralClient>().guilds.cache.get(_guildId);
+
+  /// Get message [PartialMessage] of this
+  PartialMessage? get message => _message;
 
   /// Get user [User] of this
   User get user => _guildId != null
@@ -132,8 +137,9 @@ class Interaction  {
   /// ```
   Future<Interaction> updateReply ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
+    String mid = message?.id ?? "@original";
 
-    await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original")
+    await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$applicationId/$token/messages/$mid")
       .files(messagePayload['files'])
       .payload(messagePayload['payload'])
       .build();
@@ -152,11 +158,12 @@ class Interaction  {
   /// });
   /// ```
   Future<void> delete () async {
-    await ioc.use<DiscordApiHttpService>()
-      .destroy(url: "/webhooks/$applicationId/$token/messages/@original")
-      .build();
-  }
+    String mid = message?.id ?? "@original";
 
+    await ioc.use<DiscordApiHttpService>()
+        .destroy(url: "/webhooks/$applicationId/$token/messages/$mid")
+        .build();
+  }
   /// ### Shows no response (and error)
   ///
   /// Example :
@@ -172,7 +179,12 @@ class Interaction  {
           }
         }).build();
   }
-  factory Interaction.from({ required dynamic payload }) {
+  factory Interaction.from({ required dynamic payload, required PartialChannel? channel }) {
+    PartialMessage? message;
+    if(payload['message'] != null) {
+      message = (payload['guild_id'] != null ? Message.from(channel: channel as GuildChannel, payload: payload['message']) : DmMessage.from(channel: channel as DmChannel, payload: payload['message'])) as PartialMessage<PartialChannel>;
+    }
+
     return Interaction(
       payload['id'],
       null,
@@ -182,6 +194,7 @@ class Interaction  {
       payload['token'],
       payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
+      message
     );
   }
 }
