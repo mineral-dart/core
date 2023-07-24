@@ -4,11 +4,9 @@ import 'package:mineral/src/api/interactions/context_menu_interaction.dart';
 
 class ContextMessageInteraction extends ContextMenuInteraction {
   Snowflake _channelId;
-  Message _message;
 
   ContextMessageInteraction(
     this._channelId,
-    this._message,
     super._type,
     super._id,
     super._label,
@@ -18,10 +16,8 @@ class ContextMessageInteraction extends ContextMenuInteraction {
     super._token,
     super._userId,
     super._guildId,
+    super._message,
   );
-
-  /// Get message [Message] of this
-  Message get message => _message;
 
   /// Get channel [TextBasedChannel] of this
   TextBasedChannel get channel => guild!.channels.cache.get(_channelId)!;
@@ -29,7 +25,6 @@ class ContextMessageInteraction extends ContextMenuInteraction {
   factory ContextMessageInteraction.from({ required Message message, required dynamic payload }) {
     return ContextMessageInteraction(
       payload['channel_id'],
-      message,
       payload['type'],
       payload['id'],
       payload['data']['name'],
@@ -39,6 +34,7 @@ class ContextMessageInteraction extends ContextMenuInteraction {
       payload['token'],
       payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
+      message,
     );
   }
 }

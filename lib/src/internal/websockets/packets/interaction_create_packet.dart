@@ -30,6 +30,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
 
     Guild? guild = client.guilds.cache.get(payload['guild_id']);
     GuildMember? member = guild?.members.cache.get(payload['member']['user']['id']);
+    TextBasedChannel? channel = guild?.channels.cache.get(payload['channel_id']);
 
     if (payload['type'] == InteractionType.applicationCommand.value && payload['data']['type'] == ApplicationCommandType.chatInput.value) {
       _executeCommandInteraction(payload);
@@ -58,7 +59,7 @@ class InteractionCreatePacket with Container implements WebsocketPacket {
     }
 
     if (member != null) {
-      final Interaction interaction = Interaction.from(payload: payload);
+      final Interaction interaction = Interaction.from(payload: payload, channel: channel);
       eventService.controller.add(InteractionCreateEvent(interaction));
     }
   }

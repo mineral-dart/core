@@ -3,13 +3,9 @@ import 'dart:core';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral_ioc/ioc.dart';
-
-import 'package:mineral/core.dart';
 
 class ButtonInteraction extends Interaction {
   Snowflake _customId;
-  PartialMessage? _message;
   Snowflake _channelId;
 
   ButtonInteraction(
@@ -21,7 +17,7 @@ class ButtonInteraction extends Interaction {
     super.token,
     super._userId,
     super._guildId,
-    this._message,
+    super._message,
     this._customId,
     this._channelId,
   );
@@ -29,22 +25,10 @@ class ButtonInteraction extends Interaction {
   /// Get custom id of this
   Snowflake get customId => _customId;
 
-  /// Get message [PartialMessage] of this
-  PartialMessage? get message => _message;
-
   /// Get channel [PartialChannel] of this
   PartialChannel get channel => guild != null
     ? guild!.channels.cache.getOrFail<TextBasedChannel>(_channelId)
     : throw UnsupportedError('DM channel is not supported');
-
-  @override
-  Future<void> delete () async {
-    String mid = message?.id ?? "@original";
-
-    await ioc.use<DiscordApiHttpService>()
-     .destroy(url: "/webhooks/$applicationId/$token/messages/$mid")
-     .build();
-  }
 
   factory ButtonInteraction.fromPayload(PartialChannel channel, dynamic payload) {
     return ButtonInteraction(
