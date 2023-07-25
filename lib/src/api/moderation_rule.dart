@@ -7,7 +7,8 @@ import 'package:mineral/src/exceptions/too_many_exception.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 enum ModerationEventType {
-  messageSend(1);
+  messageSend(1),
+  memberProfile(2);
 
   final int value;
   const ModerationEventType(this.value);
@@ -21,7 +22,8 @@ enum ModerationTriggerType {
   harmfulLink(2),
   spam(3),
   keywordPreset(4),
-  mentionSpam(5);
+  mentionSpam(5),
+  blockMemberInteractions(6);
 
   final int value;
   const ModerationTriggerType(this.value);
@@ -45,7 +47,8 @@ enum ModerationPresetType {
 enum ModerationActionType {
   blockMessage(1),
   sendAlertMessage(2),
-  timeout(3);
+  timeout(3),
+  blockMemberInteractions(4);
 
   final int value;
   const ModerationActionType(this.value);
