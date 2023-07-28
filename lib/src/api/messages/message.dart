@@ -4,7 +4,6 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
-import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
@@ -151,14 +150,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
     if (response.statusCode == 200) {
       Message message = Message.from(channel: channel, payload: jsonDecode(response.body));
 
-      if (channel is CategoryChannel) {
-        channel.messages.cache.putIfAbsent(message.id, () => message);
-      }
-
-      if (channel is PartialTextChannel) {
-        channel.messages.cache.putIfAbsent(message.id, () => message);
-      }
-
+      channel.messages.cache.putIfAbsent(message.id, () => message);
       return message;
     }
 
