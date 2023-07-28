@@ -1,4 +1,10 @@
+import 'dart:convert';
+
+import 'package:http/http.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral_ioc/ioc.dart';
+
+import '../../../core.dart';
 
 class VanityInvite {
   final String? code;
@@ -14,20 +20,14 @@ class VanityInvite {
   /// VanityInvite? invite = await VanityInvite.sync(guild);
   /// ```
   ///
-  /// @Todo: Implement this.
   static Future<VanityInvite?> sync(Snowflake guildId) async {
-    // if(!guild.features.contains(GuildFeature.vanityUrl)) {
-    //   ioc.use<ConsoleService>().warn("The guild $guildId does not have a vanity invite.");
-    //   return null;
-    // }
-    //
-    // Response response = await ioc.use<DiscordApiHttpService>().get(url: "/guilds/$guildId/vanity-url").build();
-    // if(response.statusCode != 200) {
-    //   ioc.use<ConsoleService>().warn("The guild $guildId does not have a vanity invite.");
-    //   return null;
-    // }
-    //
-    // return VanityInvite.from(jsonDecode(response.body));
+     Response response = await ioc.use<DiscordApiHttpService>().get(url: "/guilds/$guildId/vanity-url").build();
+
+     if(response.statusCode != 200) {
+       return null;
+     }
+
+    return VanityInvite.from(jsonDecode(response.body));
   }
 
   factory VanityInvite.from(Map<String, dynamic> payload) {
