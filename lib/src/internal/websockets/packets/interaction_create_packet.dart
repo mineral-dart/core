@@ -13,9 +13,7 @@ import 'package:mineral/src/api/interactions/menus/mentionable_menu_interaction.
 import 'package:mineral/src/api/interactions/menus/role_menu_interaction.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/collector_service.dart';
-import 'package:mineral/src/internal/services/command_service.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
-import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/events/interaction_create_event.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';

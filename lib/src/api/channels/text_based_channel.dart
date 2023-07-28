@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/builders/channel_builder.dart';
-import 'package:mineral/src/api/invites/invite.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
 

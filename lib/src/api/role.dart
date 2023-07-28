@@ -5,6 +5,7 @@ import 'package:mineral/exception.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/helper.dart';
 import 'package:mineral/src/internal/mixins/snowflake_timestamp.dart';
+import 'package:mineral/src/internal/mixins/string.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class Tag {
@@ -308,7 +309,7 @@ class Role {
   /// }
   /// ```
   @override
-  String toString () => '<@&$id>';
+  String toString () => label.equals('@everyone') ? label : '<@&$id>';
 
   factory Role.from({ required GuildRoleManager roleManager, dynamic payload }) {
     return Role(

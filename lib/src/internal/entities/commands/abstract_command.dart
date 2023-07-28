@@ -1,7 +1,6 @@
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/interactions/command_interaction.dart';
 import 'package:mineral/src/exceptions/missing_method_exception.dart';
-import 'package:mineral/src/internal/entities/commands/display.dart';
 
 class AbstractCommand<T extends CommandInteraction> {
   final Display _label;

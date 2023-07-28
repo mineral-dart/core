@@ -1,7 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/helper.dart';
-import 'package:mineral/src/internal/entities/commands/display.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 
 import '../../../exceptions/missing_method_exception.dart';

@@ -1,7 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/invites/vanity_invite.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';

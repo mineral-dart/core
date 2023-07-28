@@ -8,7 +8,6 @@ import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral/src/internal/services/console/themes/console_theme.dart';
 import 'package:mineral/src/internal/services/context_menu_service.dart';
 import 'package:mineral/src/internal/services/debugger_service.dart';
-import 'package:mineral/src/internal/services/discord_api_http_service.dart';
 import 'package:mineral/src/internal/services/environment_service.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/services/intent_service.dart';

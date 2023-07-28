@@ -7,7 +7,6 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/invites/vanity_invite.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/command_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -217,7 +216,6 @@ class Guild {
 
   /// The [Guild]'s max members.
   int get maxMembers => _maxMembers;
-
 
   /// The [Guild]'s vanity url code.
   VanityInvite? get vanity => _vanityInvite;

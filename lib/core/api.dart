@@ -38,6 +38,9 @@ export '../src/api/interactions/interaction.dart' show Interaction;
 export '../src/api/interactions/menus/dynamic_menu_interaction.dart' show DynamicMenuInteraction;
 export '../src/api/interactions/menus/user_menu_interaction.dart' show UserMenuInteraction;
 export '../src/api/interactions/modal_interaction.dart' show ModalInteraction;
+export '../src/api/invites/invite.dart' show Invite;
+export '../src/api/invites/vanity_invite.dart' show VanityInvite;
+export '../src/api/lang.dart' show Lang;
 export '../src/api/managers/member_role_manager.dart' show MemberRoleManager;
 export '../src/api/managers/message_manager.dart' show MessageManager, BulkDeleteBuilder;
 export '../src/api/managers/voice_manager.dart' show VoiceManager;
@@ -54,9 +57,6 @@ export '../src/api/users/user_flags/user_flag_contract.dart' show UserFlagContra
 export '../src/api/utils.dart';
 export '../src/api/webhook.dart' show Webhook;
 export '../src/internal/services/intent_service.dart' show Intent;
-export '../src/api/invites/invite.dart' show Invite;
-export '../src/api/invites/vanity_invite.dart' show VanityInvite;
-export '../src/api/lang.dart' show Lang;
 
 
 typedef Snowflake = String;

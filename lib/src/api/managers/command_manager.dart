@@ -1,7 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/internal/entities/commands/abstract_command.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class CommandService extends CacheManager<AbstractCommand>  {

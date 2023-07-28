@@ -1,5 +1,4 @@
 import 'package:mineral/core/api.dart';
-import 'package:mineral/src/internal/entities/commands/display.dart';
 
 import '../../../../framework.dart';
 

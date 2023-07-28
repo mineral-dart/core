@@ -1,8 +1,8 @@
+import 'package:collection/collection.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/exceptions/not_exist_exception.dart';
 import 'package:mineral_contract/mineral_contract.dart';
 import 'package:mineral_ioc/ioc.dart';
-import 'package:collection/collection.dart';
 
 class ComponentService extends MineralService implements ComponentServiceContract {
   final Map<Type, InteractiveComponent> _collectors = {};
