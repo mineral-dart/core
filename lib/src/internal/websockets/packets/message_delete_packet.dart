@@ -24,6 +24,6 @@ class MessageDeletePacket with Container implements WebsocketPacket {
     Message? message = channel!.messages.cache.get(payload['id']);
 
     channel.messages.cache.remove(payload['id']);
-    eventService.controller.add(MessageDeleteEvent(message));
+    eventService.controller.add(MessageDeleteEvent(message, guild));
   }
 }
