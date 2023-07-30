@@ -135,7 +135,12 @@ enum GuildFeature {
   sevenDayThreadArchive('SEVEN_DAY_THREAD_ARCHIVE'),
   applicationCommandPermissionsV2('APPLICATION_COMMAND_PERMISSIONS_V2'),
   soundboard('SOUNDBOARD'),
-  channelIconEmojisGenerated('CHANNEL_ICON_EMOJIS_GENERATED');
+  channelIconEmojisGenerated('CHANNEL_ICON_EMOJIS_GENERATED'),
+  guestsEnabled('GUESTS_ENABLED'),
+  guildOnboardingHasPrompts('GUILD_ONBOARDING_HAS_PROMPTS'),
+  guildOnboardingEverEnabled('GUILD_ONBOARDING_EVER_ENABLED'),
+  guildOnboarding('GUILD_ONBOARDING'),
+  guildServerGuide('GUILD_SERVER_GUIDE');
 
   final String value;
   const GuildFeature(this.value);
