@@ -207,7 +207,7 @@ class GuildMember  {
   /// Returns a clone of this
   GuildMember clone () => GuildMember(user, nickname, _avatar, joinedAt, _premiumSince, _permissions, pending, _timeoutDuration, roles, voice, guild, presence);
 
-  factory GuildMember.from({ required user, required GuildRoleManager roles, required Guild guild, dynamic member, required VoiceManager voice }) {
+  factory GuildMember.from({ required user, required GuildRoleManager roles, required Guild guild, required dynamic member, required VoiceManager voice }) {
     MemberRoleManager memberRoleManager = MemberRoleManager(manager: roles, memberId: user.id);
     for (var element in (member['roles'] as List<dynamic>)) {
       Role? role = roles.cache.get(element);
