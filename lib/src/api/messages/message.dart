@@ -247,7 +247,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
     final message = Message(
       payload['id'],
-      payload['content'],
+      payload['content'] ?? '',
       payload['tts'] ?? false,
       embeds,
       payload['allow_mentions'] ?? false,
@@ -257,11 +257,11 @@ class Message extends PartialMessage<TextBasedChannel>  {
       payload['payload'],
       messageAttachments,
       payload['flags'],
-      payload['pinned'],
+      payload['pinned'] ?? false,
       channel.guild.id,
       payload['channel_id'],
       MessageReactionManager<GuildChannel, Message>(channel),
-      payload['timestamp'],
+      payload['timestamp'] ?? DateTime.now().toIso8601String(),
       payload['edited_timestamp'],
       MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false),
       MessageAuthor(channel.guild.id, User.from(payload['author']))
