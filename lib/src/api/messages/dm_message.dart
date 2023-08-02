@@ -68,46 +68,11 @@ class DmMessage extends PartialMessage<DmChannel>  {
     User? user = client.users.cache.get(payload['author']['id']);
 
     List<EmbedBuilder> embeds = [];
-    for (dynamic element in payload['embeds']) {
-      List<EmbedField> fields = [];
-      if (element['fields'] != null) {
-        for (dynamic item in element['fields']) {
-          fields.add(EmbedField(
-            name: item['name'],
-            value: item['value'],
-            inline: item['inline'] ?? false
-          ));
-        }
+    if (payload['embeds'] != null) {
+      for (dynamic element in payload['embeds']) {
+        embeds.add(EmbedBuilder.from(element));
       }
-
-      EmbedBuilder embed = EmbedBuilder(
-        title: element['title'],
-        description: element['description'],
-        url: element['url'],
-        timestamp: element['timestamp'] != null ? DateTime.parse(element['timestamp']) : null,
-        footer: element['footer'] != null ? EmbedFooter(
-          text: element['footer']['text'],
-          iconUrl: element['footer']['icon_url'],
-          proxyIconUrl: element['footer']['proxy_icon_url'],
-        ) : null,
-        image: element['image'] != null ? EmbedImage(
-          url: element['image']['url'],
-          proxyUrl: element['image']['proxy_url'],
-          height: element['image']['height'],
-          width: element['image']['width'],
-        ) : null,
-        author: element['author'] != null ? EmbedAuthor(
-          name: element['author']['name'],
-          url: element['author']['url'],
-          proxyIconUrl: element['author']['proxy_icon_url'],
-          iconUrl: element['author']['icon_url'],
-        ) : null,
-        fields: fields,
-      );
-
-      embeds.add(embed);
     }
-
     List<MessageStickerItem> stickers = [];
     if (payload['sticker_items'] != null) {
       for (dynamic element in payload['sticker_items']) {
