@@ -194,6 +194,45 @@ class EmbedBuilder {
     };
   }
 
+  factory EmbedBuilder.from(final payload) {
+    List<EmbedField> fields = [];
+    if (payload['fields'] != null) {
+      for (dynamic item in payload['fields']) {
+        fields.add(EmbedField(
+            name: item['name'],
+            value: item['value'],
+            inline: item['inline'] ?? false
+        ));
+      }
+    }
+
+    return EmbedBuilder(
+      title: payload['title'],
+      description: payload['description'],
+      url: payload['url'],
+      timestamp: payload['timestamp'] != null ? DateTime.parse(payload['timestamp']) : null,
+      footer: payload['footer'] != null ? EmbedFooter(
+        text: payload['footer']['text'],
+        iconUrl: payload['footer']['icon_url'],
+        proxyIconUrl: payload['footer']['proxy_icon_url'],
+      ) : null,
+      image: payload['image'] != null ? EmbedImage(
+        url: payload['image']['url'],
+        proxyUrl: payload['image']['proxy_url'],
+        height: payload['image']['height'],
+        width: payload['image']['width'],
+      ) : null,
+      author: payload['author'] != null ? EmbedAuthor(
+        name: payload['author']['name'],
+        url: payload['author']['url'],
+        proxyIconUrl: payload['author']['proxy_icon_url'],
+        iconUrl: payload['author']['icon_url'],
+      ) : null,
+      fields: fields,
+      color: Color("#${payload['color'].toRadixString(16)}"),
+    );
+  }
+
   /// Create new instance of this to build an embed from a [GuildPreview]
   factory EmbedBuilder.fromGuildPreview(GuildPreview preview) {
     MineralClient client = ioc.use<MineralClient>();
@@ -211,7 +250,7 @@ class EmbedBuilder {
     embed.addField(name: 'Identifier', value: preview.id);
     embed.addField(name: 'Features', value: preview.features.map((feature) => '• $feature').join('\n'), inline: true);
 
-    if (preview.stickers.isNotEmpty) {
+    if (preview.stickers.isNotEmpty || preview.emojis.isNotEmpty) {
       embed.addField(name: 'Emojis', value: preview.emojis.values.map((emoji) => emoji).join(' '), inline: true);
     }
 

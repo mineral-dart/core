@@ -35,6 +35,7 @@ class MemberManager extends CacheManager<GuildMember>  {
           user: User.from(element['user']),
           roles: guild.roles,
           guild: guild,
+          member: element,
           voice: voiceManager ?? VoiceManager.empty(element['deaf'], element['mute'], element['user']['id'], _guildId)
         );
 
@@ -60,6 +61,7 @@ class MemberManager extends CacheManager<GuildMember>  {
         user: User.from(payload['user']),
         roles: guild.roles,
         guild: guild,
+        member: payload,
         voice: VoiceManager.empty(payload['deaf'], payload['mute'], payload['user']['id'], _guildId)
       );
 
