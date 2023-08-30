@@ -93,7 +93,6 @@ extension MineralClientExtension on MineralClient {
     ModerationRuleManager moderationManager = ModerationRuleManager(websocketPayload['guild_id']);
 
     WebhookManager webhookManager = WebhookManager(websocketPayload['id'], null);
-    VanityInvite? vanityInvite = await VanityInvite.sync(websocketPayload['id']);
 
     Guild guild = Guild.from(
       emojiManager: emojiManager,
@@ -103,11 +102,10 @@ extension MineralClientExtension on MineralClient {
       moderationRuleManager: moderationManager,
       webhookManager: webhookManager,
       guildScheduledEventService: guildScheduledManager,
-      vanityInvite: vanityInvite,
       payload: websocketPayload,
     );
 
-    this.guilds.cache.putIfAbsent(guild.id, () => guild);
+    guilds.cache.putIfAbsent(guild.id, () => guild);
 
     for (dynamic element in websocketPayload['stickers']) {
       Sticker sticker = Sticker.from(element);
@@ -127,7 +125,7 @@ extension MineralClientExtension on MineralClient {
       );
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
-      this.users.cache.putIfAbsent(user.id, () => user);
+      users.cache.putIfAbsent(user.id, () => user);
     }
 
     for(dynamic payload in websocketPayload['channels']) {
@@ -161,6 +159,7 @@ extension MineralClientExtension on MineralClient {
     guild.webhooks.guild = guild;
     guild.emojis.guild = guild;
     guild.scheduledEvents.guild = guild;
+    guild.vanity = await VanityInvite.sync(websocketPayload['id']);
 
     Map<Snowflake, ModerationRule>? autoModerationRules = await getAutoModerationRules(guild);
     if (autoModerationRules != null) {
