@@ -69,7 +69,7 @@ class Guild {
   late TextChannel? rulesChannel;
   int? _maxPresences;
   int _maxMembers;
-  VanityInvite? _vanityInvite;
+  late VanityInvite? vanity;
   String? _description;
   ImageFormater? _banner;
   int _premiumTier;
@@ -117,7 +117,6 @@ class Guild {
     this._rulesChannelId,
     this._maxPresences,
     this._maxMembers,
-    this._vanityInvite,
     this._description,
     this._banner,
     this._premiumTier,
@@ -216,9 +215,6 @@ class Guild {
 
   /// The [Guild]'s max members.
   int get maxMembers => _maxMembers;
-
-  /// The [Guild]'s vanity url code.
-  VanityInvite? get vanity => _vanityInvite;
 
   /// The [Guild]'s description.
   String? get description => _description;
@@ -667,7 +663,6 @@ class Guild {
     required ModerationRuleManager moderationRuleManager,
     required WebhookManager webhookManager,
     required GuildScheduledEventService guildScheduledEventService,
-    required VanityInvite? vanityInvite,
     required dynamic payload
   }) {
     StickerManager stickerManager = StickerManager();
@@ -706,7 +701,6 @@ class Guild {
       payload['rules_channel_id'],
       payload['max_presences'],
       payload['max_members'],
-      vanityInvite,
       payload['description'],
       payload['banner'] != null ? ImageFormater(payload['banner'], 'banners/${payload['id']}') : null,
       payload['premium_tier'],

@@ -16,5 +16,4 @@ class GuildRemovePacket with Container implements WebsocketPacket {
     eventService.controller.add(GuildDeleteEvent(guild));
     client.guilds.cache.remove(guild.id);
   }
-
 }

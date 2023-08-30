@@ -44,7 +44,6 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
     GuildScheduledEventService guildScheduledEventService = GuildScheduledEventService();
     guildScheduledEventService.cache.addAll(before.scheduledEvents.cache);
 
-    VanityInvite? vanityInvite = await VanityInvite.sync(websocketResponse.payload['id']);
 
     Guild after = Guild.from(
       emojiManager: emojiManager,
@@ -54,7 +53,6 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
       moderationRuleManager: moderationManager,
       webhookManager: webhookManager,
       payload: websocketResponse.payload,
-      vanityInvite: vanityInvite,
       guildScheduledEventService: guildScheduledEventService
     );
 
@@ -69,6 +67,7 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
     after.rulesChannel = after.channels.cache.get<TextChannel>(after.rulesChannelId);
     after.publicUpdatesChannel = after.channels.cache.get<TextChannel>(after.publicUpdatesChannelId);
     after.emojis.guild = after;
+    after.vanity = await VanityInvite.sync(websocketResponse.payload['id']);
 
     eventService.controller.add(GuildUpdateEvent(before, after));
     client.guilds.cache.set(after.id, after);
