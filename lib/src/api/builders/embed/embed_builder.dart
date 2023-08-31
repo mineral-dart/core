@@ -251,7 +251,13 @@ class EmbedBuilder {
     embed.addField(name: 'Features', value: preview.features.map((feature) => '• $feature').join('\n'), inline: true);
 
     if (preview.stickers.isNotEmpty || preview.emojis.isNotEmpty) {
-      embed.addField(name: 'Emojis', value: preview.emojis.values.map((emoji) => emoji).join(' '), inline: true);
+      List<Emoji> emojis = preview.emojis.values.toList();
+
+      if(emojis.length > 25) {
+        emojis = emojis.sublist(0, 25);
+      }
+
+      embed.addField(name: 'Emojis', value: emojis.map((emoji) => emoji).join(' ') + "...", inline: true);
     }
 
     embed.addField(name: '\u200B', value: '\u200B');
