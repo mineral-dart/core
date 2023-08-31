@@ -229,7 +229,7 @@ class EmbedBuilder {
         iconUrl: payload['author']['icon_url'],
       ) : null,
       fields: fields,
-      color: payload['color'] ? Color("#${payload['color'].toRadixString(16)}") : null,
+      color: payload['color'] != null ? Color("#${payload['color'].toRadixString(16)}") : null,
     );
   }
 
