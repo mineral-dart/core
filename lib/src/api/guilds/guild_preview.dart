@@ -77,6 +77,8 @@ class GuildPreview {
 
     final List<GuildFeature> features = [];
     for (final payload in payload['features']) {
+      if(GuildFeature.values.any((feature) => feature.value == payload) == false) continue;
+
       final feature = GuildFeature.values.firstWhere((feature) => feature.value == payload);
       features.add(feature);
     }
