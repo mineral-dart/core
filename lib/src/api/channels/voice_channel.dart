@@ -1,7 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/channel_builder.dart';
-import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
 
@@ -45,6 +44,10 @@ class VoiceChannel extends TextBasedChannel {
   /// Get current online members
   Map<Snowflake, GuildMember> get members => guild.members.cache.where((member) => member.voice.channel?.id == id);
 
+  /// Get parent [CategoryChannel] of this
+  @override
+  CategoryChannel? get parent => super.parent as CategoryChannel?;
+
   /// Define the bitrate of this
   Future<void> setBitrate (int bitrate) async {
     await update(ChannelBuilder({ 'bitrate': bitrate }));
@@ -64,9 +67,6 @@ class VoiceChannel extends TextBasedChannel {
   Future<void> setVideoQuality (VideoQualityMode mode) async {
     await update(ChannelBuilder({ 'video_quality_mode': mode.value }));
   }
-
-  @override
-  CategoryChannel? get parent => super.parent as CategoryChannel?;
 
   factory VoiceChannel.fromPayload(dynamic payload) {
     final permissionOverwriteManager = PermissionOverwriteManager();

@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:http/http.dart';
 import 'package:mineral/src/internal/services/http_service/http_adapter_contract.dart';
 

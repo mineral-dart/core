@@ -4,22 +4,22 @@ import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
-import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 import 'package:mineral/src/api/managers/message_reaction_manager.dart';
 import 'package:mineral/src/api/messages/message_attachment.dart';
+import 'package:mineral/src/api/messages/message_author.dart';
 import 'package:mineral/src/api/messages/message_mention.dart';
 import 'package:mineral/src/api/messages/message_sticker_item.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 import 'message_parser.dart';
 
 class Message extends PartialMessage<TextBasedChannel>  {
-  Snowflake _authorId;
   final MessageMention _mentions;
+  final MessageAuthor _author;
 
   Message(
     super._id,
@@ -39,17 +39,24 @@ class Message extends PartialMessage<TextBasedChannel>  {
     super._reactions,
     super.timestamp,
     super.editedTimestamp,
-    this._authorId,
     this._mentions,
+    this._author,
   );
 
-  GuildMember? get author => channel.guild.members.cache.get(_authorId);
+  /// Get author of this
+  MessageAuthor get author => _author;
 
+  /// Get channel of this
   @override
   TextBasedChannel get channel => super.channel;
 
+  /// Get all mentions of this
   MessageMention get mentions => _mentions;
 
+  /// Edit this message
+  /// ```dart
+  /// await message.edit(content: 'Hello world!');
+  /// ```
   Future<Message?> edit ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
 
@@ -69,7 +76,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
   Future<void> crossPost () async {
     if (channel.type != ChannelType.guildNews) {
-      ioc.use<MineralCli>().console.warn('Message $id cannot be cross-posted as it is not in an announcement channel');
+      ioc.use<ConsoleService>().warn('Message $id cannot be cross-posted as it is not in an announcement channel');
       return;
     }
 
@@ -77,9 +84,28 @@ class Message extends PartialMessage<TextBasedChannel>  {
       .build();
   }
 
-  Future<void> pin (Snowflake webhookId) async {
+  /// Create a thread from this message
+  /// ```dart
+  /// ThreadChannel? thread = await message.createThread(label: 'My thread');
+  /// ```
+  Future<ThreadChannel?> createThread ({ required String label, int archiveDuration = 60}) async {
+     Response response = await ioc.use<DiscordApiHttpService>().post(url: '/channels/${super.channel.id}/messages/${super.id}/threads')
+        .payload({
+          'name': label,
+          'auto_archive_duration': archiveDuration,
+        })
+        .build();
+
+    return await channel.guild.channels.resolve(jsonDecode(response.body)['id']) as ThreadChannel?;
+  }
+
+  /// Pin this message
+  /// ```dart
+  /// await message.pin();
+  /// ```
+  Future<void> pin () async {
     if (isPinned) {
-      ioc.use<MineralCli>().console.warn('Message $id is already pinned');
+      ioc.use<ConsoleService>().warn('Message $id is already pinned');
       return;
     }
 
@@ -87,9 +113,13 @@ class Message extends PartialMessage<TextBasedChannel>  {
       .build();
   }
 
+  /// Unpin this message
+  /// ```dart
+  /// await message.unpin();
+  /// ```
   Future<void> unpin () async {
     if (!isPinned) {
-      ioc.use<MineralCli>().console.warn('Message $id isn\'t pinned');
+      ioc.use<ConsoleService>().warn('Message $id isn\'t pinned');
       return;
     }
 
@@ -98,6 +128,10 @@ class Message extends PartialMessage<TextBasedChannel>  {
       .build();
   }
 
+  /// Reply to this message
+  /// ```dart
+  /// await message.reply(content: 'Hello world!');
+  /// ```
   Future<PartialMessage?> reply ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     MineralClient client = ioc.use<MineralClient>();
 
@@ -116,14 +150,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
     if (response.statusCode == 200) {
       Message message = Message.from(channel: channel, payload: jsonDecode(response.body));
 
-      if (channel is CategoryChannel) {
-        (channel as TextBasedChannel).messages.cache.putIfAbsent(message.id, () => message);
-      }
-
-      if (channel is PartialTextChannel) {
-        (channel as PartialTextChannel).messages.cache.putIfAbsent(message.id, () => message);
-      }
-
+      channel.messages.cache.putIfAbsent(message.id, () => message);
       return message;
     }
 
@@ -134,40 +161,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
     List<EmbedBuilder> embeds = [];
     if (payload['embeds'] != null) {
       for (dynamic element in payload['embeds']) {
-        List<Field> fields = [];
-        if (element['fields'] != null) {
-          for (dynamic item in element['fields']) {
-            Field field = Field(name: item['name'], value: item['value'], inline: item['inline'] ?? false);
-            fields.add(field);
-          }
-        }
-
-        EmbedBuilder embed = EmbedBuilder(
-          title: element['title'],
-          description: element['description'],
-          url: element['url'],
-          timestamp: element['timestamp'] != null ? DateTime.parse(element['timestamp']) : null,
-          footer: element['footer'] != null ? Footer(
-            text: element['footer']['text'],
-            iconUrl: element['footer']['icon_url'],
-            proxyIconUrl: element['footer']['proxy_icon_url'],
-          ) : null,
-          image: element['image'] != null ? Image(
-            url: element['image']['url'],
-            proxyUrl: element['image']['proxy_url'],
-            height: element['image']['height'],
-            width: element['image']['width'],
-          ) : null,
-          author: element['author'] != null ? Author(
-            name: element['author']['name'],
-            url: element['author']['url'],
-            proxyIconUrl: element['author']['proxy_icon_url'],
-            iconUrl: element['author']['icon_url'],
-          ) : null,
-          fields: fields,
-        );
-
-        embeds.add(embed);
+         embeds.add(EmbedBuilder.from(element));
       }
     }
 
@@ -217,7 +211,7 @@ class Message extends PartialMessage<TextBasedChannel>  {
 
     final message = Message(
       payload['id'],
-      payload['content'],
+      payload['content'] ?? '',
       payload['tts'] ?? false,
       embeds,
       payload['allow_mentions'] ?? false,
@@ -227,14 +221,14 @@ class Message extends PartialMessage<TextBasedChannel>  {
       payload['payload'],
       messageAttachments,
       payload['flags'],
-      payload['pinned'],
+      payload['pinned'] ?? false,
       channel.guild.id,
       payload['channel_id'],
       MessageReactionManager<GuildChannel, Message>(channel),
-      payload['timestamp'],
+      payload['timestamp'] ?? DateTime.now().toIso8601String(),
       payload['edited_timestamp'],
-      payload['author']['id'],
-      MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false)
+      MessageMention(channel, channelMentions, memberMentions, roleMentions, payload['mention_everyone'] ?? false),
+      MessageAuthor(channel.guild.id, User.from(payload['author']))
     );
 
     message.reactions.message = message;

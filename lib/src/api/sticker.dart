@@ -62,7 +62,14 @@ class Sticker {
   StickerType get type => _type;
   FormatType get format => _format;
   int? get sortValue => _sortValue;
+  DateTime get createdAt => _id.dateTime;
 
+  /// Set name of this
+  ///
+  /// ```dart
+  /// Sticker sticker = guild.stickers.cache.get('sticker_id');
+  /// await sticker.setName('new name');
+  /// ```
   Future<void> setName (String name, { String? reason }) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
       .payload({ 'name': name })
@@ -74,6 +81,12 @@ class Sticker {
     }
   }
 
+  /// Set description of this
+  ///
+  /// ```dart
+  /// Sticker sticker = guild.stickers.cache.get('sticker_id');
+  /// await sticker.setDescription('new description');
+  /// ```
   Future<void> setDescription (String description, { String? reason }) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
       .payload({ 'description': description })
@@ -85,6 +98,12 @@ class Sticker {
     }
   }
 
+  /// Set tags of this
+  ///
+  /// ```dart
+  /// Sticker sticker = guild.stickers.cache.get('sticker_id');
+  /// await sticker.setTags('new tags');
+  /// ```
   Future<void> setTags (String tags, { String? reason }) async {
     Response response = await ioc.use<DiscordApiHttpService>().patch(url: "/guilds/${guild.id}/stickers/$id")
       .payload({ 'tags': tags })
@@ -96,6 +115,12 @@ class Sticker {
     }
   }
 
+  /// Delete this
+  ///
+  /// ```dart
+  /// Sticker sticker = guild.stickers.cache.get('sticker_id');
+  /// await sticker.delete();
+  /// ```
   Future<void> delete ({ String? reason }) async {
     Response response = await ioc.use<DiscordApiHttpService>().destroy(url: "/guilds/${guild.id}/stickers/$id")
       .auditLog(reason)

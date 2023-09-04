@@ -7,6 +7,7 @@ class CodeBuilder {
 
   CodeBuilder(this._language, this._code, { this.indent });
 
+  /// Serialize as [String].
   @override
   String toString () {
     final encoder = JsonEncoder.withIndent(List.filled(indent ?? 2, ' ').join());

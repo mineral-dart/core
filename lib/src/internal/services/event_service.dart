@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral_ioc/ioc.dart';
 import 'package:mineral_contract/mineral_contract.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 typedef EventContainer<T> = Map<T, List<MineralEvent>>;
 

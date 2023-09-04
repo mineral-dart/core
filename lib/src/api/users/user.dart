@@ -7,13 +7,15 @@ import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/users/user_flag.dart';
 import 'package:mineral/src/internal/mixins/mineral_client.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class User {
   Snowflake _id;
   String _username;
-  String _discriminator;
+  String? _globalName;
+  @deprecated
+  String? _discriminator;
   bool _bot;
   bool _system;
   List<UserFlagContract> _publicFlags;
@@ -25,6 +27,7 @@ class User {
   User(
     this._id,
     this._username,
+    this._globalName,
     this._discriminator,
     this._bot,
     this._system,
@@ -35,16 +38,45 @@ class User {
     this.premiumType
   );
 
+  /// Returns the unique identifier of the user as a [Snowflake].
   Snowflake get id => _id;
+
+  /// Returns the creation date of the user as a [DateTime].
+  DateTime get createdAt => _id.dateTime;
+
+  /// Returns the username of the user as a [String].
   String get username => _username;
-  String get discriminator => _discriminator;
+
+  String? get globalName => _globalName ?? _username;
+
+  /// Returns the username of the user as a [String].
+  @deprecated
+  String? get discriminator => _discriminator;
+
+  /// Returns a [bool] indicating whether the user is a bot.
   bool get isBot => _bot;
+
+  /// Returns a [bool] indicating whether the user is a system user.
   bool get isSystem => _system;
+
+  /// Returns a list of public user flags as a list of [UserFlagContract].
   List<UserFlagContract> get publicFlags => _publicFlags;
+
+  /// Returns a list of user flags as a list of [UserFlagContract].
   List<UserFlagContract> get flags => _flags;
+
+  /// Returns the decoration of the user as a [UserDecoration].
   UserDecoration get decoration => _decoration;
+
+  /// Returns the user's tag as a [String].
+  @deprecated
   String get tag => '$_username#$_discriminator';
+
+  /// Returns the user's locale as a [Locale] enum value based on the value of language
   Locale get lang => Locale.values.firstWhere((element) => element.locale == _lang);
+
+  /// Returns a [bool] indicating whether the user use the new Discord username system.
+  bool get isMigrated => _discriminator == '0';
 
   /// Return [GuildMember] of [Guild] context for this
   GuildMember? toGuildMember (Snowflake guildId) {
@@ -52,18 +84,16 @@ class User {
     return client.guilds.cache.get(guildId)?.members.cache.get(_id);
   }
 
-  /// ### Envoie un message en DM à l'utilisateur
+  /// This function sends a DM message to the user that corresponds to the instance of the [User].
   ///
-  /// Example :
   /// ```dart
-  /// GuildMember? member = guild.members.cache.get('240561194958716924');
+  /// GuildMember member = guild.members.cache.getOrFail('240561194958716924');
   /// await member.user.send(content: 'Hello World !');
   /// ```
   Future<DmMessage?> send ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments, bool? tts }) async {
     MineralClient client = ioc.use<MineralClient>();
     DmChannel? channel = client.dmChannels.cache.get(_id);
 
-    /// Get channel if exist or create
     if (channel == null) {
       Response response = await ioc.use<DiscordApiHttpService>().post(url: '/users/@me/channels')
         .payload({ 'recipient_id': _id })
@@ -91,12 +121,13 @@ class User {
       return message;
     }
 
-    ioc.use<MineralCli>().console.warn(payload['message']);
+    ioc.use<ConsoleService>().warn(payload['message']);
     return null;
   }
 
+  /// Returns a taggable [String] representation of the user.
   @override
-  String toString () => "<@$_id>";
+  String toString () => '<@$_id>';
 
   factory User.from(dynamic payload) {
     final List<UserFlagContract> publicFlags = [];
@@ -120,6 +151,7 @@ class User {
     return User(
       payload['id'],
       payload['username'],
+      payload['global_name'],
       payload['discriminator'],
       payload['bot'] == true,
       payload['system'] == true,

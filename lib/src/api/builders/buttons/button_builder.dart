@@ -1,55 +1,78 @@
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/src/api/builders/buttons/clickable_button.dart';
-import 'package:mineral/src/api/builders/buttons/contracts/button_contract.dart';
-import 'package:mineral/src/api/builders/buttons/contracts/clickable_button_contract.dart';
 import 'package:mineral/src/api/builders/buttons/link_button.dart';
 import 'package:mineral/src/api/builders/component_wrapper.dart';
 
-import 'contracts/link_contract.dart';
+/// ButtonBuilder component
+class ButtonBuilder extends ComponentWrapper {
+  /// Create a basic button with dedicated properties
+  static ClickableButton button (String customId, {
+    String? label,
+    ButtonStyle style = ButtonStyle.primary,
+    EmojiBuilder? emoji,
+    bool disabled = false,
+  }) => ClickableButton(customId, label: label, style: style, emoji: emoji, disabled: disabled);
 
-class ButtonBuilder extends ComponentWrapper implements ButtonContract {
-  static ClickableButtonContract button (String customId) => ClickableButton(customId, null, ButtonStyle.primary);
-  static LinkContract link (String url) => LinkButton(null, url, ButtonStyle.link);
+  /// Create a link button with dedicated properties
+  static LinkButton link (String url, {
+    String? label,
+    EmojiBuilder? emoji,
+    bool disabled = false,
+  }) => LinkButton(url, label: label, emoji: emoji, disabled: disabled);
 
-  final String? _customId;
-  String? _label;
-  ButtonStyle _style;
-  EmojiBuilder? _emoji;
-  bool _disabled = false;
-  String? _url;
+  /// Gets the custom id of this
+  String? customId;
 
-  ButtonBuilder(this._customId, this._url, this._style): super(type: ComponentType.button);
+  /// Gets the label of this
+  String? label;
 
-  String get customId => _customId!;
+  /// Gets the [ButtonStyle] of this
+  ButtonStyle style;
 
-  String? get label => _label;
+  /// Gets the [EmojiBuilder] of this
+  EmojiBuilder? emoji;
 
-  ButtonStyle get style => _style;
+  /// Gets the disabled state of this
+  bool disabled;
 
-  EmojiBuilder? get emoji => _emoji;
+  /// Gets the url of this
+  String? url;
 
-  bool get disabled => _disabled;
+  ButtonBuilder(this.customId, {
+    this.label,
+    this.style = ButtonStyle.primary,
+    this.emoji,
+    this.disabled = false,
+    this.url
+  }): super(type: ComponentType.button);
 
-  String get url => _url!;
 
-  void setLabel (String value) => _label = value;
+  /// Sets the label of this
+  @override
+  void setLabel (String value) => label = value;
 
-  void setDisabled (bool value) => _disabled = value;
+  /// Sets the disabled state of this
+  @override
+  void setDisabled (bool value) => disabled = value;
 
-  void setEmoji (EmojiBuilder? value) => _emoji = value;
+  /// Sets the emoji of this
+  @override
+  void setEmoji (EmojiBuilder? value) => emoji = value;
 
-  void setStyle (ButtonStyle value) => _style = value;
+  /// Sets the style of this
+  void setStyle (ButtonStyle value) => style = value;
 
-  void setUrl (String value) => _url = value;
+  /// Sets the url of this
+  void setUrl (String value) => url = value;
 
   @override
   Map<String, dynamic> toJson() => {
     'type': type?.value,
-    'custom_id': _customId,
-    'label': _label,
-    'style': _style.value,
-    'emoji': _emoji?.emoji.toJson(),
-    'disabled': _disabled,
-    'url': _url,
+    'custom_id': customId,
+    'label': label,
+    'style': style.value,
+    'emoji': emoji?.emoji.toJson(),
+    'disabled': disabled,
+    'url': url,
   };
 }

@@ -1,5 +1,4 @@
 import 'package:mineral/core/api.dart';
-import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 
 class ThreadChannel extends PartialTextChannel {
@@ -42,7 +41,7 @@ class ThreadChannel extends PartialTextChannel {
   /// Get birthday of this
   DateTime get createdAt => DateTime.parse(_createdAt);
 
-  /// Get parent of this
+  /// Get parent [CategoryChannel] of this
   @override
   TextChannel get parent => super.parent as TextChannel;
 

@@ -9,10 +9,16 @@ class UserDecoration {
 
   UserDecoration(this._discriminator, this._avatar, this._avatarDecoration);
 
+  /// An optional [ImageFormater] instance representing the [User]'s avatar image.
   ImageFormater? get avatar => _avatar;
+
+  /// An optional [ImageFormater] instance representing the decoration of the [User]'s avatar image.
   ImageFormater? get avatarDecoration => _avatarDecoration;
 
-  /// ### Returns the absolute url to the user's avatar
+  /// This function is a getter that returns the default avatar URL of a [User] as [String].
+  ///
+  /// If the user has an avatar, it returns the URL of that avatar.
+  /// Otherwise, it returns a URL for the default avatar image based on the [User]'s discriminator.
   String get defaultAvatarUrl => _avatar != null
     ? '${_avatar?.url}'
     : '${Constants.cdnUrl}/embed/avatars/${int.parse(_discriminator) % 5 }.png';

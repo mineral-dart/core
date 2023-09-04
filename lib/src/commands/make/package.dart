@@ -1,17 +1,18 @@
 import 'dart:io';
 
 import 'package:mineral/src/commands/templates/module.dart';
-import 'package:mineral_cli/mineral_cli.dart';
-import 'package:mineral_console/mineral_console.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 import 'package:path/path.dart';
+import 'package:prompts/prompts.dart' as prompts;
 import 'package:recase/recase.dart';
 
-class MakeModule extends CliCommand {
-  MakeModule(Console console): super(console, 'make:module', 'Create new module structure', ['name']);
+class MakePackage extends CliCommandContract {
+  MakePackage(ConsoleService console): super(console, 'make:package', 'Create new package structure', ['name']);
 
   @override
   Future<void> handle(Map args) async {
-    final placeInRootFolder = Confirm('Would you like to change the location of your ?', defaultValue: false).build();
+    final placeInRootFolder = prompts.getBool('Would you like to change the location of your ?', defaultsTo: false);
     final Directory directory = Directory(join(Directory.current.path, 'src', ReCase(args['name']).snakeCase));
 
     if (!placeInRootFolder) {
@@ -20,7 +21,7 @@ class MakeModule extends CliCommand {
       return;
     }
 
-    final location = Ask('Where do you want to create your command file ?').build();
+    final location = prompts.get('Where do you want to create your package ?');
     final file = File(join(directory.path, location, '${ReCase(args['name']).snakeCase}.dart'));
 
     await _createFile(directory, file, args);

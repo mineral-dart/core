@@ -1,9 +1,9 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/core/api.dart';
-import 'package:mineral/src/api/channels/dm_channel.dart';
 import 'package:mineral/src/api/channels/news_channel.dart';
 import 'package:mineral/src/api/channels/stage_channel.dart';
-import 'package:mineral_console/mineral_console.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class PartialChannel {
   final Snowflake _id;
@@ -46,7 +46,7 @@ class ChannelWrapper {
     final ChannelType? channelType = ChannelType.values.firstWhereOrNull((element) => element.value == payload['type']);
 
     if (channelType == null) {
-      Console(theme: DefaultTheme()).warn("Guild channel ${payload['type']} don't exist! Please report this to our team.");
+      ioc.use<ConsoleService>().warn("Guild channel ${payload['type']} don't exist! Please report this to our team.");
       return null;
     }
 
@@ -72,7 +72,7 @@ class ChannelWrapper {
       case ChannelType.guildForum:
         return ForumChannel.fromPayload(payload);
       default:
-        Console(theme: DefaultTheme()).warn('$channelType is not supported');
+        ioc.use<ConsoleService>().warn('$channelType is not supported');
     }
 
     return null;

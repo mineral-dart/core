@@ -1,7 +1,11 @@
 import 'package:mineral/core/builders.dart';
-import 'package:mineral/src/api/builders/buttons/contracts/clickable_button_contract.dart';
 
-class ClickableButton extends ButtonBuilder implements ClickableButtonContract {
-  ClickableButton(super.customId, super.url, super.style);
-
+/// ClickableButton component
+class ClickableButton extends ButtonBuilder {
+  ClickableButton(String customId, {
+    super.label,
+    super.style = ButtonStyle.primary,
+    super.emoji,
+    super.disabled = false,
+  }): super(customId);
 }

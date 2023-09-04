@@ -18,6 +18,7 @@ class ForumChannel extends GuildChannel {
     this._discussions,
   );
 
+  /// Get children of this
   ForumDiscussionManager get discussions => _discussions;
 
   /// Defines the default emoji of this

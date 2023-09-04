@@ -4,7 +4,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/builders/channel_builder.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class GuildChannel extends PartialChannel {
@@ -39,24 +39,29 @@ class GuildChannel extends PartialChannel {
   /// Get [PermissionOverwrite] manager
   PermissionOverwriteManager? get permissions => _permissions;
 
+  /// Set label of this
   Future<void> setLabel (String value) async {
     await update(ChannelBuilder({ 'name': value }));
   }
 
+  /// Set parents of this
   Future<void> setParentId (Snowflake id) async {
     await update(ChannelBuilder({ 'parent_id': id }));
   }
 
+  /// Set parents of this
   Future<void> setParent (CategoryChannel channel) async {
     await update(ChannelBuilder({ 'parent_id': channel.id }));
   }
 
+  /// Set permissions of this
   Future<void> setPermissionsOverwrite (List<PermissionOverwrite> permissions) async {
-    await update(ChannelBuilder({ 'permission_overwrites': permissions.map((permission) => permission.toJson()) }));
+    await update(ChannelBuilder({ 'permission_overwrites': permissions.map((permission) => permission.toJson()).toList() }));
   }
 
+  /// Update this
   Future<void> update (ChannelBuilder builder) async {
-    if (_validate()) {
+    if (_validate(builder.payload)) {
       await ioc.use<DiscordApiHttpService>().patch(url: '/channels/$id')
       .payload(builder.payload)
       .build();
@@ -88,15 +93,18 @@ class GuildChannel extends PartialChannel {
     return flags;
   }
 
-  bool _validate () {
-    if (type == ChannelType.guildCategory) {
-      ioc.use<MineralCli>().console.warn('A category channel cannot have a parent');
-      return false;
-    }
+  bool _validate (dynamic payload) {
+    Map<String, Function> checks = {
+      'You can\'t send empty channel update': (element, GuildChannel channel) => element.isEmpty,
+      'A category channel can\'t have a parent': (element, GuildChannel channel) => element['parent_id'] != null && channel.type == ChannelType.guildCategory,
+      'A thread channel can\'t change its parent': (element, GuildChannel channel) => element['parent_id'] != null && [ChannelType.guildPublicThread, ChannelType.guildPrivateThread, ChannelType.guildNewsThread].contains(channel.type)
+    };
 
-    if (type == ChannelType.guildPublicThread || type == ChannelType.private || type == ChannelType.guildNewsThread) {
-      ioc.use<MineralCli>().console.warn('A thread channel cannot change a parent');
-      return false;
+    for(MapEntry<String, Function> check in checks.entries) {
+      if(check.value(payload, this)) {
+        ioc.use<ConsoleService>().warn(check.key);
+        return false;
+      }
     }
 
     return true;

@@ -3,14 +3,16 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
+import 'package:mineral/core/extras.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/managers/guild_role_manager.dart';
 import 'package:mineral/src/exceptions/not_exist_exception.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class MemberRoleManager extends CacheManager<Role>  {
+class MemberRoleManager extends CacheManager<Role> with Container {
   late final Guild _guild;
   GuildRoleManager manager;
   Snowflake memberId;
@@ -18,6 +20,11 @@ class MemberRoleManager extends CacheManager<Role>  {
   MemberRoleManager({ required this.manager, required this.memberId });
 
   Guild get guild => _guild;
+
+  Role get highest => cache.values.fold(_guild.roles.everyone, (previousValue, element) {
+    if (element.position > previousValue.position) return element;
+    return previousValue;
+  });
 
   /// Add a [Role] to the [GuildMember]
   ///
@@ -50,6 +57,14 @@ class MemberRoleManager extends CacheManager<Role>  {
 
     if (response.statusCode == 204) {
       cache.putIfAbsent(id, () => role);
+      return;
+    }
+
+    final payload = jsonDecode(response.body);
+
+    if(payload['code'] == DiscordErrorsCode.missingPermissions.value) {
+      container.use<ConsoleService>().warn('Bot don\'t have permissions to add or remove roles !');
+      return;
     }
   }
 
@@ -77,6 +92,14 @@ class MemberRoleManager extends CacheManager<Role>  {
 
     if (response.statusCode == 204) {
       cache.remove(id);
+      return;
+    }
+
+    final payload = jsonDecode(response.body);
+
+    if(payload['code'] == DiscordErrorsCode.missingPermissions.value) {
+      container.use<ConsoleService>().warn('Bot don\'t have permissions to add or remove roles !');
+      return;
     }
   }
 

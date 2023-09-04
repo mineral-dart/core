@@ -4,9 +4,15 @@ import 'dart:io';
 import 'package:http/http.dart';
 import 'package:path/path.dart';
 
+/// Attachment [File] builder
 class AttachmentBuilder {
+  /// Content property of this.
   List<int> content;
+
+  /// Filename property of this.
   String? filename;
+
+  /// Description property of this.
   String? description;
 
   AttachmentBuilder(this.content, {
@@ -14,21 +20,18 @@ class AttachmentBuilder {
     this.description
   });
 
-  Object toJson ({int? id}) {
-    return {
-      'id': id,
-      'filename': filename,
-      'description': description
-    };
-  }
+  /// Create a [MultipartFile] from the attachment
+  MultipartFile toFile(int id) => MultipartFile.fromBytes("files[$id]", content, filename: filename);
 
-  MultipartFile toFile(int id) {
-    return MultipartFile.fromBytes("files[$id]", content, filename: filename);
-  }
+  /// Serialize the attachment to JSON
+  Object toJson ({int? id}) => {
+    'id': id,
+    'filename': filename,
+    'description': description
+  };
 
-  /// ### Create an attachment from a path
-  ///
-  /// Example :
+
+  /// Create an attachment from a path
   /// ```dart
   /// await interaction.reply(
   ///   content: 'Hello World!',
@@ -49,9 +52,7 @@ class AttachmentBuilder {
     return AttachmentBuilder(file.readAsBytesSync(), filename: basename(file.path), description: description);
   }
 
-  /// ### Create an attachment from a base64 string
-  ///
-  /// Example :
+  /// Create an attachment from a base64 string
   /// ```dart
   /// await interaction.reply(
   ///   content: 'Hello World!',
@@ -70,5 +71,4 @@ class AttachmentBuilder {
   factory AttachmentBuilder.base64(String content, {required String filename, String? description}) {
     return AttachmentBuilder(base64Decode(content), filename: filename, description: description);
   }
-
 }

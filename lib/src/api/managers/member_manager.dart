@@ -9,12 +9,17 @@ import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class MemberManager extends CacheManager<GuildMember>  {
-  late final Guild _guild;
-  Guild get guild => _guild;
+  final Snowflake _guildId;
+  Guild get guild => ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId);
+
+  MemberManager(this._guildId);
+
+  /// Get the [GuildMember] of the [MineralClient]
+  GuildMember get me => ioc.use<MineralClient>().user.toGuildMember(_guildId)!;
 
   Future<Map<Snowflake, GuildMember>> sync () async {
     Response response = await ioc.use<DiscordApiHttpService>()
-      .get(url: "/guilds/${_guild.id}/members")
+      .get(url: "/guilds/$_guildId/members")
       .build();
 
     if(response.statusCode == 200) {
@@ -28,9 +33,10 @@ class MemberManager extends CacheManager<GuildMember>  {
 
         GuildMember guildMember = GuildMember.from(
           user: User.from(element['user']),
-          roles: _guild.roles,
-          guild: _guild,
-          voice: voiceManager ?? VoiceManager.empty(element['deaf'], element['mute'], element['user']['id'], _guild.id)
+          roles: guild.roles,
+          guild: guild,
+          member: element,
+          voice: voiceManager ?? VoiceManager.empty(element['deaf'], element['mute'], element['user']['id'], _guildId)
         );
 
         cache.putIfAbsent(guildMember.user.id, () => guildMember);
@@ -46,16 +52,17 @@ class MemberManager extends CacheManager<GuildMember>  {
     }
 
     final Response response = await ioc.use<DiscordApiHttpService>()
-        .get(url: '/guilds/${_guild.id}/members/$id')
+        .get(url: '/guilds/$_guildId/members/$id')
         .build();
 
     if(response.statusCode == 200) {
       dynamic payload = jsonDecode(response.body);
       final GuildMember guildMember = GuildMember.from(
-          user: User.from(payload['user']),
-          roles: _guild.roles,
-          guild: _guild,
-          voice: VoiceManager.empty(payload['deaf'], payload['mute'], payload['user']['id'], _guild.id)
+        user: User.from(payload['user']),
+        roles: guild.roles,
+        guild: guild,
+        member: payload,
+        voice: VoiceManager.empty(payload['deaf'], payload['mute'], payload['user']['id'], _guildId)
       );
 
       cache.putIfAbsent(guildMember.user.id, () => guildMember);

@@ -1,11 +1,11 @@
 import 'dart:core';
 
 import 'package:mineral/core/api.dart';
+import 'package:mineral/core/extras.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral_cli/mineral_cli.dart';
 import 'package:mineral_ioc/ioc.dart';
 
-class CommandInteraction extends Interaction  {
+class CommandInteraction extends Interaction with Client  {
   String _identifier;
   Snowflake? _channelId;
 
@@ -21,82 +21,46 @@ class CommandInteraction extends Interaction  {
     super._token,
     super._userId,
     super._guildId,
+    super._message,
     this._identifier,
     this._channelId,
     this._data,
     this._params,
   );
 
+  /// Get identifier of this
   String get identifier => _identifier;
+
+  /// Get channel [PartialChannel] of this
   PartialChannel? get channel => guild != null
     ? guild!.channels.cache.get(_channelId)
     : ioc.use<MineralClient>().dmChannels.cache.get(_channelId);
+
+  /// Get data of this
   Map<String, dynamic> get data => _data;
+  /// Get params of this
   Map<String, dynamic> get params => _params;
 
-  /// ### Returns an instance of [PartialTextChannel] or null if the command has the designed option
+  /// Returns an instance of [T] or null if the command has the designed option
+  ///
+  /// ```dart
+  /// final int value = getValue<int>('key', defaultValue: 0);
+  /// final double value = getValue<double>('key', defaultValue: 0.0);
+  /// final String value = getValue<String?>('key', defaultValue: 'Hello World');
+  /// ```
+  T getValue<T>(String key, { T? defaultValue }) => params[key] ?? defaultValue as T;
+
+  /// Returns an instance of [PartialTextChannel] or null if the command has the designed option
   ///
   /// Example :
   /// ```dart
   /// Channel? channel = interaction.getChannel('option_name');
   /// ```
-  T? getChannel<T extends PartialTextChannel> (String optionName) {
-    return guild?.channels.cache.get(params[optionName]);
+  T getChannel<T extends GuildChannel>(String optionName) {
+    return guild?.channels.cache.get(params[optionName]) as T;
   }
 
-  /// ### Returns an instance of [PartialTextChannel] if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// final Channel channel = interaction.getChannelOrFail('option_name');
-  /// ```
-  T getChannelOrFail<T extends PartialTextChannel> (String optionName) {
-    return guild!.channels.cache.getOrFail(params[optionName]);
-  }
-
-  /// ### Returns an [int] if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// int? value = interaction.getInteger('option_name');
-  /// ```
-  int? getInteger (String optionName) {
-    double integer = params[optionName];
-    return integer.toInt();
-  }
-
-  /// ### Returns an [int] or null if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// final int value = interaction.getIntegerOrFail('option_name');
-  /// ```
-  int getIntegerOrFail (String optionName) {
-    double integer = params[optionName];
-    return integer.toInt();
-  }
-
-  /// ### Returns an [String] or null if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// String? str = interaction.getString('option_name');
-  /// ```
-  String? getString (String optionName) {
-    return params[optionName].toString();
-  }
-
-  /// ### Returns an [String] if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// final String str = interaction.getStringOrFail('option_name');
-  /// ```
-  String getStringOrFail (String optionName) {
-    return params[optionName].toString();
-  }
-
-  /// ### Returns an instance of [GuildMember] if the command has the designed option
+  /// Returns an instance of [GuildMember] if the command has the designed option
   ///
   /// Example :
   /// ```dart
@@ -106,79 +70,27 @@ class CommandInteraction extends Interaction  {
     return guild?.members.cache.get(params[optionName]);
   }
 
-  /// ### Returns an instance of [GuildMember] if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// final GuildMember member = interaction.getMemberOrFail('option_name');
-  /// ```
-  GuildMember getMemberOrFail (String optionName) {
-    return guild!.members.cache.getOrFail(params[optionName]);
-  }
-
-  /// ### Returns an instance of [User] or null if the command has the designed option
+  /// Returns an instance of [User] or null if the command has the designed option
   ///
   /// Example :
   /// ```dart
   /// User? user = interaction.getUser('option_name');
   /// ```
   User? getUser (String optionName) {
-    final MineralClient client = ioc.use<MineralClient>();
     return client.users.cache.get(params[optionName]);
   }
 
-  /// ### Returns an instance of [User] if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// final User user = interaction.getUserOrFail('option_name');
-  /// ```
-  User getUserOrFail (String optionName) {
-    final MineralClient client = ioc.use<MineralClient>();
-    return client.users.cache.getOrFail(params[optionName]);
-  }
-
-  /// ### Returns an [bool] or null if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// bool? boolean = interaction.getBoolean('option_name');
-  /// ```
-  bool? getBoolean (String optionName) {
-    return params[optionName];
-  }
-
-  /// ### Returns an [bool] if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// final bool boolean = interaction.getBooleanOrFail('option_name');
-  /// ```
-  bool getBooleanOrFail (String optionName) {
-    return params[optionName];
-  }
-
-  /// ### Returns an instance of [Role] or null if the command has the designed option
+  /// Returns an instance of [Role] or null if the command has the designed option
   ///
   /// Example :
   /// ```dart
   /// Role? role = interaction.getRole('option_name');
   /// ```
-  Role? getRole (String optionName) {
+  Role? getRole(String optionName) {
     return guild?.roles.cache.get(params[optionName]);
   }
 
-  /// ### Returns an instance of [Role] if the command has the designed option
-  ///
-  /// Example :
-  /// ```dart
-  /// Role? role = interaction.getRole('option_name');
-  /// ```
-  Role getRoleOrFail (String optionName) {
-    return guild!.roles.cache.getOrFail(params[optionName]);
-  }
-
-  /// ### Returns an [T] if the command has the designed option
+  /// Returns an [T] if the command has the designed option
   ///
   /// Example :
   /// ```dart
@@ -189,7 +101,7 @@ class CommandInteraction extends Interaction  {
     return params[optionName];
   }
 
-  /// ### Returns an value if the command has the designed option
+  /// Returns an value if the command has the designed option
   ///
   /// Example :
   /// ```dart
@@ -222,8 +134,9 @@ class CommandInteraction extends Interaction  {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['guild_id'] == null ? payload['user']['id'] : payload['member']?['user']?['id'],
+      payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
+      null,
       payload['data']['name'],
       payload['channel_id'],
       payload['data'],

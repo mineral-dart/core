@@ -3,6 +3,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/sticker.dart';
 
+/// Represents a preview of a [Guild].
 class GuildPreview {
   final Snowflake _id;
   final String _label;
@@ -30,16 +31,37 @@ class GuildPreview {
     this._approximatePresenceCount,
   );
 
+  /// Get the [Guild] id.
   Snowflake get id => _id;
+
+  /// Get the [Guild] label.
   String get label => _label;
+
+  /// Get the [Guild] description.
   String? get description => _description;
+
+  /// Get the [Guild] icon.
   String? get icon => '${Constants.cdnUrl}/icons/$id/$_icon.png';
+
+  /// Get the [Guild] splash.
   String? get splash => '${Constants.cdnUrl}/splashes/$id/$_splash.png';
+
+  /// Get the [Guild] discovery splash.
   String? get discoverySplash => '${Constants.cdnUrl}/discovery-splashes/$id/$_discoverySplash.png';
+
+  /// Get the [Guild] emojis.
   Map<Snowflake, Emoji> get emojis => _emojis;
+
+  /// Get the [Guild] stickers.
   Map<Snowflake, Sticker> get stickers => _stickers;
+
+  /// Get the [Guild] features.
   List<GuildFeature> get features => _features;
+
+  /// Get the [Guild] approximate member count.
   int get approximateMemberCount => _approximateMemberCount;
+
+  /// Get the [Guild] approximate presence count.
   int get approximatePresenceCount => _approximatePresenceCount;
 
   factory GuildPreview.from({ required Guild guild, required dynamic payload }) {
@@ -55,6 +77,8 @@ class GuildPreview {
 
     final List<GuildFeature> features = [];
     for (final payload in payload['features']) {
+      if(GuildFeature.values.any((feature) => feature.value == payload) == false) continue;
+
       final feature = GuildFeature.values.firstWhere((feature) => feature.value == payload);
       features.add(feature);
     }

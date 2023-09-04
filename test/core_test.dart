@@ -31,7 +31,7 @@ void main() {
     EnvironmentService manager = EnvironmentService();
     manager.load();
 
-    ShardManager shardManager = ShardManager(http, manager.environment.get("APP_TOKEN")!, [Intent.all]);
+    ShardManager shardManager = ShardManager(http, manager.get("APP_TOKEN")!, [Intent.all]);
     await shardManager.start(shardsCount: 1);
   });
 }

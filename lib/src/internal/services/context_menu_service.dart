@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/interactions/context_menu_interaction.dart';
-import 'package:mineral_ioc/ioc.dart';
 import 'package:mineral_contract/mineral_contract.dart';
+import 'package:mineral_ioc/ioc.dart';
 
 class ContextMenuService extends MineralService implements ContextMenuServiceContract {
   final Map<String, MineralContextMenu> _contextMenus = {};
@@ -29,7 +29,7 @@ class ContextMenuService extends MineralService implements ContextMenuServiceCon
   }
 
   List<MineralContextMenu> getFromGuild (Guild guild) {
-    bool filter(MineralContextMenu element) => element.builder.scope.mode == Scope.guild.mode || element.builder.scope.mode == guild.id;
+    bool filter(MineralContextMenu element) => element.builder.scope.mode == CommandScope.guild.mode || element.builder.scope.mode == guild.id;
 
     return _contextMenus.where(filter).values.toList();
   }

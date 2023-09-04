@@ -10,6 +10,7 @@ class MessageMention {
 
   MessageMention(this._channel, this._channels, this._members, this._roles, this._everyone);
 
+  /// Get members [GuildMember] of this
   Map<Snowflake, GuildMember> get members {
     Map<Snowflake, GuildMember> members = {};
     for (final element in _members) {
@@ -20,6 +21,7 @@ class MessageMention {
     return members;
   }
 
+  /// Get roles [Role] of this
   Map<Snowflake, Role> get roles {
     Map<Snowflake, Role> roles = {};
     for (final element in _roles) {
@@ -30,6 +32,7 @@ class MessageMention {
     return roles;
   }
 
+  /// Get channels [GuildChannel] of this
   Map<Snowflake, GuildChannel> get channels {
     Map<Snowflake, GuildChannel> channels = {};
     for (final element in _channels) {

@@ -1,23 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:mineral/core/extras.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral_environment/environment.dart';
-import 'package:mineral_ioc/ioc.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 import 'package:path/path.dart';
 
-class EnvironmentService extends MineralService with Console {
-  final MineralEnvironment environment = MineralEnvironment();
+class EnvironmentService extends EnvironmentServiceContract with Console {
+  final Map<String, String> _cache = Map.from(Platform.environment);
 
   EnvironmentService(): super(inject: true);
 
-  Future<MineralEnvironment> load () async {
+  Future<void> load () async {
     if (hasValidEnvironment()) {
-      environment.data.putIfAbsent('APP_TOKEN', () => Platform.environment.getOrFail('APP_TOKEN'));
-      environment.data.putIfAbsent('LOG_LEVEL', () => Platform.environment.getOrFail('LOG_LEVEL'));
-      environment.data.putIfAbsent('DEBUGGER', () => Platform.environment.getOrFail('DEBUGGER'));
-
-      return environment;
+      _cache.putIfAbsent('APP_TOKEN', () => Platform.environment.getOrFail('APP_TOKEN'));
+      _cache.putIfAbsent('LOG_LEVEL', () => Platform.environment.getOrFail('LOG_LEVEL'));
+      _cache.putIfAbsent('DEBUGGER', () => Platform.environment.getOrFail('DEBUGGER'));
     }
 
     File file = File(join(Directory.current.path, '.env'));
@@ -34,11 +32,9 @@ class EnvironmentService extends MineralService with Console {
         String key = content.removeAt(0).trim();
         String value = content.join(':').trim();
 
-        environment.data.putIfAbsent(key, () => value);
+        _cache.putIfAbsent(key, () => value);
       }
     }
-
-    return environment;
   }
 
   Future<void> createEnvironmentFile () async {
@@ -59,4 +55,32 @@ class EnvironmentService extends MineralService with Console {
 
     return !requiredKeysChecked.contains(false);
   }
+
+  @override
+  Map<String, String> get data => _cache;
+
+  @override
+  T get<T> (String key, { T? defaultValue }) => (_cache[key] ?? defaultValue) as T;
+
+  @override
+  T getOrFail<T> (String key, { String? message }) {
+    final result = get(key);
+    _exist(key, result);
+
+    return result as T;
+  }
+
+  void _exist<T> (String key, T result, { String? message }) {
+    if (result == null) {
+      throw Exception(message ?? 'No values are attached to $key key.');
+    }
+  }
+
+  @override
+  void delete(String key) {
+    _cache.remove(key);
+  }
+
+  @override
+  bool has(String key) => _cache.containsKey(key);
 }

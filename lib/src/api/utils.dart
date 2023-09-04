@@ -26,27 +26,13 @@ enum ApplicationCommandType {
   const ApplicationCommandType(this.value);
 }
 
-enum NotificationLevel {
-  allMessages(0),
-  onlyMentions(1);
-
-  final int _value;
-  const NotificationLevel(this._value);
-
-  @override
-  String toString() => _value.toString();
-}
-
 enum ExplicitContentFilterLevel {
   disabled(0),
   membersWithoutRoles(1),
   allMembers(2);
 
-  final int _value;
-  const ExplicitContentFilterLevel(this._value);
-
-  @override
-  String toString() => _value.toString();
+  final int value;
+  const ExplicitContentFilterLevel(this.value);
 }
 
 enum SystemChannelFlags {
@@ -55,19 +41,8 @@ enum SystemChannelFlags {
   suppressGuildReminderNotifications(1 << 2),
   suppressJoinNotificationReplies(1 << 3);
 
-  final int _value;
-  const SystemChannelFlags(this._value);
-
-  @override
-  String toString() => _value.toString();
-}
-
-class VerificationLevel {
-  static int none = 0;
-  static int low = 1;
-  static int medium = 2;
-  static int high = 3;
-  static int veryHigh = 4;
+  final int value;
+  const SystemChannelFlags(this.value);
 }
 
 class NsfwLevel {
@@ -158,7 +133,14 @@ enum GuildFeature {
   welcomeScreen('WELCOME_SCREEN_ENABLED'),
   memberProfiles('MEMBER_PROFILES'),
   sevenDayThreadArchive('SEVEN_DAY_THREAD_ARCHIVE'),
-  applicationCommandPermissionsV2('APPLICATION_COMMAND_PERMISSIONS_V2');
+  applicationCommandPermissionsV2('APPLICATION_COMMAND_PERMISSIONS_V2'),
+  soundboard('SOUNDBOARD'),
+  channelIconEmojisGenerated('CHANNEL_ICON_EMOJIS_GENERATED'),
+  guestsEnabled('GUESTS_ENABLED'),
+  guildOnboardingHasPrompts('GUILD_ONBOARDING_HAS_PROMPTS'),
+  guildOnboardingEverEnabled('GUILD_ONBOARDING_EVER_ENABLED'),
+  guildOnboarding('GUILD_ONBOARDING'),
+  guildServerGuide('GUILD_SERVER_GUIDE');
 
   final String value;
   const GuildFeature(this.value);

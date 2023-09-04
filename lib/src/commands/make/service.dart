@@ -1,17 +1,18 @@
 import 'dart:io';
 
 import 'package:mineral/src/commands/templates/event.dart';
-import 'package:mineral_cli/mineral_cli.dart';
-import 'package:mineral_console/mineral_console.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 import 'package:path/path.dart';
+import 'package:prompts/prompts.dart' as prompts;
 import 'package:recase/recase.dart';
 
-class MakeService extends CliCommand {
-  MakeService(Console console): super(console, 'make:service', 'Create new service file', ['name']);
+class MakeService extends CliCommandContract {
+  MakeService(ConsoleService console): super(console, 'make:service', 'Create new service file', ['name']);
 
   @override
   Future<void> handle(Map args) async {
-    final placeInRootFolder = Confirm('Would you like to change the location of your service file ?', defaultValue: false).build();
+    final placeInRootFolder = prompts.getBool('Would you like to change the location of your ?', defaultsTo: false);
 
     if (!placeInRootFolder) {
       final file = File(join(Directory.current.path, 'src', '${ReCase(args['name']).snakeCase}.dart'));
@@ -19,7 +20,7 @@ class MakeService extends CliCommand {
       return;
     }
 
-    final location = Ask('Where do you want to create your event file ?').build();
+    final location = prompts.get('Where do you want to create your service ?');
     final file = File(join(Directory.current.path, 'src', location, '${ReCase(args['name']).snakeCase}.dart'));
     await _createFile(file, args);
   }

@@ -9,6 +9,7 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/extras.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/src/exceptions/shard_exception.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral/src/internal/services/debugger_service.dart';
 import 'package:mineral/src/internal/websockets/heartbeat.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_handler.dart';
@@ -16,7 +17,6 @@ import 'package:mineral/src/internal/websockets/sharding/shard_manager.dart';
 import 'package:mineral/src/internal/websockets/sharding/shard_message.dart';
 import 'package:mineral/src/internal/websockets/websocket_dispatcher.dart';
 import 'package:mineral/src/internal/websockets/websocket_response.dart';
-import 'package:mineral_cli/mineral_cli.dart';
 
 /// Represents a Discord Shard.
 /// A Shard is the object used to interact with the discord websocket.
@@ -128,7 +128,7 @@ class Shard with Container {
       case ShardCommand.error:
         final String error = 'Shard #$id ${message.data['reason']} | ${message.data['code']}';
         debugger.debug(error);
-        container.use<MineralCli>().console.error(error);
+        container.use<ConsoleService>().error(error);
 
         final Map<int, Function> errors = {
           4000: () => reconnect(resume: true),
@@ -142,7 +142,7 @@ class Shard with Container {
           4005: () => reconnect(resume: true),
           4007: () => reconnect(resume: false),
           4008: () => {
-            container.use<MineralCli>().console.warn('Shard #$id : You send to many packets!'),
+            container.use<ConsoleService>().warn('Shard #$id : You send to many packets!'),
             reconnect(resume: false)
           },
           4009: () => reconnect(resume: true),
@@ -155,14 +155,14 @@ class Shard with Container {
           return errorCallback();
         }
 
-        container.use<MineralCli>().console.error('Shard #$id : No error callback');
+        container.use<ConsoleService>().error('Shard #$id : No error callback');
         break;
       case ShardCommand.disconnected:
         if (_pendingReconnect) {
           return debugger.debug('Shard #$id : Websocket disconnected for reconnection');
         }
 
-        container.use<MineralCli>().console.warn('Shard #$id : Websocket disconnected without error, try to reconnect...');
+        container.use<ConsoleService>().warn('Shard #$id : Websocket disconnected without error, try to reconnect...');
         return reconnect(resume: true);
       case ShardCommand.terminateOk:
         debugger.debug('Shard #$id : Websocket connection terminated, restart...');
@@ -172,7 +172,7 @@ class Shard with Container {
         break;
       default:
         final String error = 'Shard #$id : Websocket disconnected for reconnection';
-        container.use<MineralCli>().console.error('Shard #$id : Unhandled message : ${message.command.name}');
+        container.use<ConsoleService>().error('Shard #$id : Unhandled message : ${message.command.name}');
         return debugger.debug(error);
     }
   }

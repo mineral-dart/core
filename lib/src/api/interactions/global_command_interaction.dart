@@ -10,12 +10,14 @@ class GlobalCommandInteraction extends CommandInteraction {
     super.token,
     super.userId,
     super.guildId,
+    super.message,
     super.identifier,
     super.channelId,
     super.data,
-    super.params
+    super.params,
   );
 
+  /// Get channel [PartialChannel] of this
   @override
   PartialChannel? get channel => super.channel as PartialChannel;
 
@@ -42,8 +44,9 @@ class GlobalCommandInteraction extends CommandInteraction {
         payload['version'],
         payload['type'],
         payload['token'],
-        payload['guild_id'] == null ? payload['user']['id'] : payload['member']?['user']?['id'],
+        payload['member']?['user']?['id'] ?? payload['user']?['id'],
         payload['guild_id'],
+        null,
         payload['data']['name'],
         payload['channel_id'],
         payload['data'],

@@ -27,7 +27,7 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
       roleManager.cache.putIfAbsent(role.id, () => role);
     }
 
-    MemberManager memberManager = MemberManager();
+    MemberManager memberManager = MemberManager(websocketResponse.payload['id']);
     memberManager.cache.addAll(before!.members.cache);
 
     ChannelManager channelManager = ChannelManager(before.id);
@@ -43,6 +43,7 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
 
     GuildScheduledEventService guildScheduledEventService = GuildScheduledEventService();
     guildScheduledEventService.cache.addAll(before.scheduledEvents.cache);
+
 
     Guild after = Guild.from(
       emojiManager: emojiManager,
@@ -66,6 +67,7 @@ class GuildUpdatePacket with Container implements WebsocketPacket {
     after.rulesChannel = after.channels.cache.get<TextChannel>(after.rulesChannelId);
     after.publicUpdatesChannel = after.channels.cache.get<TextChannel>(after.publicUpdatesChannelId);
     after.emojis.guild = after;
+    after.vanity = await VanityInvite.sync(websocketResponse.payload['id']);
 
     eventService.controller.add(GuildUpdateEvent(before, after));
     client.guilds.cache.set(after.id, after);

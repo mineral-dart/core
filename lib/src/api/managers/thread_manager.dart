@@ -3,11 +3,9 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
-import 'package:mineral/core/builders.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/internal/mixins/mineral_client.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class ThreadManager extends CacheManager<ThreadChannel>  {
@@ -35,13 +33,16 @@ class ThreadManager extends CacheManager<ThreadChannel>  {
     return cache;
   }
 
-  Future<ThreadChannel?> create<T extends GuildChannel> ({ Snowflake? messageId, String? label }) async {
-    MineralClient client = ioc.use<MineralClient>();
-    return await client.createChannel(_guildId, ChannelBuilder({
-      'name': label,
-      'auto_archive_duration': '60',
-      'type': ChannelType.guildPublicThread.value
-    }));
+  Future<ThreadChannel?> create ({ required String label, required TextBasedChannel channel, int autoArchiveDuration = 60, bool isPrivate = false }) async {
+    Response response = await ioc.use<DiscordApiHttpService>().post(url: '/channels/${channel.id}/threads')
+        .payload({
+          'name': label,
+          'auto_archive_duration': autoArchiveDuration,
+          'type': isPrivate ? ChannelType.guildPrivateThread.value : ChannelType.guildPublicThread.value,
+          'invitable': isPrivate,
+         }).build();
+
+    return ioc.use<MineralClient>().guilds.cache.getOrFail(_guildId).channels.cache.getOrFail(jsonDecode(response.body)['id']);
   }
 
   Future<ThreadChannel> resolve (Snowflake id) async {

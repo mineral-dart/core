@@ -1,5 +1,4 @@
 import 'package:mineral/core/extras.dart';
-import 'package:mineral/framework.dart';
 import 'package:mineral/src/internal/services/debugger_service.dart';
 
 class CodeErrorException with Container, Console implements Exception {

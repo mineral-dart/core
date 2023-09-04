@@ -1,3 +1,5 @@
+
+
 enum OpCode {
   dispatch(0),
   heartbeat(1),
@@ -15,6 +17,18 @@ enum OpCode {
 
   final int value;
   const OpCode (this.value);
+}
+
+enum DiscordErrorsCode {
+  panic(2051),
+  tooManyApiRetries(2058),
+  apiError(2069),
+  badResponse(2070),
+  unknow(9001),
+  missingPermissions(50013);
+
+  final int value;
+  const DiscordErrorsCode (this.value);
 }
 
 enum PacketType {
@@ -41,6 +55,10 @@ enum PacketType {
   messageCreate('MESSAGE_CREATE'),
   messageUpdate('MESSAGE_UPDATE'),
   messageDelete('MESSAGE_DELETE'),
+  messageReactionAdd('MESSAGE_REACTION_ADD'),
+  messageReactionRemove('MESSAGE_REACTION_REMOVE'),
+  messageReactionRemoveAll('MESSAGE_REACTION_REMOVE_ALL'),
+  messageReactionRemoveEmoji('MESSAGE_REACTION_REMOVE_EMOJI'),
 
   channelCreate('CHANNEL_CREATE'),
   channelUpdate('CHANNEL_UPDATE'),
@@ -87,4 +105,16 @@ class Constants {
 
   // Version of API
   static const int apiVersion = 10;
+
+  // Discord epoch
+  static const int discordEpoch = 1420070400000;
+
+  // Name of Minéral
+  static const String name = "Mineral";
+
+  // Git of Minéral
+  static const String githubURL = "https://github.com/mineral-dart";
+
+  // Version of Minéral
+  static const String version = "NO VERSION";
 }

@@ -8,7 +8,7 @@ import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
 import 'package:mineral/src/api/sticker.dart';
 import 'package:mineral/src/helper.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class StickerManager extends CacheManager<Sticker>  {
@@ -34,7 +34,7 @@ class StickerManager extends CacheManager<Sticker>  {
       return sticker;
     }
 
-    ioc.use<MineralCli>().console.warn('cancelled ${guild.name} guild does not have the ${GuildFeature.verified} or ${GuildFeature.partnered} feature.');
+    ioc.use<ConsoleService>().warn('cancelled ${guild.name} guild does not have the ${GuildFeature.verified} or ${GuildFeature.partnered} feature.');
     return null;
   }
 

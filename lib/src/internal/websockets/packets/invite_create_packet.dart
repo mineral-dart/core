@@ -1,7 +1,6 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/events.dart';
 import 'package:mineral/framework.dart';
-import 'package:mineral/src/api/invites/invite.dart';
 import 'package:mineral/src/internal/mixins/container.dart';
 import 'package:mineral/src/internal/services/event_service.dart';
 import 'package:mineral/src/internal/websockets/websocket_packet.dart';

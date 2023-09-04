@@ -16,20 +16,49 @@ import 'package:mineral/src/api/users/user_flags/verified_bot_flag.dart';
 import 'package:mineral/src/api/users/user_flags/verified_developer_flag.dart';
 
 class UserFlag {
+  /// The user is a Discord employee.
   static get staff => StaffFlag();
+
+  /// The user is a partner.
   static get partner => PartnerFlag();
+
+  /// The user is a HypeSquad member.
   static get hypeSquad => HypeSquadFlag();
+
+  /// The user is a Bug Hunter.
   static get bugHunterLevel1 => BugHunterLevel1Flag();
-  static get hypeSquadOnlineHouse1 => HypeSquadOnlineHouse1Flag();
-  static get hypeSquadOnlineHouse2 => HypeSquadOnlineHouse2Flag();
-  static get hypeSquadOnlineHouse3 => HypeSquadOnlineHouse3Flag();
+
+  /// The user is a HypeSquad member from House Bravery Squad.
+  static get braveryHouseMember => HypeSquadBraveryHouseMember();
+
+  /// The user is a HypeSquad member from House Brilliance Squad.
+  static get brillanceHouseMember => HypeSquadBrillanceHouseMember();
+
+  /// The user is a HypeSquad member from House Balance Squad.
+  static get balanceHouseMember => HypeSquadBalanceHouseMember();
+
+  /// The user has purchased Nitro before it was renamed to Nitro Classic.
   static get premiumEarlySupporter => PremiumEarlySupporterFlag();
+
+  /// The user is a member of a team.
   static get teamPseudoUser => TeamPseudoUserFlag();
+
+  /// The user is a Bug Hunter level 2.
   static get bugHunterLevel2 => BugHunterLevel2Flag();
+
+  /// The user is a verified bot.
   static get verifiedBot => VerifiedBotFlag();
+
+  /// The user is a verified developer.
   static get verifiedDeveloper => VerifiedDeveloperFlag();
+
+  /// The user is a certified moderator.
   static get certifiedModerator => CertifiedModeratorFlag();
+
+  /// The user is a bot can use HTTP interactions.
   static get botHttpInteractions => BotHttpInteractionsFlag();
+
+  /// The user is an active developer.
   static get activeDeveloper => ActiveDeveloperFlag();
 
   static final List<UserFlagContract> _flags = [
@@ -37,9 +66,9 @@ class UserFlag {
     UserFlag.partner,
     UserFlag.hypeSquad,
     UserFlag.bugHunterLevel1,
-    UserFlag.hypeSquadOnlineHouse1,
-    UserFlag.hypeSquadOnlineHouse2,
-    UserFlag.hypeSquadOnlineHouse3,
+    UserFlag.braveryHouseMember,
+    UserFlag.brillanceHouseMember,
+    UserFlag.balanceHouseMember,
     UserFlag.premiumEarlySupporter,
     UserFlag.teamPseudoUser,
     UserFlag.bugHunterLevel2,
@@ -50,8 +79,11 @@ class UserFlag {
     UserFlag.activeDeveloper,
   ];
 
+  /// Finds a flag by its value.
   static UserFlagContract find (int value) => _flags.firstWhere((element) => element.value == value);
 
+  /// Get all flags.
   static get values => _flags.map((e) => e.value);
+
   UserFlag._();
 }

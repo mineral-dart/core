@@ -6,9 +6,8 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/exception.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/managers/cache_manager.dart';
-import 'package:mineral/src/api/messages/dm_message.dart';
 import 'package:mineral/src/api/messages/partial_message.dart';
-import 'package:mineral_cli/mineral_cli.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
@@ -34,7 +33,7 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
 
   Future<Map<Snowflake, T>> sync () async {
     Response response = await ioc.use<DiscordApiHttpService>()
-      .get(url: "/channels/$_channelId/messages")
+      .get(url: "/channels/$_channelId/messages?limit=100")
       .build();
 
     dynamic payload = jsonDecode(response.body);
@@ -51,6 +50,7 @@ class MessageManager<T extends PartialMessage> extends CacheManager<T>  {
         cache.putIfAbsent(message.id, () => message as T);
       } else {
         // @Todo add DM case
+
       }
     }
 
@@ -111,8 +111,7 @@ class BulkDeleteBuilder<T extends PartialMessage> {
   ///
   Future<void> amount(int amount, {String? reason}) async {
     if (amount >= maxMessages || amount <= minMessages) {
-      return ioc.use<MineralCli>()
-          .console.error('Provided too few or too many messages to delete. Must provide at least $minMessages and at most $maxMessages messages to delete. Action canceled');
+      return ioc.use<ConsoleService>().error('Provided too few or too many messages to delete. Must provide at least $minMessages and at most $maxMessages messages to delete. Action canceled');
     }
 
     if(_manager.cache.isEmpty || _manager.cache.length < amount) {

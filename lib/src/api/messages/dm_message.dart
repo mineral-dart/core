@@ -55,6 +55,7 @@ class DmMessage extends PartialMessage<DmChannel>  {
   }
 
   /// Delete this
+  @override
   Future<void> delete ({ String? reason }) async {
     await ioc.use<DiscordApiHttpService>()
       .destroy(url: '/channels/${channel.id}/messages/$id')
@@ -67,43 +68,11 @@ class DmMessage extends PartialMessage<DmChannel>  {
     User? user = client.users.cache.get(payload['author']['id']);
 
     List<EmbedBuilder> embeds = [];
-    for (dynamic element in payload['embeds']) {
-      List<Field> fields = [];
-      if (element['fields'] != null) {
-        for (dynamic item in element['fields']) {
-          Field field = Field(name: item['name'], value: item['value'], inline: item['inline'] ?? false);
-          fields.add(field);
-        }
+    if (payload['embeds'] != null) {
+      for (dynamic element in payload['embeds']) {
+        embeds.add(EmbedBuilder.from(element));
       }
-
-      EmbedBuilder embed = EmbedBuilder(
-        title: element['title'],
-        description: element['description'],
-        url: element['url'],
-        timestamp: element['timestamp'] != null ? DateTime.parse(element['timestamp']) : null,
-        footer: element['footer'] != null ? Footer(
-          text: element['footer']['text'],
-          iconUrl: element['footer']['icon_url'],
-          proxyIconUrl: element['footer']['proxy_icon_url'],
-        ) : null,
-        image: element['image'] != null ? Image(
-          url: element['image']['url'],
-          proxyUrl: element['image']['proxy_url'],
-          height: element['image']['height'],
-          width: element['image']['width'],
-        ) : null,
-        author: element['author'] != null ? Author(
-          name: element['author']['name'],
-          url: element['author']['url'],
-          proxyIconUrl: element['author']['proxy_icon_url'],
-          iconUrl: element['author']['icon_url'],
-        ) : null,
-        fields: fields,
-      );
-
-      embeds.add(embed);
     }
-
     List<MessageStickerItem> stickers = [];
     if (payload['sticker_items'] != null) {
       for (dynamic element in payload['sticker_items']) {

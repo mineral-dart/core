@@ -10,13 +10,7 @@ class Activity {
   Snowflake? _applicationId;
   String? _details;
   String? _state;
-  // Emoji? emoji;
-  // Party? party;
-  // Asset? assets;
-  // Secret? secrets;
-  // Instance? instance;
   int? _flags;
-  // List<Button> buttons;
 
   Activity(
     this._label,

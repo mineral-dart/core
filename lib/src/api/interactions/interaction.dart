@@ -3,8 +3,18 @@ import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
 import 'package:mineral/src/api/messages/message_parser.dart';
+import 'package:mineral/src/api/messages/partial_message.dart';
 import 'package:mineral_ioc/ioc.dart';
 
+/// ### Interaction Type
+///  - [ping] : A ping
+///  - [channelMessageWithSource] : A message component
+///  - [deferredChannelMessageWithSource] : A deferred message component
+///  - [deferredUpdateMessage] : A deferred message update
+///  - [updateMessage] : A message update
+///  - [applicationCommandAutocompleteResult] : A command autocomplete result
+///  - [modal] : A modal
+///
 enum InteractionCallbackType {
   pong(1),
   channelMessageWithSource(4),
@@ -27,21 +37,40 @@ class Interaction  {
   String _token;
   Snowflake? _userId;
   Snowflake? _guildId;
+  PartialMessage? _message;
 
-  Interaction(this._id, this._label, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId);
+  Interaction(this._id, this._label, this._applicationId, this._version, this._typeId, this._token, this._userId, this._guildId, this._message);
 
+  /// Get id [Snowflake] of this
   Snowflake get id => _id;
+
+  /// Get label [String] of this
   String? get label => _label;
+
+  /// Get application id [Snowflake] of this
   Snowflake get applicationId => _applicationId;
+
+  /// Get version [int] of this
   int get version => _version;
+
+  /// Get type [InteractionType] of this
   InteractionType get type => InteractionType.values.firstWhere((element) => element.value == _typeId);
+
+  /// Get token [String] of this
   String get token => _token;
+
+  /// Get guild [Guild] of this
   Guild? get guild => ioc.use<MineralClient>().guilds.cache.get(_guildId);
 
+  /// Get message [PartialMessage] of this
+  PartialMessage? get message => _message;
+
+  /// Get user [User] of this
   User get user => _guildId != null
     ? guild!.members.cache.getOrFail(_userId).user
     : ioc.use<MineralClient>().users.cache.getOrFail(_userId);
 
+  /// Get member [GuildMember] of this
   GuildMember? get member => guild?.members.cache.get(_userId);
 
   /// ### Responds to this by an [Message]
@@ -88,10 +117,14 @@ class Interaction  {
   }
 
   /// ### Responds to this by a deferred [Message] (Show a loading state to the user)
-  Future<Interaction> deferredReply () async {
+  Future<Interaction> deferredReply ({ bool private = false }) async {
     await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
-      .payload({ 'type': InteractionCallbackType.deferredChannelMessageWithSource.value })
-      .build();
+        .payload({
+          'type': InteractionCallbackType.deferredChannelMessageWithSource.value,
+          'data': {
+            'flags': private ? 1 << 6 : null
+          }
+        }).build();
 
     return this;
   }
@@ -104,8 +137,9 @@ class Interaction  {
   /// ```
   Future<Interaction> updateReply ({ String? content, List<EmbedBuilder>? embeds, ComponentBuilder? components, List<AttachmentBuilder>? attachments }) async {
     dynamic messagePayload = MessageParser(content, embeds, components, attachments, null).toJson();
+    String mid = message?.id ?? "@original";
 
-    await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$applicationId/$token/messages/@original")
+    await ioc.use<DiscordApiHttpService>().patch(url: "/webhooks/$applicationId/$token/messages/$mid")
       .files(messagePayload['files'])
       .payload(messagePayload['payload'])
       .build();
@@ -124,12 +158,33 @@ class Interaction  {
   /// });
   /// ```
   Future<void> delete () async {
-    await ioc.use<DiscordApiHttpService>()
-      .destroy(url: "/webhooks/$applicationId/$token/messages/@original")
-      .build();
-  }
+    String mid = message?.id ?? "@original";
 
-  factory Interaction.from({ required dynamic payload }) {
+    await ioc.use<DiscordApiHttpService>()
+        .destroy(url: "/webhooks/$applicationId/$token/messages/$mid")
+        .build();
+  }
+  /// ### Shows no response (and error)
+  ///
+  /// Example :
+  /// ```dart
+  /// await interaction.noReply();
+  ///  ```
+  Future<void> noReply ({ bool private = false }) async {
+    await ioc.use<DiscordApiHttpService>().post(url: "/interactions/$id/$token/callback")
+        .payload({
+          'type': InteractionCallbackType.deferredUpdateMessage.value,
+          'data': {
+            'flags': private ? 1 << 6 : null
+          }
+        }).build();
+  }
+  factory Interaction.from({ required dynamic payload, required PartialChannel? channel }) {
+    PartialMessage? message;
+    if(payload['message'] != null) {
+      message = (payload['guild_id'] != null ? Message.from(channel: channel as GuildChannel, payload: payload['message']) : DmMessage.from(channel: channel as DmChannel, payload: payload['message'])) as PartialMessage<PartialChannel>;
+    }
+
     return Interaction(
       payload['id'],
       null,
@@ -137,8 +192,9 @@ class Interaction  {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['member']?['user']?['id'],
+      payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
+      message
     );
   }
 }

@@ -18,9 +18,13 @@ class ContextUserInteraction extends ContextMenuInteraction {
     super._token,
     super._user,
     super._guild,
+    super._message,
   );
 
+  /// Get target [GuildMember] of this
   GuildMember? get target => guild?.members.cache.get(_targetId);
+
+  /// Get channel [GuildChannel] of this
   GuildChannel? get channel => guild?.channels.cache.get(_channelId);
 
   factory ContextUserInteraction.from({ required dynamic payload }) {
@@ -34,8 +38,9 @@ class ContextUserInteraction extends ContextMenuInteraction {
       payload['version'],
       payload['type'],
       payload['token'],
-      payload['member']?['user']?['id'],
+      payload['member']?['user']?['id'] ?? payload['user']?['id'],
       payload['guild_id'],
+      null,
     );
   }
 }

@@ -1,18 +1,19 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:mineral_cli/mineral_cli.dart';
-import 'package:mineral_console/mineral_console.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
+import 'package:mineral_contract/mineral_contract.dart';
+import 'package:tint/tint.dart';
 
-class Help extends CliCommand {
-  final MineralCliContract _cli;
-  Help(Console console, this._cli): super(console, 'help', 'Displays the list of commands', []);
+class Help extends CliCommandContract {
+  final Map<String, CliCommandContract> _commands;
+  Help(ConsoleService console, this._commands): super(console, 'help', 'Displays the list of commands', []);
 
   @override
   Future<void> handle(args) async {
-    Map<String, List<CliCommand>> commands = {};
+    Map<String, List<CliCommandContract>> commands = {};
 
-    for (final command in _cli.commands.values) {
+    for (final command in _commands.values) {
       final String key = command.name.contains(':')
         ? command.name.split(':').first
         : 'Available commands';
@@ -25,8 +26,8 @@ class Help extends CliCommand {
     }
 
     String display = '';
-    _cli.commands.values.toList().sort((a, b) => a.arguments.length + b.arguments.length);
-    int maxArgumentLength = _cli.commands.values.last.arguments.map((argument) => '<$argument>').join('').length;
+    _commands.values.toList().sort((a, b) => a.arguments.length + b.arguments.length);
+    int maxArgumentLength = _commands.values.last.arguments.map((argument) => '<$argument>').join('').length;
 
     for (final group in commands.entries.sorted((a, b) => b.key.length.compareTo(a.key.length))) {
       display += '${group.key.blue()}\n';

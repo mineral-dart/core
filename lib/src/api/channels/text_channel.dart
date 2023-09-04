@@ -1,6 +1,5 @@
 import 'package:mineral/core/api.dart';
 import 'package:mineral/src/api/builders/channel_builder.dart';
-import 'package:mineral/src/api/managers/message_manager.dart';
 import 'package:mineral/src/api/managers/permission_overwrite_manager.dart';
 import 'package:mineral/src/api/managers/thread_manager.dart';
 import 'package:mineral/src/api/managers/webhook_manager.dart';
@@ -60,6 +59,7 @@ class TextChannel extends TextBasedChannel {
     await update(ChannelBuilder({ 'rate_limit': limit }));
   }
 
+  /// Get parent [CategoryChannel] of this
   @override
   CategoryChannel? get parent => super.parent as CategoryChannel?;
 

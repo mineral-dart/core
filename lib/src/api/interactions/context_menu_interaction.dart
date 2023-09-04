@@ -13,8 +13,10 @@ class ContextMenuInteraction extends Interaction {
     super._token,
     super._userId,
     super._guildId,
+    super._message,
   );
 
+  /// Get type of this
   ContextMenuType get typeMenu => ContextMenuType.values.firstWhere((element) => element.value == _type);
 
   Object get toJson => {

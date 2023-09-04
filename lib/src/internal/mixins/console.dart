@@ -1,7 +1,8 @@
-import 'package:mineral_cli/mineral_cli.dart';
-import 'package:mineral_console/mineral_console.dart';
+import 'package:mineral/src/internal/services/console/console_service.dart';
+import 'package:mineral_contract/mineral_contract.dart';
 import 'package:mineral_ioc/ioc.dart';
 
 mixin Console {
-  ConsoleContract get console => ioc.use<MineralCli>().console;
+  /// Returns the console service.
+  ConsoleServiceContract get console => ioc.use<ConsoleService>();
 }
