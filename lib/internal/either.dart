@@ -40,5 +40,18 @@ final class Success<V, E> extends Either<V, E> {
 final class Failure<V, E> extends Either<V, E> {
   final dynamic error;
   final StackTrace? stackTrace;
+
   Failure(this.error, { this.stackTrace }): super._();
+
+  void throwWithStackTrace({ String? message }) {
+    throw Error.throwWithStackTrace(Exception(message ?? error), stackTrace!);
+  }
+
+  void reThrow() {
+    if (stackTrace != null) {
+      throw error.withStackTrace(stackTrace);
+    }
+
+    throw error;
+  }
 }
