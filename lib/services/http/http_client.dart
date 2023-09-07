@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:mineral/services/http/builders/delete_builder.dart';
 import 'package:mineral/services/http/builders/get_builder.dart';
+import 'package:mineral/services/http/builders/patch_builder.dart';
 import 'package:mineral/services/http/builders/post_builder.dart';
 import 'package:mineral/services/http/builders/put_builder.dart';
 import 'package:mineral/services/http/header_bucket.dart';
@@ -66,6 +67,20 @@ class HttpClient {
       ..headers.addAll(headers.all);
 
     return PutBuilder(this, request);
+  }
+
+  /// Create a PATCH request
+  /// ```dart
+  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// final foo = await client.patch('/foo/:id')
+  ///   .payload({ 'name': 'John Doe' })
+  ///   .build();
+  /// ```
+  PatchBuilder patch(String url) {
+    final request = Request('PATCH', Uri.parse('$baseUrl$url'))
+      ..headers.addAll(headers.all);
+
+    return PatchBuilder(this, request);
   }
 
   /// Create a DELETE request
