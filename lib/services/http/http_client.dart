@@ -86,7 +86,7 @@ class HttpClient {
   /// Create a DELETE request
   /// ```dart
   /// final HttpClient client = HttpClient(baseUrl: '/');
-  /// await client.delete('/foo').build();
+  /// await client.delete('/foo/:id').build();
   /// ```
   DeleteBuilder delete(String url) {
     final request = Request('DELETE', Uri.parse('$baseUrl$url'))

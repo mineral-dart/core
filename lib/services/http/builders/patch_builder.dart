@@ -4,6 +4,15 @@ import 'package:http/http.dart';
 import 'package:mineral/internal/either.dart';
 import 'package:mineral/services/http/http_client.dart';
 
+/// Builder for [BaseRequest] with [Request] or [MultipartRequest]
+/// ```dart
+/// final HttpClient client = HttpClient(baseUrl: '/');
+/// final foo = await client.patch('/foo')
+///   .payload({'foo': 'bar'})
+///   .files([MultipartFile.fromBytes('file', [1, 2, 3])])
+///   .header('Content-Type', 'application/json')
+///   .build();
+/// ```
 class PatchBuilder {
   final Map<String, String> _headers = {};
   final HttpClient _httpClient;
@@ -13,21 +22,50 @@ class PatchBuilder {
 
   PatchBuilder(this._httpClient, this._request);
 
+  /// Add payload to the [BaseRequest]
+  /// ```dart
+  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// final foo = await client.patch('/foo/:id')
+  ///   .payload({'foo': 'bar'})
+  ///   .build();
+  /// ```
   PatchBuilder payload (dynamic fields) {
     _payload = fields;
     return this;
   }
 
+  /// Add files to the [BaseRequest] with [MultipartFile]
+  /// ```dart
+  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// final foo = await client.patch('/foo/:id')
+  ///   .files([MultipartFile.fromBytes('file', [1, 2, 3])])
+  ///   .build();
+  /// ```
   PatchBuilder files (List<MultipartFile> files) {
     _files.addAll(files);
     return this;
   }
 
+  /// Add headers to the [BaseRequest]
+  /// ```dart
+  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// final foo = await client.patch('/foo/:id')
+  ///   .header('Content-Type', 'application/json')
+  ///   .build();
+  /// ```
   PatchBuilder header (String key, String value) {
     _headers.putIfAbsent(key, () => value);
     return this;
   }
 
+  /// Build the [BaseRequest] and send it to the [HttpClient]
+  /// [BaseRequest] becomes [Request] if there are no files and [MultipartRequest] if there are files
+  /// ```dart
+  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// final foo = await client.patch('/foo/:id')
+  ///   .payload({'foo': 'bar'})
+  ///   .build();
+  /// ```
   Future<EitherContract> build () async {
     final BaseRequest request = _files.isNotEmpty
       ? MultipartRequest(_request.method, _request.url)
