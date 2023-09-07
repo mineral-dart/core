@@ -7,7 +7,7 @@ final class HttpRequestDispatcher {
 
   HttpRequestDispatcher(this._client);
 
-  Future<EitherContract> process (Request request) async {
+  Future<EitherContract> process (BaseRequest request) async {
     final streamedResponse = await _client.send(request);
     final result = await Response.fromStream(streamedResponse);
 

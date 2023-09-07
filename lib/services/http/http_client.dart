@@ -1,6 +1,7 @@
 import 'package:http/http.dart';
 import 'package:mineral/services/http/builders/delete_builder.dart';
 import 'package:mineral/services/http/builders/get_builder.dart';
+import 'package:mineral/services/http/builders/post_builder.dart';
 import 'package:mineral/services/http/header_bucket.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
 
@@ -29,7 +30,7 @@ class HttpClient {
   /// Create a GET request
   /// ```dart
   /// final HttpClient client = HttpClient(baseUrl: '/');
-  /// final response = await client.get('/users').build();
+  /// final response = await client.get('/foo').build();
   /// ```
   GetBuilder get(String url) {
     final request = Request('GET', Uri.parse('$baseUrl$url'))
@@ -38,10 +39,24 @@ class HttpClient {
     return GetBuilder(this, request);
   }
 
+  /// Create a POST request
+  /// ```dart
+  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// final foo = await client.post('/foo/:id')
+  ///   .payload({ 'name': 'John Doe' })
+  ///   .build();
+  /// ```
+  PostBuilder post(String url) {
+    final request = Request('POST', Uri.parse('$baseUrl$url'))
+      ..headers.addAll(headers.all);
+
+    return PostBuilder(this, request);
+  }
+
   /// Create a DELETE request
   /// ```dart
   /// final HttpClient client = HttpClient(baseUrl: '/');
-  /// await client.delete('/users').build();
+  /// await client.delete('/foo').build();
   /// ```
   DeleteBuilder delete(String url) {
     final request = Request('DELETE', Uri.parse('$baseUrl$url'))
