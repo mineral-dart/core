@@ -22,7 +22,7 @@ void main () {
 
     final future = Either.future<dynamic, String>(
       future: Future.error(errorMessage),
-      onError: (failure) => throw Error.throwWithStackTrace(Exception(failure.error), failure.stackTrace!)
+      onError: (failure) => failure.throwWithStackTrace()
     );
 
     await expectLater(future, throwsA(isA<Exception>()));

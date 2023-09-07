@@ -6,7 +6,7 @@ class Either<V, E> {
   factory Either.success(V value) = Success<V, E>;
   factory Either.failure(E error, { StackTrace? stackTrace }) = Failure<V, E>;
 
-  static Future<Either<V, E>> future<V, E> ({ required Future future, Function(Failure<V, E>)? onError }) async {
+  static Future<Either<V, E>> future<V, E> ({ required Future future, Either<V, E>? Function(Failure<V, E>)? onError }) async {
     try {
       final result = await future;
       return Success(result);
@@ -14,7 +14,8 @@ class Either<V, E> {
       final failure = Failure<V, E>(e, stackTrace: s);
 
       if (onError != null) {
-        return onError(failure);
+        final result = onError(failure);
+        return result ?? failure;
       }
 
       return failure;
@@ -43,7 +44,7 @@ final class Failure<V, E> extends Either<V, E> {
 
   Failure(this.error, { this.stackTrace }): super._();
 
-  void throwWithStackTrace({ String? message }) {
+  Failure<V, E> throwWithStackTrace({ String? message }) {
     throw Error.throwWithStackTrace(Exception(message ?? error), stackTrace!);
   }
 
