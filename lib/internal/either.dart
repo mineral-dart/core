@@ -1,58 +1,69 @@
 import 'dart:async';
 
-class Either<V, E> {
+abstract class EitherContract {}
+
+class Either<V, E> implements EitherContract {
   Either._();
 
-  factory Either.success(V value) = Success<V, E>;
-  factory Either.failure(E error, { StackTrace? stackTrace }) = Failure<V, E>;
+  static Success<T> success<T>(T value) => Success<T>(value);
+  static Failure<E> failure<E>(dynamic error, { E? payload, StackTrace? stackTrace }) => Failure<E>(error, payload: payload, stackTrace: stackTrace);
 
-  static Future<Either<V, E>> future<V, E> ({ required Future future, Either<V, E>? Function(Failure<V, E>)? onError }) async {
+  static Future future<V, E> ({ required Future future, EitherContract? Function(Failure<E>)? onError }) async {
     try {
       final result = await future;
-      return Success(result);
-    } catch (e, s) {
-      final failure = Failure<V, E>(e, stackTrace: s);
 
-      if (onError != null) {
-        final result = onError(failure);
-        return result ?? failure;
+      if (result is Success) {
+        return result;
       }
 
-      return failure;
+      if (result is Failure) {
+        return onError != null
+          ? onError(result as Failure<E>)
+          : result;
+      }
+
+      return Either.success(result);
+    } catch (error, stackTrace) {
+      final result = Either.failure<E>(error, stackTrace: stackTrace);
+
+      return onError != null
+        ? onError(result)
+        : result;
     }
   }
 
-  factory Either.tryCatch(V Function() run, Function(Failure) onError) {
+  static tryCatch<V>(V Function() run, Function(Failure) onError) {
     try {
-      return Success(run());
+      return Either.success<V>(run());
     } catch (e, s) {
       return onError(Failure(e, stackTrace: s));
     }
   }
 }
 
-final class Success<V, E> extends Either<V, E> {
+final class Success<V> implements EitherContract {
   final V value;
-  Success(this.value): super._();
+  Success(this.value);
 
   bool get hasValue => value != null;
 }
 
-final class Failure<V, E> extends Either<V, E> {
+final class Failure<T> implements EitherContract {
   final dynamic error;
+  final T? payload;
   final StackTrace? stackTrace;
 
-  Failure(this.error, { this.stackTrace }): super._();
+  Failure(this.error, { this.payload, this.stackTrace });
 
-  Failure<V, E> throwWithStackTrace({ String? message }) {
-    throw Error.throwWithStackTrace(Exception(message ?? error), stackTrace!);
+  Failure throwWithStackTrace({ String? message }) {
+    throw Error.throwWithStackTrace(Exception(message ?? error), stackTrace ?? StackTrace.current);
   }
 
-  void reThrow() {
+  Failure reThrow() {
     if (stackTrace != null) {
       throw error.withStackTrace(stackTrace);
     }
 
-    throw error;
+    throw Exception(error);
   }
 }
