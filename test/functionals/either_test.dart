@@ -3,7 +3,7 @@ import 'package:test/expect.dart';
 import 'package:test/scaffolding.dart';
 
 void main () {
-  test('handle failure when Error was emitted', () async {
+  test('Either.future should handle failure when Error was emitted', () async {
     final String errorMessage = 'Error message';
 
     final either = await Either.future<dynamic, String>(
@@ -17,7 +17,7 @@ void main () {
     ]));
   });
 
-  test('handle failure when Error was emitted with throw error', () async {
+  test('Either.future should handle failure when Error was emitted with throw error', () async {
     final String errorMessage = 'Error message';
 
     final future = Either.future<dynamic, String>(
@@ -28,7 +28,7 @@ void main () {
     await expectLater(future, throwsA(isA<Exception>()));
   });
 
-  test('handle success when Error was not emitted', () async {
+  test('Either.future should handle success when Error was not emitted', () async {
     final String successMessage = 'Success message';
 
     final either = await Either.future<String, dynamic>(
