@@ -1,5 +1,5 @@
-import 'functionals/result_test.dart' as result_test;
+import 'functionals/either_test.dart' as either_test;
 
 void main () {
-  result_test.main();
+  either_test.main();
 }
