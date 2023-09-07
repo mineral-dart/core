@@ -1,4 +1,4 @@
-abstract class LoggerContract {
+abstract interface class LoggerContract {
   void log(dynamic message);
 
   void error(String message);
