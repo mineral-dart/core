@@ -1,4 +1,5 @@
 import 'package:http/http.dart';
+import 'package:mineral/services/http/builders/delete_builder.dart';
 import 'package:mineral/services/http/builders/get_builder.dart';
 import 'package:mineral/services/http/header_bucket.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
@@ -28,12 +29,24 @@ class HttpClient {
   /// Create a GET request
   /// ```dart
   /// final HttpClient client = HttpClient(baseUrl: '/');
-  /// final response = client.get('/users').build();
+  /// final response = await client.get('/users').build();
   /// ```
   GetBuilder get(String url) {
     final request = Request('GET', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
     return GetBuilder(this, request);
+  }
+
+  /// Create a DELETE request
+  /// ```dart
+  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// await client.delete('/users').build();
+  /// ```
+  DeleteBuilder delete(String url) {
+    final request = Request('DELETE', Uri.parse('$baseUrl$url'))
+      ..headers.addAll(headers.all);
+
+    return DeleteBuilder(this, request);
   }
 }
