@@ -1,19 +1,19 @@
 import 'package:http/http.dart';
-import 'package:mineral/services/http/builders/delete_builder.dart';
-import 'package:mineral/services/http/builders/get_builder.dart';
-import 'package:mineral/services/http/builders/patch_builder.dart';
-import 'package:mineral/services/http/builders/post_builder.dart';
-import 'package:mineral/services/http/builders/put_builder.dart';
+import 'package:mineral/internal/services/http/builders/discord_delete_builder.dart';
+import 'package:mineral/internal/services/http/builders/discord_get_builder.dart';
+import 'package:mineral/internal/services/http/builders/discord_patch_builder.dart';
+import 'package:mineral/internal/services/http/builders/discord_post_builder.dart';
+import 'package:mineral/internal/services/http/builders/discord_put_builder.dart';
 import 'package:mineral/services/http/header_bucket.dart';
 import 'package:mineral/services/http/http_client_contract.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
-import 'package:mineral/services/http/method_adapter.dart';
 
-/// HTTP Client used to make requests to a server
+/// Discord HTTP Client used to make requests to a Discord API.
+/// Related to the official Discord API documentation: https://discord.com/developers/docs/intro
 /// ```dart
-/// final HttpClient client = HttpClient(baseUrl: '/');
+/// final DiscordHttpClient client = DiscordHttpClient(baseUrl: '/');
 /// ```
-class HttpClient<T extends MethodAdapter> implements HttpClientContract {
+class DiscordHttpClient implements HttpClientContract {
   /// Client used to make requests
   final Client _client = Client();
 
@@ -29,7 +29,7 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
   @override
   final HeaderBucket headers = HeaderBucket();
 
-  HttpClient({ required this.baseUrl, Map<String, String> headers = const {} }) {
+  DiscordHttpClient({ required this.baseUrl, Map<String, String> headers = const {} }) {
     dispatcher = HttpRequestDispatcher(_client);
     this.headers.addAll(headers);
   }
@@ -40,11 +40,11 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
   /// final response = await client.get('/foo').build();
   /// ```
   @override
-  GetBuilder get(String url) {
+  DiscordGetBuilder get(String url) {
     final request = Request('GET', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return GetBuilder(dispatcher, request);
+    return DiscordGetBuilder(dispatcher, request);
   }
 
   /// Create a POST request
@@ -55,11 +55,11 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
   ///   .build();
   /// ```
   @override
-  PostBuilder post(String url) {
+  DiscordPostBuilder post(String url) {
     final request = Request('POST', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return PostBuilder(dispatcher, request);
+    return DiscordPostBuilder(dispatcher, request);
   }
 
   /// Create a PUT request
@@ -70,11 +70,11 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
   ///  .build();
   ///  ```
   @override
-  PutBuilder put(String url) {
+  DiscordPutBuilder put(String url) {
     final request = Request('PUT', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return PutBuilder(dispatcher, request);
+    return DiscordPutBuilder(dispatcher, request);
   }
 
   /// Create a PATCH request
@@ -85,11 +85,11 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
   ///   .build();
   /// ```
   @override
-  PatchBuilder patch(String url) {
+  DiscordPatchBuilder patch(String url) {
     final request = Request('PATCH', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return PatchBuilder(dispatcher, request);
+    return DiscordPatchBuilder(dispatcher, request);
   }
 
   /// Create a DELETE request
@@ -98,10 +98,10 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
   /// await client.delete('/foo/:id').build();
   /// ```
   @override
-  DeleteBuilder delete(String url) {
+  DiscordDeleteBuilder delete(String url) {
     final request = Request('DELETE', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return DeleteBuilder(dispatcher, request);
+    return DiscordDeleteBuilder(dispatcher, request);
   }
 }

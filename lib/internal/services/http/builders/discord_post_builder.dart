@@ -2,61 +2,43 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:mineral/internal/either.dart';
+import 'package:mineral/services/http/builders/post_builder.dart';
 import 'package:mineral/services/http/http_client.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
 import 'package:mineral/services/http/method_adapter.dart';
 
 /// Builder for [BaseRequest] with [Request] or [MultipartRequest]
 /// ```dart
-/// final HttpClient client = HttpClient(baseUrl: '/');
+/// final DiscordHttpClient client = DiscordHttpClient(baseUrl: '/');
 /// final foo = await client.post('/foo')
 ///   .payload({'foo': 'bar'})
 ///   .files([MultipartFile.fromBytes('file', [1, 2, 3])])
 ///   .header('Content-Type', 'application/json')
 ///   .build();
 /// ```
-class PostBuilder extends MethodAdapter {
-  final Map<String, String> _headers = {};
+class DiscordPostBuilder extends PostBuilder implements MethodAdapter {
   final HttpRequestDispatcher _dispatcher;
+  final Map<String, String> _headers = {};
   final Request _request;
   final List<MultipartFile> _files = [];
   dynamic _payload;
 
-  PostBuilder(this._dispatcher, this._request);
+  DiscordPostBuilder(this._dispatcher, this._request): super(_dispatcher, _request);
 
-  /// Add payload to the [BaseRequest]
+  /// Add AuditLog to the [BaseRequest] headers
+  /// [AuditLog] is a reason for the action
+  /// Related to the official Discord API documentation https://discord.com/developers/docs/resources/audit-log
   /// ```dart
-  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// final DiscordHttpClient client = DiscordHttpClient(baseUrl: '/');
   /// final foo = await client.post('/foo')
   ///   .payload({'foo': 'bar'})
-  ///   .build();
-  /// ```
-  PostBuilder payload (dynamic fields) {
-    _payload = fields;
-    return this;
-  }
-
-  /// Add files to the [BaseRequest] with [MultipartFile]
-  /// ```dart
-  /// final HttpClient client = HttpClient(baseUrl: '/');
-  /// final foo = await client.post('/foo')
-  ///   .files([MultipartFile.fromBytes('file', [1, 2, 3])])
-  ///   .build();
-  /// ```
-  PostBuilder files (List<MultipartFile> files) {
-    _files.addAll(files);
-    return this;
-  }
-
-  /// Add headers to the [BaseRequest]
-  /// ```dart
-  /// final HttpClient client = HttpClient(baseUrl: '/');
-  /// final foo = await client.post('/foo')
-  ///   .header('Content-Type', 'application/json')
-  ///   .build();
-  /// ```
-  PostBuilder header (String key, String value) {
-    _headers.putIfAbsent(key, () => value);
+  ///  .auditLog('foo')
+  ///  .build();
+  ///  ```
+  DiscordPostBuilder auditLog (String? value) {
+    if (value != null) {
+      _headers.putIfAbsent('X-Audit-Log-Reason', () => value);
+    }
     return this;
   }
 
@@ -68,6 +50,7 @@ class PostBuilder extends MethodAdapter {
   ///   .payload({'foo': 'bar'})
   ///   .build();
   /// ```
+  @override
   Future<EitherContract> build () async {
     final BaseRequest request = _files.isNotEmpty
       ? MultipartRequest(_request.method, _request.url)

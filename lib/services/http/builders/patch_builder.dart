@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:mineral/internal/either.dart';
 import 'package:mineral/services/http/http_client.dart';
+import 'package:mineral/services/http/http_request_dispatcher.dart';
+import 'package:mineral/services/http/method_adapter.dart';
 
 /// Builder for [BaseRequest] with [Request] or [MultipartRequest]
 /// ```dart
@@ -13,14 +15,14 @@ import 'package:mineral/services/http/http_client.dart';
 ///   .header('Content-Type', 'application/json')
 ///   .build();
 /// ```
-class PatchBuilder {
+class PatchBuilder extends MethodAdapter {
   final Map<String, String> _headers = {};
-  final HttpClient _httpClient;
+  final HttpRequestDispatcher _dispatcher;
   final Request _request;
   final List<MultipartFile> _files = [];
   dynamic _payload;
 
-  PatchBuilder(this._httpClient, this._request);
+  PatchBuilder(this._dispatcher, this._request);
 
   /// Add payload to the [BaseRequest]
   /// ```dart
@@ -66,6 +68,7 @@ class PatchBuilder {
   ///   .payload({'foo': 'bar'})
   ///   .build();
   /// ```
+  @override
   Future<EitherContract> build () async {
     final BaseRequest request = _files.isNotEmpty
       ? MultipartRequest(_request.method, _request.url)
@@ -82,6 +85,6 @@ class PatchBuilder {
       request.headers.addAll(_headers);
     }
 
-    return _httpClient.dispatcher.process(request);
+    return _dispatcher.process(request);
   }
 }
