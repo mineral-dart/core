@@ -33,6 +33,8 @@ class Either<V, E> {
 final class Success<V, E> extends Either<V, E> {
   final V value;
   Success(this.value): super._();
+
+  bool get hasValue => value != null;
 }
 
 final class Failure<V, E> extends Either<V, E> {
