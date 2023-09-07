@@ -39,4 +39,12 @@ void main () {
     final Intents service = Intents.none();
     expect(service.intents, isEmpty);
   });
+
+  test('can create Intent service without intents', () {
+    final List<Intent> intents = [Intent.guilds, Intent.directMessages];
+    final Intents service = Intents.only(intents);
+    
+    expect(service.intents, allOf([hasLength(2), containsAll(intents)]));
+    expect(service.calculatedValue, equals(4097));
+  });
 }

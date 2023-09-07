@@ -20,4 +20,6 @@ class Intents {
 
   /// Creates an [Intents] service with the intents defined in the builder.
   factory Intents.builder(Function(IntentBuilder) builder) => Intents._(builder(IntentBuilder()).intents);
+
+  int get calculatedValue => _intents.fold(0, (previousValue, element) => previousValue += element.value);
 }
