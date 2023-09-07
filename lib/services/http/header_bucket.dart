@@ -1,4 +1,6 @@
+/// Header bucket used to store headers
 final class HeaderBucket {
+  /// Headers of [HttpClient]
   final Map<String, String> _headers = {};
 
   /// Add a header
