@@ -27,14 +27,14 @@ class DiscordPutBuilder extends PutBuilder implements MethodAdapter {
 
   /// Add AuditLog to the [BaseRequest] headers
   /// [AuditLog] is a reason for the action
-  /// Related to the official Discord API documentation https://discord.com/developers/docs/resources/audit-log
+  /// Related to the official [Discord API](https://discord.com/developers/docs/resources/audit-log) documentation
   /// ```dart
   /// final DiscordHttpClient client = DiscordHttpClient(baseUrl: '/');
   /// final foo = await client.put('/foo')
   ///   .payload({'foo': 'bar'})
-  ///  .auditLog('foo')
-  ///  .build();
-  ///  ```
+  ///   .auditLog('foo')
+  ///   .build();
+  /// ```
   DiscordPutBuilder auditLog (String? value) {
     if (value != null) {
       _headers.putIfAbsent('X-Audit-Log-Reason', () => value);
