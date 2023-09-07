@@ -3,6 +3,13 @@ final class HeaderBucket {
   /// Headers of [HttpClient]
   final Map<String, String> _headers = {};
 
+  /// Get headers
+  /// ```dart
+  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// client.headers.all;
+  /// ```
+  Map<String, String> get all => _headers;
+
   /// Add a header
   /// ```dart
   /// final HttpClient client = HttpClient(baseUrl: '/');
