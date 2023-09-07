@@ -4,20 +4,20 @@ import 'package:mineral/services/logger/logger_contract.dart';
 
 class Logger implements LoggerContract {
   @override
-  void debug(message) => stdout.writeln(message);
+  void debug(String message) => stdout.writeln(message);
 
   @override
-  void error(message) => stdout.writeln(message);
+  void error(String message) => stdout.writeln(message);
 
   @override
-  void info(message) => stdout.writeln(message);
+  void info(String message) => stdout.writeln(message);
 
   @override
   void log(message) => stdout.writeln(message);
 
   @override
-  void success(message) => stdout.writeln(message);
+  void success(String message) => stdout.writeln(message);
 
   @override
-  void warning(message) => stdout.writeln(message);
+  void warning(String message) => stdout.writeln(message);
 }

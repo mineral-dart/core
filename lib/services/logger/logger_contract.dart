@@ -1,13 +1,13 @@
 abstract class LoggerContract {
   void log(dynamic message);
 
-  void error(dynamic message);
+  void error(String message);
 
-  void warning(dynamic message);
+  void warning(String message);
 
-  void success(dynamic message);
+  void success(String message);
 
-  void info(dynamic message);
+  void info(String message);
 
-  void debug(dynamic message);
+  void debug(String message);
 }
