@@ -32,9 +32,9 @@ class DiscordPatchBuilder extends PatchBuilder implements MethodAdapter {
   /// final DiscordHttpClient client = DiscordHttpClient(baseUrl: '/');
   /// final foo = await client.put('/foo')
   ///   .payload({'foo': 'bar'})
-  ///  .auditLog('foo')
-  ///  .build();
-  ///  ```
+  ///   .auditLog('foo')
+  ///   .build();
+  /// ```
   DiscordPatchBuilder auditLog (String? value) {
     if (value != null) {
       _headers.putIfAbsent('X-Audit-Log-Reason', () => value);
