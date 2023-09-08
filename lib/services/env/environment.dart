@@ -14,9 +14,11 @@ class Environment extends Injectable {
   Environment._internal() {
     File env = File(join(Directory.current.path, '.env'));
 
-    for (final line in env.readAsLinesSync()) {
-      final [key, value] = line.split('=');
-      add(key, value.trim());
+    if (env.existsSync()) {
+      for (final line in env.readAsLinesSync()) {
+        final [key, value] = line.split('=');
+        add(key, value.trim());
+      }
     }
   }
 
