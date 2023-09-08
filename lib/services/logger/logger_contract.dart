@@ -1,4 +1,6 @@
-abstract interface class LoggerContract {
+import 'package:mineral/internal/fold/injectable.dart';
+
+abstract interface class LoggerContract extends Injectable {
   void log(dynamic message);
 
   void error(String message);
