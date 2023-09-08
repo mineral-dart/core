@@ -1,13 +1,28 @@
+import 'dart:convert';
 import 'dart:io';
 
+import 'package:mineral/internal/fold/container.dart';
+import 'package:mineral/internal/fold/injectable.dart';
 import 'package:path/path.dart';
 
 /// A class to handle environment variables
 /// ```dart
 /// final Environment env = Environment();
 /// ```
-class Environment {
+class Environment extends Injectable {
   final Map<String, String> _env = Map.from(Platform.environment);
+
+  Environment._internal() {
+    File env = File(join(Directory.current.path, '.env'));
+
+    for (final line in env.readAsLinesSync()) {
+      final [key, value] = line.split('=');
+      add(key, value.trim());
+    }
+  }
+
+  factory Environment() => Environment._internal();
+  factory Environment.singleton() => container.use<Environment>('environment');
 
   /// Creates a new environment file
   /// ```dart
