@@ -1,10 +1,10 @@
+import 'package:mineral/services/http/contracts/http_request_dispatcher_contract.dart';
 import 'package:mineral/services/http/header_bucket.dart';
-import 'package:mineral/services/http/http_request_dispatcher.dart';
 import 'package:mineral/services/http/method_adapter.dart';
 
-abstract class HttpClientContract {
+abstract class HttpClientContract<D extends HttpRequestDispatcherContract> {
   /// Dispatcher used to dispatch requests under pools
-  late final HttpRequestDispatcher dispatcher;
+  late final D dispatcher;
 
   /// Base URL of this
   abstract final String baseUrl;

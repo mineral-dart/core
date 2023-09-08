@@ -3,10 +3,10 @@ import 'package:mineral/internal/either.dart';
 import 'package:mineral/services/http/contracts/http_request_dispatcher_contract.dart';
 import 'package:mineral/services/http/http_response.dart';
 
-final class HttpRequestDispatcher implements HttpRequestDispatcherContract {
+final class DiscordHttpRequestDispatcher implements HttpRequestDispatcherContract {
   final Client _client;
 
-  HttpRequestDispatcher(this._client);
+  DiscordHttpRequestDispatcher(this._client);
 
   @override
   Future<EitherContract> process (BaseRequest request) async {

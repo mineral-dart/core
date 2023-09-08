@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:mineral/internal/either.dart';
+import 'package:mineral/internal/services/http/discord_http_request_dispatcher.dart';
 import 'package:mineral/services/http/builders/post_builder.dart';
 import 'package:mineral/services/http/http_client.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
@@ -17,7 +18,7 @@ import 'package:mineral/services/http/method_adapter.dart';
 ///   .build();
 /// ```
 class DiscordPostBuilder extends PostBuilder implements MethodAdapter {
-  final HttpRequestDispatcher _dispatcher;
+  final DiscordHttpRequestDispatcher _dispatcher;
   final Map<String, String> _headers = {};
   final Request _request;
   final List<MultipartFile> _files = [];

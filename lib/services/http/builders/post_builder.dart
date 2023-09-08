@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart';
 import 'package:mineral/internal/either.dart';
+import 'package:mineral/services/http/contracts/http_request_dispatcher_contract.dart';
 import 'package:mineral/services/http/http_client.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
 import 'package:mineral/services/http/method_adapter.dart';
@@ -15,9 +16,9 @@ import 'package:mineral/services/http/method_adapter.dart';
 ///   .header('Content-Type', 'application/json')
 ///   .build();
 /// ```
-class PostBuilder extends MethodAdapter {
+class PostBuilder<D extends HttpRequestDispatcherContract> extends MethodAdapter {
   final Map<String, String> _headers = {};
-  final HttpRequestDispatcher _dispatcher;
+  final D _dispatcher;
   final Request _request;
   final List<MultipartFile> _files = [];
   dynamic _payload;

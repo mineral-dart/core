@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 import 'package:mineral/internal/either.dart';
+import 'package:mineral/internal/services/http/discord_http_request_dispatcher.dart';
 import 'package:mineral/services/http/builders/delete_builder.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
 import 'package:mineral/services/http/method_adapter.dart';
@@ -10,7 +11,7 @@ import 'package:mineral/services/http/method_adapter.dart';
 /// await client.delete('/foo').build();
 /// ```
 class DiscordDeleteBuilder extends DeleteBuilder implements MethodAdapter {
-  final HttpRequestDispatcher _dispatcher;
+  final DiscordHttpRequestDispatcher _dispatcher;
   final Map<String, String> _headers = {};
   final Request _request;
 

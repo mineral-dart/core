@@ -4,8 +4,9 @@ import 'package:mineral/services/http/builders/get_builder.dart';
 import 'package:mineral/services/http/builders/patch_builder.dart';
 import 'package:mineral/services/http/builders/post_builder.dart';
 import 'package:mineral/services/http/builders/put_builder.dart';
+import 'package:mineral/services/http/contracts/http_request_dispatcher_contract.dart';
 import 'package:mineral/services/http/header_bucket.dart';
-import 'package:mineral/services/http/http_client_contract.dart';
+import 'package:mineral/services/http/contracts/http_client_contract.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
 import 'package:mineral/services/http/method_adapter.dart';
 
@@ -13,7 +14,7 @@ import 'package:mineral/services/http/method_adapter.dart';
 /// ```dart
 /// final HttpClient client = HttpClient(baseUrl: '/');
 /// ```
-class HttpClient<T extends MethodAdapter> implements HttpClientContract {
+class HttpClient implements HttpClientContract<HttpRequestDispatcher> {
   /// Client used to make requests
   final Client _client = Client();
 
@@ -44,7 +45,7 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
     final request = Request('GET', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return GetBuilder(dispatcher, request);
+    return GetBuilder<HttpRequestDispatcher>(dispatcher, request);
   }
 
   /// Create a POST request
@@ -59,7 +60,7 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
     final request = Request('POST', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return PostBuilder(dispatcher, request);
+    return PostBuilder<HttpRequestDispatcher>(dispatcher, request);
   }
 
   /// Create a PUT request
@@ -74,7 +75,7 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
     final request = Request('PUT', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return PutBuilder(dispatcher, request);
+    return PutBuilder<HttpRequestDispatcher>(dispatcher, request);
   }
 
   /// Create a PATCH request
@@ -89,7 +90,7 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
     final request = Request('PATCH', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return PatchBuilder(dispatcher, request);
+    return PatchBuilder<HttpRequestDispatcher>(dispatcher, request);
   }
 
   /// Create a DELETE request
@@ -102,6 +103,6 @@ class HttpClient<T extends MethodAdapter> implements HttpClientContract {
     final request = Request('DELETE', Uri.parse('$baseUrl$url'))
       ..headers.addAll(headers.all);
 
-    return DeleteBuilder(dispatcher, request);
+    return DeleteBuilder<HttpRequestDispatcher>(dispatcher, request);
   }
 }
