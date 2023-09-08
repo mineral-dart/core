@@ -1,4 +1,5 @@
 import 'package:http/http.dart';
+import 'package:mineral/internal/fold/injectable.dart';
 import 'package:mineral/internal/services/http/builders/discord_delete_builder.dart';
 import 'package:mineral/internal/services/http/builders/discord_get_builder.dart';
 import 'package:mineral/internal/services/http/builders/discord_patch_builder.dart';
@@ -13,7 +14,7 @@ import 'package:mineral/services/http/http_request_dispatcher.dart';
 /// ```dart
 /// final DiscordHttpClient client = DiscordHttpClient(baseUrl: '/');
 /// ```
-class DiscordHttpClient implements HttpClientContract {
+class DiscordHttpClient extends Injectable implements HttpClientContract {
   /// Client used to make requests
   final Client _client = Client();
 
