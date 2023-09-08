@@ -52,3 +52,5 @@ final class Container {
 
   int length () => _services.length;
 }
+
+final Container container = Container();
