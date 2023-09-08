@@ -1,9 +1,10 @@
 import 'dart:io';
 
+import 'package:mineral/internal/fold/injectable.dart';
 import 'package:mineral/services/logger/logger_contract.dart';
 import 'package:tint/tint.dart';
 
-class Logger implements LoggerContract {
+class Logger extends Injectable implements LoggerContract {
   @override
   void debug(String message) =>
       stdout.writeln('${'[ debug ]'.grey()} $message');
