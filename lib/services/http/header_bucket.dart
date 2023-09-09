@@ -90,6 +90,15 @@ final class HeaderBucket {
     _headers['Authorization'] = authorization;
   }
 
+  /// Set User-Agent header
+  /// ```dart
+  /// final HttpClient client = HttpClient(baseUrl: '/');
+  /// client.headers.setUserAgent('Mineral');
+  /// ```
+  void setUserAgent(String userAgent) {
+    _headers['User-Agent'] = userAgent;
+  }
+
   /// Check if a hasContentType header exists on bucket
   /// ```dart
   /// final HttpClient client = HttpClient(baseUrl: '/');
