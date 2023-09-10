@@ -32,7 +32,7 @@ class DiscordHttpClient extends Injectable implements HttpClientContract<Discord
   final HeaderBucket headers = HeaderBucket();
 
   DiscordHttpClient({ required this.baseUrl, required LoggerContract logger, Map<String, String> headers = const {} }) {
-    dispatcher = DiscordHttpRequestDispatcher(logger, _client);
+    dispatcher = DiscordHttpRequestDispatcher(_client);
     this.headers.addAll(headers);
   }
 

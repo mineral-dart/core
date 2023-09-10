@@ -15,7 +15,6 @@ final class DiscordBucketPool {
   void updateBucket(String poolName, DiscordHttpBucket bucket) {
     final bucket = _buckets[poolName];
     if (bucket != null) {
-      bucket.
     }
   }
 }
