@@ -2,6 +2,7 @@ import 'package:mineral/internal/services/http/repositories/audit_log_repository
 import 'package:mineral/internal/services/http/repositories/auto_moderation_repository.dart';
 import 'package:mineral/internal/services/http/repositories/channel_repository.dart';
 import 'package:mineral/internal/services/http/repositories/emoji_repository.dart';
+import 'package:mineral/internal/services/http/repositories/guild_repository.dart';
 
 final class DiscordEndpointRepository {
   /// Get [Channel] endpoints
@@ -15,4 +16,7 @@ final class DiscordEndpointRepository {
 
   /// Get [AuditLog] endpoints
   final AuditLogRepository auditLogs = AuditLogRepository();
+
+  /// Get [Guild] endpoints
+  final GuildRepository guilds = GuildRepository();
 }
