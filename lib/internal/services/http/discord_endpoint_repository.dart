@@ -1,3 +1,4 @@
+import 'package:mineral/internal/services/http/repositories/audit_log_repository.dart';
 import 'package:mineral/internal/services/http/repositories/auto_moderation_repository.dart';
 import 'package:mineral/internal/services/http/repositories/channel_repository.dart';
 import 'package:mineral/internal/services/http/repositories/emoji_repository.dart';
@@ -11,4 +12,7 @@ final class DiscordEndpointRepository {
 
   /// Get [AutoModeration] endpoints
   final AutoModerationRepository moderation = AutoModerationRepository();
+
+  /// Get [AuditLog] endpoints
+  final AuditLogRepository auditLogs = AuditLogRepository();
 }
