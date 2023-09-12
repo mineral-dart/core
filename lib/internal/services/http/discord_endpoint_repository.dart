@@ -9,6 +9,7 @@ import 'package:mineral/internal/services/http/repositories/invite_repository.da
 import 'package:mineral/internal/services/http/repositories/state_instance_repository.dart';
 import 'package:mineral/internal/services/http/repositories/sticker_repository.dart';
 import 'package:mineral/internal/services/http/repositories/user_repository.dart';
+import 'package:mineral/internal/services/http/repositories/voice_repository.dart';
 
 final class DiscordEndpointRepository {
   /// Get [Channel] endpoints
@@ -43,4 +44,7 @@ final class DiscordEndpointRepository {
 
   /// Get [User] endpoints
   final UserRepository users = UserRepository();
+
+  /// Get [Voice] endpoints
+  final VoiceRepository voice = VoiceRepository();
 }
