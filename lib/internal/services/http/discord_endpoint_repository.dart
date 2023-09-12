@@ -3,6 +3,7 @@ import 'package:mineral/internal/services/http/repositories/auto_moderation_repo
 import 'package:mineral/internal/services/http/repositories/channel_repository.dart';
 import 'package:mineral/internal/services/http/repositories/emoji_repository.dart';
 import 'package:mineral/internal/services/http/repositories/guild_repository.dart';
+import 'package:mineral/internal/services/http/repositories/guild_scheduled_event_repository.dart';
 
 final class DiscordEndpointRepository {
   /// Get [Channel] endpoints
@@ -19,4 +20,7 @@ final class DiscordEndpointRepository {
 
   /// Get [Guild] endpoints
   final GuildRepository guilds = GuildRepository();
+
+  /// Get [ScheduledEvent] endpoints
+  final GuildScheduledEventRepository scheduledEvents = GuildScheduledEventRepository();
 }
