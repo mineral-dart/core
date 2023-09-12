@@ -5,6 +5,7 @@ import 'package:mineral/internal/services/http/builders/discord_get_builder.dart
 import 'package:mineral/internal/services/http/builders/discord_patch_builder.dart';
 import 'package:mineral/internal/services/http/builders/discord_post_builder.dart';
 import 'package:mineral/internal/services/http/builders/discord_put_builder.dart';
+import 'package:mineral/internal/services/http/discord_endpoint_repository.dart';
 import 'package:mineral/services/http/header_bucket.dart';
 import 'package:mineral/services/http/http_client_contract.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
@@ -17,6 +18,8 @@ import 'package:mineral/services/http/http_request_dispatcher.dart';
 class DiscordHttpClient extends Injectable implements HttpClientContract {
   /// Client used to make requests
   final Client _client = Client();
+
+  final DiscordEndpointRepository endpoints = DiscordEndpointRepository();
 
   /// Dispatcher used to dispatch requests under pools
   @override
