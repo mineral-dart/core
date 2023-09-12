@@ -6,6 +6,7 @@ import 'package:mineral/internal/services/http/repositories/guild_repository.dar
 import 'package:mineral/internal/services/http/repositories/guild_scheduled_event_repository.dart';
 import 'package:mineral/internal/services/http/repositories/guild_template_repository.dart';
 import 'package:mineral/internal/services/http/repositories/invite_repository.dart';
+import 'package:mineral/internal/services/http/repositories/state_instance_repository.dart';
 
 final class DiscordEndpointRepository {
   /// Get [Channel] endpoints
@@ -31,4 +32,7 @@ final class DiscordEndpointRepository {
 
   /// Get [Invite] endpoints
   final InviteRepository invites = InviteRepository();
+
+  /// Get [StageInstance] endpoints
+  final StageInstanceRepository stageInstances = StageInstanceRepository();
 }
