@@ -4,84 +4,84 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.get('1234');
   /// ```
-  String get(String guildId) => Uri(pathSegments: ['guilds', guildId]).path;
+  String get({ required String guildId }) => Uri(pathSegments: ['guilds', guildId]).path;
 
   /// Get guild preview
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#get-guild-preview)
   /// ```dart
   /// final uri = http.endpoints.guilds.getPreview('1234');
   /// ```
-  String getPreview(String guildId) => Uri(pathSegments: ['guilds', guildId, 'preview']).path;
+  String getPreview({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'preview']).path;
 
   /// Modify guild
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#modify-guild)
   /// ```dart
   /// final uri = http.endpoints.guilds.update('1234');
   /// ```
-  String update(String guildId) => Uri(pathSegments: ['guilds', guildId]).path;
+  String update({ required String guildId }) => Uri(pathSegments: ['guilds', guildId]).path;
 
   /// Delete guild
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#delete-guild)
   /// ```dart
   /// final uri = http.endpoints.guilds.delete('1234');
   /// ```
-  String delete(String guildId) => Uri(pathSegments: ['guilds', guildId]).path;
+  String delete({ required String guildId }) => Uri(pathSegments: ['guilds', guildId]).path;
 
   /// Get guild channels
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#get-guild-channels)
   /// ```dart
   /// final uri = http.endpoints.guilds.getChannels('1234');
   /// ```
-  String getChannels(String guildId) => Uri(pathSegments: ['guilds', guildId, 'channels']).path;
+  String getChannels({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'channels']).path;
 
   /// Create guild channel
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#create-guild-channel)
   /// ```dart
   /// final uri = http.endpoints.guilds.createChannel('1234');
   /// ```
-  String createChannel(String guildId) => Uri(pathSegments: ['guilds', guildId, 'channels']).path;
+  String createChannel({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'channels']).path;
 
   /// Modify guild channel positions
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#modify-guild-channel-positions)
   /// ```dart
   /// final uri = http.endpoints.guilds.updateChannelPositions('1234');
   /// ```
-  String updateChannelPositions(String guildId) => Uri(pathSegments: ['guilds', guildId, 'channels']).path;
+  String updateChannelPositions({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'channels']).path;
 
   /// Get guild member
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#get-guild-member)
   /// ```dart
   /// final uri = http.endpoints.guilds.getMember('1234');
   /// ```
-  String getMember(String guildId) => Uri(pathSegments: ['guilds', guildId, 'members']).path;
+  String getMember({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'members']).path;
 
   /// Search guild members
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#search-guild-members)
   /// ```dart
   /// final uri = http.endpoints.guilds.searchMembers('1234');
   /// ```
-  String searchMembers(String guildId) => Uri(pathSegments: ['guilds', guildId, 'members', 'search']).path;
+  String searchMembers({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'members', 'search']).path;
 
   /// Add guild member
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#add-guild-member)
   /// ```dart
   /// final uri = http.endpoints.guilds.addMember('1234');
   /// ```
-  String addMember(String guildId) => Uri(pathSegments: ['guilds', guildId, 'members']).path;
+  String addMember({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'members']).path;
 
   /// Modify guild member
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#modify-guild-member)
   /// ```dart
   /// final uri = http.endpoints.guilds.updateMember('1234');
   /// ```
-  String updateMember(String guildId) => Uri(pathSegments: ['guilds', guildId, 'members']).path;
+  String updateMember({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'members']).path;
 
   /// Modify current user's nick
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#modify-current-member)
   /// ```dart
   /// final uri = http.endpoints.guilds.updateCurrentUserNick('987741097889517643');
   /// ```
-  String updateCurrentUserNick(String guildId) => Uri(pathSegments: ['guilds', guildId, 'members', '@me', 'nick']).path;
+  String updateCurrentUserNick({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'members', '@me', 'nick']).path;
 
   /// Add guild member role
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#add-guild-member-role)
@@ -116,7 +116,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getBans('240561194958716928');
   /// ```
-  String getBans(String guildId) => Uri(pathSegments: ['guilds', guildId, 'bans']).path;
+  String getBans({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'bans']).path;
 
   /// Get guild ban
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#get-guild-ban)
@@ -147,21 +147,21 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getRoles('240561194958716928');
   /// ```
-  String getRoles(String guildId) => Uri(pathSegments: ['guilds', guildId, 'roles']).path;
+  String getRoles({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'roles']).path;
 
   /// Create guild role
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#create-guild-role)
   /// ```dart
   /// final uri = http.endpoints.guilds.createRole('240561194958716928');
   /// ```
-  String createRole(String guildId) => Uri(pathSegments: ['guilds', guildId, 'roles']).path;
+  String createRole({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'roles']).path;
 
   /// Modify guild role positions
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#modify-guild-role-positions)
   /// ```dart
   /// final uri = http.endpoints.guilds.updateRolePositions('240561194958716928');
   /// ```
-  String updateRolePositions(String guildId) => Uri(pathSegments: ['guilds', guildId, 'roles']).path;
+  String updateRolePositions({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'roles']).path;
 
   /// Modify guild role
   /// Related [official documentation](https://discord.com/developers/docs/resources/guild#modify-guild-role)
@@ -184,7 +184,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.updateMFALevel('240561194958716928');
   /// ```
-  String updateMFALevel(String guildId) =>
+  String updateMFALevel({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'mfa']).path;
 
   /// Get guild prune count
@@ -192,7 +192,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getPruneCount('240561194958716928');
   /// ```
-  String getPruneCount(String guildId) =>
+  String getPruneCount({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'prune']).path;
 
   /// Begin guild prune
@@ -200,7 +200,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.beginPrune('240561194958716928');
   /// ```
-  String beginPrune(String guildId) =>
+  String beginPrune({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'prune']).path;
 
   /// Get guild voice regions
@@ -208,7 +208,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getVoiceRegions('240561194958716928');
   /// ```
-  String getVoiceRegions(String guildId) =>
+  String getVoiceRegions({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'regions']).path;
 
   /// Get guild invites
@@ -216,7 +216,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getInvites('240561194958716928');
   /// ```
-  String getInvites(String guildId) =>
+  String getInvites({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'invites']).path;
 
   /// Get guild integrations
@@ -224,7 +224,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getIntegrations('240561194958716928');
   /// ```
-  String getIntegrations(String guildId) =>
+  String getIntegrations({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'integrations']).path;
 
   /// Delete guild integration
@@ -240,7 +240,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getWidgetSettings('240561194958716928');
   /// ```
-  String getWidgetSettings(String guildId) =>
+  String getWidgetSettings({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'widget']).path;
 
   /// Modify guild widget settings
@@ -248,7 +248,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.updateWidgetSettings('240561194958716928');
   /// ```
-  String updateWidgetSettings(String guildId) =>
+  String updateWidgetSettings({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'widget']).path;
 
   /// Get guild widget
@@ -256,7 +256,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getWidget('240561194958716928');
   /// ```
-  String getWidget(String guildId) =>
+  String getWidget({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'widget.json']).path;
 
   /// Get guild vanity url
@@ -264,7 +264,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getVanityUrl('240561194958716928');
   /// ```
-  String getVanityUrl(String guildId) =>
+  String getVanityUrl({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'vanity-url']).path;
 
   /// get guild widget image
@@ -272,7 +272,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getWidgetImage('240561194958716928');
   /// ```
-  String getWidgetImage(String guildId) =>
+  String getWidgetImage({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'widget.png']).path;
 
   /// Get guild welcome screen
@@ -280,7 +280,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getWelcomeScreen('240561194958716928');
   /// ```
-  String getWelcomeScreen(String guildId) =>
+  String getWelcomeScreen({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'welcome-screen']).path;
 
   /// Modify guild welcome screen
@@ -288,7 +288,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.updateWelcomeScreen('240561194958716928');
   /// ```
-  String updateWelcomeScreen(String guildId) =>
+  String updateWelcomeScreen({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'welcome-screen']).path;
 
   /// Get guild onboarding welcome screen
@@ -296,7 +296,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.getOnboardingScreen('240561194958716928');
   /// ```
-  String getOnboardingScreen(String guildId) =>
+  String getOnboardingScreen({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'onboarding']).path;
 
   /// Modify guild onboarding welcome screen
@@ -304,7 +304,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.updateOnboardingScreen('240561194958716928');
   /// ```
-  String updateOnboardingScreen(String guildId) =>
+  String updateOnboardingScreen({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'onboarding']).path;
 
   /// Modify current user voice state
@@ -312,7 +312,7 @@ final class GuildRepository {
   /// ```dart
   /// final uri = http.endpoints.guilds.updateCurrentUserVoiceState('240561194958716928');
   /// ```
-  String updateCurrentUserVoiceState(String guildId) =>
+  String updateCurrentUserVoiceState({ required String guildId }) =>
       Uri(pathSegments: ['guilds', guildId, 'voice-states', '@me']).path;
 
   /// Modify user voice state

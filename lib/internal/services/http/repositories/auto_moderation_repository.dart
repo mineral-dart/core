@@ -7,14 +7,14 @@ final class AutoModerationRepository {
   /// ```dart
   /// final moderation = await client.moderation.list(guildId: '1234567890');
   /// ```
-  String list(String guildId) => Uri(pathSegments: ['guilds', guildId, 'auto-moderation', 'rules']).path;
+  String list({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'auto-moderation', 'rules']).path;
 
   /// Returns an [AutoModeration] object for the given [Guild] and rule IDs.
   /// Related to the official Discord API documentation: https://discord.com/developers/docs/resources/auto-moderation#get-auto-moderation-rule
   /// ```dart
   /// final moderation = await client.moderation.get(guildId: '1234567890', ruleId: '1234567890');
   /// ```
-  String get(String guildId, String ruleId) =>
+  String get({ required String guildId, required String ruleId }) =>
       Uri(pathSegments: ['guilds', guildId, 'auto-moderation', 'rules', ruleId]).path;
 
   /// Create a new [AutoModeration] for the given [Guild].
@@ -22,14 +22,14 @@ final class AutoModerationRepository {
   /// ```dart
   /// final moderation = await client.moderation.create(guildId: '1234567890', ruleId: '1234567890');
   /// ```
-  String create(String guildId) => Uri(pathSegments: ['guilds', guildId, 'auto-moderation', 'rules']).path;
+  String create({ required String guildId }) => Uri(pathSegments: ['guilds', guildId, 'auto-moderation', 'rules']).path;
 
   /// Modify the given [AutoModeration].
   /// Related to the official Discord API documentation: https://discord.com/developers/docs/resources/auto-moderation#modify-auto-moderation-rule
   /// ```dart
   /// final moderation = await client.moderation.update(guildId: '1234567890', ruleId: '1234567890');
   /// ```
-  String update(String guildId, String ruleId) =>
+  String update({ required String guildId, required String ruleId }) =>
       Uri(pathSegments: ['guilds', guildId, 'auto-moderation', 'rules', ruleId]).path;
 
   /// Delete the given [AutoModeration].
@@ -37,6 +37,6 @@ final class AutoModerationRepository {
   /// ```dart
   /// final moderation = await client.moderation.delete(guildId: '1234567890', ruleId: '1234567890');
   /// ```
-  String delete(String guildId, String ruleId) =>
+  String delete({ required String guildId, required String ruleId }) =>
       Uri(pathSegments: ['guilds', guildId, 'auto-moderation', 'rules', ruleId]).path;
 }

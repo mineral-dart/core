@@ -7,5 +7,6 @@ final class AuditLogRepository {
   /// ```dart
   /// final uri = http.endpoints.auditLogs.get('1234');
   /// ```
-  String get(String guildId) => Uri(pathSegments: ['guilds', guildId, 'audit-logs']).path;
+  String get({ required String guildId }) =>
+      Uri(pathSegments: ['guilds', guildId, 'audit-logs']).path;
 }
