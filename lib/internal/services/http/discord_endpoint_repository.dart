@@ -10,6 +10,7 @@ import 'package:mineral/internal/services/http/repositories/state_instance_repos
 import 'package:mineral/internal/services/http/repositories/sticker_repository.dart';
 import 'package:mineral/internal/services/http/repositories/user_repository.dart';
 import 'package:mineral/internal/services/http/repositories/voice_repository.dart';
+import 'package:mineral/internal/services/http/repositories/webhook_repository.dart';
 
 final class DiscordEndpointRepository {
   /// Get [Channel] endpoints
@@ -47,4 +48,7 @@ final class DiscordEndpointRepository {
 
   /// Get [Voice] endpoints
   final VoiceRepository voice = VoiceRepository();
+
+  /// Get [Webhook] endpoints
+  final WebhookRepository webhooks = WebhookRepository();
 }
