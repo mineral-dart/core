@@ -5,6 +5,7 @@ import 'package:mineral/internal/services/http/repositories/emoji_repository.dar
 import 'package:mineral/internal/services/http/repositories/guild_repository.dart';
 import 'package:mineral/internal/services/http/repositories/guild_scheduled_event_repository.dart';
 import 'package:mineral/internal/services/http/repositories/guild_template_repository.dart';
+import 'package:mineral/internal/services/http/repositories/invite_repository.dart';
 
 final class DiscordEndpointRepository {
   /// Get [Channel] endpoints
@@ -27,4 +28,7 @@ final class DiscordEndpointRepository {
 
   /// Get [GuildTemplate] endpoints
   final GuildTemplateRepository templates = GuildTemplateRepository();
+
+  /// Get [Invite] endpoints
+  final InviteRepository invites = InviteRepository();
 }
