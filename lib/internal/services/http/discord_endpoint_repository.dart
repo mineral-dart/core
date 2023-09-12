@@ -8,6 +8,7 @@ import 'package:mineral/internal/services/http/repositories/guild_template_repos
 import 'package:mineral/internal/services/http/repositories/invite_repository.dart';
 import 'package:mineral/internal/services/http/repositories/state_instance_repository.dart';
 import 'package:mineral/internal/services/http/repositories/sticker_repository.dart';
+import 'package:mineral/internal/services/http/repositories/user_repository.dart';
 
 final class DiscordEndpointRepository {
   /// Get [Channel] endpoints
@@ -39,4 +40,7 @@ final class DiscordEndpointRepository {
 
   /// Get [Sticker] endpoints
   final StickerRepository stickers = StickerRepository();
+
+  /// Get [User] endpoints
+  final UserRepository users = UserRepository();
 }
