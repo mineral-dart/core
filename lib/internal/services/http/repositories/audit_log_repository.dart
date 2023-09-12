@@ -1,6 +1,6 @@
 /// [AuditLog] repository
 ///
-/// Related to the official Discord API documentation: https://discord.com/developers/docs/resources/audit-log
+/// Related to the official [Discord API documentation](https://discord.com/developers/docs/resources/audit-log)
 final class AuditLogRepository {
   /// Get audit log
   /// Related [official documentation](https://discord.com/developers/docs/resources/audit-log#get-guild-audit-log)
