@@ -14,9 +14,15 @@ class Environment extends Injectable {
   Environment._internal() {
     File env = File(join(Directory.current.path, '.env'));
 
+    if (!env.existsSync()) {
+      return;
+    }
+
     for (final line in env.readAsLinesSync()) {
-      final [key, value] = line.split('=');
-      add(key, value.trim());
+      if (line.isNotEmpty) {
+        final [key, value] = line.split('=');
+        add(key, value.trim());
+      }
     }
   }
 
@@ -26,11 +32,11 @@ class Environment extends Injectable {
   /// Creates a new environment file
   /// ```dart
   /// final Environment env = Environment();
-  /// await env.createEnvironmentFile();
+  /// env.createEnvironmentFile();
   /// ```
-  Future<void> createEnvironmentFile () async {
+  void createEnvironmentFile () {
     final File env = File(join(Directory.current.path, '.env'));
-    await env.create();
+    env.createSync(recursive: true);
   }
 
   /// Writes into the environment file
@@ -38,14 +44,11 @@ class Environment extends Injectable {
   /// final Environment env = Environment();
   /// env.write({ 'foo': 'bar' });
   /// ```
-  void write (Map<String, dynamic> values) {
+  Future<void> write (Map<String, dynamic> values) async {
     final File env = File(join(Directory.current.path, '.env'));
-    final sink = env.openWrite();
+    final payload = values.entries.fold([], (acc, element) => [...acc, '${element.key}=${element.value}']);
 
-    sink.write(List.from(values.entries.map((e) => '${e.key}=${e.value}')));
-
-    sink.flush();
-    sink.close();
+    env.writeAsString(payload.join('\n'));
   }
 
   /// Adds a new environment variable
