@@ -1,12 +1,14 @@
 import 'package:http/http.dart';
 import 'package:mineral/internal/either.dart';
+import 'package:mineral/services/http/contracts/http_request_dispatcher_contract.dart';
 import 'package:mineral/services/http/http_response.dart';
 
-final class HttpRequestDispatcher {
+final class HttpRequestDispatcher implements HttpRequestDispatcherContract {
   final Client _client;
 
   HttpRequestDispatcher(this._client);
 
+  @override
   Future<EitherContract> process (BaseRequest request) async {
     final streamedResponse = await _client.send(request);
     final result = await Response.fromStream(streamedResponse);

@@ -34,7 +34,7 @@ class Environment extends Injectable {
   /// final Environment env = Environment();
   /// env.createEnvironmentFile();
   /// ```
-  void createEnvironmentFile () {
+  void createEnvironmentFile() {
     final File env = File(join(Directory.current.path, '.env'));
     env.createSync(recursive: true);
   }
@@ -44,9 +44,10 @@ class Environment extends Injectable {
   /// final Environment env = Environment();
   /// env.write({ 'foo': 'bar' });
   /// ```
-  Future<void> write (Map<String, dynamic> values) async {
+  Future<void> write(Map<String, dynamic> values) async {
     final File env = File(join(Directory.current.path, '.env'));
-    final payload = values.entries.fold([], (acc, element) => [...acc, '${element.key}=${element.value}']);
+    final payload =
+        values.entries.fold([], (acc, element) => [...acc, '${element.key}=${element.value}']);
 
     env.writeAsString(payload.join('\n'));
   }
@@ -56,7 +57,7 @@ class Environment extends Injectable {
   /// final Environment env = Environment();
   /// env.add('foo', 'bar');
   /// ```
-  void add (String key, String value) {
+  void add(String key, String value) {
     _env.putIfAbsent(key, () => value);
   }
 
@@ -65,7 +66,7 @@ class Environment extends Injectable {
   /// final Environment env = Environment();
   /// env.set('foo', 'bar');
   /// ```
-  void set (String key, String value) {
+  void set(String key, String value) {
     _env[key] = value;
   }
 
@@ -74,13 +75,13 @@ class Environment extends Injectable {
   /// final Environment env = Environment();
   /// final String? foo = env.get<String>('foo');
   /// ```
-  T? get<T> (String key) => switch (T) {
-    int => int.parse(_env[key]!),
-    double => double.parse(_env[key]!),
-    String => _env[key],
-    bool => _env[key] == 'true',
-    _ => _env[key]
-  } as T;
+  T? get<T>(String key) => switch (T) {
+        int => int.parse(_env[key]!),
+        double => double.parse(_env[key]!),
+        String => _env[key],
+        bool => _env[key] == 'true',
+        _ => _env[key]
+      } as T;
 
   /// Gets an environment variable or throws an exception if it doesn't exist
   /// ```dart
@@ -89,7 +90,7 @@ class Environment extends Injectable {
   /// final String? foo = env.getOrFail<String>('foo');
   /// final String? foo = env.getOrFail<String>('foo', message: 'Foo not found');
   /// ```
-  T getOrFail<T> (String key, { String? message }) {
+  T getOrFail<T>(String key, {String? message}) {
     if (!_env.containsKey(key)) {
       throw Exception(message ?? 'Environment variable $key not found');
     }
@@ -102,7 +103,7 @@ class Environment extends Injectable {
   /// final Environment env = Environment();
   /// env.remove('foo');
   /// ```
-  void remove (String key) {
+  void remove(String key) {
     _env.remove(key);
   }
 }

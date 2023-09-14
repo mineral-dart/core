@@ -53,9 +53,10 @@ final class Kernel {
     final config = http(environment);
 
     this.http = container.bind<DiscordHttpClient>('http', (_) =>
-      DiscordHttpClient(baseUrl: '${config.baseUrl}/v${config.version}')
+      DiscordHttpClient(logger: logger, baseUrl: '${config.baseUrl}/v${config.version}')
         ..headers.setContentType('application/json')
         ..headers.setAuthorization('Bot $token')
+        ..headers.setUserAgent('Mineral')
     );
   }
 

@@ -1,5 +1,6 @@
 import 'package:http/http.dart';
 import 'package:mineral/internal/either.dart';
+import 'package:mineral/services/http/contracts/http_request_dispatcher_contract.dart';
 import 'package:mineral/services/http/http_client.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
 import 'package:mineral/services/http/method_adapter.dart';
@@ -9,8 +10,8 @@ import 'package:mineral/services/http/method_adapter.dart';
 /// final HttpClient client = HttpClient(baseUrl: '/');
 /// await client.delete('/foo').build();
 /// ```
-class DeleteBuilder extends MethodAdapter {
-  final HttpRequestDispatcher _dispatcher;
+class DeleteBuilder<D extends HttpRequestDispatcherContract> extends MethodAdapter {
+  final D _dispatcher;
   final Request _request;
 
   DeleteBuilder(this._dispatcher, this._request);
