@@ -25,17 +25,18 @@ final class WebsocketManager {
 
     return switch(response) {
       Success<HttpResponse>(value: final v) => v.payload,
-      Failure() => switch (response.payload?.statusCode) {
-        401 => throw Exception('Your token is invalid'),
-        _ => throw Exception('Uncategorized error')
+      Failure(error: final err) => switch (response.payload?.statusCode) {
+        401 => throw Exception('(401) Your token is invalid'),
+        _ => throw Exception('(${response.payload?.statusCode}) $err')
       },
       _ => throw Exception()
     };
   }
 
   Future<void> start ({ required int? shardCount }) async {
-    final { 'url': url } = await _getBotGateway();
-    print(url);
+    final { 'url': url, 'session_start_limit': session, 'shards': shards } = await _getBotGateway();
+
+    print(session);
 
     // shardCount != null
     //   ? totalShards = shardCount
