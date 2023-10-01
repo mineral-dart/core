@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mineral/commands/generate_environment_command.dart';
 import 'package:mineral/commands/help_command.dart';
 import 'package:mineral/internal/config/application_config_contract.dart';
@@ -7,8 +9,11 @@ import 'package:mineral/internal/console/console.dart';
 import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
+import 'package:mineral/internal/watcher/hmr.dart';
+import 'package:mineral/internal/wss/websocket_manager.dart';
 import 'package:mineral/services/env/environment.dart';
 import 'package:mineral/services/logger/logger_contract.dart';
+import 'package:path/path.dart';
 
 final class Kernel {
   final Environment environment = container.bind('environment', (_) => Environment());
@@ -18,11 +23,19 @@ final class Kernel {
 
   late final String token;
   late final Intents intents;
+  late final bool useHmr;
+
+  late final WebsocketManager websocketManager;
 
   Kernel._application(ApplicationConfigContract Function(Environment) app, LoggerContract Function() logger, HttpConfigContract Function(Environment) http) {
     _registerApplication(app);
     _registerLogger(logger);
     _registerHttp(http);
+
+    websocketManager = WebsocketManager(this.http);
+    _createHmr(reloadable: useHmr);
+
+    websocketManager.start(shardCount: 0);
 
     this.logger.info('Kernel is ready');
   }
@@ -41,6 +54,7 @@ final class Kernel {
 
     token = application.token;
     intents = application.intents;
+    useHmr = application.hmr;
   }
 
   /// Register the logger
@@ -58,6 +72,17 @@ final class Kernel {
         ..headers.setAuthorization('Bot $token')
         ..headers.setUserAgent('Mineral')
     );
+  }
+
+  void _createHmr({ bool reloadable = false }) {
+    final watcher = Hmr(
+      appRoot: Directory.current,
+      allowReload: reloadable,
+      wss: websocketManager,
+      roots: [Directory(join(Directory.current.path, 'lib'))]
+    );
+
+    watcher.watch();
   }
 
   void _registerConsole (ConsoleConfigContract Function() console) {
