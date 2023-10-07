@@ -7,6 +7,7 @@ import 'package:mineral/src/internal/websockets/packets/channel_delete_packet.da
 import 'package:mineral/src/internal/websockets/packets/channel_update_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_create_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_integrations_update.dart';
+import 'package:mineral/src/internal/websockets/packets/guild_member_chunk_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_remove_packet.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_create.dart';
 import 'package:mineral/src/internal/websockets/packets/guild_scheduled_event_delete.dart';
@@ -70,6 +71,7 @@ class WebsocketDispatcher {
     register(PacketType.voiceStateUpdate, VoiceStateUpdatePacket());
     register(PacketType.inviteCreate, InviteCreatePacket());
     register(PacketType.inviteDelete, InviteDeletePacket());
+    register(PacketType.guildMemberChunk, GuildMemberChunkPacker());
   }
 
   void register (PacketType type, WebsocketPacket packet) {
