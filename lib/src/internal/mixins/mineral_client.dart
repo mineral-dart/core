@@ -5,6 +5,7 @@ import 'package:mineral/core.dart';
 import 'package:mineral/core/api.dart';
 import 'package:mineral/core/builders.dart';
 import 'package:mineral/framework.dart';
+import 'package:mineral/internal.dart';
 import 'package:mineral/src/api/channels/partial_channel.dart';
 import 'package:mineral/src/api/managers/channel_manager.dart';
 import 'package:mineral/src/api/managers/emoji_manager.dart';
@@ -126,6 +127,14 @@ extension MineralClientExtension on MineralClient {
 
       memberManager.cache.putIfAbsent(guildMember.user.id, () => guildMember);
       users.cache.putIfAbsent(user.id, () => user);
+    }
+
+    if(websocketPayload['members'].length > 1000) {
+      container.use<ShardManager>().send(OpCode.requestGuildMember, {
+        'guild_id': websocketPayload['id'],
+        'query': '',
+        'limit': 0,
+      });
     }
 
     for(dynamic payload in websocketPayload['channels']) {

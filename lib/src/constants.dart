@@ -49,6 +49,7 @@ enum PacketType {
   guildScheduledEventUpdate('GUILD_SCHEDULED_EVENT_UPDATE'),
   guildScheduledEventUserAdd('GUILD_SCHEDULED_EVENT_USER_ADD'),
   guildScheduledEventUserRemove('GUILD_SCHEDULED_EVENT_USER_REMOVE'),
+  guildMemberChunk('GUILD_MEMBERS_CHUNK'),
 
   webhookUpdate('WEBHOOKS_UPDATE'),
 
