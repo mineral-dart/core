@@ -41,4 +41,8 @@ final class Shard {
     //
     // _streamSubscription = _stream.listen(print);
   }
+
+  void send () {
+
+  }
 }
