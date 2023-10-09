@@ -1,6 +1,11 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:isolate';
 
+import 'package:mineral/internal/wss/entities/websocket_message.dart';
+import 'package:mineral/internal/wss/op_code.dart';
+import 'package:mineral/internal/wss/shard_action.dart';
+import 'package:mineral/internal/wss/shard_message.dart';
 import 'package:mineral/internal/wss/websocket_manager.dart';
 
 final class Shard {
@@ -24,6 +29,8 @@ final class Shard {
   bool _isPendingReconnect = false;
   bool _isinitialized = false;
 
+  final Queue<WebsocketMessage> queue = Queue();
+
   DateTime? lastHeartbeat;
 
   Shard({ required this.manager, required this.id, required this.gatewayUrl });
@@ -42,7 +49,19 @@ final class Shard {
     // _streamSubscription = _stream.listen(print);
   }
 
-  void send () {
+  void send ({ required OpCode code, required dynamic payload, bool canQueue = true }) {
+    final WebsocketMessage websocketMessage = WebsocketMessage(code, payload);
 
+    if (_isinitialized || canQueue) {
+      final ShardMessage shardMessage = ShardMessage(
+        action: ShardAction.send,
+        data: websocketMessage.build()
+      );
+
+      _sendPort.send(shardMessage);
+      return;
+    }
+
+    queue.add(websocketMessage);
   }
 }

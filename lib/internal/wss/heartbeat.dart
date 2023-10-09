@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mineral/internal/wss/op_code.dart';
 import 'package:mineral/internal/wss/shard.dart';
 
 final class Heartbeat {
@@ -29,7 +30,7 @@ final class Heartbeat {
   }
 
   void _send() {
-    _shard.send();
+    _shard.send(code: OpCode.heartbeat, payload: _shard.sequence, canQueue: false);
     _shard.lastHeartbeat = DateTime.now();
   }
 }
