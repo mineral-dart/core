@@ -16,7 +16,7 @@ class GuildMemberChunkPacker with Container implements WebsocketPacket {
 
     Guild? guild = client.guilds.cache.getOrFail(payload['guild_id']);
 
-    for (dynamic member in payload['members']) {
+    for (final member in payload['members']) {
       if(guild.members.cache.containsKey(member['user']['id'])) {
         continue;
       }
