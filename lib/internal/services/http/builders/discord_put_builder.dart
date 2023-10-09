@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/internal/either.dart';
 import 'package:mineral/internal/services/http/discord_http_request_dispatcher.dart';
 import 'package:mineral/services/http/builders/put_builder.dart';
+import 'package:mineral/services/http/contracts/http_response.dart';
 import 'package:mineral/services/http/http_client.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
 import 'package:mineral/services/http/method_adapter.dart';
@@ -52,7 +52,7 @@ class DiscordPutBuilder extends PutBuilder implements MethodAdapter {
   ///   .build();
   /// ```
   @override
-  Future<EitherContract> build () async {
+  Future<HttpResponse> build () async {
     final BaseRequest request = _files.isNotEmpty
       ? MultipartRequest(_request.method, _request.url)
       : _request;

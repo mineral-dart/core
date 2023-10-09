@@ -1,10 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
-import 'package:mineral/internal/either.dart';
 import 'package:mineral/internal/services/http/discord_http_bucket.dart';
 import 'package:mineral/internal/services/http/rate_limit.dart';
 import 'package:mineral/services/http/contracts/http_request_dispatcher_contract.dart';
-import 'package:mineral/services/http/http_response.dart';
+import 'package:mineral/services/http/contracts/http_response.dart';
+import 'package:mineral/services/http/entities/http_error.dart';
+import 'package:mineral/services/http/entities/http_payload.dart';
 
 final class DiscordHttpRequestDispatcher implements HttpRequestDispatcherContract {
   static const _maxRateLimitWaits = 10;
@@ -17,7 +18,7 @@ final class DiscordHttpRequestDispatcher implements HttpRequestDispatcherContrac
   DiscordHttpRequestDispatcher(this._client);
 
   @override
-  Future<EitherContract> process(BaseRequest request) async {
+  Future<HttpResponse> process(BaseRequest request) async {
     final rateLimitId = _getRateLimitId(request);
     var requestBucket = _rateLimitBuckets[rateLimitId];
 
@@ -46,28 +47,26 @@ final class DiscordHttpRequestDispatcher implements HttpRequestDispatcherContrac
       requestBucket?.removePendingRequest(request);
     }
 
-    final response = HttpResponse.fromHttpResponse(result);
-
-    if (response.statusCode != 429) {
+    if (result.statusCode != 429) {
       // We handle 429 responses below
       final newBucket =
-          _rateLimitBuckets.values.firstWhereOrNull((bucket) => bucket.inBucket(response)) ??
-              DiscordHttpBucket.fromResponse(response);
+          _rateLimitBuckets.values.firstWhereOrNull((bucket) => bucket.inBucket(result)) ??
+              DiscordHttpBucket.fromResponse(result);
 
       if (newBucket != null) {
-        newBucket.updateRateLimit(response);
+        newBucket.updateRateLimit(result);
 
         requestBucket = newBucket;
         _rateLimitBuckets[rateLimitId] = newBucket;
       }
     } else {
-      final isGlobal = response.headers[RateLimit.xRateLimitGlobal.value] == 'true';
+      final isGlobal = result.headers[RateLimit.xRateLimitGlobal.value] == 'true';
       var affectedBucket = isGlobal ? _globalBucket : requestBucket;
 
       if (affectedBucket == null) {
         if (isGlobal) {
           affectedBucket = DiscordHttpBucket.global(
-            resetAfter: double.parse(response.headers[RateLimit.retryAfter.value]!),
+            resetAfter: double.parse(result.headers[RateLimit.retryAfter.value]!),
           );
           _globalBucket = affectedBucket;
         } else {
@@ -75,16 +74,13 @@ final class DiscordHttpRequestDispatcher implements HttpRequestDispatcherContrac
           throw StateError('Received rate limit response with invalid rate limit headers');
         }
       } else {
-        affectedBucket.updateRateLimit(response);
+        affectedBucket.updateRateLimit(result);
       }
     }
-
     return switch (result) {
-      Response(statusCode: final code) when _isInRange(100, 399, code) =>
-        Either.success<HttpResponse>(response),
-      Response(statusCode: final code) when _isInRange(400, 599, code) =>
-        Either.failure(response.reasonPhrase, payload: response),
-      _ => Either.failure(response.reasonPhrase, payload: response),
+      Response(statusCode: final code) when _isInRange(100, 399, code) => HttpPayload.fromHttpResponse(result),
+      Response(statusCode: final code) when _isInRange(400, 599, code) => HttpError.fromHttpResponse(result),
+      _ => HttpError.fromHttpResponse(result),
     };
   }
 

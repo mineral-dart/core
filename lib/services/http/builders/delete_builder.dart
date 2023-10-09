@@ -1,8 +1,7 @@
 import 'package:http/http.dart';
-import 'package:mineral/internal/either.dart';
 import 'package:mineral/services/http/contracts/http_request_dispatcher_contract.dart';
+import 'package:mineral/services/http/contracts/http_response.dart';
 import 'package:mineral/services/http/http_client.dart';
-import 'package:mineral/services/http/http_request_dispatcher.dart';
 import 'package:mineral/services/http/method_adapter.dart';
 
 /// Builder for [BaseRequest] with [Request]
@@ -22,7 +21,7 @@ class DeleteBuilder<D extends HttpRequestDispatcherContract> extends MethodAdapt
   /// final foo = await client.patch('/foo/:id').build();
   /// ```
   @override
-  Future<EitherContract> build () async {
+  Future<HttpResponse> build () async {
     return _dispatcher.process(_request);
   }
 }

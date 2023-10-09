@@ -1,6 +1,6 @@
 import 'package:http/http.dart';
-import 'package:mineral/internal/either.dart';
+import 'package:mineral/services/http/contracts/http_response.dart';
 
 abstract interface class HttpRequestDispatcherContract {
-  Future<EitherContract> process (BaseRequest request);
+  Future<HttpResponse> process (BaseRequest request);
 }

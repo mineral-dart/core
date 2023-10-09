@@ -1,8 +1,8 @@
 import 'dart:convert';
 
 import 'package:http/http.dart';
-import 'package:mineral/internal/either.dart';
 import 'package:mineral/services/http/contracts/http_request_dispatcher_contract.dart';
+import 'package:mineral/services/http/contracts/http_response.dart';
 import 'package:mineral/services/http/http_client.dart';
 import 'package:mineral/services/http/http_request_dispatcher.dart';
 import 'package:mineral/services/http/method_adapter.dart';
@@ -69,7 +69,8 @@ class PutBuilder<D extends HttpRequestDispatcherContract> extends MethodAdapter 
   ///   .payload({'foo': 'bar'})
   ///   .build();
   /// ```
-  Future<EitherContract> build () async {
+  @override
+  Future<HttpResponse> build () async {
     final BaseRequest request = _files.isNotEmpty
       ? MultipartRequest(_request.method, _request.url)
       : _request;

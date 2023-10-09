@@ -1,8 +1,8 @@
 import 'package:http/http.dart';
-import 'package:mineral/internal/either.dart';
+import 'package:mineral/services/http/entities/either.dart';
 import 'package:mineral/internal/services/http/discord_http_request_dispatcher.dart';
 import 'package:mineral/services/http/builders/delete_builder.dart';
-import 'package:mineral/services/http/http_request_dispatcher.dart';
+import 'package:mineral/services/http/contracts/http_response.dart';
 import 'package:mineral/services/http/method_adapter.dart';
 
 /// Builder for [BaseRequest] with [Request]
@@ -39,7 +39,7 @@ class DiscordDeleteBuilder extends DeleteBuilder implements MethodAdapter {
   /// final foo = await client.delete('/foo/:id').build();
   /// ```
   @override
-  Future<EitherContract> build () async {
+  Future<HttpResponse> build () async {
     _request.headers.addAll(_headers);
     return _dispatcher.process(_request);
   }

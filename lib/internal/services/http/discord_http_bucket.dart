@@ -1,6 +1,5 @@
 import 'package:http/http.dart' as http;
 import 'package:mineral/internal/services/http/rate_limit.dart';
-import 'package:mineral/services/http/http_response.dart';
 
 final class DiscordHttpBucket {
   final List<http.BaseRequest> _pendingRequests = [];
@@ -53,7 +52,7 @@ final class DiscordHttpBucket {
       ? Future.delayed(const Duration(milliseconds: 50))
       : Future.delayed(resetAfter);
 
-  void updateRateLimit(HttpResponse response) {
+  void updateRateLimit(http.Response response) {
     if (!inBucket(response)) {
       return;
     }
@@ -67,7 +66,7 @@ final class DiscordHttpBucket {
     }
   }
 
-  bool inBucket(HttpResponse response) =>
+  bool inBucket(http.Response response) =>
       _getHeader(RateLimit.xRateLimitBucket, response.headers) != null;
 
   static T? _getHeader<T>(RateLimit rateLimit, Map<String, String> headers) {
@@ -89,7 +88,7 @@ final class DiscordHttpBucket {
         Duration(microseconds: (resetAfter * Duration.microsecondsPerSecond).ceil()),
       );
 
-  static DiscordHttpBucket? fromResponse(HttpResponse response) {
+  static DiscordHttpBucket? fromResponse(http.Response response) {
     final bucketId = _getHeader<String>(RateLimit.xRateLimitBucket, response.headers);
     final remaining = _getHeader<int>(RateLimit.xRateLimitRemaining, response.headers);
     final reset = _getHeader<double>(RateLimit.xRateLimitReset, response.headers);

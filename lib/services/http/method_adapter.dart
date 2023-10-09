@@ -1,5 +1,5 @@
-import 'package:mineral/internal/either.dart';
+import 'package:mineral/services/http/contracts/http_response.dart';
 
 abstract class MethodAdapter {
-  Future<EitherContract> build ();
+  Future<HttpResponse> build ();
 }
