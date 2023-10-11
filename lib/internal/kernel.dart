@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:isolate';
 
 import 'package:mineral/commands/generate_environment_command.dart';
 import 'package:mineral/commands/help_command.dart';
@@ -7,6 +8,7 @@ import 'package:mineral/internal/config/console_config_contract.dart';
 import 'package:mineral/internal/config/http_config_contract.dart';
 import 'package:mineral/internal/console/console.dart';
 import 'package:mineral/internal/fold/container.dart';
+import 'package:mineral/internal/services/embedded/embedded_application.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
 import 'package:mineral/internal/watcher/hmr.dart';
@@ -26,18 +28,28 @@ final class Kernel {
   late final bool useHmr;
 
   late final WebsocketManager websocketManager;
+  late final EmbeddedApplication application;
 
   Kernel._application(ApplicationConfigContract Function(Environment) app, LoggerContract Function() logger, HttpConfigContract Function(Environment) http) {
     _registerApplication(app);
     _registerLogger(logger);
     _registerHttp(http);
 
-    websocketManager = WebsocketManager(this.http);
-    _createHmr(reloadable: useHmr);
+    application = EmbeddedApplication(this.logger);
 
-    websocketManager.start(shardCount: 0);
+    if (Isolate.current.debugName != application.isolateDebugName) {
+      websocketManager = WebsocketManager(
+        application: application,
+        http: this.http,
+        token: token,
+        intents: intents
+      );
 
-    this.logger.info('Kernel is ready');
+      _createHmr(reloadable: useHmr);
+      websocketManager.start(shardCount: 1);
+
+      application.createAndListen();
+    }
   }
 
   Kernel._console(LoggerContract Function() logger, ConsoleConfigContract Function() console) {
@@ -78,7 +90,7 @@ final class Kernel {
     final watcher = Hmr(
       appRoot: Directory.current,
       allowReload: reloadable,
-      wss: websocketManager,
+      application: application,
       roots: [Directory(join(Directory.current.path, 'lib'))]
     );
 
