@@ -1,15 +1,16 @@
 import 'dart:io';
 
+import 'package:mineral/internal/services/embedded/embedded_application.dart';
 import 'package:mineral/internal/watcher/directory_watcher_element.dart';
 import 'package:mineral/internal/wss/websocket_manager.dart';
 
 final class Hmr {
   final Directory appRoot;
-  final WebsocketManager wss;
+  final EmbeddedApplication application;
   late final List<DirectoryWatcherElement> watchers = [];
   final bool allowReload;
 
-  Hmr({ required this.allowReload, required this.appRoot, required this.wss, required List<Directory> roots }) {
+  Hmr({ required this.allowReload, required this.appRoot, required this.application, required List<Directory> roots }) {
     watchers.addAll(List.from(
       roots.map((root) =>
         DirectoryWatcherElement(
@@ -25,6 +26,7 @@ final class Hmr {
 
   void restart () {
     if (allowReload) {
+      application.restart();
       print('restard');
     }
   }
