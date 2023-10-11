@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:collection';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
 import 'package:collection/collection.dart';
 import 'package:mineral/internal/services/embedded/embedded_application.dart';
 import 'package:mineral/internal/wss/entities/shard_handler.dart';
-import 'package:mineral/internal/wss/entities/websocket_event_dispatcher.dart';
 import 'package:mineral/internal/wss/entities/websocket_message.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';
 import 'package:mineral/internal/wss/heartbeat.dart';
@@ -23,12 +21,10 @@ final class Shard {
   final int id;
   final String gatewayUrl;
 
-  late Isolate _isolate;
   ReceivePort _receivePort = ReceivePort();
   late final SendPort _sendPort;
 
   late Stream<dynamic> _stream;
-  late StreamSubscription<dynamic> _streamSubscription;
 
   int? sequence;
   String? sessionId;
@@ -60,7 +56,6 @@ final class Shard {
     );
 
     isolate.then((isolate) async {
-      _isolate = isolate;
       _sendPort = await _stream.first as SendPort;
 
        _sendPort.send(ShardMessage(
@@ -68,7 +63,7 @@ final class Shard {
         data: { 'url': _isResumable ? resumeUrl : gatewayUrl }
       ));
 
-      _streamSubscription = _stream.listen(_handle);
+      _stream.listen(_handle);
     });
   }
 
@@ -143,7 +138,6 @@ final class Shard {
         data: websocketMessage.build()
       );
 
-      print('send message ${shardMessage.action}');
       _sendPort.send(shardMessage);
       return;
     }
@@ -162,7 +156,6 @@ final class Shard {
       payload['shard'] = [id, manager.totalShards];
     }
 
-    print('identify $payload');
     send(code: OpCode.identify, canQueue: false, payload: payload);
   }
 

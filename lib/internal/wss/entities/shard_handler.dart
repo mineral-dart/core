@@ -38,7 +38,6 @@ final class ShardHandler {
         }
       ));
     } finally {
-      print('error');
     }
   }
 
@@ -55,7 +54,6 @@ final class ShardHandler {
   }
 
   Future<void> _connect() async {
-    print(_gatewayUrl);
     _socket = await WebSocket.connect('$_gatewayUrl?v=10&encoding=json');
 
     _socketListener = _socket.listen((event) {
@@ -87,7 +85,6 @@ final class ShardHandler {
     // ));
 
     await for (final ShardMessage message in _stream) {
-      print('From stream ${message.action} : ${message.data}');
       switch (message.action) {
         case ShardAction.send:
           if (_socket.closeCode == null) {

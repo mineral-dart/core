@@ -12,7 +12,6 @@ final class Heartbeat {
   Heartbeat(this._shard);
 
   void beat (Duration delay) {
-    print('go to beattt');
     _delay = delay;
     _timer = Timer.periodic(delay, (_) => _send());
   }

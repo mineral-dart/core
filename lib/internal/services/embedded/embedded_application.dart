@@ -28,7 +28,7 @@ final class EmbeddedApplication {
   Future<void> createAndListen () async {
     await create();
     await for (final WebsocketResponse message in _port!) {
-      print(message);
+      dispatcher.dispatch(message, pushToQueue: true);
     }
   }
 
@@ -40,6 +40,7 @@ final class EmbeddedApplication {
   void restart () {
     kill();
     createAndListen();
+    dispatcher.restoreEvents();
   }
 
   Future<void> sendMessage (dynamic message) async {
