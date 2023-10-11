@@ -35,9 +35,8 @@ final class Kernel {
     _registerLogger(logger);
     _registerHttp(http);
 
-    application = EmbeddedApplication(this.logger);
-
     if (Isolate.current.debugName != application.isolateDebugName) {
+      application = EmbeddedApplication(this.logger);
       websocketManager = WebsocketManager(
         application: application,
         http: this.http,
