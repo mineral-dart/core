@@ -12,8 +12,13 @@ final class Heartbeat {
   Heartbeat(this._shard);
 
   void beat (Duration delay) {
+    print('go to beattt');
     _delay = delay;
     _timer = Timer.periodic(delay, (_) => _send());
+  }
+
+  void ack () {
+    ackMissing -= 1;
   }
 
   void _cancel () {
@@ -30,6 +35,8 @@ final class Heartbeat {
   }
 
   void _send() {
+    ackMissing += 1;
+
     _shard.send(code: OpCode.heartbeat, payload: _shard.sequence, canQueue: false);
     _shard.lastHeartbeat = DateTime.now();
   }
