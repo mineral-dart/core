@@ -11,8 +11,8 @@ final class WebsocketEventDispatcher {
       _eventQueue.addLast(response);
     }
 
-    print(_eventQueue.length);
-    print(response.type);
+    // print(_eventQueue.length);
+    // print(response.type);
   }
 
   void restoreEvents () {
@@ -20,7 +20,7 @@ final class WebsocketEventDispatcher {
 
     _isRestoring = true;
     while (queue.isNotEmpty) {
-      dispatch(_eventQueue.removeFirst());
+      dispatch(queue.removeFirst());
     }
     _isRestoring = false;
   }

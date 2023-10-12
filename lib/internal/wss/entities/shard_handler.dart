@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:mineral/internal/wss/builders/shard_message_builder.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';
 import 'package:mineral/internal/wss/shard_action.dart';
 import 'package:mineral/internal/wss/shard_message.dart';
@@ -30,13 +31,14 @@ final class ShardHandler {
       _connect();
     } catch (error) {
       print(error);
-      _shardPort.send(ShardMessage(
-        action: ShardAction.error,
-        data: {
-          'reason': error,
-          'code': _socket.closeCode
-        }
-      ));
+
+      final message = ShardMessageBuilder()
+        .setAction(ShardAction.error)
+        .append('reason', error)
+        .append('code', _socket.closeCode)
+        .build();
+
+      _shardPort.send(message);
     } finally {
     }
   }
@@ -48,41 +50,36 @@ final class ShardHandler {
 
   Future<void> _terminate() async {
     await _disconnected();
-    _shardPort.send(ShardMessage(
-      action: ShardAction.terminateOk
-    ));
+
+    final message = ShardMessageBuilder()
+      .setAction(ShardAction.terminateOk)
+      .build();
+
+    _shardPort.send(message);
   }
 
   Future<void> _connect() async {
     _socket = await WebSocket.connect('$_gatewayUrl?v=10&encoding=json');
 
     _socketListener = _socket.listen((event) {
-      _shardPort.send(ShardMessage(
-        action: ShardAction.data,
-        data: WebsocketResponse.fromWebsocket(jsonDecode(event))
-      ));
+      final message = ShardMessageBuilder()
+        .setAction(ShardAction.data)
+        .setData(WebsocketResponse.fromWebsocket(jsonDecode(event)))
+        .build();
+
+      _shardPort.send(message);
     });
 
-    _socket.handleError((err) => {
-      _shardPort.send(ShardMessage(
-        action: ShardAction.error,
-        data: {
-          'error': err.toString(),
-          'code': _socket.closeCode,
-          'reason': _socket.closeReason
-        })
-      )
-    });
+    _socket.handleError((err) {
+      final message = ShardMessageBuilder()
+        .setAction(ShardAction.error)
+        .append('error', err.toString())
+        .append('code', _socket.closeCode)
+        .append('reason', _socket.closeReason)
+        .build();
 
-    // await _socket.done;
-    //
-    // _shardPort.send(ShardMessage(
-    //   action: ShardAction.disconnected,
-    //   data: {
-    //     'code': _socket.closeCode,
-    //     'reason': _socket.closeReason
-    //   }
-    // ));
+      _shardPort.send(message);
+    });
 
     await for (final ShardMessage message in _stream) {
       switch (message.action) {

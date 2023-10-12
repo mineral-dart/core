@@ -5,6 +5,7 @@ import 'dart:isolate';
 
 import 'package:collection/collection.dart';
 import 'package:mineral/internal/services/embedded/embedded_application.dart';
+import 'package:mineral/internal/wss/builders/shard_message_builder.dart';
 import 'package:mineral/internal/wss/entities/shard_handler.dart';
 import 'package:mineral/internal/wss/entities/websocket_message.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';
@@ -61,11 +62,12 @@ final class Shard {
       _isolate = isolate;
       _sendPort = await _stream.first as SendPort;
 
-       _sendPort.send(ShardMessage(
-        action: ShardAction.init,
-        data: { 'url': _isResumable ? resumeUrl : gatewayUrl }
-      ));
+      final message = ShardMessageBuilder()
+        .setAction(ShardAction.init)
+        .append('url', _isResumable ? resumeUrl : gatewayUrl)
+        .build();
 
+       _sendPort.send(message);
       _streamSubscription = _stream.listen(_handle);
     });
   }
@@ -178,19 +180,23 @@ final class Shard {
   }
 
   void _terminate() {
-    _sendPort.send(ShardMessage(action: ShardAction.terminate));
+    final message = ShardMessageBuilder()
+      .setAction(ShardAction.terminate)
+      .build();
+
+    _sendPort.send(message);
   }
 
   void send ({ required OpCode code, required dynamic payload, bool canQueue = true }) {
     final WebsocketMessage websocketMessage = WebsocketMessage(code, payload);
 
     if (_isinitialized || canQueue == false) {
-      final ShardMessage shardMessage = ShardMessage(
-        action: ShardAction.send,
-        data: websocketMessage.build()
-      );
+      final message = ShardMessageBuilder()
+        .setAction(ShardAction.send)
+        .setData(websocketMessage.build())
+        .build();
 
-      _sendPort.send(shardMessage);
+      _sendPort.send(message);
       return;
     }
 

@@ -2,7 +2,6 @@ import 'dart:collection';
 
 import 'package:mineral/internal/services/embedded/embedded_application.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
-import 'package:mineral/internal/wss/entities/websocket_event_dispatcher.dart';
 import 'package:mineral/internal/wss/op_code.dart';
 import 'package:mineral/services/http/entities/either.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
