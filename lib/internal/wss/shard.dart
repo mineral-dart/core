@@ -73,8 +73,50 @@ final class Shard {
     }
 
     return switch (message.action) {
+      ShardAction.error => _dispatchErrors(message),
       ShardAction.data => _dispatchActionData(message),
       _ => throw Exception('Invalid action')
+    };
+  }
+
+  void _dispatchErrors (ShardMessage message) {
+    final { 'code': int code, 'reason': reason } = message.data;
+    print(message.data);
+
+    return switch (code) {
+      4000 => _handleReconnect(resume: true),
+      4001 => _handleReconnect(resume: true),
+      4002 => _handleReconnect(resume: true),
+      4003 => _handleReconnect(resume: false),
+      4004 => {
+        _terminate(),
+        throw Exception('[Authentication failed] Your token is invalid'),
+      },
+      4005 => _handleReconnect(resume: true),
+      4007 => _handleReconnect(resume: false),
+      4008 => _handleReconnect(resume: false),
+      4009 => _handleReconnect(resume: true),
+      4010 => {
+        _terminate(),
+        throw Exception('[Invalid shard] Shard #$id is invalid shard id sent to gateway')
+      },
+      4011 => {
+        _terminate(),
+        throw Exception('[Sharding required] Shard #$id : the session would have handled too many guilds')
+      },
+      4012 => {
+        _terminate(),
+        throw Exception('[Invalid API version] Shard #$id : You sent an invalid version for the gateway')
+      },
+      4013 => {
+        _terminate(),
+        throw Exception('[Invalid intent] Shard #$id : You sent an invalid intent for a Gateway Intent')
+      },
+      4014 => {
+        _terminate(),
+        throw Exception('[Disallowed intent] Shard #$id : You sent a disallowed intent for a Gateway Intent')
+      },
+      _ => throw Exception('Unexpected error code : $code')
     };
   }
 
