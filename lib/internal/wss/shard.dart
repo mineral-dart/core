@@ -23,8 +23,10 @@ final class Shard {
 
   ReceivePort _receivePort = ReceivePort();
   late final SendPort _sendPort;
+  Isolate? _isolate;
 
   late Stream<dynamic> _stream;
+  late StreamSubscription<dynamic> _streamSubscription;
 
   int? sequence;
   String? sessionId;
@@ -56,6 +58,7 @@ final class Shard {
     );
 
     isolate.then((isolate) async {
+      _isolate = isolate;
       _sendPort = await _stream.first as SendPort;
 
        _sendPort.send(ShardMessage(
@@ -63,7 +66,7 @@ final class Shard {
         data: { 'url': _isResumable ? resumeUrl : gatewayUrl }
       ));
 
-      _stream.listen(_handle);
+      _streamSubscription = _stream.listen(_handle);
     });
   }
 
@@ -75,6 +78,7 @@ final class Shard {
     return switch (message.action) {
       ShardAction.error => _dispatchErrors(message),
       ShardAction.data => _dispatchActionData(message),
+      ShardAction.terminateOk => _handleTerminate(),
       _ => throw Exception('Invalid action')
     };
   }
@@ -137,6 +141,12 @@ final class Shard {
       OpCode.invalidSession => _handleReconnect(resume: response.payload),
       _ => throw Exception('Invalid opcode : $code')
     };
+  }
+
+  void _handleTerminate () {
+    _streamSubscription.cancel();
+    _isolate?.kill();
+    _spawn();
   }
 
   void _handleHello (WebsocketResponse response) {
