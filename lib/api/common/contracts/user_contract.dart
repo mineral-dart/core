@@ -9,6 +9,6 @@ abstract interface class UserContract {
   abstract final bool isSystem;
   abstract final bool isVerified;
   abstract final List<dynamic> publicFlags;
-  abstract final List<dynamic> flags;
+  abstract final int flags;
   abstract final String? locale;
 }
