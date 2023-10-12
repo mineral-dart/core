@@ -6,9 +6,9 @@ final class DirectoryWatcherElement {
   final Directory watcherRoot;
   late final DirectoryWatcher _watcher;
 
-  final void Function() addFile;
-  final void Function() editFile;
-  final void Function() removeFile;
+  final void Function(WatchEvent event) addFile;
+  final void Function(WatchEvent event) editFile;
+  final void Function(WatchEvent event) removeFile;
 
   DirectoryWatcherElement({
     required this.appRoot,
@@ -24,24 +24,15 @@ final class DirectoryWatcherElement {
     _watcher.events.listen(dispatch);
   }
 
-  String makeRelativePath (String path) =>
-    path.replaceFirst(appRoot.path, '').substring(1);
-
   void dispatch (WatchEvent event) {
-    final String location = makeRelativePath(event.path);
 
     switch (event.type) {
       case ChangeType.ADD:
-        print('add: $location');
-        addFile();
-
+        addFile(event);
       case ChangeType.MODIFY:
-        print('modify: $location');
-        editFile();
-
+        editFile(event);
       case ChangeType.REMOVE:
-        print('delete: $location');
-        removeFile();
+        removeFile(event);
     }
   }
 }

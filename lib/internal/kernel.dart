@@ -11,11 +11,12 @@ import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/services/embedded/embedded_application.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
-import 'package:mineral/internal/watcher/hmr.dart';
+import 'package:mineral/internal/watcher/watcher_builder.dart';
 import 'package:mineral/internal/wss/websocket_manager.dart';
 import 'package:mineral/services/env/environment.dart';
 import 'package:mineral/services/logger/logger_contract.dart';
 import 'package:path/path.dart';
+import 'package:watcher/watcher.dart';
 
 final class Kernel {
   final Environment environment = container.bind('environment', (_) => Environment());
@@ -86,12 +87,26 @@ final class Kernel {
   }
 
   void _createHmr({ bool reloadable = false }) {
-    final watcher = Hmr(
-      appRoot: Directory.current,
-      allowReload: reloadable,
-      application: application,
-      roots: [Directory(join(Directory.current.path, 'lib'))]
-    );
+    String makeRelativePath (String path) =>
+        path.replaceFirst(Directory.current.path, '').substring(1);
+
+    final watcher = WatcherBuilder(Directory.current)
+      .setApplication(application)
+      .setAllowReload(reloadable)
+      .addWatchFolder(Directory(join(Directory.current.path, 'lib')))
+      .onReload((event) {
+        final String location = makeRelativePath(event.path);
+
+        switch (event.type) {
+          case ChangeType.ADD: logger.info('File added: $location');
+          case ChangeType.MODIFY: logger.info('File modified: $location');
+          case ChangeType.REMOVE: logger.info('File removed: $location');
+        }
+
+        logger.info('Restarting application...');
+        application.restart();
+      })
+      .build();
 
     watcher.watch();
   }

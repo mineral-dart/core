@@ -2,36 +2,30 @@ import 'dart:io';
 
 import 'package:mineral/internal/services/embedded/embedded_application.dart';
 import 'package:mineral/internal/watcher/directory_watcher_element.dart';
-import 'package:mineral/internal/wss/websocket_manager.dart';
+import 'package:watcher/watcher.dart';
 
-final class Hmr {
+final class Watcher {
   final Directory appRoot;
   final EmbeddedApplication application;
   late final List<DirectoryWatcherElement> watchers = [];
   final bool allowReload;
+  void Function(WatchEvent event) onReload;
 
-  Hmr({ required this.allowReload, required this.appRoot, required this.application, required List<Directory> roots }) {
+  Watcher({ required this.allowReload, required this.appRoot, required this.application, required List<Directory> roots, required this.onReload }) {
     watchers.addAll(List.from(
       roots.map((root) =>
         DirectoryWatcherElement(
           appRoot: appRoot,
           watcherRoot: root,
-          addFile: restart,
-          editFile: restart,
-          removeFile: restart
+          addFile: onReload,
+          editFile: onReload,
+          removeFile: onReload
         )
       )
     ));
   }
 
-  void restart () {
-    if (allowReload) {
-      application.restart();
-      print('restard');
-    }
-  }
-
-  watch() {
+  void watch() {
     for (final watcher in watchers) {
       watcher.watch();
     }
