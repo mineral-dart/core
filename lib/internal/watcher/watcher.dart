@@ -1,12 +1,12 @@
 import 'dart:io';
 
-import 'package:mineral/internal/services/embedded/embedded_application.dart';
+import 'package:mineral/internal/app/embedded_development.dart';
 import 'package:mineral/internal/watcher/directory_watcher_element.dart';
 import 'package:watcher/watcher.dart';
 
 final class Watcher {
   final Directory appRoot;
-  final EmbeddedApplication application;
+  final EmbeddedDevelopment application;
   late final List<DirectoryWatcherElement> watchers = [];
   final bool allowReload;
   void Function(WatchEvent event) onReload;

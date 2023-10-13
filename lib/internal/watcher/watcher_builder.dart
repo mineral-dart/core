@@ -1,12 +1,13 @@
 import 'dart:io';
 
-import 'package:mineral/internal/services/embedded/embedded_application.dart';
+import 'package:mineral/internal/app/contracts/embedded_application_contract.dart';
+import 'package:mineral/internal/app/embedded_development.dart';
 import 'package:mineral/internal/watcher/watcher.dart';
 import 'package:watcher/watcher.dart' as watcher;
 
 final class WatcherBuilder {
   final Directory _appRoot;
-  EmbeddedApplication? _application;
+  EmbeddedDevelopment? _application;
   final List<Directory> _watchers = [];
   bool _allowReload = false;
   void Function(watcher.WatchEvent) _onReload = (_) {};
@@ -18,7 +19,7 @@ final class WatcherBuilder {
     return this;
   }
 
-  WatcherBuilder setApplication (EmbeddedApplication value) {
+  WatcherBuilder setApplication (EmbeddedDevelopment value) {
     _application = value;
     return this;
   }

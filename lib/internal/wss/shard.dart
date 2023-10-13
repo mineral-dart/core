@@ -4,7 +4,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:collection/collection.dart';
-import 'package:mineral/internal/services/embedded/embedded_application.dart';
+import 'package:mineral/internal/app/contracts/embedded_application_contract.dart';
 import 'package:mineral/internal/wss/builders/shard_message_builder.dart';
 import 'package:mineral/internal/wss/entities/shard_handler.dart';
 import 'package:mineral/internal/wss/entities/websocket_message.dart';
@@ -168,7 +168,7 @@ final class Shard {
 
   void _handleDispatch (WebsocketResponse response) {
     sequence = response.sequence;
-    application.sendMessage(response);
+    application.dispatch(response);
   }
 
   void _handleReconnect ({ bool resume = false }) {

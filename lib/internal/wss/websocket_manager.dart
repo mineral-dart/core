@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:mineral/internal/services/embedded/embedded_application.dart';
+import 'package:mineral/internal/app/contracts/embedded_application_contract.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
 import 'package:mineral/internal/wss/op_code.dart';
 import 'package:mineral/services/http/entities/either.dart';
