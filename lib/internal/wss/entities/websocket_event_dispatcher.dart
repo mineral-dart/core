@@ -7,6 +7,8 @@ import 'package:mineral/internal/wss/entities/packet_type.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';
 import 'package:mineral/internal/wss/packets/ready_packet.dart';
 
+import '../packets/guild_create_packet.dart';
+
 final class WebsocketEventDispatcher {
   final Collection<PacketType, PacketContract> packets = Collection();
   final Queue<WebsocketResponse> _eventQueue = Queue();
@@ -15,6 +17,7 @@ final class WebsocketEventDispatcher {
 
   WebsocketEventDispatcher() {
     packets.putIfAbsent(PacketType.ready, () => ReadyPacket());
+    packets.putIfAbsent(PacketType.guildCreate, () => GuildCreatePacket());
   }
 
   Future<void> dispatch (WebsocketResponse response, { bool pushToQueue = false }) async {
