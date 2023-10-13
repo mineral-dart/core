@@ -6,12 +6,6 @@ import 'package:mineral/internal/wss/entities/websocket_response.dart';
 final class GuildCreatePacket implements PacketContract {
   @override
   Future<void> handle(WebsocketResponse response) async {
-    print("guild create packet handled");
-
     final { "id": id } = response.payload;
-
-    print(id);
-    Client client = container.use<Client>('client');
-    print("Client in guild create packet: ${client.user.username}");
   }
 }
