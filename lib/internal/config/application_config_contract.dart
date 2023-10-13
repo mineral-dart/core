@@ -5,14 +5,11 @@ abstract class ApplicationConfigContract {
   final String token;
   final Intents intents;
   late final bool hmr;
+  late final String appEnv;
 
   Environment get env => Environment.singleton();
 
-  ApplicationConfigContract({
-    required this.token,
-    required this.intents,
-    String hmr = 'false'
-  }) {
+  ApplicationConfigContract({ required this.token, required this.intents, String hmr = 'false', required this.appEnv}) {
     this.hmr = bool.parse(hmr);
   }
 }
