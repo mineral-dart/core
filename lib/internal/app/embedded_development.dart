@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -10,8 +11,10 @@ import 'package:path/path.dart';
 
 final class EmbeddedDevelopment implements EmbeddedApplication {
   final WebsocketEventDispatcher dispatcher = WebsocketEventDispatcher();
+  final Queue<WebsocketResponse> eventQueue = Queue();
   final String debugName = 'embedded_application';
   final LoggerContract _logger;
+
 
   ReceivePort? _port;
   Isolate? isolate;
@@ -30,7 +33,16 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
   Future<void> createAndListen () async {
     await create();
     await for (final WebsocketResponse message in _port!) {
-      dispatcher.dispatch(message, pushToQueue: true);
+      eventQueue.addLast(message);
+      dispatcher.dispatch(message);
+    }
+  }
+
+  void restoreEvents () {
+    final queue = Queue<WebsocketResponse>.from(eventQueue);
+
+    while (queue.isNotEmpty) {
+      dispatch(queue.removeFirst());
     }
   }
 
@@ -43,7 +55,7 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
   void restart () {
     kill();
     createAndListen();
-    dispatcher.restoreEvents();
+    restoreEvents();
   }
 
   @override
