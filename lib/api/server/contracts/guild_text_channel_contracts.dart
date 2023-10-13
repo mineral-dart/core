@@ -1,7 +1,7 @@
 import 'package:mineral/api/common/contracts/cache_contract.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/contracts/channel_contract.dart';
-import 'package:mineral/api/server/contracts/guild_message_contract.dart';
+import 'package:mineral/api/server/contracts/guild_message_contracts.dart';
 
 abstract interface class GuildTextChannelContract implements ChannelContract {
   abstract final int guildId;
