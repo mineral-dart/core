@@ -3,7 +3,6 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mineral/internal/app/contracts/embedded_application_contract.dart';
-import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/wss/entities/websocket_event_dispatcher.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';
 import 'package:mineral/services/logger/logger_contract.dart';
@@ -47,7 +46,6 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
   }
 
   void kill () {
-    container.removeBindings();
     _port?.close();
     isolate?.kill(priority: Isolate.immediate);
   }

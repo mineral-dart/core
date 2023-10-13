@@ -3,12 +3,14 @@ import 'dart:isolate';
 
 import 'package:mineral/commands/generate_environment_command.dart';
 import 'package:mineral/commands/help_command.dart';
+import 'package:mineral/internal/app/contracts/embedded_application_contract.dart';
+import 'package:mineral/internal/app/embedded_development.dart';
+import 'package:mineral/internal/app/embedded_production.dart';
 import 'package:mineral/internal/config/application_config_contract.dart';
 import 'package:mineral/internal/config/console_config_contract.dart';
 import 'package:mineral/internal/config/http_config_contract.dart';
 import 'package:mineral/internal/console/console.dart';
 import 'package:mineral/internal/fold/container.dart';
-import 'package:mineral/internal/services/embedded/embedded_application.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
 import 'package:mineral/internal/watcher/watcher_builder.dart';
@@ -24,6 +26,7 @@ final class Kernel {
   late final Console console;
   late final DiscordHttpClient http;
 
+  late final String appEnv;
   late final String token;
   late final Intents intents;
   late final bool useHmr;
@@ -36,19 +39,9 @@ final class Kernel {
     _registerLogger(logger);
     _registerHttp(http);
 
-    application = EmbeddedApplication(this.logger);
-    if (Isolate.current.debugName != application.isolateDebugName) {
-      websocketManager = WebsocketManager(
-        application: application,
-        http: this.http,
-        token: token,
-        intents: intents
-      );
-
-      _createHmr(reloadable: useHmr);
-      websocketManager.start(shardCount: 1);
-
-      application.createAndListen();
+    switch (appEnv) {
+      case 'development': _startDevelopmentApplication();
+      case 'production': _startProductionApplication();
     }
   }
 
@@ -57,13 +50,45 @@ final class Kernel {
     _registerConsole(console);
   }
 
-  Future<void> start () async {
+  void _startDevelopmentApplication () {
+    application = EmbeddedDevelopment(logger);
+    final app = application as EmbeddedDevelopment;
+
+    websocketManager = WebsocketManager(
+      application: application,
+      http: http,
+      token: token,
+      intents: intents
+    );
+
+    if (Isolate.current.debugName != app.debugName) {
+      final embedded = application as EmbeddedDevelopment;
+
+      _createHmr(reloadable: useHmr);
+      websocketManager.start(shardCount: 1);
+
+      embedded.createAndListen();
+    }
+  }
+
+  void _startProductionApplication () {
+    application = EmbeddedProduction(logger);
+
+    websocketManager = WebsocketManager(
+      application: application as EmbeddedProduction,
+      http: http,
+      token: token,
+      intents: intents
+    );
+
+    websocketManager.start(shardCount: 1);
   }
 
   /// Register the application
   void _registerApplication (ApplicationConfigContract Function(Environment) app) {
     final application = app(environment);
 
+    appEnv = application.appEnv;
     token = application.token;
     intents = application.intents;
     useHmr = application.hmr;
@@ -91,7 +116,7 @@ final class Kernel {
         path.replaceFirst(Directory.current.path, '').substring(1);
 
     final watcher = WatcherBuilder(Directory.current)
-      .setApplication(application)
+      .setApplication(application as EmbeddedDevelopment)
       .setAllowReload(reloadable)
       .addWatchFolder(Directory(join(Directory.current.path, 'lib')))
       .onReload((event) {
@@ -103,8 +128,10 @@ final class Kernel {
           case ChangeType.REMOVE: logger.info('File removed: $location');
         }
 
-        logger.info('Restarting application...');
-        application.restart();
+        if (application is EmbeddedDevelopment) {
+          logger.info('Restarting application...');
+          (application as EmbeddedDevelopment).restart();
+        }
       })
       .build();
 
