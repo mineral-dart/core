@@ -12,12 +12,8 @@ final class Container {
   /// expect(container.length(), 1);
   /// ```
   T bind<T extends Injectable> (String binding, T Function(Container) injectable) {
-    if (_services.containsKey(binding)) {
-      throw Exception('Service $binding already exists');
-    }
-
     final injectableInstance = injectable(this);
-    _services.putIfAbsent(binding, () => injectableInstance);
+    _services[binding] = injectableInstance;
 
     return injectableInstance;
   }
