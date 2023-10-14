@@ -1,11 +1,12 @@
 import 'package:mineral/api/common/resources/color.dart';
 import 'package:mineral/api/common/resources/image.dart';
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/contracts/emoji_contracts.dart';
 import 'package:mineral/api/server/resources/permission.dart';
 import 'package:mineral/api/server/resources/role_tag.dart';
 
 abstract interface class RoleContract {
-  abstract final String id;
+  abstract final Snowflake id;
   abstract String name;
   abstract Color color;
   abstract bool isHoisted;
