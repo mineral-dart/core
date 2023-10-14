@@ -1,12 +1,14 @@
 import 'package:mineral/api/common/contracts/application_contract.dart';
+import 'package:mineral/api/common/contracts/cache_contract.dart';
 import 'package:mineral/api/common/contracts/client_contract.dart';
 import 'package:mineral/api/common/contracts/user_contract.dart';
 import 'package:mineral/api/private/caches/private_channel_cache.dart';
 import 'package:mineral/api/server/caches/guild_cache.dart';
+import 'package:mineral/api/server/contracts/guild_contracts.dart';
 
 final class Client implements ClientContract {
   @override
-  final GuildCache guilds = GuildCache();
+  final CacheContract<GuildContract> guilds = GuildCache();
 
   @override
   final PrivateChannelCache privateChannels = PrivateChannelCache();
