@@ -1,18 +1,16 @@
 import 'dart:collection';
 
-import 'package:mineral/internal/app/contracts/embedded_application_contract.dart';
-import 'package:mineral/internal/services/intents/intents.dart';
 import 'package:mineral/internal/wss/op_code.dart';
 import 'package:mineral/services/http/entities/either.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/internal/wss/shard.dart';
 
 final class WebsocketManager {
-  final EmbeddedApplication application;
   final Map<int, Shard> shards = {};
+  final void Function(Map<String, dynamic>) dispatcher;
 
   final String token;
-  final Intents intents;
+  final int intents;
 
   final DiscordHttpClient http;
   final Queue<int> waitingIdentifyQueue = Queue();
@@ -26,7 +24,7 @@ final class WebsocketManager {
 
   late final Duration _identifyTimeout;
 
-  WebsocketManager({ required this.application, required this.http, required this.token, required this.intents });
+  WebsocketManager({ required this.http, required this.token, required this.intents, required this.dispatcher });
 
   /// Get the bot gateway
   Future _getBotGateway () async => Either.future(
@@ -68,7 +66,7 @@ final class WebsocketManager {
   }
 
   void _startShard (int id) {
-    final Shard shard = Shard(this, application, id, _gatewayUrl);
+    final Shard shard = Shard(this, id, _gatewayUrl, dispatcher);
     shards.putIfAbsent(id, () => shard);
   }
 }

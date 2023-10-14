@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:collection/collection.dart';
-import 'package:mineral/internal/app/contracts/embedded_application_contract.dart';
 import 'package:mineral/internal/wss/builders/shard_message_builder.dart';
 import 'package:mineral/internal/wss/entities/shard_handler.dart';
 import 'package:mineral/internal/wss/entities/websocket_message.dart';
@@ -16,7 +15,6 @@ import 'package:mineral/internal/wss/shard_message.dart';
 import 'package:mineral/internal/wss/websocket_manager.dart';
 
 final class Shard {
-  final EmbeddedApplication application;
   late final Heartbeat _heartbeat;
   final WebsocketManager manager;
   final int id;
@@ -28,6 +26,7 @@ final class Shard {
 
   late Stream<dynamic> _stream;
   late StreamSubscription<dynamic> _streamSubscription;
+  final void Function(Map<String, dynamic>) dispatcher;
 
   int? sequence;
   String? sessionId;
@@ -41,7 +40,7 @@ final class Shard {
 
   DateTime? lastHeartbeat;
 
-  Shard(this.manager, this.application, this.id, this.gatewayUrl) {
+  Shard(this.manager, this.id, this.gatewayUrl, this.dispatcher) {
     _heartbeat = Heartbeat(this);
     _spawn();
   }
@@ -87,7 +86,6 @@ final class Shard {
 
   void _dispatchErrors (ShardMessage message) {
     final { 'code': int code, 'reason': reason } = message.data;
-    print(message.data);
 
     return switch (code) {
       4000 => _handleReconnect(resume: true),
@@ -168,7 +166,14 @@ final class Shard {
 
   void _handleDispatch (WebsocketResponse response) {
     sequence = response.sequence;
-    application.dispatch(response);
+    final payload = {
+      'op': response.opCode,
+      'sequence': response.sequence,
+      'type': response.type,
+      'payload': response.payload
+    };
+
+    dispatcher(payload);
   }
 
   void _handleReconnect ({ bool resume = false }) {
@@ -206,7 +211,7 @@ final class Shard {
   void _identify () {
     final Map<String, dynamic> payload = {
       'token': manager.token,
-      'intents': manager.intents.calculatedValue,
+      'intents': manager.intents,
       'properties': { '\$os': Platform.operatingSystem },
     };
 
