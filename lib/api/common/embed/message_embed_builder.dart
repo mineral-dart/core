@@ -19,6 +19,8 @@ final class MessageEmbedBuilder {
   MessageEmbedAuthor? author;
   List<MessageEmbedField> fields = const [];
 
+  MessageEmbedBuilder();
+
   MessageEmbedBuilder setTitle(String title) {
     this.title = title;
     return this;
@@ -118,5 +120,85 @@ final class MessageEmbedBuilder {
       timestamp: timestamp,
       color: color
     );
+  }
+
+  factory MessageEmbedBuilder.of(MessageEmbed embed) {
+    final builder = MessageEmbedBuilder();
+
+    if (embed.title != null) {
+      builder.setTitle(embed.title!);
+    }
+
+    if (embed.description != null) {
+      builder.setDescription(embed.description!);
+    }
+
+    if (embed.url != null) {
+      builder.setUrl(embed.url!);
+    }
+
+    if (embed.timestamp != null) {
+      builder.setTimestamp(embed.timestamp!);
+    }
+
+    if (embed.color != null) {
+      builder.setColor(embed.color!);
+    }
+
+    if (embed.footer != null) {
+      builder.setFooter(
+        embed.footer!.text,
+        iconUrl: embed.footer!.iconUrl,
+        proxyIconUrl: embed.footer!.proxyIconUrl
+      );
+    }
+
+    if (embed.image != null) {
+      builder.setImage(
+        embed.image!.url,
+        proxyUrl: embed.image!.proxyUrl,
+        height: embed.image!.height,
+        width: embed.image!.width
+      );
+    }
+
+    if (embed.thumbnail != null) {
+      builder.setThumbnail(
+        embed.thumbnail!.url,
+        proxyUrl: embed.thumbnail!.proxyUrl,
+        height: embed.thumbnail!.height,
+        width: embed.thumbnail!.width
+      );
+    }
+
+    if (embed.video != null) {
+      builder.setVideo(
+        embed.video!.url,
+        proxyUrl: embed.video!.proxyUrl,
+        height: embed.video!.height,
+        width: embed.video!.width
+      );
+    }
+
+    if (embed.author != null) {
+      builder.setAuthor(
+        embed.author!.name,
+        url: embed.author!.url,
+        iconUrl: embed.author!.iconUrl,
+        proxyIconUrl: embed.author!.proxyIconUrl
+      );
+    }
+
+    if (embed.fields.isNotEmpty) {
+      for (final field in embed.fields) {
+        builder.addField(
+          field.name,
+          field.value,
+          inline: field.inline
+        );
+      }
+    }
+
+    return builder;
   }
 }
