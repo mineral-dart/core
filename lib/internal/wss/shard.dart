@@ -168,9 +168,9 @@ final class Shard {
     sequence = response.sequence;
     final payload = {
       'op': response.opCode,
-      'sequence': response.sequence,
-      'type': response.type,
-      'payload': response.payload
+      's': response.sequence,
+      't': response.type,
+      'd': response.payload
     };
 
     dispatcher(payload);

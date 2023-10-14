@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -5,6 +6,7 @@ import 'package:mineral/internal/app/contracts/embedded_application_contract.dar
 import 'package:mineral/internal/console/console.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/internal/watcher/watcher_builder.dart';
+import 'package:mineral/internal/wss/entities/websocket_response.dart';
 import 'package:mineral/internal/wss/websocket_manager.dart';
 import 'package:mineral/services/env/environment.dart';
 import 'package:mineral/services/logger/logger_contract.dart';
@@ -12,6 +14,8 @@ import 'package:path/path.dart';
 import 'package:watcher/watcher.dart';
 
 final class EmbeddedDevelopment implements EmbeddedApplication {
+  final Queue<Map<String, dynamic>> queue = Queue();
+
   final Environment environment;
   final LoggerContract logger;
   late WebsocketManager websocket;
@@ -76,10 +80,22 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
       .then((Isolate isolate) async {
         _devIsolate = isolate;
         _devSendPort = await _receivedPort?.first;
+
+        restoreEvents();
       });
   }
 
   void dispatch(Map<String, dynamic> response) {
+    queue.addLast(response);
     _devSendPort?.send(response);
+  }
+
+  void restoreEvents () {
+    final Queue<Map<String, dynamic>> queue = Queue.from(this.queue);
+
+    while (queue.isNotEmpty) {
+      final response = queue.removeFirst();
+      _devSendPort?.send(response);
+    }
   }
 }

@@ -1,3 +1,4 @@
+import 'package:mineral/internal/factories/contracts/event_contract.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
 import 'package:mineral/services/env/environment.dart';
 
@@ -6,7 +7,7 @@ abstract class ApplicationConfigContract {
   final Intents intents;
   late final bool hmr;
   late final String appEnv;
-  List<Function()> events;
+  List<EventContract Function()> events;
 
   Environment get env => Environment.singleton();
 
