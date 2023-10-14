@@ -1,7 +1,10 @@
+import 'package:mineral/api/common/client/client.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/caches/guild_message_cache.dart';
 import 'package:mineral/api/server/caches/guild_webhook_cache.dart';
-import 'package:mineral/api/server/contracts/guild_text_channel_contracts.dart';
+import 'package:mineral/api/server/contracts/channels/guild_text_channel_contracts.dart';
+import 'package:mineral/api/server/contracts/guild_contracts.dart';
+import 'package:mineral/internal/fold/container.dart';
 
 final class GuildTextChannel implements GuildTextChannelContract {
   @override
@@ -11,10 +14,10 @@ final class GuildTextChannel implements GuildTextChannelContract {
   final String name;
 
   @override
-  final int guildId;
+  final Snowflake guildId;
 
   @override
-  final String topic;
+  final String? topic;
 
   @override
   final bool isNsfw;
@@ -26,13 +29,13 @@ final class GuildTextChannel implements GuildTextChannelContract {
   final Snowflake? lastMessageId;
 
   @override
-  final int? lastPinTimestamp;
+  final String? lastPinTimestamp;
 
   @override
-  final int position;
+  final int? position;
 
   @override
-  final int? parentId;
+  final Snowflake? parentId;
 
   @override
   final GuildWebhookCache webhooks = GuildWebhookCache();
@@ -53,9 +56,45 @@ final class GuildTextChannel implements GuildTextChannelContract {
     required this.parentId
   });
 
+  factory GuildTextChannel.fromWss(final payload) {
+    return GuildTextChannel._(
+      id: payload['id'].toString().toSnowflake(),
+      name: payload['name'],
+      guildId: payload['guild_id'].toString().toSnowflake(),
+      topic: payload['topic'],
+      isNsfw: payload['nsfw'] ?? false,
+      rateLimitPerUser: payload['rate_limit_per_user'],
+      lastMessageId: payload['last_message_id'].toString().toSnowflake(),
+      lastPinTimestamp: payload['last_pin_timestamp'],
+      position: payload['position'],
+      parentId: payload['parent_id'].toString().toSnowflake()
+    );
+  }
+
+  @override
+  GuildContract get guild => container.use<Client>('client').guilds.cache.getOrFail(guildId);
+
   @override
   Future<void> send() async {}
 
   @override
   Future<void> delete({ String? reason }) async {}
+
+  @override
+  Future<void> setParent(Snowflake parentId, { String? reason }) async {}
+
+  @override
+  Future<void> setPosition(int position, { String? reason }) async {}
+
+  @override
+  Future<void> setTopic(String topic, { String? reason }) async {}
+
+  @override
+  Future<void> setName(String name, { String? reason }) async {}
+
+  @override
+  Future<void> setNsfw(bool isNsfw, { String? reason }) async {}
+
+  @override
+  Future<void> setRateLimitPerUser(int rateLimitPerUser, { String? reason }) async {}
 }
