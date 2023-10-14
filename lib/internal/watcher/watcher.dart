@@ -6,12 +6,11 @@ import 'package:watcher/watcher.dart';
 
 final class Watcher {
   final Directory appRoot;
-  final EmbeddedDevelopment application;
   late final List<DirectoryWatcherElement> watchers = [];
   final bool allowReload;
   void Function(WatchEvent event) onReload;
 
-  Watcher({ required this.allowReload, required this.appRoot, required this.application, required List<Directory> roots, required this.onReload }) {
+  Watcher({ required this.allowReload, required this.appRoot, required List<Directory> roots, required this.onReload }) {
     watchers.addAll(List.from(
       roots.map((root) =>
         DirectoryWatcherElement(

@@ -7,7 +7,6 @@ import 'package:watcher/watcher.dart' as watcher;
 
 final class WatcherBuilder {
   final Directory _appRoot;
-  EmbeddedDevelopment? _application;
   final List<Directory> _watchers = [];
   bool _allowReload = false;
   void Function(watcher.WatchEvent) _onReload = (_) {};
@@ -16,11 +15,6 @@ final class WatcherBuilder {
 
   WatcherBuilder setAllowReload (bool value) {
     _allowReload = value;
-    return this;
-  }
-
-  WatcherBuilder setApplication (EmbeddedDevelopment value) {
-    _application = value;
     return this;
   }
 
@@ -37,7 +31,6 @@ final class WatcherBuilder {
   Watcher build () => Watcher(
     allowReload: _allowReload,
     appRoot: _appRoot,
-    application: _application!,
     roots: _watchers,
     onReload: _onReload
   );
