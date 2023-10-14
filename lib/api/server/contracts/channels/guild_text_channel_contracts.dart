@@ -1,6 +1,5 @@
 import 'package:mineral/api/common/contracts/cache_contract.dart';
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/common/contracts/channel_contract.dart';
 import 'package:mineral/api/server/contracts/channels/guild_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/guild_message_contracts.dart';
 
