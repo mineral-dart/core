@@ -30,6 +30,10 @@ class Helper {
     return int.parse(color.toString().replaceAll('#', ''), radix: 16);
   }
 
+  static Color rgbToColor (int rgb) {
+    return Color.of(rgb.toRadixString(16));
+  }
+
   static int reduceRolePermissions (List<Permission> permissions) {
     int _permissions = 0;
 
