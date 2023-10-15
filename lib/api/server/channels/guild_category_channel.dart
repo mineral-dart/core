@@ -52,7 +52,7 @@ final class GuildCategoryChannel implements GuildCategoryChannelContracts {
   Future<void> setTopic(String topic, {String? reason}) async {}
 
   @override
-  List<GuildChannelContract> getChannels() {
+  List<GuildChannelContract> get channels {
     return guild.channels.cache.values
       .where((channel) =>
         switch(channel) {
