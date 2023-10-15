@@ -36,17 +36,20 @@ final class GuildCache implements CacheContract<GuildContract> {
           _ => throw Exception("Unknown channel type: ${payload['type']}")
         };
 
-        guild.channels.cache.putIfAbsent(Snowflake(payload['id']), () => channel);
+        guild.channels.cache.putIfAbsent(
+            Snowflake(payload['id']),
+            () => channel
+        );
       }
 
-      for(final payload in payload['roles']) {
+      for (final payload in payload['roles']) {
         guild.roles.cache.putIfAbsent(
             Snowflake(payload['id']),
             () => Role.fromWss(payload)
         );
       }
 
-      for(final payload in payload['members']) {
+      for (final payload in payload['members']) {
         guild.members.cache.putIfAbsent(
             Snowflake(payload['user']['id']),
             () => GuildMember.fromWss(payload, guild)
@@ -61,16 +64,6 @@ final class GuildCache implements CacheContract<GuildContract> {
       }
 
       cache.putIfAbsent(guild.id, () => guild);
-
-      print("Roles: ${guild.roles.cache.length}");
-      print("Guild: ${guild.label}");
-      print("Channels: ${guild.channels.cache.length}");
-      print("Members: ${guild.members.cache.length}");
-      print("Presences: ${guild.members.cache.values.where((member) => member.presence != null).map((e) => e.presence!.activities.length).reduce((value, element) => value + element)}");
-      print("Guilds in client's cache: ${cache.length}");
-
       return guild;
   }
-
-
 }
