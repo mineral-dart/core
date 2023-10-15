@@ -4,6 +4,7 @@ import 'package:mineral/commands/generate_environment_command.dart';
 import 'package:mineral/commands/help_command.dart';
 import 'package:mineral/internal/app/embedded_development.dart';
 import 'package:mineral/internal/app/embedded_dispatcher.dart';
+import 'package:mineral/internal/app/embedded_production.dart';
 import 'package:mineral/internal/config/application_config_contract.dart';
 import 'package:mineral/internal/config/console_config_contract.dart';
 import 'package:mineral/internal/config/http_config_contract.dart';
@@ -70,10 +71,16 @@ final class Kernel {
         logger: logger,
         http: httpClient,
       ),
+      'production' => EmbeddedProduction(
+        environment: environment,
+        logger: logger,
+        http: httpClient,
+        events: configApp.events,
+      ),
       _ => throw Exception('Invalid environment mode')
     };
 
-    await app.spawn();
+    app.spawn();
   }
 
   Kernel setConsole(ConsoleConfigContract Function() config) {

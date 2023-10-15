@@ -19,7 +19,6 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
   final Environment environment;
   final LoggerContract logger;
   late WebsocketManager websocket;
-  late final Console console;
   late final DiscordHttpClient http;
 
   ReceivePort? _receivedPort;
@@ -34,7 +33,7 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
   EmbeddedDevelopment({ required this.logger, required this.environment, required this.http });
 
   @override
-  Future<void> spawn () async {
+  void spawn () {
     websocket = WebsocketManager(
       token: token,
       intents: intents,
