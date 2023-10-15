@@ -25,6 +25,7 @@ final class Kernel {
 
   Kernel();
 
+  /// Set the application configuration
   Kernel setApplication(ApplicationConfigContract Function(Environment) config) {
     configApp = config(environment);
 
@@ -41,6 +42,7 @@ final class Kernel {
     return this;
   }
 
+  /// Set the http client to communicate with the discord api
   Kernel setHttp(HttpConfigContract Function(Environment) http) {
     final config = http(environment);
 
@@ -63,6 +65,9 @@ final class Kernel {
     return this;
   }
 
+  /// Set the development port to communicate with the development server
+  /// [SendPort] The port to communicate with the development server
+  ///
   Kernel setDevelopmentPort (SendPort? port) {
     _devPort = port;
     return this;
