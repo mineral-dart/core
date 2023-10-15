@@ -21,7 +21,7 @@ final class Shard {
   final String gatewayUrl;
 
   ReceivePort _receivePort = ReceivePort();
-  late final SendPort _sendPort;
+  SendPort? _sendPort;
   Isolate? _isolate;
 
   late Stream<dynamic> _stream;
@@ -66,7 +66,7 @@ final class Shard {
         .append('url', _isResumable ? resumeUrl : gatewayUrl)
         .build();
 
-       _sendPort.send(message);
+       _sendPort?.send(message);
       _streamSubscription = _stream.listen(_handle);
     });
   }
@@ -189,7 +189,7 @@ final class Shard {
       .setAction(ShardAction.terminate)
       .build();
 
-    _sendPort.send(message);
+    _sendPort?.send(message);
   }
 
   void send ({ required OpCode code, required dynamic payload, bool canQueue = true }) {
@@ -201,7 +201,7 @@ final class Shard {
         .setData(websocketMessage.build())
         .build();
 
-      _sendPort.send(message);
+      _sendPort?.send(message);
       return;
     }
 
