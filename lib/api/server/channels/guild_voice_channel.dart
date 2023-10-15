@@ -29,30 +29,6 @@ final class GuildVoiceChannel implements GuildVoiceChannelContract {
   @override
   final int userLimit;
 
-  GuildVoiceChannel._({
-    required this.id,
-    required this.name,
-    required this.guildId,
-    required this.topic,
-    required this.position,
-    required this.parentId,
-    required this.bitrate,
-    required this.userLimit
-  });
-
-  factory GuildVoiceChannel.fromWss(final payload) {
-    return GuildVoiceChannel._(
-      id: payload['id'].toString().toSnowflake(),
-      name: payload['name'],
-      guildId: payload['guild_id'].toString().toSnowflake(),
-      topic: payload['topic'],
-      position: payload['position'],
-      parentId: payload['parent_id'].toString().toSnowflake(),
-      bitrate: payload['bitrate'],
-      userLimit: payload['user_limit']
-    );
-  }
-
   @override
   GuildContract get guild => container.use<Client>('client').guilds.cache.getOrFail(guildId);
 
@@ -70,4 +46,30 @@ final class GuildVoiceChannel implements GuildVoiceChannelContract {
 
   @override
   Future<void> setName(String name, { String? reason }) async {}
+
+  GuildVoiceChannel._({
+    required this.id,
+    required this.name,
+    required this.guildId,
+    required this.topic,
+    required this.position,
+    required this.parentId,
+    required this.bitrate,
+    required this.userLimit
+  });
+
+  factory GuildVoiceChannel.fromWss(final payload) {
+    return GuildVoiceChannel._(
+      id: Snowflake(payload['id']),
+      name: payload['name'],
+      guildId: Snowflake(payload['guild_id']),
+      topic: payload['topic'],
+      position: payload['position'],
+      parentId: payload['parent_id'] != null
+          ? Snowflake(payload['parent_id'])
+          : null,
+      bitrate: payload['bitrate'],
+      userLimit: payload['user_limit']
+    );
+  }
 }

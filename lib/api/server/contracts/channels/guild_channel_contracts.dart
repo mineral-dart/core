@@ -6,8 +6,8 @@ abstract interface class GuildChannelContract implements ChannelContract {
   abstract final Snowflake guildId;
   abstract final String? topic;
   abstract final int? position;
+  abstract final GuildContract guild;
 
-  GuildContract get guild;
   Future<void> setName(String name, { String? reason });
   Future<void> delete({ String? reason });
   Future<void> setParent(Snowflake parentId, { String? reason });

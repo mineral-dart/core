@@ -4,6 +4,7 @@ import 'package:mineral/api/server/caches/guild_message_cache.dart';
 import 'package:mineral/api/server/caches/guild_webhook_cache.dart';
 import 'package:mineral/api/server/contracts/channels/guild_announcement_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/guild_contracts.dart';
+import 'package:mineral/api/server/guild.dart';
 import 'package:mineral/internal/fold/container.dart';
 
 final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract {
@@ -43,6 +44,9 @@ final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract
   @override
   final GuildMessageCache messages = GuildMessageCache();
 
+  @override
+  GuildContract get guild => container.use<Client>('client').guilds.cache.getOrFail(guildId);
+
   GuildAnnouncementChannel._({
     required this.id,
     required this.name,
@@ -53,11 +57,8 @@ final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract
     required this.lastMessageId,
     required this.lastPinTimestamp,
     required this.position,
-    required this.parentId
+    required this.parentId,
   });
-
-  @override
-  GuildContract get guild => container.use<Client>('client').guilds.cache.getOrFail(guildId);
 
   factory GuildAnnouncementChannel.fromWss(final payload) {
     return GuildAnnouncementChannel._(
@@ -70,7 +71,7 @@ final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract
       lastMessageId: payload['last_message_id'].toString().toSnowflake(),
       lastPinTimestamp: payload['last_pin_timestamp'],
       position: payload['position'],
-      parentId: payload['parent_id'].toString().toSnowflake()
+      parentId: payload['parent_id'].toString().toSnowflake(),
     );
   }
 

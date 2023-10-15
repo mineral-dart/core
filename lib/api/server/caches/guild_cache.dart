@@ -31,7 +31,7 @@ final class GuildCache implements CacheContract<GuildContract> {
           ChannelsType.guildText => GuildTextChannel.fromWss(payload),
           ChannelsType.guildVoice => GuildVoiceChannel.fromWss(payload),
           ChannelsType.guildNews => GuildAnnouncementChannel.fromWss(payload),
-          ChannelsType.guildCategory => GuildCategoryChannel.fromWss(payload, guild.id),
+          ChannelsType.guildCategory => GuildCategoryChannel.fromWss(payload),
           ChannelsType.guildForum => GuildTextChannel.fromWss(payload), // todo: implement guild forum channel
           _ => throw Exception("Unknown channel type: ${payload['type']}")
         };
