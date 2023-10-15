@@ -55,6 +55,7 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
     final watcher = WatcherBuilder(Directory.current)
       .setAllowReload(useHmr)
       .addWatchFolder(Directory(join(Directory.current.path, 'lib')))
+      .addWatchFolder(Directory(join(Directory.current.path, 'config')))
       .onReload((event) {
         final String location = makeRelativePath(event.path);
 
