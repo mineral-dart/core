@@ -14,7 +14,3 @@ final class Snowflake {
   };
 }
 
-extension SnowflakeExtension on dynamic {
-  Snowflake toSnowflake() => Snowflake(this);
-}
-

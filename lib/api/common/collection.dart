@@ -5,7 +5,7 @@ import 'package:mineral/api/common/snowflake.dart';
 class Collection<K, V> extends MapBase<K, V> {
   final Map<K, V> _map = HashMap.identity();
 
-  V? get(K key) {
+  V? get(K? key) {
     final element = key is Snowflake
         ? _map.entries.firstWhere((element) => (element.key as Snowflake).value == key.value).value
         : _map[key];

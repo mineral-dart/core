@@ -167,22 +167,22 @@ final class Guild implements GuildContract {
   }
 
   @override
-  GuildTextChannelContract? get systemChannel => channels.cache.get(systemChannelId.toSnowflake()) as GuildTextChannelContract?;
+  GuildTextChannelContract? get systemChannel => channels.cache.get(systemChannelId) as GuildTextChannelContract?;
 
   @override
-  GuildTextChannelContract? get publicUpdatesChannel => channels.cache.get(publicUpdatesChannelId.toSnowflake()) as GuildTextChannelContract?;
+  GuildTextChannelContract? get publicUpdatesChannel => channels.cache.get(publicUpdatesChannelId) as GuildTextChannelContract?;
 
   @override
-  GuildTextChannelContract? get safetyAlertsChannel => channels.cache.get(safetyAlertsChannelId.toSnowflake()) as GuildTextChannelContract?;
+  GuildTextChannelContract? get safetyAlertsChannel => channels.cache.get(safetyAlertsChannelId) as GuildTextChannelContract?;
 
   @override
-  GuildTextChannelContract? get widgetChannel => channels.cache.get(widgetChannelId.toSnowflake()) as GuildTextChannelContract?;
+  GuildTextChannelContract? get widgetChannel => channels.cache.get(widgetChannelId) as GuildTextChannelContract?;
 
   @override
-  GuildTextChannelContract? get rulesChannel => channels.cache.get(rulesChannelId.toSnowflake()) as GuildTextChannelContract?;
+  GuildTextChannelContract? get rulesChannel => channels.cache.get(rulesChannelId) as GuildTextChannelContract?;
 
   @override
-  GuildVoiceChannelContract? get afkChannel => channels.cache.get(afkChannelId.toSnowflake()) as GuildVoiceChannelContract?;
+  GuildVoiceChannelContract? get afkChannel => channels.cache.get(afkChannelId) as GuildVoiceChannelContract?;
 
   @override
   GuildMemberContract get owner => members.cache.getOrFail(ownerId);

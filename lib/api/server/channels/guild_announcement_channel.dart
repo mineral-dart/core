@@ -4,7 +4,6 @@ import 'package:mineral/api/server/caches/guild_message_cache.dart';
 import 'package:mineral/api/server/caches/guild_webhook_cache.dart';
 import 'package:mineral/api/server/contracts/channels/guild_announcement_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/guild_contracts.dart';
-import 'package:mineral/api/server/guild.dart';
 import 'package:mineral/internal/fold/container.dart';
 
 final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract {
@@ -62,16 +61,20 @@ final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract
 
   factory GuildAnnouncementChannel.fromWss(final payload) {
     return GuildAnnouncementChannel._(
-      id: payload['id'].toString().toSnowflake(),
+      id: Snowflake(payload['id']),
       name: payload['name'],
       guildId: Snowflake(payload['guild_id']),
       topic: payload['topic'],
       isNsfw: payload['nsfw'] ?? false,
       rateLimitPerUser: payload['rate_limit_per_user'],
-      lastMessageId: payload['last_message_id'].toString().toSnowflake(),
+      lastMessageId: payload['last_message_id'] != null
+          ? Snowflake(payload['last_message_id'])
+          : null,
       lastPinTimestamp: payload['last_pin_timestamp'],
       position: payload['position'],
-      parentId: payload['parent_id'].toString().toSnowflake(),
+      parentId: payload['parent_id'] != null
+          ? Snowflake(payload['parent_id'])
+          : null
     );
   }
 
