@@ -22,7 +22,7 @@ final class Guild implements GuildContract {
   final String? description;
 
   @override
-  final String ownerId;
+  final Snowflake ownerId;
 
   @override
   late final GuildMemberCache members;
@@ -45,21 +45,21 @@ final class Guild implements GuildContract {
   @override
   final Image? splash;
 
-  final String? afkChannelId;
+  final Snowflake? afkChannelId;
 
   final int? afkTimeout;
 
   @override
-  final String? rulesChannelId;
+  final Snowflake? rulesChannelId;
 
   @override
-  final String? publicUpdatesChannelId;
+  final Snowflake? publicUpdatesChannelId;
 
   @override
-  final String? safetyAlertsChannelId;
+  final Snowflake? safetyAlertsChannelId;
 
   @override
-  final String? systemChannelId;
+  final Snowflake? systemChannelId;
 
   @override
   final int? systemChannelFlags;
@@ -68,7 +68,7 @@ final class Guild implements GuildContract {
   final bool? widgetEnabled;
 
   @override
-  final String? widgetChannelId;
+  final Snowflake? widgetChannelId;
 
   @override
   final VerificationLevel verificationLevel;
@@ -173,7 +173,7 @@ final class Guild implements GuildContract {
   GuildTextChannelContract? get rulesChannel => channels.cache.get(rulesChannelId.toSnowflake()) as GuildTextChannelContract?;
   GuildVoiceChannelContract? get afkChannel => channels.cache.get(afkChannelId.toSnowflake()) as GuildVoiceChannelContract?;
 
-  User get owner => members.cache.getOrFail(Snowflake(ownerId)).user;
+  User get owner => members.cache.getOrFail(ownerId).user;
 
   /// [Guild] to Json method is private
   dynamic _toJson() {
@@ -213,22 +213,34 @@ final class Guild implements GuildContract {
     }
 
     return Guild._(
-        id: payload["id"].toString().toSnowflake(),
+        id: Snowflake(payload["id"]),
         label: payload["name"],
         description: payload["description"],
-        ownerId: payload["owner_id"],
+        ownerId: Snowflake(payload["owner_id"]),
         icon: Image(label: payload["icon"], endpoint: "icons/${payload["id"]}/"),
         banner: Image(label: payload["banner"], endpoint: "banners/${payload["id"]}/"),
         splash: Image(label: payload["splash"], endpoint: "splashes/${payload["id"]}/"),
-        afkChannelId: payload["afk_channel_id"],
+        afkChannelId: payload["afk_channel_id"] != null
+            ? Snowflake(payload["afk_channel_id"])
+            : null,
         afkTimeout: payload["afk_timeout"],
-        rulesChannelId: payload["rules_channel_id"],
-        systemChannelId: payload["system_channel_id"],
-        publicUpdatesChannelId: payload["public_updates_channel_id"],
+        rulesChannelId: payload["rules_channel_id"] != null
+            ? Snowflake(payload["rules_channel_id"])
+            : null,
+        systemChannelId: payload["system_channel_id"] != null
+            ? Snowflake(payload["system_channel_id"])
+            : null,
+        publicUpdatesChannelId: payload["public_updates_channel_id"] != null
+            ? Snowflake(payload["public_updates_channel_id"])
+            : null,
         systemChannelFlags: payload["system_channel_flags"],
-        safetyAlertsChannelId: payload["safety_alerts_channel_id"],
+        safetyAlertsChannelId: payload["safety_alerts_channel_id"] != null
+            ? Snowflake(payload["safety_alerts_channel_id"])
+            : null,
         widgetEnabled: payload["widget_enabled"],
-        widgetChannelId: payload["widget_channel_id"],
+        widgetChannelId: payload["widget_channel_id"] != null
+            ? Snowflake(payload["widget_channel_id"])
+            : null,
         verificationLevel: VerificationLevel.from(payload["verification_level"]),
         defaultNotificationLevel: NotificationLevel.of(payload["default_message_notifications"]),
         explicitContentFilter: ContentFilterLevel.of(payload["explicit_content_filter"]),
@@ -246,7 +258,9 @@ final class Guild implements GuildContract {
         approximateMemberCount: payload["approximate_member_count"],
         approximatePresenceCount: payload["approximate_presence_count"],
         premiumProgressBarEnabled: payload["premium_progress_bar_enabled"],
-        vanity: payload['vanity_url_code'] != null ? Vanity(payload["vanity_url_code"], null) : null,
+        vanity: payload['vanity_url_code'] != null
+            ? Vanity(payload["vanity_url_code"], null)
+            : null,
     );
   }
 }

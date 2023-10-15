@@ -23,7 +23,7 @@ abstract interface class GuildContract {
   abstract final Snowflake id;
   abstract final String label;
   abstract final String? description;
-  abstract final String ownerId;
+  abstract final Snowflake ownerId;
 
   abstract final CacheContract<GuildMemberContract> members;
   abstract final CacheContract<RoleContract> roles;
@@ -34,14 +34,14 @@ abstract interface class GuildContract {
   abstract final Image? banner;
   abstract final Image? splash;
 
-  abstract final String? rulesChannelId;
-  abstract final String? publicUpdatesChannelId;
-  abstract final String? safetyAlertsChannelId;
-  abstract final String? systemChannelId;
+  abstract final Snowflake? rulesChannelId;
+  abstract final Snowflake? publicUpdatesChannelId;
+  abstract final Snowflake? safetyAlertsChannelId;
+  abstract final Snowflake? systemChannelId;
   abstract final int? systemChannelFlags;
 
   abstract final bool? widgetEnabled;
-  abstract final String? widgetChannelId;
+  abstract final Snowflake? widgetChannelId;
 
   abstract final VerificationLevel verificationLevel;
   abstract final NotificationLevel defaultNotificationLevel;
