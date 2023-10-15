@@ -11,9 +11,9 @@ abstract interface class GuildMemberContract {
   abstract final List<RoleContract> roles;
   abstract final DateTime joinedAt;
   abstract final DateTime? premiumSince;
-  abstract final bool deaf;
-  abstract final bool mute;
-  abstract final bool? pending;
+  abstract final bool isDeaf;
+  abstract final bool isMute;
+  abstract final bool? isPending;
   abstract final List<Permission>? permissions;
   abstract PresenceContracts? presence;
 }

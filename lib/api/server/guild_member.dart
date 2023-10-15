@@ -13,19 +13,19 @@ final class GuildMember implements GuildMemberContract {
   Image? avatar;
 
   @override
-  bool deaf;
+  bool isDeaf;
 
   @override
   DateTime joinedAt;
 
   @override
-  bool mute;
+  bool isMute;
 
   @override
   String? nick;
 
   @override
-  bool? pending;
+  bool? isPending;
 
   @override
   List<Permission>? permissions;
@@ -44,11 +44,11 @@ final class GuildMember implements GuildMemberContract {
 
   GuildMember._({
     required this.avatar,
-    required this.deaf,
+    required this.isDeaf,
     required this.joinedAt,
-    required this.mute,
+    required this.isMute,
     required this.nick,
-    required this.pending,
+    required this.isPending,
     required this.permissions,
     required this.premiumSince,
     required this.roles,
@@ -58,11 +58,11 @@ final class GuildMember implements GuildMemberContract {
   factory GuildMember.fromWss(Map<String, dynamic> payload, Guild guild) =>
       GuildMember._(
         avatar: payload['avatar'] != null ? Image(label: payload['avatar']) : null,
-        deaf: payload['deaf'],
+        isDeaf: payload['deaf'],
         joinedAt: DateTime.parse(payload['joined_at']),
-        mute: payload['mute'],
+        isMute: payload['mute'],
         nick: payload['nick'],
-        pending: payload['pending'],
+        isPending: payload['pending'],
         permissions: payload['permissions'] != null ? Helper.bitfieldToPermissions(payload['permissions']) : null,
         premiumSince: payload['premium_since'] != null ? DateTime.parse(payload['premium_since']) : null,
         roles: (payload['roles'] as List<dynamic>).map((e) => guild.roles.cache.getOrFail(Snowflake(e))).toList(),
