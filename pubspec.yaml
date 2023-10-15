@@ -22,6 +22,7 @@ dependencies:
   prompts: ^2.0.0
   tint: ^2.0.1
   watcher: ^1.1.0
+  logging: ^1.2.0
 
 dev_dependencies:
   lints: ^2.1.1

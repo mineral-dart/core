@@ -12,26 +12,26 @@ import 'package:mineral/internal/console/console.dart';
 import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/services/env/environment.dart';
-import 'package:mineral/services/logger/logger_contract.dart';
+import 'package:mineral/services/logger/logger.dart';
 
 final class Kernel {
   final Environment environment = container.bind('environment', (_) => Environment());
   Console? console;
 
   late final DiscordHttpClient httpClient;
-  late final LoggerContract logger;
+  late final Logger logger;
   late ApplicationConfigContract configApp;
   SendPort? _devPort;
 
   Kernel();
 
-  Kernel setLogger(LoggerContract Function() logger) {
-    this.logger = container.bind('logger', (container) => logger());
-    return this;
-  }
-
   Kernel setApplication(ApplicationConfigContract Function(Environment) config) {
     configApp = config(environment);
+
+    logger = Logger()
+      ..setRootLogLevel(configApp.logLevel)
+      ..setRootListener(configApp.logger);
+
     environment
       ..set('APP_ENV', configApp.appEnv)
       ..set('APP_TOKEN', configApp.token)
@@ -45,7 +45,7 @@ final class Kernel {
     final config = http(environment);
 
     httpClient = container.bind<DiscordHttpClient>('http', (_) =>
-      DiscordHttpClient(logger: logger, baseUrl: '${config.baseUrl}/v${config.version}')
+      DiscordHttpClient(logger: logger.http, baseUrl: '${config.baseUrl}/v${config.version}')
         ..headers.setContentType('application/json')
         ..headers.setAuthorization('Bot ${configApp.token}')
         ..headers.setUserAgent('Mineral')
@@ -88,7 +88,7 @@ final class Kernel {
 
     console = container.bind<Console>('console', (_) => Console(logger))
       ..addCommand(HelpCommand())
-      ..addCommand(GenerateEnvironmentCommand(logger));
+      ..addCommand(GenerateEnvironmentCommand(logger.console));
 
     for (final command in consoleConfig.commands) {
       console?.addCommand(command);
