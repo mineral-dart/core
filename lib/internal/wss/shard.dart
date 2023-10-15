@@ -149,7 +149,6 @@ final class Shard {
     final WebsocketResponse response = message.data;
     final OpCode? code = OpCode.values.firstWhereOrNull((element) => element.value == response.opCode);
     manager.logger.fine('Shard #$id : received opcode $code');
-    manager.logger.finest('Shard #$id : received ${jsonEncode(response.payload)}');
 
     return switch (code) {
       OpCode.heartbeat => _heartbeat.reset(),
@@ -187,6 +186,7 @@ final class Shard {
   }
 
   void _handleDispatch (WebsocketResponse response) {
+    manager.logger.finest('Shard #$id : received ${response.type} : ${jsonEncode(response.payload)}');
     sequence = response.sequence;
     final payload = {
       'op': response.opCode,
@@ -218,10 +218,7 @@ final class Shard {
   void send ({ required OpCode code, required dynamic payload, loggable = true, bool canQueue = true }) {
     final WebsocketMessage websocketMessage = WebsocketMessage(code, payload);
 
-    if (loggable) {
-      manager.logger.fine('Shard #$id : send opcode ${websocketMessage.code}');
-      manager.logger.finest('Shard #$id : send payload $payload');
-    }
+    manager.logger.fine('Shard #$id : send opcode ${websocketMessage.code}');
 
     if (_isinitialized || canQueue == false) {
       final message = ShardMessageBuilder()
@@ -258,6 +255,12 @@ final class Shard {
   }
 
   void _resume () {
+    manager.logger.finest('Shard #$id : send resume {'
+      'token: ****, '
+      'session_id: $sessionId, '
+      'seq: $sequence }'
+    );
+
     send(
       canQueue: false,
       code: OpCode.resume,
