@@ -46,6 +46,7 @@ final class Guild implements GuildContract {
   final Image? splash;
 
   final String? afkChannelId;
+
   final int? afkTimeout;
 
   @override
@@ -158,7 +159,6 @@ final class Guild implements GuildContract {
     required this.approximatePresenceCount,
     required this.premiumProgressBarEnabled,
     required this.vanity,
-
   }) {
     members = GuildMemberCache(this);
     channels = GuildChannelsCache(this);

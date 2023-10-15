@@ -1,9 +1,14 @@
+import 'package:mineral/api/common/contracts/cache_contract.dart';
 import 'package:mineral/api/common/resources/image.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/caches/guild_channels_cache.dart';
 import 'package:mineral/api/server/caches/guild_emojis_cache.dart';
 import 'package:mineral/api/server/caches/guild_members_cache.dart';
 import 'package:mineral/api/server/caches/guild_roles_cache.dart';
+import 'package:mineral/api/server/contracts/channels/guild_channel_contracts.dart';
+import 'package:mineral/api/server/contracts/emoji_contracts.dart';
+import 'package:mineral/api/server/contracts/guild_member_contracts.dart';
+import 'package:mineral/api/server/contracts/role_contracts.dart';
 import 'package:mineral/api/server/resources/content_filter_level.dart';
 import 'package:mineral/api/server/resources/guild_features.dart';
 import 'package:mineral/api/server/resources/locale.dart';
@@ -20,10 +25,10 @@ abstract interface class GuildContract {
   abstract final String? description;
   abstract final String ownerId;
 
-  abstract final GuildMemberCache members;
-  abstract final GuildRolesCache roles;
-  abstract final GuildChannelsCache channels;
-  abstract final GuildEmojisCache emojis;
+  abstract final CacheContract<GuildMemberContract> members;
+  abstract final CacheContract<RoleContract> roles;
+  abstract final CacheContract<GuildChannelContract> channels;
+  abstract final CacheContract<EmojiContract> emojis;
 
   abstract final Image? icon;
   abstract final Image? banner;
