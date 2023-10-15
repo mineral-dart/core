@@ -3,13 +3,11 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mineral/internal/app/contracts/embedded_application_contract.dart';
-import 'package:mineral/internal/console/console.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/internal/watcher/watcher_builder.dart';
-import 'package:mineral/internal/wss/entities/websocket_response.dart';
 import 'package:mineral/internal/wss/websocket_manager.dart';
 import 'package:mineral/services/env/environment.dart';
-import 'package:mineral/services/logger/logger_contract.dart';
+import 'package:mineral/services/logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:watcher/watcher.dart';
 
@@ -17,7 +15,7 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
   final Queue<Map<String, dynamic>> queue = Queue();
 
   final Environment environment;
-  final LoggerContract logger;
+  final Logger logger;
   late WebsocketManager websocket;
   late final DiscordHttpClient http;
 
@@ -35,6 +33,7 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
   @override
   void spawn () {
     websocket = WebsocketManager(
+      logger: logger.wss,
       token: token,
       intents: intents,
       http: http,
@@ -59,14 +58,15 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
         final String location = makeRelativePath(event.path);
 
         switch (event.type) {
-          case ChangeType.ADD: logger.info('File added: $location');
-          case ChangeType.MODIFY: logger.info('File modified: $location');
-          case ChangeType.REMOVE: logger.info('File removed: $location');
+          case ChangeType.ADD: logger.hmr.info('File added: $location');
+          case ChangeType.MODIFY: logger.hmr.info('File modified: $location');
+          case ChangeType.REMOVE: logger.hmr.info('File removed: $location');
         }
 
         _devIsolate?.kill(priority: Isolate.immediate);
         createDevelopmentIsolate();
-        logger.info('Restarting application...');
+
+        logger.hmr.info('Restarting application...');
       })
       .build();
 

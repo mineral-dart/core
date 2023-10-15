@@ -1,4 +1,5 @@
 import 'package:http/http.dart';
+import 'package:logging/logging.dart';
 import 'package:mineral/internal/fold/injectable.dart';
 import 'package:mineral/internal/services/http/builders/discord_delete_builder.dart';
 import 'package:mineral/internal/services/http/builders/discord_get_builder.dart';
@@ -9,7 +10,6 @@ import 'package:mineral/internal/services/http/discord_http_request_dispatcher.d
 import 'package:mineral/internal/services/http/discord_endpoint_repository.dart';
 import 'package:mineral/services/http/header_bucket.dart';
 import 'package:mineral/services/http/contracts/http_client_contract.dart';
-import 'package:mineral/services/logger/logger_contract.dart';
 
 /// Discord HTTP Client used to make requests to a Discord API.
 /// Related to the official Discord API documentation: https://discord.com/developers/docs/intro
@@ -37,7 +37,7 @@ class DiscordHttpClient extends Injectable
 
   DiscordHttpClient(
       {required this.baseUrl,
-      required LoggerContract logger,
+      required Logger logger,
       Map<String, String> headers = const {}}) {
     dispatcher = DiscordHttpRequestDispatcher(_client);
     this.headers.addAll(headers);

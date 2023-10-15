@@ -4,6 +4,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:collection/collection.dart';
+import 'package:logging/logging.dart';
 import 'package:mineral/internal/wss/builders/shard_message_builder.dart';
 import 'package:mineral/internal/wss/entities/shard_handler.dart';
 import 'package:mineral/internal/wss/entities/websocket_message.dart';
@@ -61,6 +62,8 @@ final class Shard {
       _isolate = isolate;
       _sendPort = await _stream.first as SendPort;
 
+      
+
       final message = ShardMessageBuilder()
         .setAction(ShardAction.init)
         .append('url', _isResumable ? resumeUrl : gatewayUrl)
@@ -68,6 +71,9 @@ final class Shard {
 
        _sendPort?.send(message);
       _streamSubscription = _stream.listen(_handle);
+    })
+    .onError((error, stackTrace) {
+      manager.logger.severe('Error while spawning shard $id', error, stackTrace);
     });
   }
 
@@ -94,6 +100,7 @@ final class Shard {
       4003 => _handleReconnect(resume: false),
       4004 => {
         _terminate(),
+        manager.logger.severe('[Authentication failed] Your token is invalid'),
         throw Exception('[Authentication failed] Your token is invalid'),
       },
       4005 => _handleReconnect(resume: true),
@@ -102,22 +109,27 @@ final class Shard {
       4009 => _handleReconnect(resume: true),
       4010 => {
         _terminate(),
+        manager.logger.severe('Shard #$id is invalid shard id sent to gateway'),
         throw Exception('[Invalid shard] Shard #$id is invalid shard id sent to gateway')
       },
       4011 => {
         _terminate(),
+        manager.logger.severe('Shard #$id : the session would have handled too many guilds'),
         throw Exception('[Sharding required] Shard #$id : the session would have handled too many guilds')
       },
       4012 => {
         _terminate(),
+        manager.logger.severe('Shard #$id : You sent an invalid version for the gateway'),
         throw Exception('[Invalid API version] Shard #$id : You sent an invalid version for the gateway')
       },
       4013 => {
         _terminate(),
+        manager.logger.severe('Shard #$id : You sent an invalid intent for a Gateway Intent'),
         throw Exception('[Invalid intent] Shard #$id : You sent an invalid intent for a Gateway Intent')
       },
       4014 => {
         _terminate(),
+        manager.logger.severe('Shard #$id : You sent a disallowed intent for a Gateway Intent'),
         throw Exception('[Disallowed intent] Shard #$id : You sent a disallowed intent for a Gateway Intent')
       },
       _ => throw Exception('Unexpected error code : $code')
@@ -131,6 +143,8 @@ final class Shard {
 
     final WebsocketResponse response = message.data;
     final OpCode? code = OpCode.values.firstWhereOrNull((element) => element.value == response.opCode);
+    manager.logger.fine('Shard #$id : received $code');
+    manager.logger.finest('Shard #$id : received ${response.payload}');
 
     return switch (code) {
       OpCode.heartbeat => _heartbeat.reset(),
@@ -139,7 +153,10 @@ final class Shard {
       OpCode.heartbeatAck => _heartbeat.ack(),
       OpCode.reconnect => _handleReconnect(),
       OpCode.invalidSession => _handleReconnect(resume: response.payload),
-      _ => throw Exception('Invalid opcode : $code')
+      _ => {
+        manager.logger.warning('Shard #$id : received invalid opcode $code'),
+        throw Exception('Invalid opcode : $code')
+      }
     };
   }
 

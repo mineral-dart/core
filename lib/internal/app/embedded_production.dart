@@ -6,13 +6,14 @@ import 'package:mineral/internal/wss/entities/websocket_event_dispatcher.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';
 import 'package:mineral/internal/wss/websocket_manager.dart';
 import 'package:mineral/services/env/environment.dart';
+import 'package:mineral/services/logger/logger.dart';
 import 'package:mineral/services/logger/logger_contract.dart';
 
 final class EmbeddedProduction implements EmbeddedApplication {
   final EventFactory _factory = EventFactory();
   late final WebsocketEventDispatcher _dispatcher;
   late WebsocketManager websocket;
-  final LoggerContract logger;
+  final Logger logger;
   final Environment environment;
   late final DiscordHttpClient http;
 
@@ -30,6 +31,7 @@ final class EmbeddedProduction implements EmbeddedApplication {
   @override
   void spawn() {
     websocket = WebsocketManager(
+      logger: logger.wss,
       token: token,
       intents: intents,
       http: http,
