@@ -47,9 +47,18 @@ final class Kernel {
     httpClient = container.bind<DiscordHttpClient>('http', (_) =>
       DiscordHttpClient(logger: logger.http, baseUrl: '${config.baseUrl}/v${config.version}')
         ..headers.setContentType('application/json')
-        ..headers.setAuthorization('Bot ${configApp.token}')
         ..headers.setUserAgent('Mineral')
       );
+
+    logger.http.fine('Http client initialized { Isolate: ${Isolate.current.debugName} }');
+    logger.http.finest('Default configuration { '
+        'baseUrl: ${httpClient.baseUrl}, '
+        'headers: ${httpClient.headers.all}, '
+        'Authorization: Bot **** '
+      '}'
+    );
+
+    httpClient.headers.setAuthorization('Bot ${configApp.token}');
 
     return this;
   }
