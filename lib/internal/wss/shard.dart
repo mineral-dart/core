@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:collection';
+import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -59,10 +60,10 @@ final class Shard {
     );
 
     isolate.then((isolate) async {
+      manager.logger.fine('Shard #$id : spawned');
+
       _isolate = isolate;
       _sendPort = await _stream.first as SendPort;
-
-      
 
       final message = ShardMessageBuilder()
         .setAction(ShardAction.init)
@@ -74,6 +75,7 @@ final class Shard {
     })
     .onError((error, stackTrace) {
       manager.logger.severe('Error while spawning shard $id', error, stackTrace);
+      throw Exception('Error while spawning shard $id');
     });
   }
 
@@ -92,6 +94,9 @@ final class Shard {
 
   void _dispatchErrors (ShardMessage message) {
     final { 'code': int code, 'reason': reason } = message.data;
+
+    manager.logger.fine('Shard #$id : received error code $code');
+    manager.logger.finest('Shard #$id : received error $reason');
 
     return switch (code) {
       4000 => _handleReconnect(resume: true),
@@ -143,8 +148,8 @@ final class Shard {
 
     final WebsocketResponse response = message.data;
     final OpCode? code = OpCode.values.firstWhereOrNull((element) => element.value == response.opCode);
-    manager.logger.fine('Shard #$id : received $code');
-    manager.logger.finest('Shard #$id : received ${response.payload}');
+    manager.logger.fine('Shard #$id : received opcode $code');
+    manager.logger.finest('Shard #$id : received ${jsonEncode(response.payload)}');
 
     return switch (code) {
       OpCode.heartbeat => _heartbeat.reset(),
@@ -194,6 +199,7 @@ final class Shard {
   }
 
   void _handleReconnect ({ bool resume = false }) {
+    manager.logger.fine('Shard #$id : reconnecting');
     if (!_isPendingReconnect) {
       _isPendingReconnect = true;
       _isResumable = resume;
@@ -209,8 +215,13 @@ final class Shard {
     _sendPort?.send(message);
   }
 
-  void send ({ required OpCode code, required dynamic payload, bool canQueue = true }) {
+  void send ({ required OpCode code, required dynamic payload, loggable = true, bool canQueue = true }) {
     final WebsocketMessage websocketMessage = WebsocketMessage(code, payload);
+
+    if (loggable) {
+      manager.logger.fine('Shard #$id : send opcode ${websocketMessage.code}');
+      manager.logger.finest('Shard #$id : send payload $payload');
+    }
 
     if (_isinitialized || canQueue == false) {
       final message = ShardMessageBuilder()
@@ -236,7 +247,14 @@ final class Shard {
       payload['shard'] = [id, manager.totalShards];
     }
 
-    send(code: OpCode.identify, canQueue: false, payload: payload);
+    manager.logger.fine('Shard #$id : identify');
+    manager.logger.finest('Shard #$id : identify { '
+      'token: ****, '
+      'intents: ${manager.intents}, '
+      'properties: { \$os: ${Platform.operatingSystem} } } '
+    '}');
+
+    send(code: OpCode.identify, loggable: false, canQueue: false, payload: payload);
   }
 
   void _resume () {

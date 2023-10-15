@@ -35,7 +35,7 @@ final class Heartbeat {
 
   void _send() {
     ackMissing += 1;
-
+    _shard.manager.logger.fine('Shard #${_shard.id} : sending heartbeat');
     _shard.send(code: OpCode.heartbeat, payload: _shard.sequence, canQueue: false);
     _shard.lastHeartbeat = DateTime.now();
   }
