@@ -2,12 +2,13 @@ import 'package:args/args.dart';
 import 'package:mineral/internal/console/command.dart';
 import 'package:mineral/internal/console/option_bucket.dart';
 import 'package:mineral/internal/fold/injectable.dart';
+import 'package:mineral/services/logger/logger.dart';
 import 'package:mineral/services/logger/logger_contract.dart';
 
 final class Console extends Injectable {
   final Map<String, Command> commands = {};
   final ArgParser _commandParser = ArgParser();
-  final LoggerContract logger;
+  final Logger logger;
 
   Console(this.logger);
 
@@ -16,7 +17,7 @@ final class Console extends Injectable {
     final command = commands[result.command?.name];
 
     if (result.command == null || command == null) {
-      logger.error('No command was provided');
+      logger.console.info('No command was provided');
       return;
     }
 
