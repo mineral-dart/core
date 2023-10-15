@@ -8,6 +8,8 @@ import 'package:mineral/api/server/caches/guild_roles_cache.dart';
 import 'package:mineral/api/server/contracts/channels/guild_text_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/guild_contracts.dart';
 import 'package:mineral/api/server/contracts/channels/guild_voice_channel_contracts.dart';
+import 'package:mineral/api/server/contracts/guild_member_contracts.dart';
+import 'package:mineral/api/server/guild_member.dart';
 import 'package:mineral/api/server/resources/enums.dart';
 import 'package:mineral/api/server/resources/vanity.dart';
 
@@ -173,7 +175,7 @@ final class Guild implements GuildContract {
   GuildTextChannelContract? get rulesChannel => channels.cache.get(rulesChannelId.toSnowflake()) as GuildTextChannelContract?;
   GuildVoiceChannelContract? get afkChannel => channels.cache.get(afkChannelId.toSnowflake()) as GuildVoiceChannelContract?;
 
-  User get owner => members.cache.getOrFail(ownerId).user;
+  GuildMemberContract get owner => members.cache.getOrFail(ownerId);
 
   /// [Guild] to Json method is private
   dynamic _toJson() {
