@@ -1,3 +1,5 @@
+import 'package:collection/collection.dart';
+import 'package:logging/logging.dart';
 import 'package:mineral/internal/factories/contracts/event_contract.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
 import 'package:mineral/services/env/environment.dart';
@@ -8,10 +10,26 @@ abstract class ApplicationConfigContract {
   late final bool hmr;
   late final String appEnv;
   List<EventContract Function()> events;
+  late final Level logLevel;
+  final void Function(LogRecord)? logger;
 
   Environment get env => Environment.singleton();
 
-  ApplicationConfigContract({ required this.token, required this.intents, String hmr = 'false', required this.appEnv, required this.events }) {
+  ApplicationConfigContract({
+    required this.token,
+    required this.intents,
+    required this.appEnv,
+    required this.events,
+    String hmr = 'false',
+    String logLevel = 'INFO',
+    this.logger,
+  }) {
     this.hmr = bool.parse(hmr);
+
+    final targetLogLevel = Level.LEVELS.firstWhereOrNull((level) => level.name == logLevel);
+    this.logLevel = switch(targetLogLevel) {
+      Level() => targetLogLevel,
+      _ => throw Exception('Invalid log level: $logLevel'),
+    };
   }
 }
