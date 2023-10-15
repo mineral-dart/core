@@ -1,11 +1,9 @@
 import 'package:mineral/api/common/contracts/cache_contract.dart';
 import 'package:mineral/api/common/resources/image.dart';
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/server/caches/guild_channels_cache.dart';
-import 'package:mineral/api/server/caches/guild_emojis_cache.dart';
-import 'package:mineral/api/server/caches/guild_members_cache.dart';
-import 'package:mineral/api/server/caches/guild_roles_cache.dart';
 import 'package:mineral/api/server/contracts/channels/guild_channel_contracts.dart';
+import 'package:mineral/api/server/contracts/channels/guild_text_channel_contracts.dart';
+import 'package:mineral/api/server/contracts/channels/guild_voice_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/emoji_contracts.dart';
 import 'package:mineral/api/server/contracts/guild_member_contracts.dart';
 import 'package:mineral/api/server/contracts/role_contracts.dart';
@@ -62,4 +60,12 @@ abstract interface class GuildContract {
   abstract final int? approximateMemberCount;
   abstract final int? approximatePresenceCount;
   abstract final bool premiumProgressBarEnabled;
+
+  GuildTextChannelContract? get systemChannel;
+  GuildTextChannelContract? get publicUpdatesChannel;
+  GuildTextChannelContract? get safetyAlertsChannel;
+  GuildTextChannelContract? get widgetChannel;
+  GuildTextChannelContract? get rulesChannel;
+  GuildVoiceChannelContract? get afkChannel;
+  GuildMemberContract get owner;
 }
