@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:logging/logging.dart';
 import 'package:mineral/internal/console/command.dart';
 import 'package:mineral/internal/console/command_option.dart';
 import 'package:mineral/internal/console/console.dart';
@@ -8,7 +9,9 @@ import 'package:mineral/internal/fold/container.dart';
 import 'package:tint/tint.dart';
 
 final class HelpCommand extends Command {
-  HelpCommand(): super(
+  final Logger _logger;
+
+  HelpCommand(this._logger): super(
     name: 'help',
     description: 'Displays help information',
     options: [

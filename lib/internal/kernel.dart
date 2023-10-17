@@ -101,7 +101,7 @@ final class Kernel {
     final consoleConfig = config();
 
     console = container.bind<Console>('console', (_) => Console(logger))
-      ..addCommand(HelpCommand())
+      ..addCommand(HelpCommand(logger.console))
       ..addCommand(GenerateEnvironmentCommand(logger.console));
 
     for (final command in consoleConfig.commands) {
