@@ -82,4 +82,9 @@ abstract interface class GuildContract {
 
   Future<void> update(GuildBuilder builder);
   Future<void> delete();
+
+  Future<void> ban({ required GuildMemberContract member, int? deleteMessageDays, String? reason });
+  Future<void> unban({ required Snowflake userId, String? reason });
+  Future<void> kick({ required GuildMemberContract member, String? reason });
+  Future<void> leave();
 }

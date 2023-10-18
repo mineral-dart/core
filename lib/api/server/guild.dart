@@ -11,9 +11,6 @@ import 'package:mineral/api/server/contracts/channels/guild_voice_channel_contra
 import 'package:mineral/api/server/contracts/guild_member_contracts.dart';
 import 'package:mineral/api/server/resources/enums.dart';
 import 'package:mineral/api/server/resources/vanity.dart';
-import 'package:mineral/internal/services/http/discord_http_client.dart';
-import 'package:mineral/services/http/entities/either.dart';
-import 'package:mineral/services/http/entities/http_error.dart';
 
 final class Guild implements GuildContract {
   @override
@@ -277,7 +274,30 @@ final class Guild implements GuildContract {
     print(result.body['name']);*/
   }
 
-  // not tested
+  @override
+  Future<void> ban({required GuildMemberContract member, int? deleteMessageDays, String? reason}) {
+    // TODO: implement ban
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> kick({required GuildMemberContract member, String? reason}) {
+    // TODO: implement kick
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> leave() {
+    // TODO: implement leave
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> unban({required Snowflake userId, String? reason}) {
+    // TODO: implement unban
+    throw UnimplementedError();
+  }
+
   factory Guild.fromWss(final payload) {
     List<GuildFeature> features = [];
 
