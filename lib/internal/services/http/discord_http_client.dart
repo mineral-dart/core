@@ -1,9 +1,6 @@
 import 'package:http/http.dart';
-<<<<<<< HEAD
 import 'package:logging/logging.dart';
-=======
 import 'package:mineral/internal/fold/container.dart';
->>>>>>> feat/guild
 import 'package:mineral/internal/fold/injectable.dart';
 import 'package:mineral/internal/services/http/builders/discord_delete_builder.dart';
 import 'package:mineral/internal/services/http/builders/discord_get_builder.dart';
