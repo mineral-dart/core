@@ -30,6 +30,10 @@ final class ReadyPacket implements PacketContract {
       sessionType: response.payload['session_type'],
     );
 
-    eventFactory.dispatch<ReadyEventContract>((event) => event.handle(client));
+    container.bind('client', (_) => client);
+
+    eventFactory.dispatch<ReadyEventContract>(
+      (event) => event.handle(client)
+    );
   }
 }
