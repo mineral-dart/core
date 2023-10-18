@@ -20,7 +20,7 @@ final class ReadyPacket implements PacketContract {
 
     final client = Client(
       version: response.payload['v'],
-      user: User.fromWebsocket(response.payload['user']),
+      user: User.fromWss(response.payload['user']),
       application: Application(
         id: Snowflake(application['id']),
         flags: application['flags'],

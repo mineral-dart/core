@@ -1,15 +1,16 @@
 final class Snowflake {
-  final String _value;
+  final String value;
 
-  Snowflake(this._value);
+  Snowflake(this.value);
 
   @override
-  int get hashCode => _value.hashCode;
+  int get hashCode => value.hashCode;
 
   @override
   bool operator ==(Object other) => switch (other) {
-    Snowflake(_value: final String value) => _value == value,
-    String() => _value == other,
+    Snowflake(value: final String value) => value == this.value,
+    String() => value == other,
     _ => false
   };
 }
+

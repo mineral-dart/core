@@ -1,8 +1,12 @@
 import 'package:mineral/api/common/contracts/user_contract.dart';
 import 'package:mineral/api/common/contracts/user_decoration_contract.dart';
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/user/user_decoration.dart';
 
 final class User implements UserContract {
+  @override
+  final Snowflake id;
+
   @override
   final String username;
 
@@ -25,7 +29,7 @@ final class User implements UserContract {
   final bool isVerified;
 
   @override
-  final List<dynamic> publicFlags;
+  final int publicFlags;
 
   @override
   final int flags;
@@ -33,7 +37,8 @@ final class User implements UserContract {
   @override
   final String? locale;
 
-  User({
+  User._({
+    required this.id,
     required this.username,
     required this.globalName,
     required this.discriminator,
@@ -46,8 +51,9 @@ final class User implements UserContract {
     required this.locale,
   });
 
-  factory User.fromWebsocket(Map<String, dynamic> payload) =>
-    User(
+  factory User.fromWss(Map<String, dynamic> payload) =>
+   User._(
+      id: Snowflake(payload['id']),
       username: payload['username'],
       globalName: payload['global_name'],
       discriminator: payload['discriminator'],
@@ -59,7 +65,7 @@ final class User implements UserContract {
       isBot: payload['bot'] ?? false,
       isSystem: payload['system'] ?? false,
       isVerified: payload['verified'] ?? false,
-      publicFlags: payload['public_flags'] ?? <dynamic>[],
+      publicFlags: payload['public_flags'] ?? 0,
       flags: payload['flags'] ?? 0,
       locale: payload['locale'],
     );
