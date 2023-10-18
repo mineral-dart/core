@@ -1,6 +1,7 @@
 import 'package:mineral/api/common/contracts/cache_contract.dart';
 import 'package:mineral/api/common/resources/image.dart';
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/builders/guild_builder.dart';
 import 'package:mineral/api/server/contracts/channels/guild_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/channels/guild_text_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/channels/guild_voice_channel_contracts.dart';
@@ -68,4 +69,17 @@ abstract interface class GuildContract {
   GuildTextChannelContract? get rulesChannel;
   GuildVoiceChannelContract? get afkChannel;
   GuildMemberContract get owner;
+
+  Future<void> setName({ required String name });
+  Future<void> setRegion({ required String region });
+  Future<void> setVerificationLevel({ required VerificationLevel verificationLevel });
+  Future<void> setDefaultNotificationLevel({ required NotificationLevel defaultNotificationLevel });
+  Future<void> setExplicitContentFilter({ required ContentFilterLevel explicitContentFilter });
+  Future<void> setNsfwLevel({ required NsfwLevel nsfwLevel });
+  Future<void> setAfkChannel({ required GuildVoiceChannelContract channel });
+  Future<void> setAfkTimeout({ required int timeout });
+  Future<void> setIcon({ required Image icon });
+
+  Future<void> update(GuildBuilder builder);
+  Future<void> delete();
 }

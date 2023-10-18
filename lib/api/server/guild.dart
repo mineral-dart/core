@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/resources/image.dart';
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/builders/guild_builder.dart';
 import 'package:mineral/api/server/caches/guild_channels_cache.dart';
 import 'package:mineral/api/server/caches/guild_emojis_cache.dart';
 import 'package:mineral/api/server/caches/guild_members_cache.dart';
@@ -10,6 +11,9 @@ import 'package:mineral/api/server/contracts/channels/guild_voice_channel_contra
 import 'package:mineral/api/server/contracts/guild_member_contracts.dart';
 import 'package:mineral/api/server/resources/enums.dart';
 import 'package:mineral/api/server/resources/vanity.dart';
+import 'package:mineral/internal/services/http/discord_http_client.dart';
+import 'package:mineral/services/http/entities/either.dart';
+import 'package:mineral/services/http/entities/http_error.dart';
 
 final class Guild implements GuildContract {
   @override
@@ -187,30 +191,90 @@ final class Guild implements GuildContract {
   @override
   GuildMemberContract get owner => members.cache.getOrFail(ownerId);
 
-  /// [Guild] to Json method is private
-  dynamic _toJson() {
-    return {
-      "name": label,
-      "description": description,
-      "icon": icon,
-      "banner": banner,
-      "verification_level": verificationLevel.value,
-      "default_message_notifications": defaultNotificationLevel.value,
-      "explicit_content_filter": explicitContentFilter.value,
-      "afk_channel_id": afkChannelId,
-      "afk_timeout": afkTimeout,
-      "owner_id": ownerId,
-      "splash": splash,
-      "discovery_splash": splash,
-      "system_channel_id": systemChannelId,
-      "system_channel_flags": systemChannelFlags,
-      "rules_channel_id": rulesChannelId,
-      "public_updates_channel_id": publicUpdatesChannelId,
-      "preferred_locale": preferredLocale.locale,
-      "features": features.map((e) => e.name),
-      "premium_progress_bar_enabled": premiumProgressBarEnabled,
-      "safety_alerts_channel_id": safetyAlertsChannelId,
-    };
+  @override
+  Future<void> delete() {
+    // TODO: implement delete
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<void> setAfkChannel({ required GuildVoiceChannelContract channel}) async {
+    GuildBuilder builder = GuildBuilder();
+    await update(builder.setAfkChannelId(channel.id));
+  }
+
+  @override
+  Future<void> setAfkTimeout({required int timeout}) async {
+    GuildBuilder builder = GuildBuilder();
+    await update(builder.setAfkTimeout(timeout));
+  }
+
+  @override
+  Future<void> setDefaultNotificationLevel({required NotificationLevel defaultNotificationLevel}) async {
+    GuildBuilder builder = GuildBuilder();
+    await update(builder.setDefaultMessageNotifications(defaultNotificationLevel));
+  }
+
+  @override
+  Future<void> setExplicitContentFilter({required ContentFilterLevel explicitContentFilter}) async {
+    GuildBuilder builder = GuildBuilder();
+    await update(builder.setExplicitContentFilter(explicitContentFilter));
+  }
+
+  @override
+  Future<void> setIcon({required Image icon}) async {
+    GuildBuilder builder = GuildBuilder();
+    await update(builder.setIcon(icon));
+  }
+
+  @override
+  Future<void> setName({required String name}) async {
+    GuildBuilder builder = GuildBuilder();
+    await update(builder.setName(name));
+  }
+
+  @override
+  Future<void> setNsfwLevel({required NsfwLevel nsfwLevel}) async {
+    GuildBuilder builder = GuildBuilder();
+    await update(builder.setNsfwLevel(nsfwLevel));
+  }
+
+  @override
+  Future<void> setRegion({required String region}) async {
+    GuildBuilder builder = GuildBuilder();
+    await update(builder.setRegion(region));
+  }
+
+  @override
+  Future<void> setVerificationLevel({required VerificationLevel verificationLevel}) async {
+    GuildBuilder builder = GuildBuilder();
+    await update(builder.setVerificationLevel(verificationLevel));
+  }
+
+  @override
+  Future<void> update(GuildBuilder builder) async {
+  /*  final http = DiscordHttpClient.singleton();
+
+    builder.setName("Mineral test");
+    final request = http
+        .patch("/guilds/${id.value}")
+        .payload({
+          "name": "Mineral test",
+        })
+        .build();
+
+    final result = await Either.future(
+        future: request,
+        onError: (error) => switch(error) {
+          HttpError(statusCode: final code) when code == 400 => throw Exception("HttpError: $code"),
+        // TODO: Handle this case.
+          HttpError(statusCode: final code, message: final message) => throw Exception("HttpError ($code): $message"),
+        },
+        onSuccess: (response) => response,
+    );
+
+    print(result.statusCode);
+    print(result.body['name']);*/
   }
 
   // not tested
