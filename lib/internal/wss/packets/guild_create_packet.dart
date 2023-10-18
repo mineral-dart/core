@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mineral/internal/factories/contracts/guild_create_event_contract.dart';
 import 'package:mineral/internal/factories/event_factory.dart';
 import 'package:mineral/api/common/client/client.dart';
 import 'package:mineral/api/server/caches/guild_cache.dart';
@@ -19,6 +20,9 @@ final class GuildCreatePacket implements PacketContract {
     Client client = container.use<Client>('client');
     final GuildCache guilds = client.guilds as GuildCache;
     Guild guild = guilds.from(response.payload);
-    // todo emit event
+
+    eventFactory.dispatch<GuildCreateEventContract>(
+      (event) => event.handle(guild)
+    );
   }
 }
