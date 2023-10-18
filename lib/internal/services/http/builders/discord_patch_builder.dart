@@ -26,6 +26,19 @@ class DiscordPatchBuilder extends PatchBuilder implements MethodAdapter {
 
   DiscordPatchBuilder(this._dispatcher, this._request): super(_dispatcher, _request);
 
+  /// Add payload to the [BaseRequest]
+  /// ```dart
+  /// final DiscordHttpClient client = DiscordHttpClient(baseUrl: '/');
+  /// final foo = await client.patch('/foo/:id')
+  ///  .payload({'foo': 'bar'})
+  ///  .build();
+  ///  ```
+  @override
+  DiscordPatchBuilder payload (dynamic fields) {
+    _payload = fields;
+    return this;
+  }
+
   /// Add AuditLog to the [BaseRequest] headers
   /// [AuditLog] is a reason for the action
   /// Related to the official [Discord API](https://discord.com/developers/docs/resources/audit-log) documentation

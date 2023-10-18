@@ -94,7 +94,6 @@ class DiscordHttpClient extends Injectable
   @override
   DiscordPatchBuilder patch(String url) {
     final request = Request('PATCH', Uri.parse('$baseUrl$url'))..headers.addAll(headers.all);
-
     return DiscordPatchBuilder(dispatcher, request);
   }
 
