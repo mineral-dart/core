@@ -84,7 +84,7 @@ final class GuildTextChannel implements GuildTextChannelContract {
     required this.parentId
   });
 
-  factory GuildTextChannel.fromWss(final payload) {
+  factory GuildTextChannel.fromWss(final payload, final GuildContract guild) {
     return GuildTextChannel._(
       id: Snowflake(payload['id']),
       name: payload['name'],
@@ -99,7 +99,7 @@ final class GuildTextChannel implements GuildTextChannelContract {
       parentId: payload['parent_id'] != null
           ? Snowflake(payload['parent_id'])
           : null,
-      guildId: Snowflake(payload['guild_id']),
+      guildId: guild.id,
     );
   }
 }

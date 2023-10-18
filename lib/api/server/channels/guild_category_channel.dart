@@ -65,11 +65,11 @@ final class GuildCategoryChannel implements GuildCategoryChannelContracts {
       .toList();
   }
 
-  factory GuildCategoryChannel.fromWss(final payload) => GuildCategoryChannel._(
+  factory GuildCategoryChannel.fromWss(final payload, final GuildContract guild) => GuildCategoryChannel._(
       id: Snowflake(payload['id']),
       name: payload['name'],
       position: payload['position'],
       topic: payload['topic'],
-      guildId: Snowflake(payload['guild_id']),
+      guildId: guild.id,
     );
 }

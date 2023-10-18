@@ -58,11 +58,11 @@ final class GuildVoiceChannel implements GuildVoiceChannelContract {
     required this.userLimit
   });
 
-  factory GuildVoiceChannel.fromWss(final payload) {
+  factory GuildVoiceChannel.fromWss(final payload, final GuildContract guild) {
     return GuildVoiceChannel._(
       id: Snowflake(payload['id']),
       name: payload['name'],
-      guildId: Snowflake(payload['guild_id']),
+      guildId: guild.id,
       topic: payload['topic'],
       position: payload['position'],
       parentId: payload['parent_id'] != null

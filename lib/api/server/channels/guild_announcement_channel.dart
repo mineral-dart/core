@@ -59,11 +59,11 @@ final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract
     required this.parentId,
   });
 
-  factory GuildAnnouncementChannel.fromWss(final payload) {
+  factory GuildAnnouncementChannel.fromWss(final payload, final GuildContract guild) {
     return GuildAnnouncementChannel._(
       id: Snowflake(payload['id']),
       name: payload['name'],
-      guildId: Snowflake(payload['guild_id']),
+      guildId: guild.id,
       topic: payload['topic'],
       isNsfw: payload['nsfw'] ?? false,
       rateLimitPerUser: payload['rate_limit_per_user'],
