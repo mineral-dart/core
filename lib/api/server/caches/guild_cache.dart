@@ -28,11 +28,11 @@ final class GuildCache implements CacheContract<GuildContract> {
 
       for (final payload in payload['channels']) {
         final channel = switch(ChannelsType.values.where((element) => element.value == payload['type']).first) {
-          ChannelsType.guildText => GuildTextChannel.fromWss(payload),
-          ChannelsType.guildVoice => GuildVoiceChannel.fromWss(payload),
-          ChannelsType.guildNews => GuildAnnouncementChannel.fromWss(payload),
-          ChannelsType.guildCategory => GuildCategoryChannel.fromWss(payload),
-          ChannelsType.guildForum => GuildTextChannel.fromWss(payload), // todo: implement guild forum channel
+          ChannelsType.guildText => GuildTextChannel.fromWss(payload, guild),
+          ChannelsType.guildVoice => GuildVoiceChannel.fromWss(payload, guild),
+          ChannelsType.guildNews => GuildAnnouncementChannel.fromWss(payload, guild),
+          ChannelsType.guildCategory => GuildCategoryChannel.fromWss(payload, guild),
+          ChannelsType.guildForum => GuildTextChannel.fromWss(payload, guild), // todo: implement guild forum channel
           _ => throw Exception("Unknown channel type: ${payload['type']}")
         };
 
