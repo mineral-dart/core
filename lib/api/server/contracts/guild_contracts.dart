@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/contracts/cache_contract.dart';
-import 'package:mineral/api/common/resources/image.dart';
+import 'package:mineral/api/common/image.dart';
+import 'package:mineral/api/common/resources/picture.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/builders/guild_builder.dart';
 import 'package:mineral/api/server/contracts/channels/guild_channel_contracts.dart';
@@ -29,9 +30,9 @@ abstract interface class GuildContract {
   abstract final CacheContract<GuildChannelContract> channels;
   abstract final CacheContract<EmojiContract> emojis;
 
-  abstract final Image? icon;
-  abstract final Image? banner;
-  abstract final Image? splash;
+  abstract final Picture? icon;
+  abstract final Picture? banner;
+  abstract final Picture? splash;
 
   abstract final Snowflake? rulesChannelId;
   abstract final Snowflake? publicUpdatesChannelId;

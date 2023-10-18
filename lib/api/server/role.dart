@@ -1,6 +1,6 @@
 import 'package:mineral/api/common/emojis/emoji.dart';
 import 'package:mineral/api/common/resources/color.dart';
-import 'package:mineral/api/common/resources/image.dart';
+import 'package:mineral/api/common/resources/picture.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/helper.dart';
 import 'package:mineral/api/server/contracts/emoji_contracts.dart';
@@ -22,7 +22,7 @@ final class Role implements RoleContract {
   int flags;
 
   @override
-  Image? icon;
+  Picture? icon;
 
   @override
   bool isHoisted;
@@ -66,7 +66,7 @@ final class Role implements RoleContract {
       color: Helper.rgbToColor(payload['color']),
       emoji: payload['unicode_emoji'] != null ? Emoji.unicode(payload['unicode_emoji']) : null,
       flags: payload['flags'],
-      icon: payload['icon'] != null ? Image(label: payload['icon']) : null,
+      icon: payload['icon'] != null ? Picture(label: payload['icon']) : null,
       isHoisted: payload['hoist'],
       isManaged: payload['managed'],
       isMentionable: payload['mentionable'],

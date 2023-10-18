@@ -1,5 +1,5 @@
 import 'package:mineral/api/common/contracts/presence_contracts.dart';
-import 'package:mineral/api/common/resources/image.dart';
+import 'package:mineral/api/common/resources/picture.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/user/user.dart';
 import 'package:mineral/api/helper.dart';
@@ -10,7 +10,7 @@ import 'package:mineral/api/server/resources/permission.dart';
 
 final class GuildMember implements GuildMemberContract {
   @override
-  Image? avatar;
+  Picture? avatar;
 
   @override
   bool isDeaf;
@@ -57,7 +57,7 @@ final class GuildMember implements GuildMemberContract {
 
   factory GuildMember.fromWss(Map<String, dynamic> payload, Guild guild) =>
       GuildMember._(
-        avatar: payload['avatar'] != null ? Image(label: payload['avatar']) : null,
+        avatar: payload['avatar'] != null ? Picture(label: payload['avatar']) : null,
         isDeaf: payload['deaf'],
         joinedAt: DateTime.parse(payload['joined_at']),
         isMute: payload['mute'],

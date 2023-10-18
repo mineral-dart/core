@@ -1,4 +1,5 @@
-import 'package:mineral/api/common/resources/image.dart';
+import 'package:mineral/api/common/image.dart';
+import 'package:mineral/api/common/resources/picture.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/builders/guild_builder.dart';
 import 'package:mineral/api/server/caches/guild_channels_cache.dart';
@@ -41,13 +42,13 @@ final class Guild implements GuildContract {
   late final GuildEmojisCache emojis;
 
   @override
-  final Image? icon;
+  final Picture? icon;
 
   @override
-  final Image? banner;
+  final Picture? banner;
 
   @override
-  final Image? splash;
+  final Picture? splash;
 
   final Snowflake? afkChannelId;
 
@@ -307,9 +308,9 @@ final class Guild implements GuildContract {
         label: payload["name"],
         description: payload["description"],
         ownerId: Snowflake(payload["owner_id"]),
-        icon: Image(label: payload["icon"], endpoint: "icons/${payload["id"]}/"),
-        banner: Image(label: payload["banner"], endpoint: "banners/${payload["id"]}/"),
-        splash: Image(label: payload["splash"], endpoint: "splashes/${payload["id"]}/"),
+        icon: Picture(label: payload["icon"], endpoint: "icons/${payload["id"]}/"),
+        banner: Picture(label: payload["banner"], endpoint: "banners/${payload["id"]}/"),
+        splash: Picture(label: payload["splash"], endpoint: "splashes/${payload["id"]}/"),
         afkChannelId: payload["afk_channel_id"] != null
             ? Snowflake(payload["afk_channel_id"])
             : null,
