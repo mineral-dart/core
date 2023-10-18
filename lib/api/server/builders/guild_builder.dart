@@ -1,4 +1,6 @@
-import 'package:mineral/api/common/resources/image.dart';
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/resources/enums.dart';
 
@@ -42,13 +44,23 @@ class GuildBuilder {
     return this;
   }
 
-  GuildBuilder setIcon(Image icon) {
-    throw UnimplementedError();
+  GuildBuilder setIcon(File file) {
+    _fields['icon'] = _encodeFile(file);
     return this;
   }
 
-  GuildBuilder setSplash(Image splash) {
-    throw UnimplementedError();
+  GuildBuilder setSplash(File file) {
+    _fields['splash'] = _encodeFile(file);
+    return this;
+  }
+
+  GuildBuilder setDiscoverySplash(File file) {
+    _fields['discovery_splash'] = _encodeFile(file);
+    return this;
+  }
+
+  GuildBuilder setBanner(File file) {
+    _fields['banner'] = _encodeFile(file);
     return this;
   }
 
@@ -80,6 +92,14 @@ class GuildBuilder {
   GuildBuilder setNsfwLevel(NsfwLevel nsfwLevel) {
     _fields['nsfw_level'] = nsfwLevel.value;
     return this;
+  }
+
+  String _encodeFile (File file) {
+    final ext = file.path.split('.').last;
+    final bytes = file.readAsBytesSync();
+    final base64 = base64Encode(bytes);
+
+    return 'data:image/$ext;base64,$base64';
   }
 
   Map<String, dynamic> build() => _fields;
