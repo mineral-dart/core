@@ -11,6 +11,9 @@ import 'package:mineral/api/server/contracts/channels/guild_voice_channel_contra
 import 'package:mineral/api/server/contracts/guild_member_contracts.dart';
 import 'package:mineral/api/server/resources/enums.dart';
 import 'package:mineral/api/server/resources/vanity.dart';
+import 'package:mineral/internal/services/http/discord_http_client.dart';
+import 'package:mineral/services/http/entities/either.dart';
+import 'package:mineral/services/http/entities/http_error.dart';
 
 final class Guild implements GuildContract {
   @override
@@ -197,81 +200,72 @@ final class Guild implements GuildContract {
   @override
   Future<void> setAfkChannel({ required GuildVoiceChannelContract channel}) async {
     GuildBuilder builder = GuildBuilder();
-    await update(builder.setAfkChannelId(channel.id));
+    return update(builder.setAfkChannelId(channel.id));
   }
 
   @override
   Future<void> setAfkTimeout({required int timeout}) async {
     GuildBuilder builder = GuildBuilder();
-    await update(builder.setAfkTimeout(timeout));
+    return update(builder.setAfkTimeout(timeout));
   }
 
   @override
   Future<void> setDefaultNotificationLevel({required NotificationLevel defaultNotificationLevel}) async {
     GuildBuilder builder = GuildBuilder();
-    await update(builder.setDefaultMessageNotifications(defaultNotificationLevel));
+    return update(builder.setDefaultMessageNotifications(defaultNotificationLevel));
   }
 
   @override
   Future<void> setExplicitContentFilter({required ContentFilterLevel explicitContentFilter}) async {
     GuildBuilder builder = GuildBuilder();
-    await update(builder.setExplicitContentFilter(explicitContentFilter));
+    return update(builder.setExplicitContentFilter(explicitContentFilter));
   }
 
   @override
   Future<void> setIcon({required Image icon}) async {
     GuildBuilder builder = GuildBuilder();
-    await update(builder.setIcon(icon));
+    return update(builder.setIcon(icon));
   }
 
   @override
   Future<void> setName({required String name}) async {
     GuildBuilder builder = GuildBuilder();
-    await update(builder.setName(name));
+    return update(builder.setName(name));
   }
 
   @override
   Future<void> setNsfwLevel({required NsfwLevel nsfwLevel}) async {
     GuildBuilder builder = GuildBuilder();
-    await update(builder.setNsfwLevel(nsfwLevel));
+    return update(builder.setNsfwLevel(nsfwLevel));
   }
 
   @override
   Future<void> setRegion({required String region}) async {
     GuildBuilder builder = GuildBuilder();
-    await update(builder.setRegion(region));
+    return update(builder.setRegion(region));
   }
 
   @override
   Future<void> setVerificationLevel({required VerificationLevel verificationLevel}) async {
     GuildBuilder builder = GuildBuilder();
-    await update(builder.setVerificationLevel(verificationLevel));
+    return update(builder.setVerificationLevel(verificationLevel));
   }
 
   @override
   Future<void> update(GuildBuilder builder) async {
-  /*  final http = DiscordHttpClient.singleton();
+    final http = DiscordHttpClient.singleton();
 
-    builder.setName("Mineral test");
-    final request = http
-        .patch("/guilds/${id.value}")
-        .payload({
-          "name": "Mineral test",
-        })
-        .build();
+    final request = http.patch("/guilds/${id.value}")
+      .payload(builder.build())
+      .build();
 
-    final result = await Either.future(
-        future: request,
-        onError: (error) => switch(error) {
-          HttpError(statusCode: final code) when code == 400 => throw Exception("HttpError: $code"),
-        // TODO: Handle this case.
-          HttpError(statusCode: final code, message: final message) => throw Exception("HttpError ($code): $message"),
-        },
-        onSuccess: (response) => response,
+    return Either.future(
+      future: request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+          => throw ArgumentError(message),
+      }
     );
-
-    print(result.statusCode);
-    print(result.body['name']);*/
   }
 
   @override
