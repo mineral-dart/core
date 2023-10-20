@@ -2,7 +2,7 @@ import 'package:mineral/api/common/client/application.dart';
 import 'package:mineral/api/common/client/client.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/user/user.dart';
-import 'package:mineral/internal/factories/contracts/ready_event_contract.dart';
+import 'package:mineral/internal/factories/contracts/client/ready_event_contract.dart';
 import 'package:mineral/internal/factories/event_factory.dart';
 import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/wss/contracts/packet_contract.dart';
