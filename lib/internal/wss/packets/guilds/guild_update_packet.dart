@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/contracts/guild_contracts.dart';
-import 'package:mineral/internal/factories/contracts/guild_update_event_contract.dart';
+import 'package:mineral/internal/factories/contracts/guilds/guild_update_event_contract.dart';
 import 'package:mineral/internal/factories/event_factory.dart';
 import 'package:mineral/api/common/client/client.dart';
 import 'package:mineral/api/server/caches/guild_cache.dart';
