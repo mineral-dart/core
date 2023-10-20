@@ -1,6 +1,7 @@
 import 'package:mineral/api/common/collection.dart';
 import 'package:mineral/api/common/contracts/cache_contract.dart';
 import 'package:mineral/api/common/contracts/presence_contracts.dart';
+import 'package:mineral/api/common/emojis/emoji.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/user/presence.dart';
 import 'package:mineral/api/server/channels/guild_announcement_channel.dart';
@@ -61,6 +62,13 @@ final class GuildCache implements CacheContract<GuildContract> {
         GuildMemberContract member = guild.members.cache.getOrFail(Snowflake(payload['user']['id']));
 
         member.presence = presence;
+      }
+
+      for(final payload in payload['emojis']) {
+        guild.emojis.cache.putIfAbsent(
+            Snowflake(payload['id']),
+            () => Emoji.fromWss(payload)
+        );
       }
 
       return guild;
