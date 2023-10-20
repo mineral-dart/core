@@ -4,9 +4,10 @@ import 'package:mineral/internal/factories/event_factory.dart';
 import 'package:mineral/internal/wss/contracts/packet_contract.dart';
 import 'package:mineral/internal/wss/entities/packet_type.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';
-import 'package:mineral/internal/wss/packets/ready_packet.dart';
+import 'package:mineral/internal/wss/packets/guilds/guild_create_packet.dart';
+import 'package:mineral/internal/wss/packets/guilds/guild_update_packet.dart';
+import 'package:mineral/internal/wss/packets/client/ready_packet.dart';
 
-import '../packets/guild_create_packet.dart';
 
 final class WebsocketEventDispatcher {
   final EventFactory eventFactory;
@@ -15,7 +16,8 @@ final class WebsocketEventDispatcher {
   WebsocketEventDispatcher(this.eventFactory) {
     _packets
       ..putIfAbsent(PacketType.ready, () => ReadyPacket(eventFactory))
-      ..putIfAbsent(PacketType.guildCreate, () => GuildCreatePacket(eventFactory));
+      ..putIfAbsent(PacketType.guildCreate, () => GuildCreatePacket(eventFactory))
+      ..putIfAbsent(PacketType.guildUpdate, () => GuildUpdatePacket(eventFactory));
   }
 
   Future<void> dispatch (WebsocketResponse response, { bool pushToQueue = false }) async {
