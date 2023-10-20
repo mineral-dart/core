@@ -19,7 +19,8 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
   late WebsocketManager websocket;
   late final DiscordHttpClient http;
 
-  ReceivePort? _receivedPort;
+  DateTime? duration;
+
   Isolate? _devIsolate;
   SendPort? _devSendPort;
 
@@ -51,38 +52,53 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
         path.replaceFirst(Directory.current.path, '').substring(1);
 
     final watcher = WatcherBuilder(Directory.current)
-      .setAllowReload(useHmr)
-      .addWatchFolder(Directory(join(Directory.current.path, 'lib')))
-      .addWatchFolder(Directory(join(Directory.current.path, 'config')))
-      .onReload((event) {
-        final String location = makeRelativePath(event.path);
+        .setAllowReload(useHmr)
+        .addWatchFolder(Directory(join(Directory.current.path, 'lib')))
+        .addWatchFolder(Directory(join(Directory.current.path, 'config')))
+        .onReload((event) {
+          if(!event.path.endsWith(".dart")) {
+            return;
+          }
 
-        switch (event.type) {
-          case ChangeType.ADD: logger.hmr.info('File added: $location');
-          case ChangeType.MODIFY: logger.hmr.info('File modified: $location');
-          case ChangeType.REMOVE: logger.hmr.info('File removed: $location');
-        }
+          if (Platform.isLinux && duration != null) {
+            if (DateTime.now().difference(duration!) < Duration(milliseconds: 5)) {
+              return;
+            }
+          }
 
-        _devIsolate?.kill(priority: Isolate.immediate);
-        createDevelopmentIsolate();
+          final String location = makeRelativePath(event.path);
 
-        logger.hmr.info('Restarting application...');
-      })
-      .build();
+          switch (event.type) {
+            case ChangeType.ADD: logger.hmr.info('File added: $location');
+            case ChangeType.MODIFY: logger.hmr.info('File modified: $location');
+            case ChangeType.REMOVE: logger.hmr.info('File removed: $location');
+          }
+
+          _devIsolate?.kill(priority: Isolate.immediate);
+          _devIsolate = null;
+          createDevelopmentIsolate();
+
+          logger.hmr.info('Restarting application...');
+
+          if (Platform.isLinux) {
+            duration = DateTime.now();
+          }
+       })
+        .build();
 
     watcher.watch();
   }
 
-  void createDevelopmentIsolate () async {
-    _receivedPort = ReceivePort();
+  void createDevelopmentIsolate () {
+    final port = ReceivePort();
     final uri = Uri.parse(join(Directory.current.path, 'bin', 'app.dart'));
-    Isolate.spawnUri(uri, [], _receivedPort?.sendPort, debugName: 'dev')
-      .then((Isolate isolate) async {
-        _devIsolate = isolate;
-        _devSendPort = await _receivedPort?.first;
+    Isolate.spawnUri(uri, [], port.sendPort, debugName: 'dev')
+        .then((Isolate isolate) async {
+      _devIsolate = isolate;
+      _devSendPort = await port.first;
 
-        restoreEvents();
-      });
+      restoreEvents();
+    });
   }
 
   void dispatch(Map<String, dynamic> response) {

@@ -25,7 +25,6 @@ final class DirectoryWatcherElement {
   }
 
   void dispatch (WatchEvent event) {
-
     switch (event.type) {
       case ChangeType.ADD:
         addFile(event);
