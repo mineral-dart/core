@@ -63,7 +63,6 @@ final class GuildCache implements CacheContract<GuildContract> {
         member.presence = presence;
       }
 
-      cache.putIfAbsent(guild.id, () => guild);
       return guild;
   }
 }

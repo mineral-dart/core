@@ -101,7 +101,7 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
     });
   }
 
-  void dispatch(Map<String, dynamic> response) {
+  void dispatch (Map<String, dynamic> response) {
     queue.addLast(response);
     _devSendPort?.send(response);
   }
