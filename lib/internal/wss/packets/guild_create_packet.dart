@@ -21,6 +21,8 @@ final class GuildCreatePacket implements PacketContract {
     final GuildCache guilds = client.guilds as GuildCache;
     Guild guild = guilds.from(response.payload);
 
+    guilds.cache.putIfAbsent(guild.id, () => guild);
+
     eventFactory.dispatch<GuildCreateEventContract>(
       (event) => event.handle(guild)
     );
