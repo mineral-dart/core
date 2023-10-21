@@ -19,11 +19,10 @@ final class GuildUpdatePacket implements PacketContract {
 
   @override
   Future<void> handle(WebsocketResponse response) async {
-    Client client = container.use<Client>('client');
+    final Client client = container.use<Client>('client');
     final GuildCache guilds = client.guilds as GuildCache;
-    print(response.payload);
-    GuildContract beforeGuild = guilds.cache.getOrFail(Snowflake(response.payload['id']));
-    GuildContract guild = Guild.fromWss(response.payload);
+    final GuildContract beforeGuild = guilds.cache.getOrFail(Snowflake(response.payload['id']));
+    final GuildContract guild = Guild.fromWss(response.payload);
 
     guild.channels.cache.addAll(beforeGuild.channels.cache);
     guild.roles.cache.addAll(beforeGuild.roles.cache);

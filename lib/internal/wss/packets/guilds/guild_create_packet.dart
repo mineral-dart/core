@@ -17,9 +17,9 @@ final class GuildCreatePacket implements PacketContract {
 
   @override
   Future<void> handle(WebsocketResponse response) async {
-    Client client = container.use<Client>('client');
+    final Client client = container.use<Client>('client');
     final GuildCache guilds = client.guilds as GuildCache;
-    Guild guild = guilds.from(response.payload);
+    final Guild guild = guilds.from(response.payload);
 
     guilds.cache.putIfAbsent(guild.id, () => guild);
 
