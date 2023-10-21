@@ -1,4 +1,3 @@
-import 'dart:collection';
 import 'dart:isolate';
 
 import 'package:mineral/internal/factories/contracts/event_contract.dart';
