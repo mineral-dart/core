@@ -43,6 +43,19 @@ class DiscordPostBuilder extends PostBuilder implements MethodAdapter {
     return this;
   }
 
+  /// Add payload to the [BaseRequest]
+  /// ```dart
+  /// final HttpClient client = DiscordHttpClient(baseUrl: '/');
+  /// final foo = await client.post('/foo')
+  ///   .payload({'foo': 'bar'})
+  ///   .build();
+  /// ```
+  @override
+  DiscordPostBuilder payload (dynamic fields) {
+    _payload = fields;
+    return this;
+  }
+
   /// Build the [BaseRequest] and send it to the [HttpClient]
   /// [BaseRequest] becomes [Request] if there are no files and [MultipartRequest] if there are files
   /// ```dart
