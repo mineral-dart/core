@@ -270,15 +270,38 @@ final class Guild implements GuildContract {
   }
 
   @override
-  Future<void> ban({required GuildMemberContract member, int? deleteMessageDays, String? reason}) {
-    // TODO: implement ban
-    throw UnimplementedError();
+  Future<void> ban(GuildMemberContract member, { int? days, String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.put('/guilds/$id/bans/${member.user.id}')
+      .auditLog(reason)
+      .payload({ 'delete_message_seconds': days })
+      .build();
+
+    await Either.future(
+      future:request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+          => throw ArgumentError(message),
+      }
+    );
   }
 
   @override
-  Future<void> kick({required GuildMemberContract member, String? reason}) {
-    // TODO: implement kick
-    throw UnimplementedError();
+  Future<void> kick(GuildMemberContract member, { String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.delete('/guilds/$id/members/${member.user.id}')
+      .auditLog(reason)
+      .build();
+
+    await Either.future(
+      future:request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+          => throw ArgumentError(message),
+      }
+    );
   }
 
   @override
