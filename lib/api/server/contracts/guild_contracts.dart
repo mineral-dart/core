@@ -71,6 +71,7 @@ abstract interface class GuildContract {
   GuildVoiceChannelContract? get afkChannel;
   GuildMemberContract get owner;
 
+  Future<void> setOwner (GuildMemberContract member, { String? reason });
   Future<void> setName(String name, { String? reason });
   Future<void> setRegion(String region, { String? reason });
   Future<void> setVerificationLevel(VerificationLevel verificationLevel, { String? reason });
@@ -79,13 +80,24 @@ abstract interface class GuildContract {
   Future<void> setNsfwLevel(NsfwLevel nsfwLevel, { String? reason });
   Future<void> setAfkChannel(GuildVoiceChannelContract channel, { String? reason });
   Future<void> setAfkTimeout(int timeout, { String? reason });
+
   Future<void> setIcon(Image icon, { String? reason });
+  Future<void> removeIcon({ String? reason });
+
+  Future<void> setBanner(Image icon, { String? reason });
+  Future<void> removeBanner({ String? reason });
+
+  Future<void> setSplash(Image icon, { String? reason });
+  Future<void> removeSplash({ String? reason });
+
+  Future<void> setDiscoverySplash(Image icon, { String? reason });
+  Future<void> removeDiscoverySplash({ String? reason });
 
   Future<void> update(GuildBuilder builder, { String? reason });
   Future<void> delete({ String? reason });
 
   Future<void> ban(GuildMemberContract member, { int? days, String? reason });
-  Future<void> unban(Snowflake userId, { String? reason });
+  Future<void> unban(Snowflake id, { String? reason });
   Future<void> kick(GuildMemberContract member, { String? reason });
-  Future<void> leave();
+  Future<void> leave({ String? reason });
 }

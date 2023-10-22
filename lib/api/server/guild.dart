@@ -193,6 +193,24 @@ final class Guild implements GuildContract {
   GuildMemberContract get owner => members.cache.getOrFail(ownerId);
 
   @override
+  Future<void> setOwner (GuildMemberContract member, { String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.patch('/guilds/${id.value}')
+      .payload({ 'owner_id': member.user.id.value })
+      .auditLog(reason)
+      .build();
+
+    await Either.future(
+      future: request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+          => throw ArgumentError(message),
+      }
+    );
+  }
+
+  @override
   Future<void> delete({ String? reason }) {
     final http = DiscordHttpClient.singleton();
 
@@ -240,6 +258,92 @@ final class Guild implements GuildContract {
   }
 
   @override
+  Future<void> removeIcon({ String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.patch("/guilds/$id")
+      .payload({ 'icon': null })
+      .build();
+
+    return Either.future(
+      future: request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+        => throw ArgumentError(message),
+      }
+    );
+  }
+
+  @override
+  Future<void> setBanner(Image icon, { String? reason }) async {
+    GuildBuilder builder = GuildBuilder();
+    return update(builder.setBanner(icon), reason: reason);
+  }
+
+  @override
+  Future<void> removeBanner({ String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.patch("/guilds/$id")
+      .payload({ 'banner': null })
+      .build();
+
+    return Either.future(
+      future: request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+        => throw ArgumentError(message),
+      }
+    );
+  }
+
+  @override
+  Future<void> setSplash(Image icon, { String? reason }) async {
+    GuildBuilder builder = GuildBuilder();
+    return update(builder.setSplash(icon), reason: reason);
+  }
+
+  @override
+  Future<void> removeSplash({ String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.patch("/guilds/$id")
+      .payload({ 'splash': null })
+      .build();
+
+    return Either.future(
+      future: request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+        => throw ArgumentError(message),
+      }
+    );
+  }
+
+  @override
+  Future<void> setDiscoverySplash(Image icon, { String? reason }) async {
+    GuildBuilder builder = GuildBuilder();
+    return update(builder.setDiscoverySplash(icon), reason: reason);
+  }
+
+  @override
+  Future<void> removeDiscoverySplash({ String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.patch("/guilds/$id")
+        .payload({ 'discovery_splash': null })
+        .build();
+
+    return Either.future(
+        future: request,
+        onError: (HttpError error) => switch(error) {
+          HttpError(message: final message)
+          => throw ArgumentError(message),
+        }
+    );
+  }
+
+  @override
   Future<void> setName(String name, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
     return update(builder.setName(name), reason: reason);
@@ -271,7 +375,7 @@ final class Guild implements GuildContract {
       .payload(builder.build())
       .build();
 
-    return Either.future(
+    await Either.future(
       future: request,
       onError: (HttpError error) => switch(error) {
         HttpError(message: final message)
@@ -316,15 +420,37 @@ final class Guild implements GuildContract {
   }
 
   @override
-  Future<void> leave() {
-    // TODO: implement leave
-    throw UnimplementedError();
+  Future<void> leave({ String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.delete('/users/@me/guilds/$id')
+      .auditLog(reason)
+      .build();
+
+    await Either.future(
+      future:request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+          => throw ArgumentError(message),
+      }
+    );
   }
 
   @override
-  Future<void> unban(Snowflake userId, { String? reason}) {
-    // TODO: implement unban
-    throw UnimplementedError();
+  Future<void> unban(Snowflake id, { String? reason}) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.delete('/guilds/${this.id}/bans/$id')
+      .auditLog(reason)
+      .build();
+
+    await Either.future(
+      future:request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+          => throw ArgumentError(message),
+      }
+    );
   }
 
   factory Guild.fromWss(final payload) {
