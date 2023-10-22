@@ -71,21 +71,21 @@ abstract interface class GuildContract {
   GuildVoiceChannelContract? get afkChannel;
   GuildMemberContract get owner;
 
-  Future<void> setName({ required String name });
-  Future<void> setRegion({ required String region });
-  Future<void> setVerificationLevel({ required VerificationLevel verificationLevel });
-  Future<void> setDefaultNotificationLevel({ required NotificationLevel defaultNotificationLevel });
-  Future<void> setExplicitContentFilter({ required ContentFilterLevel explicitContentFilter });
-  Future<void> setNsfwLevel({ required NsfwLevel nsfwLevel });
-  Future<void> setAfkChannel({ required GuildVoiceChannelContract channel });
-  Future<void> setAfkTimeout({ required int timeout });
-  Future<void> setIcon({ required Image icon });
+  Future<void> setName(String name, { String? reason });
+  Future<void> setRegion(String region, { String? reason });
+  Future<void> setVerificationLevel(VerificationLevel verificationLevel, { String? reason });
+  Future<void> setDefaultNotificationLevel(NotificationLevel defaultNotificationLevel, { String? reason });
+  Future<void> setExplicitContentFilter(ContentFilterLevel explicitContentFilter, { String? reason });
+  Future<void> setNsfwLevel(NsfwLevel nsfwLevel, { String? reason });
+  Future<void> setAfkChannel(GuildVoiceChannelContract channel, { String? reason });
+  Future<void> setAfkTimeout(int timeout, { String? reason });
+  Future<void> setIcon(Image icon, { String? reason });
 
-  Future<void> update(GuildBuilder builder);
-  Future<void> delete();
+  Future<void> update(GuildBuilder builder, { String? reason });
+  Future<void> delete({ String? reason });
 
   Future<void> ban(GuildMemberContract member, { int? days, String? reason });
-  Future<void> unban({ required Snowflake userId, String? reason });
+  Future<void> unban(Snowflake userId, { String? reason });
   Future<void> kick(GuildMemberContract member, { String? reason });
   Future<void> leave();
 }

@@ -193,67 +193,78 @@ final class Guild implements GuildContract {
   GuildMemberContract get owner => members.cache.getOrFail(ownerId);
 
   @override
-  Future<void> delete() {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<void> delete({ String? reason }) {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.delete('/guilds/${id.value}')
+      .auditLog(reason)
+      .build();
+
+    return Either.future(
+      future: request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+          => throw ArgumentError(message),
+      }
+    );
   }
 
   @override
-  Future<void> setAfkChannel({ required GuildVoiceChannelContract channel}) async {
+  Future<void> setAfkChannel(GuildVoiceChannelContract channel, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
-    return update(builder.setAfkChannelId(channel.id));
+    return update(builder.setAfkChannelId(channel.id), reason: reason);
   }
 
   @override
-  Future<void> setAfkTimeout({required int timeout}) async {
+  Future<void> setAfkTimeout(int timeout, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
-    return update(builder.setAfkTimeout(timeout));
+    return update(builder.setAfkTimeout(timeout), reason: reason);
   }
 
   @override
-  Future<void> setDefaultNotificationLevel({required NotificationLevel defaultNotificationLevel}) async {
+  Future<void> setDefaultNotificationLevel(NotificationLevel defaultNotificationLevel, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
-    return update(builder.setDefaultMessageNotifications(defaultNotificationLevel));
+    return update(builder.setDefaultMessageNotifications(defaultNotificationLevel), reason: reason);
   }
 
   @override
-  Future<void> setExplicitContentFilter({required ContentFilterLevel explicitContentFilter}) async {
+  Future<void> setExplicitContentFilter(ContentFilterLevel explicitContentFilter, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
-    return update(builder.setExplicitContentFilter(explicitContentFilter));
+    return update(builder.setExplicitContentFilter(explicitContentFilter), reason: reason);
   }
 
   @override
-  Future<void> setIcon({required Image icon}) async {
+  Future<void> setIcon(Image icon, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
-    return update(builder.setIcon(icon));
+    return update(builder.setIcon(icon), reason: reason);
   }
 
   @override
-  Future<void> setName({required String name}) async {
+  Future<void> setName(String name, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
-    return update(builder.setName(name));
+    return update(builder.setName(name), reason: reason);
   }
 
   @override
-  Future<void> setNsfwLevel({required NsfwLevel nsfwLevel}) async {
+  Future<void> setNsfwLevel(NsfwLevel nsfwLevel, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
-    return update(builder.setNsfwLevel(nsfwLevel));
+    return update(builder.setNsfwLevel(nsfwLevel), reason: reason);
   }
 
   @override
-  Future<void> setRegion({required String region}) async {
+  Future<void> setRegion(String region, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
-    return update(builder.setRegion(region));
+    return update(builder.setRegion(region), reason: reason);
   }
 
   @override
-  Future<void> setVerificationLevel({required VerificationLevel verificationLevel}) async {
+  Future<void> setVerificationLevel(VerificationLevel verificationLevel, { String? reason }) async {
     GuildBuilder builder = GuildBuilder();
-    return update(builder.setVerificationLevel(verificationLevel));
+    return update(builder.setVerificationLevel(verificationLevel), reason: reason);
   }
 
   @override
-  Future<void> update(GuildBuilder builder) async {
+  Future<void> update(GuildBuilder builder, { String? reason }) async {
     final http = DiscordHttpClient.singleton();
 
     final request = http.patch("/guilds/${id.value}")
@@ -311,7 +322,7 @@ final class Guild implements GuildContract {
   }
 
   @override
-  Future<void> unban({required Snowflake userId, String? reason}) {
+  Future<void> unban(Snowflake userId, { String? reason}) {
     // TODO: implement unban
     throw UnimplementedError();
   }
