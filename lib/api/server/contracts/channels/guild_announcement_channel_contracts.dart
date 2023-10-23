@@ -14,7 +14,10 @@ abstract interface class GuildAnnouncementChannelContract implements GuildChanne
   abstract final CacheContract<dynamic> webhooks;
   abstract final CacheContract<GuildMessageContract> messages;
   abstract final Snowflake? parentId;
+  abstract final String? topic;
 
+  Future<void> setTopic(String topic, { String? reason });
+  Future<void> setParent(Snowflake parentId, { String? reason });
   Future<void> send({ List<MessageEmbed>? embeds, String? content, String? tts });
   Future<void> setNsfw(bool isNsfw, { String? reason });
 }
