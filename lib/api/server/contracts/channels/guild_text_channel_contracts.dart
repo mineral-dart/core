@@ -7,6 +7,7 @@ import 'package:mineral/api/server/contracts/channels/guild_channel_contracts.da
 import 'package:mineral/api/server/contracts/guild_message_contracts.dart';
 
 abstract interface class GuildTextChannelContract implements GuildChannelContract {
+  abstract final String? topic;
   abstract final bool isNsfw;
   abstract final int rateLimitPerUser;
   abstract final Snowflake? lastMessageId;
@@ -16,8 +17,10 @@ abstract interface class GuildTextChannelContract implements GuildChannelContrac
   abstract final Snowflake? parentId;
 
   Future<void> update (GuildTextChannelBuilder builder, { String? reason });
+  Future<void> setTopic(String topic, { String? reason });
   Future<void> setRateLimitPerUser(int rateLimitPerUser, { String? reason });
   Future<void> setNsfw(bool isNsfw, { String? reason });
+  Future<void> setParent(Snowflake parentId, { String? reason });
   Future<void> send({
     List<MessageEmbed>? embeds,
     String? content,

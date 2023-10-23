@@ -4,13 +4,10 @@ import 'package:mineral/api/server/contracts/guild_contracts.dart';
 
 abstract interface class GuildChannelContract implements ChannelContract {
   abstract final Snowflake guildId;
-  abstract final String? topic;
   abstract final int? position;
   abstract final GuildContract guild;
 
   Future<void> setName(String name, { String? reason });
   Future<void> delete({ String? reason });
-  Future<void> setParent(Snowflake parentId, { String? reason });
   Future<void> setPosition(int position, { String? reason });
-  Future<void> setTopic(String topic, { String? reason });
 }
