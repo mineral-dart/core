@@ -1,13 +1,16 @@
 import 'package:mineral/api/common/client/client.dart';
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/builders/guild_category_channel_builder.dart';
 import 'package:mineral/api/server/channels/guild_announcement_channel.dart';
 import 'package:mineral/api/server/channels/guild_text_channel.dart';
 import 'package:mineral/api/server/channels/guild_voice_channel.dart';
 import 'package:mineral/api/server/contracts/channels/guild_category_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/channels/guild_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/guild_contracts.dart';
-import 'package:mineral/api/server/guild.dart';
 import 'package:mineral/internal/fold/container.dart';
+import 'package:mineral/internal/services/http/discord_http_client.dart';
+import 'package:mineral/services/http/entities/either.dart';
+import 'package:mineral/services/http/entities/http_error.dart';
 
 final class GuildCategoryChannel implements GuildCategoryChannelContracts {
   @override
@@ -23,9 +26,6 @@ final class GuildCategoryChannel implements GuildCategoryChannelContracts {
   final int? position;
 
   @override
-  final String? topic;
-
-  @override
   GuildContract get guild => container.use<Client>('client').guilds.cache.getOrFail(guildId);
 
   GuildCategoryChannel._({
@@ -33,23 +33,38 @@ final class GuildCategoryChannel implements GuildCategoryChannelContracts {
     required this.guildId,
     required this.name,
     required this.position,
-    required this.topic,
   });
 
   @override
-  Future<void> delete({String? reason}) async {}
+  Future<void> update (GuildCategoryChannelBuilder builder, { String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    final request = http.patch('/channels/${id.value}')
+        .payload(builder.build())
+        .build();
+
+    await Either.future(
+      future: request,
+      onError: (HttpError error) => switch(error) {
+        HttpError(message: final message)
+          => throw ArgumentError(message),
+      }
+    );
+  }
 
   @override
-  Future<void> setName(String name, {String? reason}) async {}
+  Future<void> delete({ String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    await http.delete('/channels/${id.value}')
+        .build();
+  }
 
   @override
-  Future<void> setParent(Snowflake parentId, {String? reason}) async {}
+  Future<void> setName(String name, { String? reason }) async {}
 
   @override
-  Future<void> setPosition(int position, {String? reason}) async {}
-
-  @override
-  Future<void> setTopic(String topic, {String? reason}) async {}
+  Future<void> setPosition(int position, { String? reason }) async {}
 
   @override
   List<GuildChannelContract> get channels {
@@ -66,10 +81,9 @@ final class GuildCategoryChannel implements GuildCategoryChannelContracts {
   }
 
   factory GuildCategoryChannel.fromWss(final payload, final GuildContract guild) => GuildCategoryChannel._(
-      id: Snowflake(payload['id']),
-      name: payload['name'],
-      position: payload['position'],
-      topic: payload['topic'],
-      guildId: guild.id,
-    );
+    id: Snowflake(payload['id']),
+    name: payload['name'],
+    position: payload['position'],
+    guildId: guild.id,
+  );
 }
