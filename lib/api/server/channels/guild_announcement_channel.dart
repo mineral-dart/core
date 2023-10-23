@@ -1,12 +1,18 @@
 import 'package:mineral/api/common/client/client.dart';
+import 'package:mineral/api/common/composables/sendable_message.dart';
+import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/builders/guild_announcement_channel_builder.dart';
 import 'package:mineral/api/server/caches/guild_message_cache.dart';
 import 'package:mineral/api/server/caches/guild_webhook_cache.dart';
 import 'package:mineral/api/server/contracts/channels/guild_announcement_channel_contracts.dart';
 import 'package:mineral/api/server/contracts/guild_contracts.dart';
 import 'package:mineral/internal/fold/container.dart';
+import 'package:mineral/internal/services/http/discord_http_client.dart';
 
 final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract {
+  final SendableMessage _sendableMessage = SendableMessage();
+
   @override
   final Snowflake id;
 
@@ -46,6 +52,58 @@ final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract
   @override
   GuildContract get guild => container.use<Client>('client').guilds.cache.getOrFail(guildId);
 
+  @override
+  Future<void> update (GuildAnnouncementChannelBuilder builder, { String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    await http.patch('/channels/${id.value}')
+      .payload(builder.build())
+       .build();
+  }
+
+  @override
+  Future<void> send({ List<MessageEmbed>? embeds, String? content, String? tts }) async {
+    await _sendableMessage.sendToGuildTextChannel(id, embeds, content, tts);
+  }
+
+  @override
+  Future<void> delete({ String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    await http.delete('/channels/${id.value}')
+      .build();
+  }
+
+  @override
+  Future<void> setParent(Snowflake parentId, { String? reason }) async {
+    GuildAnnouncementChannelBuilder builder = GuildAnnouncementChannelBuilder();
+    return update(builder.setParentId(parentId), reason: reason);
+  }
+
+  @override
+  Future<void> setPosition(int position, { String? reason }) async {
+    GuildAnnouncementChannelBuilder builder = GuildAnnouncementChannelBuilder();
+    return update(builder.setPosition(position), reason: reason);
+  }
+
+  @override
+  Future<void> setTopic(String topic, { String? reason }) async {
+    GuildAnnouncementChannelBuilder builder = GuildAnnouncementChannelBuilder();
+    return update(builder.setTopic(topic), reason: reason);
+  }
+
+  @override
+  Future<void> setName(String name, { String? reason }) async {
+    GuildAnnouncementChannelBuilder builder = GuildAnnouncementChannelBuilder();
+    return update(builder.setName(name), reason: reason);
+  }
+
+  @override
+  Future<void> setNsfw(bool isNsfw, { String? reason }) async {
+    GuildAnnouncementChannelBuilder builder = GuildAnnouncementChannelBuilder();
+    return update(builder.setNsfw(isNsfw), reason: reason);
+  }
+
   GuildAnnouncementChannel._({
     required this.id,
     required this.name,
@@ -77,28 +135,4 @@ final class GuildAnnouncementChannel implements GuildAnnouncementChannelContract
           : null
     );
   }
-
-  @override
-  Future<void> send() async {}
-
-  @override
-  Future<void> delete({ String? reason }) async {}
-
-  @override
-  Future<void> setParent(Snowflake parentId, { String? reason }) async {}
-
-  @override
-  Future<void> setPosition(int position, { String? reason }) async {}
-
-  @override
-  Future<void> setTopic(String topic, { String? reason }) async {}
-
-  @override
-  Future<void> setName(String name, { String? reason }) async {}
-
-  @override
-  Future<void> setNsfw(bool isNsfw, { String? reason }) async {}
-
-  @override
-  Future<void> setRateLimitPerUser(int rateLimitPerUser, { String? reason }) async {}
 }
