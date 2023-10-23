@@ -8,4 +8,10 @@ final class MessageEmbedFooter {
     this.iconUrl,
     this.proxyIconUrl
   });
+
+  Map<String, String?> get serializeAsJson => {
+    'text': text,
+    'icon_url': iconUrl?.toString(),
+    'proxy_icon_url': proxyIconUrl?.toString()
+  };
 }

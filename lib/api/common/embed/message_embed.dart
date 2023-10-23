@@ -31,4 +31,18 @@ final class MessageEmbed {
     this.author,
     this.fields = const []
   });
+
+  Map<String, dynamic> get serializeAsJson => {
+    'title': title,
+    'description': description,
+    'url': url?.toString(),
+    'timestamp': timestamp?.toIso8601String(),
+    'color': int.parse(color.toString().replaceAll('#', ''), radix: 16),
+    'footer': footer?.serializeAsJson,
+    'image': image?.serializeAsJson,
+    'thumbnail': thumbnail?.serializeAsJson,
+    'video': video?.serializeAsJson,
+    'author': author?.serializeAsJson,
+    'fields': fields.map((field) => field.serializeAsJson).toList()
+  };
 }

@@ -8,4 +8,10 @@ final class MessageEmbedField {
     required this.value,
     this.inline = false
   });
+
+  Map<String, String?> get serializeAsJson => {
+    'name': name,
+    'value': value,
+    'inline': inline.toString()
+  };
 }

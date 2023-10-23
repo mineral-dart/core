@@ -10,4 +10,11 @@ final class MessageEmbedVideo {
     this.width,
     this.height
   });
+
+  Map<String, String?> get serializeAsJson => {
+    'url': url.toString(),
+    'proxy_url': proxyUrl?.toString(),
+    'width': width?.toString(),
+    'height': height?.toString()
+  };
 }
