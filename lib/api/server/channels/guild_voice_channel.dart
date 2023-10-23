@@ -71,6 +71,18 @@ final class GuildVoiceChannel implements GuildVoiceChannelContract {
     return update(builder.setName(name), reason: reason);
   }
 
+  @override
+  Future<void> setBitrate(int bitrate, { String? reason }) async {
+    GuildVoiceChannelBuilder builder = GuildVoiceChannelBuilder();
+    return update(builder.setBitrate(bitrate), reason: reason);
+  }
+
+  @override
+  Future<void> setUserLimit(int limit, { String? reason }) async {
+    GuildVoiceChannelBuilder builder = GuildVoiceChannelBuilder();
+    return update(builder.setUserLimit(limit), reason: reason);
+  }
+
   GuildVoiceChannel._({
     required this.id,
     required this.name,

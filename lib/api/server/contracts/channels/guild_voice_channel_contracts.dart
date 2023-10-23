@@ -9,4 +9,6 @@ abstract interface class GuildVoiceChannelContract implements GuildChannelContra
 
   Future<void> update (GuildVoiceChannelBuilder builder, { String? reason });
   Future<void> setParent(Snowflake parentId, { String? reason });
+  Future<void> setBitrate(int bitrate, { String? reason });
+  Future<void> setUserLimit(int limit, { String? reason });
 }
