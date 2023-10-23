@@ -1,4 +1,6 @@
 import 'package:mineral/api/common/contracts/cache_contract.dart';
+import 'package:mineral/api/common/embed/message_embed.dart';
+import 'package:mineral/api/common/embed/message_embed_builder.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/builders/guild_text_channel_builder.dart';
 import 'package:mineral/api/server/contracts/channels/guild_channel_contracts.dart';
@@ -16,5 +18,9 @@ abstract interface class GuildTextChannelContract implements GuildChannelContrac
   Future<void> update (GuildTextChannelBuilder builder, { String? reason });
   Future<void> setRateLimitPerUser(int rateLimitPerUser, { String? reason });
   Future<void> setNsfw(bool isNsfw, { String? reason });
-  Future<void> send();
+  Future<void> send({
+    List<MessageEmbed>? embeds,
+    String? content,
+    String? tts,
+  });
 }

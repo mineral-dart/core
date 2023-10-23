@@ -1,4 +1,6 @@
 import 'package:mineral/api/common/client/client.dart';
+import 'package:mineral/api/common/composables/sendable_message.dart';
+import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/builders/guild_text_channel_builder.dart';
 import 'package:mineral/api/server/caches/guild_message_cache.dart';
@@ -11,6 +13,8 @@ import 'package:mineral/services/http/entities/either.dart';
 import 'package:mineral/services/http/entities/http_error.dart';
 
 final class GuildTextChannel implements GuildTextChannelContract {
+  final SendableMessage _sendableMessage = SendableMessage();
+
   @override
   final Snowflake id;
 
@@ -68,22 +72,16 @@ final class GuildTextChannel implements GuildTextChannelContract {
   }
 
   @override
-  Future<void> send() async {}
+  Future<void> send({ List<MessageEmbed>? embeds, String? content, String? tts }) async {
+    await _sendableMessage.sendToGuildTextChannel(id, embeds, content, tts);
+  }
 
   @override
   Future<void> delete({ String? reason }) async {
     final http = DiscordHttpClient.singleton();
 
-    final request = http.delete('/channels/${id.value}')
+    await http.delete('/channels/${id.value}')
       .build();
-
-    await Either.future(
-      future: request,
-      onError: (HttpError error) => switch(error) {
-        HttpError(message: final message)
-          => throw ArgumentError(message),
-      }
-    );
   }
 
   @override
