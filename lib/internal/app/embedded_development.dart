@@ -97,7 +97,7 @@ final class EmbeddedDevelopment implements EmbeddedApplication {
       }
     }
 
-    String location (String path) => event.path
+    String location = event.path
       .replaceFirst(Directory.current.path, '')
       .substring(1);
 
