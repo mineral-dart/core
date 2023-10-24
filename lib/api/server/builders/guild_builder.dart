@@ -42,23 +42,23 @@ class GuildBuilder {
     return this;
   }
 
-  GuildBuilder setIcon(Image file) {
-    _fields['icon'] = file.encode;
+  GuildBuilder setIcon(Image? file) {
+    _fields['icon'] = file?.encode;
     return this;
   }
 
-  GuildBuilder setSplash(Image file) {
-    _fields['splash'] = file.encode;
+  GuildBuilder setSplash(Image? file) {
+    _fields['splash'] = file?.encode;
     return this;
   }
 
-  GuildBuilder setDiscoverySplash(Image file) {
-    _fields['discovery_splash'] = file.encode;
+  GuildBuilder setDiscoverySplash(Image? file) {
+    _fields['discovery_splash'] = file?.encode;
     return this;
   }
 
-  GuildBuilder setBanner(Image file) {
-    _fields['banner'] = file.encode;
+  GuildBuilder setBanner(Image? file) {
+    _fields['banner'] = file?.encode;
     return this;
   }
 

@@ -21,7 +21,7 @@ final class Guild implements GuildContract {
   final Snowflake id;
 
   @override
-  final String label;
+  final String name;
 
   @override
   final String? description;
@@ -131,7 +131,7 @@ final class Guild implements GuildContract {
 
   Guild._({
     required this.id,
-    required this.label,
+    required this.name,
     required this.description,
     required this.ownerId,
     required this.icon,
@@ -259,19 +259,8 @@ final class Guild implements GuildContract {
 
   @override
   Future<void> removeIcon({ String? reason }) async {
-    final http = DiscordHttpClient.singleton();
-
-    final request = http.patch("/guilds/$id")
-      .payload({ 'icon': null })
-      .build();
-
-    return Either.future(
-      future: request,
-      onError: (HttpError error) => switch(error) {
-        HttpError(message: final message)
-        => throw ArgumentError(message),
-      }
-    );
+    GuildBuilder builder = GuildBuilder();
+    return update(builder.setIcon(null), reason: reason);
   }
 
   @override
@@ -282,19 +271,8 @@ final class Guild implements GuildContract {
 
   @override
   Future<void> removeBanner({ String? reason }) async {
-    final http = DiscordHttpClient.singleton();
-
-    final request = http.patch("/guilds/$id")
-      .payload({ 'banner': null })
-      .build();
-
-    return Either.future(
-      future: request,
-      onError: (HttpError error) => switch(error) {
-        HttpError(message: final message)
-        => throw ArgumentError(message),
-      }
-    );
+    GuildBuilder builder = GuildBuilder();
+    return update(builder.setBanner(null), reason: reason);
   }
 
   @override
@@ -305,19 +283,8 @@ final class Guild implements GuildContract {
 
   @override
   Future<void> removeSplash({ String? reason }) async {
-    final http = DiscordHttpClient.singleton();
-
-    final request = http.patch("/guilds/$id")
-      .payload({ 'splash': null })
-      .build();
-
-    return Either.future(
-      future: request,
-      onError: (HttpError error) => switch(error) {
-        HttpError(message: final message)
-        => throw ArgumentError(message),
-      }
-    );
+    GuildBuilder builder = GuildBuilder();
+    return update(builder.setSplash(null), reason: reason);
   }
 
   @override
@@ -328,19 +295,8 @@ final class Guild implements GuildContract {
 
   @override
   Future<void> removeDiscoverySplash({ String? reason }) async {
-    final http = DiscordHttpClient.singleton();
-
-    final request = http.patch("/guilds/$id")
-        .payload({ 'discovery_splash': null })
-        .build();
-
-    return Either.future(
-        future: request,
-        onError: (HttpError error) => switch(error) {
-          HttpError(message: final message)
-          => throw ArgumentError(message),
-        }
-    );
+    GuildBuilder builder = GuildBuilder();
+    return update(builder.setDiscoverySplash(null), reason: reason);
   }
 
   @override
@@ -465,7 +421,7 @@ final class Guild implements GuildContract {
 
     return Guild._(
         id: Snowflake(payload["id"]),
-        label: payload["name"],
+        name: payload["name"],
         description: payload["description"],
         ownerId: Snowflake(payload["owner_id"]),
         icon: Picture(label: payload["icon"], endpoint: "icons/${payload["id"]}/"),
