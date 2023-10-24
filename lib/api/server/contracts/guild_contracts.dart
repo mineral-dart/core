@@ -21,7 +21,7 @@ import 'package:mineral/api/server/resources/verification_level.dart';
 
 abstract interface class GuildContract {
   abstract final Snowflake id;
-  abstract final String label;
+  abstract final String name;
   abstract final String? description;
   abstract final Snowflake ownerId;
 
