@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/contracts/client_contract.dart';
 import 'package:mineral/api/common/image.dart';
 import 'package:mineral/api/common/resources/picture.dart';
 import 'package:mineral/api/common/snowflake.dart';
@@ -12,9 +13,11 @@ import 'package:mineral/api/server/contracts/channels/guild_voice_channel_contra
 import 'package:mineral/api/server/contracts/guild_member_contracts.dart';
 import 'package:mineral/api/server/resources/enums.dart';
 import 'package:mineral/api/server/resources/vanity.dart';
+import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/services/http/entities/either.dart';
 import 'package:mineral/services/http/entities/http_error.dart';
+import 'package:mineral/services/logger/logger.dart';
 
 final class Guild implements GuildContract {
   @override
@@ -194,6 +197,13 @@ final class Guild implements GuildContract {
 
   @override
   Future<void> setOwner (GuildMemberContract member, { String? reason }) async {
+    if (ownerId != container.use<ClientContract>('client').user.id) {
+      final String message = 'You can\'t change the owner of the guild !';
+
+      container.use<Logger>('logger').app.severe(message);
+      throw Exception(message);
+    }
+
     final http = DiscordHttpClient.singleton();
 
     final request = http.patch('/guilds/${id.value}')
