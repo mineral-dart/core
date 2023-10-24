@@ -61,10 +61,16 @@ final class GuildCategoryChannel implements GuildCategoryChannelContracts {
   }
 
   @override
-  Future<void> setName(String name, { String? reason }) async {}
+  Future<void> setName(String name, { String? reason }) async {
+    GuildCategoryChannelBuilder builder = GuildCategoryChannelBuilder();
+    return update(builder.setName(name), reason: reason);
+  }
 
   @override
-  Future<void> setPosition(int position, { String? reason }) async {}
+  Future<void> setPosition(int position, { String? reason }) async {
+    GuildCategoryChannelBuilder builder = GuildCategoryChannelBuilder();
+    return update(builder.setPosition(position), reason: reason);
+  }
 
   @override
   List<GuildChannelContract> get channels {

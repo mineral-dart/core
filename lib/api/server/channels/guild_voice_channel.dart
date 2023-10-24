@@ -51,7 +51,12 @@ final class GuildVoiceChannel implements GuildVoiceChannelContract {
   }
 
   @override
-  Future<void> delete({ String? reason }) async {}
+  Future<void> delete({ String? reason }) async {
+    final http = DiscordHttpClient.singleton();
+
+    await http.delete('/channels/${id.value}')
+      .build();
+  }
 
   @override
   Future<void> setParent(Snowflake parentId, { String? reason }) async {
