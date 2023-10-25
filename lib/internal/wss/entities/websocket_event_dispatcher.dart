@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/collection.dart';
-import 'package:mineral/internal/factories/event_factory.dart';
+import 'package:mineral/internal/factories/events/event_factory.dart';
 import 'package:mineral/internal/wss/contracts/packet_contract.dart';
 import 'package:mineral/internal/wss/entities/packet_type.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';

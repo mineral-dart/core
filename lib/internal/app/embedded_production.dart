@@ -1,6 +1,6 @@
 import 'package:mineral/internal/app/contracts/embedded_application_contract.dart';
-import 'package:mineral/internal/factories/contracts/event_contract.dart';
-import 'package:mineral/internal/factories/event_factory.dart';
+import 'package:mineral/internal/factories/events/contracts/event_contract.dart';
+import 'package:mineral/internal/factories/events/event_factory.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/internal/wss/entities/websocket_event_dispatcher.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';

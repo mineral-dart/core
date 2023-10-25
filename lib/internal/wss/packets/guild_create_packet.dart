@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:mineral/internal/factories/contracts/guild_create_event_contract.dart';
-import 'package:mineral/internal/factories/event_factory.dart';
+import 'package:mineral/internal/factories/events/contracts/guild_create_event_contract.dart';
+import 'package:mineral/internal/factories/events/event_factory.dart';
 import 'package:mineral/api/common/client/client.dart';
 import 'package:mineral/api/server/caches/guild_cache.dart';
 import 'package:mineral/api/server/guild.dart';

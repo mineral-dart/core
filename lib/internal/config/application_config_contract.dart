@@ -1,6 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
-import 'package:mineral/internal/factories/contracts/event_contract.dart';
+import 'package:mineral/internal/factories/events/contracts/event_contract.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
 import 'package:mineral/services/env/environment.dart';
 

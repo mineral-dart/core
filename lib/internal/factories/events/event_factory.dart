@@ -1,4 +1,4 @@
-import 'package:mineral/internal/factories/contracts/event_contract.dart';
+import 'package:mineral/internal/factories/events/contracts/event_contract.dart';
 
 final class EventFactory {
   final List<EventContract Function()> events = [];
