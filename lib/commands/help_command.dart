@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
-import 'package:mineral/internal/console/command.dart';
-import 'package:mineral/internal/console/command_option.dart';
-import 'package:mineral/internal/console/console.dart';
+import 'package:mineral/internal/services/console/command.dart';
+import 'package:mineral/internal/services/console/command_option.dart';
+import 'package:mineral/internal/services/console/console.dart';
 import 'package:mineral/internal/fold/container.dart';
 import 'package:tint/tint.dart';
 
