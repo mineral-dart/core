@@ -8,7 +8,7 @@ enum Intent {
   guildMembers(1 << 1),
 
   /// Allows [Gateway] to receive [GuildBan]s.
-  guildBans(1 << 2),
+  guildModeration(1 << 2),
 
   /// Allows [Gateway] to receive [GuildEmoji]s and [GuildSticker]s.
   guildEmojisAndStickers(1 << 3),
@@ -47,7 +47,7 @@ enum Intent {
   directMessageTyping(1 << 14),
 
   /// Allows [Gateway] to receive [MessageContent]s without [GuildMember]s.
-  messageContent(1 << 17),
+  messageContent(1 << 15),
 
   /// Allows [Gateway] to receive [GuildScheduledEvents]s.
   guildScheduledEvents(1 << 16),
