@@ -5,7 +5,6 @@ import 'package:logging/logging.dart';
 import 'package:mineral/internal/services/console/command.dart';
 import 'package:mineral/internal/services/console/command_option.dart';
 import 'package:mineral/internal/services/console/console.dart';
-import 'package:mineral/internal/fold/container.dart';
 import 'package:tint/tint.dart';
 
 final class HelpCommand extends Command {
@@ -21,7 +20,7 @@ final class HelpCommand extends Command {
 
   @override
   Future<void> handle () async {
-    final Map<String, Command> commands = container.use<Console>('console').commands;
+    final Map<String, Command> commands = Console.singleton().commands;
 
     final Map<String, List<Command>> displayCommands = {};
 
@@ -30,7 +29,7 @@ final class HelpCommand extends Command {
           ? command.name.split(':').first
           : 'Available commands';
 
-      if (commands.containsKey(key)) {
+      if (displayCommands.containsKey(key)) {
         displayCommands[key]?.add(command);
       } else {
         displayCommands.putIfAbsent(key, () => [command]);
