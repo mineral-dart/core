@@ -1,5 +1,5 @@
-import 'package:mineral/internal/console/command_option.dart';
-import 'package:mineral/internal/console/option_bucket.dart';
+import 'package:mineral/internal/services/console/command_option.dart';
+import 'package:mineral/internal/services/console/option_bucket.dart';
 
 abstract interface class CommandContract {}
 

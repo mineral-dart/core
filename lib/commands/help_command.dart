@@ -2,16 +2,13 @@ import 'dart:io';
 
 import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
-import 'package:mineral/internal/console/command.dart';
-import 'package:mineral/internal/console/command_option.dart';
-import 'package:mineral/internal/console/console.dart';
-import 'package:mineral/internal/fold/container.dart';
+import 'package:mineral/internal/services/console/command.dart';
+import 'package:mineral/internal/services/console/command_option.dart';
+import 'package:mineral/internal/services/console/console.dart';
 import 'package:tint/tint.dart';
 
 final class HelpCommand extends Command {
-  final Logger _logger;
-
-  HelpCommand(this._logger): super(
+  HelpCommand(): super(
     name: 'help',
     description: 'Displays help information',
     options: [
@@ -21,8 +18,7 @@ final class HelpCommand extends Command {
 
   @override
   Future<void> handle () async {
-    final Map<String, Command> commands = container.use<Console>('console').commands;
-
+    final Map<String, Command> commands = Console.singleton().commands;
     final Map<String, List<Command>> displayCommands = {};
 
     for (final command in commands.values) {
@@ -30,7 +26,7 @@ final class HelpCommand extends Command {
           ? command.name.split(':').first
           : 'Available commands';
 
-      if (commands.containsKey(key)) {
+      if (displayCommands.containsKey(key)) {
         displayCommands[key]?.add(command);
       } else {
         displayCommands.putIfAbsent(key, () => [command]);

@@ -1,5 +1,5 @@
 import 'package:logging/logging.dart';
-import 'package:mineral/internal/console/command.dart';
+import 'package:mineral/internal/services/console/command.dart';
 import 'package:mineral/services/env/environment.dart';
 
 final class GenerateEnvironmentCommand extends Command {
