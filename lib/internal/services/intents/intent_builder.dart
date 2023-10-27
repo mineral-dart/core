@@ -19,7 +19,7 @@ final class IntentBuilder {
 
   /// Creates an [IntentBuilder] with [GuildBan] intents.
   IntentBuilder guildBans() {
-    intents.add(Intent.guildBans);
+    intents.add(Intent.guildModeration);
     return this;
   }
 
