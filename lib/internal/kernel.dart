@@ -42,8 +42,9 @@ final class Kernel {
       ..set('INTENTS', configApp.intents.calculatedValue.toString())
       ..set('HMR', configApp.hmr.toString());
 
-    packages = PackageFactory(logger.app)
-      ..packages.addAll(configApp.packages);
+    packages = container.bind('Mineral/Factories/Package', (_) =>
+      PackageFactory(logger.app)
+        ..registerMany(configApp.packages));
 
     return this;
   }
@@ -107,7 +108,7 @@ final class Kernel {
   Kernel setConsole(ConsoleConfigContract Function() config) {
     final consoleConfig = config();
 
-    console = container.bind<Console>('console', (_) => Console(logger))
+    console = container.bind<Console>('Mineral/Factories/Console', (_) => Console(logger))
       ..addCommand(HelpCommand(logger.console))
       ..addCommand(GenerateEnvironmentCommand(logger.console))
       ..addCommand(ConfigureCommand(logger.console));

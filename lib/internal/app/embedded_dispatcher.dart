@@ -23,7 +23,7 @@ final class EmbeddedDispatcher {
     _dispatcher = WebsocketEventDispatcher(_eventFactory);
 
     _packageFactory = PackageFactory(_logger);
-    _packageFactory.packages.addAll(packages);
+    _packageFactory.registerMany(packages);
     _packageFactory.init();
   }
 

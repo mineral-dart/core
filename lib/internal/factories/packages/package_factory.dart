@@ -1,18 +1,30 @@
 import 'package:logging/logging.dart';
 import 'package:mineral/internal/factories/packages/contracts/package_contract.dart';
+import 'package:mineral/internal/fold/container.dart';
+import 'package:mineral/internal/fold/injectable.dart';
 
-final class PackageFactory {
+final class PackageFactory extends Injectable {
   final Logger _logger;
-  final List<PackageContract Function()> packages = [];
+  final List<PackageContract> packages = [];
 
   PackageFactory(this._logger);
 
-  void init() {
-    for (final package in packages) {
-      final instance = package();
-      _logger.fine('Initializing package: ${instance.packageName}');
+  void register (PackageContract Function() package) {
+    packages.add(package());
+  }
 
-      instance.init();
+  void registerMany (List<PackageContract Function()> packages) {
+    for (final package in packages) {
+      register(package);
     }
   }
+
+  void init() {
+    for (final package in packages) {
+      _logger.fine('Initializing package: ${package.packageName}');
+      package.init();
+    }
+  }
+
+  factory PackageFactory.singleton() => container.use('Mineral/Factories/Package');
 }

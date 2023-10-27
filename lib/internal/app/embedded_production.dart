@@ -36,7 +36,7 @@ final class EmbeddedProduction implements EmbeddedApplication {
     _packageFactory = PackageFactory(logger.app);
     _dispatcher = WebsocketEventDispatcher(_eventFactory);
 
-    _packageFactory.packages.addAll(packages);
+    _packageFactory.registerMany(packages);
     _packageFactory.init();
   }
 
