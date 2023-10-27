@@ -1,4 +1,4 @@
-import 'package:mineral/internal/console/command_option.dart';
+import 'package:mineral/internal/services/console/command_option.dart';
 
 abstract class OptionContract {
   T get<T>(String key);

@@ -1,9 +1,9 @@
 import 'package:args/args.dart';
-import 'package:mineral/internal/console/command.dart';
-import 'package:mineral/internal/console/option_bucket.dart';
+import 'package:mineral/internal/services/console/command.dart';
+import 'package:mineral/internal/services/console/option_bucket.dart';
+import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/fold/injectable.dart';
 import 'package:mineral/services/logger/logger.dart';
-import 'package:mineral/services/logger/logger_contract.dart';
 
 final class Console extends Injectable {
   final Map<String, Command> commands = {};
@@ -42,4 +42,6 @@ final class Console extends Injectable {
     commands.putIfAbsent(command.name, () => command);
     _commandParser.addCommand(command.name, args);
   }
+
+  factory Console.singleton() => container.use('Mineral/Factories/Console');
 }
