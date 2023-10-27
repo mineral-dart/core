@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:mineral/commands/configure_command.dart';
 import 'package:mineral/commands/generate_environment_command.dart';
 import 'package:mineral/commands/help_command.dart';
 import 'package:mineral/internal/app/embedded_development.dart';
@@ -8,7 +9,8 @@ import 'package:mineral/internal/app/embedded_production.dart';
 import 'package:mineral/internal/config/application_config_contract.dart';
 import 'package:mineral/internal/config/console_config_contract.dart';
 import 'package:mineral/internal/config/http_config_contract.dart';
-import 'package:mineral/internal/console/console.dart';
+import 'package:mineral/internal/services/console/console.dart';
+import 'package:mineral/internal/factories/packages/package_factory.dart';
 import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/services/env/environment.dart';
@@ -18,6 +20,7 @@ final class Kernel {
   final Environment environment = container.bind('environment', (_) => Environment());
   Console? console;
 
+  late final PackageFactory packages;
   late final DiscordHttpClient httpClient;
   late final Logger logger;
   late ApplicationConfigContract configApp;
@@ -38,6 +41,9 @@ final class Kernel {
       ..set('APP_TOKEN', configApp.token)
       ..set('INTENTS', configApp.intents.calculatedValue.toString())
       ..set('HMR', configApp.hmr.toString());
+
+    packages = PackageFactory(logger.app)
+      ..packages.addAll(configApp.packages);
 
     return this;
   }
@@ -75,7 +81,7 @@ final class Kernel {
 
   Future<void> start () async {
     if (Isolate.current.debugName == 'dev') {
-      return EmbeddedDispatcher(_devPort, configApp.events)
+      return EmbeddedDispatcher(_devPort, logger.app, configApp.events, configApp.packages)
         .spawn();
     }
 
@@ -90,6 +96,7 @@ final class Kernel {
         logger: logger,
         http: httpClient,
         events: configApp.events,
+        packages: configApp.packages,
       ),
       _ => throw Exception('Invalid environment mode')
     };
@@ -102,7 +109,8 @@ final class Kernel {
 
     console = container.bind<Console>('console', (_) => Console(logger))
       ..addCommand(HelpCommand(logger.console))
-      ..addCommand(GenerateEnvironmentCommand(logger.console));
+      ..addCommand(GenerateEnvironmentCommand(logger.console))
+      ..addCommand(ConfigureCommand(logger.console));
 
     for (final command in consoleConfig.commands) {
       console?.addCommand(command);
