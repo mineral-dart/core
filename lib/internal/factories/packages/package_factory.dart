@@ -2,6 +2,7 @@ import 'package:logging/logging.dart';
 import 'package:mineral/internal/factories/packages/contracts/package_contract.dart';
 import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/fold/injectable.dart';
+import 'package:mineral/internal/services/console/console.dart';
 
 final class PackageFactory extends Injectable {
   final Logger _logger;
@@ -23,6 +24,13 @@ final class PackageFactory extends Injectable {
     for (final package in packages) {
       _logger.fine('Initializing package: ${package.packageName}');
       package.init();
+    }
+  }
+
+  void initConsole() {
+    for (final package in packages) {
+      _logger.fine('Initializing package console: ${package.packageName}');
+      package.initConsole(Console.singleton());
     }
   }
 

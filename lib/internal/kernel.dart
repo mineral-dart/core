@@ -121,6 +121,7 @@ final class Kernel {
   }
 
   void handle (List<String> arguments) {
+    packages.initConsole();
     console?.handle(arguments);
   }
 }
