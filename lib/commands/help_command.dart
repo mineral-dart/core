@@ -8,9 +8,7 @@ import 'package:mineral/internal/services/console/console.dart';
 import 'package:tint/tint.dart';
 
 final class HelpCommand extends Command {
-  final Logger _logger;
-
-  HelpCommand(this._logger): super(
+  HelpCommand(): super(
     name: 'help',
     description: 'Displays help information',
     options: [
@@ -21,7 +19,6 @@ final class HelpCommand extends Command {
   @override
   Future<void> handle () async {
     final Map<String, Command> commands = Console.singleton().commands;
-
     final Map<String, List<Command>> displayCommands = {};
 
     for (final command in commands.values) {

@@ -109,7 +109,7 @@ final class Kernel {
     final consoleConfig = config();
 
     console = container.bind<Console>('Mineral/Factories/Console', (_) => Console(logger))
-      ..addCommand(HelpCommand(logger.console))
+      ..addCommand(HelpCommand())
       ..addCommand(GenerateEnvironmentCommand(logger.console))
       ..addCommand(ConfigureCommand(logger.console));
 
