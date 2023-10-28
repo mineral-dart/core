@@ -5,6 +5,8 @@ import 'package:mineral/internal/factories/events/contracts/event_contract.dart'
 import 'package:mineral/internal/factories/events/event_factory.dart';
 import 'package:mineral/internal/factories/packages/contracts/package_contract.dart';
 import 'package:mineral/internal/factories/packages/package_factory.dart';
+import 'package:mineral/internal/factories/states/contracts/state_contract.dart';
+import 'package:mineral/internal/factories/states/state_factory.dart';
 import 'package:mineral/internal/fold/container.dart';
 import 'package:mineral/internal/wss/entities/websocket_event_dispatcher.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';
@@ -13,18 +15,25 @@ final class EmbeddedDispatcher {
   final Logger _logger;
 
   final EventFactory _eventFactory = container.bind('Mineral/Factories/Event', (_) => EventFactory());
+  final StateFactory _stateFactory = container.bind('Mineral/Factories/State', (_) => StateFactory());
   late final PackageFactory _packageFactory;
 
   late final WebsocketEventDispatcher _dispatcher;
   final SendPort? _devPort;
 
-  EmbeddedDispatcher(this._devPort, this._logger, List<EventContract Function()> events, List<PackageContract Function()> packages) {
+  EmbeddedDispatcher(this._devPort, this._logger, {
+    required List<EventContract Function()> events,
+    required List<PackageContract Function()> packages,
+    required List<StateContract Function()> states
+  }) {
     _eventFactory.registerMany(events);
     _dispatcher = WebsocketEventDispatcher(_eventFactory);
 
     _packageFactory = PackageFactory(_logger);
     _packageFactory.registerMany(packages);
     _packageFactory.init();
+
+    _stateFactory.registerMany(states);
   }
 
   Future<void> spawn () async {

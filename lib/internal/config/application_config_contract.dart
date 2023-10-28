@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:logging/logging.dart';
 import 'package:mineral/internal/factories/events/contracts/event_contract.dart';
 import 'package:mineral/internal/factories/packages/contracts/package_contract.dart';
+import 'package:mineral/internal/factories/states/contracts/state_contract.dart';
 import 'package:mineral/internal/services/intents/intents.dart';
 import 'package:mineral/services/env/environment.dart';
 
@@ -13,6 +14,7 @@ abstract class ApplicationConfigContract {
 
   List<EventContract Function()> events;
   List<PackageContract Function()> packages;
+  List<StateContract Function()> states;
 
   late final Level logLevel;
   final void Function(LogRecord)? logger;
@@ -23,7 +25,8 @@ abstract class ApplicationConfigContract {
     required this.token,
     required this.intents,
     required this.appEnv,
-    required this.events,
+    this.events = const [],
+    this.states = const [],
     this.packages = const [],
     String hmr = 'false',
     String logLevel = 'INFO',

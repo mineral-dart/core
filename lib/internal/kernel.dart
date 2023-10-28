@@ -82,7 +82,11 @@ final class Kernel {
 
   Future<void> start () async {
     if (Isolate.current.debugName == 'dev') {
-      return EmbeddedDispatcher(_devPort, logger.app, configApp.events, configApp.packages)
+      return EmbeddedDispatcher(_devPort, logger.app,
+        events: configApp.events,
+        packages: configApp.packages,
+        states: configApp.states
+      )
         .spawn();
     }
 
@@ -98,6 +102,7 @@ final class Kernel {
         http: httpClient,
         events: configApp.events,
         packages: configApp.packages,
+        states: configApp.states,
       ),
       _ => throw Exception('Invalid environment mode')
     };

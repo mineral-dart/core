@@ -3,6 +3,8 @@ import 'package:mineral/internal/factories/events/contracts/event_contract.dart'
 import 'package:mineral/internal/factories/events/event_factory.dart';
 import 'package:mineral/internal/factories/packages/contracts/package_contract.dart';
 import 'package:mineral/internal/factories/packages/package_factory.dart';
+import 'package:mineral/internal/factories/states/contracts/state_contract.dart';
+import 'package:mineral/internal/factories/states/state_factory.dart';
 import 'package:mineral/internal/services/http/discord_http_client.dart';
 import 'package:mineral/internal/wss/entities/websocket_event_dispatcher.dart';
 import 'package:mineral/internal/wss/entities/websocket_response.dart';
@@ -13,6 +15,7 @@ import 'package:mineral/services/logger/logger.dart';
 final class EmbeddedProduction implements EmbeddedApplication {
   final EventFactory _eventFactory = EventFactory();
   late final PackageFactory _packageFactory;
+  late final StateFactory _stateFactory;
 
   late final WebsocketEventDispatcher _dispatcher;
   late WebsocketManager websocket;
@@ -30,14 +33,18 @@ final class EmbeddedProduction implements EmbeddedApplication {
     required this.environment,
     required this.http,
     required List<EventContract Function()> events,
-    required List<PackageContract Function()> packages
+    required List<PackageContract Function()> packages,
+    required List<StateContract Function()> states,
   }) {
     _eventFactory.registerMany(events);
-    _packageFactory = PackageFactory(logger.app);
     _dispatcher = WebsocketEventDispatcher(_eventFactory);
 
+    _packageFactory = PackageFactory(logger.app);
     _packageFactory.registerMany(packages);
     _packageFactory.init();
+
+    _stateFactory = StateFactory();
+    _stateFactory.registerMany(states);
   }
 
   @override
