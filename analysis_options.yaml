@@ -15,16 +15,46 @@ include: package:lints/recommended.yaml
 
 # Uncomment the following section to specify additional rules.
 
-# linter:
-#   rules:
-#     - camel_case_types
+linter:
+  rules:
+    lines_longer_than_80_chars: false
+    avoid_multiple_declarations_per_line: true
+    always_put_control_body_on_new_line: true
+    always_declare_return_types: true
+    always_put_required_named_parameters_first: true
+    unrelated_type_equality_checks: true
+    avoid_bool_literals_in_conditional_expressions: true
+    avoid_catches_without_on_clauses: true
+    avoid_catching_errors: true
+    avoid_escaping_inner_quotes: true
+    avoid_final_parameters: true
+    avoid_private_typedef_functions: true
+    avoid_void_async: true
+    cascade_invocations: true
+    combinators_ordering: true
+    directives_ordering: true
+    file_names: true
+    join_return_with_assignment: true
+    matching_super_parameters: true
+    prefer_constructors_over_static_methods: true
+    prefer_final_in_for_each: true
+    prefer_final_locals: true
+    prefer_null_aware_method_calls: true
+    prefer_single_quotes: true
+    type_annotate_public_apis: true
+    unnecessary_await_in_return: true
+    unnecessary_breaks: true
+    unnecessary_lambdas: true
+    use_is_even_rather_than_modulo: true
+    use_named_constants: true
+    use_string_buffers: true
 
-# analyzer:
-#   exclude:
-#     - path/to/excluded/files/**
+    # analyzer:
+    #   exclude:
+    #     - path/to/excluded/files/**
 
-# For more information about the core and recommended set of lints, see
-# https://dart.dev/go/core-lints
+    # For more information about the core and recommended set of lints, see
+    # https://dart.dev/go/core-lints
 
-# For additional information about configuring this file, see
-# https://dart.dev/guides/language/analysis-options
+    # For additional information about configuring this file, see
+    # https://dart.dev/guides/language/analysis-options
