@@ -29,7 +29,7 @@ final class ResponseImpl implements Response {
       required this.bodyString,
       required this.body});
 
-  factory ResponseImpl.fromStreamedResponse(http.Response response) => ResponseImpl._(
+  factory ResponseImpl.fromHttpResponse(http.Response response) => ResponseImpl._(
       statusCode: response.statusCode,
       headers: response.headers.entries.map((entry) => HeaderImpl(entry.key, entry.value)).toSet(),
       bodyString: response.body,

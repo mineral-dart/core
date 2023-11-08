@@ -26,7 +26,7 @@ final class RequestProcessor {
     final response = await factory.create(
         client, {'uri': uri, 'headers': serializeHeaders(option, headers), 'body': payload});
 
-    return ResponseImpl.fromStreamedResponse(response);
+    return ResponseImpl.fromHttpResponse(response);
   }
 
   Map<String, String> serializeHeaders(HttpClientOption option, Set<Header> headers) {
