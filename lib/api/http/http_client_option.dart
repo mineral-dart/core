@@ -1,13 +1,13 @@
 import 'package:mineral/api/http/header.dart';
 
 abstract interface class HttpClientOption {
-  abstract final Uri baseUrl;
-  abstract final Set<Header> headers;
+  String get baseUrl;
+  Set<Header> get headers;
 }
 
 final class HttpClientOptionImpl implements HttpClientOption {
   @override
-  final Uri baseUrl;
+  final String baseUrl;
 
   @override
   final Set<Header> headers;

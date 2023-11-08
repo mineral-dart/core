@@ -1,6 +1,5 @@
-import 'package:mineral/api/http/http_method.dart';
+import 'package:http/http.dart';
 
-abstract interface class Request {
-  abstract final Uri uri;
-  abstract final HttpMethod method;
+abstract interface class Request implements BaseRequest {
+
 }
