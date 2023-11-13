@@ -3,14 +3,14 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mineral/api/http/header.dart';
 
-abstract interface class Response {
+abstract interface class Response<T> {
   abstract final int statusCode;
   abstract final Set<Header> headers;
   abstract final String bodyString;
-  abstract final Map<String, dynamic> body;
+  abstract final T body;
 }
 
-final class ResponseImpl implements Response {
+final class ResponseImpl<T> implements Response<T> {
   @override
   final int statusCode;
 
@@ -21,7 +21,7 @@ final class ResponseImpl implements Response {
   final String bodyString;
 
   @override
-  final Map<String, dynamic> body;
+  final T body;
 
   ResponseImpl._(
       {required this.statusCode,
