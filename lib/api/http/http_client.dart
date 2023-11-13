@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 import 'package:mineral/api/http/header.dart';
-import 'package:mineral/api/http/http_client_option.dart';
+import 'package:mineral/api/http/http_client_config.dart';
 import 'package:mineral/api/http/http_interceptor.dart';
 import 'package:mineral/api/http/http_request_option.dart';
 import 'package:mineral/api/http/response.dart';
@@ -10,7 +10,7 @@ import 'package:mineral/api/http/response.dart';
 abstract interface class HttpClient {
   HttpInterceptor get interceptor;
 
-  HttpClientOption get option;
+  HttpClientConfig get config;
 
   Future<Response<T>> get<T>(String endpoint, {HttpRequestOption? option});
 
@@ -33,9 +33,9 @@ final class HttpClientImpl implements HttpClient {
   final HttpInterceptor interceptor = HttpInterceptorImpl();
 
   @override
-  final HttpClientOption option;
+  final HttpClientConfig config;
 
-  HttpClientImpl({required this.option});
+  HttpClientImpl({required this.config});
 
   @override
   Future<Response<T>> delete<T>(String endpoint, {HttpRequestOption? option}) {
@@ -67,7 +67,7 @@ final class HttpClientImpl implements HttpClient {
 
   Future<Response<T>> _request<T>(
       String method, String endpoint, HttpRequestOption? option, Map<String, dynamic>? body) async {
-    String url = '${this.option.baseUrl}$endpoint';
+    String url = '${config.baseUrl}$endpoint';
 
     if (option case HttpRequestOption(queryParameters: final params)) {
       url += '?${Uri(queryParameters: params).query}';
@@ -94,7 +94,7 @@ final class HttpClientImpl implements HttpClient {
   }
 
   Map<String, String> _serializeHeaders(Set<Header> headers) {
-    final Set<Header> mergedHeaders = {...option.headers, ...headers};
+    final Set<Header> mergedHeaders = {...config.headers, ...headers};
     return mergedHeaders
         .fold({}, (previousValue, element) => {...previousValue, element.key: element.value});
   }
