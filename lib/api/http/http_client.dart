@@ -46,13 +46,13 @@ final class HttpClientImpl implements HttpClient {
   @override
   Future<Response> patch(String endpoint,
       {Set<Header> headers = const {}, Map<String, dynamic>? body}) {
-    return _request('PATCH', endpoint, headers, null);
+    return _request('PATCH', endpoint, headers, body);
   }
 
   @override
   Future<Response> post(String endpoint,
       {Set<Header> headers = const {}, Map<String, dynamic>? body}) {
-    return _request('POST', endpoint, headers, null);
+    return _request('POST', endpoint, headers, body);
   }
 
   @override
