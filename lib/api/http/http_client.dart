@@ -24,6 +24,9 @@ abstract interface class HttpClient {
       {HttpRequestOption? option, Map<String, dynamic> body});
 
   Future<Response<T>> delete<T>(String endpoint, {HttpRequestOption? option});
+
+  Future<Response<T>> send<T>(String method, String endpoint,
+      {HttpRequestOption? option, Map<String, dynamic> body});
 }
 
 final class HttpClientImpl implements HttpClient {
@@ -63,6 +66,12 @@ final class HttpClientImpl implements HttpClient {
   Future<Response<T>> put<T>(String endpoint,
       {HttpRequestOption? option, Map<String, dynamic>? body}) {
     return _request('PUT', endpoint, option, body);
+  }
+
+  @override
+  Future<Response<T>> send<T>(String method, String endpoint,
+      {HttpRequestOption? option, Map<String, dynamic>? body}) {
+    return _request(method, endpoint, option, body);
   }
 
   Future<Response<T>> _request<T>(
