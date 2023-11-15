@@ -5,6 +5,7 @@ import 'package:mineral/api/http/header.dart';
 import 'package:mineral/api/http/http_client_config.dart';
 import 'package:mineral/api/http/http_interceptor.dart';
 import 'package:mineral/api/http/http_request_option.dart';
+import 'package:mineral/api/http/request.dart';
 import 'package:mineral/api/http/response.dart';
 
 abstract interface class HttpClient {
@@ -82,15 +83,23 @@ final class HttpClientImpl implements HttpClient {
       url += '?${Uri(queryParameters: params).query}';
     }
 
-    http.Request request = http.Request(method, Uri.parse(url))
-      ..headers.addAll(_serializeHeaders(option?.headers ?? {}))
-      ..body = jsonEncode(body);
+    Request request = RequestImpl(
+      url: Uri.parse(url),
+      body: body ?? {},
+      bodyString: jsonEncode(body ?? {}),
+      headers: option?.headers ?? {},
+      method: method,
+    );
 
     for (final requestInterceptor in interceptor.request) {
       request = await requestInterceptor(request);
     }
 
-    final http.StreamedResponse streamedResponse = await _client.send(request);
+    final http.Request httpRequest = http.Request(request.method, request.url)
+      ..headers.addAll(_serializeHeaders(request.headers))
+      ..body = jsonEncode(request.body);
+
+    final http.StreamedResponse streamedResponse = await _client.send(httpRequest);
     final http.Response res = await http.Response.fromStream(streamedResponse);
 
     Response response = ResponseImpl.fromHttpResponse(res);

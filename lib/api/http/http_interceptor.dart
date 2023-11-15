@@ -1,7 +1,7 @@
-import 'package:http/http.dart' as http;
+import 'package:mineral/api/http/request.dart';
 import 'package:mineral/api/http/response.dart';
 
-typedef RequestInterceptor = Future<http.Request> Function(http.Request);
+typedef RequestInterceptor = Future<Request> Function(Request);
 typedef ResponseInterceptor = Future<Response> Function(Response);
 
 abstract interface class HttpInterceptor {
