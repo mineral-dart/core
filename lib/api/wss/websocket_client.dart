@@ -63,7 +63,9 @@ final class WebsocketClientImpl implements WebsocketClient {
     );
 
     final firstMessage = await stream.first;
-    _handleMessage(_onOpen?.call, firstMessage);
+    if (_onOpen != null) {
+      _handleMessage(_onOpen, firstMessage);
+    }
   }
 
   @override
@@ -78,7 +80,7 @@ final class WebsocketClientImpl implements WebsocketClient {
 
   Future<void> _handleMessage(callback, dynamic message) async {
     final interceptedMessage = await _handleMessageInterceptors(WebsocketMessageImpl(
-        channelName: name, originalContent: message, content: message.toString()));
+        channelName: name, originalContent: message as String, content: message));
 
     callback(interceptedMessage);
   }
