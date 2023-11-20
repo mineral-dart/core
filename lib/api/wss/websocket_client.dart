@@ -9,7 +9,7 @@ abstract interface class WebsocketClient {
 
   String get url;
 
-  Stream get stream;
+  Stream? get stream;
 
   Interceptor get interceptor;
 
@@ -23,7 +23,7 @@ abstract interface class WebsocketClient {
 }
 
 final class WebsocketClientImpl implements WebsocketClient {
-  late final io.WebSocket _channel;
+  io.WebSocket? _channel;
   final void Function(dynamic)? _onError;
   final void Function()? _onClose;
   final void Function(WebsocketMessage)? _onOpen;
@@ -39,7 +39,7 @@ final class WebsocketClientImpl implements WebsocketClient {
   final String url;
 
   @override
-  late final Stream stream;
+  Stream? stream;
 
   WebsocketClientImpl(
       {required this.url,
@@ -54,15 +54,15 @@ final class WebsocketClientImpl implements WebsocketClient {
   @override
   Future<void> connect() async {
     _channel = await io.WebSocket.connect(url);
-    stream = _channel.asBroadcastStream();
+    stream = _channel!.asBroadcastStream();
 
-    stream.listen(
+    stream?.listen(
       (dynamic message) => _handleMessage(_onMessage, message),
       onError: _onError,
       onDone: _onClose,
     );
 
-    final firstMessage = await stream.first;
+    final firstMessage = await stream?.first;
     if (_onOpen != null) {
       _handleMessage(_onOpen, firstMessage);
     }
@@ -70,7 +70,7 @@ final class WebsocketClientImpl implements WebsocketClient {
 
   @override
   void disconnect({int? code = 1000, String? reason}) {
-    _channel.close(code, reason);
+    _channel?.close(code, reason);
   }
 
   @override
@@ -89,7 +89,7 @@ final class WebsocketClientImpl implements WebsocketClient {
   Future<void> send(String message) async {
     final interceptedMessage = await _handleRequestedMessageInterceptors(
         WebsocketRequestedMessageImpl(channelName: name, content: message));
-    _channel.add(interceptedMessage.content);
+    _channel?.add(interceptedMessage.content);
   }
 
   Future<WebsocketMessage> _handleMessageInterceptors(WebsocketMessage message) async {
