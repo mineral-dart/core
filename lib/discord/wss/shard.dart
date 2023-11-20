@@ -8,7 +8,7 @@ import 'package:mineral/discord/wss/dispatchers/discord_authentication.dart';
 import 'package:mineral/discord/wss/dispatchers/discord_event.dart';
 import 'package:mineral/discord/wss/dispatchers/discord_network_error.dart';
 
-abstract interface class WebsocketManager {
+abstract interface class Shard {
   DiscordWebsocketConfig get config;
 
   WebsocketClient get client;
@@ -18,7 +18,7 @@ abstract interface class WebsocketManager {
   Future<void> init();
 }
 
-final class WebsocketManagerImpl implements WebsocketManager {
+final class ShardImpl implements Shard {
   @override
   final DiscordWebsocketConfig config;
 
@@ -34,7 +34,7 @@ final class WebsocketManagerImpl implements WebsocketManager {
 
   late final DiscordNetworkError networkError;
 
-  WebsocketManagerImpl({required this.url, required this.config}) {
+  ShardImpl({required this.url, required this.config}) {
     client = WebsocketClientImpl(
         url: url,
         onClose: () async {
