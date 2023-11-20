@@ -1,4 +1,4 @@
-import 'package:mineral/discord/wss/dispatchers/shard_authentication.dart';
+import 'package:mineral/discord/wss/shard.dart';
 import 'package:mineral/discord/wss/shard_message.dart';
 
 abstract interface class ShardData {
@@ -6,20 +6,20 @@ abstract interface class ShardData {
 }
 
 final class ShardDataImpl implements ShardData {
-  final ShardAuthentication authentication;
+  final Shard shard;
 
-  ShardDataImpl(this.authentication);
+  ShardDataImpl(this.shard);
 
   @override
   void dispatch(ShardMessage message) {
-
     return switch (message.type) {
       'READY' => ready(message.payload),
-      _ => print('Unknown dispatch event ! ${message.type}'),
+      _ => shard.manager.serializer.dispatch(message.type!, message.payload)
     };
   }
 
   void ready(Map<String, dynamic> payload) {
-    authentication.setupRequirements(payload);
+    shard.authentication.setupRequirements(payload);
+    shard.manager.serializer.dispatch('READY', payload);
   }
 }

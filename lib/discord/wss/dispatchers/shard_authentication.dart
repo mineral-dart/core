@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:mineral/api/wss/websocket_client.dart';
 import 'package:mineral/discord/wss/builders/discord_message_builder.dart';
 import 'package:mineral/discord/wss/constants/op_code.dart';
-import 'package:mineral/discord/wss/sharding_config.dart';
+import 'package:mineral/discord/wss/shard.dart';
 
 abstract interface class ShardAuthentication {
   void setupRequirements(Map<String, dynamic> payload);
@@ -21,14 +20,13 @@ abstract interface class ShardAuthentication {
 }
 
 final class ShardAuthenticationImpl implements ShardAuthentication {
-  final WebsocketClient client;
-  final ShardingConfig config;
+  final Shard shard;
 
   int? sequence;
   String? sessionId;
   String? resumeUrl;
 
-  ShardAuthenticationImpl(this.client, this.config);
+  ShardAuthenticationImpl(this.shard);
 
   @override
   void identify(Map<String, dynamic> payload) {
@@ -36,12 +34,12 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
 
     final message = ShardMessageBuilder()
         .setOpCode(OpCode.identify)
-        .append('token', config.token)
+        .append('token', shard.manager.config.token)
         .append('intents', 513)
-        .append('compress', config.compress)
+        .append('compress', shard.manager.config.compress)
         .append('properties', {'\$os': 'macos', '\$device': 'mineral'});
 
-    client.send(message.build());
+    shard.client.send(message.build());
   }
 
   void createHeartbeatTimer(int interval) {
@@ -51,7 +49,7 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
   }
 
   void heartbeat() {
-    client.send(jsonEncode({
+    shard.client.send(jsonEncode({
       'op': 1,
       'd': null,
     }));
@@ -64,12 +62,12 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
 
   @override
   Future<void> connect() async {
-    await client.connect();
+    await shard.client.connect();
   }
 
   @override
   void reconnect() {
-    client.disconnect();
+    shard.client.disconnect();
     connect();
   }
 
@@ -77,11 +75,11 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
   void resume() {
     final message = ShardMessageBuilder()
         .setOpCode(OpCode.resume)
-        .append('token', config.token)
+        .append('token', shard.manager.config.token)
         .append('session_id', sessionId)
         .append('seq', sequence);
 
-    client.send(message.build());
+    shard.client.send(message.build());
   }
 
   @override

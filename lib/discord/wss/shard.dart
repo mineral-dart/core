@@ -2,14 +2,14 @@ import 'dart:convert';
 
 import 'package:mineral/api/wss/websocket_client.dart';
 import 'package:mineral/discord/wss/constants/op_code.dart';
-import 'package:mineral/discord/wss/shard_message.dart';
 import 'package:mineral/discord/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/discord/wss/dispatchers/shard_data.dart';
 import 'package:mineral/discord/wss/dispatchers/shard_network_error.dart';
-import 'package:mineral/discord/wss/sharding_config.dart';
+import 'package:mineral/discord/wss/shard_message.dart';
+import 'package:mineral/process_manager.dart';
 
 abstract interface class Shard {
-  ShardingConfig get config;
+  ProcessManager get manager;
 
   WebsocketClient get client;
 
@@ -20,7 +20,7 @@ abstract interface class Shard {
 
 final class ShardImpl implements Shard {
   @override
-  final ShardingConfig config;
+  final ProcessManager manager;
 
   @override
   late final WebsocketClient client;
@@ -34,7 +34,7 @@ final class ShardImpl implements Shard {
 
   late final ShardNetworkError networkError;
 
-  ShardImpl({required String shardName, required this.url, required this.config}) {
+  ShardImpl({required String shardName, required this.url, required this.manager}) {
     client = WebsocketClientImpl(
         name: shardName,
         url: url,
@@ -44,9 +44,9 @@ final class ShardImpl implements Shard {
         onError: (error) => networkError.dispatch(error),
         onOpen: (message) => print('Opened ! $message'));
 
-    authentication = ShardAuthenticationImpl(client, config);
-    networkError = ShardNetworkErrorImpl(client, authentication, config);
-    dispatchEvent = ShardDataImpl(authentication);
+    authentication = ShardAuthenticationImpl(this);
+    networkError = ShardNetworkErrorImpl(this);
+    dispatchEvent = ShardDataImpl(this);
   }
 
   @override
@@ -57,7 +57,6 @@ final class ShardImpl implements Shard {
     });
 
     client.listen((message) {
-      print(message.originalContent);
       if (message.content case ShardMessage(opCode: final code, payload: final payload)) {
         switch (code) {
           case OpCode.hello:
