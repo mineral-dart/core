@@ -1,5 +1,6 @@
 import 'package:mineral/api/http/header.dart';
 import 'package:mineral/api/http/http_client.dart';
+import 'package:mineral/application/data_serializer.dart';
 import 'package:mineral/discord/wss/shard.dart';
 import 'package:mineral/discord/wss/sharding_config.dart';
 
@@ -9,11 +10,16 @@ abstract interface class ProcessManager {
   ShardingConfig get config;
 
   HttpClient get httpClient;
+
+  DataSerializer get serializer;
 }
 
 final class ProcessManagerImpl implements ProcessManager {
   @override
   final Map<int, Shard> shards = {};
+
+  @override
+  final DataSerializer serializer = DataSerializerImpl();
 
   @override
   final ShardingConfig config;
@@ -36,7 +42,7 @@ final class ProcessManagerImpl implements ProcessManager {
     final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
 
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
-      final shard = ShardImpl(shardName: 'shard #$i', url: endpoint, config: config);
+      final shard = ShardImpl(shardName: 'shard #$i', url: endpoint, manager: this);
       shards.putIfAbsent(i, () => shard);
 
       await shard.init();
