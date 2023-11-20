@@ -85,9 +85,9 @@ final class HttpClientImpl implements HttpClient {
 
     Request request = RequestImpl(
       url: Uri.parse(url),
-      body: body ?? {},
-      bodyString: jsonEncode(body ?? {}),
-      headers: option?.headers ?? {},
+      body: body,
+      bodyString: body != null ? jsonEncode(body) : '',
+      headers: {...config.headers, ...option?.headers ?? {}},
       method: method,
     );
 
@@ -97,7 +97,7 @@ final class HttpClientImpl implements HttpClient {
 
     final http.Request httpRequest = http.Request(request.method, request.url)
       ..headers.addAll(_serializeHeaders(request.headers))
-      ..body = jsonEncode(request.body);
+      ..body = request.body != null ? jsonEncode(request.body) : '';
 
     final http.StreamedResponse streamedResponse = await _client.send(httpRequest);
     final http.Response res = await http.Response.fromStream(streamedResponse);
@@ -112,8 +112,7 @@ final class HttpClientImpl implements HttpClient {
   }
 
   Map<String, String> _serializeHeaders(Set<Header> headers) {
-    final Set<Header> mergedHeaders = {...config.headers, ...headers};
-    return mergedHeaders
+    return headers
         .fold({}, (previousValue, element) => {...previousValue, element.key: element.value});
   }
 }

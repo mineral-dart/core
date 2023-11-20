@@ -9,7 +9,7 @@ abstract interface class Request {
 
   String get bodyString;
 
-  Map<String, dynamic> get body;
+  Map<String, dynamic>? get body;
 }
 
 final class RequestImpl implements Request {
@@ -17,7 +17,7 @@ final class RequestImpl implements Request {
   String method;
 
   @override
-  Map<String, dynamic> body;
+  Map<String, dynamic>? body;
 
   @override
   String bodyString;
