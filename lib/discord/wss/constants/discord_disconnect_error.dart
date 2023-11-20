@@ -1,0 +1,22 @@
+enum DiscordDisconnectError {
+  unknownError(4000,	'Unknown error', true),
+  unknownOpCode(4001,	'Unknown opcode',	true),
+  decodeError(4002,	'Decode error',	true),
+  notAuthenticated(4003,	'Not authenticated', true),
+  authenticationFailed(4004,	'Authentication failed', false),
+  alreadyAuthenticated(4005,	'Already authenticated', true),
+  invalidSequence(4007,	'Invalid sequence',	true),
+  rateLimited(4008,	'Rate limited', true),
+  sessionTimeout(4009,	'Session timed out', true),
+  invalidShard(4010,	'Invalid shard', false),
+  shardingRequired(4011,	'Sharding required', false),
+  invalidApiVersion(4012,	'Invalid API version', false),
+  invalidIntents(4013,	'Invalid intent(s)', false),
+  disallowedIntents(4014,	'Disallowed intent(s)',	false);
+
+  final int code;
+  final String message;
+  final bool canBeReconnected;
+
+  const DiscordDisconnectError(this.code, this.message, this.canBeReconnected);
+}
