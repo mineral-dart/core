@@ -11,7 +11,7 @@ abstract interface class ShardingConfig {
 
   int get largeThreshold;
 
-  int get shardCount;
+  int? get shardCount;
 }
 
 final class ShardingConfigImpl implements ShardingConfig {
@@ -34,15 +34,15 @@ final class ShardingConfigImpl implements ShardingConfig {
   final int largeThreshold;
 
   @override
-  final int shardCount;
+  final int? shardCount;
 
   ShardingConfigImpl({
     required this.token,
     required this.intent,
     required this.version,
+    this.shardCount,
     this.compress = false,
     this.encoding = 'json',
     this.largeThreshold = 50,
-    this.shardCount = 1,
   });
 }
