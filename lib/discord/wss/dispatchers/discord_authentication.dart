@@ -13,7 +13,7 @@ abstract interface class DiscordAuthentication {
 
   Future<void> connect();
 
-  void reconnect(dynamic payload);
+  void reconnect();
 
   void ack();
 
@@ -68,8 +68,9 @@ final class DiscordAuthenticationImpl implements DiscordAuthentication {
   }
 
   @override
-  void reconnect(dynamic payload) {
-    print(payload);
+  void reconnect() {
+    client.disconnect();
+    connect();
   }
 
   @override

@@ -66,7 +66,9 @@ final class WebsocketManagerImpl implements WebsocketManager {
           case OpCode.heartbeatAck:
             authentication.ack();
           case OpCode.reconnect:
-            authentication.reconnect(payload);
+            authentication.reconnect();
+          case OpCode.invalidSession:
+            authentication.resume();
           case OpCode.dispatch:
             dispatchEvent.dispatch(message.content);
           default:
