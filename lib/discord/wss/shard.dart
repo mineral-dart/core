@@ -34,8 +34,9 @@ final class ShardImpl implements Shard {
 
   late final ShardNetworkError networkError;
 
-  ShardImpl({required this.url, required this.config}) {
+  ShardImpl({required String shardName, required this.url, required this.config}) {
     client = WebsocketClientImpl(
+        name: shardName,
         url: url,
         onClose: () async {
           authentication.connect();
