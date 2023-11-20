@@ -1,4 +1,4 @@
-import 'package:mineral/discord/op_code.dart';
+import 'package:mineral/discord/wss/constants/op_code.dart';
 
 abstract interface class DiscordPayloadMessage<T> {
   String? get type;
