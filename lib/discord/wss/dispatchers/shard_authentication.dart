@@ -34,7 +34,7 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
   void identify(Map<String, dynamic> payload) {
     createHeartbeatTimer(payload['heartbeat_interval']);
 
-    final message = DiscordMessageBuilder()
+    final message = ShardMessageBuilder()
         .setOpCode(OpCode.identify)
         .append('token', config.token)
         .append('intents', 513)
@@ -75,7 +75,7 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
 
   @override
   void resume() {
-    final message = DiscordMessageBuilder()
+    final message = ShardMessageBuilder()
         .setOpCode(OpCode.resume)
         .append('token', config.token)
         .append('session_id', sessionId)

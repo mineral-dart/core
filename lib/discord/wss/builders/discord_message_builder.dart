@@ -2,18 +2,18 @@ import 'dart:convert';
 
 import 'package:mineral/discord/wss/constants/op_code.dart';
 
-final class DiscordMessageBuilder {
+final class ShardMessageBuilder {
   OpCode? _code;
   Map<String, dynamic>? _payload;
 
-  DiscordMessageBuilder();
+  ShardMessageBuilder();
 
-  DiscordMessageBuilder setOpCode(OpCode code) {
+  ShardMessageBuilder setOpCode(OpCode code) {
     _code = code;
     return this;
   }
 
-  DiscordMessageBuilder append(String key, dynamic payload) {
+  ShardMessageBuilder append(String key, dynamic payload) {
     _payload ??= {};
     _payload![key] = payload;
 
