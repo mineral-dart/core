@@ -1,6 +1,6 @@
 import 'package:mineral/discord/wss/constants/op_code.dart';
 
-abstract interface class DiscordPayloadMessage<T> {
+abstract interface class ShardMessage<T> {
   String? get type;
 
   OpCode get opCode;
@@ -10,7 +10,7 @@ abstract interface class DiscordPayloadMessage<T> {
   T get payload;
 }
 
-final class DiscordPayloadMessageImpl<T> implements DiscordPayloadMessage<T> {
+final class ShardMessageImpl<T> implements ShardMessage<T> {
   @override
   final String? type;
 
@@ -23,14 +23,14 @@ final class DiscordPayloadMessageImpl<T> implements DiscordPayloadMessage<T> {
   @override
   final T payload;
 
-  DiscordPayloadMessageImpl(
+  ShardMessageImpl(
       {required this.type,
       required this.opCode,
       required this.sequence,
       required this.payload});
 
-  factory DiscordPayloadMessageImpl.of(Map<String, dynamic> message) =>
-      DiscordPayloadMessageImpl(
+  factory ShardMessageImpl.of(Map<String, dynamic> message) =>
+      ShardMessageImpl(
           type: message['t'],
           opCode: OpCode.values
               .firstWhere((element) => element.value == message['op']),

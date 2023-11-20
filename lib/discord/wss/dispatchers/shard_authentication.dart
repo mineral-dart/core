@@ -4,9 +4,9 @@ import 'dart:convert';
 import 'package:mineral/api/wss/websocket_client.dart';
 import 'package:mineral/discord/wss/builders/discord_message_builder.dart';
 import 'package:mineral/discord/wss/constants/op_code.dart';
-import 'package:mineral/discord/wss/discord_websocket_config.dart';
+import 'package:mineral/discord/wss/sharding_config.dart';
 
-abstract interface class DiscordAuthentication {
+abstract interface class ShardAuthentication {
   void setupRequirements(Map<String, dynamic> payload);
 
   void identify(Map<String, dynamic> payload);
@@ -20,15 +20,15 @@ abstract interface class DiscordAuthentication {
   void resume();
 }
 
-final class DiscordAuthenticationImpl implements DiscordAuthentication {
+final class ShardAuthenticationImpl implements ShardAuthentication {
   final WebsocketClient client;
-  final DiscordWebsocketConfig config;
+  final ShardingConfig config;
 
   int? sequence;
   String? sessionId;
   String? resumeUrl;
 
-  DiscordAuthenticationImpl(this.client, this.config);
+  ShardAuthenticationImpl(this.client, this.config);
 
   @override
   void identify(Map<String, dynamic> payload) {

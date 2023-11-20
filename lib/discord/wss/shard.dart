@@ -2,37 +2,37 @@ import 'dart:convert';
 
 import 'package:mineral/api/wss/websocket_client.dart';
 import 'package:mineral/discord/wss/constants/op_code.dart';
-import 'package:mineral/discord/wss/discord_payload_message.dart';
-import 'package:mineral/discord/wss/discord_websocket_config.dart';
-import 'package:mineral/discord/wss/dispatchers/discord_authentication.dart';
-import 'package:mineral/discord/wss/dispatchers/discord_event.dart';
-import 'package:mineral/discord/wss/dispatchers/discord_network_error.dart';
+import 'package:mineral/discord/wss/shard_message.dart';
+import 'package:mineral/discord/wss/dispatchers/shard_authentication.dart';
+import 'package:mineral/discord/wss/dispatchers/shard_data.dart';
+import 'package:mineral/discord/wss/dispatchers/shard_network_error.dart';
+import 'package:mineral/discord/wss/sharding_config.dart';
 
 abstract interface class Shard {
-  DiscordWebsocketConfig get config;
+  ShardingConfig get config;
 
   WebsocketClient get client;
 
-  DiscordAuthentication get authentication;
+  ShardAuthentication get authentication;
 
   Future<void> init();
 }
 
 final class ShardImpl implements Shard {
   @override
-  final DiscordWebsocketConfig config;
+  final ShardingConfig config;
 
   @override
   late final WebsocketClient client;
 
   @override
-  late final DiscordAuthentication authentication;
+  late final ShardAuthentication authentication;
 
   final String url;
 
-  late final DiscordEvent dispatchEvent;
+  late final ShardData dispatchEvent;
 
-  late final DiscordNetworkError networkError;
+  late final ShardNetworkError networkError;
 
   ShardImpl({required this.url, required this.config}) {
     client = WebsocketClientImpl(
@@ -43,21 +43,21 @@ final class ShardImpl implements Shard {
         onError: (error) => networkError.dispatch(error),
         onOpen: (message) => print('Opened ! $message'));
 
-    authentication = DiscordAuthenticationImpl(client, config);
-    networkError = DiscordNetworkErrorImpl(client, authentication, config);
-    dispatchEvent = DiscordEventImpl(authentication);
+    authentication = ShardAuthenticationImpl(client, config);
+    networkError = ShardNetworkErrorImpl(client, authentication, config);
+    dispatchEvent = ShardDataImpl(authentication);
   }
 
   @override
   Future<void> init() async {
     client.interceptor.message.add((message) async {
-      message.content = DiscordPayloadMessageImpl.of(jsonDecode(message.originalContent));
+      message.content = ShardMessageImpl.of(jsonDecode(message.originalContent));
       return message;
     });
 
     client.listen((message) {
       print(message.originalContent);
-      if (message.content case DiscordPayloadMessage(opCode: final code, payload: final payload)) {
+      if (message.content case ShardMessage(opCode: final code, payload: final payload)) {
         switch (code) {
           case OpCode.hello:
             authentication.identify(payload);

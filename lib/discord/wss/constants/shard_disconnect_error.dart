@@ -1,4 +1,4 @@
-enum DiscordDisconnectError {
+enum ShardDisconnectError {
   unknownError(4000,	'Unknown error', true),
   unknownOpCode(4001,	'Unknown opcode',	true),
   decodeError(4002,	'Decode error',	true),
@@ -18,5 +18,5 @@ enum DiscordDisconnectError {
   final String message;
   final bool canBeReconnected;
 
-  const DiscordDisconnectError(this.code, this.message, this.canBeReconnected);
+  const ShardDisconnectError(this.code, this.message, this.canBeReconnected);
 }

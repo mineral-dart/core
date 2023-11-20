@@ -1,4 +1,4 @@
-abstract interface class DiscordWebsocketConfig {
+abstract interface class ShardingConfig {
   String get token;
 
   int get intent;
@@ -14,7 +14,7 @@ abstract interface class DiscordWebsocketConfig {
   int get shardCount;
 }
 
-final class DiscordWebsocketConfigImpl implements DiscordWebsocketConfig {
+final class ShardingConfigImpl implements ShardingConfig {
   @override
   final String token;
 
@@ -36,7 +36,7 @@ final class DiscordWebsocketConfigImpl implements DiscordWebsocketConfig {
   @override
   final int shardCount;
 
-  DiscordWebsocketConfigImpl({
+  ShardingConfigImpl({
     required this.token,
     required this.intent,
     required this.version,
