@@ -6,6 +6,7 @@ import 'package:mineral/discord/wss/discord_payload_message.dart';
 import 'package:mineral/discord/wss/discord_websocket_config.dart';
 import 'package:mineral/discord/wss/dispatchers/discord_authentication.dart';
 import 'package:mineral/discord/wss/dispatchers/discord_event.dart';
+import 'package:mineral/discord/wss/dispatchers/discord_network_error.dart';
 
 abstract interface class WebsocketManager {
   DiscordWebsocketConfig get config;
@@ -31,21 +32,19 @@ final class WebsocketManagerImpl implements WebsocketManager {
 
   late final DiscordEvent dispatchEvent;
 
+  late final DiscordNetworkError networkError;
+
   WebsocketManagerImpl({required this.url, required this.config}) {
     client = WebsocketClientImpl(
         url: url,
         onClose: () async {
-          print('Channel closed');
           authentication.connect();
         },
-        onError: (error) => print('Error ! $error'),
+        onError: (error) => networkError.dispatch(error),
         onOpen: (message) => print('Opened ! $message'));
 
-    authentication = DiscordAuthenticationImpl(
-      client: client,
-      config: config,
-    );
-
+    authentication = DiscordAuthenticationImpl(client, config);
+    networkError = DiscordNetworkErrorImpl(client, authentication, config);
     dispatchEvent = DiscordEventImpl(authentication);
   }
 
@@ -53,7 +52,6 @@ final class WebsocketManagerImpl implements WebsocketManager {
   Future<void> init() async {
     client.interceptor.message.add((message) async {
       message.content = DiscordPayloadMessageImpl.of(jsonDecode(message.originalContent));
-
       return message;
     });
 

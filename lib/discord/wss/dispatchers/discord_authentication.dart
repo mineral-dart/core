@@ -28,7 +28,7 @@ final class DiscordAuthenticationImpl implements DiscordAuthentication {
   String? sessionId;
   String? resumeUrl;
 
-  DiscordAuthenticationImpl({required this.client, required this.config});
+  DiscordAuthenticationImpl(this.client, this.config);
 
   @override
   void identify(Map<String, dynamic> payload) {
