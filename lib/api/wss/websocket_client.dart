@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io' as io;
 
 import 'package:mineral/api/wss/interceptor.dart';
@@ -24,7 +25,8 @@ abstract interface class WebsocketClient {
 
 final class WebsocketClientImpl implements WebsocketClient {
   io.WebSocket? _channel;
-  final void Function(dynamic)? _onError;
+  StreamSubscription<dynamic>? _channelListener;
+  final void Function(Object payload)? _onError;
   final void Function()? _onClose;
   final void Function(WebsocketMessage)? _onOpen;
   void Function(WebsocketMessage)? _onMessage;
@@ -44,7 +46,7 @@ final class WebsocketClientImpl implements WebsocketClient {
   WebsocketClientImpl(
       {required this.url,
       this.name = 'default',
-      void Function(dynamic)? onError,
+      void Function(Object payload)? onError,
       void Function()? onClose,
       void Function(WebsocketMessage)? onOpen})
       : _onError = onError,
@@ -53,23 +55,40 @@ final class WebsocketClientImpl implements WebsocketClient {
 
   @override
   Future<void> connect() async {
-    _channel = await io.WebSocket.connect(url);
-    stream = _channel!.asBroadcastStream();
+    try {
+      _channel = await io.WebSocket.connect(url);
+      stream = _channel!.asBroadcastStream();
 
-    stream?.listen(
-      (dynamic message) => _handleMessage(_onMessage, message),
-      onError: _onError,
-      onDone: _onClose,
-    );
+      if (_onError != null) {
+        stream!.handleError((err) {
+          _onError!({'error': err, 'code': _channel?.closeCode, 'reason': _channel?.closeReason});
+        });
+      }
 
-    final firstMessage = await stream?.first;
-    if (_onOpen != null) {
-      _handleMessage(_onOpen, firstMessage);
+      _channelListener = stream!.listen(
+        (dynamic message) => _handleMessage(_onMessage, message),
+        onDone: () {
+          print(_channel?.closeCode);
+          print(_channel?.closeReason);
+          _onClose!();
+        },
+      );
+
+      if (_onOpen != null) {
+        final firstMessage = await stream?.first;
+        _handleMessage(_onOpen, firstMessage);
+      }
+    } on io.WebSocketException catch (err) {
+      print(err);
+      _onError!({'error': err, 'code': _channel?.closeCode, 'reason': _channel?.closeReason});
+    } finally {
+      print('finally…');
     }
   }
 
   @override
-  void disconnect({int? code = 1000, String? reason}) {
+  void disconnect({int? code = 4000, String? reason}) {
+    _channelListener?.cancel();
     _channel?.close(code, reason);
   }
 
@@ -89,7 +108,13 @@ final class WebsocketClientImpl implements WebsocketClient {
   Future<void> send(String message) async {
     final interceptedMessage = await _handleRequestedMessageInterceptors(
         WebsocketRequestedMessageImpl(channelName: name, content: message));
-    _channel?.add(interceptedMessage.content);
+
+    switch (_channel?.readyState) {
+      case io.WebSocket.open:
+        _channel?.add(interceptedMessage.content);
+      case io.WebSocket.closed when _onClose != null:
+        _onClose!();
+    }
   }
 
   Future<WebsocketMessage> _handleMessageInterceptors(WebsocketMessage message) async {

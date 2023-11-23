@@ -12,14 +12,15 @@ final class ShardDataImpl implements ShardData {
 
   @override
   void dispatch(ShardMessage message) {
+    print(message.payload);
     return switch (message.type) {
       'READY' => ready(message.payload),
-      _ => shard.manager.serializer.serialize(message.type!, message.payload)
+      _ => print('Unknown message type ! ${message.type}'),
     };
   }
 
   void ready(Map<String, dynamic> payload) {
     shard.authentication.setupRequirements(payload);
-    shard.manager.serializer.serialize('READY', payload);
+    // shard.manager.serializer.serialize('READY', payload);
   }
 }

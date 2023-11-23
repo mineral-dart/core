@@ -38,11 +38,18 @@ final class ShardImpl implements Shard {
     client = WebsocketClientImpl(
         name: shardName,
         url: url,
-        onClose: () async {
-          authentication.connect();
+        onError: (error) {
+          print('error $error');
+          networkError.dispatch(error);
         },
-        onError: (error) => networkError.dispatch(error),
-        onOpen: (message) => print('Opened ! $message'));
+        onClose: () {
+          print('closed !');
+        },
+        onOpen: (message) {
+          if (message.content case ShardMessage(:final payload)) {
+            print('Opened ! $payload');
+          }
+        });
 
     authentication = ShardAuthenticationImpl(this);
     networkError = ShardNetworkErrorImpl(this);

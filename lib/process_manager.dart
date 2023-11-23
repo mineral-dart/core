@@ -29,7 +29,11 @@ final class ProcessManagerImpl implements ProcessManager {
 
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {
     final response = await httpClient.get('/gateway/bot');
-    return response.body;
+    return switch(response.statusCode) {
+      200 => response.body,
+      401 => throw Exception('This token is invalid or revocated !'),
+      _ => throw Exception(response.body['message']),
+    };
   }
 
   Future<void> createShards() async {
