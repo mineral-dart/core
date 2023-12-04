@@ -9,9 +9,11 @@ import 'package:mineral/discord/wss/shard_message.dart';
 import 'package:mineral/process_manager.dart';
 
 abstract interface class Shard {
+  String get shardName;
+
   ProcessManager get manager;
 
-  WebsocketClient get client;
+  abstract WebsocketClient client;
 
   ShardAuthentication get authentication;
 
@@ -20,10 +22,13 @@ abstract interface class Shard {
 
 final class ShardImpl implements Shard {
   @override
+  final String shardName;
+
+  @override
   final ProcessManager manager;
 
   @override
-  late final WebsocketClient client;
+  late WebsocketClient client;
 
   @override
   late final ShardAuthentication authentication;
@@ -34,23 +39,7 @@ final class ShardImpl implements Shard {
 
   late final ShardNetworkError networkError;
 
-  ShardImpl({required String shardName, required this.url, required this.manager}) {
-    client = WebsocketClientImpl(
-        name: shardName,
-        url: url,
-        onError: (error) {
-          print('error $error');
-          networkError.dispatch(error);
-        },
-        onClose: () {
-          print('closed !');
-        },
-        onOpen: (message) {
-          if (message.content case ShardMessage(:final payload)) {
-            print('Opened ! $payload');
-          }
-        });
-
+  ShardImpl({required this.shardName, required this.url, required this.manager}) {
     authentication = ShardAuthenticationImpl(this);
     networkError = ShardNetworkErrorImpl(this);
     dispatchEvent = ShardDataImpl(this);
@@ -58,6 +47,23 @@ final class ShardImpl implements Shard {
 
   @override
   Future<void> init() async {
+    client = WebsocketClientImpl(
+        name: shardName,
+        url: url,
+        onError: (error) {
+          print('error $error');
+          networkError.dispatch(error);
+        },
+        onClose: (int? exitCode) {
+          networkError.dispatch(exitCode);
+          print('closed !');
+        },
+        onOpen: (message) {
+          if (message.content case ShardMessage(:final payload)) {
+            print('Opened<< ! $payload');
+          }
+        });
+
     client.interceptor.message.add((message) async {
       message.content = ShardMessageImpl.of(jsonDecode(message.originalContent));
       return message;

@@ -68,6 +68,7 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
   @override
   void reconnect() {
     shard.client.disconnect();
+    shard.init();
     connect();
   }
 

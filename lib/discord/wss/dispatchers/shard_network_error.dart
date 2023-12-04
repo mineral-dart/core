@@ -18,6 +18,9 @@ final class ShardNetworkErrorImpl implements ShardNetworkError {
 
     if (error case ShardDisconnectError(canBeReconnected: final canBeReconnected)) {
       print('${error.code} ${error.message}');
+      if (error.code == 4005) {
+        return;
+      }
       return canBeReconnected ? shard.authentication.resume() : shard.authentication.reconnect();
     }
 
