@@ -1,6 +1,6 @@
-import 'package:mineral/api/api/common/message.dart';
-import 'package:mineral/api/api/server/channels/guild_channel.dart';
-import 'package:mineral/api/api/server/guild_member.dart';
+import 'package:mineral/api/common/message.dart';
+import 'package:mineral/api/server/channels/guild_channel.dart';
+import 'package:mineral/api/server/guild_member.dart';
 
 final class GuildMessage implements Message {
   @override

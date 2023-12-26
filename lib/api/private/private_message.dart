@@ -1,7 +1,6 @@
-import 'package:mineral/api/api/common/channel.dart';
-import 'package:mineral/api/api/common/message.dart';
-import 'package:mineral/api/api/private/user.dart';
-import 'package:mineral/api/api/private/channels/private_channel.dart';
+import 'package:mineral/api/common/message.dart';
+import 'package:mineral/api/private/channels/private_channel.dart';
+import 'package:mineral/api/private/user.dart';
 
 final class PrivateMessage implements Message {
   @override

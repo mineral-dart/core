@@ -1,6 +1,6 @@
-import 'package:mineral/api/api/common/partial_emoji.dart';
-import 'package:mineral/api/api/private/user.dart';
-import 'package:mineral/api/api/server/role.dart';
+import 'package:mineral/api/common/partial_emoji.dart';
+import 'package:mineral/api/private/user.dart';
+import 'package:mineral/api/server/role.dart';
 
 final class Emoji extends PartialEmoji {
   final String? globalName;
