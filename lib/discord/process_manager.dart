@@ -9,7 +9,7 @@ abstract interface class ProcessManager {
 
   ShardingConfigContract get config;
 
-  HttpClient get httpClient;
+  HttpClientContract get httpClient;
 
   EventManagerContract get eventManager;
 }
@@ -22,7 +22,7 @@ final class ProcessManagerImpl implements ProcessManager {
   final ShardingConfigContract config;
 
   @override
-  final HttpClient httpClient;
+  final HttpClientContract httpClient;
 
   @override
   final EventManagerContract eventManager;
