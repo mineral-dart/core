@@ -1,5 +1,5 @@
-import 'package:mineral/discord/wss/shard.dart';
-import 'package:mineral/discord/wss/shard_message.dart';
+import 'package:mineral/domains/wss/shard.dart';
+import 'package:mineral/domains/wss/shard_message.dart';
 
 abstract interface class ShardData {
   void dispatch(ShardMessage message);

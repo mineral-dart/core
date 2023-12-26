@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:mineral/application/wss/websocket_client.dart';
-import 'package:mineral/discord/process_manager.dart';
-import 'package:mineral/discord/wss/constants/op_code.dart';
-import 'package:mineral/discord/wss/dispatchers/shard_authentication.dart';
-import 'package:mineral/discord/wss/dispatchers/shard_data.dart';
-import 'package:mineral/discord/wss/dispatchers/shard_network_error.dart';
-import 'package:mineral/discord/wss/shard_message.dart';
+import 'package:mineral/domains/kernel/process_manager.dart';
+import 'package:mineral/domains/wss/constants/op_code.dart';
+import 'package:mineral/domains/wss/dispatchers/shard_authentication.dart';
+import 'package:mineral/domains/wss/dispatchers/shard_data.dart';
+import 'package:mineral/domains/wss/dispatchers/shard_network_error.dart';
+import 'package:mineral/domains/wss/shard_message.dart';
 
 abstract interface class ShardContract {
   String get shardName;

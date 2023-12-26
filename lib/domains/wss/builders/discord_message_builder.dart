@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mineral/discord/wss/constants/op_code.dart';
+import 'package:mineral/domains/wss/constants/op_code.dart';
 
 final class ShardMessageBuilder {
   OpCode? _code;
