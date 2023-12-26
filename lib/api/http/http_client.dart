@@ -8,7 +8,7 @@ import 'package:mineral/api/http/http_request_option.dart';
 import 'package:mineral/api/http/request.dart';
 import 'package:mineral/api/http/response.dart';
 
-abstract interface class HttpClient {
+abstract interface class HttpClientContract {
   HttpInterceptor get interceptor;
 
   HttpClientConfig get config;
@@ -30,7 +30,7 @@ abstract interface class HttpClient {
       {HttpRequestOption? option, Map<String, dynamic> body});
 }
 
-final class HttpClientImpl implements HttpClient {
+final class HttpClient implements HttpClientContract {
   final http.Client _client = http.Client();
 
   @override
@@ -39,7 +39,7 @@ final class HttpClientImpl implements HttpClient {
   @override
   final HttpClientConfig config;
 
-  HttpClientImpl({required this.config});
+  HttpClient({required this.config});
 
   @override
   Future<Response<T>> delete<T>(String endpoint, {HttpRequestOption? option}) {
