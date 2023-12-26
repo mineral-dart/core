@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mineral/application/events/types/listenable.dart';
+import 'package:mineral/domains/events/types/listenable.dart';
 import 'package:rxdart/rxdart.dart';
 
 final class EventDispatcher implements Listenable {
