@@ -1,5 +1,5 @@
-import 'package:mineral/api/wss/websocket_message.dart';
-import 'package:mineral/api/wss/websocket_requested_message.dart';
+import 'package:mineral/application/wss/websocket_message.dart';
+import 'package:mineral/application/wss/websocket_requested_message.dart';
 
 typedef MessageInterceptor = Future<WebsocketMessage> Function(WebsocketMessage);
 typedef RequestInterceptor = Future<WebsocketRequestedMessage> Function(WebsocketRequestedMessage);
