@@ -1,4 +1,4 @@
-abstract interface class ShardingConfig {
+abstract interface class ShardingConfigContract {
   String get token;
 
   int get intent;
@@ -14,7 +14,7 @@ abstract interface class ShardingConfig {
   int? get shardCount;
 }
 
-final class ShardingConfigImpl implements ShardingConfig {
+final class ShardingConfig implements ShardingConfigContract {
   @override
   final String token;
 
@@ -36,7 +36,7 @@ final class ShardingConfigImpl implements ShardingConfig {
   @override
   final int? shardCount;
 
-  ShardingConfigImpl({
+  ShardingConfig({
     required this.token,
     required this.intent,
     required this.version,
