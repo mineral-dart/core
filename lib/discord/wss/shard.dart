@@ -8,7 +8,7 @@ import 'package:mineral/discord/wss/dispatchers/shard_data.dart';
 import 'package:mineral/discord/wss/dispatchers/shard_network_error.dart';
 import 'package:mineral/discord/wss/shard_message.dart';
 
-abstract interface class Shard {
+abstract interface class ShardContract {
   String get shardName;
 
   ProcessManager get manager;
@@ -20,7 +20,7 @@ abstract interface class Shard {
   Future<void> init();
 }
 
-final class ShardImpl implements Shard {
+final class Shard implements ShardContract {
   @override
   final String shardName;
 
@@ -39,7 +39,7 @@ final class ShardImpl implements Shard {
 
   late final ShardNetworkError networkError;
 
-  ShardImpl({required this.shardName, required this.url, required this.manager}) {
+  Shard({required this.shardName, required this.url, required this.manager}) {
     authentication = ShardAuthenticationImpl(this);
     networkError = ShardNetworkErrorImpl(this);
     dispatchEvent = ShardDataImpl(this);
