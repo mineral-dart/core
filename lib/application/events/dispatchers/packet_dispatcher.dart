@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:mineral/application/events/types/listenable.dart';
-import 'package:mineral/discord/wss/shard_message.dart';
+import 'package:mineral/domains/wss/shard_message.dart';
 import 'package:rxdart/rxdart.dart';
 
 final class PacketDispatcher implements Listenable<ShardMessage> {

@@ -1,5 +1,5 @@
-import 'package:mineral/discord/wss/constants/shard_disconnect_error.dart';
-import 'package:mineral/discord/wss/shard.dart';
+import 'package:mineral/domains/wss/constants/shard_disconnect_error.dart';
+import 'package:mineral/domains/wss/shard.dart';
 
 abstract interface class ShardNetworkError {
   void dispatch(dynamic payload);

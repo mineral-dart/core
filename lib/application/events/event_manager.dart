@@ -1,7 +1,7 @@
 import 'package:mineral/application/events/dispatchers/event_dispatcher.dart';
 import 'package:mineral/application/events/dispatchers/packet_dispatcher.dart';
 import 'package:mineral/application/events/types/listenable.dart';
-import 'package:mineral/discord/wss/shard_message.dart';
+import 'package:mineral/domains/wss/shard_message.dart';
 
 abstract interface class EventManagerContract {
   Listenable<ShardMessage> get packets;
