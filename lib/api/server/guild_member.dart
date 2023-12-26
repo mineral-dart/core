@@ -1,4 +1,4 @@
-import 'package:mineral/api/api/server/guild.dart';
+import 'package:mineral/api/server/guild.dart';
 
 final class GuildMember {
   final String id;

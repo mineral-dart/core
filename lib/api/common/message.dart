@@ -1,4 +1,4 @@
-import 'package:mineral/api/api/common/channel.dart';
+import 'package:mineral/api/common/channel.dart';
 
 abstract interface class Message {
   String get id;

@@ -1,9 +1,8 @@
-import 'package:mineral/api/api/common/emoji.dart';
-import 'package:mineral/api/api/common/partial_emoji.dart';
-import 'package:mineral/api/api/server/channels/guild_channel.dart';
-import 'package:mineral/api/api/server/enums/forum_layout_types.dart';
-import 'package:mineral/api/api/server/enums/sort_order_forum.dart';
-import 'package:mineral/api/api/server/guild.dart';
+import 'package:mineral/api/common/partial_emoji.dart';
+import 'package:mineral/api/server/channels/guild_channel.dart';
+import 'package:mineral/api/server/enums/forum_layout_types.dart';
+import 'package:mineral/api/server/enums/sort_order_forum.dart';
+import 'package:mineral/api/server/guild.dart';
 
 final class GuildForumChannel implements GuildChannel {
   @override

@@ -1,9 +1,9 @@
-import 'package:mineral/api/api/common/emoji.dart';
-import 'package:mineral/api/api/server/channels/guild_channel.dart';
-import 'package:mineral/api/api/server/channels/guild_text_channel.dart';
-import 'package:mineral/api/api/server/channels/guild_voice_channel.dart';
-import 'package:mineral/api/api/server/guild_member.dart';
-import 'package:mineral/api/api/server/role.dart';
+import 'package:mineral/api/common/emoji.dart';
+import 'package:mineral/api/server/channels/guild_channel.dart';
+import 'package:mineral/api/server/channels/guild_text_channel.dart';
+import 'package:mineral/api/server/channels/guild_voice_channel.dart';
+import 'package:mineral/api/server/guild_member.dart';
+import 'package:mineral/api/server/role.dart';
 
 final class Guild {
   final String id;

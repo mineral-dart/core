@@ -1,7 +1,7 @@
-import 'package:mineral/api/api/server/channels/guild_channel.dart';
-import 'package:mineral/api/api/server/guild.dart';
+import 'package:mineral/api/server/channels/guild_channel.dart';
+import 'package:mineral/api/server/guild.dart';
 
-final class GuildVoiceChannel implements GuildChannel {
+final class GuildAnnouncementChannel implements GuildChannel {
   @override
   final String id;
 
@@ -17,11 +17,14 @@ final class GuildVoiceChannel implements GuildChannel {
   @override
   final Guild guild;
 
-  GuildVoiceChannel({
+  final String description;
+
+  GuildAnnouncementChannel({
     required this.id,
     required this.name,
     required this.position,
     required this.guildId,
     required this.guild,
+    required this.description,
   });
 }

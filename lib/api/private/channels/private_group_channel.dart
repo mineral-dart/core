@@ -1,4 +1,4 @@
-import 'package:mineral/api/api/common/channel.dart';
+import 'package:mineral/api/common/channel.dart';
 
 final class PrivateChannel implements Channel {
   @override
