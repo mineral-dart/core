@@ -1,12 +1,12 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mineral/api/http/header.dart';
-import 'package:mineral/api/http/http_client_config.dart';
-import 'package:mineral/api/http/http_interceptor.dart';
-import 'package:mineral/api/http/http_request_option.dart';
-import 'package:mineral/api/http/request.dart';
-import 'package:mineral/api/http/response.dart';
+import 'package:mineral/application/http/header.dart';
+import 'package:mineral/application/http/http_client_config.dart';
+import 'package:mineral/application/http/http_interceptor.dart';
+import 'package:mineral/application/http/http_request_option.dart';
+import 'package:mineral/application/http/request.dart';
+import 'package:mineral/application/http/response.dart';
 
 abstract interface class HttpClientContract {
   HttpInterceptor get interceptor;

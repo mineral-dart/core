@@ -1,5 +1,5 @@
-import 'package:mineral/api/http/request.dart';
-import 'package:mineral/api/http/response.dart';
+import 'package:mineral/application/http/request.dart';
+import 'package:mineral/application/http/response.dart';
 
 typedef RequestInterceptor = Future<Request> Function(Request);
 typedef ResponseInterceptor = Future<Response> Function(Response);
