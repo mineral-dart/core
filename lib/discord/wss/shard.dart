@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mineral/api/wss/websocket_client.dart';
+import 'package:mineral/application/wss/websocket_client.dart';
 import 'package:mineral/discord/process_manager.dart';
 import 'package:mineral/discord/wss/constants/op_code.dart';
 import 'package:mineral/discord/wss/dispatchers/shard_authentication.dart';
