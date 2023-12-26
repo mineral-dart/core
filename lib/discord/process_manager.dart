@@ -7,7 +7,7 @@ import 'package:mineral/discord/wss/sharding_config.dart';
 abstract interface class ProcessManager {
   Map<int, Shard> get shards;
 
-  ShardingConfig get config;
+  ShardingConfigContract get config;
 
   HttpClient get httpClient;
 
@@ -19,7 +19,7 @@ final class ProcessManagerImpl implements ProcessManager {
   final Map<int, Shard> shards = {};
 
   @override
-  final ShardingConfig config;
+  final ShardingConfigContract config;
 
   @override
   final HttpClient httpClient;
