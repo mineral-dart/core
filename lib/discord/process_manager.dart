@@ -1,5 +1,5 @@
-import 'package:mineral/api/http/header.dart';
-import 'package:mineral/api/http/http_client.dart';
+import 'package:mineral/application/http/header.dart';
+import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/events/event_manager.dart';
 import 'package:mineral/discord/wss/shard.dart';
 import 'package:mineral/discord/wss/sharding_config.dart';

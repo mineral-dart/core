@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mineral/api/http/header.dart';
+import 'package:mineral/application/http/header.dart';
 
 abstract interface class Response<T> {
   abstract final int statusCode;

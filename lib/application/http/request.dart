@@ -1,4 +1,4 @@
-import 'package:mineral/api/http/header.dart';
+import 'package:mineral/application/http/header.dart';
 
 abstract interface class Request {
   String get method;
