@@ -1,9 +1,9 @@
 import 'dart:async';
 
-abstract interface class Listenable {
-  StreamSubscription listen(void Function(dynamic) handle);
+abstract interface class Listenable<T> {
+  StreamSubscription listen(void Function(T) handle);
 
-  void dispatch(dynamic payload);
+  void dispatch(T payload);
 
   void dispose();
 }

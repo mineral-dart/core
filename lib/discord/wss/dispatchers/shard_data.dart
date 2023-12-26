@@ -6,21 +6,16 @@ abstract interface class ShardData {
 }
 
 final class ShardDataImpl implements ShardData {
-  final Shard shard;
+  final Shard _shard;
 
-  ShardDataImpl(this.shard);
+  ShardDataImpl(this._shard);
 
   @override
   void dispatch(ShardMessage message) {
-    print(message.payload);
-    return switch (message.type) {
-      'READY' => ready(message.payload),
-      _ => print('Unknown message type ! ${message.type}'),
-    };
-  }
+    if (message.type == 'READY') {
+      _shard.authentication.setupRequirements(message.payload);
+    }
 
-  void ready(Map<String, dynamic> payload) {
-    shard.authentication.setupRequirements(payload);
-    // shard.manager.serializer.serialize('READY', payload);
+    _shard.manager.eventManager.packets.dispatch(message);
   }
 }

@@ -1,13 +1,14 @@
 import 'dart:async';
 
 import 'package:mineral/application/events/types/listenable.dart';
+import 'package:mineral/discord/wss/shard_message.dart';
 import 'package:rxdart/rxdart.dart';
 
-final class PacketDispatcher implements Listenable {
-  final BehaviorSubject<dynamic> _packets = BehaviorSubject();
+final class PacketDispatcher implements Listenable<ShardMessage> {
+  final BehaviorSubject<ShardMessage> _packets = BehaviorSubject();
 
   @override
-  StreamSubscription listen(Function(dynamic) handle) => _packets.stream.listen(handle);
+  StreamSubscription listen(Function(ShardMessage) handle) => _packets.stream.listen(handle);
 
   @override
   void dispatch(dynamic payload) => _packets.add(payload);
