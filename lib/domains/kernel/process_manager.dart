@@ -1,6 +1,6 @@
-import 'package:mineral/application/events/event_manager.dart';
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
+import 'package:mineral/domains/events/event_manager.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
 
