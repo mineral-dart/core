@@ -1,20 +1,31 @@
 import 'package:mineral/domains/events/dispatchers/event_dispatcher.dart';
 import 'package:mineral/domains/events/dispatchers/packet_dispatcher.dart';
 import 'package:mineral/domains/events/types/listenable_dispatcher.dart';
-import 'package:mineral/domains/wss/shard_message.dart';
+import 'package:mineral/domains/events/types/listenable_event.dart';
+import 'package:mineral/domains/events/types/listenable_packet.dart';
 
 abstract interface class EventManagerContract {
-  ListenableDispatcher<ShardMessage> get packets;
+  ListenableDispatcher get packets;
+
   ListenableDispatcher get events;
+
   void dispose();
 }
 
 final class EventManager implements EventManagerContract {
   @override
-  final PacketDispatcher packets = PacketDispatcher();
+  late final PacketDispatcher packets;
 
   @override
   final EventDispatcher events = EventDispatcher();
+
+  EventManager() {
+    packets = PacketDispatcher(this);
+  }
+
+  void listenPacketClass(ListenablePacket packet) => packets.listen({'packet': packet.type, 'listener': packet.listen});
+
+  void listenEventClass(ListenableEvent event) => events.listen({'event': event.event, 'listener': event.handle});
 
   @override
   void dispose() {
