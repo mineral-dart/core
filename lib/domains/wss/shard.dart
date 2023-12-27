@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:mineral/application/wss/websocket_client.dart';
-import 'package:mineral/domains/kernel/process_manager.dart';
+import 'package:mineral/domains/kernel/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/constants/op_code.dart';
 import 'package:mineral/domains/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/domains/wss/dispatchers/shard_data.dart';
@@ -11,7 +11,7 @@ import 'package:mineral/domains/wss/shard_message.dart';
 abstract interface class ShardContract {
   String get shardName;
 
-  ProcessManager get manager;
+  KernelContract get kernel;
 
   abstract WebsocketClient client;
 
@@ -25,7 +25,7 @@ final class Shard implements ShardContract {
   final String shardName;
 
   @override
-  final ProcessManager manager;
+  final KernelContract kernel;
 
   @override
   late WebsocketClient client;
@@ -39,7 +39,7 @@ final class Shard implements ShardContract {
 
   late final ShardNetworkError networkError;
 
-  Shard({required this.shardName, required this.url, required this.manager}) {
+  Shard({required this.shardName, required this.url, required this.kernel}) {
     authentication = ShardAuthenticationImpl(this);
     networkError = ShardNetworkErrorImpl(this);
     dispatchEvent = ShardDataImpl(this);

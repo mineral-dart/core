@@ -34,9 +34,9 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
 
     final message = ShardMessageBuilder()
         .setOpCode(OpCode.identify)
-        .append('token', shard.manager.config.token)
+        .append('token', shard.kernel.config.token)
         .append('intents', 513)
-        .append('compress', shard.manager.config.compress)
+        .append('compress', shard.kernel.config.compress)
         .append('properties', {'\$os': 'macos', '\$device': 'mineral'});
 
     shard.client.send(message.build());
@@ -76,7 +76,7 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
   void resume() {
     final message = ShardMessageBuilder()
         .setOpCode(OpCode.resume)
-        .append('token', shard.manager.config.token)
+        .append('token', shard.kernel.config.token)
         .append('session_id', sessionId)
         .append('seq', sequence);
 
