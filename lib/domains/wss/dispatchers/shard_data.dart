@@ -16,6 +16,6 @@ final class ShardDataImpl implements ShardData {
       _shard.authentication.setupRequirements(message.payload);
     }
 
-    _shard.manager.eventManager.packets.dispatch(message);
+    _shard.kernel.eventManager.packets.dispatch(message);
   }
 }

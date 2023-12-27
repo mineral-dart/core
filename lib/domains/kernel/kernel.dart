@@ -1,20 +1,13 @@
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
+import 'package:mineral/application/http/http_client_config.dart';
 import 'package:mineral/domains/events/event_manager.dart';
+import 'package:mineral/domains/events/packets/ready_packet.dart';
+import 'package:mineral/domains/kernel/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
 
-abstract interface class ProcessManager {
-  Map<int, Shard> get shards;
-
-  ShardingConfigContract get config;
-
-  HttpClientContract get httpClient;
-
-  EventManagerContract get eventManager;
-}
-
-final class ProcessManagerImpl implements ProcessManager {
+final class Kernel implements KernelContract {
   @override
   final Map<int, Shard> shards = {};
 
@@ -27,7 +20,7 @@ final class ProcessManagerImpl implements ProcessManager {
   @override
   final EventManagerContract eventManager;
 
-  ProcessManagerImpl({required this.httpClient, required this.config, required this.eventManager}) {
+  Kernel({required this.httpClient, required this.config, required this.eventManager}) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
@@ -42,14 +35,29 @@ final class ProcessManagerImpl implements ProcessManager {
     };
   }
 
-  Future<void> createShards() async {
+  Future<void> init() async {
     final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
 
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
-      final shard = Shard(shardName: 'shard #$i', url: endpoint, manager: this);
+      final shard = Shard(shardName: 'shard #$i', url: endpoint, kernel: this);
       shards.putIfAbsent(i, () => shard);
 
       await shard.init();
     }
+  }
+
+  factory Kernel.create(
+      {required String token, required int intent, int httpVersion = 10, int shardVersion = 10}) {
+    final http = HttpClient(
+        config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
+      Header.userAgent('Mineral'),
+      Header.contentType('application/json'),
+    }));
+
+    final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
+
+    final EventManager eventManager = EventManager()..listenPacketClass(ReadyPacket());
+
+    return Kernel(httpClient: http, config: shardConfig, eventManager: eventManager);
   }
 }
