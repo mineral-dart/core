@@ -22,7 +22,7 @@ final class EventManager implements EventManagerContract {
     packets = PacketDispatcher(this);
   }
 
-  void listenPacketClass(ListenablePacket packet) => packets.listen({'packet': packet.type, 'listener': packet.listen});
+  void listenPacketClass(ListenablePacket packet) => packets.listen({'packet': packet.event, 'listener': packet.listen});
 
   @override
   void dispose() {

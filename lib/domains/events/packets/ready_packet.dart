@@ -5,11 +5,11 @@ import 'package:mineral/domains/wss/shard_message.dart';
 
 final class ReadyPacket implements ListenablePacket {
   @override
-  PacketType get type => PacketType.ready;
+  PacketType get event => PacketType.ready;
 
   @override
   void listen(Map<String, dynamic> payload) {
     final { 'message': ShardMessage message, 'dispatch': Function(InternalEventParams) dispatch } = payload;
-    dispatch(InternalEventParams('$type', []));
+    dispatch(InternalEventParams(event.toString(), []));
   }
 }
