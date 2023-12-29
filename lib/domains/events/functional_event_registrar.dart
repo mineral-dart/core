@@ -1,9 +1,8 @@
 import 'dart:async';
 
-import 'package:mineral/domains/events/events/ready_event.dart';
 import 'package:mineral/domains/events/internal_event.dart';
 import 'package:mineral/domains/events/types/packet_type.dart';
-import 'package:mineral/domains/kernel/types/mineral_client_contract.dart';
+import 'package:mineral/domains/shared/types/mineral_client_contract.dart';
 
 abstract interface class FunctionalEventRegistrarContract {
   void make(String event, Function() handle);

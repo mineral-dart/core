@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:mineral/application/wss/websocket_client.dart';
-import 'package:mineral/domains/kernel/types/kernel_contract.dart';
+import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/constants/op_code.dart';
 import 'package:mineral/domains/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/domains/wss/dispatchers/shard_data.dart';
