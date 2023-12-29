@@ -1,7 +1,6 @@
 import 'package:mineral/domains/events/dispatchers/event_dispatcher.dart';
 import 'package:mineral/domains/events/dispatchers/packet_dispatcher.dart';
 import 'package:mineral/domains/events/types/listenable_dispatcher.dart';
-import 'package:mineral/domains/events/types/listenable_event.dart';
 import 'package:mineral/domains/events/types/listenable_packet.dart';
 
 abstract interface class EventManagerContract {
@@ -24,8 +23,6 @@ final class EventManager implements EventManagerContract {
   }
 
   void listenPacketClass(ListenablePacket packet) => packets.listen({'packet': packet.type, 'listener': packet.listen});
-
-  void listenEventClass(ListenableEvent event) => events.listen({'event': event.event, 'listener': event.handle});
 
   @override
   void dispose() {
