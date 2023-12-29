@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/bot.dart';
 import 'package:mineral/domains/data/internal_event_params.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
@@ -10,6 +11,8 @@ final class ReadyPacket implements ListenablePacket {
   @override
   void listen(Map<String, dynamic> payload) {
     final { 'message': ShardMessage message, 'dispatch': Function(InternalEventParams) dispatch } = payload;
-    dispatch(InternalEventParams(event.toString(), []));
+
+    final client = Bot.fromJson(message.payload);
+    dispatch(InternalEventParams(event.toString(), [client]));
   }
 }
