@@ -1,7 +1,7 @@
-import 'package:mineral/domains/events/dispatchers/event_dispatcher.dart';
-import 'package:mineral/domains/events/dispatchers/packet_dispatcher.dart';
-import 'package:mineral/domains/events/types/listenable_dispatcher.dart';
-import 'package:mineral/domains/events/types/listenable_packet.dart';
+import 'package:mineral/domains/data/dispatchers/event_dispatcher.dart';
+import 'package:mineral/domains/data/dispatchers/packet_dispatcher.dart';
+import 'package:mineral/domains/data/types/listenable_dispatcher.dart';
+import 'package:mineral/domains/data/types/listenable_packet.dart';
 
 abstract interface class EventManagerContract {
   ListenableDispatcher get packets;

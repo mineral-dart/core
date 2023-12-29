@@ -1,5 +1,5 @@
-import 'package:mineral/domains/events/events/message_create_event.dart';
-import 'package:mineral/domains/events/events/ready_event.dart';
+import 'package:mineral/domains/data/events/message_create_event.dart';
+import 'package:mineral/domains/data/events/ready_event.dart';
 
 enum PacketType {
   ready('READY', ReadyEvent),

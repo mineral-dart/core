@@ -1,8 +1,8 @@
 import 'dart:async';
 
-import 'package:mineral/domains/events/internal_event.dart';
-import 'package:mineral/domains/events/internal_event_params.dart';
-import 'package:mineral/domains/events/types/listenable_dispatcher.dart';
+import 'package:mineral/domains/data/internal_event.dart';
+import 'package:mineral/domains/data/internal_event_params.dart';
+import 'package:mineral/domains/data/types/listenable_dispatcher.dart';
 import 'package:rxdart/rxdart.dart';
 
 final class EventDispatcher implements ListenableDispatcher<InternalEventParams> {
