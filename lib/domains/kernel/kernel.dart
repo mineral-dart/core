@@ -2,6 +2,7 @@ import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
 import 'package:mineral/domains/events/event_manager.dart';
+import 'package:mineral/domains/events/packets/message_create_packet.dart';
 import 'package:mineral/domains/events/packets/ready_packet.dart';
 import 'package:mineral/domains/kernel/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/shard.dart';
@@ -56,7 +57,9 @@ final class Kernel implements KernelContract {
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
-    final EventManager eventManager = EventManager()..listenPacketClass(ReadyPacket());
+    final EventManager eventManager = EventManager()
+      ..listenPacketClass(ReadyPacket())
+      ..listenPacketClass(MessageCreatePacket());
 
     return Kernel(httpClient: http, config: shardConfig, eventManager: eventManager);
   }
