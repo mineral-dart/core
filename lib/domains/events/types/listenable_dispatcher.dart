@@ -1,7 +1,7 @@
-abstract interface class ListenableDispatcher {
+abstract interface class ListenableDispatcher<T> {
   void listen(dynamic params);
 
-  void dispatch(dynamic payload);
+  void dispatch(T payload);
 
   void dispose();
 }
