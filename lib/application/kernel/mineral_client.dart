@@ -1,6 +1,6 @@
-import 'package:mineral/domains/events/functional_event_registrar.dart';
-import 'package:mineral/domains/events/internal_event.dart';
-import 'package:mineral/domains/events/types/listenable_event.dart';
+import 'package:mineral/domains/data/functional_event_registrar.dart';
+import 'package:mineral/domains/data/internal_event.dart';
+import 'package:mineral/domains/data/types/listenable_event.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/shared/types/mineral_client_contract.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mineral/domains/events/types/packet_type.dart';
+import 'package:mineral/domains/data/types/packet_type.dart';
 
 abstract interface class ListenablePacket<T> {
   PacketType get event;

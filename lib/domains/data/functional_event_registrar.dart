@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:mineral/domains/events/internal_event.dart';
-import 'package:mineral/domains/events/types/packet_type.dart';
+import 'package:mineral/domains/data/internal_event.dart';
+import 'package:mineral/domains/data/types/packet_type.dart';
 import 'package:mineral/domains/shared/types/mineral_client_contract.dart';
 
 abstract interface class FunctionalEventRegistrarContract {

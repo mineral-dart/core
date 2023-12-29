@@ -1,9 +1,9 @@
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
-import 'package:mineral/domains/events/event_manager.dart';
-import 'package:mineral/domains/events/packets/message_create_packet.dart';
-import 'package:mineral/domains/events/packets/ready_packet.dart';
+import 'package:mineral/domains/data/event_manager.dart';
+import 'package:mineral/domains/data/packets/message_create_packet.dart';
+import 'package:mineral/domains/data/packets/ready_packet.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
