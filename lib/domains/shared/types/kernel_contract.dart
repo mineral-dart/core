@@ -1,5 +1,5 @@
 import 'package:mineral/application/http/http_client.dart';
-import 'package:mineral/domains/data/event_manager.dart';
+import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
 
@@ -10,7 +10,7 @@ abstract interface class KernelContract {
 
   HttpClientContract get httpClient;
 
-  EventManagerContract get eventManager;
+  DataListenerContract get dataListener;
 
   Future<void> init();
 }

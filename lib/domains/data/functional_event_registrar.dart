@@ -21,5 +21,5 @@ final class FunctionalEventRegistrar implements FunctionalEventRegistrarContract
   void ready(ReadyEventHandler handle) => _registerEvent(InternalEvent(PacketType.ready.toString(), handle));
 
   void _registerEvent(InternalEvent event) =>
-      _client.kernel.eventManager.events.listen(event);
+      _client.kernel.dataListener.events.listen(event);
 }

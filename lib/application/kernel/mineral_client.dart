@@ -21,7 +21,7 @@ final class MineralClient implements MineralClientContract {
 
     switch (instance) {
       case ListenableEvent():
-        kernel.eventManager.events.listen(InternalEvent(
+        kernel.dataListener.events.listen(InternalEvent(
             instance.event, (instance as dynamic).handle));
     }
   }

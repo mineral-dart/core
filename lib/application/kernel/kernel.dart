@@ -1,7 +1,7 @@
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
-import 'package:mineral/domains/data/event_manager.dart';
+import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data/packets/message_create_packet.dart';
 import 'package:mineral/domains/data/packets/ready_packet.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
@@ -19,9 +19,9 @@ final class Kernel implements KernelContract {
   final HttpClientContract httpClient;
 
   @override
-  final EventManagerContract eventManager;
+  final DataListenerContract dataListener;
 
-  Kernel({required this.httpClient, required this.config, required this.eventManager}) {
+  Kernel({required this.httpClient, required this.config, required this.dataListener}) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
@@ -36,6 +36,7 @@ final class Kernel implements KernelContract {
     };
   }
 
+  @override
   Future<void> init() async {
     final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
 
@@ -57,10 +58,10 @@ final class Kernel implements KernelContract {
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
-    final EventManager eventManager = EventManager()
+    final DataListenerContract dataListener = DataListener()
       ..listenPacketClass(ReadyPacket())
       ..listenPacketClass(MessageCreatePacket());
 
-    return Kernel(httpClient: http, config: shardConfig, eventManager: eventManager);
+    return Kernel(httpClient: http, config: shardConfig, dataListener: dataListener);
   }
 }

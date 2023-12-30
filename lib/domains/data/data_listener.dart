@@ -3,7 +3,7 @@ import 'package:mineral/domains/data/dispatchers/packet_dispatcher.dart';
 import 'package:mineral/domains/data/types/listenable_dispatcher.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 
-abstract interface class EventManagerContract {
+abstract interface class DataListenerContract {
   ListenableDispatcher get packets;
 
   ListenableDispatcher get events;
@@ -11,14 +11,14 @@ abstract interface class EventManagerContract {
   void dispose();
 }
 
-final class EventManager implements EventManagerContract {
+final class DataListener implements DataListenerContract {
   @override
   late final PacketDispatcher packets;
 
   @override
   final EventDispatcher events = EventDispatcher();
 
-  EventManager() {
+  DataListener() {
     packets = PacketDispatcher(this);
   }
 
