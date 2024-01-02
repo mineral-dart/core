@@ -33,7 +33,7 @@ final class GuildTextChannel implements GuildChannel {
       name: json['name'],
       position: json['position'],
       guildId: guildId,
-      description: json['description'],
+      description: json['topic'],
     );
   }
 }
