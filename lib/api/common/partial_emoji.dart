@@ -1,6 +1,13 @@
-abstract class PartialEmoji {
-  String name;
-  String id;
+class PartialEmoji {
+  final String id;
+  final String name;
 
-  PartialEmoji( this.name, this.id);
+  const PartialEmoji(this.name, this.id);
+
+  factory PartialEmoji.fromJson(Map<String, dynamic> json) {
+    return PartialEmoji(
+      json['id'],
+      json['name'],
+    );
+  }
 }
