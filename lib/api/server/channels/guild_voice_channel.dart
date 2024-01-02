@@ -15,13 +15,21 @@ final class GuildVoiceChannel implements GuildChannel {
   final String guildId;
 
   @override
-  final Guild guild;
+  late final Guild guild;
 
   GuildVoiceChannel({
     required this.id,
     required this.name,
     required this.position,
     required this.guildId,
-    required this.guild,
   });
+
+  factory GuildVoiceChannel.fromJson(String guildId, Map<String, dynamic> json) {
+    return GuildVoiceChannel(
+      id: json['id'],
+      name: json['name'],
+      position: json['position'],
+      guildId: guildId,
+    );
+  }
 }

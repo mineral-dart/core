@@ -15,16 +15,25 @@ final class GuildTextChannel implements GuildChannel {
   final String guildId;
 
   @override
-  final Guild guild;
+  late final Guild guild;
 
-  final String description;
+  final String? description;
 
   GuildTextChannel({
     required this.id,
     required this.name,
     required this.position,
     required this.guildId,
-    required this.guild,
     required this.description,
   });
+
+  factory GuildTextChannel.fromJson(String guildId, Map<String, dynamic> json) {
+    return GuildTextChannel(
+      id: json['id'],
+      name: json['name'],
+      position: json['position'],
+      guildId: guildId,
+      description: json['description'],
+    );
+  }
 }
