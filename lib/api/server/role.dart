@@ -4,7 +4,7 @@ final class Role {
   final int color;
   final bool hoist;
   final int position;
-  final int permissions;
+  final int? permissions;
   final bool managed;
   final bool mentionable;
   final int flags;
@@ -28,10 +28,10 @@ final class Role {
       color: json['color'],
       hoist: json['hoist'],
       position: json['position'],
-      permissions: int.parse(json['permissions']),
-      managed: bool.parse(json['managed']),
-      mentionable: bool.parse(json['mentionable']),
-      flags: int.parse(json['flags']),
+      permissions: json['permissions'],
+      managed: json['managed'],
+      mentionable: json['mentionable'],
+      flags: json['flags'],
     );
   }
 }
