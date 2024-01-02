@@ -21,7 +21,7 @@ final class ChannelFactory {
     GuildForumChannelFactory()
   ];
 
-  static Channel? make(String guildId, Map<String, dynamic> json) {
+  static T? make<T extends Channel>(String guildId, Map<String, dynamic> json) {
     final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
 
     if (channelFactory == null) {
@@ -29,6 +29,6 @@ final class ChannelFactory {
       return null;
     }
 
-    return channelFactory.make(guildId, json);
+    return channelFactory.make(guildId, json) as T?;
   }
 }

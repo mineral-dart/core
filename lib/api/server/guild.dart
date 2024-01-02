@@ -1,38 +1,42 @@
-import 'package:mineral/api/common/emoji.dart';
+import 'package:collection/collection.dart';
+import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/server/channels/guild_channel.dart';
 import 'package:mineral/api/server/channels/guild_text_channel.dart';
 import 'package:mineral/api/server/channels/guild_voice_channel.dart';
-import 'package:mineral/api/server/guild_member.dart';
+import 'package:mineral/api/server/collections/guild_emoji_collection.dart';
+import 'package:mineral/api/server/collections/guild_member_collection.dart';
+import 'package:mineral/api/server/collections/role_collection.dart';
 import 'package:mineral/api/server/role.dart';
+import 'package:mineral/domains/data/factories/channel_factory.dart';
 
 final class Guild {
   final String id;
   final String name;
   final String? description;
-  final String region;
   final String ownerId;
-  final GuildMember member;
+  final GuildMemberCollection members;
+  final GuildMemberCollection bots;
   final String? bitfieldPermission;
   final String? afkChannelId;
-  final GuildVoiceChannel afkChannel;
+  final GuildVoiceChannel? afkChannel;
   final int? afkTimeout;
   final bool hasWidgetEnabled;
   final String? widgetChannelId;
   final int? verificationLevel;
   final int defaultMessageNotifications;
   final int explicitContentFilter;
-  final Map<String, Role> roles;
-  final Map<String, Emoji> emojis;
-  final Map<String, dynamic> features;
+  final RoleCollection roles;
+  final GuildEmojiCollection emojis;
+  final List<String> features;
   final Map<String, dynamic> stickers;
   final Map<String, GuildChannel> channels;
   final int mfaLevel;
   final String? applicationId;
   final String? systemChannelId;
-  final GuildTextChannel systemChannel;
-  final int? systemChannelFlags;
+  final GuildTextChannel? systemChannel;
+  final int systemChannelFlags;
   final String? rulesChannelId;
-  final GuildTextChannel rulesChannel;
+  final GuildTextChannel? rulesChannel;
   final int maxMembers;
   final String? vanityUrlCode;
   final String? banner;
@@ -43,22 +47,21 @@ final class Guild {
   final int? premiumSubscriptionCount;
   final String preferredLocale;
   final String? publicUpdatesChannelId;
-  final GuildTextChannel publicUpdatesChannel;
+  final GuildTextChannel? publicUpdatesChannel;
   final int? maxVideoChannelUsers;
   final int? approximateMemberCount;
   final int? approximatePresenceCount;
-  final int? welcomeScreen;
   final int nsfwLevel;
   final bool premiumProgressBarEnabled;
   final String? safetyAlertsChannelId;
-  final GuildTextChannel safetyAlertsChannel;
+  final GuildTextChannel? safetyAlertsChannel;
 
   Guild({
     required this.id,
     required this.name,
-    required this.region,
     required this.ownerId,
-    required this.member,
+    required this.members,
+    required this.bots,
     required this.hasWidgetEnabled,
     required this.defaultMessageNotifications,
     required this.explicitContentFilter,
@@ -97,8 +100,94 @@ final class Guild {
     required this.maxVideoChannelUsers,
     required this.approximateMemberCount,
     required this.approximatePresenceCount,
-    required this.welcomeScreen,
     required this.safetyAlertsChannelId,
     required this.safetyAlertsChannel,
   });
+
+  factory Guild.fromJson(Map<String, dynamic> json) {
+    final roles = RoleCollection(Map<String, Role>.from(json['roles'].fold({}, (value, element) {
+      final role = Role.fromJson(element);
+      return {...value, role.id: role};
+    })));
+
+    List<Map<String, dynamic>> filterMember(bool isBot) {
+      return List<Map<String, dynamic>>.from(
+          json['members'].where((element) => element['user']['bot'] == isBot));
+    }
+
+    final members = GuildMemberCollection.fromJson(
+        guildId: json['id'], roles: roles, json: filterMember(false));
+
+    final bots =
+        GuildMemberCollection.fromJson(guildId: json['id'], roles: roles, json: filterMember(true));
+
+    final emojis = GuildEmojiCollection.fromJson(roles: roles, json: json['emojis']);
+
+    final channels = Map<String, GuildChannel>.from(json['channels'].fold({}, (value, element) {
+      final channel = ChannelFactory.make(json['id'], element);
+      return channel != null ? {...value, channel.id: channel} : value;
+    }));
+
+    final Channel? afkChannel =
+        channels.values.firstWhereOrNull((element) => element.id == json['afk_channel_id']);
+
+    final Channel? systemChannel =
+        channels.values.firstWhereOrNull((element) => element.id == json['system_channel_id']);
+
+    final Channel? rulesChannel =
+        channels.values.firstWhereOrNull((element) => element.id == json['rules_channel_id']);
+
+    final Channel? publicUpdatesChannel = channels.values
+        .firstWhereOrNull((element) => element.id == json['public_updates_channel_id']);
+
+    final Channel? safetyAlertsChannel = channels.values
+        .firstWhereOrNull((element) => element.id == json['safety_alerts_channel_id']);
+
+    return Guild(
+        id: json['id'],
+        name: json['name'],
+        ownerId: json['owner_id'],
+        members: members,
+        bots: bots,
+        hasWidgetEnabled: json['widget_enabled'] ?? false,
+        defaultMessageNotifications: json['default_message_notifications'],
+        explicitContentFilter: json['explicit_content_filter'],
+        roles: roles,
+        emojis: emojis,
+        features: List<String>.from(json['features']),
+        stickers: {},
+        channels: channels,
+        mfaLevel: json['mfa_level'],
+        maxMembers: json['max_members'],
+        premiumTier: json['premium_tier'],
+        preferredLocale: json['preferred_locale'],
+        nsfwLevel: json['nsfw_level'],
+        premiumProgressBarEnabled: json['premium_progress_bar_enabled'],
+        description: json['description'],
+        bitfieldPermission: json['permissions'],
+        afkChannelId: json['afk_channel_id'],
+        afkChannel: afkChannel as GuildVoiceChannel?,
+        afkTimeout: json['afk_timeout'],
+        widgetChannelId: json['widget_channel_id'],
+        verificationLevel: json['verification_level'],
+        applicationId: json['application_id'],
+        systemChannelId: json['system_channel_id'],
+        systemChannel: systemChannel as GuildTextChannel?,
+        systemChannelFlags: json['system_channel_flags'],
+        rulesChannelId: json['rules_channel_id'],
+        rulesChannel: rulesChannel as GuildTextChannel?,
+        vanityUrlCode: json['vanity_url_code'],
+        banner: json['banner'],
+        icon: json['icon'],
+        splash: json['splash'],
+        discoverySplash: json['discovery_splash'],
+        premiumSubscriptionCount: json['premium_subscription_count'],
+        publicUpdatesChannelId: json['public_updates_channel_id'],
+        publicUpdatesChannel: publicUpdatesChannel as GuildTextChannel?,
+        maxVideoChannelUsers: json['max_video_channel_users'],
+        approximateMemberCount: json['approximate_member_count'],
+        approximatePresenceCount: json['approximate_presence_count'],
+        safetyAlertsChannelId: json['safety_alerts_channel_id'],
+        safetyAlertsChannel: safetyAlertsChannel as GuildTextChannel?);
+  }
 }
