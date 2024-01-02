@@ -2,8 +2,5 @@ abstract class PartialEmoji {
   String name;
   String id;
 
-  PartialEmoji({
-    required this.name,
-    required this.id,
-  });
+  PartialEmoji( this.name, this.id);
 }
