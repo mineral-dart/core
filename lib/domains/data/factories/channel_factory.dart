@@ -3,6 +3,7 @@ import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/domains/data/factories/channels/guild_announcement_channel_factory.dart';
 import 'package:mineral/domains/data/factories/channels/guild_category_channel_factory.dart';
+import 'package:mineral/domains/data/factories/channels/guild_forum_channel_factory.dart';
 import 'package:mineral/domains/data/factories/channels/guild_text_channel_factory.dart';
 import 'package:mineral/domains/data/factories/channels/guild_voice_channel_factory.dart';
 
@@ -16,7 +17,8 @@ final class ChannelFactory {
     GuildTextChannelFactory(),
     GuildVoiceChannelFactory(),
     GuildCategoryChannelFactory(),
-    GuildAnnouncementChannelFactory()
+    GuildAnnouncementChannelFactory(),
+    GuildForumChannelFactory()
   ];
 
   static Channel? make(String guildId, Map<String, dynamic> json) {
