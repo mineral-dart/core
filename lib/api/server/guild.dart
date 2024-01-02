@@ -1,13 +1,12 @@
-import 'package:collection/collection.dart';
 import 'package:mineral/api/common/channel.dart';
-import 'package:mineral/api/server/channels/guild_channel.dart';
 import 'package:mineral/api/server/channels/guild_text_channel.dart';
 import 'package:mineral/api/server/channels/guild_voice_channel.dart';
+import 'package:mineral/api/server/collections/guild_channel_collection.dart';
 import 'package:mineral/api/server/collections/guild_emoji_collection.dart';
 import 'package:mineral/api/server/collections/guild_member_collection.dart';
 import 'package:mineral/api/server/collections/role_collection.dart';
+import 'package:mineral/api/server/collections/sticker_collection.dart';
 import 'package:mineral/api/server/role.dart';
-import 'package:mineral/domains/data/factories/channel_factory.dart';
 
 final class Guild {
   final String id;
@@ -28,8 +27,8 @@ final class Guild {
   final RoleCollection roles;
   final GuildEmojiCollection emojis;
   final List<String> features;
-  final Map<String, dynamic> stickers;
-  final Map<String, GuildChannel> channels;
+  final StickerCollection stickers;
+  final GuildChannelCollection channels;
   final int mfaLevel;
   final String? applicationId;
   final String? systemChannelId;
@@ -123,25 +122,17 @@ final class Guild {
 
     final emojis = GuildEmojiCollection.fromJson(roles: roles, json: json['emojis']);
 
-    final channels = Map<String, GuildChannel>.from(json['channels'].fold({}, (value, element) {
-      final channel = ChannelFactory.make(json['id'], element);
-      return channel != null ? {...value, channel.id: channel} : value;
-    }));
+    final channels = GuildChannelCollection.fromJson(guildId: json['id'], json: json['channels']);
 
-    final Channel? afkChannel =
-        channels.values.firstWhereOrNull((element) => element.id == json['afk_channel_id']);
+    final Channel? afkChannel = channels.getOrNull(json['afk_channel_id']);
 
-    final Channel? systemChannel =
-        channels.values.firstWhereOrNull((element) => element.id == json['system_channel_id']);
+    final Channel? systemChannel = channels.getOrNull(json['system_channel_id']);
 
-    final Channel? rulesChannel =
-        channels.values.firstWhereOrNull((element) => element.id == json['rules_channel_id']);
+    final Channel? rulesChannel = channels.getOrNull(json['rules_channel_id']);
 
-    final Channel? publicUpdatesChannel = channels.values
-        .firstWhereOrNull((element) => element.id == json['public_updates_channel_id']);
+    final Channel? publicUpdatesChannel = channels.getOrNull(json['public_updates_channel_id']);
 
-    final Channel? safetyAlertsChannel = channels.values
-        .firstWhereOrNull((element) => element.id == json['safety_alerts_channel_id']);
+    final Channel? safetyAlertsChannel = channels.getOrNull(json['safety_alerts_channel_id']);
 
     return Guild(
         id: json['id'],
@@ -155,7 +146,7 @@ final class Guild {
         roles: roles,
         emojis: emojis,
         features: List<String>.from(json['features']),
-        stickers: {},
+        stickers: StickerCollection.fromJson(json['stickers']),
         channels: channels,
         mfaLevel: json['mfa_level'],
         maxMembers: json['max_members'],
