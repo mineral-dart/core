@@ -8,6 +8,11 @@ final class GuildMemberCollection {
 
   Map<String, GuildMember> get list => _members;
 
+  GuildMember? get(String? id) => _members[id];
+
+  GuildMember getOrFail(String id, {String? error}) => _members.values
+      .firstWhere((element) => element.id == id, orElse: () => throw error ?? 'Member not found');
+
   factory GuildMemberCollection.fromJson(
       {required String guildId,
       required RoleCollection roles,
