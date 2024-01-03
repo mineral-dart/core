@@ -2,8 +2,8 @@ import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/server/guild.dart';
 
 abstract class GuildChannel extends Channel {
-  int get position;
-  Guild get guild;
+  late final Guild guild;
+  final int position;
 
-  GuildChannel(super.id, super.name);
+  GuildChannel(String id, String name, this.position) : super(id, name);
 }

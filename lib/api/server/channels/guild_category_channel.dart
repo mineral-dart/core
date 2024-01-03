@@ -1,18 +1,11 @@
 import 'package:mineral/api/server/channels/guild_channel.dart';
-import 'package:mineral/api/server/guild.dart';
 
 final class GuildCategoryChannel extends GuildChannel {
-  @override
-  final int position;
-
-  @override
-  late final Guild guild;
-
   GuildCategoryChannel({
     required String id,
     required String name,
-    required this.position,
-  }): super(id, name);
+    required int position,
+  }): super(id, name, position);
 
   factory GuildCategoryChannel.fromJson(String guildId, Map<String, dynamic> json) {
     return GuildCategoryChannel(

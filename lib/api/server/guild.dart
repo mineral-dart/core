@@ -62,7 +62,7 @@ final class Guild {
 
     final channels = GuildChannelCollection.fromJson(guildId: json['id'], json: json);
 
-    return Guild(
+    final guild = Guild(
         id: json['id'],
         name: json['name'],
         members: members,
@@ -77,5 +77,11 @@ final class Guild {
         applicationId: json['application_id'],
         assets: GuildAsset.fromJson(json),
         owner: members.getOrFail(json['owner_id']));
+
+    for (final channel in guild.channels.list.values) {
+      channel.guild = guild;
+    }
+
+    return guild;
   }
 }
