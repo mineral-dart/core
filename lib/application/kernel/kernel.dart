@@ -2,6 +2,7 @@ import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
 import 'package:mineral/domains/data/data_listener.dart';
+import 'package:mineral/domains/data/packets/guild_create_packet.dart';
 import 'package:mineral/domains/data/packets/message_create_packet.dart';
 import 'package:mineral/domains/data/packets/ready_packet.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
@@ -60,7 +61,8 @@ final class Kernel implements KernelContract {
 
     final DataListenerContract dataListener = DataListener()
       ..listenPacketClass(ReadyPacket())
-      ..listenPacketClass(MessageCreatePacket());
+      ..listenPacketClass(MessageCreatePacket())
+      ..listenPacketClass(GuildCreatePacket());
 
     return Kernel(httpClient: http, config: shardConfig, dataListener: dataListener);
   }
