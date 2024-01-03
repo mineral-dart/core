@@ -1,4 +1,6 @@
-abstract interface class Channel {
-  String get id;
-  String get name;
+abstract class Channel {
+  final String id;
+  final String name;
+
+  const Channel(this.id, this.name);
 }
