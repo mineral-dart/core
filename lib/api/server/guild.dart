@@ -9,6 +9,7 @@ import 'package:mineral/api/server/collections/sticker_collection.dart';
 import 'package:mineral/api/server/enums/default_message_notification.dart';
 import 'package:mineral/api/server/enums/explicit_content_filter.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
+import 'package:mineral/api/server/guild_member.dart';
 import 'package:mineral/api/server/role.dart';
 
 final class Guild {
@@ -16,6 +17,7 @@ final class Guild {
   final String name;
   final String? description;
   final String ownerId;
+  final GuildMember owner;
   final GuildMemberCollection members;
   final GuildMemberCollection bots;
   final String? bitfieldPermission;
@@ -104,6 +106,7 @@ final class Guild {
     required this.approximatePresenceCount,
     required this.safetyAlertsChannelId,
     required this.safetyAlertsChannel,
+    required this.owner,
   });
 
   factory Guild.fromJson(Map<String, dynamic> json) {
@@ -137,15 +140,17 @@ final class Guild {
 
     final Channel? safetyAlertsChannel = channels.getOrNull(json['safety_alerts_channel_id']);
 
-    return Guild(
+    final guild = Guild(
         id: json['id'],
         name: json['name'],
         ownerId: json['owner_id'],
         members: members,
         bots: bots,
         hasWidgetEnabled: json['widget_enabled'] ?? false,
-        defaultMessageNotifications: DefaultMessageNotification.values.firstWhere((element) => element.value == json['default_message_notifications']),
-        explicitContentFilter: ExplicitContentFilter.values.firstWhere((element) => element.value == json['explicit_content_filter']),
+        defaultMessageNotifications: DefaultMessageNotification.values
+            .firstWhere((element) => element.value == json['default_message_notifications']),
+        explicitContentFilter: ExplicitContentFilter.values
+            .firstWhere((element) => element.value == json['explicit_content_filter']),
         roles: roles,
         emojis: emojis,
         features: List<String>.from(json['features']),
@@ -163,7 +168,8 @@ final class Guild {
         afkChannel: afkChannel as GuildVoiceChannel?,
         afkTimeout: json['afk_timeout'],
         widgetChannelId: json['widget_channel_id'],
-        verificationLevel: VerificationLevel.values.firstWhere((element) => element.value == json['verification_level']),
+        verificationLevel: VerificationLevel.values
+            .firstWhere((element) => element.value == json['verification_level']),
         applicationId: json['application_id'],
         systemChannelId: json['system_channel_id'],
         systemChannel: systemChannel as GuildTextChannel?,
@@ -182,6 +188,9 @@ final class Guild {
         approximateMemberCount: json['approximate_member_count'],
         approximatePresenceCount: json['approximate_presence_count'],
         safetyAlertsChannelId: json['safety_alerts_channel_id'],
-        safetyAlertsChannel: safetyAlertsChannel as GuildTextChannel?);
+        safetyAlertsChannel: safetyAlertsChannel as GuildTextChannel?,
+        owner: members.getOrFail(json['owner_id']));
+
+    return guild;
   }
 }
