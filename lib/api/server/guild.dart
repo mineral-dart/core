@@ -8,6 +8,7 @@ import 'package:mineral/api/server/enums/explicit_content_filter.dart';
 import 'package:mineral/api/server/enums/mfa_level.dart';
 import 'package:mineral/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
+import 'package:mineral/api/server/guild_assets.dart';
 import 'package:mineral/api/server/guild_member.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/domains/shared/utils.dart';
@@ -35,10 +36,7 @@ final class Guild {
   final List<SystemChannelFlag> systemChannelFlags;
   final int maxMembers;
   final String? vanityUrlCode;
-  final String? banner;
-  final String? icon;
-  final String? splash;
-  final String? discoverySplash;
+  final GuildAsset assets;
   final int premiumTier;
   final int? premiumSubscriptionCount;
   final String preferredLocale;
@@ -74,10 +72,7 @@ final class Guild {
     required this.applicationId,
     required this.systemChannelFlags,
     required this.vanityUrlCode,
-    required this.banner,
-    required this.icon,
-    required this.splash,
-    required this.discoverySplash,
+    required this.assets,
     required this.premiumSubscriptionCount,
     required this.maxVideoChannelUsers,
     required this.approximateMemberCount,
@@ -132,10 +127,7 @@ final class Guild {
         applicationId: json['application_id'],
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
         vanityUrlCode: json['vanity_url_code'],
-        banner: json['banner'],
-        icon: json['icon'],
-        splash: json['splash'],
-        discoverySplash: json['discovery_splash'],
+        assets: GuildAsset.fromJson(json),
         premiumSubscriptionCount: json['premium_subscription_count'],
         maxVideoChannelUsers: json['max_video_channel_users'],
         approximateMemberCount: json['approximate_member_count'],
