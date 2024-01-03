@@ -2,6 +2,7 @@ import 'package:mineral/api/server/enums/default_message_notification.dart';
 import 'package:mineral/api/server/enums/explicit_content_filter.dart';
 import 'package:mineral/api/server/enums/mfa_level.dart';
 import 'package:mineral/api/server/enums/nsfw_level.dart';
+import 'package:mineral/api/server/enums/premium_tier.dart';
 import 'package:mineral/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
 import 'package:mineral/domains/shared/utils.dart';
@@ -17,7 +18,7 @@ final class GuildSettings {
   final MfaLevel mfaLevel;
   final List<SystemChannelFlag> systemChannelFlags;
   final String? vanityUrlCode;
-  final int premiumTier;
+  final PremiumTier premiumTier;
   final int? premiumSubscriptionCount;
   final String preferredLocale;
   final int? maxVideoChannelUsers;
@@ -57,7 +58,7 @@ final class GuildSettings {
         mfaLevel: findInEnum(MfaLevel.values, json['mfa_level']),
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
         vanityUrlCode: json['vanity_url_code'],
-        premiumTier: json['premium_tier'],
+        premiumTier: findInEnum(PremiumTier.values, json['premium_tier']),
         premiumSubscriptionCount: json['premium_subscription_count'],
         preferredLocale: json['preferred_locale'],
         maxVideoChannelUsers: json['max_video_channel_users'],
