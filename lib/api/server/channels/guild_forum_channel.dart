@@ -2,16 +2,9 @@ import 'package:mineral/api/server/channels/guild_category_channel.dart';
 import 'package:mineral/api/server/channels/guild_channel.dart';
 import 'package:mineral/api/server/enums/forum_layout_types.dart';
 import 'package:mineral/api/server/enums/sort_order_forum.dart';
-import 'package:mineral/api/server/guild.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
 final class GuildForumChannel extends GuildChannel {
-  @override
-  final int position;
-
-  @override
-  late final Guild guild;
-
   final String? description;
 
   final SortOrderType? sortOrder;
@@ -25,12 +18,12 @@ final class GuildForumChannel extends GuildChannel {
   GuildForumChannel({
     required String id,
     required String name,
-    required this.position,
+    required int position,
     required this.description,
     required this.sortOrder,
     required this.layoutType,
     required this.categoryId,
-  }): super(id, name);
+  }): super(id, name, position);
 
   factory GuildForumChannel.fromJson(String guildId, Map<String, dynamic> json) {
     return GuildForumChannel(
