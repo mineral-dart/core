@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/server/channels/guild_channel.dart';
 import 'package:mineral/api/server/channels/guild_text_channel.dart';
 import 'package:mineral/api/server/channels/guild_voice_channel.dart';
 import 'package:mineral/api/server/collections/guild_channel_collection.dart';
@@ -19,16 +20,14 @@ final class Guild {
   final String id;
   final String name;
   final String? description;
-  final String ownerId;
   final GuildMember owner;
   final GuildMemberCollection members;
   final GuildMemberCollection bots;
   final String? bitfieldPermission;
-  final String? afkChannelId;
   final GuildVoiceChannel? afkChannel;
   final int? afkTimeout;
   final bool hasWidgetEnabled;
-  final String? widgetChannelId;
+  final GuildChannel? widgetChannel;
   final VerificationLevel verificationLevel;
   final DefaultMessageNotification defaultMessageNotifications;
   final ExplicitContentFilter explicitContentFilter;
@@ -39,10 +38,8 @@ final class Guild {
   final GuildChannelCollection channels;
   final MfaLevel mfaLevel;
   final String? applicationId;
-  final String? systemChannelId;
   final GuildTextChannel? systemChannel;
   final List<SystemChannelFlag> systemChannelFlags;
-  final String? rulesChannelId;
   final GuildTextChannel? rulesChannel;
   final int maxMembers;
   final String? vanityUrlCode;
@@ -53,20 +50,17 @@ final class Guild {
   final int premiumTier;
   final int? premiumSubscriptionCount;
   final String preferredLocale;
-  final String? publicUpdatesChannelId;
   final GuildTextChannel? publicUpdatesChannel;
   final int? maxVideoChannelUsers;
   final int? approximateMemberCount;
   final int? approximatePresenceCount;
   final int nsfwLevel;
   final bool premiumProgressBarEnabled;
-  final String? safetyAlertsChannelId;
   final GuildTextChannel? safetyAlertsChannel;
 
   Guild({
     required this.id,
     required this.name,
-    required this.ownerId,
     required this.members,
     required this.bots,
     required this.hasWidgetEnabled,
@@ -85,16 +79,13 @@ final class Guild {
     required this.premiumProgressBarEnabled,
     required this.description,
     required this.bitfieldPermission,
-    required this.afkChannelId,
     required this.afkChannel,
     required this.afkTimeout,
-    required this.widgetChannelId,
+    required this.widgetChannel,
     required this.verificationLevel,
     required this.applicationId,
-    required this.systemChannelId,
     required this.systemChannel,
     required this.systemChannelFlags,
-    required this.rulesChannelId,
     required this.rulesChannel,
     required this.vanityUrlCode,
     required this.banner,
@@ -102,12 +93,10 @@ final class Guild {
     required this.splash,
     required this.discoverySplash,
     required this.premiumSubscriptionCount,
-    required this.publicUpdatesChannelId,
     required this.publicUpdatesChannel,
     required this.maxVideoChannelUsers,
     required this.approximateMemberCount,
     required this.approximatePresenceCount,
-    required this.safetyAlertsChannelId,
     required this.safetyAlertsChannel,
     required this.owner,
   });
@@ -143,10 +132,11 @@ final class Guild {
 
     final Channel? safetyAlertsChannel = channels.getOrNull(json['safety_alerts_channel_id']);
 
+    final Channel? widgetChannel = channels.getOrNull(json['widget_channel_id']);
+
     final guild = Guild(
         id: json['id'],
         name: json['name'],
-        ownerId: json['owner_id'],
         members: members,
         bots: bots,
         hasWidgetEnabled: json['widget_enabled'] ?? false,
@@ -167,17 +157,14 @@ final class Guild {
         premiumProgressBarEnabled: json['premium_progress_bar_enabled'],
         description: json['description'],
         bitfieldPermission: json['permissions'],
-        afkChannelId: json['afk_channel_id'],
         afkChannel: afkChannel as GuildVoiceChannel?,
         afkTimeout: json['afk_timeout'],
-        widgetChannelId: json['widget_channel_id'],
+        widgetChannel: widgetChannel as GuildTextChannel?,
         verificationLevel: VerificationLevel.values
             .firstWhere((element) => element.value == json['verification_level']),
         applicationId: json['application_id'],
-        systemChannelId: json['system_channel_id'],
         systemChannel: systemChannel as GuildTextChannel?,
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
-        rulesChannelId: json['rules_channel_id'],
         rulesChannel: rulesChannel as GuildTextChannel?,
         vanityUrlCode: json['vanity_url_code'],
         banner: json['banner'],
@@ -185,12 +172,10 @@ final class Guild {
         splash: json['splash'],
         discoverySplash: json['discovery_splash'],
         premiumSubscriptionCount: json['premium_subscription_count'],
-        publicUpdatesChannelId: json['public_updates_channel_id'],
         publicUpdatesChannel: publicUpdatesChannel as GuildTextChannel?,
         maxVideoChannelUsers: json['max_video_channel_users'],
         approximateMemberCount: json['approximate_member_count'],
         approximatePresenceCount: json['approximate_presence_count'],
-        safetyAlertsChannelId: json['safety_alerts_channel_id'],
         safetyAlertsChannel: safetyAlertsChannel as GuildTextChannel?,
         owner: members.getOrFail(json['owner_id']));
 
