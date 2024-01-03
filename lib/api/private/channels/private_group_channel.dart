@@ -1,17 +1,11 @@
 import 'package:mineral/api/common/channel.dart';
 
-final class PrivateChannel implements Channel {
-  @override
-  final String id;
-
-  @override
-  final String name;
-
+final class PrivateChannel extends Channel {
   final List<String> users;
 
   PrivateChannel({
-    required this.id,
-    required this.name,
+    required String id,
+    required String name,
     required this.users,
-  });
+  }): super(id, name);
 }

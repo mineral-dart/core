@@ -1,35 +1,24 @@
 import 'package:mineral/api/server/channels/guild_channel.dart';
 import 'package:mineral/api/server/guild.dart';
 
-final class GuildVoiceChannel implements GuildChannel {
-  @override
-  final String id;
-
-  @override
-  final String name;
-
+final class GuildVoiceChannel extends GuildChannel {
   @override
   final int position;
-
-  @override
-  final String guildId;
 
   @override
   late final Guild guild;
 
   GuildVoiceChannel({
-    required this.id,
-    required this.name,
+    required String id,
+    required String name,
     required this.position,
-    required this.guildId,
-  });
+  }): super(id, name);
 
   factory GuildVoiceChannel.fromJson(String guildId, Map<String, dynamic> json) {
     return GuildVoiceChannel(
       id: json['id'],
       name: json['name'],
       position: json['position'],
-      guildId: guildId,
     );
   }
 }
