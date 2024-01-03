@@ -8,6 +8,7 @@ import 'package:mineral/api/server/collections/role_collection.dart';
 import 'package:mineral/api/server/collections/sticker_collection.dart';
 import 'package:mineral/api/server/enums/default_message_notification.dart';
 import 'package:mineral/api/server/enums/explicit_content_filter.dart';
+import 'package:mineral/api/server/enums/mfa_level.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
 import 'package:mineral/api/server/guild_member.dart';
 import 'package:mineral/api/server/role.dart';
@@ -34,7 +35,7 @@ final class Guild {
   final List<String> features;
   final StickerCollection stickers;
   final GuildChannelCollection channels;
-  final int mfaLevel;
+  final MfaLevel mfaLevel;
   final String? applicationId;
   final String? systemChannelId;
   final GuildTextChannel? systemChannel;
@@ -156,7 +157,7 @@ final class Guild {
         features: List<String>.from(json['features']),
         stickers: StickerCollection.fromJson(json['stickers']),
         channels: channels,
-        mfaLevel: json['mfa_level'],
+        mfaLevel: MfaLevel.values.firstWhere((element) => element.value == json['mfa_level']),
         maxMembers: json['max_members'],
         premiumTier: json['premium_tier'],
         preferredLocale: json['preferred_locale'],
