@@ -9,9 +9,11 @@ import 'package:mineral/api/server/collections/sticker_collection.dart';
 import 'package:mineral/api/server/enums/default_message_notification.dart';
 import 'package:mineral/api/server/enums/explicit_content_filter.dart';
 import 'package:mineral/api/server/enums/mfa_level.dart';
+import 'package:mineral/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
 import 'package:mineral/api/server/guild_member.dart';
 import 'package:mineral/api/server/role.dart';
+import 'package:mineral/domains/shared/utils.dart';
 
 final class Guild {
   final String id;
@@ -39,7 +41,7 @@ final class Guild {
   final String? applicationId;
   final String? systemChannelId;
   final GuildTextChannel? systemChannel;
-  final int systemChannelFlags;
+  final List<SystemChannelFlag> systemChannelFlags;
   final String? rulesChannelId;
   final GuildTextChannel? rulesChannel;
   final int maxMembers;
@@ -174,7 +176,7 @@ final class Guild {
         applicationId: json['application_id'],
         systemChannelId: json['system_channel_id'],
         systemChannel: systemChannel as GuildTextChannel?,
-        systemChannelFlags: json['system_channel_flags'],
+        systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
         rulesChannelId: json['rules_channel_id'],
         rulesChannel: rulesChannel as GuildTextChannel?,
         vanityUrlCode: json['vanity_url_code'],
