@@ -1,7 +1,3 @@
-import 'package:mineral/api/common/channel.dart';
-import 'package:mineral/api/server/channels/guild_channel.dart';
-import 'package:mineral/api/server/channels/guild_text_channel.dart';
-import 'package:mineral/api/server/channels/guild_voice_channel.dart';
 import 'package:mineral/api/server/collections/guild_channel_collection.dart';
 import 'package:mineral/api/server/collections/guild_emoji_collection.dart';
 import 'package:mineral/api/server/collections/guild_member_collection.dart';
@@ -24,10 +20,8 @@ final class Guild {
   final GuildMemberCollection members;
   final GuildMemberCollection bots;
   final String? bitfieldPermission;
-  final GuildVoiceChannel? afkChannel;
   final int? afkTimeout;
   final bool hasWidgetEnabled;
-  final GuildChannel? widgetChannel;
   final VerificationLevel verificationLevel;
   final DefaultMessageNotification defaultMessageNotifications;
   final ExplicitContentFilter explicitContentFilter;
@@ -38,9 +32,7 @@ final class Guild {
   final GuildChannelCollection channels;
   final MfaLevel mfaLevel;
   final String? applicationId;
-  final GuildTextChannel? systemChannel;
   final List<SystemChannelFlag> systemChannelFlags;
-  final GuildTextChannel? rulesChannel;
   final int maxMembers;
   final String? vanityUrlCode;
   final String? banner;
@@ -50,13 +42,11 @@ final class Guild {
   final int premiumTier;
   final int? premiumSubscriptionCount;
   final String preferredLocale;
-  final GuildTextChannel? publicUpdatesChannel;
   final int? maxVideoChannelUsers;
   final int? approximateMemberCount;
   final int? approximatePresenceCount;
   final int nsfwLevel;
   final bool premiumProgressBarEnabled;
-  final GuildTextChannel? safetyAlertsChannel;
 
   Guild({
     required this.id,
@@ -79,25 +69,19 @@ final class Guild {
     required this.premiumProgressBarEnabled,
     required this.description,
     required this.bitfieldPermission,
-    required this.afkChannel,
     required this.afkTimeout,
-    required this.widgetChannel,
     required this.verificationLevel,
     required this.applicationId,
-    required this.systemChannel,
     required this.systemChannelFlags,
-    required this.rulesChannel,
     required this.vanityUrlCode,
     required this.banner,
     required this.icon,
     required this.splash,
     required this.discoverySplash,
     required this.premiumSubscriptionCount,
-    required this.publicUpdatesChannel,
     required this.maxVideoChannelUsers,
     required this.approximateMemberCount,
     required this.approximatePresenceCount,
-    required this.safetyAlertsChannel,
     required this.owner,
   });
 
@@ -120,19 +104,7 @@ final class Guild {
 
     final emojis = GuildEmojiCollection.fromJson(roles: roles, json: json['emojis']);
 
-    final channels = GuildChannelCollection.fromJson(guildId: json['id'], json: json['channels']);
-
-    final Channel? afkChannel = channels.getOrNull(json['afk_channel_id']);
-
-    final Channel? systemChannel = channels.getOrNull(json['system_channel_id']);
-
-    final Channel? rulesChannel = channels.getOrNull(json['rules_channel_id']);
-
-    final Channel? publicUpdatesChannel = channels.getOrNull(json['public_updates_channel_id']);
-
-    final Channel? safetyAlertsChannel = channels.getOrNull(json['safety_alerts_channel_id']);
-
-    final Channel? widgetChannel = channels.getOrNull(json['widget_channel_id']);
+    final channels = GuildChannelCollection.fromJson(guildId: json['id'], json: json);
 
     return Guild(
         id: json['id'],
@@ -155,25 +127,19 @@ final class Guild {
         premiumProgressBarEnabled: json['premium_progress_bar_enabled'],
         description: json['description'],
         bitfieldPermission: json['permissions'],
-        afkChannel: afkChannel as GuildVoiceChannel?,
         afkTimeout: json['afk_timeout'],
-        widgetChannel: widgetChannel as GuildTextChannel?,
         verificationLevel: findInEnum(VerificationLevel.values, json['verification_level']),
         applicationId: json['application_id'],
-        systemChannel: systemChannel as GuildTextChannel?,
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
-        rulesChannel: rulesChannel as GuildTextChannel?,
         vanityUrlCode: json['vanity_url_code'],
         banner: json['banner'],
         icon: json['icon'],
         splash: json['splash'],
         discoverySplash: json['discovery_splash'],
         premiumSubscriptionCount: json['premium_subscription_count'],
-        publicUpdatesChannel: publicUpdatesChannel as GuildTextChannel?,
         maxVideoChannelUsers: json['max_video_channel_users'],
         approximateMemberCount: json['approximate_member_count'],
         approximatePresenceCount: json['approximate_presence_count'],
-        safetyAlertsChannel: safetyAlertsChannel as GuildTextChannel?,
         owner: members.getOrFail(json['owner_id']));
   }
 }
