@@ -6,6 +6,9 @@ import 'package:mineral/api/server/collections/guild_emoji_collection.dart';
 import 'package:mineral/api/server/collections/guild_member_collection.dart';
 import 'package:mineral/api/server/collections/role_collection.dart';
 import 'package:mineral/api/server/collections/sticker_collection.dart';
+import 'package:mineral/api/server/enums/default_message_notification.dart';
+import 'package:mineral/api/server/enums/explicit_content_filter.dart';
+import 'package:mineral/api/server/enums/verification_level.dart';
 import 'package:mineral/api/server/role.dart';
 
 final class Guild {
@@ -21,9 +24,9 @@ final class Guild {
   final int? afkTimeout;
   final bool hasWidgetEnabled;
   final String? widgetChannelId;
-  final int? verificationLevel;
-  final int defaultMessageNotifications;
-  final int explicitContentFilter;
+  final VerificationLevel verificationLevel;
+  final DefaultMessageNotification defaultMessageNotifications;
+  final ExplicitContentFilter explicitContentFilter;
   final RoleCollection roles;
   final GuildEmojiCollection emojis;
   final List<String> features;
@@ -141,8 +144,8 @@ final class Guild {
         members: members,
         bots: bots,
         hasWidgetEnabled: json['widget_enabled'] ?? false,
-        defaultMessageNotifications: json['default_message_notifications'],
-        explicitContentFilter: json['explicit_content_filter'],
+        defaultMessageNotifications: DefaultMessageNotification.values.firstWhere((element) => element.value == json['default_message_notifications']),
+        explicitContentFilter: ExplicitContentFilter.values.firstWhere((element) => element.value == json['explicit_content_filter']),
         roles: roles,
         emojis: emojis,
         features: List<String>.from(json['features']),
@@ -160,7 +163,7 @@ final class Guild {
         afkChannel: afkChannel as GuildVoiceChannel?,
         afkTimeout: json['afk_timeout'],
         widgetChannelId: json['widget_channel_id'],
-        verificationLevel: json['verification_level'],
+        verificationLevel: VerificationLevel.values.firstWhere((element) => element.value == json['verification_level']),
         applicationId: json['application_id'],
         systemChannelId: json['system_channel_id'],
         systemChannel: systemChannel as GuildTextChannel?,
