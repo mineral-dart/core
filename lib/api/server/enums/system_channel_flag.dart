@@ -1,6 +1,6 @@
-import 'package:mineral/api/common/types/flag.dart';
+import 'package:mineral/api/common/types/enhanced_enum.dart';
 
-enum SystemChannelFlag implements Flag {
+enum SystemChannelFlag implements EnhancedEnum<int> {
   suppressJoinNotifications(1 << 0),
   suppressPremiumSubscriptions(1 << 1),
   suppressGuildReminderNotifications(1 << 2),

@@ -134,22 +134,20 @@ final class Guild {
 
     final Channel? widgetChannel = channels.getOrNull(json['widget_channel_id']);
 
-    final guild = Guild(
+    return Guild(
         id: json['id'],
         name: json['name'],
         members: members,
         bots: bots,
         hasWidgetEnabled: json['widget_enabled'] ?? false,
-        defaultMessageNotifications: DefaultMessageNotification.values
-            .firstWhere((element) => element.value == json['default_message_notifications']),
-        explicitContentFilter: ExplicitContentFilter.values
-            .firstWhere((element) => element.value == json['explicit_content_filter']),
+        defaultMessageNotifications: findInEnum(DefaultMessageNotification.values, json['default_message_notifications']),
+        explicitContentFilter: findInEnum(ExplicitContentFilter.values, json['explicit_content_filter']),
         roles: roles,
         emojis: emojis,
         features: List<String>.from(json['features']),
         stickers: StickerCollection.fromJson(json['stickers']),
         channels: channels,
-        mfaLevel: MfaLevel.values.firstWhere((element) => element.value == json['mfa_level']),
+        mfaLevel: findInEnum(MfaLevel.values, json['mfa_level']),
         maxMembers: json['max_members'],
         premiumTier: json['premium_tier'],
         preferredLocale: json['preferred_locale'],
@@ -160,8 +158,7 @@ final class Guild {
         afkChannel: afkChannel as GuildVoiceChannel?,
         afkTimeout: json['afk_timeout'],
         widgetChannel: widgetChannel as GuildTextChannel?,
-        verificationLevel: VerificationLevel.values
-            .firstWhere((element) => element.value == json['verification_level']),
+        verificationLevel: findInEnum(VerificationLevel.values, json['verification_level']),
         applicationId: json['application_id'],
         systemChannel: systemChannel as GuildTextChannel?,
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
@@ -178,7 +175,5 @@ final class Guild {
         approximatePresenceCount: json['approximate_presence_count'],
         safetyAlertsChannel: safetyAlertsChannel as GuildTextChannel?,
         owner: members.getOrFail(json['owner_id']));
-
-    return guild;
   }
 }
