@@ -13,6 +13,8 @@ final class GuildMemberCollection {
   GuildMember getOrFail(String id, {String? error}) => _members.values
       .firstWhere((element) => element.id == id, orElse: () => throw error ?? 'Member not found');
 
+  late final int maxInGuild;
+
   factory GuildMemberCollection.fromJson(
       {required String guildId,
       required RoleCollection roles,
