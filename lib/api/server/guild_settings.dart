@@ -2,7 +2,6 @@ import 'package:mineral/api/server/enums/default_message_notification.dart';
 import 'package:mineral/api/server/enums/explicit_content_filter.dart';
 import 'package:mineral/api/server/enums/mfa_level.dart';
 import 'package:mineral/api/server/enums/nsfw_level.dart';
-import 'package:mineral/api/server/enums/premium_tier.dart';
 import 'package:mineral/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
 import 'package:mineral/api/server/guild_subscription.dart';
@@ -58,6 +57,6 @@ final class GuildSettings {
         subscription: GuildSubscription.fromJson(json),
         preferredLocale: json['preferred_locale'],
         maxVideoChannelUsers: json['max_video_channel_users'],
-        nsfwLevel: findInEnum(NsfwLevel.values, json['nsfw_level']),
+        nsfwLevel: findInEnum(NsfwLevel.values, json['nsfw_level']));
   }
 }
