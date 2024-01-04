@@ -21,7 +21,6 @@ final class Guild {
   final StickerCollection stickers;
   final GuildChannelCollection channels;
   final String? applicationId;
-  final int maxMembers;
   final GuildAsset assets;
 
   Guild({
@@ -34,7 +33,6 @@ final class Guild {
     required this.emojis,
     required this.stickers,
     required this.channels,
-    required this.maxMembers,
     required this.description,
     required this.applicationId,
     required this.assets,
@@ -52,8 +50,9 @@ final class Guild {
           json['members'].where((element) => element['user']['bot'] == isBot));
     }
 
-    final members = GuildMemberCollection.fromJson(
-        guildId: json['id'], roles: roles, json: filterMember(false));
+    final members =
+        GuildMemberCollection.fromJson(guildId: json['id'], roles: roles, json: filterMember(false))
+          ..maxInGuild = json['max_members'];
 
     final bots =
         GuildMemberCollection.fromJson(guildId: json['id'], roles: roles, json: filterMember(true));
@@ -72,7 +71,6 @@ final class Guild {
         emojis: emojis,
         stickers: StickerCollection.fromJson(json['stickers']),
         channels: channels,
-        maxMembers: json['max_members'],
         description: json['description'],
         applicationId: json['application_id'],
         assets: GuildAsset.fromJson(json),
