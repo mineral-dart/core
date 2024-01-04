@@ -20,11 +20,9 @@ final class GuildSettings {
   final List<SystemChannelFlag> systemChannelFlags;
   final String? vanityUrlCode;
   final GuildSubscription subscription;
-
   final String preferredLocale;
   final int? maxVideoChannelUsers;
   final NsfwLevel nsfwLevel;
-  final bool premiumProgressBarEnabled;
 
   GuildSettings({
     required this.bitfieldPermission,
@@ -41,7 +39,6 @@ final class GuildSettings {
     required this.preferredLocale,
     required this.maxVideoChannelUsers,
     required this.nsfwLevel,
-    required this.premiumProgressBarEnabled,
   });
 
   factory GuildSettings.fromJson(Map<String, dynamic> json) {
@@ -62,6 +59,5 @@ final class GuildSettings {
         preferredLocale: json['preferred_locale'],
         maxVideoChannelUsers: json['max_video_channel_users'],
         nsfwLevel: findInEnum(NsfwLevel.values, json['nsfw_level']),
-        premiumProgressBarEnabled: json['premium_progress_bar_enabled']);
   }
 }
