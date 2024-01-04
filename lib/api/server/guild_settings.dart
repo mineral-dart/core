@@ -5,6 +5,7 @@ import 'package:mineral/api/server/enums/nsfw_level.dart';
 import 'package:mineral/api/server/enums/premium_tier.dart';
 import 'package:mineral/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
+import 'package:mineral/api/server/guild_subscription.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
 final class GuildSettings {
@@ -18,8 +19,8 @@ final class GuildSettings {
   final MfaLevel mfaLevel;
   final List<SystemChannelFlag> systemChannelFlags;
   final String? vanityUrlCode;
-  final PremiumTier premiumTier;
-  final int? premiumSubscriptionCount;
+  final GuildSubscription subscription;
+
   final String preferredLocale;
   final int? maxVideoChannelUsers;
   final NsfwLevel nsfwLevel;
@@ -36,8 +37,7 @@ final class GuildSettings {
     required this.mfaLevel,
     required this.systemChannelFlags,
     required this.vanityUrlCode,
-    required this.premiumTier,
-    required this.premiumSubscriptionCount,
+    required this.subscription,
     required this.preferredLocale,
     required this.maxVideoChannelUsers,
     required this.nsfwLevel,
@@ -58,8 +58,7 @@ final class GuildSettings {
         mfaLevel: findInEnum(MfaLevel.values, json['mfa_level']),
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
         vanityUrlCode: json['vanity_url_code'],
-        premiumTier: findInEnum(PremiumTier.values, json['premium_tier']),
-        premiumSubscriptionCount: json['premium_subscription_count'],
+        subscription: GuildSubscription.fromJson(json),
         preferredLocale: json['preferred_locale'],
         maxVideoChannelUsers: json['max_video_channel_users'],
         nsfwLevel: findInEnum(NsfwLevel.values, json['nsfw_level']),
