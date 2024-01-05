@@ -12,11 +12,11 @@ enum _ServerNamedChannel {
   widgetChannel,
 }
 
-final class GuildChannelCollection {
+final class ChannelManager {
   final Map<_ServerNamedChannel, String?> _namedChannels;
   final Map<String, ServerChannel> _channels;
 
-  GuildChannelCollection(this._channels, this._namedChannels);
+  ChannelManager(this._channels, this._namedChannels);
 
   Map<String, ServerChannel> get list => _channels;
 
@@ -40,8 +40,7 @@ final class GuildChannelCollection {
   ServerTextChannel? get widgetChannel =>
       getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.widgetChannel]);
 
-  factory GuildChannelCollection.fromJson(
-      {required String guildId, required Map<String, dynamic> json}) {
+  factory ChannelManager.fromJson({required String guildId, required Map<String, dynamic> json}) {
     final channels = Map<String, ServerChannel>.from(json['channels'].fold({}, (value, element) {
       final channel = ChannelFactory.make(guildId, element);
       return channel != null ? {...value, channel.id: channel} : value;
@@ -55,6 +54,6 @@ final class GuildChannelCollection {
       _ServerNamedChannel.safetyAlertsChannel: json['safety_alerts_channel_id'],
     };
 
-    return GuildChannelCollection(channels, namedChannels);
+    return ChannelManager(channels, namedChannels);
   }
 }

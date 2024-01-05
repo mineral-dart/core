@@ -1,10 +1,10 @@
-import 'package:mineral/api/server/collections/role_collection.dart';
+import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member.dart';
 
-final class GuildMemberCollection {
+final class MemberManager {
   final Map<String, GuildMember> _members;
 
-  GuildMemberCollection(this._members);
+  MemberManager(this._members);
 
   Map<String, GuildMember> get list => _members;
 
@@ -15,11 +15,11 @@ final class GuildMemberCollection {
 
   late final int maxInGuild;
 
-  factory GuildMemberCollection.fromJson(
+  factory MemberManager.fromJson(
       {required String guildId,
-      required RoleCollection roles,
+      required RoleManager roles,
       required List<Map<String, dynamic>> json}) {
-    return GuildMemberCollection(Map<String, GuildMember>.from(json.fold({}, (value, element) {
+    return MemberManager(Map<String, GuildMember>.from(json.fold({}, (value, element) {
       final member = GuildMember.fromJson(roles: roles, member: element, guildId: guildId);
       return {...value, member.id: member};
     })));
