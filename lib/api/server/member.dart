@@ -3,7 +3,7 @@ import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
-final class GuildMember {
+final class Member {
   final String id;
   final String username;
   final String? nickname;
@@ -18,7 +18,7 @@ final class GuildMember {
   final RoleManager roles;
   final bool isBot;
 
-  GuildMember._({
+  Member._({
     required this.id,
     required this.username,
     required this.nickname,
@@ -33,8 +33,8 @@ final class GuildMember {
     required this.isBot,
   });
 
-  factory GuildMember.fromJson({required RoleManager roles, required Map<String, dynamic> member}) {
-    return GuildMember._(
+  factory Member.fromJson({required RoleManager roles, required Map<String, dynamic> member}) {
+    return Member._(
       id: member['user']['id'],
       username: member['user']['nick'] ?? member['user']['username'],
       nickname: member['nick'] ?? member['user']['display_name'],

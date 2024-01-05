@@ -6,7 +6,7 @@ import 'package:mineral/api/server/member.dart';
 final class GuildMessage extends Message<ServerChannel> {
   final String userId;
 
-  final GuildMember member;
+  final Member member;
 
   GuildMessage({
     required String id,
