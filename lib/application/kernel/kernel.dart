@@ -2,6 +2,7 @@ import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
 import 'package:mineral/domains/data/data_listener.dart';
+import 'package:mineral/domains/data/memory/memory_storage.dart';
 import 'package:mineral/domains/data/packets/guild_create_packet.dart';
 import 'package:mineral/domains/data/packets/message_create_packet.dart';
 import 'package:mineral/domains/data/packets/ready_packet.dart';
@@ -59,10 +60,11 @@ final class Kernel implements KernelContract {
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
+    final MemoryStorageContract storage = MemoryStorage();
     final DataListenerContract dataListener = DataListener()
-      ..listenPacketClass(ReadyPacket())
-      ..listenPacketClass(MessageCreatePacket())
-      ..listenPacketClass(GuildCreatePacket());
+      ..listenPacketClass(ReadyPacket(storage))
+      ..listenPacketClass(MessageCreatePacket(storage))
+      ..listenPacketClass(GuildCreatePacket(storage));
 
     return Kernel(httpClient: http, config: shardConfig, dataListener: dataListener);
   }
