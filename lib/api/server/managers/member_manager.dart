@@ -6,7 +6,11 @@ final class MemberManager {
 
   MemberManager(this._members);
 
-  Map<String, GuildMember> get list => _members;
+  Map<String, GuildMember> get list =>
+      Map.fromIterable(_members.entries.where((element) => !element.value.isBot));
+
+  Map<String, GuildMember> get bots =>
+      Map.fromIterable(_members.entries.where((element) => element.value.isBot));
 
   GuildMember? get(String? id) => _members[id];
 

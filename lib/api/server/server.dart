@@ -12,7 +12,6 @@ final class Server {
   final String? description;
   final GuildMember owner;
   final MemberManager members;
-  final MemberManager bots;
   final ServerSettings settings;
   final RoleManager roles;
   final ChannelManager channels;
@@ -23,7 +22,6 @@ final class Server {
     required this.id,
     required this.name,
     required this.members,
-    required this.bots,
     required this.settings,
     required this.roles,
     required this.channels,
@@ -39,17 +37,7 @@ final class Server {
       return {...value, role.id: role};
     })));
 
-    List<Map<String, dynamic>> filterMember(bool isBot) {
-      return List<Map<String, dynamic>>.from(
-          json['members'].where((element) => element['user']['bot'] == isBot));
-    }
-
-    final members =
-        MemberManager.fromJson(roles: roles, json: filterMember(false))
-          ..maxInGuild = json['max_members'];
-
-    final bots =
-        MemberManager.fromJson(roles: roles, json: filterMember(true));
+    final members = MemberManager.fromJson(roles: roles, json: json['members']);
 
     final channels = ChannelManager.fromJson(guildId: json['id'], json: json);
 
@@ -57,7 +45,6 @@ final class Server {
         id: json['id'],
         name: json['name'],
         members: members,
-        bots: bots,
         settings: ServerSettings.fromJson(json),
         roles: roles,
         channels: channels,
