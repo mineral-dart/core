@@ -1,25 +1,25 @@
-import 'package:mineral/api/server/collections/server_channel_collection.dart';
-import 'package:mineral/api/server/collections/guild_emoji_collection.dart';
-import 'package:mineral/api/server/collections/guild_member_collection.dart';
-import 'package:mineral/api/server/collections/role_collection.dart';
-import 'package:mineral/api/server/collections/sticker_collection.dart';
-import 'package:mineral/api/server/server_assets.dart';
+import 'package:mineral/api/server/managers/channel_manager.dart';
+import 'package:mineral/api/server/managers/emoji_manager.dart';
+import 'package:mineral/api/server/managers/member_manager.dart';
+import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/server/managers/sticker_manager.dart';
 import 'package:mineral/api/server/member.dart';
-import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/api/server/role.dart';
+import 'package:mineral/api/server/server_assets.dart';
+import 'package:mineral/api/server/server_settings.dart';
 
 final class Server {
   final String id;
   final String name;
   final String? description;
   final GuildMember owner;
-  final GuildMemberCollection members;
-  final GuildMemberCollection bots;
+  final MemberManager members;
+  final MemberManager bots;
   final ServerSettings settings;
-  final RoleCollection roles;
-  final GuildEmojiCollection emojis;
-  final StickerCollection stickers;
-  final GuildChannelCollection channels;
+  final RoleManager roles;
+  final EmojiManager emojis;
+  final StickerManager stickers;
+  final ChannelManager channels;
   final String? applicationId;
   final ServerAsset assets;
 
@@ -40,7 +40,7 @@ final class Server {
   });
 
   factory Server.fromJson(Map<String, dynamic> json) {
-    final roles = RoleCollection(Map<String, Role>.from(json['roles'].fold({}, (value, element) {
+    final roles = RoleManager(Map<String, Role>.from(json['roles'].fold({}, (value, element) {
       final role = Role.fromJson(element);
       return {...value, role.id: role};
     })));
@@ -51,15 +51,15 @@ final class Server {
     }
 
     final members =
-        GuildMemberCollection.fromJson(guildId: json['id'], roles: roles, json: filterMember(false))
+        MemberManager.fromJson(guildId: json['id'], roles: roles, json: filterMember(false))
           ..maxInGuild = json['max_members'];
 
     final bots =
-        GuildMemberCollection.fromJson(guildId: json['id'], roles: roles, json: filterMember(true));
+        MemberManager.fromJson(guildId: json['id'], roles: roles, json: filterMember(true));
 
-    final emojis = GuildEmojiCollection.fromJson(roles: roles, json: json['emojis']);
+    final emojis = EmojiManager.fromJson(roles: roles, json: json['emojis']);
 
-    final channels = GuildChannelCollection.fromJson(guildId: json['id'], json: json);
+    final channels = ChannelManager.fromJson(guildId: json['id'], json: json);
 
     final server = Server(
         id: json['id'],
@@ -69,7 +69,7 @@ final class Server {
         settings: ServerSettings.fromJson(json),
         roles: roles,
         emojis: emojis,
-        stickers: StickerCollection.fromJson(json['stickers']),
+        stickers: StickerManager.fromJson(json['stickers']),
         channels: channels,
         description: json['description'],
         applicationId: json['application_id'],
