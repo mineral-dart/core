@@ -4,10 +4,10 @@ import 'package:mineral/api/server/enums/mfa_level.dart';
 import 'package:mineral/api/server/enums/nsfw_level.dart';
 import 'package:mineral/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
-import 'package:mineral/api/server/guild_subscription.dart';
+import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
-final class GuildSettings {
+final class ServerSettings {
   final String? bitfieldPermission;
   final int? afkTimeout;
   final bool hasWidgetEnabled;
@@ -18,12 +18,12 @@ final class GuildSettings {
   final MfaLevel mfaLevel;
   final List<SystemChannelFlag> systemChannelFlags;
   final String? vanityUrlCode;
-  final GuildSubscription subscription;
+  final ServerSubscription subscription;
   final String preferredLocale;
   final int? maxVideoChannelUsers;
   final NsfwLevel nsfwLevel;
 
-  GuildSettings({
+  ServerSettings({
     required this.bitfieldPermission,
     required this.afkTimeout,
     required this.hasWidgetEnabled,
@@ -40,8 +40,8 @@ final class GuildSettings {
     required this.nsfwLevel,
   });
 
-  factory GuildSettings.fromJson(Map<String, dynamic> json) {
-    return GuildSettings(
+  factory ServerSettings.fromJson(Map<String, dynamic> json) {
+    return ServerSettings(
         bitfieldPermission: json['permissions'],
         afkTimeout: json['afk_timeout'],
         hasWidgetEnabled: json['widget_enabled'] ?? false,
@@ -54,7 +54,7 @@ final class GuildSettings {
         mfaLevel: findInEnum(MfaLevel.values, json['mfa_level']),
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
         vanityUrlCode: json['vanity_url_code'],
-        subscription: GuildSubscription.fromJson(json),
+        subscription: ServerSubscription.fromJson(json),
         preferredLocale: json['preferred_locale'],
         maxVideoChannelUsers: json['max_video_channel_users'],
         nsfwLevel: findInEnum(NsfwLevel.values, json['nsfw_level']));

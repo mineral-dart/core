@@ -1,5 +1,5 @@
 import 'package:mineral/api/server/collections/role_collection.dart';
-import 'package:mineral/api/server/guild_member.dart';
+import 'package:mineral/api/server/member.dart';
 
 final class GuildMemberCollection {
   final Map<String, GuildMember> _members;

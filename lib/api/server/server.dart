@@ -1,29 +1,29 @@
-import 'package:mineral/api/server/collections/guild_channel_collection.dart';
+import 'package:mineral/api/server/collections/server_channel_collection.dart';
 import 'package:mineral/api/server/collections/guild_emoji_collection.dart';
 import 'package:mineral/api/server/collections/guild_member_collection.dart';
 import 'package:mineral/api/server/collections/role_collection.dart';
 import 'package:mineral/api/server/collections/sticker_collection.dart';
-import 'package:mineral/api/server/guild_assets.dart';
-import 'package:mineral/api/server/guild_member.dart';
-import 'package:mineral/api/server/guild_settings.dart';
+import 'package:mineral/api/server/server_assets.dart';
+import 'package:mineral/api/server/member.dart';
+import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/api/server/role.dart';
 
-final class Guild {
+final class Server {
   final String id;
   final String name;
   final String? description;
   final GuildMember owner;
   final GuildMemberCollection members;
   final GuildMemberCollection bots;
-  final GuildSettings settings;
+  final ServerSettings settings;
   final RoleCollection roles;
   final GuildEmojiCollection emojis;
   final StickerCollection stickers;
   final GuildChannelCollection channels;
   final String? applicationId;
-  final GuildAsset assets;
+  final ServerAsset assets;
 
-  Guild({
+  Server({
     required this.id,
     required this.name,
     required this.members,
@@ -39,7 +39,7 @@ final class Guild {
     required this.owner,
   });
 
-  factory Guild.fromJson(Map<String, dynamic> json) {
+  factory Server.fromJson(Map<String, dynamic> json) {
     final roles = RoleCollection(Map<String, Role>.from(json['roles'].fold({}, (value, element) {
       final role = Role.fromJson(element);
       return {...value, role.id: role};
@@ -61,25 +61,25 @@ final class Guild {
 
     final channels = GuildChannelCollection.fromJson(guildId: json['id'], json: json);
 
-    final guild = Guild(
+    final server = Server(
         id: json['id'],
         name: json['name'],
         members: members,
         bots: bots,
-        settings: GuildSettings.fromJson(json),
+        settings: ServerSettings.fromJson(json),
         roles: roles,
         emojis: emojis,
         stickers: StickerCollection.fromJson(json['stickers']),
         channels: channels,
         description: json['description'],
         applicationId: json['application_id'],
-        assets: GuildAsset.fromJson(json),
+        assets: ServerAsset.fromJson(json),
         owner: members.getOrFail(json['owner_id']));
 
-    for (final channel in guild.channels.list.values) {
-      channel.guild = guild;
+    for (final channel in server.channels.list.values) {
+      channel.guild = server;
     }
 
-    return guild;
+    return server;
   }
 }

@@ -1,11 +1,11 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
-import 'package:mineral/domains/data/factories/channels/guild_announcement_channel_factory.dart';
-import 'package:mineral/domains/data/factories/channels/guild_category_channel_factory.dart';
-import 'package:mineral/domains/data/factories/channels/guild_forum_channel_factory.dart';
-import 'package:mineral/domains/data/factories/channels/guild_text_channel_factory.dart';
-import 'package:mineral/domains/data/factories/channels/guild_voice_channel_factory.dart';
+import 'package:mineral/domains/data/factories/channels/server_announcement_channel_factory.dart';
+import 'package:mineral/domains/data/factories/channels/server_category_channel_factory.dart';
+import 'package:mineral/domains/data/factories/channels/server_forum_channel_factory.dart';
+import 'package:mineral/domains/data/factories/channels/server_text_channel_factory.dart';
+import 'package:mineral/domains/data/factories/channels/server_voice_channel_factory.dart';
 
 abstract interface class ChannelFactoryContract<T extends Channel> {
   ChannelType get type;
@@ -14,11 +14,11 @@ abstract interface class ChannelFactoryContract<T extends Channel> {
 
 final class ChannelFactory {
   static final List<ChannelFactoryContract> _factories = [
-    GuildTextChannelFactory(),
-    GuildVoiceChannelFactory(),
-    GuildCategoryChannelFactory(),
-    GuildAnnouncementChannelFactory(),
-    GuildForumChannelFactory()
+    ServerTextChannelFactory(),
+    ServerVoiceChannelFactory(),
+    ServerCategoryChannelFactory(),
+    ServerAnnouncementChannelFactory(),
+    ServerForumChannelFactory()
   ];
 
   static T? make<T extends Channel>(String guildId, Map<String, dynamic> json) {

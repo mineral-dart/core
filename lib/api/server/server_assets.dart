@@ -1,21 +1,21 @@
 import 'package:mineral/api/common/image_asset.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
-final class GuildAsset {
+final class ServerAsset {
   final ImageAsset? icon;
   final ImageAsset? splash;
   final ImageAsset? banner;
   final ImageAsset? discoverySplash;
 
-  GuildAsset({
+  ServerAsset({
     this.icon,
     this.splash,
     this.banner,
     this.discoverySplash,
   });
 
-  factory GuildAsset.fromJson(Map<String, dynamic> json) {
-    return GuildAsset(
+  factory ServerAsset.fromJson(Map<String, dynamic> json) {
+    return ServerAsset(
       icon: createOrNull(
           field: json['icon'], fn: () => ImageAsset(['icons', json['id']], json['icon'])),
       splash: createOrNull(
