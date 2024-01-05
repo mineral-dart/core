@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/avatar_decoration.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
 final class GuildMember {
@@ -13,7 +14,7 @@ final class GuildMember {
   final int? flags;
   final DateTime? premiumSince;
   final int? publicFlags;
-  final String guildId;
+  late final Server server;
   final RoleManager roles;
   final bool isBot;
 
@@ -28,15 +29,11 @@ final class GuildMember {
     required this.flags,
     required this.premiumSince,
     required this.publicFlags,
-    required this.guildId,
     required this.roles,
     required this.isBot,
   });
 
-  factory GuildMember.fromJson(
-      {required String guildId,
-      required RoleManager roles,
-      required Map<String, dynamic> member}) {
+  factory GuildMember.fromJson({required RoleManager roles, required Map<String, dynamic> member}) {
     return GuildMember._(
       id: member['user']['id'],
       username: member['user']['nick'] ?? member['user']['username'],
@@ -51,7 +48,6 @@ final class GuildMember {
       premiumSince: createOrNull(
           field: member['premium_since'], fn: () => DateTime.parse(member['premium_since'])),
       publicFlags: member['user']['public_flags'],
-      guildId: guildId,
       roles: RoleManager.fromJson(roles.list, List<String>.from(member['roles'])),
       isBot: member['user']['bot'],
     );
