@@ -8,6 +8,7 @@ import 'package:mineral/api/server/server_settings.dart';
 
 final class Server {
   final String id;
+  final String? applicationId;
   final String name;
   final String? description;
   final GuildMember owner;
@@ -15,7 +16,6 @@ final class Server {
   final ServerSettings settings;
   final RoleManager roles;
   final ChannelManager channels;
-  final String? applicationId;
   final ServerAsset assets;
 
   Server({
