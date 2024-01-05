@@ -11,7 +11,7 @@ final class Server {
   final String? applicationId;
   final String name;
   final String? description;
-  final GuildMember owner;
+  final Member owner;
   final MemberManager members;
   final ServerSettings settings;
   final RoleManager roles;
