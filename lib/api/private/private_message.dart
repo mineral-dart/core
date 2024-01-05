@@ -1,9 +1,8 @@
+import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/message.dart';
-import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/user.dart';
-import 'package:mineral/api/server/channels/guild_channel.dart';
 
-final class PrivateMessage extends Message<GuildChannel> {
+final class PrivateMessage extends Message<Channel> {
   final String userId;
 
   final User user;
@@ -13,7 +12,7 @@ final class PrivateMessage extends Message<GuildChannel> {
     required String content,
     required DateTime createdAt,
     required DateTime updatedAt,
-    required GuildChannel channel,
+    required Channel channel,
     required this.userId,
     required this.user,
   }): super(id, content, channel, createdAt, updatedAt);

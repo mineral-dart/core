@@ -1,4 +1,4 @@
-import 'package:mineral/api/server/guild.dart';
+import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/data/internal_event_params.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
@@ -13,7 +13,7 @@ final class GuildCreatePacket implements ListenablePacket {
     final {'message': ShardMessage message, 'dispatch': Function(InternalEventParams) dispatch} =
         payload;
 
-    final guild = Guild.fromJson(message.payload);
+    final guild = Server.fromJson(message.payload);
     dispatch(InternalEventParams(event.toString(), [guild]));
   }
 }
