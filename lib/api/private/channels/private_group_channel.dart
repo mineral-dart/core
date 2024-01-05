@@ -1,9 +1,9 @@
 import 'package:mineral/api/common/channel.dart';
 
-final class PrivateChannel extends Channel {
+final class PrivateGroupChannel extends Channel {
   final List<String> users;
 
-  PrivateChannel({
+  PrivateGroupChannel({
     required String id,
     required String name,
     required this.users,
