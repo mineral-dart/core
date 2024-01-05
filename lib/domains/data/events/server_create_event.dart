@@ -8,7 +8,7 @@ typedef ServerCreateEventHandler = FutureOr<void> Function(Bot bot);
 
 abstract class ServerCreateEvent implements ListenableEvent {
   @override
-  String get event => 'GuildCreateEvent';
+  String get event => 'ServerCreateEvent';
 
   FutureOr<void> handle(Server server);
 }

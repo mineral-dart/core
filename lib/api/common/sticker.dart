@@ -10,7 +10,6 @@ final class Sticker {
   final String? asset;
   final StickerType type;
   final FormatType? formatType;
-  final String? guildId;
   final bool isAvailable;
   final int? sortValue;
 
@@ -24,7 +23,6 @@ final class Sticker {
     this.tags,
     this.asset,
     this.formatType,
-    this.guildId,
     this.sortValue,
   });
 
@@ -39,7 +37,6 @@ final class Sticker {
       tags: json['tags'],
       asset: json['asset'],
       formatType: FormatType.values.firstWhere((element) => element.value == json['format_type']),
-      guildId: json['guild_id'],
       sortValue: json['sort_value'],
     );
   }

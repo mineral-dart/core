@@ -16,11 +16,9 @@ final class MemberManager {
   late final int maxInGuild;
 
   factory MemberManager.fromJson(
-      {required String guildId,
-      required RoleManager roles,
-      required List<Map<String, dynamic>> json}) {
+      {required RoleManager roles, required List<Map<String, dynamic>> json}) {
     return MemberManager(Map<String, GuildMember>.from(json.fold({}, (value, element) {
-      final member = GuildMember.fromJson(roles: roles, member: element, guildId: guildId);
+      final member = GuildMember.fromJson(roles: roles, member: element);
       return {...value, member.id: member};
     })));
   }

@@ -1,8 +1,6 @@
 import 'package:mineral/api/server/managers/channel_manager.dart';
-import 'package:mineral/api/server/managers/emoji_manager.dart';
 import 'package:mineral/api/server/managers/member_manager.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
-import 'package:mineral/api/server/managers/sticker_manager.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server_assets.dart';
@@ -17,8 +15,6 @@ final class Server {
   final MemberManager bots;
   final ServerSettings settings;
   final RoleManager roles;
-  final EmojiManager emojis;
-  final StickerManager stickers;
   final ChannelManager channels;
   final String? applicationId;
   final ServerAsset assets;
@@ -30,8 +26,6 @@ final class Server {
     required this.bots,
     required this.settings,
     required this.roles,
-    required this.emojis,
-    required this.stickers,
     required this.channels,
     required this.description,
     required this.applicationId,
@@ -51,13 +45,11 @@ final class Server {
     }
 
     final members =
-        MemberManager.fromJson(guildId: json['id'], roles: roles, json: filterMember(false))
+        MemberManager.fromJson(roles: roles, json: filterMember(false))
           ..maxInGuild = json['max_members'];
 
     final bots =
-        MemberManager.fromJson(guildId: json['id'], roles: roles, json: filterMember(true));
-
-    final emojis = EmojiManager.fromJson(roles: roles, json: json['emojis']);
+        MemberManager.fromJson(roles: roles, json: filterMember(true));
 
     final channels = ChannelManager.fromJson(guildId: json['id'], json: json);
 
@@ -68,16 +60,18 @@ final class Server {
         bots: bots,
         settings: ServerSettings.fromJson(json),
         roles: roles,
-        emojis: emojis,
-        stickers: StickerManager.fromJson(json['stickers']),
         channels: channels,
         description: json['description'],
         applicationId: json['application_id'],
-        assets: ServerAsset.fromJson(json),
+        assets: ServerAsset.fromJson(roles, json),
         owner: members.getOrFail(json['owner_id']));
 
     for (final channel in server.channels.list.values) {
-      channel.guild = server;
+      channel.server = server;
+    }
+
+    for (final member in server.members.list.values) {
+      member.server = server;
     }
 
     return server;
