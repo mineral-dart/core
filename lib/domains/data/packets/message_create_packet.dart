@@ -10,20 +10,24 @@ final class MessageCreatePacket implements ListenablePacket {
   PacketType get event => PacketType.messageCreate;
 
   final MemoryStorageContract storage;
+
   const MessageCreatePacket(this.storage);
 
   @override
   void listen(Map<String, dynamic> payload) {
-    final { 'message': ShardMessage message, 'dispatch': Function(InternalEventParams) dispatch } = payload;
+    final {'message': ShardMessage message, 'dispatch': Function(InternalEventParams) dispatch} =
+        payload;
 
-    final messageInstance = switch(message.payload['guild_id']) {
-      String() => ServerMessage.fromJson(
-          server: storage.servers[message.payload['guild_id']]!,
-          json: message.payload
-      ),
-      _ => throw 'Not implemented',
-    };
+    switch (message.payload['guild_id']) {
+      case String():
+        sendServerMessage(dispatch, message.payload);
+      default:
+        throw 'Not implemented';
+    }
+  }
 
-    dispatch(InternalEventParams('ServerMessageEvent', [messageInstance]));
+  void sendServerMessage(Function(InternalEventParams) dispatch, Map<String, dynamic> json) {
+    final message = ServerMessage.fromJson(server: storage.servers[json['guild_id']]!, json: json);
+    dispatch(InternalEventParams('ServerMessageEvent', [message]));
   }
 }
