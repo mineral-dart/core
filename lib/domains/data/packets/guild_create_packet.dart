@@ -18,6 +18,10 @@ final class GuildCreatePacket implements ListenablePacket {
         payload;
 
     final guild = Server.fromJson(message.payload);
-    dispatch(InternalEventParams(event.toString(), [guild]));
+
+    storage.servers[guild.id] = guild;
+    storage.channels.addAll(guild.channels.list);
+
+    dispatch(InternalEventParams('ServerCreateEvent', [guild]));
   }
 }
