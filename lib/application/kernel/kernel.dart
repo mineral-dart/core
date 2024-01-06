@@ -1,6 +1,7 @@
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
+import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data/memory/memory_storage.dart';
 import 'package:mineral/domains/data/packets/guild_create_packet.dart';
@@ -18,12 +19,15 @@ final class Kernel implements KernelContract {
   final ShardingConfigContract config;
 
   @override
+  final LoggerContract logger;
+
+  @override
   final HttpClientContract httpClient;
 
   @override
   final DataListenerContract dataListener;
 
-  Kernel({required this.httpClient, required this.config, required this.dataListener}) {
+  Kernel({required this.logger, required this.httpClient, required this.config, required this.dataListener}) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
@@ -60,12 +64,14 @@ final class Kernel implements KernelContract {
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
+    final LoggerContract logger = Logger();
+
     final MemoryStorageContract storage = MemoryStorage();
     final DataListenerContract dataListener = DataListener()
-      ..listenPacketClass(ReadyPacket(storage))
+      ..listenPacketClass(ReadyPacket(logger, storage))
       ..listenPacketClass(MessageCreatePacket(storage))
       ..listenPacketClass(GuildCreatePacket(storage));
 
-    return Kernel(httpClient: http, config: shardConfig, dataListener: dataListener);
+    return Kernel(logger: logger, httpClient: http, config: shardConfig, dataListener: dataListener);
   }
 }
