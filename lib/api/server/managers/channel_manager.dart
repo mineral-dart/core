@@ -22,6 +22,10 @@ final class ChannelManager {
 
   T? getOrNull<T extends ServerChannel>(String? id) => _channels[id] as T?;
 
+  T getOrFail<T extends ServerChannel>(String id) =>
+      _channels.values.firstWhere((element) => element.id == id, orElse: () => throw Exception('Channel not found'))
+          as T;
+
   ServerVoiceChannel? get afkChannel =>
       getOrNull<ServerVoiceChannel>(_namedChannels[_ServerNamedChannel.afkChannel]);
 
