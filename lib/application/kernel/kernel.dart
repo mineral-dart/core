@@ -1,3 +1,5 @@
+import 'package:mineral/application/environment/environment.dart';
+import 'package:mineral/application/environment/environment_schema.dart';
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
@@ -27,7 +29,11 @@ final class Kernel implements KernelContract {
   @override
   final DataListenerContract dataListener;
 
-  Kernel({required this.logger, required this.httpClient, required this.config, required this.dataListener}) {
+  Kernel(
+      {required this.logger,
+      required this.httpClient,
+      required this.config,
+      required this.dataListener}) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
@@ -55,7 +61,14 @@ final class Kernel implements KernelContract {
   }
 
   factory Kernel.create(
-      {required String token, required int intent, int httpVersion = 10, int shardVersion = 10}) {
+      {required String token,
+      required int intent,
+      required List<EnvironmentSchema> environment,
+      int httpVersion = 10,
+      int shardVersion = 10}) {
+    final LoggerContract logger = Logger();
+    Environment().validate(environment);
+
     final http = HttpClient(
         config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
       Header.userAgent('Mineral'),
@@ -64,14 +77,13 @@ final class Kernel implements KernelContract {
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
-    final LoggerContract logger = Logger();
-
     final MemoryStorageContract storage = MemoryStorage();
     final DataListenerContract dataListener = DataListener()
       ..listenPacketClass(ReadyPacket(logger, storage))
       ..listenPacketClass(MessageCreatePacket(storage))
       ..listenPacketClass(GuildCreatePacket(storage));
 
-    return Kernel(logger: logger, httpClient: http, config: shardConfig, dataListener: dataListener);
+    return Kernel(
+        logger: logger, httpClient: http, config: shardConfig, dataListener: dataListener);
   }
 }

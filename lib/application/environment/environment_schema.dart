@@ -1,3 +1,3 @@
-abstract interface class EnvSchema<T> {
+abstract interface class EnvironmentSchema {
   String get key;
 }

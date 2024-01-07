@@ -15,7 +15,7 @@ final class Environment implements EnvironmentContract {
     }
   }
 
-  T get<T>(EnvSchema variable) {
+  T get<T>(EnvironmentSchema variable) {
     final value = _values.entries
         .firstWhere((element) => element.key == variable.key,
             orElse: () => throw Exception('Environment variable ${variable.key} not found'))
@@ -29,7 +29,7 @@ final class Environment implements EnvironmentContract {
     } as T;
   }
 
-  void validate(List<EnvSchema> values) {
+  void validate(List<EnvironmentSchema> values) {
     for (final key in values) {
       get(key);
     }
