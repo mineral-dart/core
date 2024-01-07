@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:mineral/application/environment/environment_schema.dart';
 
 abstract interface class EnvironmentContract {}
 
@@ -15,27 +16,24 @@ final class Environment implements EnvironmentContract {
     }
   }
 
-  T? getOrNull<T>(String key) {
+  T get<T>(String key) {
     final value = _values.entries
-        .firstWhereOrNull((element) => element.key == key)
-        ?.value;
+        .firstWhere((element) => element.key == key,
+            orElse: () => throw Exception('Environment variable $key not found'))
+        .value;
 
-    return switch(T) {
-      int => int.tryParse(value ?? ''),
-      double => double.tryParse(value ?? ''),
-      bool => bool.tryParse(value ?? ''),
+    return switch (T) {
+      int => int.parse(value),
+      double => double.parse(value),
+      bool => bool.parse(value),
       _ => value,
-    } as T?;
+    } as T;
   }
 
-  T getOrFail<T>(String key) {
-    final value = getOrNull<T>(key);
-
-    if (value == null) {
-      throw Exception('Environment variable $key not found');
+  void validate(List<EnvSchema> values) {
+    for (final schema in values) {
+      get(schema.key);
     }
-
-    return value;
   }
 
   void initFromDisk() {
