@@ -70,8 +70,11 @@ final class Kernel implements KernelContract {
       required List<EnvironmentSchema> environment,
       int httpVersion = 10,
       int shardVersion = 10}) {
-    final LoggerContract logger = Logger();
     final env = Environment()..validate(environment);
+
+    final logLevel = env.getRawOrFail<String>('LOG_LEVEL');
+    final LoggerContract logger = Logger(logLevel);
+
     final http = HttpClient(
         config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
       Header.userAgent('Mineral'),
@@ -95,13 +98,15 @@ final class Kernel implements KernelContract {
   }
 
   factory Kernel.fromEnvironment({required List<EnvironmentSchema> environment}) {
-    final LoggerContract logger = Logger();
     final env = Environment()..validate(environment);
 
-    final token = env.getFromString<String>('TOKEN');
-    final httpVersion = env.getFromString<int>('HTTP_VERSION');
-    final shardVersion = env.getFromString<int>('WSS_VERSION');
-    final intent = env.getFromString<int>('INTENT');
+    final logLevel = env.getRawOrFail<String>('LOG_LEVEL');
+    final LoggerContract logger = Logger(logLevel);
+
+    final token = env.getRawOrFail<String>('TOKEN');
+    final httpVersion = env.getRawOrFail<int>('HTTP_VERSION');
+    final shardVersion = env.getRawOrFail<int>('WSS_VERSION');
+    final intent = env.getRawOrFail<int>('INTENT');
 
     final http = HttpClient(
         config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {

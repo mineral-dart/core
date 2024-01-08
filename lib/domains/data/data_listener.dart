@@ -24,7 +24,7 @@ final class DataListener implements DataListenerContract {
   final MemoryStorageContract storage;
 
   DataListener(this.logger, this.storage) {
-    packets = PacketDispatcher(this);
+    packets = PacketDispatcher(this, logger);
   }
 
   void subscribe(ListenablePacket Function(LoggerContract, MemoryStorageContract) factory) {

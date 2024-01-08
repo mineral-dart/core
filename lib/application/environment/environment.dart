@@ -17,7 +17,7 @@ final class Environment implements EnvironmentContract {
     }
   }
 
-  T getFromString<T>(String key) {
+  T getRawOrFail<T>(String key) {
     final value = _values.entries
         .firstWhere((element) => element.key == key,
             orElse: () => throw Exception('Environment variable $key not found'))

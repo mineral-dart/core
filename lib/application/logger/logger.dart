@@ -11,8 +11,21 @@ abstract interface class LoggerContract {
 final class Logger implements LoggerContract {
   final _logger = logging.Logger('Core');
 
-  Logger() {
-    logging.Logger.root.level = logging.Level.ALL;
+  Logger(String level) {
+    const logLevels = {
+      'TRACE': logging.Level.FINEST,
+      'FATAL': logging.Level.SHOUT,
+      'ERROR': logging.Level.SEVERE,
+      'WARN': logging.Level.WARNING,
+      'INFO': logging.Level.INFO,
+    };
+
+    final bool logLevel = logLevels.keys.contains(level.toUpperCase());
+    if (!logLevel) {
+      throw Exception('Invalid LOG_LEVEL environment variable, please include in ${logLevels.keys.map((e) => e.toLowerCase())}');
+    }
+
+    logging.Logger.root.level = logLevels[level.toUpperCase()];
     logging.Logger.root.onRecord.listen((record) {
       print('${record.level.name}: ${record.time}: ${record.message}');
     });

@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mineral/domains/wss/constants/op_code.dart';
 
 abstract interface class ShardMessage<T> {
@@ -8,6 +10,8 @@ abstract interface class ShardMessage<T> {
   int? get sequence;
 
   T get payload;
+
+  Object serialize();
 }
 
 final class ShardMessageImpl<T> implements ShardMessage<T> {
@@ -24,16 +28,21 @@ final class ShardMessageImpl<T> implements ShardMessage<T> {
   final T payload;
 
   ShardMessageImpl(
-      {required this.type,
-      required this.opCode,
-      required this.sequence,
-      required this.payload});
+      {required this.type, required this.opCode, required this.sequence, required this.payload});
 
-  factory ShardMessageImpl.of(Map<String, dynamic> message) =>
-      ShardMessageImpl(
-          type: message['t'],
-          opCode: OpCode.values
-              .firstWhere((element) => element.value == message['op']),
-          sequence: message['s'],
-          payload: message['d']);
+  factory ShardMessageImpl.of(Map<String, dynamic> message) => ShardMessageImpl(
+      type: message['t'],
+      opCode: OpCode.values.firstWhere((element) => element.value == message['op']),
+      sequence: message['s'],
+      payload: message['d']);
+
+  @override
+  Object serialize() {
+    return {
+      't': type,
+      'op': opCode.value,
+      's': sequence,
+      'd': jsonEncode(payload),
+    };
+  }
 }
