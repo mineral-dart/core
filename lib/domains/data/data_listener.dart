@@ -1,5 +1,7 @@
+import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/dispatchers/event_dispatcher.dart';
 import 'package:mineral/domains/data/dispatchers/packet_dispatcher.dart';
+import 'package:mineral/domains/data/memory/memory_storage.dart';
 import 'package:mineral/domains/data/types/listenable_dispatcher.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 
@@ -18,11 +20,17 @@ final class DataListener implements DataListenerContract {
   @override
   final EventDispatcher events = EventDispatcher();
 
-  DataListener() {
+  final LoggerContract logger;
+  final MemoryStorageContract storage;
+
+  DataListener(this.logger, this.storage) {
     packets = PacketDispatcher(this);
   }
 
-  void listenPacketClass(ListenablePacket packet) => packets.listen({'packet': packet.event, 'listener': packet.listen});
+  void subscribe(ListenablePacket Function(LoggerContract, MemoryStorageContract) factory) {
+    final packet = factory(logger, storage);
+    packets.listen({'packet': packet.event, 'listener': packet.listen});
+  }
 
   @override
   void dispose() {

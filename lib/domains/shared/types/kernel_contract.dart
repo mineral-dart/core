@@ -1,3 +1,4 @@
+import 'package:mineral/application/environment/environment.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
@@ -10,6 +11,8 @@ abstract interface class KernelContract {
   ShardingConfigContract get config;
 
   LoggerContract get logger;
+
+  EnvironmentContract get environment;
 
   HttpClientContract get httpClient;
 

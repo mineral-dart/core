@@ -1,4 +1,5 @@
 import 'package:mineral/api/server/server.dart';
+import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/internal_event_params.dart';
 import 'package:mineral/domains/data/memory/memory_storage.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
@@ -9,8 +10,10 @@ final class GuildCreatePacket implements ListenablePacket {
   @override
   PacketType get event => PacketType.guildCreate;
 
+  final LoggerContract logger;
   final MemoryStorageContract storage;
-  const GuildCreatePacket(this.storage);
+
+  const GuildCreatePacket(this.logger, this.storage);
 
   @override
   void listen(Map<String, dynamic> payload) {

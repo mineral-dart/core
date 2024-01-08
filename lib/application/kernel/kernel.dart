@@ -24,6 +24,9 @@ final class Kernel implements KernelContract {
   final LoggerContract logger;
 
   @override
+  final EnvironmentContract environment;
+
+  @override
   final HttpClientContract httpClient;
 
   @override
@@ -31,6 +34,7 @@ final class Kernel implements KernelContract {
 
   Kernel(
       {required this.logger,
+      required this.environment,
       required this.httpClient,
       required this.config,
       required this.dataListener}) {
@@ -67,7 +71,37 @@ final class Kernel implements KernelContract {
       int httpVersion = 10,
       int shardVersion = 10}) {
     final LoggerContract logger = Logger();
-    Environment().validate(environment);
+    final env = Environment()..validate(environment);
+    final http = HttpClient(
+        config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
+      Header.userAgent('Mineral'),
+      Header.contentType('application/json'),
+    }));
+
+    final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
+
+    final MemoryStorageContract storage = MemoryStorage();
+    final DataListenerContract dataListener = DataListener(logger, storage)
+      ..subscribe(ReadyPacket.new)
+      ..subscribe(MessageCreatePacket.new)
+      ..subscribe(GuildCreatePacket.new);
+
+    return Kernel(
+        logger: logger,
+        environment: env,
+        httpClient: http,
+        config: shardConfig,
+        dataListener: dataListener);
+  }
+
+  factory Kernel.fromEnvironment({required List<EnvironmentSchema> environment}) {
+    final LoggerContract logger = Logger();
+    final env = Environment()..validate(environment);
+
+    final token = env.getFromString<String>('TOKEN');
+    final httpVersion = env.getFromString<int>('HTTP_VERSION');
+    final shardVersion = env.getFromString<int>('WSS_VERSION');
+    final intent = env.getFromString<int>('INTENT');
 
     final http = HttpClient(
         config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
@@ -78,12 +112,16 @@ final class Kernel implements KernelContract {
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
     final MemoryStorageContract storage = MemoryStorage();
-    final DataListenerContract dataListener = DataListener()
-      ..listenPacketClass(ReadyPacket(logger, storage))
-      ..listenPacketClass(MessageCreatePacket(storage))
-      ..listenPacketClass(GuildCreatePacket(storage));
+    final DataListenerContract dataListener = DataListener(logger, storage)
+      ..subscribe(ReadyPacket.new)
+      ..subscribe(MessageCreatePacket.new)
+      ..subscribe(GuildCreatePacket.new);
 
     return Kernel(
-        logger: logger, httpClient: http, config: shardConfig, dataListener: dataListener);
+        logger: logger,
+        environment: env,
+        httpClient: http,
+        config: shardConfig,
+        dataListener: dataListener);
   }
 }
