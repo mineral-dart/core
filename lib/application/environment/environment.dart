@@ -7,14 +7,10 @@ abstract interface class EnvironmentContract {
 }
 
 final class Environment implements EnvironmentContract {
-  final Map<String, String> _values = Map.fromEntries(Platform.environment.entries);
+  final Map<String, String> _values = {};
 
   Environment() {
-    final isContained = Platform.environment['DEPLOY_WITH_DOCKER'];
-
-    if (isContained == null) {
-      initFromDisk();
-    }
+    loadEnvironment();
   }
 
   T getRawOrFail<T>(String key) {
@@ -52,7 +48,7 @@ final class Environment implements EnvironmentContract {
     }
   }
 
-  void initFromDisk() {
+  void loadEnvironment() {
     final dir = Directory.current;
     final elements = dir.listSync();
 
@@ -61,13 +57,17 @@ final class Environment implements EnvironmentContract {
         .toList();
 
     final orderedFiles = orderEnvFiles(environments);
-    final environment = orderedFiles.first;
+    if (orderedFiles.isNotEmpty) {
+      final environment = orderedFiles.first;
 
-    final lines = File.fromUri(environment.uri).readAsLinesSync();
-    for (final line in lines.nonNulls.where((element) => element.isNotEmpty)) {
-      final [key, value] = line.split('=');
-      _values[key] = value;
+      final lines = File.fromUri(environment.uri).readAsLinesSync();
+      for (final line in lines.nonNulls.where((element) => element.isNotEmpty)) {
+        final [key, value] = line.split('=');
+        _values[key] = value;
+      }
     }
+
+    _values.addEntries(Platform.environment.entries);
   }
 
   List<FileSystemEntity> orderEnvFiles(List<FileSystemEntity> files) {
