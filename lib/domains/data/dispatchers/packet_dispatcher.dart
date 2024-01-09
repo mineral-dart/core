@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data/types/listenable_dispatcher.dart';
@@ -19,7 +21,7 @@ final class PacketDispatcher implements ListenableDispatcher {
     final Function(Map<String, dynamic>) listener = payload['listener'];
 
     _packets.stream.where((event) => event.type == packet.name).listen((ShardMessage message) {
-      _logger.trace(message.serialize());
+      _logger.trace(jsonEncode(message.serialize()));
       listener({'message': message, 'dispatch': _manager.events.dispatch});
     });
   }

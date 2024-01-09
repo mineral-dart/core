@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:mineral/domains/wss/constants/op_code.dart';
 
 abstract interface class ShardMessage<T> {
@@ -42,7 +40,7 @@ final class ShardMessageImpl<T> implements ShardMessage<T> {
       't': type,
       'op': opCode.value,
       's': sequence,
-      'd': jsonEncode(payload),
+      'd': payload,
     };
   }
 }
