@@ -64,7 +64,7 @@ final class Environment implements EnvironmentContract {
     final environment = orderedFiles.first;
 
     final lines = File.fromUri(environment.uri).readAsLinesSync();
-    for (final line in lines) {
+    for (final line in lines.nonNulls.where((element) => element.isNotEmpty)) {
       final [key, value] = line.split('=');
       _values[key] = value;
     }
