@@ -20,7 +20,7 @@ final class GuildCreatePacket implements ListenablePacket {
     final {'message': ShardMessage message, 'dispatch': Function(InternalEventParams) dispatch} =
         payload;
 
-    final guild = Server.fromJson(message.payload);
+    final guild = Server.fromJson(storage, message.payload);
 
     storage.servers[guild.id] = guild;
     storage.channels.addAll(guild.channels.list);

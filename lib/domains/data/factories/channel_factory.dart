@@ -6,10 +6,11 @@ import 'package:mineral/domains/data/factories/channels/server_category_channel_
 import 'package:mineral/domains/data/factories/channels/server_forum_channel_factory.dart';
 import 'package:mineral/domains/data/factories/channels/server_text_channel_factory.dart';
 import 'package:mineral/domains/data/factories/channels/server_voice_channel_factory.dart';
+import 'package:mineral/domains/data/memory/memory_storage.dart';
 
 abstract interface class ChannelFactoryContract<T extends Channel> {
   ChannelType get type;
-  T make(String guildId, Map<String, dynamic> json);
+  T make(MemoryStorageContract storage, String guildId, Map<String, dynamic> json);
 }
 
 final class ChannelFactory {
@@ -21,7 +22,7 @@ final class ChannelFactory {
     ServerForumChannelFactory()
   ];
 
-  static T? make<T extends Channel>(String guildId, Map<String, dynamic> json) {
+  static T? make<T extends Channel>(MemoryStorageContract storage, String guildId, Map<String, dynamic> json) {
     final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
 
     if (channelFactory == null) {
@@ -29,6 +30,6 @@ final class ChannelFactory {
       return null;
     }
 
-    return channelFactory.make(guildId, json) as T?;
+    return channelFactory.make(storage, guildId, json) as T?;
   }
 }

@@ -1,7 +1,9 @@
+import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/domains/data/factories/channel_factory.dart';
+import 'package:mineral/domains/data/memory/memory_storage.dart';
 
 enum _ServerNamedChannel {
   afkChannel,
@@ -23,8 +25,9 @@ final class ChannelManager {
   T? getOrNull<T extends ServerChannel>(String? id) => _channels[id] as T?;
 
   T getOrFail<T extends ServerChannel>(String id) =>
-      _channels.values.firstWhere((element) => element.id == id, orElse: () => throw Exception('Channel not found'))
-          as T;
+      _channels.values.firstWhere((element) => element.id == id,
+          orElse: () => throw Exception('Channel not found'))
+      as T;
 
   ServerVoiceChannel? get afkChannel =>
       getOrNull<ServerVoiceChannel>(_namedChannels[_ServerNamedChannel.afkChannel]);
@@ -44,11 +47,28 @@ final class ChannelManager {
   ServerTextChannel? get widgetChannel =>
       getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.widgetChannel]);
 
-  factory ChannelManager.fromJson({required String guildId, required Map<String, dynamic> json}) {
-    final channels = Map<String, ServerChannel>.from(json['channels'].fold({}, (value, element) {
-      final channel = ChannelFactory.make(guildId, element);
-      return channel != null ? {...value, channel.id: channel} : value;
-    }));
+  factory ChannelManager.fromJson(
+      {required MemoryStorageContract storage, required String guildId, required Map<String,
+          dynamic> json}) {
+
+    final categories = Map<String, ServerChannel>.from(
+      List.from(json['channels'])
+        .where((element) => element['type'] == ChannelType.guildCategory.value)
+        .fold({}, (value, element) {
+          final channel = ChannelFactory.make(storage, guildId, element);
+          return channel != null ? {...value, channel.id: channel} : value;
+        })
+    );
+
+    storage.channels.addAll(categories);
+
+    final channels = Map<String, ServerChannel>.from(
+      List.from(json['channels']).where((element) =>
+      element['type'] != ChannelType.guildCategory.value).fold({}, (value, element) {
+        final channel = ChannelFactory.make(storage, guildId, element);
+        return channel != null ? {...value, channel.id: channel} : value;
+      })
+    );
 
     final Map<_ServerNamedChannel, String?> namedChannels = {
       _ServerNamedChannel.afkChannel: json['afk_channel_id'],

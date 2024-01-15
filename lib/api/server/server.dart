@@ -5,6 +5,7 @@ import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/api/server/server_settings.dart';
+import 'package:mineral/domains/data/memory/memory_storage.dart';
 
 final class Server {
   final String id;
@@ -31,7 +32,7 @@ final class Server {
     required this.owner,
   });
 
-  factory Server.fromJson(Map<String, dynamic> json) {
+  factory Server.fromJson(MemoryStorageContract storage, Map<String, dynamic> json) {
     final roles = RoleManager(Map<String, Role>.from(json['roles'].fold({}, (value, element) {
       final role = Role.fromJson(element);
       return {...value, role.id: role};
@@ -39,7 +40,7 @@ final class Server {
 
     final members = MemberManager.fromJson(roles: roles, json: json['members']);
 
-    final channels = ChannelManager.fromJson(guildId: json['id'], json: json);
+    final channels = ChannelManager.fromJson(storage: storage, guildId: json['id'], json: json);
 
     final server = Server(
         id: json['id'],
