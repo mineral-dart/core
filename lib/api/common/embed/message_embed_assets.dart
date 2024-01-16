@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/embed/message_embed_author.dart';
+import 'package:mineral/api/common/embed/message_embed_color.dart';
 import 'package:mineral/api/common/embed/message_embed_footer.dart';
 import 'package:mineral/api/common/embed/message_embed_image.dart';
 import 'package:mineral/domains/shared/utils.dart';
@@ -9,7 +10,7 @@ final class MessageEmbedAssets {
   final MessageEmbedImage? video;
   final MessageEmbedFooter? footer;
   final MessageEmbedAuthor? author;
-  final int color;
+  final MessageEmbedColor color;
 
   const MessageEmbedAssets({
     required this.image,

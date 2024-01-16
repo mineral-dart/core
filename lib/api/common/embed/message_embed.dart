@@ -5,24 +5,24 @@ import 'package:mineral/api/common/embed/message_embed_type.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
 final class MessageEmbed {
-  final String title;
-  final String description;
+  final String? title;
+  final String? description;
   final MessageEmbedType? type;
   final String? url;
   final DateTime? timestamp;
-  final MessageEmbedAssets assets;
+  final MessageEmbedAssets? assets;
   final MessageEmbedProvider? provider;
   final List<MessageEmbedField> fields;
 
   MessageEmbed({
     required this.title,
     required this.description,
-    required this.type,
     required this.url,
     required this.timestamp,
     required this.assets,
-    required this.provider,
     required this.fields,
+    this.type,
+    this.provider,
   }) {
     expectOrThrow(fields.length <= 25, message: 'Fields must be 25 or fewer in length');
   }
