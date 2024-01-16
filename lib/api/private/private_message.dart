@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/user.dart';
