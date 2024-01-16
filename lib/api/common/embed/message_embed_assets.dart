@@ -21,6 +21,17 @@ final class MessageEmbedAssets {
     required this.color,
   });
 
+  Object toJson() {
+    return {
+      'image': image?.toJson(),
+      'thumbnail': thumbnail?.toJson(),
+      'video': video?.toJson(),
+      'footer': footer?.toJson(),
+      'author': author?.toJson(),
+      'color': color,
+    };
+  }
+
   factory MessageEmbedAssets.fromJson(Map<String, dynamic> json) {
     return MessageEmbedAssets(
       image:

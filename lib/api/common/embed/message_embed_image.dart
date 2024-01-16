@@ -11,6 +11,15 @@ final class MessageEmbedImage {
     required this.width,
   });
 
+  Object toJson() {
+    return {
+      'url': url,
+      'proxy_url': proxyUrl,
+      'height': height,
+      'width': width,
+    };
+  }
+
   factory MessageEmbedImage.fromJson(Map<String, dynamic> raw) {
     return MessageEmbedImage(
       url: raw['url'],

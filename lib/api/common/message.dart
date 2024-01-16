@@ -17,4 +17,6 @@ abstract class Message<T extends Channel> {
     this.createdAt,
     this.updatedAt,
   );
+
+
 }

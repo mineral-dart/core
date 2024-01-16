@@ -10,6 +10,14 @@ final class MessageEmbedField {
     expectOrThrow(value.length <= 1024, message: 'Value must be 1024 or fewer in length');
   }
 
+  Object toJson() {
+    return {
+      'name': name,
+      'value': value,
+      'inline': inline,
+    };
+  }
+
   factory MessageEmbedField.fromJson(Map<String, dynamic> json) {
     return MessageEmbedField(
       name: json['name'],

@@ -27,6 +27,18 @@ final class MessageEmbed {
     expectOrThrow(fields.length <= 25, message: 'Fields must be 25 or fewer in length');
   }
 
+  Object toJson() {
+    return {
+      'title': title,
+      'description': description,
+      'type': type,
+      'url': url,
+      'timestamp': timestamp?.toIso8601String(),
+      'assets': assets?.toJson(),
+      'fields': fields.map((field) => field.toJson()).toList(),
+    };
+  }
+
   factory MessageEmbed.fromJson(Map<String, dynamic> json) {
     return MessageEmbed(
       title: json['title'],

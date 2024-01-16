@@ -11,6 +11,15 @@ final class MessageEmbedAuthor {
     expectOrThrow(name.length <= 256, message: 'Author name must be 256 or fewer in length');
   }
 
+  Object toJson() {
+    return {
+      'name': name,
+      'url': url,
+      'icon_url': iconUrl,
+      'proxy_icon_url': proxyIconUrl,
+    };
+  }
+
   factory MessageEmbedAuthor.fromJson(Map<String, dynamic> json) {
     return MessageEmbedAuthor(
       name: json['name'],
