@@ -18,3 +18,9 @@ List<T> bitfieldToList<T extends EnhancedEnum<int>>(List<T> values, int bitfield
 T findInEnum<T extends EnhancedEnum<R>, R>(List<T> values, R value) {
   return values.firstWhereOrNull((element) => element.value == value) as T;
 }
+
+void expectOrThrow(bool value, {String? message}) {
+  if (!value) {
+    throw Exception(message);
+  }
+}
