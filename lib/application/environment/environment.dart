@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:mineral/application/environment/environment_schema.dart';
 
 abstract interface class EnvironmentContract {
+  Map<String, String> get list;
   T get<T>(EnvironmentSchema variable);
 }
 
@@ -12,6 +13,9 @@ final class Environment implements EnvironmentContract {
   Environment() {
     loadEnvironment();
   }
+
+  @override
+  Map<String, String> get list => _values;
 
   T getRawOrFail<T>(String key) {
     final value = _values.entries
