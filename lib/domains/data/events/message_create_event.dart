@@ -7,9 +7,9 @@ import 'package:mineral/domains/data/types/listenable_event.dart';
 typedef ServerMessageEventHandler = FutureOr<void> Function(ServerMessage message);
 typedef PrivateMessageEventHandler = FutureOr<void> Function(PrivateMessage message);
 
-abstract class ServerCreateEvent implements ListenableEvent {
+abstract class MessageCreateEvent implements ListenableEvent {
   @override
-  String get event => 'ServerCreateEvent';
+  String get event => 'MessageCreateEvent';
 
   FutureOr<void> handle();
 }
