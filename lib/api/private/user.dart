@@ -28,4 +28,22 @@ final class User {
     required this.premiumType,
     required this.publicFlags,
   });
+
+  factory User.fromJson(Map<String, dynamic> json) {
+    return User(
+      id: json['id'],
+      username: json['username'],
+      discriminator: json['discriminator'],
+      avatar: json['avatar'],
+      bot: json['bot'],
+      system: json['system'],
+      mfaEnabled: json['mfa_enabled'],
+      locale: json['locale'],
+      verified: json['verified'],
+      email: json['email'],
+      flags: json['flags'],
+      premiumType: json['premium_type'],
+      publicFlags: json['public_flags'],
+    );
+  }
 }
