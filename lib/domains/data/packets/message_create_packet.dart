@@ -1,3 +1,5 @@
+import 'package:mineral/api/private/private_message.dart';
+import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/internal_event_params.dart';
@@ -24,12 +26,18 @@ final class MessageCreatePacket implements ListenablePacket {
       case String():
         sendServerMessage(dispatch, message.payload);
       default:
-        throw 'Not implemented';
+        User user = User.fromJson(message.payload['author']);
+        sendPrivateMessage(dispatch, message.payload, user);
     }
   }
 
   void sendServerMessage(Function(InternalEventParams) dispatch, Map<String, dynamic> json) {
     final message = ServerMessage.fromJson(server: storage.servers[json['guild_id']]!, json: json);
     dispatch(InternalEventParams('ServerMessageEvent', [message]));
+  }
+
+  void sendPrivateMessage(Function(InternalEventParams) dispatch, Map<String, dynamic> json, User user) {
+    final message = PrivateMessage.fromJson(json: json, user: user);
+    dispatch(InternalEventParams('PrivateMessageEvent', [message]));
   }
 }
