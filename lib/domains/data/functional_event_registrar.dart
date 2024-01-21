@@ -13,6 +13,8 @@ abstract interface class FunctionalEventRegistrarContract {
   void serverCreate(ServerCreateEventHandler handle);
 
   void serverMessageCreate(ServerMessageEventHandler handle);
+
+  void privateMessageCreate(PrivateMessageEventHandler handle);
 }
 
 final class FunctionalEventRegistrar implements FunctionalEventRegistrarContract {
@@ -34,6 +36,9 @@ final class FunctionalEventRegistrar implements FunctionalEventRegistrarContract
   @override
   void serverMessageCreate(ServerMessageEventHandler handle) =>
       _registerEvent(InternalEvent('ServerMessageEvent', handle));
+
+  void privateMessageCreate(PrivateMessageEventHandler handle) =>
+      _registerEvent(InternalEvent('PrivateMessageEvent', handle));
 
   void _registerEvent(InternalEvent event) => _client.kernel.dataListener.events.listen(event);
 }
