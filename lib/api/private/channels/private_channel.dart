@@ -9,7 +9,7 @@ final class PrivateChannel extends Channel {
   factory PrivateChannel.fromJson(Map<String, dynamic> json) {
     return PrivateChannel(
       id: json['channel_id'],
-      name: json['name'],
+      name: json['author']['username'],
     );
   }
 }
