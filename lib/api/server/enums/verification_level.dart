@@ -7,6 +7,8 @@ enum VerificationLevel implements EnhancedEnum<int> {
   high(3),
   veryHigh(4);
 
+  @override
   final int value;
+
   const VerificationLevel(this.value);
 }
