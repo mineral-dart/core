@@ -32,6 +32,8 @@ final class EnvironmentPlaceholder implements PlaceholderContract {
           _ => throw Exception('Invalid type')
         };
 
-        return acc.replaceAll('{${element.key}}', finalValue);
+        return acc
+          .replaceAll('{${element.key}}', finalValue)
+          .replaceAll('{{ ${element.key} }}', finalValue);
       });
 }
