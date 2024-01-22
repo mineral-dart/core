@@ -8,6 +8,12 @@ abstract interface class Response<T> {
   abstract final Set<Header> headers;
   abstract final String bodyString;
   abstract final T body;
+
+  Uri get uri;
+
+  String? get reasonPhrase;
+
+  String get method;
 }
 
 final class ResponseImpl<T> implements Response<T> {
@@ -23,15 +29,30 @@ final class ResponseImpl<T> implements Response<T> {
   @override
   final T body;
 
+  @override
+  final Uri uri;
+
+  @override
+  final String? reasonPhrase;
+
+  @override
+  final String method;
+
   ResponseImpl._(
       {required this.statusCode,
       required this.headers,
       required this.bodyString,
-      required this.body});
+      required this.body,
+      required this.uri,
+      required this.reasonPhrase,
+      required this.method});
 
   factory ResponseImpl.fromHttpResponse(http.Response response) => ResponseImpl._(
       statusCode: response.statusCode,
       headers: response.headers.entries.map((entry) => Header(entry.key, entry.value)).toSet(),
       bodyString: response.body,
-      body: jsonDecode(response.body));
+      body: jsonDecode(response.body),
+      uri: response.request!.url,
+      reasonPhrase: response.reasonPhrase,
+      method: response.request!.method);
 }
