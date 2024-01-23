@@ -1,8 +1,11 @@
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/dispatchers/event_dispatcher.dart';
 import 'package:mineral/domains/data/dispatchers/packet_dispatcher.dart';
-import 'package:mineral/domains/data/memory/memory_storage.dart';
+import 'package:mineral/domains/data/packets/guild_create_packet.dart';
+import 'package:mineral/domains/data/packets/message_create_packet.dart';
+import 'package:mineral/domains/data/packets/ready_packet.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
+import 'package:mineral/domains/marshaller/marshaller.dart';
 
 abstract interface class DataListenerContract {
   PacketDispatcherContract get packets;
@@ -20,14 +23,18 @@ final class DataListener implements DataListenerContract {
   final EventDispatcherContract events = EventDispatcher();
 
   final LoggerContract logger;
-  final MemoryStorageContract storage;
+  final MarshallerContract marshaller;
 
-  DataListener(this.logger, this.storage) {
+  DataListener(this.logger, this.marshaller) {
     packets = PacketDispatcher(this, logger);
+
+    subscribe(ReadyPacket.new);
+    subscribe(MessageCreatePacket.new);
+    subscribe(GuildCreatePacket.new);
   }
 
-  void subscribe(ListenablePacket Function(LoggerContract, MemoryStorageContract) factory) {
-    final packet = factory(logger, storage);
+  void subscribe(ListenablePacket Function(LoggerContract, MarshallerContract) factory) {
+    final packet = factory(logger, marshaller);
     packets.listen(packet.event, packet.listen);
   }
 

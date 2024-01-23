@@ -6,9 +6,7 @@ import 'package:mineral/application/http/http_client_config.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data/memory/memory_storage.dart';
-import 'package:mineral/domains/data/packets/guild_create_packet.dart';
-import 'package:mineral/domains/data/packets/message_create_packet.dart';
-import 'package:mineral/domains/data/packets/ready_packet.dart';
+import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
@@ -84,10 +82,8 @@ final class Kernel implements KernelContract {
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
     final MemoryStorageContract storage = MemoryStorage();
-    final DataListenerContract dataListener = DataListener(logger, storage)
-      ..subscribe(ReadyPacket.new)
-      ..subscribe(MessageCreatePacket.new)
-      ..subscribe(GuildCreatePacket.new);
+    final MarshallerContract marshaller = Marshaller(storage);
+    final DataListenerContract dataListener = DataListener(logger, marshaller);
 
     return Kernel(
         logger: logger,
@@ -117,10 +113,8 @@ final class Kernel implements KernelContract {
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
     final MemoryStorageContract storage = MemoryStorage();
-    final DataListenerContract dataListener = DataListener(logger, storage)
-      ..subscribe(ReadyPacket.new)
-      ..subscribe(MessageCreatePacket.new)
-      ..subscribe(GuildCreatePacket.new);
+    final MarshallerContract marshaller = Marshaller(storage);
+    final DataListenerContract dataListener = DataListener(logger, marshaller);
 
     return Kernel(
         logger: logger,
