@@ -5,6 +5,7 @@ import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/memory/memory_storage.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
+import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/wss/shard_message.dart';
 
 final class MessageCreatePacket implements ListenablePacket {
@@ -12,13 +13,12 @@ final class MessageCreatePacket implements ListenablePacket {
   PacketType get event => PacketType.messageCreate;
 
   final LoggerContract logger;
-  final MemoryStorageContract storage;
+  final MarshallerContract marshaller;
 
-  const MessageCreatePacket(this.logger, this.storage);
+  const MessageCreatePacket(this.logger, this.marshaller);
 
   @override
-  void listen(
-      ShardMessage message, Function({required String event, required List params}) dispatch) {
+  void listen(ShardMessage message, DispatchEvent dispatch) {
     switch (message.payload['guild_id']) {
       case String():
         sendServerMessage(dispatch, message.payload);
@@ -28,9 +28,8 @@ final class MessageCreatePacket implements ListenablePacket {
     }
   }
 
-  void sendServerMessage(
-      Function({required String event, required List params}) dispatch, Map<String, dynamic> json) {
-    final message = ServerMessage.fromJson(server: storage.servers[json['guild_id']]!, json: json);
+  void sendServerMessage(DispatchEvent dispatch, Map<String, dynamic> json) {
+    final message = marshaller.serializers.serverMessage.serialize(json);
     dispatch(event: 'ServerMessageEvent', params: [message]);
   }
 
