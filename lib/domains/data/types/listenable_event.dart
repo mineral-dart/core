@@ -1,3 +1,5 @@
+import 'package:mineral/domains/shared/mineral_event.dart';
+
 abstract interface class ListenableEvent {
-  String get event;
+  EventList get event;
 }

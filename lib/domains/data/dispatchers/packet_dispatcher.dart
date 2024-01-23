@@ -2,13 +2,13 @@ import 'dart:convert';
 
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
+import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
 import 'package:mineral/domains/wss/shard_message.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract interface class PacketDispatcherContract {
-  void listen(PacketType packet,
-      Function(ShardMessage, Function({required String event, required List params})) listener);
+  void listen(PacketType packet, Function(ShardMessage, DispatchEvent) listener);
 
   void dispatch(dynamic payload);
 
@@ -24,8 +24,7 @@ final class PacketDispatcher implements PacketDispatcherContract {
   PacketDispatcher(this._manager, this._logger);
 
   @override
-  void listen(PacketType packet,
-      Function(ShardMessage, Function({required String event, required List params})) listener) {
+  void listen(PacketType packet, Function(ShardMessage, DispatchEvent) listener) {
     _packets.stream.where((event) => event.type == packet.name).listen((ShardMessage message) {
       _logger.trace(jsonEncode(message.serialize()));
       Function.apply(listener, [message, _manager.events.dispatch]);

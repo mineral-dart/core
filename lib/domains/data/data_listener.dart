@@ -35,7 +35,7 @@ final class DataListener implements DataListenerContract {
 
   void subscribe(ListenablePacket Function(LoggerContract, MarshallerContract) factory) {
     final packet = factory(logger, marshaller);
-    packets.listen(packet.event, packet.listen);
+    packets.listen(packet.packetType, packet.listen);
   }
 
   @override
