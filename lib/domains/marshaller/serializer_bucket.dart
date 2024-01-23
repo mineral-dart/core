@@ -8,7 +8,7 @@ import 'package:mineral/domains/marshaller/serializers/server_serializer.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
 
 abstract interface class SerializerBucket {
-  SerializerContract<Channel> get channels;
+  SerializerContract<Channel?> get channels;
 
   SerializerContract<Server> get server;
 

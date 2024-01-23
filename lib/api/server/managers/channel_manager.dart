@@ -2,8 +2,7 @@ import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
-import 'package:mineral/domains/data/factories/channel_factory.dart';
-import 'package:mineral/domains/data/memory/memory_storage.dart';
+import 'package:mineral/domains/marshaller/marshaller.dart';
 
 enum _ServerNamedChannel {
   afkChannel,
@@ -48,24 +47,24 @@ final class ChannelManager {
       getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.widgetChannel]);
 
   factory ChannelManager.fromJson(
-      {required MemoryStorageContract storage, required String guildId, required Map<String,
+      {required MarshallerContract marshaller, required String guildId, required Map<String,
           dynamic> json}) {
 
     final categories = Map<String, ServerChannel>.from(
       List.from(json['channels'])
         .where((element) => element['type'] == ChannelType.guildCategory.value)
         .fold({}, (value, element) {
-          final channel = ChannelFactory.make(storage, guildId, element);
+          final channel = marshaller.serializers.channels.serialize(element);
           return channel != null ? {...value, channel.id: channel} : value;
         })
     );
 
-    storage.channels.addAll(categories);
+    marshaller.storage.channels.addAll(categories);
 
     final channels = Map<String, ServerChannel>.from(
       List.from(json['channels']).where((element) =>
       element['type'] != ChannelType.guildCategory.value).fold({}, (value, element) {
-        final channel = ChannelFactory.make(storage, guildId, element);
+        final channel = marshaller.serializers.channels.serialize(element);
         return channel != null ? {...value, channel.id: channel} : value;
       })
     );
