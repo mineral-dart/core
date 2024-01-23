@@ -1,5 +1,4 @@
 import 'package:mineral/domains/data/functional_event_registrar.dart';
-import 'package:mineral/domains/data/internal_event.dart';
 import 'package:mineral/domains/data/types/listenable_event.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/shared/types/mineral_client_contract.dart';
@@ -21,8 +20,8 @@ final class MineralClient implements MineralClientContract {
 
     switch (instance) {
       case ListenableEvent():
-        kernel.dataListener.events.listen(InternalEvent(
-            instance.event, (instance as dynamic).handle));
+        kernel.dataListener.events
+            .listen(event: instance.event, handle: (instance as dynamic).handle);
     }
   }
 

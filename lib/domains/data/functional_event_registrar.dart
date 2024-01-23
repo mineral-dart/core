@@ -1,7 +1,6 @@
 import 'package:mineral/domains/data/events/message_create_event.dart';
 import 'package:mineral/domains/data/events/ready_event.dart';
 import 'package:mineral/domains/data/events/server_create_event.dart';
-import 'package:mineral/domains/data/internal_event.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
 import 'package:mineral/domains/shared/types/mineral_client_contract.dart';
 
@@ -23,22 +22,26 @@ final class FunctionalEventRegistrar implements FunctionalEventRegistrarContract
   FunctionalEventRegistrar(this._client);
 
   @override
-  void make(String event, Function() handle) => _registerEvent(InternalEvent(event, handle));
+  void make(String event, Function() handle) => _registerEvent(event: event, handle: handle);
 
   @override
   void ready(ReadyEventHandler handle) =>
-      _registerEvent(InternalEvent(PacketType.ready.toString(), handle));
+      _registerEvent(event: PacketType.ready.toString(), handle: handle);
 
   @override
   void serverCreate(ServerCreateEventHandler handle) =>
-      _registerEvent(InternalEvent('ServerCreateEvent', handle));
+      _registerEvent(event: 'ServerCreateEvent', handle: handle);
 
   @override
   void serverMessageCreate(ServerMessageEventHandler handle) =>
-      _registerEvent(InternalEvent('ServerMessageEvent', handle));
+      _registerEvent(event: 'ServerMessageEvent', handle: handle);
 
   void privateMessageCreate(PrivateMessageEventHandler handle) =>
-      _registerEvent(InternalEvent('PrivateMessageEvent', handle));
+      _registerEvent(event: 'PrivateMessageEvent', handle: handle);
 
-  void _registerEvent(InternalEvent event) => _client.kernel.dataListener.events.listen(event);
+  void _registerEvent<T extends Function>({required String event, required T handle}) =>
+      _client.kernel.dataListener.events.listen(
+        event: event,
+        handle: handle,
+      );
 }
