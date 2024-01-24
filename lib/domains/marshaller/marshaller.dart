@@ -1,4 +1,4 @@
-import 'package:mineral/domains/data/memory/memory_storage.dart';
+import 'package:mineral/domains/marshaller/memory_storage.dart';
 import 'package:mineral/domains/marshaller/serializer_bucket.dart';
 
 abstract interface class MarshallerContract {

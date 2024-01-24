@@ -1,6 +1,6 @@
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/domains/data/memory/memory_storage.dart';
+import 'package:mineral/domains/marshaller/memory_storage.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
 final class ServerTextChannel extends ServerChannel {
