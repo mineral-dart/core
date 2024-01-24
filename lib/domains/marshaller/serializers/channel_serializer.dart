@@ -27,7 +27,7 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
     final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
 
     if (channelFactory == null) {
-      print('Channel type not found ${json['type']}');
+      _marshaller.logger.warn('Channel type not found ${json['type']}');
       return null as T;
     }
 

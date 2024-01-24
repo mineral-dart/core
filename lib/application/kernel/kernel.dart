@@ -82,7 +82,7 @@ final class Kernel implements KernelContract {
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
     final MemoryStorageContract storage = MemoryStorage();
-    final MarshallerContract marshaller = Marshaller(storage);
+    final MarshallerContract marshaller = Marshaller(logger, storage);
     final DataListenerContract dataListener = DataListener(logger, marshaller);
 
     return Kernel(
@@ -113,7 +113,7 @@ final class Kernel implements KernelContract {
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
     final MemoryStorageContract storage = MemoryStorage();
-    final MarshallerContract marshaller = Marshaller(storage);
+    final MarshallerContract marshaller = Marshaller(logger, storage);
     final DataListenerContract dataListener = DataListener(logger, marshaller);
 
     return Kernel(
