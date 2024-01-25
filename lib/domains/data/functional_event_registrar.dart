@@ -1,5 +1,6 @@
 import 'package:mineral/domains/data/events/message_create_event.dart';
 import 'package:mineral/domains/data/events/ready_event.dart';
+import 'package:mineral/domains/data/events/server_channel_create_event.dart';
 import 'package:mineral/domains/data/events/server_create_event.dart';
 import 'package:mineral/domains/shared/mineral_event.dart';
 import 'package:mineral/domains/shared/types/mineral_client_contract.dart';
@@ -12,6 +13,8 @@ abstract interface class FunctionalEventRegistrarContract {
   void serverCreate(ServerCreateEventHandler handle);
 
   void serverMessageCreate(ServerMessageEventHandler handle);
+
+  void serverChannelCreate(ServerChannelCreateEventHandler handle);
 
   void privateMessageCreate(PrivateMessageEventHandler handle);
 }
@@ -35,6 +38,10 @@ final class FunctionalEventRegistrar implements FunctionalEventRegistrarContract
   @override
   void serverMessageCreate(ServerMessageEventHandler handle) =>
       _registerEvent(event: MineralEvent.serverMessageCreate, handle: handle);
+
+  @override
+  void serverChannelCreate(ServerChannelCreateEventHandler handle) =>
+      _registerEvent(event: MineralEvent.serverChannelCreate, handle: handle);
 
   void privateMessageCreate(PrivateMessageEventHandler handle) =>
       _registerEvent(event: MineralEvent.serverMessageCreate, handle: handle);
