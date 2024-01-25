@@ -22,7 +22,6 @@ final class ServerAsset {
   });
 
   factory ServerAsset.fromJson(RoleManager roles, Map<String, dynamic> json) {
-
     return ServerAsset(
       emojis: EmojiManager.fromJson(roles: roles, json: json['emojis']),
       stickers: StickerManager.fromJson(json['stickers']),

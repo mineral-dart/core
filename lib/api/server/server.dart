@@ -55,7 +55,7 @@ final class Server {
         id: json['id'],
         name: json['name'],
         members: members,
-        settings: ServerSettings.fromJson(json),
+        settings: marshaller.serializers.serverSettings.serialize(json),
         roles: roles,
         channels: channels,
         description: json['description'],
