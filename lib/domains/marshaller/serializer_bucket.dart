@@ -1,8 +1,10 @@
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/serializers/channel_serializer.dart';
+import 'package:mineral/domains/marshaller/serializers/member_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_message_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_serializer.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
@@ -13,6 +15,8 @@ abstract interface class SerializerBucket {
   SerializerContract<Server> get server;
 
   SerializerContract<ServerMessage> get serverMessage;
+
+  SerializerContract<Member> get member;
 }
 
 final class SerializerBucketImpl<T> implements SerializerBucket {
@@ -25,8 +29,12 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   @override
   final SerializerContract<ServerMessage> serverMessage;
 
+  @override
+  final SerializerContract<Member> member;
+
   SerializerBucketImpl(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
-        serverMessage = ServerMessageSerializer(marshaller);
+        serverMessage = ServerMessageSerializer(marshaller),
+        member = MemberSerializer(marshaller);
 }

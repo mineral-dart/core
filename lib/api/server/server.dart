@@ -38,7 +38,16 @@ final class Server {
       return {...value, role.id: role};
     })));
 
-    final members = MemberManager.fromJson(roles: roles, json: json['members']);
+    // final members = MemberManager.fromJson(roles: roles, json: json['members']);
+    final members = MemberManager(
+      Map<String, Member>.from(json['members'].fold({}, (value, element) {
+        final member = marshaller.serializers.member.serialize({
+          ...element,
+          'guild_roles': roles.list
+        });
+        return {...value, member.id: member};
+      }))
+    );
 
     final channels = ChannelManager.fromJson(marshaller: marshaller, guildId: json['id'], json: json);
 

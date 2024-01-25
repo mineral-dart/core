@@ -1,6 +1,7 @@
 import 'package:mineral/api/common/avatar_decoration.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/server.dart';
+import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
 final class Member {
@@ -33,23 +34,26 @@ final class Member {
     required this.isBot,
   });
 
-  factory Member.fromJson({required RoleManager roles, required Map<String, dynamic> member}) {
+  factory Member.fromJson(MarshallerContract marshaller, Map<String, dynamic> json) {
+    final serverRoles = json.entries.firstWhere((element) => element.key == 'guild_roles',
+        orElse: () => throw FormatException('Server roles not found in member structure'));
+
     return Member._(
-      id: member['user']['id'],
-      username: member['user']['nick'] ?? member['user']['username'],
-      nickname: member['nick'] ?? member['user']['display_name'],
-      globalName: member['user']['global_name'],
-      discriminator: member['user']['discriminator'],
-      avatar: member['avatar'],
+      id: json['user']['id'],
+      username: json['user']['nick'] ?? json['user']['username'],
+      nickname: json['nick'] ?? json['user']['display_name'],
+      globalName: json['user']['global_name'],
+      discriminator: json['user']['discriminator'],
+      avatar: json['avatar'],
       avatarDecoration: createOrNull(
-          field: member['user']?['avatar_decoration_data'],
-          fn: () => AvatarDecoration.fromJson(member['user']['avatar_decoration_data'])),
-      flags: member['flags'],
+          field: json['user']?['avatar_decoration_data'],
+          fn: () => AvatarDecoration.fromJson(json['user']['avatar_decoration_data'])),
+      flags: json['flags'],
       premiumSince: createOrNull(
-          field: member['premium_since'], fn: () => DateTime.parse(member['premium_since'])),
-      publicFlags: member['user']['public_flags'],
-      roles: RoleManager.fromJson(roles.list, List<String>.from(member['roles'])),
-      isBot: member['user']['bot'],
+          field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
+      publicFlags: json['user']['public_flags'],
+      roles: RoleManager.fromJson(serverRoles.value, List<String>.from(json['roles'])),
+      isBot: json['user']['bot'],
     );
   }
 }
