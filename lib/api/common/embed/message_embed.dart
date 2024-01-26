@@ -39,7 +39,7 @@ final class MessageEmbed {
     };
   }
 
-  factory MessageEmbed.fromJson(Map<String, dynamic> json) {
+  factory MessageEmbed.fromJson(dynamic json) {
     return MessageEmbed(
       title: json['title'],
       description: json['description'],
