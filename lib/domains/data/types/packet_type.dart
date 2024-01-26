@@ -2,6 +2,7 @@ enum PacketType {
   ready('READY'),
   messageCreate('MESSAGE_CREATE'),
   guildCreate('GUILD_CREATE'),
+  guildUpdate('GUILD_UPDATE'),
   channelCreate('CHANNEL_CREATE'),
   channelUpdate('CHANNEL_UPDATE'),
   channelDelete('CHANNEL_DELETE'),

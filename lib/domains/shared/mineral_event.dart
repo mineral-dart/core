@@ -10,6 +10,7 @@ final class MineralEvent implements EventList {
 
   static final ready = MineralEvent('Ready');
   static final serverCreate = MineralEvent('ServerCreate');
+  static final serverUpdate = MineralEvent('ServerUpdate');
   static final serverMessageCreate = MineralEvent('ServerMessageCreate');
   static final serverChannelCreate = MineralEvent('ServerChannelCreate');
   static final serverChannelUpdate = MineralEvent('ServerChannelUpdate');
