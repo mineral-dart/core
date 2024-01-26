@@ -4,7 +4,8 @@ enum PacketType {
   guildCreate('GUILD_CREATE'),
   channelCreate('CHANNEL_CREATE'),
   channelUpdate('CHANNEL_UPDATE'),
-  channelDelete('CHANNEL_DELETE');
+  channelDelete('CHANNEL_DELETE'),
+  channelPinsUpdate('CHANNEL_PINS_UPDATE');
 
   final String name;
 
