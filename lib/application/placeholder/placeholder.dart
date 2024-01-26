@@ -42,7 +42,7 @@ class Placeholder implements PlaceholderContract {
 
   @override
   String apply(String value, {Map<String, dynamic>? values}) {
-    String finalValue = '';
+    String finalValue = value;
     if (values != null) {
       final currentValues = Map<String, dynamic>.from(values.map((key, value) =>
           identifier != null ? MapEntry('$identifier.$key', value) : MapEntry(key, value)));
