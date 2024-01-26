@@ -2,6 +2,7 @@ import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/dispatchers/event_dispatcher.dart';
 import 'package:mineral/domains/data/dispatchers/packet_dispatcher.dart';
 import 'package:mineral/domains/data/packets/channel_create_packet.dart';
+import 'package:mineral/domains/data/packets/channel_delete_packet.dart';
 import 'package:mineral/domains/data/packets/channel_update_packet.dart';
 import 'package:mineral/domains/data/packets/guild_create_packet.dart';
 import 'package:mineral/domains/data/packets/message_create_packet.dart';
@@ -35,6 +36,7 @@ final class DataListener implements DataListenerContract {
     subscribe(GuildCreatePacket.new);
     subscribe(ChannelCreatePacket.new);
     subscribe(ChannelUpdatePacket.new);
+    subscribe(ChannelDeletePacket.new);
   }
 
   void subscribe(ListenablePacket Function(LoggerContract, MarshallerContract) factory) {
