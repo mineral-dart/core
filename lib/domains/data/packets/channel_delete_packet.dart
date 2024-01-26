@@ -18,7 +18,6 @@ final class ChannelDeletePacket implements ListenablePacket {
   @override
   void listen(ShardMessage message, DispatchEvent dispatch) {
     final channel = marshaller.serializers.channels.serialize(message.payload);
-    print(channel);
 
     switch (channel) {
       case ServerChannel():
