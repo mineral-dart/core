@@ -8,7 +8,7 @@ import 'package:mineral/domains/wss/shard_message.dart';
 
 final class ChannelUpdatePacket implements ListenablePacket {
   @override
-  PacketType get packetType => PacketType.channelCreate;
+  PacketType get packetType => PacketType.channelUpdate;
 
   final LoggerContract logger;
   final MarshallerContract marshaller;
