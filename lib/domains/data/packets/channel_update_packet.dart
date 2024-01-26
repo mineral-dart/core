@@ -25,16 +25,17 @@ final class ChannelUpdatePacket implements ListenablePacket {
     }
   }
 
-  void registerServerChannel(ShardMessage message, ServerChannel channel, DispatchEvent dispatch) {
+  void registerServerChannel(ShardMessage message, ServerChannel after, DispatchEvent dispatch) {
     final server = marshaller.storage.servers[message.payload['guild_id']];
+    final before = marshaller.storage.channels[after.id];
 
     if (server != null) {
-      channel.server = server;
-      server.channels.list[channel.id] = channel;
+      after.server = server;
+      server.channels.list[after.id] = after;
     }
 
-    marshaller.storage.channels[channel.id] = channel;
+    dispatch(event: MineralEvent.serverChannelUpdate, params: [before, after]);
 
-    dispatch(event: MineralEvent.serverChannelUpdate, params: [channel]);
+    marshaller.storage.channels[after.id] = after;
   }
 }
