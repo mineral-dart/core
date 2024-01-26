@@ -6,7 +6,7 @@ import 'package:mineral/domains/shared/mineral_event.dart';
 
 typedef ServerChannelDeleteEventHandler = FutureOr<void> Function(ServerChannel?);
 
-abstract class ServerChannelCreateEvent implements ListenableEvent {
+abstract class ServerChannelDeleteEvent implements ListenableEvent {
   @override
   EventList get event => MineralEvent.serverChannelDelete;
 

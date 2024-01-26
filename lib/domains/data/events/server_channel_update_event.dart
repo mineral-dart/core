@@ -6,7 +6,7 @@ import 'package:mineral/domains/shared/mineral_event.dart';
 
 typedef ServerChannelUpdateEventHandler = FutureOr<void> Function(ServerChannel, ServerChannel);
 
-abstract class ServerChannelCreateEvent implements ListenableEvent {
+abstract class ServerChannelUpdateEvent implements ListenableEvent {
   @override
   EventList get event => MineralEvent.serverChannelUpdate;
 
