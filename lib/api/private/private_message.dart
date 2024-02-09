@@ -1,4 +1,4 @@
-import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/user.dart';
@@ -13,11 +13,19 @@ final class PrivateMessage extends Message<PrivateChannel> {
     required String id,
     required String content,
     required DateTime createdAt,
+    required List<MessageEmbed> embeds,
     required DateTime? updatedAt,
     required PrivateChannel channel,
     required this.userId,
     required this.user,
-  }): super(id, content, channel, createdAt, updatedAt);
+  }): super(
+    id,
+    content,
+    channel,
+    embeds,
+    createdAt,
+    updatedAt,
+  );
 
   factory PrivateMessage.fromJson({required Map<String, dynamic> json, required User user}) {
     return PrivateMessage(
@@ -27,7 +35,8 @@ final class PrivateMessage extends Message<PrivateChannel> {
         updatedAt: createOrNull(field: json['edited_timestamp'], fn: () => DateTime.parse(json['edited_timestamp'])),
         channel: PrivateChannel.fromJson(json),
         userId: json['author']['id'],
-        user: user
+        user: user,
+        embeds: [], // todo
     );
   }
 }
