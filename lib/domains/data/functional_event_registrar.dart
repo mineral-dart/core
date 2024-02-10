@@ -1,4 +1,5 @@
-import 'package:mineral/domains/data/events/message_create_event.dart';
+import 'package:mineral/domains/data/events/private_message_create_event.dart';
+import 'package:mineral/domains/data/events/server_message_create_event.dart';
 import 'package:mineral/domains/data/events/ready_event.dart';
 import 'package:mineral/domains/data/events/server_channel_create_event.dart';
 import 'package:mineral/domains/data/events/server_create_event.dart';
@@ -43,9 +44,10 @@ final class FunctionalEventRegistrar implements FunctionalEventRegistrarContract
   void serverChannelCreate(ServerChannelCreateEventHandler handle) =>
       _registerEvent(event: MineralEvent.serverChannelCreate, handle: handle);
 
+  @override
   void privateMessageCreate(PrivateMessageEventHandler handle) =>
-      _registerEvent(event: MineralEvent.serverMessageCreate, handle: handle);
-// todo
+      _registerEvent(event: MineralEvent.privateMessageCreate, handle: handle);
+
   void _registerEvent<T extends Function>({required EventList event, required T handle}) =>
       _client.kernel.dataListener.events.listen(
         event: event,
