@@ -28,15 +28,21 @@ final class PrivateMessage extends Message<PrivateChannel> {
   );
 
   factory PrivateMessage.fromJson({required Map<String, dynamic> json, required User user}) {
+    final List<MessageEmbed> embeds = [];
+
+    for (final embed in json['embeds']) {
+      embeds.add(MessageEmbed.fromJson(embed));
+    }
+
     return PrivateMessage(
         id: json['id'],
         content: json['content'],
         createdAt: DateTime.parse(json['timestamp']),
         updatedAt: createOrNull(field: json['edited_timestamp'], fn: () => DateTime.parse(json['edited_timestamp'])),
-        channel: PrivateChannel.fromJson(json),
+        channel: user.channel,
         userId: json['author']['id'],
         user: user,
-        embeds: [], // todo
+        embeds: embeds,
     );
   }
 }
