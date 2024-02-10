@@ -22,7 +22,7 @@ final class MessageCreatePacket implements ListenablePacket {
       case String():
         sendServerMessage(dispatch, message.payload);
       default:
-        User user = User.fromJson(message.payload['author']);
+        final User user = User.fromJson(message.payload['author']);
         sendPrivateMessage(dispatch, message.payload, user);
     }
   }
@@ -34,6 +34,6 @@ final class MessageCreatePacket implements ListenablePacket {
 
   void sendPrivateMessage(DispatchEvent dispatch, Map<String, dynamic> json, User user) {
     final message = PrivateMessage.fromJson(json: json, user: user);
-    dispatch(event: MineralEvent.serverMessageCreate, params: [message]); // todo
+    dispatch(event: MineralEvent.privateMessageCreate, params: [message]);
   }
 }
