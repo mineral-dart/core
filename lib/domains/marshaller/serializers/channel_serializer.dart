@@ -1,5 +1,7 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/private/channels/private_channel.dart';
+import 'package:mineral/domains/marshaller/factories/channels/private_channel_factory.dart';
 import 'package:mineral/domains/marshaller/factories/channels/server_announcement_channel_factory.dart';
 import 'package:mineral/domains/marshaller/factories/channels/server_category_channel_factory.dart';
 import 'package:mineral/domains/marshaller/factories/channels/server_forum_channel_factory.dart';
@@ -17,7 +19,8 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
     ServerVoiceChannelFactory(),
     ServerCategoryChannelFactory(),
     ServerAnnouncementChannelFactory(),
-    ServerForumChannelFactory()
+    ServerForumChannelFactory(),
+    PrivateChannelFactory(),
   ];
 
   ChannelSerializer(this._marshaller);
