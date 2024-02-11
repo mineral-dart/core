@@ -1,6 +1,6 @@
 import 'package:mineral/domains/data/event_buckets/private_bucket.dart';
 import 'package:mineral/domains/data/event_buckets/server_bucket.dart';
-import 'package:mineral/domains/data/events/ready_event.dart';
+import 'package:mineral/domains/data/events/common/ready_event.dart';
 import 'package:mineral/domains/shared/mineral_event.dart';
 import 'package:mineral/domains/shared/types/mineral_client_contract.dart';
 

@@ -1,14 +1,14 @@
 import 'package:mineral/domains/data/event_bucket.dart';
-import 'package:mineral/domains/data/events/server_channel_create_event.dart';
-import 'package:mineral/domains/data/events/server_channel_delete_event.dart';
-import 'package:mineral/domains/data/events/server_channel_pins_update_event.dart';
-import 'package:mineral/domains/data/events/server_channel_update_event.dart';
-import 'package:mineral/domains/data/events/server_create_event.dart';
-import 'package:mineral/domains/data/events/server_delete_event.dart';
-import 'package:mineral/domains/data/events/server_member_add_event.dart';
-import 'package:mineral/domains/data/events/server_member_remove_event.dart';
-import 'package:mineral/domains/data/events/server_message_create_event.dart';
-import 'package:mineral/domains/data/events/server_update_event.dart';
+import 'package:mineral/domains/data/events/server/server_channel_create_event.dart';
+import 'package:mineral/domains/data/events/server/server_channel_delete_event.dart';
+import 'package:mineral/domains/data/events/server/server_channel_pins_update_event.dart';
+import 'package:mineral/domains/data/events/server/server_channel_update_event.dart';
+import 'package:mineral/domains/data/events/server/server_create_event.dart';
+import 'package:mineral/domains/data/events/server/server_delete_event.dart';
+import 'package:mineral/domains/data/events/server/server_member_add_event.dart';
+import 'package:mineral/domains/data/events/server/server_member_remove_event.dart';
+import 'package:mineral/domains/data/events/server/server_message_create_event.dart';
+import 'package:mineral/domains/data/events/server/server_update_event.dart';
 import 'package:mineral/domains/shared/mineral_event.dart';
 
 final class ServerBucket {
