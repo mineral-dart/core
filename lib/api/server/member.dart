@@ -53,7 +53,7 @@ final class Member {
           field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
       publicFlags: json['user']['public_flags'],
       roles: RoleManager.fromJson(serverRoles.value, List<String>.from(json['roles'])),
-      isBot: json['user']['bot'],
+      isBot: json['user']['bot'] ?? false,
     );
   }
 }
