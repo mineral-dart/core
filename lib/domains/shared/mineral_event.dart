@@ -20,6 +20,13 @@ final class MineralEvent implements EventList {
   static final serverMemberAdd = MineralEvent('ServerMemberAdd');
   static final serverMemberRemove = MineralEvent('ServerMemberRemove');
 
+
+  static final serverMemberUpdate = MineralEvent('ServerMemberUpdate');// todo
+
+  static final serverRoleCreate = MineralEvent('ServerRoleCreate');
+  static final serverRoleUpdate = MineralEvent('ServerRoleUpdate');
+  static final serverRoleDelete = MineralEvent('ServerRoleDelete');
+
   // private
   static final privateMessageCreate = MineralEvent('PrivateMessageCreate');
   static final privateChannelCreate = MineralEvent('PrivateChannelCreate');
