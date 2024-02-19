@@ -23,15 +23,12 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
       return;
     }
 
-    final server = await marshaller.serializers.server.serialize(rawServer);
-    final member = await marshaller.serializers.member.serialize({
+    final member = marshaller.serializers.member.serialize({
       ...message.payload,
       'guild_roles': server.roles.list
     });
 
-    await marshaller.cache.put(member.id, message.payload);
-    server.members.list.putIfAbsent(member.id, () => member);
-    // TODO: Add deserialize server then put in cache
+    server.members.add(member);
 
     dispatch(event: MineralEvent.serverMemberAdd, params: [member, server]);
   }
