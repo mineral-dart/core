@@ -1,7 +1,8 @@
 import 'package:mineral/api/common/partial_application.dart';
+import 'package:mineral/api/common/snowflake.dart';
 
 final class Bot {
-  final String id;
+  final Snowflake id;
   final String? discriminator;
   final int version;
   final String username;
@@ -32,7 +33,7 @@ final class Bot {
   });
 
   factory Bot.fromJson(Map<String, dynamic> json) => Bot._(
-    id: json['user']['id'],
+    id: Snowflake(json['user']['id']),
     discriminator: json['user']['discriminator'],
     version: json['v'],
     username: json['user']['username'],
