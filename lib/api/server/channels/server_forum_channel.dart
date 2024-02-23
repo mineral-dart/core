@@ -27,6 +27,7 @@ final class ServerForumChannel extends ServerChannel {
   }) : super(id, name, position);
 
   factory ServerForumChannel.fromJson(String guildId, Map<String, dynamic> json) {
+    print(json);
     return ServerForumChannel(
       id: Snowflake(json['id']),
       name: json['name'],
@@ -35,11 +36,11 @@ final class ServerForumChannel extends ServerChannel {
       sortOrder: createOrNull(
           field: json['default_sort_order'],
           fn: () => SortOrderType.values
-              .firstWhere((element) => element.toString() == json['default_sort_order'])),
+              .firstWhere((element) => element.value == json['default_sort_order'])),
       layoutType: createOrNull(
           field: json['default_forum_layout'],
           fn: () => ForumLayoutType.values
-              .firstWhere((element) => element.toString() == json['default_forum_layout'])),
+              .firstWhere((element) => element.value == json['default_forum_layout'])),
       categoryId: json['parent_id'],
     );
   }
