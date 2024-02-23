@@ -61,7 +61,7 @@ final class WebsocketClientImpl implements WebsocketClient {
 
       if (_onError != null) {
         stream!.handleError((err) {
-          _onError!({'error': err, 'code': _channel?.closeCode, 'reason': _channel?.closeReason});
+          _onError({'error': err, 'code': _channel?.closeCode, 'reason': _channel?.closeReason});
         });
       }
 
@@ -113,7 +113,7 @@ final class WebsocketClientImpl implements WebsocketClient {
       case io.WebSocket.open:
         _channel?.add(interceptedMessage.content);
       case io.WebSocket.closed when _onClose != null:
-        _onClose!(_channel!.closeCode!);
+        _onClose(_channel!.closeCode!);
     }
   }
 
