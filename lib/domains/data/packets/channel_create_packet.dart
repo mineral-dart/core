@@ -18,7 +18,6 @@ final class ChannelCreatePacket implements ListenablePacket {
 
   @override
   void listen(ShardMessage message, DispatchEvent dispatch) {
-
     final channel = marshaller.serializers.channels.serialize(message.payload);
 
     switch (channel) {

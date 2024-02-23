@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
@@ -16,7 +17,7 @@ final class GuildMemberAddPacket implements ListenablePacket {
 
   @override
   void listen(ShardMessage message, DispatchEvent dispatch) {
-    final String serverId = message.payload['guild_id'];
+    final Snowflake serverId = Snowflake(message.payload['guild_id']);
     final server = marshaller.storage.servers[serverId];
 
     if (server == null) {
