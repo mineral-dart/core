@@ -1,5 +1,7 @@
+import 'package:mineral/api/common/snowflake.dart';
+
 abstract class Channel {
-  final String id;
+  final Snowflake id;
   final String name;
 
   const Channel(this.id, this.name);

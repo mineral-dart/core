@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/domains/marshaller/memory_storage.dart';
@@ -9,7 +10,7 @@ final class ServerTextChannel extends ServerChannel {
   final ServerCategoryChannel? category;
 
   ServerTextChannel({
-    required String id,
+    required Snowflake id,
     required String name,
     required int position,
     required this.description,
@@ -18,7 +19,7 @@ final class ServerTextChannel extends ServerChannel {
 
   factory ServerTextChannel.fromJson(MemoryStorageContract storage, String guildId, Map<String, dynamic> json) {
     return ServerTextChannel(
-      id: json['id'],
+      id: Snowflake(json['id']),
       name: json['name'],
       position: json['position'],
       description: json['topic'],

@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/managers/channel_manager.dart';
 import 'package:mineral/api/server/managers/member_manager.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
@@ -8,7 +9,7 @@ import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 
 final class Server {
-  final String id;
+  final Snowflake id;
   final String? applicationId;
   final String name;
   final String? description;

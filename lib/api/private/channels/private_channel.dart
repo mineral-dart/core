@@ -1,10 +1,11 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/private/user.dart';
+import 'package:mineral/api/common/snowflake.dart';
 
 final class PrivateChannel extends Channel {
   final List<User> recipients;
   PrivateChannel({
-    required String id,
+    required Snowflake id,
     required String name,
     required this.recipients,
   }): super(id, name);

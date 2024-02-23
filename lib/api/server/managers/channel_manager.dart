@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
@@ -14,16 +15,16 @@ enum _ServerNamedChannel {
 }
 
 final class ChannelManager {
-  final Map<_ServerNamedChannel, String?> _namedChannels;
-  final Map<String, ServerChannel> _channels;
+  final Map<_ServerNamedChannel, Snowflake?> _namedChannels;
+  final Map<Snowflake, ServerChannel> _channels;
 
   ChannelManager(this._channels, this._namedChannels);
 
-  Map<String, ServerChannel> get list => _channels;
+  Map<Snowflake, ServerChannel> get list => _channels;
 
-  T? getOrNull<T extends ServerChannel>(String? id) => _channels[id] as T?;
+  T? getOrNull<T extends ServerChannel>(Snowflake? id) => _channels[id] as T?;
 
-  T getOrFail<T extends ServerChannel>(String id) =>
+  T getOrFail<T extends ServerChannel>(Snowflake id) =>
       _channels.values.firstWhere((element) => element.id == id,
           orElse: () => throw Exception('Channel not found'))
       as T;
@@ -50,7 +51,7 @@ final class ChannelManager {
       {required MarshallerContract marshaller, required String guildId, required Map<String,
           dynamic> json}) {
 
-    final categories = Map<String, ServerChannel>.from(
+    final categories = Map<Snowflake, ServerChannel>.from(
       List.from(json['channels'])
         .where((element) => element['type'] == ChannelType.guildCategory.value)
         .fold({}, (value, element) {
@@ -61,7 +62,7 @@ final class ChannelManager {
 
     marshaller.storage.channels.addAll(categories);
 
-    final channels = Map<String, ServerChannel>.from(
+    final channels = Map<Snowflake, ServerChannel>.from(
       List.from(json['channels']).where((element) =>
       element['type'] != ChannelType.guildCategory.value).fold({}, (value, element) {
         final channel = marshaller.serializers.channels.serialize(element);
@@ -69,7 +70,7 @@ final class ChannelManager {
       })
     );
 
-    final Map<_ServerNamedChannel, String?> namedChannels = {
+    final Map<_ServerNamedChannel, Snowflake?> namedChannels = {
       _ServerNamedChannel.afkChannel: json['afk_channel_id'],
       _ServerNamedChannel.systemChannel: json['system_channel_id'],
       _ServerNamedChannel.rulesChannel: json['rules_channel_id'],
