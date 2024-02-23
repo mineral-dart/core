@@ -1,3 +1,4 @@
+import 'package:mineral/application/container/ioc_container.dart';
 import 'package:mineral/application/environment/environment.dart';
 import 'package:mineral/application/environment/environment_schema.dart';
 import 'package:mineral/application/http/header.dart';
@@ -5,8 +6,9 @@ import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
-import 'package:mineral/domains/marshaller/memory_storage.dart';
+import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
+import 'package:mineral/domains/marshaller/memory_storage.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
@@ -30,15 +32,21 @@ final class Kernel implements KernelContract {
   @override
   final DataListenerContract dataListener;
 
+  @override
+  final DataStoreContract dataStore;
+
   Kernel(
       {required this.logger,
       required this.environment,
       required this.httpClient,
       required this.config,
-      required this.dataListener}) {
+      required this.dataListener,
+      required this.dataStore}) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
+
+    ioc.bind('data_store', () => dataStore);
   }
 
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {
@@ -83,6 +91,7 @@ final class Kernel implements KernelContract {
 
     final MemoryStorageContract storage = MemoryStorage();
     final MarshallerContract marshaller = Marshaller(logger, storage);
+    final DataStoreContract dataStore = DataStore(http, marshaller);
     final DataListenerContract dataListener = DataListener(logger, marshaller);
 
     return Kernel(
@@ -90,7 +99,8 @@ final class Kernel implements KernelContract {
         environment: env,
         httpClient: http,
         config: shardConfig,
-        dataListener: dataListener);
+        dataListener: dataListener,
+        dataStore: dataStore);
   }
 
   factory Kernel.fromEnvironment({required List<EnvironmentSchema> environment}) {
@@ -114,6 +124,8 @@ final class Kernel implements KernelContract {
 
     final MemoryStorageContract storage = MemoryStorage();
     final MarshallerContract marshaller = Marshaller(logger, storage);
+    final DataStoreContract dataStore = DataStore(http, marshaller);
+
     final DataListenerContract dataListener = DataListener(logger, marshaller);
 
     return Kernel(
@@ -121,6 +133,7 @@ final class Kernel implements KernelContract {
         environment: env,
         httpClient: http,
         config: shardConfig,
-        dataListener: dataListener);
+        dataListener: dataListener,
+        dataStore: dataStore);
   }
 }
