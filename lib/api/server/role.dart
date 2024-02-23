@@ -30,7 +30,11 @@ final class Role {
       color: json['color'],
       hoist: json['hoist'],
       position: json['position'],
-      permissions: json['permissions'],
+      permissions: switch(json['permissions']) {
+        int() => json['permissions'],
+        String() => int.parse(json['permissions']),
+        _ => null,
+      },
       managed: json['managed'],
       mentionable: json['mentionable'],
       flags: json['flags'],
