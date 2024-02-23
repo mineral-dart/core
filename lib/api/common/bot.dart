@@ -1,4 +1,4 @@
-import 'package:mineral/api/common/partial_appication.dart';
+import 'package:mineral/api/common/partial_application.dart';
 
 final class Bot {
   final String id;
