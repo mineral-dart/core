@@ -1,6 +1,6 @@
 import 'package:mineral/api/common/channel.dart';
-import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/private/user.dart';
 
 final class PrivateChannel extends Channel {
   final List<User> recipients;
@@ -18,7 +18,7 @@ final class PrivateChannel extends Channel {
     }
 
     return PrivateChannel(
-      id: json['id'],
+      id: Snowflake(json['id']),
       name: recipients.map((e) => e.username).join(', '),
       recipients: recipients,
     );

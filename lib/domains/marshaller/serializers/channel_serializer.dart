@@ -1,6 +1,5 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/channel.dart';
-import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/domains/marshaller/factories/channels/private_channel_factory.dart';
 import 'package:mineral/domains/marshaller/factories/channels/server_announcement_channel_factory.dart';
 import 'package:mineral/domains/marshaller/factories/channels/server_category_channel_factory.dart';

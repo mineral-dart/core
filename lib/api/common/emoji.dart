@@ -1,16 +1,16 @@
 import 'package:mineral/api/common/partial_emoji.dart';
-import 'package:mineral/api/private/user.dart';
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
 
 final class Emoji extends PartialEmoji {
   final String? globalName;
-  final Map<String, Role> roles;
+  final Map<Snowflake, Role> roles;
   final bool managed;
   final bool animated;
   final bool available;
 
   Emoji({
-    required String id,
+    required Snowflake id,
     required String name,
     required this.globalName,
     required this.roles,
@@ -20,8 +20,8 @@ final class Emoji extends PartialEmoji {
   }) : super(id, name);
 
   factory Emoji.fromJson(
-      {required Map<String, Role> guildRoles, required Map<String, dynamic> json}) {
-    final Map<String, Role> roles = List<String>.from(json['roles']).fold({}, (value, element) {
+      {required Map<Snowflake, Role> guildRoles, required Map<String, dynamic> json}) {
+    final Map<Snowflake, Role> roles = List<String>.from(json['roles']).fold({}, (value, element) {
       final role = guildRoles[element];
 
       if (role == null) {

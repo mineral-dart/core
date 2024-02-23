@@ -1,8 +1,9 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
+import 'package:mineral/api/common/snowflake.dart';
 
 abstract class Message<T extends Channel> {
-  final String id;
+  final Snowflake id;
   final String content;
   final T channel;
   final List<MessageEmbed> embeds;
@@ -17,6 +18,4 @@ abstract class Message<T extends Channel> {
     this.createdAt,
     this.updatedAt,
   );
-
-
 }

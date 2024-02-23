@@ -1,5 +1,7 @@
+import 'package:mineral/api/common/snowflake.dart';
+
 final class Role {
-  final String id;
+  final Snowflake id;
   final String name;
   final int color;
   final bool hoist;
@@ -23,7 +25,7 @@ final class Role {
 
   factory Role.fromJson(Map<String, dynamic> json) {
     return Role(
-      id: json['id'],
+      id: Snowflake(json['id']),
       name: json['name'],
       color: json['color'],
       hoist: json['hoist'],

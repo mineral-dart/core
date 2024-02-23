@@ -34,7 +34,7 @@ final class Server {
   });
 
   factory Server.fromJson(MarshallerContract marshaller, Map<String, dynamic> json) {
-    final roles = RoleManager(Map<String, Role>.from(json['roles'].fold({}, (value, element) {
+    final roles = RoleManager(Map<Snowflake, Role>.from(json['roles'].fold({}, (value, element) {
       final role = Role.fromJson(element);
       return {...value, role.id: role};
     })));

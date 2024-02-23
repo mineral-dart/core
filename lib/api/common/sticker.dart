@@ -1,8 +1,9 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/format_type.dart';
 import 'package:mineral/api/common/types/sticker_type.dart';
 
 final class Sticker {
-  final String id;
+  final Snowflake id;
   final String? packId;
   final String name;
   final String? description;
@@ -28,7 +29,7 @@ final class Sticker {
 
   factory Sticker.fromJson(Map<String, dynamic> json) {
     return Sticker(
-      id: json['id'],
+      id: Snowflake(json['id']),
       name: json['name'],
       type: StickerType.values.firstWhere((element) => element.value == json['type']),
       isAvailable: json['available'],

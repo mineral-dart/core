@@ -1,7 +1,8 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 
 final class User {
-  final String id;
+  final Snowflake id;
   final String username;
   final String discriminator;
   final String? avatar;

@@ -1,14 +1,15 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
 
 final class RoleManager {
-  final Map<String, Role> _roles;
+  final Map<Snowflake, Role> _roles;
 
   RoleManager(this._roles);
 
-  Map<String, Role> get list => _roles;
+  Map<Snowflake, Role> get list => _roles;
 
-  factory RoleManager.fromJson(Map<String, Role> guildRoles, List<String> json) {
-    final Map<String, Role> roles = json.fold({}, (value, element) {
+  factory RoleManager.fromJson(Map<Snowflake, Role> guildRoles, List<String> json) {
+    final Map<Snowflake, Role> roles = json.fold({}, (value, element) {
       final role = guildRoles[element];
 
       if (role == null) {

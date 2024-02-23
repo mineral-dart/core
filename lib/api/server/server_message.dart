@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/server.dart';
@@ -11,7 +12,7 @@ final class ServerMessage extends Message<ServerChannel> {
   final Member author;
 
   ServerMessage({
-    required String id,
+    required Snowflake id,
     required String content,
     required DateTime createdAt,
     required DateTime? updatedAt,
@@ -23,7 +24,7 @@ final class ServerMessage extends Message<ServerChannel> {
 
   factory ServerMessage.fromJson({required Server server, required Map<String, dynamic> json}) {
     return ServerMessage(
-      id: json['id'],
+      id: Snowflake(json['id']),
       content: json['content'],
       createdAt: DateTime.parse(json['timestamp']),
       updatedAt: createOrNull(field: json['edited_timestamp'], fn: () => DateTime.parse(json['edited_timestamp'])),

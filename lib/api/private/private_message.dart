@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/domains/shared/utils.dart';
@@ -10,7 +11,7 @@ final class PrivateMessage extends Message<PrivateChannel> {
   final User user;
 
   PrivateMessage({
-    required String id,
+    required Snowflake id,
     required String content,
     required DateTime createdAt,
     required List<MessageEmbed> embeds,
@@ -35,7 +36,7 @@ final class PrivateMessage extends Message<PrivateChannel> {
     }
 
     return PrivateMessage(
-        id: json['id'],
+        id: Snowflake(json['id']),
         content: json['content'],
         createdAt: DateTime.parse(json['timestamp']),
         updatedAt: createOrNull(field: json['edited_timestamp'], fn: () => DateTime.parse(json['edited_timestamp'])),

@@ -1,5 +1,7 @@
+import 'package:mineral/api/common/snowflake.dart';
+
 final class PartialApplication {
-  final String id;
+  final Snowflake id;
   final int flags;
 
   const PartialApplication({
@@ -9,7 +11,7 @@ final class PartialApplication {
 
   factory PartialApplication.fromJson(Map<String, dynamic> json) {
     return PartialApplication(
-      id: json['id'],
+      id: Snowflake(json['id']),
       flags: json['flags'],
     );
   }
