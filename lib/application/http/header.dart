@@ -1,4 +1,4 @@
-final class Header {
+class Header {
   final String key;
   final String value;
 
