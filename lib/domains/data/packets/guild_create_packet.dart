@@ -18,7 +18,7 @@ final class GuildCreatePacket implements ListenablePacket {
   void listen(ShardMessage message, DispatchEvent dispatch) {
     final server = marshaller.serializers.server.serialize(message.payload);
 
-    marshaller.storage.servers[server.id] = server;
+    marshaller.storage.servers.putIfAbsent(server.id, () => server);
     marshaller.storage.channels.addAll(server.channels.list);
 
     dispatch(event: MineralEvent.serverCreate, params: [server]);

@@ -29,7 +29,7 @@ final class GuildMemberAddPacket implements ListenablePacket {
       'guild_roles': server.roles.list
     });
 
-    server.members.add(member);
+    server.members.list.putIfAbsent(member.id, () => member);
 
     dispatch(event: MineralEvent.serverMemberAdd, params: [member, server]);
   }

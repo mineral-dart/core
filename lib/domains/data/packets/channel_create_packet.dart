@@ -36,10 +36,10 @@ final class ChannelCreatePacket implements ListenablePacket {
 
     if (server != null) {
       channel.server = server;
-      server.channels.list[channel.id] = channel;
+      server.channels.list.putIfAbsent(channel.id, () => channel);
     }
 
-    marshaller.storage.channels[channel.id] = channel;
+    marshaller.storage.channels.putIfAbsent(channel.id, () => channel);
 
     dispatch(event: MineralEvent.serverChannelCreate, params: [channel]);
   }

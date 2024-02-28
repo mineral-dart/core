@@ -16,7 +16,6 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
 
   @override
   void listen(ShardMessage message, DispatchEvent dispatch) {
-
     final String serverId = message.payload['guild_id'];
     final server = marshaller.storage.servers[serverId];
 
@@ -29,7 +28,7 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
       'guild_roles': server.roles.list
     });
 
-    server.members.add(member);
+    server.members.list.putIfAbsent(member.id, () => member);
 
     dispatch(event: MineralEvent.serverMemberAdd, params: [member, server]);
   }

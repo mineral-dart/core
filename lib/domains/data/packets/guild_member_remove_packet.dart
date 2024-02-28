@@ -24,9 +24,11 @@ final class GuildMemberRemovePacket implements ListenablePacket {
       return;
     }
 
-    final member = marshaller.storage.servers[serverId]?.members.get(message.payload['user']['id']);
+    final member = server.members.get(message.payload['user']['id']);
     final User user = User.fromJson(message.payload['user']);
 
     dispatch(event: MineralEvent.serverMemberRemove, params: [member, user, server]);
+
+    server.members.list.remove(user.id);
   }
 }

@@ -27,6 +27,8 @@ final class ChannelDeletePacket implements ListenablePacket {
 
   void registerServerChannel(ServerChannel channel, DispatchEvent dispatch) {
     dispatch(event: MineralEvent.serverChannelDelete, params: [channel]);
+
+    channel.server.channels.list.remove(channel.id);
     marshaller.storage.channels.remove(channel.id);
   }
 }
