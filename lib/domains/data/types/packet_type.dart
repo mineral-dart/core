@@ -10,6 +10,11 @@ enum PacketType {
   guildMemberAdd('GUILD_MEMBER_ADD'),
   guildMemberRemove('GUILD_MEMBER_REMOVE'),
   guildMemberUpdate('GUILD_MEMBER_UPDATE'),
+
+  guildRoleCreate('GUILD_ROLE_CREATE'),
+  guildRoleUpdate('GUILD_ROLE_UPDATE'),
+  guildRoleDelete('GUILD_ROLE_DELETE'),
+
   channelPinsUpdate('CHANNEL_PINS_UPDATE');
 
   final String name;
