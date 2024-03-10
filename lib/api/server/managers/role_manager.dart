@@ -8,17 +8,10 @@ final class RoleManager {
 
   Map<Snowflake, Role> get list => _roles;
 
-  factory RoleManager.fromJson(Map<Snowflake, Role> guildRoles, List<String> json) {
-    final Map<Snowflake, Role> roles = json.fold({}, (value, element) {
-      final role = guildRoles[element];
-
-      if (role == null) {
-        // Todo add report case
-        return value;
-      }
-
-      return {...value, role.id: role};
-    });
+  factory RoleManager.fromList(List<Role> payload) {
+    final roles = Map<Snowflake, Role>.from(payload.fold({}, (value, element) {
+      return {...value, element.id: element};
+    }));
 
     return RoleManager(roles);
   }

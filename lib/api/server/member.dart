@@ -2,8 +2,6 @@ import 'package:mineral/api/common/avatar_decoration.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/server.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/helper.dart';
 
 final class Member {
   final Snowflake id;
@@ -20,7 +18,7 @@ final class Member {
   final RoleManager roles;
   final bool isBot;
 
-  Member._({
+  Member({
     required this.id,
     required this.username,
     required this.nickname,
@@ -34,27 +32,4 @@ final class Member {
     required this.roles,
     required this.isBot,
   });
-
-  static Future<Member> fromJson(MarshallerContract marshaller, Map<String, dynamic> json) async {
-    final serverRoles = json.entries.firstWhere((element) => element.key == 'guild_roles',
-        orElse: () => throw FormatException('Server roles not found in member structure'));
-
-    return Member._(
-      id: json['user']['id'],
-      username: json['user']['nick'] ?? json['user']['username'],
-      nickname: json['nick'] ?? json['user']['display_name'],
-      globalName: json['user']['global_name'],
-      discriminator: json['user']['discriminator'],
-      avatar: json['avatar'],
-      avatarDecoration: Helper.createOrNull(
-          field: json['user']?['avatar_decoration_data'],
-          fn: () => AvatarDecoration.fromJson(json['user']['avatar_decoration_data'])),
-      flags: json['flags'],
-      premiumSince: Helper.createOrNull(
-          field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
-      publicFlags: json['user']['public_flags'],
-      roles: RoleManager.fromJson(serverRoles.value, List<String>.from(json['roles'])),
-      isBot: json['user']['bot'] ?? false,
-    );
-  }
 }

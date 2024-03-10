@@ -32,4 +32,12 @@ final class MemberManager {
   }
 
   late final int maxInGuild;
+
+  factory MemberManager.fromList(List<Member> payload) {
+    final members = Map<Snowflake, Member>.from(payload.fold({}, (value, element) {
+      return {...value, element.id: element};
+    }));
+
+    return MemberManager(members);
+  }
 }

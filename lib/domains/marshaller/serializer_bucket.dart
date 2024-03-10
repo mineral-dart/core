@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/server/member.dart';
+import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/api/server/server_settings.dart';
@@ -7,6 +8,7 @@ import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/serializers/channel_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/member_serializer.dart';
+import 'package:mineral/domains/marshaller/serializers/role_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_message_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_settings_serializer.dart';
@@ -21,6 +23,8 @@ abstract interface class SerializerBucket {
   SerializerContract<ServerMessage> get serverMessage;
 
   SerializerContract<Member> get member;
+
+  SerializerContract<Role> get role;
 
   SerializerContract<ServerSubscription> get serverSubscription;
 
@@ -41,6 +45,9 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   final SerializerContract<Member> member;
 
   @override
+  final SerializerContract<Role> role;
+
+  @override
   final SerializerContract<ServerSubscription> serverSubscription;
 
   @override
@@ -51,6 +58,7 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
         server = ServerSerializer(marshaller),
         serverMessage = ServerMessageSerializer(marshaller),
         member = MemberSerializer(marshaller),
+        role = RoleSerializer(marshaller),
         serverSubscription = ServerSubscriptionSerializer(marshaller),
         serverSettings = ServerSettingsSerializer(marshaller);
 }
