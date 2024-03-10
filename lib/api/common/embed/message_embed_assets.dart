@@ -2,7 +2,7 @@ import 'package:mineral/api/common/embed/message_embed_author.dart';
 import 'package:mineral/api/common/embed/message_embed_color.dart';
 import 'package:mineral/api/common/embed/message_embed_footer.dart';
 import 'package:mineral/api/common/embed/message_embed_image.dart';
-import 'package:mineral/domains/shared/utils.dart';
+import 'package:mineral/domains/shared/helper.dart';
 
 final class MessageEmbedAssets {
   final MessageEmbedImage? image;
@@ -32,17 +32,17 @@ final class MessageEmbedAssets {
     };
   }
 
-  factory MessageEmbedAssets.fromJson(Map<String, dynamic> json) {
+  static Future<MessageEmbedAssets> fromJson(Map<String, dynamic> json) async {
     return MessageEmbedAssets(
-      image:
-          createOrNull(field: json['image'], fn: () => MessageEmbedImage.fromJson(json['image'])),
-      thumbnail: createOrNull(
+      image: Helper.createOrNull(
+          field: json['image'], fn: () => MessageEmbedImage.fromJson(json['image'])),
+      thumbnail: Helper.createOrNull(
           field: json['thumbnail'], fn: () => MessageEmbedImage.fromJson(json['thumbnail'])),
-      video:
-          createOrNull(field: json['video'], fn: () => MessageEmbedImage.fromJson(json['video'])),
-      footer: createOrNull(
+      video: Helper.createOrNull(
+          field: json['video'], fn: () => MessageEmbedImage.fromJson(json['video'])),
+      footer: Helper.createOrNull(
           field: json['footer'], fn: () => MessageEmbedFooter.fromJson(json['footer'])),
-      author: createOrNull(
+      author: Helper.createOrNull(
           field: json['author'], fn: () => MessageEmbedAuthor.fromJson(json['author'])),
       color: json['color'],
     );

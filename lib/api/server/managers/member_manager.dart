@@ -1,17 +1,18 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/member.dart';
 
 final class MemberManager {
-  final Map<String, Member> _members;
+  final Map<Snowflake, Member> _members;
 
   MemberManager(this._members);
 
-  Map<String, Member> get list {
+  Map<Snowflake, Member> get list {
     return _members.entries.where((element) => !element.value.isBot).fold({}, (value, element) {
       return {...value, element.key: element.value};
     });
   }
 
-  Map<String, Member> get bots {
+  Map<Snowflake, Member> get bots {
     return _members.entries.where((element) => !element.value.isBot).fold({}, (value, element) {
       return {...value, element.key: element.value};
     });

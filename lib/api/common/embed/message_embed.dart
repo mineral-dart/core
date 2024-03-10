@@ -2,6 +2,7 @@ import 'package:mineral/api/common/embed/message_embed_assets.dart';
 import 'package:mineral/api/common/embed/message_embed_field.dart';
 import 'package:mineral/api/common/embed/message_embed_provider.dart';
 import 'package:mineral/api/common/embed/message_embed_type.dart';
+import 'package:mineral/domains/shared/helper.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
 final class MessageEmbed {
@@ -39,16 +40,16 @@ final class MessageEmbed {
     };
   }
 
-  factory MessageEmbed.fromJson(dynamic json) {
+  static Future<MessageEmbed> fromJson(dynamic json) async {
     return MessageEmbed(
       title: json['title'],
       description: json['description'],
-      type: createOrNull(
+      type: Helper.createOrNull(
           field: json['type'], fn: () => findInEnum(MessageEmbedType.values, json['type'])),
       url: json['url'],
       timestamp: DateTime.tryParse(json['timestamp']),
-      assets: MessageEmbedAssets.fromJson(json['assets']),
-      provider: createOrNull(
+      assets: await MessageEmbedAssets.fromJson(json['assets']),
+      provider: await createOrNull(
           field: json['provider'], fn: () => MessageEmbedProvider.fromJson(json['provider'])),
       fields: json['fields'].map(MessageEmbedField.fromJson).toList(),
     );

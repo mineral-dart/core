@@ -26,8 +26,7 @@ final class ChannelManager {
 
   T getOrFail<T extends ServerChannel>(Snowflake id) =>
       _channels.values.firstWhere((element) => element.id == id,
-          orElse: () => throw Exception('Channel not found'))
-      as T;
+          orElse: () => throw Exception('Channel not found')) as T;
 
   ServerVoiceChannel? get afkChannel =>
       getOrNull<ServerVoiceChannel>(_namedChannels[_ServerNamedChannel.afkChannel]);
@@ -47,28 +46,20 @@ final class ChannelManager {
   ServerTextChannel? get widgetChannel =>
       getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.widgetChannel]);
 
-  factory ChannelManager.fromJson(
-      {required MarshallerContract marshaller, required String guildId, required Map<String,
-          dynamic> json}) {
+  static Future<ChannelManager> fromJson(
+      {required MarshallerContract marshaller,
+      required String guildId,
+      required Map<String, dynamic> json}) async {
+    for (final channel in List.from(json['channels'])) {
+      marshaller.cache.put(channel['id'], channel);
+    }
 
-    final categories = Map<Snowflake, ServerChannel>.from(
-      List.from(json['channels'])
-        .where((element) => element['type'] == ChannelType.guildCategory.value)
-        .fold({}, (value, element) {
-          final channel = marshaller.serializers.channels.serialize(element);
-          return channel != null ? {...value, channel.id: channel} : value;
-        })
-    );
+    final awaitedChannels = await Future.wait(List.from(json['channels'])
+        .where((element) => element['type'] != ChannelType.guildCategory.value)
+        .map((element) async => marshaller.serializers.channels.serialize(element)));
 
-    marshaller.storage.channels.addAll(categories);
-
-    final channels = Map<Snowflake, ServerChannel>.from(
-      List.from(json['channels']).where((element) =>
-      element['type'] != ChannelType.guildCategory.value).fold({}, (value, element) {
-        final channel = marshaller.serializers.channels.serialize(element);
-        return channel != null ? {...value, channel.id: channel} : value;
-      })
-    );
+    final Map<Snowflake, ServerChannel> channels = awaitedChannels.nonNulls.fold(
+        {}, (previousValue, element) => {...previousValue, element.id: element as ServerChannel});
 
     final Map<_ServerNamedChannel, Snowflake?> namedChannels = {
       _ServerNamedChannel.afkChannel: json['afk_channel_id'],

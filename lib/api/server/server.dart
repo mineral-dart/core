@@ -33,30 +33,29 @@ final class Server {
     required this.owner,
   });
 
-  factory Server.fromJson(MarshallerContract marshaller, Map<String, dynamic> json) {
+  static Future<Server> fromJson(MarshallerContract marshaller, Map<String, dynamic> json) async {
     final roles = RoleManager(Map<Snowflake, Role>.from(json['roles'].fold({}, (value, element) {
       final role = Role.fromJson(element);
       return {...value, role.id: role};
     })));
 
-    // final members = MemberManager.fromJson(roles: roles, json: json['members']);
-    final members = MemberManager(
-      Map<String, Member>.from(json['members'].fold({}, (value, element) {
-        final member = marshaller.serializers.member.serialize({
-          ...element,
-          'guild_roles': roles.list
-        });
-        return {...value, member.id: member};
-      }))
-    );
+    final serializedMembers = await Future.wait(List.from(json['members']).map((element) async {
+      return marshaller.serializers.member.serialize({...element, 'guild_roles': roles.list});
+    }));
 
-    final channels = ChannelManager.fromJson(marshaller: marshaller, guildId: json['id'], json: json);
+    final Map<Snowflake, Member> mappedMembers =
+        serializedMembers.fold({}, (acc, member) => {...acc, member.id: member});
+
+    final members = MemberManager(mappedMembers);
+
+    final channels =
+        await ChannelManager.fromJson(marshaller: marshaller, guildId: json['id'], json: json);
 
     final server = Server(
         id: json['id'],
         name: json['name'],
         members: members,
-        settings: marshaller.serializers.serverSettings.serialize(json),
+        settings: await marshaller.serializers.serverSettings.serialize(json),
         roles: roles,
         channels: channels,
         description: json['description'],

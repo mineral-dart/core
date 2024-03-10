@@ -1,7 +1,7 @@
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/domains/marshaller/memory_storage.dart';
+import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
 final class ServerTextChannel extends ServerChannel {
@@ -15,15 +15,20 @@ final class ServerTextChannel extends ServerChannel {
     required int position,
     required this.description,
     required this.category,
-  }): super(id, name, position);
+  }) : super(id, name, position);
 
-  factory ServerTextChannel.fromJson(MemoryStorageContract storage, String guildId, Map<String, dynamic> json) {
+  static Future<ServerTextChannel> fromJson(
+      MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+    final rawCategoryChannel = await marshaller.cache.get(json['parent_id']);
+
     return ServerTextChannel(
-      id: Snowflake(json['id']),
-      name: json['name'],
-      position: json['position'],
-      description: json['topic'],
-      category: createOrNull(field: json['parent_id'], fn: () => storage.channels[json['parent_id']] as ServerCategoryChannel?)
-    );
+        id: Snowflake(json['id']),
+        name: json['name'],
+        position: json['position'],
+        description: json['topic'],
+        category: await createOrNull(
+            field: json['parent_id'],
+            fn: () async => await marshaller.serializers.channels.serialize(rawCategoryChannel)
+                as ServerCategoryChannel?));
   }
 }
