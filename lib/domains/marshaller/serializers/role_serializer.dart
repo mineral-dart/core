@@ -29,6 +29,16 @@ final class RoleSerializer implements SerializerContract<Role> {
 
   @override
   Map<String, dynamic> deserialize(Role object) {
-    throw UnimplementedError();
+    return {
+      'id': object.id,
+      'name': object.name,
+      'color': object.color,
+      'hoist': object.hoist,
+      'position': object.position,
+      'permissions': object.permissions,
+      'managed': object.managed,
+      'mentionable': object.mentionable,
+      'flags': object.flags,
+    };
   }
 }

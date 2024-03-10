@@ -35,7 +35,27 @@ final class MemberSerializer implements SerializerContract<Member> {
   }
 
   @override
-  Map<String, dynamic> deserialize(Member object) {
-    throw UnimplementedError();
+  Map<String, dynamic> deserialize(Member member) {
+    final roles = member.roles.list.values
+        .map((element) => _marshaller.serializers.role.deserialize(element))
+        .toList();
+
+    return {
+      'nick': member.nickname,
+      'user': {
+        'id': member.id,
+        'username': member.username,
+        'discriminator': member.discriminator,
+        'global_name': member.globalName,
+        'avatar': member.avatar,
+        'avatar_decoration': member.avatarDecoration?.skuId,
+        'bot': member.isBot,
+        'flags': member.flags,
+        'public_flags': member.publicFlags,
+      },
+      'roles': roles,
+      'premium_since': member.premiumSince?.toIso8601String(),
+      'flags': member.flags,
+    };
   }
 }
