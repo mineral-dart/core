@@ -18,28 +18,4 @@ final class Emoji extends PartialEmoji {
     required this.animated,
     required this.available,
   }) : super(id, name);
-
-  factory Emoji.fromJson(
-      {required Map<Snowflake, Role> guildRoles, required Map<String, dynamic> json}) {
-    final Map<Snowflake, Role> roles = List<String>.from(json['roles']).fold({}, (value, element) {
-      final role = guildRoles[element];
-
-      if (role == null) {
-        // Todo add report case
-        return value;
-      }
-
-      return {...value, role.id: role};
-    });
-
-    return Emoji(
-      id: json['id'],
-      name: json['name'],
-      globalName: json['global_name'],
-      roles: roles,
-      managed: json['managed'],
-      animated: json['animated'],
-      available: json['available'],
-    );
-  }
 }

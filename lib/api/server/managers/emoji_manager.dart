@@ -1,17 +1,24 @@
 import 'package:mineral/api/common/emoji.dart';
-import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/role.dart';
+import 'package:mineral/domains/marshaller/marshaller.dart';
 
 final class EmojiManager {
-  final Map<String, Emoji> _emojis;
+  final Map<Snowflake, Emoji> _emojis;
 
   EmojiManager(this._emojis);
 
-  Map<String, Emoji> get list => _emojis;
+  Map<Snowflake, Emoji> get list => _emojis;
 
-  factory EmojiManager.fromJson({required RoleManager roles, required List<dynamic> json}) {
-    return EmojiManager(Map<String, Emoji>.from(json.fold({}, (value, element) {
-      final member = Emoji.fromJson(guildRoles: roles.list, json: element);
-      return {...value, member.id: member};
+  factory EmojiManager.fromJson(MarshallerContract marshaller,
+      {required List<Role> roles, required List<dynamic> payload}) {
+    return EmojiManager(Map<Snowflake, Emoji>.from(payload.fold({}, (value, element) {
+      final emoji = marshaller.serializers.emojis.serialize({
+        'guildRoles': roles,
+        ...element,
+      }) as Emoji;
+
+      return {...value, emoji.id: emoji};
     })));
   }
 }

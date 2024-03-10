@@ -1,18 +1,24 @@
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/common/emoji.dart';
+import 'package:mineral/api/common/sticker.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server.dart';
+import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/serializers/channel_serializer.dart';
+import 'package:mineral/domains/marshaller/serializers/emoji_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/member_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/role_serializer.dart';
+import 'package:mineral/domains/marshaller/serializers/server_assets_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_message_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_settings_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_subscription_serializer.dart';
+import 'package:mineral/domains/marshaller/serializers/sticker_serializer.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
 
 abstract interface class SerializerBucket {
@@ -29,6 +35,12 @@ abstract interface class SerializerBucket {
   SerializerContract<ServerSubscription> get serverSubscription;
 
   SerializerContract<ServerSettings> get serverSettings;
+
+  SerializerContract<ServerAsset> get serversAsset;
+
+  SerializerContract<Emoji> get emojis;
+
+  SerializerContract<Sticker> get sticker;
 }
 
 final class SerializerBucketImpl<T> implements SerializerBucket {
@@ -53,6 +65,15 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   @override
   final SerializerContract<ServerSettings> serverSettings;
 
+  @override
+  final SerializerContract<ServerAsset> serversAsset;
+
+  @override
+  final SerializerContract<Emoji> emojis;
+
+  @override
+  final SerializerContract<Sticker> sticker;
+
   SerializerBucketImpl(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
@@ -60,5 +81,8 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
         member = MemberSerializer(marshaller),
         role = RoleSerializer(marshaller),
         serverSubscription = ServerSubscriptionSerializer(marshaller),
-        serverSettings = ServerSettingsSerializer(marshaller);
+        serverSettings = ServerSettingsSerializer(marshaller),
+        serversAsset = ServerAssetsSerializer(marshaller),
+        emojis = EmojiSerializer(marshaller),
+        sticker = StickerSerializer(marshaller);
 }

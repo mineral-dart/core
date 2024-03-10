@@ -2,7 +2,6 @@ import 'package:mineral/api/server/managers/channel_manager.dart';
 import 'package:mineral/api/server/managers/member_manager.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/server.dart';
-import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
 
@@ -34,7 +33,10 @@ final class ServerSerializer implements SerializerContract<Server> {
       channels: channelManager,
       description: json['description'],
       applicationId: json['application_id'],
-      assets: ServerAsset.fromJson(roleManager, json),
+      assets: await _marshaller.serializers.serversAsset.serialize({
+        'guildRoles': serializedRoles,
+        ...json
+      }),
       owner: owner,
     );
 
@@ -50,7 +52,24 @@ final class ServerSerializer implements SerializerContract<Server> {
   }
 
   @override
-  Map<String, dynamic> deserialize(Server object) {
-    throw UnimplementedError();
+  Map<String, dynamic> deserialize(Server server) {
+    final members = server.members.list.values.map(_marshaller.serializers.member.deserialize);
+    final roles = server.roles.list.values.map(_marshaller.serializers.role.deserialize);
+    final channels = server.channels.list.values.map(_marshaller.serializers.channels.deserialize);
+    final assets = _marshaller.serializers.serversAsset.deserialize(server.assets);
+
+    return {
+      'id': server.id,
+      'name': server.name,
+      'members': members.toList(),
+      'settings': _marshaller.serializers.serverSettings.deserialize(server.settings),
+      'roles': roles.toList(),
+      'channels': channels.toList(),
+      'description': server.description,
+      'applicationId': server.applicationId,
+      'assets': _marshaller.serializers.serversAsset.deserialize(server.assets),
+      'owner': _marshaller.serializers.member.deserialize(server.owner),
+      ...assets
+    };
   }
 }
