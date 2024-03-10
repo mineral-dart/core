@@ -16,8 +16,8 @@ final class ChannelDeletePacket implements ListenablePacket {
   const ChannelDeletePacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
-    final channel = marshaller.serializers.channels.serialize(message.payload);
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final channel = await marshaller.serializers.channels.serialize(message.payload);
 
     switch (channel) {
       case ServerChannel():
@@ -29,6 +29,6 @@ final class ChannelDeletePacket implements ListenablePacket {
     dispatch(event: MineralEvent.serverChannelDelete, params: [channel]);
 
     channel.server.channels.list.remove(channel.id);
-    marshaller.storage.channels.remove(channel.id);
+    marshaller.cache.remove(channel.id);
   }
 }

@@ -1,8 +1,10 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/types/enhanced_enum.dart';
 
-T? createOrNull<T>({required dynamic field, required T? Function() fn}) =>
-    field != null ? fn() : null;
+FutureOr<T?> createOrNull<T>({required dynamic field, required FutureOr<T?> Function() fn}) async =>
+    field != null ? await fn() : null;
 
 List<T> bitfieldToList<T extends EnhancedEnum<int>>(List<T> values, int bitfield) {
   final List<T> flags = [];

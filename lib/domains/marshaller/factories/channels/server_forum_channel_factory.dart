@@ -1,6 +1,6 @@
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_forum_channel.dart';
-import 'package:mineral/domains/marshaller/memory_storage.dart';
+import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/channel_factory.dart';
 
 final class ServerForumChannelFactory implements ChannelFactoryContract<ServerForumChannel> {
@@ -8,7 +8,7 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
   ChannelType get type => ChannelType.guildForum;
 
   @override
-  ServerForumChannel make(MemoryStorageContract storage, String guildId, Map<String, dynamic> json) {
+  Future<ServerForumChannel> make(MarshallerContract storage, String guildId, Map<String, dynamic> json) async {
     return ServerForumChannel.fromJson(guildId, json);
   }
 }

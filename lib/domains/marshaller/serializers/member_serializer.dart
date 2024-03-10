@@ -8,7 +8,7 @@ final class MemberSerializer implements SerializerContract<Member> {
   MemberSerializer(this._marshaller);
 
   @override
-  Member serialize(Map<String, dynamic> json) => Member.fromJson(_marshaller, json);
+  Future<Member> serialize(Map<String, dynamic> json) => Member.fromJson(_marshaller, json);
 
   @override
   Map<String, dynamic> deserialize(Member object) {

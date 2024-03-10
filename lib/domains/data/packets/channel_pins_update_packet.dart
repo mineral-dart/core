@@ -24,18 +24,21 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
     }
   }
 
-  void registerServerChannelPins(ShardMessage message, DispatchEvent dispatch) {
-    final server = marshaller.storage.servers[message.payload['guild_id']];
-    final channel = marshaller.serializers.channels.serialize(message.payload);
+  Future<void> registerServerChannelPins(ShardMessage message, DispatchEvent dispatch) async {
+    final rawServer = await marshaller.cache.get(message.payload['guild_id']);
+    final server = await marshaller.serializers.server.serialize(rawServer);
+
+    final channel = await marshaller.serializers.channels.serialize(message.payload);
     final timestamps = createOrNull(
         field: message.payload['last_pin_timestamp'],
         fn: () => DateTime.tryParse(message.payload['last_pin_timestamp']));
 
     if (![server, channel].contains(null)) {
-      marshaller.storage.channels[channel!.id] = channel;
-      server!.channels.list[channel.id] = channel as ServerChannel;
+      marshaller.cache.put(channel!.id, channel);
+      server.channels.list[channel.id] = channel as ServerChannel;
     }
 
+    // TODO: Add deserialize server then put in cache
     dispatch(event: MineralEvent.serverChannelUpdate, params: [server, channel, timestamps]);
   }
 }

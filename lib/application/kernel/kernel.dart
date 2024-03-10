@@ -5,10 +5,10 @@ import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
 import 'package:mineral/application/logger/logger.dart';
+import 'package:mineral/domains/cache/contracts/cache_provider_contract.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/marshaller/memory_storage.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
@@ -74,6 +74,7 @@ final class Kernel implements KernelContract {
       {required String token,
       required int intent,
       required List<EnvironmentSchema> environment,
+      required CacheProviderContract cache,
       int httpVersion = 10,
       int shardVersion = 10}) {
     final env = Environment()..validate(environment);
@@ -89,8 +90,7 @@ final class Kernel implements KernelContract {
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
-    final MemoryStorageContract storage = MemoryStorage();
-    final MarshallerContract marshaller = Marshaller(logger, storage);
+    final MarshallerContract marshaller = Marshaller(logger, cache);
     final DataStoreContract dataStore = DataStore(http, marshaller);
     final DataListenerContract dataListener = DataListener(logger, marshaller);
 
@@ -103,7 +103,7 @@ final class Kernel implements KernelContract {
         dataStore: dataStore);
   }
 
-  factory Kernel.fromEnvironment({required List<EnvironmentSchema> environment}) {
+  factory Kernel.fromEnvironment({required List<EnvironmentSchema> environment, required CacheProviderContract cache}) {
     final env = Environment()..validate(environment);
 
     final logLevel = env.getRawOrFail<String>('LOG_LEVEL');
@@ -122,8 +122,7 @@ final class Kernel implements KernelContract {
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
-    final MemoryStorageContract storage = MemoryStorage();
-    final MarshallerContract marshaller = Marshaller(logger, storage);
+    final MarshallerContract marshaller = Marshaller(logger, cache);
     final DataStoreContract dataStore = DataStore(http, marshaller);
 
     final DataListenerContract dataListener = DataListener(logger, marshaller);

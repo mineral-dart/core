@@ -8,7 +8,7 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
   ServerSettingsSerializer(this._marshaller);
 
   @override
-  ServerSettings serialize(Map<String, dynamic> json) => ServerSettings.fromJson(_marshaller, json);
+  Future<ServerSettings> serialize(Map<String, dynamic> json) => ServerSettings.fromJson(_marshaller, json);
 
   @override
   Map<String, dynamic> deserialize(ServerSettings object) {

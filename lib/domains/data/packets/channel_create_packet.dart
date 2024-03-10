@@ -17,29 +17,31 @@ final class ChannelCreatePacket implements ListenablePacket {
   const ChannelCreatePacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
-    final channel = marshaller.serializers.channels.serialize(message.payload);
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final channel = await marshaller.serializers.channels.serialize(message.payload);
 
     switch (channel) {
       case ServerChannel():
         registerServerChannel(message, channel, dispatch);
       case PrivateChannel():
-        marshaller.storage.channels[channel.id] = channel;
+        await marshaller.cache.put(channel.id, channel);
         dispatch(event: MineralEvent.privateChannelCreate, params: [channel]);
       default:
         logger.warn("Unknown channel type: $channel contact Mineral's core team.");
     }
   }
 
-  void registerServerChannel(ShardMessage message, ServerChannel channel, DispatchEvent dispatch) {
-    final server = marshaller.storage.servers[message.payload['guild_id']];
+  Future<void> registerServerChannel(ShardMessage message, ServerChannel channel, DispatchEvent dispatch) async {
+    final rawServer = await marshaller.cache.get(message.payload['guild_id']);
 
-    if (server != null) {
+    if (rawServer != null) {
+      final server = await marshaller.serializers.server.serialize(rawServer);
+
       channel.server = server;
       server.channels.list.putIfAbsent(channel.id, () => channel);
     }
 
-    marshaller.storage.channels.putIfAbsent(channel.id, () => channel);
+    await marshaller.cache.put(channel.id, () => message.payload);
 
     dispatch(event: MineralEvent.serverChannelCreate, params: [channel]);
   }

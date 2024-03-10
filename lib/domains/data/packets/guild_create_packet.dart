@@ -15,11 +15,13 @@ final class GuildCreatePacket implements ListenablePacket {
   const GuildCreatePacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
-    final server = marshaller.serializers.server.serialize(message.payload);
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final server = await marshaller.serializers.server.serialize(message.payload);
 
-    marshaller.storage.servers.putIfAbsent(server.id, () => server);
-    marshaller.storage.channels.addAll(server.channels.list);
+    marshaller.cache.put(server.id, message.payload);
+    for (final channel in List<Map<String, dynamic>>.from(message.payload['channels'])) {
+      marshaller.cache.put(channel['id'], channel);
+    }
 
     dispatch(event: MineralEvent.serverCreate, params: [server]);
   }

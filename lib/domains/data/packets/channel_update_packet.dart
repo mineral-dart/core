@@ -17,31 +17,33 @@ final class ChannelUpdatePacket implements ListenablePacket {
   const ChannelUpdatePacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
-    final channel = marshaller.serializers.channels.serialize(message.payload);
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final channel = await marshaller.serializers.channels.serialize(message.payload);
 
     switch (channel) {
       case ServerChannel():
         registerServerChannel(message, channel, dispatch);
       case PrivateChannel():
-        marshaller.storage.channels[channel.id] = channel;
+        await marshaller.cache.put(channel.id, message.payload);
         dispatch(event: MineralEvent.privateChannelUpdate, params: [channel]);
       default:
         logger.warn("Unknown channel type: $channel contact Mineral's core team.");
     }
   }
 
-  void registerServerChannel(ShardMessage message, ServerChannel after, DispatchEvent dispatch) {
-    final server = marshaller.storage.servers[message.payload['guild_id']];
-    final before = marshaller.storage.channels[after.id];
+  Future<void> registerServerChannel(ShardMessage message, ServerChannel after, DispatchEvent dispatch) async {
+    final rawServer = await marshaller.cache.get(message.payload['guild_id']);
+    final before = await marshaller.cache.get(after.id);
 
-    if (server != null) {
+    if (rawServer != null) {
+      final server = await marshaller.serializers.server.serialize(rawServer);
+
       after.server = server;
       server.channels.list[after.id] = after;
     }
 
     dispatch(event: MineralEvent.serverChannelUpdate, params: [before, after]);
 
-    marshaller.storage.channels[after.id] = after;
+    marshaller.cache.put(after.id, message.payload);
   }
 }

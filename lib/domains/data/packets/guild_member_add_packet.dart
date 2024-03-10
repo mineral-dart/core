@@ -16,20 +16,23 @@ final class GuildMemberAddPacket implements ListenablePacket {
   const GuildMemberAddPacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final Snowflake serverId = Snowflake(message.payload['guild_id']);
-    final server = marshaller.storage.servers[serverId];
+    final rawServer = await marshaller.cache.get(serverId);
 
-    if (server == null) {
+    if (rawServer == null) {
       return;
     }
 
-    final member = marshaller.serializers.member.serialize({
+    final server = await marshaller.serializers.server.serialize(rawServer);
+    final member = await marshaller.serializers.member.serialize({
       ...message.payload,
       'guild_roles': server.roles.list
     });
 
+    await marshaller.cache.put(member.id, message.payload);
     server.members.list.putIfAbsent(member.id, () => member);
+    // TODO: Add deserialize server then put in cache
 
     dispatch(event: MineralEvent.serverMemberAdd, params: [member, server]);
   }

@@ -17,18 +17,18 @@ final class MessageCreatePacket implements ListenablePacket {
   const MessageCreatePacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     switch (message.payload['guild_id']) {
       case String():
-        sendServerMessage(dispatch, message.payload);
+        await sendServerMessage(dispatch, message.payload);
       default:
         final User user = User.fromJson(message.payload['author']);
         sendPrivateMessage(dispatch, message.payload, user);
     }
   }
 
-  void sendServerMessage(DispatchEvent dispatch, Map<String, dynamic> json) {
-    final message = marshaller.serializers.serverMessage.serialize(json);
+  Future<void> sendServerMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
+    final message = await marshaller.serializers.serverMessage.serialize(json);
     dispatch(event: MineralEvent.serverMessageCreate, params: [message]);
   }
 

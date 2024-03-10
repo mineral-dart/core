@@ -8,7 +8,7 @@ final class ServerSerializer<T extends Server> implements SerializerContract<Ser
   ServerSerializer(this._marshaller);
 
   @override
-  Server serialize(Map<String, dynamic> json) => Server.fromJson(_marshaller, json);
+  Future<Server> serialize(Map<String, dynamic> json) => Server.fromJson(_marshaller, json);
 
   @override
   Map<String, dynamic> deserialize(Server object) {

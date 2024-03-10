@@ -16,14 +16,14 @@ final class GuildUpdatePacket implements ListenablePacket {
   const GuildUpdatePacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final Snowflake serverId = Snowflake(message.payload['id']);
 
-    final before = marshaller.storage.servers[serverId];
+    final before = await marshaller.cache.get(serverId);
     final after = marshaller.serializers.server.serialize(message.payload);
 
     dispatch(event: MineralEvent.serverUpdate, params: [before, after]);
 
-    marshaller.storage.servers[serverId] = after;
+    marshaller.cache.put(serverId, message.payload);
   }
 }

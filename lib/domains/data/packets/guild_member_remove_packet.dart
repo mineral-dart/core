@@ -16,19 +16,23 @@ final class GuildMemberRemovePacket implements ListenablePacket {
   const GuildMemberRemovePacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final String serverId = message.payload['guild_id'];
-    final server = marshaller.storage.servers[serverId];
+    final rawServer = await marshaller.cache.get(serverId);
 
-    if (server == null) {
+    if (rawServer == null) {
       return;
     }
 
+    final server = await marshaller.serializers.server.serialize(rawServer);
     final member = server.members.get(message.payload['user']['id']);
     final User user = User.fromJson(message.payload['user']);
 
-    dispatch(event: MineralEvent.serverMemberRemove, params: [member, user, server]);
-
     server.members.list.remove(user.id);
+    marshaller.cache.remove(user.id);
+
+    // TODO: Add deserialize server then put in cache
+
+    dispatch(event: MineralEvent.serverMemberRemove, params: [member, user, server]);
   }
 }
