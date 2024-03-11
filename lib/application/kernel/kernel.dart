@@ -1,5 +1,6 @@
 import 'package:mineral/application/container/ioc_container.dart';
-import 'package:mineral/application/environment/env.dart';
+import 'package:mineral/application/environment/app_env.dart';
+import 'package:mineral/application/environment/environment.dart';
 import 'package:mineral/application/environment/env_schema.dart';
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
@@ -108,9 +109,11 @@ final class Kernel implements KernelContract {
   }
 
   factory Kernel.fromEnvironment(
-      {required List<EnvSchema> environment,
-      required CacheProviderContract Function(EnvContract) cache}) {
-    final env = Environment()..validate(environment);
+      {required CacheProviderContract Function(EnvContract) cache, List<EnvSchema>? environment}) {
+    final env = Environment()..validate(AppEnv.values);
+    if (environment != null) {
+      env.validate(environment);
+    }
 
     final logLevel = env.getRawOrFail<String>('LOG_LEVEL');
     final LoggerContract logger = Logger(logLevel);

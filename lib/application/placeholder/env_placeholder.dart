@@ -1,4 +1,4 @@
-import 'package:mineral/application/environment/env.dart';
+import 'package:mineral/application/environment/environment.dart';
 import 'package:mineral/application/placeholder/placeholder.dart';
 import 'package:recase/recase.dart';
 
