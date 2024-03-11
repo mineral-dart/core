@@ -74,7 +74,7 @@ final class Kernel implements KernelContract {
       {required String token,
       required int intent,
       required List<EnvironmentSchema> environment,
-      required CacheProviderContract cache,
+      required CacheProviderContract Function(EnvironmentContract) cache,
       int httpVersion = 10,
       int shardVersion = 10}) {
     final env = Environment()..validate(environment);
@@ -82,7 +82,8 @@ final class Kernel implements KernelContract {
     final logLevel = env.getRawOrFail<String>('LOG_LEVEL');
     final LoggerContract logger = Logger(logLevel);
 
-    cache..logger = logger
+    final cacheInstance = cache(env)
+      ..logger = logger
       ..init();
 
     final http = HttpClient(
@@ -93,7 +94,7 @@ final class Kernel implements KernelContract {
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
-    final MarshallerContract marshaller = Marshaller(logger, cache);
+    final MarshallerContract marshaller = Marshaller(logger, cacheInstance);
     final DataStoreContract dataStore = DataStore(http, marshaller);
     final DataListenerContract dataListener = DataListener(logger, marshaller);
 
@@ -106,14 +107,17 @@ final class Kernel implements KernelContract {
         dataStore: dataStore);
   }
 
-  factory Kernel.fromEnvironment({required List<EnvironmentSchema> environment, required CacheProviderContract cache}) {
+  factory Kernel.fromEnvironment(
+      {required List<EnvironmentSchema> environment,
+      required CacheProviderContract Function(EnvironmentContract) cache}) {
     final env = Environment()..validate(environment);
 
     final logLevel = env.getRawOrFail<String>('LOG_LEVEL');
     final LoggerContract logger = Logger(logLevel);
 
-    cache..logger = logger
-    ..init();
+    final cacheInstance = cache(env)
+      ..logger = logger
+      ..init();
 
     final token = env.getRawOrFail<String>('TOKEN');
     final httpVersion = env.getRawOrFail<int>('HTTP_VERSION');
@@ -128,7 +132,7 @@ final class Kernel implements KernelContract {
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
-    final MarshallerContract marshaller = Marshaller(logger, cache);
+    final MarshallerContract marshaller = Marshaller(logger, cacheInstance);
     final DataStoreContract dataStore = DataStore(http, marshaller);
 
     final DataListenerContract dataListener = DataListener(logger, marshaller);

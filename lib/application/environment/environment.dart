@@ -5,6 +5,7 @@ import 'package:mineral/application/environment/environment_schema.dart';
 abstract interface class EnvironmentContract {
   Map<String, String> get list;
   T get<T>(EnvironmentSchema variable);
+  void validate(List<EnvironmentSchema> values);
 }
 
 final class Environment implements EnvironmentContract {
@@ -38,6 +39,8 @@ final class Environment implements EnvironmentContract {
             orElse: () => throw Exception('Environment variable ${variable.key} not found'))
         .value;
 
+    print(value);
+
     return switch (T) {
       int => int.parse(value),
       double => double.parse(value),
@@ -46,6 +49,7 @@ final class Environment implements EnvironmentContract {
     } as T;
   }
 
+  @override
   void validate(List<EnvironmentSchema> values) {
     for (final key in values) {
       get(key);
