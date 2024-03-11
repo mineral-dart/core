@@ -6,7 +6,7 @@ abstract interface class CacheProviderContract<K> {
   FutureOr<void> init();
 
   Future<int> length();
-  Future<Map<K, T>> getAll<T>();
+  Future<List<T>> getAll<T extends dynamic>();
   Future<T?> get<T>(K? key);
   Future<T> getOrFail<T>(K key, { Exception Function()? onFail });
   Future<bool> has(K key);
