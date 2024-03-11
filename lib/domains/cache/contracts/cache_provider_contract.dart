@@ -1,7 +1,11 @@
 import 'dart:async';
 
+import 'package:mineral/application/logger/logger.dart';
+
 abstract interface class CacheProviderContract<K> {
   String get name;
+
+  abstract LoggerContract logger;
 
   FutureOr<void> init();
 

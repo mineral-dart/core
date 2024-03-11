@@ -82,6 +82,9 @@ final class Kernel implements KernelContract {
     final logLevel = env.getRawOrFail<String>('LOG_LEVEL');
     final LoggerContract logger = Logger(logLevel);
 
+    cache..logger = logger
+      ..init();
+
     final http = HttpClient(
         config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
       Header.userAgent('Mineral'),
@@ -104,11 +107,13 @@ final class Kernel implements KernelContract {
   }
 
   factory Kernel.fromEnvironment({required List<EnvironmentSchema> environment, required CacheProviderContract cache}) {
-    cache.init();
     final env = Environment()..validate(environment);
 
     final logLevel = env.getRawOrFail<String>('LOG_LEVEL');
     final LoggerContract logger = Logger(logLevel);
+
+    cache..logger = logger
+    ..init();
 
     final token = env.getRawOrFail<String>('TOKEN');
     final httpVersion = env.getRawOrFail<int>('HTTP_VERSION');
