@@ -104,6 +104,7 @@ final class Kernel implements KernelContract {
   }
 
   factory Kernel.fromEnvironment({required List<EnvironmentSchema> environment, required CacheProviderContract cache}) {
+    cache.init();
     final env = Environment()..validate(environment);
 
     final logLevel = env.getRawOrFail<String>('LOG_LEVEL');

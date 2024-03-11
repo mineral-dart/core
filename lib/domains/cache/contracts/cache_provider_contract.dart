@@ -3,6 +3,8 @@ import 'dart:async';
 abstract interface class CacheProviderContract<K> {
   String get name;
 
+  FutureOr<void> init();
+
   Future<int> length();
   Future<Map<K, T>> getAll<T>();
   Future<T?> get<T>(K? key);
