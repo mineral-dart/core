@@ -39,6 +39,6 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
     }
 
     // TODO: Add deserialize server then put in cache
-    dispatch(event: MineralEvent.serverChannelUpdate, params: [server, channel, timestamps]);
+    dispatch(event: MineralEvent.serverChannelPinsUpdate, params: [server, channel, timestamps]);
   }
 }
