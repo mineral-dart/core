@@ -33,7 +33,8 @@ final class ChannelUpdatePacket implements ListenablePacket {
 
   Future<void> registerServerChannel(ShardMessage message, ServerChannel after, DispatchEvent dispatch) async {
     final rawServer = await marshaller.cache.get(message.payload['guild_id']);
-    final before = await marshaller.cache.get(after.id);
+    final rawBefore = await marshaller.cache.get(after.id);
+    final before = await marshaller.serializers.channels.serialize(rawBefore);
 
     if (rawServer != null) {
       final server = await marshaller.serializers.server.serialize(rawServer);

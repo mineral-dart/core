@@ -2,7 +2,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/utils.dart';
+import 'package:mineral/domains/shared/helper.dart';
 
 final class ServerTextChannel extends ServerChannel {
   final String? description;
@@ -26,7 +26,7 @@ final class ServerTextChannel extends ServerChannel {
         name: json['name'],
         position: json['position'],
         description: json['topic'],
-        category: await createOrNull(
+        category: await Helper.createOrNullAsync(
             field: json['parent_id'],
             fn: () async => await marshaller.serializers.channels.serialize(rawCategoryChannel)
                 as ServerCategoryChannel?));
