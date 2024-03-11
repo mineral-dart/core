@@ -1,6 +1,6 @@
 import 'package:mineral/application/container/ioc_container.dart';
-import 'package:mineral/application/environment/environment.dart';
-import 'package:mineral/application/environment/environment_schema.dart';
+import 'package:mineral/application/environment/env.dart';
+import 'package:mineral/application/environment/env_schema.dart';
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
@@ -24,7 +24,7 @@ final class Kernel implements KernelContract {
   final LoggerContract logger;
 
   @override
-  final EnvironmentContract environment;
+  final EnvContract environment;
 
   @override
   final HttpClientContract httpClient;
@@ -73,8 +73,8 @@ final class Kernel implements KernelContract {
   factory Kernel.create(
       {required String token,
       required int intent,
-      required List<EnvironmentSchema> environment,
-      required CacheProviderContract Function(EnvironmentContract) cache,
+      required List<EnvSchema> environment,
+      required CacheProviderContract Function(EnvContract) cache,
       int httpVersion = 10,
       int shardVersion = 10}) {
     final env = Environment()..validate(environment);
@@ -108,8 +108,8 @@ final class Kernel implements KernelContract {
   }
 
   factory Kernel.fromEnvironment(
-      {required List<EnvironmentSchema> environment,
-      required CacheProviderContract Function(EnvironmentContract) cache}) {
+      {required List<EnvSchema> environment,
+      required CacheProviderContract Function(EnvContract) cache}) {
     final env = Environment()..validate(environment);
 
     final logLevel = env.getRawOrFail<String>('LOG_LEVEL');

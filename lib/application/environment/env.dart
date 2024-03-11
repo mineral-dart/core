@@ -1,14 +1,16 @@
 import 'dart:io';
 
-import 'package:mineral/application/environment/environment_schema.dart';
+import 'package:mineral/application/environment/env_schema.dart';
 
-abstract interface class EnvironmentContract {
+abstract interface class EnvContract {
   Map<String, String> get list;
-  T get<T>(EnvironmentSchema variable);
-  void validate(List<EnvironmentSchema> values);
+
+  T get<T>(EnvSchema variable);
+
+  void validate(List<EnvSchema> values);
 }
 
-final class Environment implements EnvironmentContract {
+final class Environment implements EnvContract {
   final Map<String, String> _values = {};
 
   Environment() {
@@ -33,13 +35,11 @@ final class Environment implements EnvironmentContract {
   }
 
   @override
-  T get<T>(EnvironmentSchema variable) {
+  T get<T>(EnvSchema variable) {
     final value = _values.entries
         .firstWhere((element) => element.key == variable.key,
             orElse: () => throw Exception('Environment variable ${variable.key} not found'))
         .value;
-
-    print(value);
 
     return switch (T) {
       int => int.parse(value),
@@ -50,7 +50,7 @@ final class Environment implements EnvironmentContract {
   }
 
   @override
-  void validate(List<EnvironmentSchema> values) {
+  void validate(List<EnvSchema> values) {
     for (final key in values) {
       get(key);
     }
