@@ -1,8 +1,8 @@
-import 'package:mineral/application/environment/environment.dart';
+import 'package:mineral/application/environment/env.dart';
 import 'package:mineral/application/placeholder/placeholder.dart';
 import 'package:recase/recase.dart';
 
-final class EnvironmentPlaceholder implements PlaceholderContract {
+final class EnvPlaceholder implements PlaceholderContract {
   final Map<String, dynamic> _values = {};
 
   @override
@@ -11,7 +11,7 @@ final class EnvironmentPlaceholder implements PlaceholderContract {
   @override
   Map<String, dynamic> get values => _values;
 
-  EnvironmentPlaceholder({required EnvironmentContract environment}) {
+  EnvPlaceholder({required EnvContract environment}) {
     _injectEntryMap(identifier, environment.list);
   }
 
