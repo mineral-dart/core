@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
@@ -15,7 +16,7 @@ final class ServerTextChannel extends ServerChannel {
     required int position,
     required this.description,
     required this.category,
-  }) : super(id, name, position);
+  }) : super(id, ChannelType.guildText, name, position);
 
   static Future<ServerTextChannel> fromJson(
       MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {

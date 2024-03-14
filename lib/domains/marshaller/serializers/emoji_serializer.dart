@@ -39,6 +39,7 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
   @override
   Map<String, dynamic> deserialize(Emoji emoji) {
     final roles = emoji.roles.values.map(_marshaller.serializers.role.deserialize);
+
     return {
       'id': emoji.id,
       'name': emoji.name,

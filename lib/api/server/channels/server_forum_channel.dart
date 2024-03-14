@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/enums/forum_layout_types.dart';
@@ -24,7 +25,7 @@ final class ServerForumChannel extends ServerChannel {
     required this.sortOrder,
     required this.layoutType,
     required this.categoryId,
-  }) : super(id, name, position);
+  }) : super(id, ChannelType.guildForum, name, position);
 
   static Future<ServerForumChannel> fromJson(String guildId, Map<String, dynamic> json) async {
     return ServerForumChannel(

@@ -11,4 +11,12 @@ final class ServerAnnouncementChannelFactory implements ChannelFactoryContract<S
   Future<ServerAnnouncementChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
     return ServerAnnouncementChannel.fromJson(guildId, json);
   }
+
+  @override
+  Map<String, dynamic> deserialize(ServerAnnouncementChannel channel) {
+    return {
+      'id': channel.id.value,
+      'type': channel.type.value,
+    };
+  }
 }

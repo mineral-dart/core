@@ -37,8 +37,8 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
     final stickers = object.stickers.list.values.map(_marshaller.serializers.sticker.deserialize);
 
     return {
-      'emojis': emojis,
-      'stickers': stickers,
+      'emojis': emojis.toList(),
+      'stickers': stickers.toList(),
       'icon': object.icon?.hash,
       'splash': object.splash?.hash,
       'banner': object.banner?.hash,

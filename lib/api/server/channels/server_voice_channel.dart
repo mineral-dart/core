@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 
 final class ServerVoiceChannel extends ServerChannel {
@@ -6,7 +7,7 @@ final class ServerVoiceChannel extends ServerChannel {
     required Snowflake id,
     required String name,
     required int position,
-  }): super(id, name, position);
+  }): super(id, ChannelType.guildVoice, name, position);
 
   factory ServerVoiceChannel.fromJson(String guildId, Map<String, dynamic> json) {
     return ServerVoiceChannel(

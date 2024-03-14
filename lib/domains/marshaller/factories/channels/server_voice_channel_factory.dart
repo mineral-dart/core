@@ -11,4 +11,12 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
   Future<ServerVoiceChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
     return ServerVoiceChannel.fromJson(guildId, json);
   }
+
+  @override
+  Map<String, dynamic> deserialize(ServerVoiceChannel channel) {
+    return {
+      'id': channel.id.value,
+      'type': channel.type.value,
+    };
+  }
 }

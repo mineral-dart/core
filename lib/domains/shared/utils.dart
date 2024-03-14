@@ -17,6 +17,10 @@ List<T> bitfieldToList<T extends EnhancedEnum<int>>(List<T> values, int bitfield
   return flags;
 }
 
+int listToBitfield<T extends EnhancedEnum<int>>(List<T> values) {
+  return values.fold(0, (previousValue, element) => previousValue += element.value);
+}
+
 T findInEnum<T extends EnhancedEnum<R>, R>(List<T> values, R value) {
   return values.firstWhereOrNull((element) => element.value == value) as T;
 }

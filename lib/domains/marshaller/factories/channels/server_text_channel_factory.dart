@@ -11,4 +11,12 @@ final class ServerTextChannelFactory implements ChannelFactoryContract<ServerTex
   Future<ServerTextChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
     return ServerTextChannel.fromJson(marshaller, guildId, json);
   }
+
+  @override
+  Map<String, dynamic> deserialize(ServerTextChannel channel) {
+    return {
+      'id': channel.id.value,
+      'type': channel.type.value,
+    };
+  }
 }

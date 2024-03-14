@@ -37,7 +37,12 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
   }
 
   @override
-  Map<String, dynamic> deserialize(T object) {
-    throw UnimplementedError();
+  Map<String, dynamic> deserialize(Channel? channel) {
+    final channelFactory = _factories.firstWhereOrNull((element) => element.type == channel?.type);
+    if (channelFactory != null) {
+      return channelFactory.deserialize(channel!);
+    }
+
+    throw Exception('Channel type not found ${channel?.type}');
   }
 }

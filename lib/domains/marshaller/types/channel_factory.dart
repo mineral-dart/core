@@ -5,4 +5,5 @@ import 'package:mineral/domains/marshaller/marshaller.dart';
 abstract interface class ChannelFactoryContract<T extends Channel> {
   ChannelType get type;
   Future<T> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json);
+  Map<String, dynamic> deserialize(T channel);
 }
