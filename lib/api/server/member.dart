@@ -1,6 +1,6 @@
-import 'package:mineral/api/common/avatar_decoration.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/server.dart';
 
 final class Member {
@@ -9,8 +9,7 @@ final class Member {
   final String? nickname;
   final String? globalName;
   final String discriminator;
-  final String? avatar;
-  final AvatarDecoration? avatarDecoration;
+  final MemberAssets assets;
   final int? flags;
   final DateTime? premiumSince;
   final int? publicFlags;
@@ -24,8 +23,7 @@ final class Member {
     required this.nickname,
     required this.globalName,
     required this.discriminator,
-    required this.avatar,
-    required this.avatarDecoration,
+    required this.assets,
     required this.flags,
     required this.premiumSince,
     required this.publicFlags,

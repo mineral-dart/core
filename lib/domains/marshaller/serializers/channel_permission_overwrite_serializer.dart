@@ -14,8 +14,8 @@ final class ChannelPermissionOverwriteSerializer implements SerializerContract<C
     return ChannelPermissionOverwrite(
       id: Snowflake(json['id']),
       type: findInEnum(ChannelPermissionOverwriteType.values, json['type']),
-      allow: json['allow_new'],
-      deny: json['deny_new'],
+      allow: json['allow'],
+      deny: json['deny'],
     );
   }
 

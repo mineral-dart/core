@@ -1,6 +1,6 @@
-import 'package:mineral/api/common/avatar_decoration.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member.dart';
+import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
 import 'package:mineral/domains/shared/helper.dart';
@@ -15,16 +15,14 @@ final class MemberSerializer implements SerializerContract<Member> {
     final serverRoles = json.entries.firstWhere((element) => element.key == 'guild_roles',
         orElse: () => throw FormatException('Server roles not found in member structure'));
 
+    print(json);
     return Member(
       id: json['user']['id'],
       username: json['user']['nick'] ?? json['user']['username'],
       nickname: json['nick'] ?? json['user']['display_name'],
       globalName: json['user']['global_name'],
       discriminator: json['user']['discriminator'],
-      avatar: json['avatar'],
-      avatarDecoration: Helper.createOrNull(
-          field: json['user']?['avatar_decoration_data'],
-          fn: () => AvatarDecoration.fromJson(json['user']['avatar_decoration_data'])),
+      assets: MemberAssets.fromJson(json['user']),
       flags: json['flags'],
       premiumSince: Helper.createOrNull(
           field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
@@ -47,8 +45,9 @@ final class MemberSerializer implements SerializerContract<Member> {
         'username': member.username,
         'discriminator': member.discriminator,
         'global_name': member.globalName,
-        'avatar': member.avatar,
-        'avatar_decoration': member.avatarDecoration?.skuId,
+        'avatar': member.assets.avatar?.hash,
+        'avatar_decoration': member.assets.avatarDecoration?.hash,
+        'banner': member.assets.banner?.hash,
         'bot': member.isBot,
         'flags': member.flags,
         'public_flags': member.publicFlags,
