@@ -28,5 +28,4 @@ final class ServerTextChannel extends ServerChannel {
   late final ServerCategoryChannel? category;
 
   ServerTextChannel(this._properties);
-
 }

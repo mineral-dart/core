@@ -6,29 +6,31 @@ import 'package:mineral/api/server/enums/sort_order_forum.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/channel_factory.dart';
 import 'package:mineral/domains/shared/helper.dart';
+import 'package:mineral/domains/shared/utils.dart';
 
 final class ServerForumChannelFactory implements ChannelFactoryContract<ServerForumChannel> {
   @override
   ChannelType get type => ChannelType.guildForum;
 
   @override
-  Future<ServerForumChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+  Future<ServerForumChannel> make(
+      MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
     final properties = await ChannelProperties.make(marshaller, json);
 
-    return ServerForumChannel(properties,
+    return ServerForumChannel(
+      properties,
       sortOrder: Helper.createOrNull(
           field: json['default_sort_order'],
-          fn: () => SortOrderType.values
-              .firstWhere((element) => element.value == json['default_sort_order'])),
+          fn: () => findInEnum(SortOrderType.values, json['default_sort_order'])),
       layoutType: Helper.createOrNull(
           field: json['default_forum_layout'],
-          fn: () => ForumLayoutType.values
-              .firstWhere((element) => element.value == json['default_forum_layout'])),
+          fn: () => findInEnum(ForumLayoutType.values, json['default_forum_layout'])),
     );
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, ServerForumChannel channel) async {
+  Future<Map<String, dynamic>> deserialize(
+      MarshallerContract marshaller, ServerForumChannel channel) async {
     return {
       'id': channel.id.value,
       'type': channel.type.value,
