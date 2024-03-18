@@ -52,11 +52,11 @@ final class ServerSerializer implements SerializerContract<Server> {
   }
 
   @override
-  Map<String, dynamic> deserialize(Server server) {
+  Future<Map<String, dynamic>> deserialize(Server server) async {
     final members = server.members.list.values.map(_marshaller.serializers.member.deserialize);
     final roles = server.roles.list.values.map(_marshaller.serializers.role.deserialize);
     final channels = server.channels.list.values.map(_marshaller.serializers.channels.deserialize);
-    final assets = _marshaller.serializers.serversAsset.deserialize(server.assets);
+    final assets = await _marshaller.serializers.serversAsset.deserialize(server.assets);
 
     return {
       'id': server.id,
