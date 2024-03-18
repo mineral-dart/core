@@ -2,6 +2,7 @@ import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
+import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 
 final class ServerAnnouncementChannel extends ServerChannel {
@@ -19,10 +20,14 @@ final class ServerAnnouncementChannel extends ServerChannel {
   @override
   int get position => _properties.position;
 
-  String? get description => _properties.description;
-
   @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
 
-  ServerAnnouncementChannel(this._properties);
+  String? get description => _properties.description;
+
+  bool get isNsfw => _properties.nsfw;
+
+  ServerCategoryChannel? category;
+
+  ServerAnnouncementChannel(this._properties, {required this.category});
 }

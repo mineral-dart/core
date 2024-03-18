@@ -19,6 +19,7 @@ final class PrivateChannelFactory implements ChannelFactoryContract<PrivateChann
     return {
       'id': channel.id.value,
       'type': channel.type.value,
+      'recipients': channel.recipients.map((user) => user.id.value).toList(),
     };
   }
 }
