@@ -13,7 +13,7 @@ final class PrivateChannelFactory implements ChannelFactoryContract<PrivateChann
   }
 
   @override
-  Map<String, dynamic> deserialize(PrivateChannel channel) {
+  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, PrivateChannel channel) async {
     return {
       'id': channel.id.value,
       'type': channel.type.value,
