@@ -1,22 +1,32 @@
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
+import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/helper.dart';
 
 final class ServerTextChannel extends ServerChannel {
-  final String? description;
+  final ChannelProperties _properties;
 
-  final ServerCategoryChannel? category;
+  @override
+  Snowflake get id => _properties.id;
 
-  ServerTextChannel({
-    required Snowflake id,
-    required String name,
-    required int position,
-    required List<ChannelPermissionOverwrite> permissionOverwrites,
-    required this.description,
-    required this.category,
-  }) : super(id, ChannelType.guildText, name, position, permissionOverwrites);
+  @override
+  ChannelType get type => _properties.type;
+
+  @override
+  String get name => _properties.name;
+
+  @override
+  int get position => _properties.position;
+
+  @override
+  List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
+
+  String? get description => _properties.description;
+
+  late final ServerCategoryChannel? category;
+
+  ServerTextChannel(this._properties);
+
 }

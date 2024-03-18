@@ -1,4 +1,4 @@
-import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
@@ -10,18 +10,8 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
 
   @override
   Future<ServerVoiceChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    final permissionOverwrites = await Future.wait(
-      List.from(json['permission_overwrites'])
-          .map((json) async => marshaller.serializers.channelPermissionOverwrite.serialize(json))
-          .toList(),
-    );
-
-    return ServerVoiceChannel(
-      id: Snowflake(json['id']),
-      name: json['name'],
-      position: json['position'],
-      permissionOverwrites: permissionOverwrites,
-    );
+    final properties = await ChannelProperties.make(marshaller, json);
+    return ServerVoiceChannel(properties);
   }
 
   @override

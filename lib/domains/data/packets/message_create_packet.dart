@@ -1,4 +1,3 @@
-import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
@@ -33,7 +32,7 @@ final class MessageCreatePacket implements ListenablePacket {
   }
 
   void sendPrivateMessage(DispatchEvent dispatch, Map<String, dynamic> json, User user) {
-    final message = PrivateMessage.fromJson(json: json, user: user);
-    dispatch(event: MineralEvent.privateMessageCreate, params: [message]);
+    // final message = PrivateMessage(json: json, user: user);
+    // dispatch(event: MineralEvent.privateMessageCreate, params: [message]);
   }
 }

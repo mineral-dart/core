@@ -32,7 +32,7 @@ final class MessageEmbedAssets {
     };
   }
 
-  static Future<MessageEmbedAssets> fromJson(Map<String, dynamic> json) async {
+  factory MessageEmbedAssets.fromJson(Map<String, dynamic> json) {
     return MessageEmbedAssets(
       image: Helper.createOrNull(
           field: json['image'], fn: () => MessageEmbedImage.fromJson(json['image'])),

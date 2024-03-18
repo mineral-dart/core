@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
@@ -9,8 +10,9 @@ final class PrivateChannelFactory implements ChannelFactoryContract<PrivateChann
 
   @override
   Future<PrivateChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    return PrivateChannel.fromJson(json);
-  }
+      final properties = await ChannelProperties.make(marshaller, json);
+      return PrivateChannel(properties);
+    }
 
   @override
   Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, PrivateChannel channel) async {

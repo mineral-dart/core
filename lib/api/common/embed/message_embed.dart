@@ -40,7 +40,7 @@ final class MessageEmbed {
     };
   }
 
-  static Future<MessageEmbed> fromJson(dynamic json) async {
+  factory MessageEmbed.fromJson(dynamic json) {
     return MessageEmbed(
       title: json['title'],
       description: json['description'],
@@ -48,8 +48,8 @@ final class MessageEmbed {
           field: json['type'], fn: () => findInEnum(MessageEmbedType.values, json['type'])),
       url: json['url'],
       timestamp: DateTime.tryParse(json['timestamp']),
-      assets: await MessageEmbedAssets.fromJson(json['assets']),
-      provider: await createOrNull(
+      assets: MessageEmbedAssets.fromJson(json['assets']),
+      provider: Helper.createOrNull(
           field: json['provider'], fn: () => MessageEmbedProvider.fromJson(json['provider'])),
       fields: json['fields'].map(MessageEmbedField.fromJson).toList(),
     );

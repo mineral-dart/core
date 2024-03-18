@@ -1,5 +1,4 @@
-import 'package:mineral/api/common/channel_permission_overwrite.dart';
-import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_announcement_channel.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
@@ -11,25 +10,14 @@ final class ServerAnnouncementChannelFactory implements ChannelFactoryContract<S
 
   @override
   Future<ServerAnnouncementChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    final permissionOverwrites = await Future.wait(
-      List.from(json['permission_overwrites'])
-        .map((json) async => marshaller.serializers.channelPermissionOverwrite.serialize(json))
-        .toList(),
-    );
-
-    return ServerAnnouncementChannel(
-      id: Snowflake(json['id']),
-      name: json['name'],
-      position: json['position'],
-      description: json['description'],
-      permissionOverwrites: permissionOverwrites
-    );
+    final properties = await ChannelProperties.make(marshaller, json);
+    return ServerAnnouncementChannel(properties);
   }
 
   @override
   Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, ServerAnnouncementChannel channel) async {
     final permissionOverwrites = await Future.wait(
-      channel.permissionOverwrites
+      channel.permissions
           .map((json) async => marshaller.serializers.channelPermissionOverwrite.deserialize(json))
           .toList(),
     );

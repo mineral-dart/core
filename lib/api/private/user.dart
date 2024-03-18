@@ -1,5 +1,4 @@
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/private/channels/private_channel.dart';
 
 final class User {
   final Snowflake id;
@@ -15,7 +14,6 @@ final class User {
   final int? flags;
   final int? premiumType;
   final int? publicFlags;
-  final PrivateChannel channel;
 
   User({
     required this.id,
@@ -31,7 +29,6 @@ final class User {
     required this.flags,
     required this.premiumType,
     required this.publicFlags,
-    required this.channel,
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -49,7 +46,6 @@ final class User {
       flags: json['flags'],
       premiumType: json['premium_type'],
       publicFlags: json['public_flags'],
-      channel: PrivateChannel(id: json['id'], name: json['username'], recipients: []),
     );
   }
 }

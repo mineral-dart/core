@@ -1,4 +1,6 @@
-enum ChannelType {
+import 'package:mineral/api/common/types/enhanced_enum.dart';
+
+enum ChannelType implements EnhancedEnum<int>{
   guildText(0),
   dm(1),
   guildVoice(2),
