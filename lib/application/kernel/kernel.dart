@@ -64,7 +64,7 @@ final class Kernel implements KernelContract {
     final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
 
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
-      final shard = Shard(shardName: 'shard #$i', url: endpoint, kernel: this);
+      final shard = Shard(shardName: 'shard #$i', url: '$endpoint/?v=${config.version}', kernel: this);
       shards.putIfAbsent(i, () => shard);
 
       await shard.init();
