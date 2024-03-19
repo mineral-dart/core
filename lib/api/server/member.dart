@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/member_timeout.dart';
@@ -11,7 +12,7 @@ final class Member {
   final String? globalName;
   final String discriminator;
   final MemberAssets assets;
-  final int? flags;
+  final List<MemberFlag> flags;
   final DateTime? premiumSince;
   final int? publicFlags;
   late final Server server;
