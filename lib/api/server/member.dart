@@ -3,6 +3,7 @@ import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/member_timeout.dart';
+import 'package:mineral/api/server/member_voice.dart';
 import 'package:mineral/api/server/server.dart';
 
 final class Member {
@@ -20,6 +21,7 @@ final class Member {
   final bool isBot;
   final bool isPending;
   final MemberTimeout timeout;
+  final MemberVoice voice;
 
   bool canByPassVerification() => flags.contains(MemberFlag.bypassedVerification);
 
@@ -43,5 +45,6 @@ final class Member {
     required this.isBot,
     required this.isPending,
     required this.timeout,
+    required this.voice,
   });
 }
