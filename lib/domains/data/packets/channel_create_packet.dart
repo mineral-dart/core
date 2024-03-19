@@ -41,7 +41,8 @@ final class ChannelCreatePacket implements ListenablePacket {
       server.channels.list.putIfAbsent(channel.id, () => channel);
     }
 
-    await marshaller.cache.put(channel.id, () => message.payload);
+    print(message.payload);
+    await marshaller.cache.put(channel.id, message.payload);
 
     dispatch(event: MineralEvent.serverChannelCreate, params: [channel]);
   }

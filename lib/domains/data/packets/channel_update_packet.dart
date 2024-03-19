@@ -41,6 +41,7 @@ final class ChannelUpdatePacket implements ListenablePacket {
 
       after.server = server;
       server.channels.list[after.id] = after;
+      marshaller.cache.put(server.id, await marshaller.serializers.server.deserialize(server));
     }
 
     dispatch(event: MineralEvent.serverChannelUpdate, params: [before, after]);

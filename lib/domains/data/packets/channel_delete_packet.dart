@@ -36,6 +36,6 @@ final class ChannelDeletePacket implements ListenablePacket {
     dispatch(event: MineralEvent.serverChannelDelete, params: [channel]);
 
     server.channels.list.remove(channel.id);
-    marshaller.cache.put(guildId, marshaller.serializers.server.deserialize(server));
+    marshaller.cache.put(guildId, await marshaller.serializers.server.deserialize(server));
   }
 }
