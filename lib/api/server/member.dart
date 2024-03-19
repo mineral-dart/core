@@ -21,6 +21,14 @@ final class Member {
   final bool isPending;
   final MemberTimeout timeout;
 
+  bool canByPassVerification() => flags.contains(MemberFlag.bypassedVerification);
+
+  bool hasCompletedOnboarding() => flags.contains(MemberFlag.completedOnboarding);
+
+  bool hasStartedOnboarding() => flags.contains(MemberFlag.startedOnboarding);
+
+  bool hasRejoined() => flags.contains(MemberFlag.didRejoin);
+
   Member({
     required this.id,
     required this.username,
