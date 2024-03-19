@@ -1,11 +1,8 @@
-import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message_properties.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
-import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/domains/shared/helper.dart';
 
 final class ServerMessageSerializer implements SerializerContract<ServerMessage> {
   final MarshallerContract _marshaller;
