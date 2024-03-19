@@ -1,6 +1,7 @@
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/member_assets.dart';
+import 'package:mineral/api/server/member_timeout.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
 import 'package:mineral/domains/shared/helper.dart';
@@ -15,7 +16,6 @@ final class MemberSerializer implements SerializerContract<Member> {
     final serverRoles = json.entries.firstWhere((element) => element.key == 'guild_roles',
         orElse: () => throw FormatException('Server roles not found in member structure'));
 
-    print(json);
     return Member(
       id: json['user']['id'],
       username: json['user']['nick'] ?? json['user']['username'],
@@ -29,6 +29,11 @@ final class MemberSerializer implements SerializerContract<Member> {
       publicFlags: json['user']['public_flags'],
       roles: RoleManager.fromList(serverRoles.value),
       isBot: json['user']['bot'] ?? false,
+      isPending: json['pending'] ?? false,
+      timeout: MemberTimeout(
+          duration: Helper.createOrNull(
+              field: json['communication_disabled_until'],
+              fn: () => DateTime.parse(json['communication_disabled_until']))),
     );
   }
 
@@ -55,6 +60,8 @@ final class MemberSerializer implements SerializerContract<Member> {
       'roles': roles,
       'premium_since': member.premiumSince?.toIso8601String(),
       'flags': member.flags,
+      'pending': member.isPending,
+      'communication_disabled_until': member.timeout.duration?.toIso8601String(),
     };
   }
 }

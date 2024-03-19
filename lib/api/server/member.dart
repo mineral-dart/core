@@ -1,6 +1,7 @@
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member_assets.dart';
+import 'package:mineral/api/server/member_timeout.dart';
 import 'package:mineral/api/server/server.dart';
 
 final class Member {
@@ -16,6 +17,8 @@ final class Member {
   late final Server server;
   final RoleManager roles;
   final bool isBot;
+  final bool isPending;
+  final MemberTimeout timeout;
 
   Member({
     required this.id,
@@ -29,5 +32,7 @@ final class Member {
     required this.publicFlags,
     required this.roles,
     required this.isBot,
+    required this.isPending,
+    required this.timeout,
   });
 }
