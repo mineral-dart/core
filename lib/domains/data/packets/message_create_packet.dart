@@ -21,18 +21,19 @@ final class MessageCreatePacket implements ListenablePacket {
       case String():
         await sendServerMessage(dispatch, message.payload);
       default:
-        final User user = User.fromJson(message.payload['author']);
-        sendPrivateMessage(dispatch, message.payload, user);
+        sendPrivateMessage(dispatch, message.payload);
     }
   }
 
   Future<void> sendServerMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
     final message = await marshaller.serializers.serverMessage.serialize(json);
     dispatch(event: MineralEvent.serverMessageCreate, params: [message]);
+
+    await marshaller.cache.put(message.id, json);
   }
 
-  void sendPrivateMessage(DispatchEvent dispatch, Map<String, dynamic> json, User user) {
-    // final message = PrivateMessage(json: json, user: user);
-    // dispatch(event: MineralEvent.privateMessageCreate, params: [message]);
+  void sendPrivateMessage(DispatchEvent dispatch, Map<String, dynamic> json) {
+    final message = marshaller.serializers.privateMessage.serialize(json);
+    dispatch(event: MineralEvent.privateMessageCreate, params: [message]);
   }
 }

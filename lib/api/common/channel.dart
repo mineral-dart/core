@@ -4,5 +4,4 @@ import 'package:mineral/api/common/types/channel_type.dart';
 abstract class Channel {
   Snowflake get id;
   ChannelType get type;
-  String get name;
 }

@@ -13,9 +13,6 @@ final class PrivateGroupChannel extends Channel {
   @override
   ChannelType get type => _properties.type;
 
-  @override
-  String get name => _properties.name;
-
   List<User> get users => _properties.recipients;
 
   PrivateGroupChannel(this._properties);

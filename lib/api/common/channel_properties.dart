@@ -9,10 +9,10 @@ import 'package:mineral/domains/shared/utils.dart';
 final class ChannelProperties {
   final Snowflake id;
   final ChannelType type;
-  final String name;
+  final String? name;
   final String? description;
   final Snowflake? categoryId;
-  final int position;
+  final int? position;
   final bool nsfw;
   final Snowflake? lastMessageId;
   final int? bitrate;
@@ -71,11 +71,22 @@ final class ChannelProperties {
 
   static Future<ChannelProperties> make(
       MarshallerContract marshaller, Map<String, dynamic> element) async {
-    final permissionOverwrites = await Future.wait(
-      List.from(element['permission_overwrites'])
-          .map((json) async => marshaller.serializers.channelPermissionOverwrite.serialize(json))
-          .toList(),
-    );
+    final permissionOverwrites = await Helper.createOrNullAsync(
+        field: element['permission_overwrites'],
+        fn: () async => Future.wait(
+              List.from(element['permission_overwrites'])
+                  .map((json) async =>
+                      marshaller.serializers.channelPermissionOverwrite.serialize(json))
+                  .toList(),
+            ));
+
+    final recipients = await Helper.createOrNullAsync(
+        field: element['recipients'],
+        fn: () async => Future.wait(
+              List.from(element['recipients'])
+                  .map((json) async => marshaller.serializers.user.serialize(json))
+                  .toList(),
+            ));
 
     return ChannelProperties(
       id: Snowflake(element['id']),
@@ -91,7 +102,7 @@ final class ChannelProperties {
       bitrate: element['bitrate'],
       userLimit: element['user_limit'],
       rateLimitPerUser: element['rate_limit_per_user'],
-      recipients: element['recipients'] ?? [],
+      recipients: recipients ?? [],
       icon: element['icon'],
       ownerId: element['owner_id'],
       applicationId: element['application_id'],

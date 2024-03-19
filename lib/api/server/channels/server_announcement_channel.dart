@@ -15,10 +15,10 @@ final class ServerAnnouncementChannel extends ServerChannel {
   ChannelType get type => _properties.type;
 
   @override
-  String get name => _properties.name;
+  String get name => _properties.name!;
 
   @override
-  int get position => _properties.position;
+  int get position => _properties.position!;
 
   @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;

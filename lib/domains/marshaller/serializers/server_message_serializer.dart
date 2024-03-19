@@ -1,4 +1,6 @@
 import 'package:mineral/api/common/embed/message_embed.dart';
+import 'package:mineral/api/common/message_properties.dart';
+import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
@@ -17,18 +19,15 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
       throw 'Server not found';
     }
 
+    final rawChannel = await _marshaller.cache.get(json['channel_id']);
+    final channel = await _marshaller.serializers.channels.serialize(rawChannel);
+
+    final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
+
     final server = await _marshaller.serializers.server.serialize(rawServer);
 
-    return ServerMessage(
-        id: Snowflake(json['id']),
-        content: json['content'],
-        createdAt: DateTime.parse(json['timestamp']),
-        updatedAt: Helper.createOrNull(
-            field: json['edited_timestamp'], fn: () => DateTime.parse(json['edited_timestamp'])),
-        channel: server.channels.getOrFail(json['channel_id']),
-        embeds: List<MessageEmbed>.from(json['embeds'].map(MessageEmbed.fromJson)),
-        userId: json['author']['id'],
-        author: server.members.getOrFail(json['author']['id']));
+    return ServerMessage(messageProperties,
+        userId: json['author']['id'], author: server.members.getOrFail(json['author']['id']));
   }
 
   @override
