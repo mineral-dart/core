@@ -15,15 +15,15 @@ final class GuildRoleCreatePacket implements ListenablePacket {
   const GuildRoleCreatePacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
-    final server = marshaller.storage.servers[message.payload['guild_id']];
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final rawServer = await marshaller.cache.get(message.payload['guild_id']);
+    final server = await marshaller.serializers.server.serialize(rawServer);
 
-    if (server == null) {
-      logger.error('Server not found for role create packet');
-      return;
-    }
+    final role = await marshaller.serializers.role.serialize(message.payload['role']);
+    server.roles.list.putIfAbsent(role.id, () => role);
 
-    final role = marshaller.serializers.role.serialize(message.payload['role']);
+    marshaller.cache.put(server.id, await marshaller.serializers.server.deserialize(server));
+    marshaller.cache.put(role.id, message.payload);
 
     dispatch(event: MineralEvent.serverRoleCreate, params: [role, server]);
   }

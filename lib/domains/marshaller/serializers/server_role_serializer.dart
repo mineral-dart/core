@@ -1,17 +1,44 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
 
-final class ServerRoleSerializer<T extends Role> implements SerializerContract<Role> {
-  final MarshallerContract _marshaller;
+final class RoleSerializer implements SerializerContract<Role> {
+  final MarshallerContract marshaller;
 
-  ServerRoleSerializer(this._marshaller);
+  RoleSerializer(this.marshaller);
 
   @override
-  Role serialize(Map<String, dynamic> json) => Role.fromJson(json);
+  Future<Role> serialize(Map<String, dynamic> json) async {
+    return Role(
+      id: Snowflake(json['id']),
+      name: json['name'],
+      color: json['color'],
+      hoist: json['hoist'],
+      position: json['position'],
+      permissions: switch(json['permissions']) {
+        int() => json['permissions'],
+        String() => int.parse(json['permissions']),
+        _ => null,
+      },
+      managed: json['managed'],
+      mentionable: json['mentionable'],
+      flags: json['flags'],
+    );
+  }
 
   @override
   Map<String, dynamic> deserialize(Role object) {
-    throw UnimplementedError();
+    return {
+      'id': object.id,
+      'name': object.name,
+      'color': object.color,
+      'hoist': object.hoist,
+      'position': object.position,
+      'permissions': object.permissions,
+      'managed': object.managed,
+      'mentionable': object.mentionable,
+      'flags': object.flags,
+    };
   }
 }

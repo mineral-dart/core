@@ -45,6 +45,14 @@ abstract interface class SerializerBucket {
   SerializerContract<ServerSubscription> get serverSubscription;
 
   SerializerContract<ServerSettings> get serverSettings;
+
+  SerializerContract<ServerAsset> get serversAsset;
+
+  SerializerContract<Emoji> get emojis;
+
+  SerializerContract<Sticker> get sticker;
+
+  SerializerContract<ChannelPermissionOverwrite> get channelPermissionOverwrite;
 }
 
 final class SerializerBucketImpl<T> implements SerializerBucket {
@@ -75,6 +83,18 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   @override
   final SerializerContract<ServerSettings> serverSettings;
 
+  @override
+  final SerializerContract<ServerAsset> serversAsset;
+
+  @override
+  final SerializerContract<Emoji> emojis;
+
+  @override
+  final SerializerContract<Sticker> sticker;
+
+  @override
+  SerializerContract<ChannelPermissionOverwrite> channelPermissionOverwrite;
+
   SerializerBucketImpl(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
@@ -84,5 +104,9 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
         user = UserSerializer(marshaller),
         role = RoleSerializer(marshaller),
         serverSubscription = ServerSubscriptionSerializer(marshaller),
-        serverSettings = ServerSettingsSerializer(marshaller);
+        serverSettings = ServerSettingsSerializer(marshaller),
+        serversAsset = ServerAssetsSerializer(marshaller),
+        emojis = EmojiSerializer(marshaller),
+        sticker = StickerSerializer(marshaller),
+        channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller);
 }
