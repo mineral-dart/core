@@ -3,12 +3,15 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client_config.dart';
+import 'package:mineral/application/http/http_client_status.dart';
 import 'package:mineral/application/http/http_interceptor.dart';
 import 'package:mineral/application/http/http_request_option.dart';
 import 'package:mineral/application/http/request.dart';
 import 'package:mineral/application/http/response.dart';
 
 abstract interface class HttpClientContract {
+  HttpClientStatus get status;
+
   HttpInterceptor get interceptor;
 
   HttpClientConfig get config;
@@ -32,6 +35,9 @@ abstract interface class HttpClientContract {
 
 final class HttpClient implements HttpClientContract {
   final http.Client _client = http.Client();
+
+  @override
+  final HttpClientStatus status = HttpClientStatusImpl();
 
   @override
   final HttpInterceptor interceptor = HttpInterceptorImpl();
