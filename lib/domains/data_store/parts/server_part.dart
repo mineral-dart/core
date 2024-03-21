@@ -15,15 +15,23 @@ final class ServerPart implements DataStorePart {
       return _dataStore.marshaller.serializers.server.serialize(cachedRawServer);
     }
 
-    final [server, channels, members] = await Future.wait([
+    final [serverResponse, channelsResponse, membersResponse] = await Future.wait([
       _dataStore.client.get('/guilds/$id'),
       _dataStore.client.get('/guilds/$id/channels'),
       _dataStore.client.get('/guilds/$id/members')
     ]);
 
-    server.body['channels'] = channels.body;
-    server.body['members'] = members.body;
+    serverResponse.body['channels'] = channelsResponse.body;
+    serverResponse.body['members'] = membersResponse.body;
 
-    return _dataStore.marshaller.serializers.server.serialize(server.body);
+    final server = await _dataStore.marshaller.serializers.server.serialize(serverResponse.body);
+    await _dataStore.marshaller.cache.put(id, serverResponse.body);
+
+    await Future.wait([
+      ...server.channels.list.values.map((channel) => _dataStore.marshaller.cache.put(channel.id, channel)),
+      ...server.members.list.values.map((member) => _dataStore.marshaller.cache.put(member.id, member))
+    ]);
+
+    return server;
   }
 }
