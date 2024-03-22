@@ -3,6 +3,7 @@ import 'dart:io';
 
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/application/http/http_client_status.dart';
 import 'package:mineral/application/http/http_request_option.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
@@ -30,7 +31,7 @@ final class ChannelPart implements DataStorePart {
     return channel as T?;
   }
 
-  Future<T> createChannel<T extends Channel>(
+  Future<T?> createServerChannel<T extends Channel>(
       {required Snowflake serverId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
@@ -38,15 +39,26 @@ final class ChannelPart implements DataStorePart {
         body: payload,
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    final channel = await switch (response.statusCode) {
+    final Channel? channel = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         _dataStore.marshaller.serializers.channels.serialize(response.body),
       int() when status.isError(response.statusCode) => throw HttpException(response.body),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     };
 
-    await _dataStore.marshaller.cache.put(channel?.id, response.body);
-    return channel as T;
+    if (channel case ServerChannel()) {
+      final server = await _dataStore.server.getServer(serverId);
+      server.channels.list[channel.id] = channel;
+
+      final rawServer = await _dataStore.marshaller.serializers.server.deserialize(server);
+
+      await Future.wait([
+        _dataStore.marshaller.cache.put(server.id, rawServer),
+        _dataStore.marshaller.cache.put(channel.id, response.body)
+      ]);
+    }
+
+    return channel as T?;
   }
 
   Future<T?> updateChannel<T extends Channel>(
