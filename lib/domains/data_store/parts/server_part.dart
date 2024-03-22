@@ -26,9 +26,9 @@ final class ServerPart implements DataStorePart {
     serverResponse.body['members'] = membersResponse.body;
 
     final server = await _dataStore.marshaller.serializers.server.serialize(serverResponse.body);
-    await _dataStore.marshaller.cache.put(id, serverResponse.body);
 
     await Future.wait([
+      _dataStore.marshaller.cache.put(id, serverResponse.body),
       ...server.channels.list.values.map((channel) => _dataStore.marshaller.cache.put(channel.id, channel)),
       ...server.members.list.values.map((member) => _dataStore.marshaller.cache.put(member.id, member))
     ]);
