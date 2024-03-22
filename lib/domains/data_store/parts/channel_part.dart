@@ -7,6 +7,7 @@ import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/application/http/http_client_status.dart';
 import 'package:mineral/application/http/http_request_option.dart';
+import 'package:mineral/application/http/response.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/data_store/data_store_part.dart';
 import 'package:mineral/domains/http/discord_header.dart';
@@ -20,22 +21,9 @@ final class ChannelPart implements DataStorePart {
 
   Future<Channel?> getChannel<T extends Channel>(Snowflake id) async {
     final response = await _dataStore.client.get('/channels/$id');
+    final Channel? channel = await serializeChannelResponse(response);
 
-    final channel = await switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        _dataStore.marshaller.serializers.channels.serialize(response.body),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
-
-    switch (channel) {
-      case ServerChannel():
-        _updateCacheFromChannelServer(id, channel, response.body);
-      case PrivateChannel():
-        _dataStore.marshaller.cache.put(channel.id, response.body);
-      default:
-        throw Exception('Unknown channel type: $channel');
-    }
+    _putInCache(channel, id, response);
 
     return channel as T?;
   }
@@ -48,16 +36,8 @@ final class ChannelPart implements DataStorePart {
         body: payload,
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    final Channel? channel = await switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        _dataStore.marshaller.serializers.channels.serialize(response.body),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
-
-    if (channel case ServerChannel()) {
-      _updateCacheFromChannelServer(id, channel, response.body);
-    }
+    final Channel? channel = await serializeChannelResponse(response);
+    _putInCache(channel, id, response);
 
     return channel as T?;
   }
@@ -70,21 +50,8 @@ final class ChannelPart implements DataStorePart {
         body: payload,
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    final channel = await switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        _dataStore.marshaller.serializers.channels.serialize(response.body),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
-
-    switch (channel) {
-      case ServerChannel():
-        _updateCacheFromChannelServer(id, channel, response.body);
-      case PrivateChannel():
-        _dataStore.marshaller.cache.put(channel.id, response.body);
-      default:
-        throw Exception('Unknown channel type: $channel');
-    }
+    final Channel? channel = await serializeChannelResponse(response);
+    _putInCache(channel, id, response);
 
     return channel as T?;
   }
@@ -98,6 +65,26 @@ final class ChannelPart implements DataStorePart {
       int() when status.isError(response.statusCode) => throw HttpException(response.body),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     };
+  }
+
+  Future<T?> serializeChannelResponse<T extends Channel>(Response response) {
+    return switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        _dataStore.marshaller.serializers.channels.serialize(response.body),
+      int() when status.isError(response.statusCode) => throw HttpException(response.body),
+      _ => throw Exception('Unknown status code: ${response.statusCode}'),
+    } as Future<T?>;
+  }
+
+  Future<void> _putInCache(Channel? channel, Snowflake id, Response response) async {
+    switch (channel) {
+      case ServerChannel():
+        _updateCacheFromChannelServer(id, channel, response.body);
+      case PrivateChannel():
+        _dataStore.marshaller.cache.put(channel.id, response.body);
+      default:
+        throw Exception('Unknown channel type: $channel');
+    }
   }
 
   Future<void> _updateCacheFromChannelServer(
