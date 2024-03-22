@@ -42,6 +42,17 @@ final class ChannelPart implements DataStorePart {
     return channel as T?;
   }
 
+  Future<PrivateChannel?> createPrivateChannel(
+      {required Snowflake id, required Snowflake recipientId}) async {
+    final response =
+        await _dataStore.client.post('/users/@me/channels', body: {'recipient_id': recipientId});
+
+    final Channel? channel = await serializeChannelResponse(response);
+    _putInCache(channel, id, response);
+
+    return channel as PrivateChannel?;
+  }
+
   Future<T?> updateChannel<T extends Channel>(
       {required Snowflake id,
       required Map<String, dynamic> payload,
