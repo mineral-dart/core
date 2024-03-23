@@ -13,6 +13,14 @@ final class PrivateChannel extends Channel {
   @override
   ChannelType get type => _properties.type;
 
+  String get name => _properties.name!;
+
+  String get description => _properties.description!;
+
+  int get messageCount => _properties.messageCount!;
+
+  int get userCount => recipients.length;
+
   List<User> get recipients => _properties.recipients;
 
   PrivateChannel(this._properties);
