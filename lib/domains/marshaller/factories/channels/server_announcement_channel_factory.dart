@@ -37,6 +37,9 @@ final class ServerAnnouncementChannelFactory
           .toList(),
     );
 
+    final permissions = await Future.wait(channel.permissions.map((element) async =>
+        marshaller.serializers.channelPermissionOverwrite.deserialize(element)));
+
     return {
       'id': channel.id.value,
       'type': channel.type.value,
@@ -46,6 +49,7 @@ final class ServerAnnouncementChannelFactory
       'topic': channel.description,
       'nsfw': channel.isNsfw,
       'parent_id': channel.category?.id,
+      'permissions': permissions,
     };
   }
 }

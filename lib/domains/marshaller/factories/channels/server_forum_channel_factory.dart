@@ -31,9 +31,13 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
   @override
   Future<Map<String, dynamic>> deserialize(
       MarshallerContract marshaller, ServerForumChannel channel) async {
+    final permissions = await Future.wait(channel.permissions.map((element) async =>
+        marshaller.serializers.channelPermissionOverwrite.deserialize(element)));
+
     return {
       'id': channel.id.value,
       'type': channel.type.value,
+      'permissions': permissions,
     };
   }
 }
