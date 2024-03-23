@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/permissions.dart';
 import 'package:mineral/api/common/snowflake.dart';
 
 final class Role {
@@ -6,10 +7,13 @@ final class Role {
   final int color;
   final bool hoist;
   final int position;
-  final int? permissions;
   final bool managed;
   final bool mentionable;
   final int flags;
+  final String? icon;
+  final String? unicodeEmoji;
+  final Map<String, dynamic> tags;
+  final Permissions permissions;
 
   Role({
     required this.id,
@@ -21,5 +25,8 @@ final class Role {
     required this.managed,
     required this.mentionable,
     required this.flags,
+    required this.icon,
+    required this.unicodeEmoji,
+    required this.tags,
   });
 }

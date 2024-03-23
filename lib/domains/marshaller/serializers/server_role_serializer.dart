@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/permissions.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
@@ -17,13 +18,16 @@ final class RoleSerializer implements SerializerContract<Role> {
       hoist: json['hoist'],
       position: json['position'],
       permissions: switch(json['permissions']) {
-        int() => json['permissions'],
-        String() => int.parse(json['permissions']),
-        _ => null,
+        int() => Permissions.fromInt(json['permissions']),
+        String() => Permissions.fromInt(int.parse(json['permissions'])),
+        _ => Permissions.fromInt(0),
       },
       managed: json['managed'],
       mentionable: json['mentionable'],
       flags: json['flags'],
+      icon: json['icon'],
+      tags: json['tags'],
+      unicodeEmoji: json['unicode_emoji'],
     );
   }
 
