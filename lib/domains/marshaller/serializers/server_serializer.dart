@@ -25,11 +25,13 @@ final class ServerSerializer implements SerializerContract<Server> {
             .serializers.member
             .serialize({...element, 'guild_roles': serializedRoles})));
 
-    final channelManager =
-        await ChannelManager.fromJson(marshaller: _marshaller, guildId: json['id'], json: json, cache: cache);
+    final channelManager = await ChannelManager.fromJson(
+        marshaller: _marshaller, guildId: json['id'], json: json, cache: cache);
 
     final roleManager = RoleManager.fromList(serializedRoles);
     final owner = serializedMembers.firstWhere((member) => member.id == json['owner_id']);
+    final serverAssets = await _marshaller.serializers.serversAsset
+        .serialize({'guildRoles': serializedRoles, ...json});
 
     final server = Server(
       id: json['id'],
@@ -40,8 +42,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       channels: channelManager,
       description: json['description'],
       applicationId: json['application_id'],
-      assets: await _marshaller.serializers.serversAsset
-          .serialize({'guildRoles': serializedRoles, ...json}),
+      assets: serverAssets,
       owner: owner,
     );
 
