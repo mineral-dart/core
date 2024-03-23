@@ -11,7 +11,7 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
   EmojiSerializer(this._marshaller);
 
   @override
-  Emoji serialize(Map<String, dynamic> json) {
+  Emoji serialize(Map<String, dynamic> json, {bool cache = false}) {
     final guildRoles = List<Role>.from(json['guildRoles']);
 
     final Map<Snowflake, Role> roles = List<String>.from(json['roles']).fold({}, (value, element) {

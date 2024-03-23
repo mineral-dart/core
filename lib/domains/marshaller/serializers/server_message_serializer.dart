@@ -10,7 +10,7 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
   ServerMessageSerializer(this._marshaller);
 
   @override
-  Future<ServerMessage> serialize(Map<String, dynamic> json) async {
+  Future<ServerMessage> serialize(Map<String, dynamic> json, {bool cache = false}) async {
     final rawServer = await _marshaller.cache.get(json['guild_id']);
     if (rawServer == null) {
       throw 'Server not found';

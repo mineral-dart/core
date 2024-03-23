@@ -10,7 +10,7 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
   PrivateMessageSerializer(this._marshaller);
 
   @override
-  Future<PrivateMessage> serialize(Map<String, dynamic> json) async {
+  Future<PrivateMessage> serialize(Map<String, dynamic> json, {bool cache = false}) async {
     final channel = await _marshaller.dataStore.channel.getChannel(json['channel_id']);
     final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
 

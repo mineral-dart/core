@@ -25,7 +25,7 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
   ChannelSerializer(this._marshaller);
 
   @override
-  Future<T> serialize(Map<String, dynamic> json) async {
+  Future<T> serialize(Map<String, dynamic> json, {bool cache = false}) async {
     final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
 
     if (channelFactory == null) {

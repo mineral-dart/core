@@ -9,7 +9,7 @@ final class UserSerializer implements SerializerContract<User> {
   UserSerializer(this._marshaller);
 
   @override
-  Future<User> serialize(Map<String, dynamic> json) async {
+  Future<User> serialize(Map<String, dynamic> json, {bool cache = false}) async {
     return User(
       id: json['id'],
       username: json['username'],

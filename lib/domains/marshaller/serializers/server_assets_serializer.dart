@@ -13,7 +13,7 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
   ServerAssetsSerializer(this._marshaller);
 
   @override
-  ServerAsset serialize(Map<String, dynamic> json) {
+  ServerAsset serialize(Map<String, dynamic> json, {bool cache = false}) {
     final guildRoles = List<Role>.from(json['guildRoles']);
 
     return ServerAsset(
