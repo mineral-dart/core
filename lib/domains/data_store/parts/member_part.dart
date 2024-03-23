@@ -17,16 +17,16 @@ final class MemberPart implements DataStorePart {
 
   MemberPart(this._dataStore);
 
-  Future<Member> getMember(Snowflake guildId, Snowflake id) async {
-    final cachedRawMember = await _dataStore.marshaller.cache.get(id);
+  Future<Member> getMember({required Snowflake guildId, required Snowflake memberId}) async {
+    final cachedRawMember = await _dataStore.marshaller.cache.get(memberId);
     if (cachedRawMember != null) {
       return _dataStore.marshaller.serializers.member.serialize(cachedRawMember);
     }
 
-    final response = await _dataStore.client.get('/guilds/$guildId/members/$id');
+    final response = await _dataStore.client.get('/guilds/$guildId/members/$memberId');
     final member = await _serializeMemberResponse(response);
 
-    await _dataStore.marshaller.cache.put(id, member);
+    await _dataStore.marshaller.cache.put(memberId, member);
 
     return member!;
   }

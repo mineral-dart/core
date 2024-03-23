@@ -51,21 +51,36 @@ final class ServerPart implements DataStorePart {
     }
 
     final response = await _dataStore.client.get('/guilds/$guildId/roles');
-    final role = await _serializeRoleResponse(response);
+    final roles = await _serializeRolesResponse(response);
+    final role = roles.firstWhere((role) => role.id == id);
 
-    if (role != null) {
-      await _dataStore.marshaller.cache.put(id, role);
-    }
+    await _dataStore.marshaller.cache.put(id, role);
 
-    return role!;
+    return role;
   }
 
-  Future<Role?> _serializeRoleResponse(Response response) {
+  Future<List<Role>> getRoles(Snowflake guildId, { bool force = false }) async {
+    if (force) {
+      final response = await _dataStore.client.get('/guilds/$guildId/roles');
+      final roles = await _serializeRolesResponse(response);
+
+      for (final role in roles) {
+        await _dataStore.marshaller.cache.put(role.id, role);
+      }
+
+      return roles;
+    }
+
+    final server = await _dataStore.server.getServer(guildId);
+    return server.roles.list.values.toList();
+  }
+
+  Future<List<Role>> _serializeRolesResponse(Response response) {
     return switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        _dataStore.marshaller.serializers.channels.serialize(response.body),
+      int() when status.isSuccess(response.statusCode) => List.from(response.body)
+          .map((element) => _dataStore.marshaller.serializers.channels.serialize(element)),
       int() when status.isError(response.statusCode) => throw HttpException(response.body),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    } as Future<Role?>;
+    } as Future<List<Role>>;
   }
 }

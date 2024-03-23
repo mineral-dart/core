@@ -13,13 +13,17 @@ final class ServerSerializer implements SerializerContract<Server> {
 
   @override
   Future<Server> serialize(Map<String, dynamic> json, {bool cache = false}) async {
-    final serializedRoles = await Future.wait(List.from(json['roles']).map((element) async => cache
-        ? _marshaller.dataStore.server.getRole(Snowflake(json['id']), Snowflake(element['id']))
-        : _marshaller.serializers.role.serialize(element)));
+    final serializedRoles = cache
+        ? await _marshaller.dataStore.server.getRoles(Snowflake(json['id']))
+        : await Future.wait(List.from(json['roles'])
+            .map((element) async => _marshaller.serializers.role.serialize(element)));
 
-    final serializedMembers = await Future.wait(List.from(json['members']).map((element) async => cache
-        ? _marshaller.dataStore.member.getMember(Snowflake(json['id']), Snowflake(element['id']))
-        : _marshaller.serializers.member.serialize({...element, 'guild_roles': serializedRoles})));
+    final serializedMembers = await Future.wait(List.from(json['members']).map((element) async =>
+        cache
+            ? _marshaller.dataStore.member.getMember(
+                guildId: Snowflake(json['id']), memberId: Snowflake(element['id']))
+            : _marshaller.serializers.member
+                .serialize({...element, 'guild_roles': serializedRoles})));
 
     final channelManager =
         await ChannelManager.fromJson(marshaller: _marshaller, guildId: json['id'], json: json);
