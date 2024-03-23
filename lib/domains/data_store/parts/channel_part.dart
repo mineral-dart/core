@@ -20,6 +20,11 @@ final class ChannelPart implements DataStorePart {
   ChannelPart(this._dataStore);
 
   Future<Channel?> getChannel<T extends Channel>(Snowflake id) async {
+    final cachedChannel = await _dataStore.marshaller.cache.get(id);
+    if (cachedChannel != null) {
+      return _dataStore.marshaller.serializers.channels.serialize(cachedChannel, cache: true);
+    }
+
     final response = await _dataStore.client.get('/channels/$id');
     final Channel? channel = await serializeChannelResponse(response);
 
@@ -100,7 +105,7 @@ final class ChannelPart implements DataStorePart {
 
   Future<void> _updateCacheFromChannelServer(
       Snowflake id, ServerChannel channel, Map<String, dynamic> rawChannel) async {
-    final server = await _dataStore.server.getServer(id);
+    final server = await _dataStore.server.getServer(rawChannel['guild_id']);
     server.channels.list[channel.id] = channel;
 
     final rawServer = await _dataStore.marshaller.serializers.server.deserialize(server);

@@ -18,11 +18,19 @@ final class GuildCreatePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.serializers.server.serialize(message.payload);
 
-    marshaller.cache.put(server.id, message.payload);
-    for (final channel in List<Map<String, dynamic>>.from(message.payload['channels'])) {
-      marshaller.cache.put(channel['id'], channel);
+    for (final role in server.roles.list.values) {
+      await marshaller.cache.put(role.id, await marshaller.serializers.role.deserialize(role));
     }
 
+    for (final channel in server.channels.list.values) {
+      await marshaller.cache.put(channel.id, await marshaller.serializers.channels.deserialize(channel));
+    }
+
+    for (final member in server.members.list.values) {
+      await marshaller.cache.put(member.id, await marshaller.serializers.member.deserialize(member));
+    }
+
+    await marshaller.cache.put(server.id, await marshaller.serializers.server.deserialize(server));
     dispatch(event: MineralEvent.serverCreate, params: [server]);
   }
 }

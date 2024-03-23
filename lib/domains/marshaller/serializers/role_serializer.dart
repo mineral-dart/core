@@ -14,9 +14,9 @@ final class RoleSerializer implements SerializerContract<Role> {
     return Role(
       id: Snowflake(json['id']),
       name: json['name'],
-      color: json['color'],
-      hoist: json['hoist'],
-      position: json['position'],
+      color: json['color'] ?? 0,
+      hoist: json['hoist'] ?? false,
+      position: json['position'] ?? 0,
       permissions: switch(json['permissions']) {
         int() => Permissions.fromInt(json['permissions']),
         String() => Permissions.fromInt(int.parse(json['permissions'])),

@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
@@ -17,7 +18,6 @@ final class ChannelDeletePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-
     final channel = await marshaller.serializers.channels.serialize(message.payload);
 
     switch (channel) {
@@ -26,16 +26,17 @@ final class ChannelDeletePacket implements ListenablePacket {
     }
   }
 
-  Future<void> registerServerChannel(String guildId, ServerChannel channel, DispatchEvent dispatch) async {
-    final rawServer = await marshaller.cache.get(guildId);
-    final server = await marshaller.serializers.server.serialize(rawServer);
+  Future<void> registerServerChannel(Snowflake guildId, ServerChannel channel, DispatchEvent dispatch) async {
+    final server = await marshaller.dataStore.server.getServer(guildId);
 
     channel.server = server;
-    marshaller.cache.remove(channel.id);
+    server.channels.list.remove(channel.id);
+
+    await Future.wait([
+      marshaller.cache.put(guildId, await marshaller.serializers.server.deserialize(server)),
+      marshaller.cache.remove(channel.id)
+    ]);
 
     dispatch(event: MineralEvent.serverChannelDelete, params: [channel]);
-
-    server.channels.list.remove(channel.id);
-    marshaller.cache.put(guildId, await marshaller.serializers.server.deserialize(server));
   }
 }

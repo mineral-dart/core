@@ -16,6 +16,7 @@ final class ServerSerializer implements SerializerContract<Server> {
     final serializedRoles = cache
         ? await _marshaller.dataStore.server.getRoles(Snowflake(json['id']))
         : await Future.wait(List.from(json['roles'])
+            .where((element) => element['id'] != json['id'])
             .map((element) async => _marshaller.serializers.role.serialize(element)));
 
     final serializedMembers = cache
@@ -25,7 +26,7 @@ final class ServerSerializer implements SerializerContract<Server> {
             .serialize({...element, 'guild_roles': serializedRoles})));
 
     final channelManager =
-        await ChannelManager.fromJson(marshaller: _marshaller, guildId: json['id'], json: json);
+        await ChannelManager.fromJson(marshaller: _marshaller, guildId: json['id'], json: json, cache: cache);
 
     final roleManager = RoleManager.fromList(serializedRoles);
     final owner = serializedMembers.firstWhere((member) => member.id == json['owner_id']);
@@ -58,18 +59,21 @@ final class ServerSerializer implements SerializerContract<Server> {
   @override
   Future<Map<String, dynamic>> deserialize(Server server) async {
     final assets = await _marshaller.serializers.serversAsset.deserialize(server.assets);
+    final settings = await _marshaller.serializers.serverSettings.deserialize(server.settings);
+
     return {
       'id': server.id,
+      'owner_id': server.owner.id,
       'name': server.name,
       'members': server.members.list.keys.toList(),
-      'settings': await _marshaller.serializers.serverSettings.deserialize(server.settings),
       'roles': server.roles.list.keys.toList(),
       'channels': server.channels.list.keys.toList(),
       'description': server.description,
       'applicationId': server.applicationId,
       'assets': await _marshaller.serializers.serversAsset.deserialize(server.assets),
       'owner': await _marshaller.serializers.member.deserialize(server.owner),
-      ...assets
+      ...assets,
+      ...settings,
     };
   }
 }

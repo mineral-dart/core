@@ -9,8 +9,8 @@ final class MemberVoice {
 
   factory MemberVoice.fromJson(Map<String, dynamic> json) {
     return MemberVoice(
-      isDeaf: json['deaf'],
-      isMute: json['mute'],
+      isDeaf: json['deaf'] ?? false,
+      isMute: json['mute'] ?? false,
     );
   }
 }

@@ -9,19 +9,23 @@ final class ServerTextChannelFactory implements ChannelFactoryContract<ServerTex
   ChannelType get type => ChannelType.guildText;
 
   @override
-  Future<ServerTextChannel> make(
-      MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+  Future<ServerTextChannel> make(MarshallerContract marshaller, String guildId,
+      Map<String, dynamic> json) async {
     final properties = await ChannelProperties.make(marshaller, json);
 
     return ServerTextChannel(properties);
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(
-      MarshallerContract marshaller, ServerTextChannel channel) async {
+  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller,
+      ServerTextChannel channel) async {
+    final permissions = await Future.wait(channel.permissions.map((element) async =>
+        marshaller.serializers.channelPermissionOverwrite.deserialize(element)));
+
     return {
       'id': channel.id.value,
       'type': channel.type.value,
+      'permissions': permissions
     };
   }
 }

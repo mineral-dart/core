@@ -24,8 +24,8 @@ final class ChannelPermissionOverwriteSerializer implements SerializerContract<C
     return {
       'id': permission.id,
       'type': permission.type.value,
-      'allow_new': permission.allow,
-      'deny_new': permission.deny,
+      'allow': permission.allow,
+      'deny': permission.deny,
     };
   }
 }

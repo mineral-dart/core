@@ -32,17 +32,16 @@ final class ChannelCreatePacket implements ListenablePacket {
   }
 
   Future<void> registerServerChannel(ShardMessage message, ServerChannel channel, DispatchEvent dispatch) async {
-    final rawServer = await marshaller.cache.get(message.payload['guild_id']);
+    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
 
-    if (rawServer != null) {
-      final server = await marshaller.serializers.server.serialize(rawServer);
+    channel.server = server;
+    server.channels.list.putIfAbsent(channel.id, () => channel);
+    final rawServer = await marshaller.serializers.server.deserialize(server);
 
-      channel.server = server;
-      server.channels.list.putIfAbsent(channel.id, () => channel);
-    }
-
-    print(message.payload);
-    await marshaller.cache.put(channel.id, message.payload);
+    await Future.wait([
+      marshaller.cache.put(server.id, rawServer),
+      marshaller.cache.put(channel.id, message.payload)
+    ]);
 
     dispatch(event: MineralEvent.serverChannelCreate, params: [channel]);
   }

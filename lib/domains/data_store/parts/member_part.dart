@@ -3,8 +3,6 @@ import 'dart:io';
 
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/member.dart';
-import 'package:mineral/api/server/role.dart';
-import 'package:mineral/api/server/server.dart';
 import 'package:mineral/application/http/http_client_status.dart';
 import 'package:mineral/application/http/response.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
@@ -42,8 +40,17 @@ final class MemberPart implements DataStorePart {
       return members;
     }
 
-    final server = await _dataStore.server.getServer(guildId);
-    return server.members.list.values.toList();
+    final rawServer = await _dataStore.marshaller.cache.get(guildId);
+    final roles = await _dataStore.server.getRoles(guildId);
+    return Future.wait(
+        List.from(rawServer['members']).map((id) async {
+          final rawMember = await _dataStore.marshaller.cache.get(id);
+          return _dataStore.marshaller.serializers.member.serialize({
+            ...rawMember,
+            'guild_roles': roles,
+          }, cache: true);
+        })
+    );
   }
 
   Future<Member?> _serializeMemberResponse(Response response) {

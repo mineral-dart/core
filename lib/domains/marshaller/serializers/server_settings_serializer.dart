@@ -36,7 +36,9 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
   }
 
   @override
-  Map<String, dynamic> deserialize(ServerSettings object) {
+  Future<Map<String, dynamic>> deserialize(ServerSettings object) async {
+    final subscriptions = await _marshaller.serializers.serverSubscription.deserialize(object.subscription);
+
     return {
       'permissions': object.bitfieldPermission,
       'afk_timeout': object.afkTimeout,
@@ -48,10 +50,10 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
       'mfa_level': object.mfaLevel.value,
       'system_channel_flags': listToBitfield(object.systemChannelFlags),
       'vanity_url_code': object.vanityUrlCode,
-      'subscription': _marshaller.serializers.serverSubscription.deserialize(object.subscription),
       'preferred_locale': object.preferredLocale,
       'max_video_channel_users': object.maxVideoChannelUsers,
-      'nsfw_level': object.nsfwLevel.value
+      'nsfw_level': object.nsfwLevel.value,
+      ...subscriptions
     };
   }
 }
