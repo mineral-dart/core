@@ -1,3 +1,5 @@
+import 'package:mineral/api/common/permissions.dart';
+import 'package:mineral/api/common/premium_tier.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
@@ -22,6 +24,12 @@ final class Member {
   final bool isPending;
   final MemberTimeout timeout;
   final MemberVoice voice;
+  final bool mfAEnabled;
+  final String? locale;
+  final PremiumTier premiumType;
+  final DateTime? joinedAt;
+  final Permissions permissions;
+  final bool pending;
 
   bool canByPassVerification() => flags.contains(MemberFlag.bypassedVerification);
 
@@ -46,5 +54,11 @@ final class Member {
     required this.isPending,
     required this.timeout,
     required this.voice,
+    required this.mfAEnabled,
+    required this.locale,
+    required this.premiumType,
+    required this.joinedAt,
+    required this.permissions,
+    required this.pending,
   });
 }

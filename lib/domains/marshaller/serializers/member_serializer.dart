@@ -1,3 +1,5 @@
+import 'package:mineral/api/common/permissions.dart';
+import 'package:mineral/api/common/premium_tier.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member.dart';
@@ -38,6 +40,17 @@ final class MemberSerializer implements SerializerContract<Member> {
               field: json['communication_disabled_until'],
               fn: () => DateTime.parse(json['communication_disabled_until']))),
       voice: MemberVoice.fromJson(json),
+      mfAEnabled: json['user']['mfa_enabled'] ?? false,
+      locale: json['user']['locale'],
+      premiumType: PremiumTier.values.firstWhere((e) => e == json['user']['premium_type'], orElse: () => PremiumTier.none),
+      joinedAt: Helper.createOrNull(
+          field: json['joined_at'], fn: () => DateTime.parse(json['joined_at'])),
+      permissions: switch(json['permissions']) {
+        int() => Permissions.fromInt(json['permissions']),
+        String() => Permissions.fromInt(int.parse(json['permissions'])),
+        _ => Permissions.fromInt(0),
+      },
+      pending: json['pending'] ?? false,
     );
   }
 

@@ -1,4 +1,4 @@
-import 'package:mineral/api/server/enums/premium_tier.dart';
+import 'package:mineral/api/common/premium_tier.dart';
 
 final class ServerSubscription {
   final PremiumTier tier;

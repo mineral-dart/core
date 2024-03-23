@@ -1,4 +1,4 @@
-import 'package:mineral/api/server/enums/premium_tier.dart';
+import 'package:mineral/api/common/premium_tier.dart';
 import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
