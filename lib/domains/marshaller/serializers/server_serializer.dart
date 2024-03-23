@@ -18,12 +18,11 @@ final class ServerSerializer implements SerializerContract<Server> {
         : await Future.wait(List.from(json['roles'])
             .map((element) async => _marshaller.serializers.role.serialize(element)));
 
-    final serializedMembers = await Future.wait(List.from(json['members']).map((element) async =>
-        cache
-            ? _marshaller.dataStore.member.getMember(
-                guildId: Snowflake(json['id']), memberId: Snowflake(element['id']))
-            : _marshaller.serializers.member
-                .serialize({...element, 'guild_roles': serializedRoles})));
+    final serializedMembers = cache
+        ? await _marshaller.dataStore.member.getMembers(Snowflake(json['id']))
+        : await Future.wait(List.from(json['members']).map((element) async => _marshaller
+            .serializers.member
+            .serialize({...element, 'guild_roles': serializedRoles})));
 
     final channelManager =
         await ChannelManager.fromJson(marshaller: _marshaller, guildId: json['id'], json: json);
