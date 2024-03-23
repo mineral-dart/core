@@ -1,4 +1,6 @@
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/private/user_assets.dart';
+import 'package:mineral/api/common/premium_tier.dart';
 
 final class User {
   final Snowflake id;
@@ -12,8 +14,11 @@ final class User {
   final bool? verified;
   final String? email;
   final int? flags;
-  final int? premiumType;
+  final PremiumTier? premiumType;
   final int? publicFlags;
+  final UserAssets assets;
+  final DateTime? createdAt;
+
 
   User({
     required this.id,
@@ -29,5 +34,7 @@ final class User {
     required this.flags,
     required this.premiumType,
     required this.publicFlags,
+    required this.assets,
+    required this.createdAt,
   });
 }
