@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/message_properties.dart';
 import 'package:mineral/api/common/snowflake.dart';
@@ -12,6 +13,14 @@ final class PrivateMessage implements Message {
 
   @override
   String get content => _properties.content;
+
+  List<MessageEmbed> get embeds => _properties.embeds;
+
+  PrivateChannel get channel => _properties.channel;
+
+  DateTime get createdAt => _properties.createdAt;
+
+  DateTime? get updatedAt => _properties.updatedAt;
 
   final String userId;
 
