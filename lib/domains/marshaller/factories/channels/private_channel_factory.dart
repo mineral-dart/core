@@ -10,9 +10,9 @@ final class PrivateChannelFactory implements ChannelFactoryContract<PrivateChann
 
   @override
   Future<PrivateChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-      final properties = await ChannelProperties.make(marshaller, json);
-      return PrivateChannel(properties);
-    }
+    final properties = await ChannelProperties.make(marshaller, json);
+    return PrivateChannel(properties);
+  }
 
   @override
   Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, PrivateChannel channel) async {

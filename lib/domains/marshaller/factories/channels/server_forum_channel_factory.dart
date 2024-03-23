@@ -37,6 +37,9 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
     return {
       'id': channel.id.value,
       'type': channel.type.value,
+      'name': channel.name,
+      'position': channel.position,
+      'guild_id': channel.server.id,
       'permissions': permissions,
     };
   }

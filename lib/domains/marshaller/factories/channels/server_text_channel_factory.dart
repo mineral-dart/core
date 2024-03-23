@@ -25,6 +25,10 @@ final class ServerTextChannelFactory implements ChannelFactoryContract<ServerTex
     return {
       'id': channel.id.value,
       'type': channel.type.value,
+      'name': channel.name,
+      'position': channel.position,
+      'guild_id': channel.server.id,
+      'topic': channel.description,
       'permissions': permissions
     };
   }

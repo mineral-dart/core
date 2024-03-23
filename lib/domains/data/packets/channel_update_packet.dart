@@ -31,21 +31,19 @@ final class ChannelUpdatePacket implements ListenablePacket {
     }
   }
 
-  Future<void> registerServerChannel(ShardMessage message, ServerChannel after, DispatchEvent dispatch) async {
-    final rawServer = await marshaller.cache.get(message.payload['guild_id']);
-    final rawBefore = await marshaller.cache.get(after.id);
-    final before = await marshaller.serializers.channels.serialize(rawBefore);
+  Future<void> registerServerChannel(ShardMessage message, ServerChannel channel, DispatchEvent dispatch) async {
+    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+    final before = await marshaller.dataStore.channel.getChannel(channel.id);
 
-    if (rawServer != null) {
-      final server = await marshaller.serializers.server.serialize(rawServer);
-
-      after.server = server;
-      server.channels.list[after.id] = after;
-      marshaller.cache.put(server.id, await marshaller.serializers.server.deserialize(server));
+    if (before case ServerChannel()) {
+      before.server = server;
     }
 
-    dispatch(event: MineralEvent.serverChannelUpdate, params: [before, after]);
+    channel.server = server;
 
-    marshaller.cache.put(after.id, message.payload);
+    final rawChannel = await marshaller.serializers.channels.deserialize(channel);
+    await marshaller.cache.put(channel.id, rawChannel);
+
+    dispatch(event: MineralEvent.serverChannelUpdate, params: [before, channel]);
   }
 }
