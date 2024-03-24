@@ -18,13 +18,8 @@ final class GuildMemberAddPacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final Snowflake serverId = Snowflake(message.payload['guild_id']);
-    final rawServer = await marshaller.cache.get(serverId);
+    final server = await marshaller.dataStore.server.getServer(serverId);
 
-    if (rawServer == null) {
-      return;
-    }
-
-    final server = await marshaller.serializers.server.serialize(rawServer);
     final member = await marshaller.serializers.member.serialize({
       ...message.payload,
       'guild_roles': server.roles.list
@@ -32,7 +27,9 @@ final class GuildMemberAddPacket implements ListenablePacket {
 
     await marshaller.cache.put(member.id, message.payload);
     server.members.list.putIfAbsent(member.id, () => member);
-    // TODO: Add deserialize server then put in cache
+
+    final rawServer = await marshaller.serializers.server.deserialize(server);
+    await marshaller.cache.put(server.id, rawServer);
 
     dispatch(event: MineralEvent.serverMemberAdd, params: [member, server]);
   }
