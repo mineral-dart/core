@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
@@ -16,20 +17,16 @@ final class GuildMemberRemovePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final String serverId = message.payload['guild_id'];
-    final rawServer = await marshaller.cache.get(serverId);
+    final Snowflake serverId = message.payload['guild_id'];
+    final server = await marshaller.dataStore.server.getServer(serverId);
+    final member = await marshaller.dataStore.member.getMember(
+        guildId: serverId, memberId: Snowflake(message.payload['user']['id']));
 
-    if (rawServer == null) {
-      return;
-    }
+    server.members.list.remove(member.id);
+    await marshaller.cache.remove(member.id);
 
-    final server = await marshaller.serializers.server.serialize(rawServer);
-    final member = server.members.get(message.payload['user']['id']);
-
-    server.members.list.remove(member?.id);
-    marshaller.cache.remove(member?.id);
-
-    await marshaller.cache.put(server.id, await marshaller.serializers.server.deserialize(server));
+    final rawServer = await marshaller.serializers.server.deserialize(server);
+    await marshaller.cache.put(server.id, rawServer);
 
     dispatch(event: MineralEvent.serverMemberRemove, params: [member, server]);
   }
