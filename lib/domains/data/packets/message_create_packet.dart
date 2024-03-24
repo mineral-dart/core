@@ -1,3 +1,4 @@
+import 'package:mineral/api/message_type.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
@@ -16,7 +17,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    if (message.payload['type'] != 0) {
+    if (![MessageType.initial, MessageType.reply].contains(message.payload['type'])) {
       return;
     }
 
