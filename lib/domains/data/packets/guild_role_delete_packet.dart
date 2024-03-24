@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
@@ -16,13 +17,20 @@ final class GuildRoleDeletePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+    final guildId = Snowflake(message.payload['guild_id']);
+    final roleId = Snowflake(message.payload['role_id']);
 
-    final rawRole = await marshaller.cache.get(message.payload['role_id']);
-    final role = await marshaller.serializers.role.serialize(rawRole);
+    final server = await marshaller.dataStore.server.getServer(guildId);
+    final role = await marshaller.dataStore.server.getRole(guildId, roleId);
 
-    server.roles.list.remove(role.id);
-    marshaller.cache.put(server.id, await marshaller.serializers.server.deserialize(server));
+    server.roles.list.remove(roleId);
+
+    final rawServer = await marshaller.serializers.server.deserialize(server);
+
+    await Future.wait([
+      marshaller.cache.remove(roleId),
+      marshaller.cache.put(server.id, rawServer)
+    ]);
 
     dispatch(event: MineralEvent.serverRoleDelete, params: [role, server]);
   }
