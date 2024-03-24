@@ -31,12 +31,6 @@ final class ServerAnnouncementChannelFactory
   @override
   Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller,
       ServerAnnouncementChannel channel) async {
-    final permissionOverwrites = await Future.wait(
-      channel.permissions
-          .map((json) async => marshaller.serializers.channelPermissionOverwrite.deserialize(json))
-          .toList(),
-    );
-
     final permissions = await Future.wait(channel.permissions.map((element) async =>
         marshaller.serializers.channelPermissionOverwrite.deserialize(element)));
 
@@ -44,12 +38,11 @@ final class ServerAnnouncementChannelFactory
       'id': channel.id.value,
       'type': channel.type.value,
       'position': channel.position,
-      'permission_overwrites': permissionOverwrites,
+      'permission_overwrites': permissions,
       'name': channel.name,
       'topic': channel.description,
       'nsfw': channel.isNsfw,
       'parent_id': channel.category?.id,
-      'permissions': permissions,
     };
   }
 }

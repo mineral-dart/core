@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
@@ -25,20 +26,23 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
   }
 
   Future<void> registerServerChannelPins(ShardMessage message, DispatchEvent dispatch) async {
-    final rawServer = await marshaller.cache.get(message.payload['guild_id']);
-    final server = await marshaller.serializers.server.serialize(rawServer);
+    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
 
-    final channel = await marshaller.serializers.channels.serialize(message.payload);
+    final channel = await marshaller.dataStore.channel.getChannel(message.payload['channel_id']);
+
     final timestamps = Helper.createOrNull(
         field: message.payload['last_pin_timestamp'],
         fn: () => DateTime.tryParse(message.payload['last_pin_timestamp']));
 
-    if (![server, channel].contains(null)) {
-      marshaller.cache.put(channel!.id, channel);
-      server.channels.list[channel.id] = channel as ServerChannel;
+    if (channel is ServerChannel) {
+      channel.server = server;
     }
 
-    // TODO: Add deserialize server then put in cache
+    if (channel case Channel()) {
+      final rawChannel = await marshaller.serializers.channels.deserialize(channel);
+      marshaller.cache.put(channel.id, rawChannel);
+    }
+
     dispatch(event: MineralEvent.serverChannelPinsUpdate, params: [server, channel, timestamps]);
   }
 }

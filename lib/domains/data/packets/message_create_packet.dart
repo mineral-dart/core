@@ -16,6 +16,10 @@ final class MessageCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    if (message.payload['type'] != 0) {
+      return;
+    }
+
     switch (message.payload['guild_id']) {
       case String():
         await sendServerMessage(dispatch, message.payload);
@@ -25,7 +29,7 @@ final class MessageCreatePacket implements ListenablePacket {
   }
 
   Future<void> sendServerMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
-    final message = await marshaller.serializers.serverMessage.serialize(json);
+    final message = await marshaller.serializers.serverMessage.serialize(json, cache: true);
     dispatch(event: MineralEvent.serverMessageCreate, params: [message]);
 
     await marshaller.cache.put(message.id, json);

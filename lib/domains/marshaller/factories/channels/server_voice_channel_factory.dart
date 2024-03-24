@@ -25,7 +25,7 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
       'name': channel.name,
       'position': channel.position,
       'guild_id': channel.server.id,
-      'permissions': permissions
+      'permission_overwrites': permissions
     };
   }
 }

@@ -21,7 +21,7 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
 
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
 
-    final server = await _marshaller.serializers.server.serialize(rawServer);
+    final server = await _marshaller.serializers.server.serialize(rawServer, cache: cache);
 
     return ServerMessage(messageProperties,
         userId: json['author']['id'], author: server.members.getOrFail(json['author']['id']));

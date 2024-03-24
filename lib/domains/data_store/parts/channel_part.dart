@@ -21,7 +21,6 @@ final class ChannelPart implements DataStorePart {
 
   Future<T?> getChannel<T extends Channel>(Snowflake id) async {
     final cachedChannel = await _dataStore.marshaller.cache.get(id);
-    print(cachedChannel);
     if (cachedChannel != null) {
       return _dataStore.marshaller.serializers.channels.serialize(cachedChannel, cache: true) as Future<T?>;
     }
