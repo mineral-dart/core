@@ -18,8 +18,7 @@ final class GuildDeletePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final Snowflake serverId = Snowflake(message.payload['id']);
-    final rawServer = await marshaller.cache.get(serverId);
-    final server = await marshaller.serializers.server.serialize(rawServer);
+    final server = await marshaller.dataStore.server.getServer(serverId);
 
     dispatch(event: MineralEvent.serverDelete, params: [server]);
 
