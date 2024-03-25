@@ -21,6 +21,8 @@ final class MemberSerializer implements SerializerContract<Member> {
     final serverRoles = json.entries.firstWhere((element) => element.key == 'guild_roles',
         orElse: () => throw FormatException('Server roles not found in member structure'));
 
+    print(json['user']['accent_color']); // int
+
     return Member(
       id: json['user']['id'],
       username: json['user']['nick'] ?? json['user']['username'],
@@ -51,6 +53,7 @@ final class MemberSerializer implements SerializerContract<Member> {
         _ => Permissions.fromInt(0),
       },
       pending: json['pending'] ?? false,
+      accentColor: json['accent_color'],
     );
   }
 

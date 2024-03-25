@@ -30,6 +30,7 @@ final class Member {
   final DateTime? joinedAt;
   final Permissions permissions;
   final bool pending;
+  final int? accentColor;
 
   bool canByPassVerification() => flags.contains(MemberFlag.bypassedVerification);
 
@@ -60,5 +61,6 @@ final class Member {
     required this.joinedAt,
     required this.permissions,
     required this.pending,
+    required this.accentColor,
   });
 }
