@@ -2,17 +2,13 @@ import 'package:mineral/api/common/permission.dart';
 
 final class Permissions {
   final int raw;
-  final List<Permission> permissions;
+  final List<Permission> _permissions;
 
-  Permissions(this.raw, this.permissions);
+  List<Permission> get list => _permissions;
 
-  bool has(Permission permission) => permissions.contains(permission);
+  Permissions(this.raw, this._permissions);
 
-  bool hasAll(List<Permission> permissions) => permissions.every((permission) => has(permission));
-
-  bool hasAny(List<Permission> permissions) => permissions.any((permission) => has(permission));
-
-  bool hasNone(List<Permission> permissions) => permissions.every((permission) => !has(permission));
+  bool has(Permission permission) => _permissions.contains(permission);
 
   factory Permissions.fromInt(int raw) {
     final permissions = Permission.values.where((permission) => raw & permission.value == permission.value).toList();

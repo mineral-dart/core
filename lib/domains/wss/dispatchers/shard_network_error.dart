@@ -12,6 +12,7 @@ final class ShardNetworkErrorImpl implements ShardNetworkError {
 
   @override
   void dispatch(dynamic payload) {
+    print(payload);
     final ShardDisconnectError? error = ShardDisconnectError.values
         .where((element) => element.code == payload as int)
         .firstOrNull;

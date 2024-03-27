@@ -1,4 +1,6 @@
-enum Permission {
+import 'package:mineral/api/common/types/enhanced_enum.dart';
+
+enum Permission implements EnhancedEnum<int> {
   createInstantInvite(1 << 0),
   kickMembers(1 << 1),
   banMembers(1 << 2),

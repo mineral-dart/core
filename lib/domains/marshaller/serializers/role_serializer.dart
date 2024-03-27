@@ -3,6 +3,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
+import 'package:mineral/domains/shared/utils.dart';
 
 final class RoleSerializer implements SerializerContract<Role> {
   final MarshallerContract marshaller;
@@ -39,7 +40,7 @@ final class RoleSerializer implements SerializerContract<Role> {
       'color': object.color,
       'hoist': object.hoist,
       'position': object.position,
-      'permissions': object.permissions,
+      'permissions': listToBitfield(object.permissions.list),
       'managed': object.managed,
       'mentionable': object.mentionable,
       'flags': object.flags,
