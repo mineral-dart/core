@@ -45,4 +45,12 @@ final class ServerTextChannel extends ServerChannel {
       payload: {'topic': description},
     );
   }
+
+  Future<void> setCategory(String categoryId, {String? reason}) async {
+    await DataStore.singleton().channel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'parent_id': categoryId},
+    );
+  }
 }
