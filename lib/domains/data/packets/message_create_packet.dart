@@ -1,4 +1,4 @@
-import 'package:mineral/api/message_type.dart';
+import 'package:mineral/api/common/message_type.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
