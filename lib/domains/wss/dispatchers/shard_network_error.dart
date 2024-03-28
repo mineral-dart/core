@@ -14,7 +14,7 @@ final class ShardNetworkErrorImpl implements ShardNetworkError {
   @override
   void dispatch(dynamic payload) {
     if (payload == null) {
-      Logger.singleton().error('Unknown error with empty exit code, restarting…');
+      Logger.singleton().trace('Unknown error with empty exit code, restarting…');
 
       shard.client.disconnect();
       shard.client.connect();

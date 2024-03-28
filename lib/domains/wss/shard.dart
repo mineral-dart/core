@@ -1,6 +1,8 @@
 import 'dart:convert';
 
+import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/application/wss/websocket_client.dart';
+import 'package:mineral/application/wss/websocket_message.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/constants/op_code.dart';
 import 'package:mineral/domains/wss/dispatchers/shard_authentication.dart';
@@ -60,14 +62,23 @@ final class Shard implements ShardContract {
         },
         onOpen: (message) {
           if (message.content case ShardMessage(:final payload)) {
-            print('Opened<< ! $payload');
+            Logger.singleton().trace(jsonEncode(payload));
           }
         });
 
-    client.interceptor.message.add((message) async {
-      message.content = ShardMessageImpl.of(jsonDecode(message.originalContent));
-      return message;
-    });
+    client.interceptor.message
+      ..add((WebsocketMessage message) async {
+        Logger.singleton().trace({
+          'shard': shardName,
+          'message': message.content,
+        });
+
+        return message;
+      })
+      ..add((message) async {
+        message.content = ShardMessageImpl.of(jsonDecode(message.originalContent));
+        return message;
+      });
 
     client.listen((message) {
       if (message.content case ShardMessage(opCode: final code, payload: final payload)) {
