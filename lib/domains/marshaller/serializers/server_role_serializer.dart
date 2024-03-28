@@ -26,7 +26,6 @@ final class RoleSerializer implements SerializerContract<Role> {
       mentionable: json['mentionable'],
       flags: json['flags'],
       icon: json['icon'],
-      tags: json['tags'],
       unicodeEmoji: json['unicode_emoji'],
     );
   }

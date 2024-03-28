@@ -24,7 +24,7 @@ final class ChannelManager {
 
   T? getOrNull<T extends ServerChannel>(Snowflake? id) => _channels[id] as T?;
 
-  T getOrFail<T extends ServerChannel>(Snowflake id) =>
+  T getOrFail<T extends ServerChannel>(String id) =>
       _channels.values.firstWhere((element) => element.id == id,
           orElse: () => throw Exception('Channel not found')) as T;
 

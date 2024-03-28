@@ -12,7 +12,6 @@ final class Role {
   final int flags;
   final String? icon;
   final String? unicodeEmoji;
-  final Map<String, dynamic> tags;
   final Permissions permissions;
 
   Role({
@@ -27,6 +26,5 @@ final class Role {
     required this.flags,
     required this.icon,
     required this.unicodeEmoji,
-    required this.tags,
   });
 }
