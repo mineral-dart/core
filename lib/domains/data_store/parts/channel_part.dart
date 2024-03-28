@@ -88,7 +88,7 @@ final class ChannelPart implements DataStorePart {
       int() when status.isSuccess(response.statusCode) =>
         _dataStore.marshaller.serializers.channels.serialize(response.body),
       int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
     } as Future<T?>;
   }
 
