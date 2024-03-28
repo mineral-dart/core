@@ -47,7 +47,9 @@ final class Kernel implements KernelContract {
       Header.authorization('Bot ${config.token}'),
     ]);
 
-    ioc.bind('data_store', () => dataStore);
+    ioc
+      ..bind('logger', () => logger)
+      ..bind('data_store', () => dataStore);
   }
 
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {

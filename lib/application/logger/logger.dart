@@ -1,4 +1,5 @@
 import 'package:logging/logging.dart' as logging;
+import 'package:mineral/application/container/ioc_container.dart';
 
 abstract interface class LoggerContract {
   void trace(Object message);
@@ -45,4 +46,6 @@ final class Logger implements LoggerContract {
 
   @override
   void warn(String message) => _logger.warning(message);
+
+  factory Logger.singleton() => ioc.resolve('logger');
 }
