@@ -58,7 +58,6 @@ final class Shard implements ShardContract {
         },
         onClose: (int? exitCode) {
           networkError.dispatch(exitCode);
-          print('closed !');
         },
         onOpen: (message) {
           if (message.content case ShardMessage(:final payload)) {
