@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/wss/constants/shard_disconnect_error.dart';
 import 'package:mineral/domains/wss/shard.dart';
@@ -15,11 +17,7 @@ final class ShardNetworkErrorImpl implements ShardNetworkError {
   void dispatch(dynamic payload) {
     if ([null, 1005].contains(payload)) {
       Logger.singleton().trace('Unknown error with empty exit code, restarting…');
-
-      shard.client.disconnect();
-      shard.client.connect();
-
-      return;
+      exit(1);
     }
 
     final ShardDisconnectError? error = ShardDisconnectError.values
