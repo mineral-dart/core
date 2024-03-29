@@ -17,7 +17,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    if (![MessageType.initial, MessageType.reply].contains(message.payload['type'])) {
+    if (![MessageType.initial.value, MessageType.reply.value].contains(message.payload['type'])) {
       return;
     }
 
