@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/private/user_assets.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
@@ -26,6 +27,7 @@ final class UserSerializer implements SerializerContract<User> {
       publicFlags: json['public_flags'],
       assets: UserAssets.fromJson(json),
       createdAt: json['created_at'],
+      presence: json['presence'] != null ? Presence.fromJson(json['presence']) : null,
     );
   }
 

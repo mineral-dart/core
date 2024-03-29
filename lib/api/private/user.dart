@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/user_assets.dart';
 import 'package:mineral/api/common/premium_tier.dart';
@@ -18,6 +19,7 @@ final class User {
   final int? publicFlags;
   final UserAssets assets;
   final DateTime? createdAt;
+  Presence? presence;
 
 
   User({
@@ -36,5 +38,6 @@ final class User {
     required this.publicFlags,
     required this.assets,
     required this.createdAt,
+    required this.presence,
   });
 }
