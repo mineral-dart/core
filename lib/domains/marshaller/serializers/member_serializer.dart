@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/permissions.dart';
 import 'package:mineral/api/common/premium_tier.dart';
+import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member.dart';
@@ -52,6 +53,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       },
       pending: json['pending'] ?? false,
       accentColor: json['accent_color'],
+      presence: json['presence'] != null ? Presence.fromJson(json['presence']) : null,
     );
   }
 

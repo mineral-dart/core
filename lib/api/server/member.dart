@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/permissions.dart';
 import 'package:mineral/api/common/premium_tier.dart';
+import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
@@ -31,6 +32,7 @@ final class Member {
   final Permissions permissions;
   final bool pending;
   final int? accentColor;
+  Presence? presence;
 
   bool canByPassVerification() => flags.contains(MemberFlag.bypassedVerification);
 
@@ -62,5 +64,6 @@ final class Member {
     required this.permissions,
     required this.pending,
     required this.accentColor,
+    required this.presence,
   });
 }
