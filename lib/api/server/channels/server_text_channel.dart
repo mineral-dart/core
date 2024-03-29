@@ -53,4 +53,48 @@ final class ServerTextChannel extends ServerChannel {
       payload: {'parent_id': categoryId},
     );
   }
+
+  Future<void> setPosition(int position, {String? reason}) async {
+    await DataStore.singleton().channel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'position': position},
+    );
+  }
+
+  Future<void> setNsfw(bool nsfw, {String? reason}) async {
+    await DataStore.singleton().channel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'nsfw': nsfw},
+    );
+  }
+
+  Future<void> setRateLimitPerUser(int rateLimitPerUser, {String? reason}) async {
+    await DataStore.singleton().channel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'rate_limit_per_user': rateLimitPerUser},
+    );
+  }
+
+  Future<void> setDefaultAutoArchiveDuration(int defaultAutoArchiveDuration, {String? reason}) async {
+    await DataStore.singleton().channel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'default_auto_archive_duration': defaultAutoArchiveDuration},
+    );
+  }
+
+  Future<void> setDefaultThreadRateLimitPerUser(int value, {String? reason}) async {
+    await DataStore.singleton().channel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'default_thread_rate_limit_per_user': value},
+    );
+  }
+
+  Future<void> delete({String? reason}) async {
+    await DataStore.singleton().channel.deleteChannel(id, reason);
+  }
 }
