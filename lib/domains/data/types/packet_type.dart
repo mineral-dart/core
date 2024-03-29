@@ -10,6 +10,7 @@ enum PacketType {
   guildMemberAdd('GUILD_MEMBER_ADD'),
   guildMemberRemove('GUILD_MEMBER_REMOVE'),
   guildMemberUpdate('GUILD_MEMBER_UPDATE'),
+  guildMemberChunk('GUILD_MEMBER_CHUNK'),
 
   guildRoleCreate('GUILD_ROLE_CREATE'),
   guildRoleUpdate('GUILD_ROLE_UPDATE'),
