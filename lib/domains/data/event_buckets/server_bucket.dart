@@ -9,6 +9,7 @@ import 'package:mineral/domains/data/events/server/server_member_add_event.dart'
 import 'package:mineral/domains/data/events/server/server_member_remove_event.dart';
 import 'package:mineral/domains/data/events/server/server_member_update_event.dart';
 import 'package:mineral/domains/data/events/server/server_message_create_event.dart';
+import 'package:mineral/domains/data/events/server/server_presence_update_event.dart';
 import 'package:mineral/domains/data/events/server/server_roles_create_event.dart';
 import 'package:mineral/domains/data/events/server/server_roles_remove_event.dart';
 import 'package:mineral/domains/data/events/server/server_roles_update_event.dart';
@@ -61,4 +62,7 @@ final class ServerBucket {
 
   void roleDelete(ServerRolesDeleteEventHandler handle) =>
       _events.make(MineralEvent.serverRoleDelete, handle);
+
+  void presenceUpdate(ServerPresenceUpdateEventHandler handle) =>
+      _events.make(MineralEvent.serverPresenceUpdate, handle);
 }

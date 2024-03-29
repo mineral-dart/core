@@ -26,10 +26,10 @@ final class Activity {
       name: json['name'],
       type: ActivityType.values[json['type']],
       url: json['url'],
-      createdAt: DateTime.parse(json['createdAt']),
+      createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at']),
       details: json['details'],
       state: json['state'],
-      emoji: Helper.createOrNull(field: json['emoji'], fn: () => ActivityEmoji(name: json['name'], id: json['id'], animated: json['animated']))
+      emoji: Helper.createOrNull(field: json['emoji'], fn: () => ActivityEmoji(name: json['name'], id: json['id'], animated: json['animated'] ?? false))
     );
   }
 }

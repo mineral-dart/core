@@ -16,6 +16,7 @@ import 'package:mineral/domains/data/packets/guild_role_delete_packet.dart';
 import 'package:mineral/domains/data/packets/guild_role_update_packet.dart';
 import 'package:mineral/domains/data/packets/guild_update_packet.dart';
 import 'package:mineral/domains/data/packets/message_create_packet.dart';
+import 'package:mineral/domains/data/packets/presence_update_packet.dart';
 import 'package:mineral/domains/data/packets/ready_packet.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
@@ -57,6 +58,7 @@ final class DataListener implements DataListenerContract {
     subscribe(GuildRoleUpdatePacket.new);
     subscribe(GuildRoleDeletePacket.new);
     subscribe(GuildMemberChunkPacket.new);
+    subscribe(PresenceUpdatePacket.new);
   }
 
   void subscribe(ListenablePacket Function(LoggerContract, MarshallerContract) factory) {

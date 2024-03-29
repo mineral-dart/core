@@ -11,6 +11,7 @@ enum PacketType {
   guildMemberRemove('GUILD_MEMBER_REMOVE'),
   guildMemberUpdate('GUILD_MEMBER_UPDATE'),
   guildMemberChunk('GUILD_MEMBER_CHUNK'),
+  presenceUpdate('PRESENCE_UPDATE'),
 
   guildRoleCreate('GUILD_ROLE_CREATE'),
   guildRoleUpdate('GUILD_ROLE_UPDATE'),

@@ -1,6 +1,6 @@
 final class ActivityEmoji {
   final String name;
-  final int? id;
+  final String? id;
   final bool animated;
 
   ActivityEmoji({
