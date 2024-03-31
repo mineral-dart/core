@@ -1,4 +1,6 @@
 import 'package:mineral/domains/data/event_bucket.dart';
+import 'package:mineral/domains/data/events/server/server_ban_add_event.dart';
+import 'package:mineral/domains/data/events/server/server_ban_remove_event.dart';
 import 'package:mineral/domains/data/events/server/server_channel_create_event.dart';
 import 'package:mineral/domains/data/events/server/server_channel_delete_event.dart';
 import 'package:mineral/domains/data/events/server/server_channel_pins_update_event.dart';
@@ -65,4 +67,10 @@ final class ServerBucket {
 
   void presenceUpdate(ServerPresenceUpdateEventHandler handle) =>
       _events.make(MineralEvent.serverPresenceUpdate, handle);
+
+  void banAdd(ServerBanAddEventHandler handle) =>
+      _events.make(MineralEvent.serverBanAdd, handle);
+
+  void banRemove(ServerBanRemoveEventHandler handle) =>
+      _events.make(MineralEvent.serverBanRemove, handle);
 }
