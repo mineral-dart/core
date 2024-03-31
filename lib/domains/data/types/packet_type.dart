@@ -1,16 +1,23 @@
 enum PacketType {
   ready('READY'),
   messageCreate('MESSAGE_CREATE'),
+
   guildCreate('GUILD_CREATE'),
   guildUpdate('GUILD_UPDATE'),
   guildDelete('GUILD_DELETE'),
+
   channelCreate('CHANNEL_CREATE'),
   channelUpdate('CHANNEL_UPDATE'),
   channelDelete('CHANNEL_DELETE'),
+
   guildMemberAdd('GUILD_MEMBER_ADD'),
   guildMemberRemove('GUILD_MEMBER_REMOVE'),
   guildMemberUpdate('GUILD_MEMBER_UPDATE'),
   guildMemberChunk('GUILD_MEMBER_CHUNK'),
+
+  guildBanAdd('GUILD_BAN_ADD'),
+  guildBanRemove('GUILD_BAN_REMOVE'),
+
   presenceUpdate('PRESENCE_UPDATE'),
 
   guildRoleCreate('GUILD_ROLE_CREATE'),
