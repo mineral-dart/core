@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/common/video_quality.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/data_store/parts/channel_part.dart';
 
@@ -70,6 +71,38 @@ final class ChannelMethods {
       id: id,
       reason: reason,
       payload: {'default_thread_rate_limit_per_user': value},
+    );
+  }
+
+  Future<void> setBitrate(int bitrate, String? reason) async {
+    await dataStoreChannel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'bitrate': bitrate},
+    );
+  }
+
+  Future<void> setUserLimit(int userLimit, String? reason) async {
+    await dataStoreChannel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'user_limit': userLimit},
+    );
+  }
+
+  Future<void> setRtcRegion(String rtcRegion, String? reason) async {
+    await dataStoreChannel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'rtc_region': rtcRegion},
+    );
+  }
+
+  Future<void> setVideoQuality(VideoQuality quality, String? reason) async {
+    await dataStoreChannel.updateChannel(
+      id: id,
+      reason: reason,
+      payload: {'video_quality_mode': quality},
     );
   }
 
