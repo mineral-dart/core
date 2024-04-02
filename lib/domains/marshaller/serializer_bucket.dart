@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
+import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/emoji.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/sticker.dart';
@@ -13,6 +14,7 @@ import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/serializers/channel_permission_overwrite_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/channel_serializer.dart';
+import 'package:mineral/domains/marshaller/serializers/embed_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/emoji_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/member_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/message_serializer.dart';
@@ -49,6 +51,8 @@ abstract interface class SerializerBucket {
   SerializerContract<ChannelPermissionOverwrite> get channelPermissionOverwrite;
 
   SerializerContract<Message> get message;
+
+  SerializerContract<MessageEmbed> get embed;
 }
 
 final class SerializerBucketImpl<T> implements SerializerBucket {
@@ -83,10 +87,13 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   final SerializerContract<Sticker> sticker;
 
   @override
-  SerializerContract<ChannelPermissionOverwrite> channelPermissionOverwrite;
+  final SerializerContract<ChannelPermissionOverwrite> channelPermissionOverwrite;
 
   @override
-  SerializerContract<Message> message;
+  final SerializerContract<Message> message;
+
+  @override
+  final SerializerContract<MessageEmbed> embed;
 
   SerializerBucketImpl(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
@@ -100,5 +107,6 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
         emojis = EmojiSerializer(marshaller),
         sticker = StickerSerializer(marshaller),
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
-        message = MessageSerializer(marshaller);
+        message = MessageSerializer(marshaller),
+        embed = EmbedSerializer(marshaller);
 }

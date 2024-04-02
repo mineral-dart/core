@@ -13,6 +13,7 @@ import 'package:mineral/application/http/response.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/data_store/data_store_part.dart';
 import 'package:mineral/domains/http/discord_header.dart';
+import 'package:mineral/domains/shared/helper.dart';
 
 final class ChannelPart implements DataStorePart {
   final DataStore _dataStore;
@@ -88,8 +89,12 @@ final class ChannelPart implements DataStorePart {
 
   Future<T> createMessage<T extends Message>(
       Snowflake? guildId, Snowflake channelId, String? content, List<MessageEmbed>? embeds) async {
-    final response = await _dataStore.client.post('/channels/$channelId/messages',
-        body: {'content': content, 'embeds': embeds?.map((element) => element.toJson()).toList()});
+    final response = await _dataStore.client.post('/channels/$channelId/messages', body: {
+      'content': content,
+      'embeds': await Helper.createOrNullAsync(
+          field: embeds,
+          fn: () async => embeds?.map(_dataStore.marshaller.serializers.embed.deserialize).toList())
+    });
 
     final message = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => _dataStore.marshaller.serializers.message
