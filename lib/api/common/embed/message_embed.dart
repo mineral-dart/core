@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/color.dart';
 import 'package:mineral/api/common/embed/message_embed_assets.dart';
 import 'package:mineral/api/common/embed/message_embed_field.dart';
 import 'package:mineral/api/common/embed/message_embed_provider.dart';
@@ -14,6 +15,7 @@ final class MessageEmbed {
   final MessageEmbedAssets? assets;
   final MessageEmbedProvider? provider;
   final List<MessageEmbedField>? fields;
+  final Color? color;
 
   MessageEmbed({
     this.title,
@@ -24,6 +26,7 @@ final class MessageEmbed {
     this.fields,
     this.type,
     this.provider,
+    this.color,
   });
 
   Object toJson() {
@@ -35,6 +38,7 @@ final class MessageEmbed {
       'timestamp': timestamp?.toIso8601String(),
       'assets': assets?.toJson(),
       'fields': fields?.map((field) => field.toJson()).toList(),
+      'color': color?.toInt()
     };
   }
 
@@ -53,6 +57,8 @@ final class MessageEmbed {
           field: json['provider'], fn: () => MessageEmbedProvider.fromJson(json['provider'])),
       fields: Helper.createOrNull(
           field: json['fields'], fn: () => json['fields'].map(MessageEmbedField.fromJson).toList()),
+      color: Helper.createOrNull(
+          field: json['color'], fn: () => Color.of(json['color'])),
     );
   }
 }
