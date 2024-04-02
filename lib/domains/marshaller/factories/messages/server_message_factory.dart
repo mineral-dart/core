@@ -18,7 +18,15 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, ServerMessage message) {
-    throw UnimplementedError();
+  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, ServerMessage message) async {
+    return {
+      'id': message.id,
+      'content': message.content,
+      'embeds': message.embeds.map(marshaller.serializers.embed.deserialize).toList(),
+      'channel': message.channel.id,
+      'guild_id': message.channel.guildId,
+      'created_at': message.createdAt.toIso8601String(),
+      'updated_at': message.updatedAt?.toIso8601String(),
+    };
   }
 }
