@@ -56,7 +56,10 @@ final class ChannelManager {
             .map((element) async => marshaller.dataStore.channel.getChannel(element))
         : List.from(json['channels'])
             .where((element) => element['type'] != ChannelType.guildCategory.value)
-            .map((element) async => marshaller.serializers.channels.serialize(element)));
+            .map((element) async => marshaller.serializers.channels.serialize({
+                  ...element,
+                  'guild_id': guildId,
+                })));
 
     final Map<Snowflake, ServerChannel> channels = awaitedChannels.nonNulls.fold(
         {}, (previousValue, element) => {...previousValue, element.id: element as ServerChannel});

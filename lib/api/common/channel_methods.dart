@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/video_quality.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
@@ -104,6 +105,10 @@ final class ChannelMethods {
       reason: reason,
       payload: {'video_quality_mode': quality},
     );
+  }
+
+  Future<void> send({ Snowflake? guildId, String? content, List<MessageEmbed>? embeds}) async {
+    await dataStoreChannel.createMessage(guildId, id, content, embeds);
   }
 
   Future<void> delete(String? reason) async {

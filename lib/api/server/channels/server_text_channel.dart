@@ -1,6 +1,7 @@
 import 'package:mineral/api/common/channel_methods.dart';
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/channel_properties.dart';
+import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
@@ -29,6 +30,8 @@ final class ServerTextChannel extends ServerChannel {
 
   late final ServerCategoryChannel? category;
 
+  Snowflake get guildId => _properties.guildId!;
+
   ServerTextChannel(this._properties) : _methods = ChannelMethods(_properties.id);
 
   Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);
@@ -52,6 +55,9 @@ final class ServerTextChannel extends ServerChannel {
 
   Future<void> setDefaultThreadRateLimitPerUser(int value, {String? reason}) =>
       _methods.setDefaultThreadRateLimitPerUser(value, reason);
+
+  Future<void> send({String? content, List<MessageEmbed>? embeds}) =>
+      _methods.send(guildId: _properties.guildId, content: content, embeds: embeds);
 
   Future<void> delete({String? reason}) => _methods.delete(reason);
 }

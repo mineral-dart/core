@@ -43,6 +43,7 @@ final class ServerAnnouncementChannelFactory
       'topic': channel.description,
       'nsfw': channel.isNsfw,
       'parent_id': channel.category?.id,
+      'guild_id': channel.guildId,
     };
   }
 }

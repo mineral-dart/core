@@ -2,6 +2,8 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/common/embed/message_embed.dart';
+import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
@@ -22,7 +24,8 @@ final class ChannelPart implements DataStorePart {
   Future<T?> getChannel<T extends Channel>(Snowflake id) async {
     final cachedChannel = await _dataStore.marshaller.cache.get(id);
     if (cachedChannel != null) {
-      return _dataStore.marshaller.serializers.channels.serialize(cachedChannel, cache: true) as Future<T?>;
+      return _dataStore.marshaller.serializers.channels.serialize(cachedChannel, cache: true)
+          as Future<T?>;
     }
 
     final response = await _dataStore.client.get('/channels/$id');
@@ -81,6 +84,23 @@ final class ChannelPart implements DataStorePart {
       int() when status.isError(response.statusCode) => throw HttpException(response.body),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     };
+  }
+
+  Future<T> createMessage<T extends Message>(
+      Snowflake? guildId, Snowflake channelId, String? content, List<MessageEmbed>? embeds) async {
+    final response = await _dataStore.client.post('/channels/$channelId/messages',
+        body: {'content': content, 'embeds': embeds?.map((element) => element.toJson()).toList()});
+
+    final message = await switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) => _dataStore.marshaller.serializers.message
+          .serialize({...response.body, 'guild_id': guildId}),
+      int() when status.isError(response.statusCode) => throw HttpException(response.body),
+      _ => throw Exception('Unknown status code: ${response.statusCode}'),
+    };
+
+    await _dataStore.marshaller.cache.put(message.id, {...response.body, 'guild_id': guildId});
+
+    return message as T;
   }
 
   Future<T?> serializeChannelResponse<T extends Channel>(Response response) {

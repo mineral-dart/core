@@ -22,7 +22,8 @@ final class ServerCategoryChannelFactory implements ChannelFactoryContract<Serve
     return {
       'id': channel.id.value,
       'type': channel.type.value,
-      'permission_overwrites': permissions
+      'permission_overwrites': permissions,
+      'guild_id': channel.guildId,
     };
   }
 }

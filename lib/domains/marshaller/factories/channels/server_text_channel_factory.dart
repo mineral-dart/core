@@ -27,7 +27,7 @@ final class ServerTextChannelFactory implements ChannelFactoryContract<ServerTex
       'type': channel.type.value,
       'name': channel.name,
       'position': channel.position,
-      'guild_id': channel.server.id,
+      'guild_id': channel.guildId,
       'topic': channel.description,
       'permission_overwrites': permissions
     };

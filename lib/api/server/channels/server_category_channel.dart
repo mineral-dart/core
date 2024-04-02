@@ -24,6 +24,9 @@ final class ServerCategoryChannel extends ServerChannel {
   @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
 
+  @override
+  Snowflake get guildId => _properties.guildId!;
+
   ServerCategoryChannel(this._properties): _methods = ChannelMethods(_properties.id);
 
   Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);

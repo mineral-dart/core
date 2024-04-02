@@ -21,7 +21,7 @@ final class MessageProperties<T extends Channel> {
   });
 
   factory MessageProperties.fromJson(T channel, Map<String, dynamic> json) {
-    final embeds = List<MessageEmbed>.from(json['embeds']).map(MessageEmbed.fromJson).toList();
+    final embeds = List.from(json['embeds']).map(MessageEmbed.fromJson).toList();
 
     return MessageProperties(
       id: Snowflake(json['id']),

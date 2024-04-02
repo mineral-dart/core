@@ -31,6 +31,9 @@ final class ServerAnnouncementChannel extends ServerChannel {
 
   ServerCategoryChannel? category;
 
+  @override
+  Snowflake get guildId => _properties.guildId!;
+
   ServerAnnouncementChannel(this._properties, {required this.category})
       : _methods = ChannelMethods(_properties.id);
 

@@ -22,12 +22,9 @@ final class ServerMessage extends Message {
 
   DateTime? get updatedAt => _properties.updatedAt;
 
-  final String userId;
-
   final Member author;
 
   ServerMessage(this._properties, {
-    required this.userId,
     required this.author,
   });
 }

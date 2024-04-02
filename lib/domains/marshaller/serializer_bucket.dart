@@ -1,14 +1,13 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/emoji.dart';
+import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/sticker.dart';
-import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/api/server/server_assets.dart';
-import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
@@ -16,10 +15,9 @@ import 'package:mineral/domains/marshaller/serializers/channel_permission_overwr
 import 'package:mineral/domains/marshaller/serializers/channel_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/emoji_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/member_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/private_message_serializer.dart';
+import 'package:mineral/domains/marshaller/serializers/message_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/role_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_assets_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/server_message_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_settings_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_subscription_serializer.dart';
@@ -31,10 +29,6 @@ abstract interface class SerializerBucket {
   SerializerContract<Channel?> get channels;
 
   SerializerContract<Server> get server;
-
-  SerializerContract<ServerMessage> get serverMessage;
-
-  SerializerContract<PrivateMessage> get privateMessage;
 
   SerializerContract<Member> get member;
 
@@ -53,6 +47,8 @@ abstract interface class SerializerBucket {
   SerializerContract<Sticker> get sticker;
 
   SerializerContract<ChannelPermissionOverwrite> get channelPermissionOverwrite;
+
+  SerializerContract<Message> get message;
 }
 
 final class SerializerBucketImpl<T> implements SerializerBucket {
@@ -61,12 +57,6 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
 
   @override
   final SerializerContract<Server> server;
-
-  @override
-  final SerializerContract<ServerMessage> serverMessage;
-
-  @override
-  SerializerContract<PrivateMessage> privateMessage;
 
   @override
   final SerializerContract<Member> member;
@@ -95,11 +85,12 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   @override
   SerializerContract<ChannelPermissionOverwrite> channelPermissionOverwrite;
 
+  @override
+  SerializerContract<Message> message;
+
   SerializerBucketImpl(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
-        serverMessage = ServerMessageSerializer(marshaller),
-        privateMessage = PrivateMessageSerializer(marshaller),
         member = MemberSerializer(marshaller),
         user = UserSerializer(marshaller),
         role = RoleSerializer(marshaller),
@@ -108,5 +99,6 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
         serversAsset = ServerAssetsSerializer(marshaller),
         emojis = EmojiSerializer(marshaller),
         sticker = StickerSerializer(marshaller),
-        channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller);
+        channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
+        message = MessageSerializer(marshaller);
 }

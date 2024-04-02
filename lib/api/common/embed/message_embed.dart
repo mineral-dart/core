@@ -13,20 +13,18 @@ final class MessageEmbed {
   final DateTime? timestamp;
   final MessageEmbedAssets? assets;
   final MessageEmbedProvider? provider;
-  final List<MessageEmbedField> fields;
+  final List<MessageEmbedField>? fields;
 
   MessageEmbed({
-    required this.title,
-    required this.description,
-    required this.url,
-    required this.timestamp,
-    required this.assets,
-    required this.fields,
+    this.title,
+    this.description,
+    this.url,
+    this.timestamp,
+    this.assets,
+    this.fields,
     this.type,
     this.provider,
-  }) {
-    expectOrThrow(fields.length <= 25, message: 'Fields must be 25 or fewer in length');
-  }
+  });
 
   Object toJson() {
     return {
@@ -36,7 +34,7 @@ final class MessageEmbed {
       'url': url,
       'timestamp': timestamp?.toIso8601String(),
       'assets': assets?.toJson(),
-      'fields': fields.map((field) => field.toJson()).toList(),
+      'fields': fields?.map((field) => field.toJson()).toList(),
     };
   }
 
@@ -47,11 +45,14 @@ final class MessageEmbed {
       type: Helper.createOrNull(
           field: json['type'], fn: () => findInEnum(MessageEmbedType.values, json['type'])),
       url: json['url'],
-      timestamp: DateTime.tryParse(json['timestamp']),
-      assets: MessageEmbedAssets.fromJson(json['assets']),
+      timestamp: Helper.createOrNull(
+          field: json['timestamp'], fn: () => DateTime.tryParse(json['timestamp'])),
+      assets: Helper.createOrNull(
+          field: json['assets'], fn: () => MessageEmbedAssets.fromJson(json['assets'])),
       provider: Helper.createOrNull(
           field: json['provider'], fn: () => MessageEmbedProvider.fromJson(json['provider'])),
-      fields: json['fields'].map(MessageEmbedField.fromJson).toList(),
+      fields: Helper.createOrNull(
+          field: json['fields'], fn: () => json['fields'].map(MessageEmbedField.fromJson).toList()),
     );
   }
 }
