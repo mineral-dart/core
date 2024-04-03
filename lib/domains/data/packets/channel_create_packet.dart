@@ -20,29 +20,29 @@ final class ChannelCreatePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final channel = await marshaller.serializers.channels.serialize(message.payload);
 
-    switch (channel) {
-      case ServerChannel():
-        registerServerChannel(message, channel, dispatch);
-      case PrivateChannel():
-        await marshaller.cache.put(channel.id, channel);
-        dispatch(event: MineralEvent.privateChannelCreate, params: [channel]);
-      default:
-        logger.warn("Unknown channel type: $channel contact Mineral's core team.");
-    }
+    return switch (channel) {
+      ServerChannel() => registerServerChannel(channel, dispatch),
+      PrivateChannel() => registerPrivateChannel(channel, dispatch),
+      _ => logger.warn("Unknown channel type: $channel contact Mineral's core team.")
+    };
   }
 
-  Future<void> registerServerChannel(ShardMessage message, ServerChannel channel, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+  Future<void> registerServerChannel(ServerChannel channel, DispatchEvent dispatch) async {
+    final server = await marshaller.dataStore.server.getServer(channel.guildId);
 
     channel.server = server;
     server.channels.list.putIfAbsent(channel.id, () => channel);
-    final rawServer = await marshaller.serializers.server.deserialize(server);
 
-    await Future.wait([
-      marshaller.cache.put(server.id, rawServer),
-      marshaller.cache.put(channel.id, message.payload)
-    ]);
+    final rawServer = await marshaller.serializers.server.deserialize(server);
+    await marshaller.cache.put(server.id, rawServer);
 
     dispatch(event: MineralEvent.serverChannelCreate, params: [channel]);
+  }
+
+  Future<void> registerPrivateChannel(PrivateChannel channel, DispatchEvent dispatch) async {
+    final rawChannel = await marshaller.serializers.channels.deserialize(channel);
+    await marshaller.cache.put(channel.id, rawChannel);
+
+    dispatch(event: MineralEvent.privateChannelCreate, params: [channel]);
   }
 }
