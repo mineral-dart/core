@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/color.dart';
 import 'package:mineral/api/common/permissions.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
@@ -15,7 +16,7 @@ final class RoleSerializer implements SerializerContract<Role> {
     return Role(
       id: Snowflake(json['id']),
       name: json['name'],
-      color: json['color'] ?? 0,
+      color: Color.of(json['color'] ?? 0),
       hoist: json['hoist'] ?? false,
       position: json['position'] ?? 0,
       permissions: switch(json['permissions']) {

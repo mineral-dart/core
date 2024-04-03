@@ -19,8 +19,7 @@ final class GuildCreatePacket implements ListenablePacket {
     final server = await marshaller.serializers.server.serialize(message.payload);
 
     for (final role in server.roles.list.values) {
-      final serializedRole = await marshaller.serializers.role.deserialize(role);
-      await marshaller.cache.put(role.id, serializedRole);
+      role.server = server;
     }
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
