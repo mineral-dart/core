@@ -25,7 +25,6 @@ final class GuildMemberAddPacket implements ListenablePacket {
       'guild_roles': server.roles.list
     });
 
-    await marshaller.cache.put(member.id, message.payload);
     server.members.list.putIfAbsent(member.id, () => member);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
