@@ -5,7 +5,8 @@ enum AppEnv implements EnvSchema {
   httpVersion('HTTP_VERSION'),
   wssVersion('WSS_VERSION'),
   intent('INTENT'),
-  logLevel('LOG_LEVEL');
+  logLevel('LOG_LEVEL'),
+  hmr('HMR');
 
   @override
   final String key;
