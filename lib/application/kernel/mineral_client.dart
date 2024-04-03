@@ -2,7 +2,14 @@ import 'package:mineral/application/environment/environment.dart';
 import 'package:mineral/domains/data/event_bucket.dart';
 import 'package:mineral/domains/data/types/listenable_event.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
-import 'package:mineral/domains/shared/types/mineral_client_contract.dart';
+
+abstract interface class MineralClientContract {
+  EnvContract get environment;
+  EventBucket get events;
+
+  void register(ListenableEvent Function() event);
+  Future<void> init();
+}
 
 final class MineralClient implements MineralClientContract {
   final KernelContract _kernel;
