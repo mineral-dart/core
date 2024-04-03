@@ -1,5 +1,4 @@
 import 'package:mineral/api/common/presence.dart';
-import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
@@ -23,12 +22,12 @@ final class PresenceUpdatePacket implements ListenablePacket {
     final before = server.members.list[message.payload['user']['id']];
     final member = server.members.list[message.payload['user']['id']];
 
-    dispatch(event: MineralEvent.serverPresenceUpdate, params: [before, member, server]);
-
     final presence = Presence.fromJson(message.payload);
     member!.presence = presence;
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
     await marshaller.cache.put(server.id, rawServer);
+
+    dispatch(event: MineralEvent.serverPresenceUpdate, params: [before, member, server]);
   }
 }
