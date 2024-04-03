@@ -72,41 +72,4 @@ final class Kernel implements KernelContract {
       await shard.init();
     }
   }
-
-  factory Kernel.create(
-      {required String token,
-      required int intent,
-      required List<EnvSchema> environment,
-      required CacheProviderContract Function(EnvContract) cache,
-      int httpVersion = 10,
-      int shardVersion = 10}) {
-    final env = Environment()..validate(environment);
-
-    final logLevel = env.getRawOrFail<String>('LOG_LEVEL');
-    final LoggerContract logger = Logger(logLevel);
-
-    final cacheInstance = cache(env)
-      ..logger = logger
-      ..init();
-
-    final http = HttpClient(
-        config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
-      Header.userAgent('Mineral'),
-      Header.contentType('application/json'),
-    }));
-
-    final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
-
-    final MarshallerContract marshaller = Marshaller(logger, cacheInstance);
-    final DataStoreContract dataStore = DataStore(http, marshaller);
-    final DataListenerContract dataListener = DataListener(logger, marshaller);
-
-    return Kernel(
-        logger: logger,
-        environment: env,
-        httpClient: http,
-        config: shardConfig,
-        dataListener: dataListener,
-        dataStore: dataStore);
-  }
 }
