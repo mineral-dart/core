@@ -10,7 +10,7 @@ final class ChannelPermissionOverwriteSerializer implements SerializerContract<C
   ChannelPermissionOverwriteSerializer(this.marshaller);
 
   @override
-  ChannelPermissionOverwrite serialize(Map<String, dynamic> json, {bool cache = false}) {
+  ChannelPermissionOverwrite serialize(Map<String, dynamic> json) {
     return ChannelPermissionOverwrite(
       id: Snowflake(json['id']),
       type: findInEnum(ChannelPermissionOverwriteType.values, json['type']),

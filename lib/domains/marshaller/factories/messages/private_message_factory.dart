@@ -6,7 +6,7 @@ import 'package:mineral/domains/marshaller/types/message_factory.dart';
 
 final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
 @override
-  Future<PrivateMessage> serialize(MarshallerContract marshaller, Map<String, dynamic> json, bool cache) async {
+  Future<PrivateMessage> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
   final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
   final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
 

@@ -12,21 +12,16 @@ final class ServerSerializer implements SerializerContract<Server> {
   ServerSerializer(this._marshaller);
 
   @override
-  Future<Server> serialize(Map<String, dynamic> json, {bool cache = false}) async {
-    final serializedRoles = cache
-        ? await _marshaller.dataStore.server.getRoles(Snowflake(json['id']))
-        : await Future.wait(List.from(json['roles'])
-            .where((element) => element['id'] != json['id'])
-            .map((element) async => _marshaller.serializers.role.serialize(element)));
+  Future<Server> serialize(Map<String, dynamic> json) async {
+    final serializedRoles = await Future.wait(List.from(json['roles'])
+        .where((element) => element['id'] != json['id'])
+        .map((element) async => _marshaller.serializers.role.serialize(element)));
 
-    final serializedMembers = cache
-        ? await _marshaller.dataStore.member.getMembers(Snowflake(json['id']))
-        : await Future.wait(List.from(json['members']).map((element) async => _marshaller
-            .serializers.member
-            .serialize({...element, 'guild_roles': serializedRoles})));
+    final serializedMembers = await Future.wait(List.from(json['members']).map((element) async =>
+        _marshaller.serializers.member.serialize({...element, 'guild_roles': serializedRoles})));
 
     final channelManager = await ChannelManager.fromJson(
-        marshaller: _marshaller, guildId: json['id'], json: json, cache: cache);
+        marshaller: _marshaller, guildId: json['id'], json: json);
 
     final roleManager = RoleManager.fromList(serializedRoles);
     final owner = serializedMembers.firstWhere((member) => member.id == json['owner_id']);
@@ -62,13 +57,22 @@ final class ServerSerializer implements SerializerContract<Server> {
     final assets = await _marshaller.serializers.serversAsset.deserialize(server.assets);
     final settings = await _marshaller.serializers.serverSettings.deserialize(server.settings);
 
+    final members = await Future.wait(server.members.list.values
+        .map((member) async => _marshaller.serializers.member.deserialize(member)));
+
+    final channels = await Future.wait(server.channels.list.values
+        .map((channel) async => _marshaller.serializers.channels.deserialize(channel)));
+
+    final roles = await Future.wait(server.roles.list.values
+        .map((role) async => _marshaller.serializers.role.deserialize(role)));
+
     return {
       'id': server.id,
       'owner_id': server.owner.id,
       'name': server.name,
-      'members': server.members.list.keys.toList(),
-      'roles': server.roles.list.keys.toList(),
-      'channels': server.channels.list.keys.toList(),
+      'members': members,
+      'roles': roles,
+      'channels': channels,
       'description': server.description,
       'applicationId': server.applicationId,
       'assets': await _marshaller.serializers.serversAsset.deserialize(server.assets),

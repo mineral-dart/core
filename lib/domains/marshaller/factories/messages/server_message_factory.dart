@@ -7,7 +7,7 @@ import 'package:mineral/domains/marshaller/types/message_factory.dart';
 final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   @override
   Future<ServerMessage> serialize(
-      MarshallerContract marshaller, Map<String, dynamic> json, bool cache) async {
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
 

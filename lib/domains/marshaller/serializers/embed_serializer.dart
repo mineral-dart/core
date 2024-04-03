@@ -19,7 +19,7 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
   EmbedSerializer(this._marshaller);
 
   @override
-  MessageEmbed serialize(Map<String, dynamic> json, {bool cache = false}) {
+  MessageEmbed serialize(Map<String, dynamic> json) {
     return MessageEmbed(
       title: json['title'],
       description: json['description'],

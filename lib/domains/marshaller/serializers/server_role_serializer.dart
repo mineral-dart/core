@@ -10,7 +10,7 @@ final class RoleSerializer implements SerializerContract<Role> {
   RoleSerializer(this.marshaller);
 
   @override
-  Future<Role> serialize(Map<String, dynamic> json, {bool cache = false}) async {
+  Future<Role> serialize(Map<String, dynamic> json) async {
     return Role(
       id: Snowflake(json['id']),
       name: json['name'],

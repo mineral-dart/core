@@ -15,7 +15,7 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
   ServerSettingsSerializer(this._marshaller);
 
   @override
-  Future<ServerSettings> serialize(Map<String, dynamic> json, {bool cache = false}) async {
+  Future<ServerSettings> serialize(Map<String, dynamic> json) async {
     return ServerSettings(
         bitfieldPermission: json['permissions'],
         afkTimeout: json['afk_timeout'],
