@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:mineral/application/container/ioc_container.dart';
 import 'package:mineral/application/environment/env_schema.dart';
 
 abstract interface class EnvContract {
@@ -89,4 +90,6 @@ final class Environment implements EnvContract {
 
     return files;
   }
+
+  factory Environment.singleton() => ioc.resolve('environment');
 }

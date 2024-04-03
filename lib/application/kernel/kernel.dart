@@ -49,6 +49,7 @@ final class Kernel implements KernelContract {
 
     ioc
       ..bind('logger', () => logger)
+      ..bind('environment', () => environment)
       ..bind('data_store', () => dataStore);
   }
 
