@@ -17,23 +17,15 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final guildId = Snowflake(message.payload['guild_id']);
-    final roleId = Snowflake(message.payload['role']['id']);
-
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
 
-    final before = await marshaller.dataStore.server.getRole(guildId, roleId);
+    final before = server.roles.list[message.payload['role']['id']];
     final after = await marshaller.serializers.role.serialize(message.payload['role']);
 
-    server.roles.list.update(after.id, (value) => after);
+    server.roles.list.update(after.id, (_) => after);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    final rawRole = await marshaller.serializers.role.deserialize(after);
-
-    await Future.wait([
-      marshaller.cache.put(after.id, rawRole),
-      marshaller.cache.put(server.id, rawServer)
-    ]);
+    await marshaller.cache.put(server.id, rawServer);
 
     dispatch(event: MineralEvent.serverRoleUpdate, params: [before, after, server]);
   }
