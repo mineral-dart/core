@@ -11,5 +11,5 @@ abstract class ServerChannelPinsUpdateEvent implements ListenableEvent {
   @override
   EventList get event => MineralEvent.serverChannelPinsUpdate;
 
-  FutureOr<void> handle(Server server, ServerChannel channel, DateTime? lastPin);
+  FutureOr<void> handle(Server server, ServerChannel channel);
 }

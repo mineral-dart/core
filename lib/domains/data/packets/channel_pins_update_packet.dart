@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
@@ -18,31 +19,22 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
   const ChannelPinsUpdatePacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
-    switch (message.payload['guild_id']) {
-      case String():
-        registerServerChannelPins(message, dispatch);
-    }
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final channel = await marshaller.serializers.channels.serialize(message.payload);
+
+    return switch (channel) {
+      ServerChannel() => registerServerChannelPins(channel, dispatch),
+      _ => logger.warn("Unknown channel type: $channel contact Mineral's core team.")
+    };
   }
 
-  Future<void> registerServerChannelPins(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+  Future<void> registerServerChannelPins(ServerChannel channel, DispatchEvent dispatch) async {
+    final server = await marshaller.dataStore.server.getServer(channel.guildId);
+    server.channels.list.update(channel.id, (_) => channel);
 
-    final channel = await marshaller.dataStore.channel.getChannel(message.payload['channel_id']);
+    final rawServer = await marshaller.serializers.server.deserialize(server);
+    await marshaller.cache.put(server.id, rawServer);
 
-    final timestamps = Helper.createOrNull(
-        field: message.payload['last_pin_timestamp'],
-        fn: () => DateTime.tryParse(message.payload['last_pin_timestamp']));
-
-    if (channel is ServerChannel) {
-      channel.server = server;
-    }
-
-    if (channel case Channel()) {
-      final rawChannel = await marshaller.serializers.channels.deserialize(channel);
-      marshaller.cache.put(channel.id, rawChannel);
-    }
-
-    dispatch(event: MineralEvent.serverChannelPinsUpdate, params: [server, channel, timestamps]);
+    dispatch(event: MineralEvent.serverChannelPinsUpdate, params: [server, channel]);
   }
 }

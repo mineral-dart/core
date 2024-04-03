@@ -30,14 +30,14 @@ final class MessageCreatePacket implements ListenablePacket {
   }
 
   Future<void> sendServerMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
-    final message = await marshaller.serializers.message.serialize(json, cache: true);
+    final message = await marshaller.serializers.message.serialize(json);
     dispatch(event: MineralEvent.serverMessageCreate, params: [message]);
 
     await marshaller.cache.put(message.id, json);
   }
 
   Future<void> sendPrivateMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
-    final message = await marshaller.serializers.message.serialize(json, cache: true);
+    final message = await marshaller.serializers.message.serialize(json);
     dispatch(event: MineralEvent.privateMessageCreate, params: [message]);
 
     await marshaller.cache.put(message.id, json);
