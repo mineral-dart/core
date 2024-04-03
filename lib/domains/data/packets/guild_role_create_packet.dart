@@ -21,8 +21,8 @@ final class GuildRoleCreatePacket implements ListenablePacket {
     final role = await marshaller.serializers.role.serialize(message.payload['role']);
     server.roles.list.putIfAbsent(role.id, () => role);
 
-    await marshaller.cache.put(server.id, await marshaller.serializers.server.deserialize(server));
-    await marshaller.cache.put(role.id, await marshaller.serializers.role.deserialize(role));
+    final rawServer = await marshaller.serializers.server.deserialize(server);
+    await marshaller.cache.put(server.id, rawServer);
 
     dispatch(event: MineralEvent.serverRoleCreate, params: [role, server]);
   }
