@@ -7,7 +7,7 @@ import 'package:mineral/domains/shared/helper.dart';
 final class MessageProperties<T extends Channel> {
   final Snowflake id;
   final String content;
-  final T channel;
+  final Snowflake channelId;
   final List<MessageEmbed> embeds;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -15,7 +15,7 @@ final class MessageProperties<T extends Channel> {
   MessageProperties({
     required this.id,
     required this.content,
-    required this.channel,
+    required this.channelId,
     required this.embeds,
     required this.createdAt,
     required this.updatedAt,
@@ -30,7 +30,7 @@ final class MessageProperties<T extends Channel> {
     return MessageProperties(
       id: Snowflake(json['id']),
       content: json['content'],
-      channel: channel,
+      channelId: json['channel_id'],
       embeds: embeds,
       createdAt: DateTime.parse(json['timestamp']),
       updatedAt: Helper.createOrNull(

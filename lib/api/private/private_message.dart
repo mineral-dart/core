@@ -5,7 +5,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/user.dart';
 
-final class PrivateMessage implements Message {
+final class PrivateMessage implements Message<PrivateChannel> {
   final MessageProperties<PrivateChannel> _properties;
 
   @override
@@ -16,7 +16,11 @@ final class PrivateMessage implements Message {
 
   List<MessageEmbed> get embeds => _properties.embeds;
 
-  PrivateChannel get channel => _properties.channel;
+  @override
+  Snowflake get channelId => _properties.channelId;
+
+  @override
+  late final PrivateChannel channel;
 
   DateTime get createdAt => _properties.createdAt;
 

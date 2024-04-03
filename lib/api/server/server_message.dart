@@ -5,7 +5,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/member.dart';
 
-final class ServerMessage extends Message {
+final class ServerMessage extends Message<ServerChannel> {
   final MessageProperties<ServerChannel> _properties;
 
   @override
@@ -16,7 +16,11 @@ final class ServerMessage extends Message {
 
   List<MessageEmbed> get embeds => _properties.embeds;
 
-  ServerChannel get channel => _properties.channel;
+  @override
+  Snowflake get channelId => _properties.channelId;
+
+  @override
+  late final ServerChannel channel;
 
   DateTime get createdAt => _properties.createdAt;
 
