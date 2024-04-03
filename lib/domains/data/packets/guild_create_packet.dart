@@ -24,16 +24,16 @@ final class GuildCreatePacket implements ListenablePacket {
     }
 
     for (final channel in server.channels.list.values) {
-      final serializedChannel = await marshaller.serializers.channels.deserialize(channel);
-      await marshaller.cache.put(channel.id, serializedChannel);
+      channel.server = server;
     }
 
     for (final member in server.members.list.values) {
-      final serializedMembers = await marshaller.serializers.member.deserialize(member);
-      await marshaller.cache.put(member.id, serializedMembers);
+      member.server = server;
     }
 
-    await marshaller.cache.put(server.id, await marshaller.serializers.server.deserialize(server));
+    final rawServer = await marshaller.serializers.server.deserialize(server);
+    await marshaller.cache.put(server.id, rawServer);
+
     dispatch(event: MineralEvent.serverCreate, params: [server]);
   }
 }
