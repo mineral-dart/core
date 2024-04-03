@@ -12,7 +12,6 @@ import 'package:mineral/domains/cache/contracts/cache_provider_contract.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/types/mineral_client_contract.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
 
 final class Client {
