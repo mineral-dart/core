@@ -5,7 +5,7 @@ import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/data/types/listenable_event.dart';
 import 'package:mineral/domains/shared/mineral_event.dart';
 
-typedef ServerChannelPinsUpdateEventHandler = FutureOr<void> Function(Server, ServerChannel, DateTime?);
+typedef ServerChannelPinsUpdateEventHandler = FutureOr<void> Function(Server, ServerChannel?);
 
 abstract class ServerChannelPinsUpdateEvent implements ListenableEvent {
   @override
