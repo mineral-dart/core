@@ -1,4 +1,3 @@
-import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
@@ -17,13 +16,12 @@ final class GuildUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final Snowflake serverId = Snowflake(message.payload['id']);
+    final before = await marshaller.dataStore.server.getServer(message.payload['id']);
+    final after = await marshaller.serializers.server.serialize(message.payload);
 
-    final before = await marshaller.cache.get(serverId);
-    final after = marshaller.serializers.server.serialize(message.payload);
+    final rawServer = await marshaller.serializers.server.deserialize(after);
+    marshaller.cache.put(after.id, rawServer);
 
     dispatch(event: MineralEvent.serverUpdate, params: [before, after]);
-
-    marshaller.cache.put(serverId, message.payload);
   }
 }
