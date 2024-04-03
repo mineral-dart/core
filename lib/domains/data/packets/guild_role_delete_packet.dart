@@ -17,20 +17,13 @@ final class GuildRoleDeletePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final guildId = Snowflake(message.payload['guild_id']);
-    final roleId = Snowflake(message.payload['role_id']);
+    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+    final role = server.roles.list[message.payload['role_id']];
 
-    final server = await marshaller.dataStore.server.getServer(guildId);
-    final role = await marshaller.dataStore.server.getRole(guildId, roleId);
-
-    server.roles.list.remove(roleId);
+    server.roles.list.remove(role?.id);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-
-    await Future.wait([
-      marshaller.cache.remove(roleId),
-      marshaller.cache.put(server.id, rawServer)
-    ]);
+    await marshaller.cache.put(server.id, rawServer);
 
     dispatch(event: MineralEvent.serverRoleDelete, params: [role, server]);
   }
