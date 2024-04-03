@@ -76,13 +76,13 @@ final class ChannelProperties {
   });
 
   static Future<ChannelProperties> make(
-      MarshallerContract marshaller, Map<String, dynamic> element, {bool cache = false}) async {
+      MarshallerContract marshaller, Map<String, dynamic> element) async {
     final permissionOverwrites = await Helper.createOrNullAsync(
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
               List.from(element['permission_overwrites'])
                   .map((json) async =>
-                      marshaller.serializers.channelPermissionOverwrite.serialize(json, cache: cache))
+                      marshaller.serializers.channelPermissionOverwrite.serialize(json))
                   .toList(),
             ));
 

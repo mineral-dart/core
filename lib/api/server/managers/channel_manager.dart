@@ -49,17 +49,13 @@ final class ChannelManager {
   static Future<ChannelManager> fromJson(
       {required MarshallerContract marshaller,
       required String guildId,
-      required Map<String, dynamic> json,
-      bool cache = false}) async {
-    final awaitedChannels = await Future.wait(cache
-        ? List.from(json['channels'])
-            .map((element) async => marshaller.dataStore.channel.getChannel(element))
-        : List.from(json['channels'])
-            .where((element) => element['type'] != ChannelType.guildCategory.value)
-            .map((element) async => marshaller.serializers.channels.serialize({
-                  ...element,
-                  'guild_id': guildId,
-                })));
+      required Map<String, dynamic> json}) async {
+    final awaitedChannels = await Future.wait(List.from(json['channels'])
+        .where((element) => element['type'] != ChannelType.guildCategory.value)
+        .map((element) async => marshaller.serializers.channels.serialize({
+              ...element,
+              'guild_id': guildId,
+            })));
 
     final Map<Snowflake, ServerChannel> channels = awaitedChannels.nonNulls.fold(
         {}, (previousValue, element) => {...previousValue, element.id: element as ServerChannel});
