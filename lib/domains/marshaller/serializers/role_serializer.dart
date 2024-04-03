@@ -37,7 +37,7 @@ final class RoleSerializer implements SerializerContract<Role> {
     return {
       'id': object.id,
       'name': object.name,
-      'color': object.color,
+      'color': object.color.toInt(),
       'hoist': object.hoist,
       'position': object.position,
       'permissions': listToBitfield(object.permissions.list),
