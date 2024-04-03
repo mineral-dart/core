@@ -19,7 +19,7 @@ final class ServerPart implements DataStorePart {
   Future<Server> getServer(Snowflake id) async {
     final cachedRawServer = await _dataStore.marshaller.cache.get(id);
     if (cachedRawServer != null) {
-      return _dataStore.marshaller.serializers.server.serialize(cachedRawServer, cache: true);
+      return _dataStore.marshaller.serializers.server.serialize(cachedRawServer);
     }
 
     final [serverResponse, channelsResponse, membersResponse] = await Future.wait([
@@ -71,13 +71,8 @@ final class ServerPart implements DataStorePart {
       return roles;
     }
 
-    final rowServer = await _dataStore.marshaller.cache.get(guildId);
-    return Future.wait(
-      List.from(rowServer['roles']).map((id) async {
-        final rawRole = await _dataStore.marshaller.cache.get(id);
-        return _dataStore.marshaller.serializers.role.serialize(rawRole);
-      })
-    );
+    final rowServer = await _dataStore.server.getServer(guildId);
+    return rowServer.roles.list.values.toList();
   }
 
   Future<List<Role>> _serializeRolesResponse(Response response) {

@@ -25,7 +25,7 @@ final class ChannelPart implements DataStorePart {
   Future<T?> getChannel<T extends Channel>(Snowflake id) async {
     final cachedChannel = await _dataStore.marshaller.cache.get(id);
     if (cachedChannel != null) {
-      return _dataStore.marshaller.serializers.channels.serialize(cachedChannel, cache: true)
+      return _dataStore.marshaller.serializers.channels.serialize(cachedChannel)
           as Future<T?>;
     }
 
@@ -82,7 +82,7 @@ final class ChannelPart implements DataStorePart {
 
     return switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => _dataStore.marshaller.cache.remove(id),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     };
   }
@@ -112,7 +112,7 @@ final class ChannelPart implements DataStorePart {
     return switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         _dataStore.marshaller.serializers.channels.serialize(response.body),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
     } as Future<T?>;
   }

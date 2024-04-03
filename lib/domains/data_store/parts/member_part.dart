@@ -61,7 +61,7 @@ final class MemberPart implements DataStorePart {
       return _dataStore.marshaller.serializers.member.serialize({
         ...rawMember,
         'guild_roles': roles,
-      }, cache: true);
+      });
     }));
   }
 
