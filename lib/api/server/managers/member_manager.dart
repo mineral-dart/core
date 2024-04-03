@@ -23,13 +23,6 @@ final class MemberManager {
   Member getOrFail(String id, {String? error}) => _members.values
       .firstWhere((element) => element.id == id, orElse: () => throw error ?? 'Member not found');
 
-  void add(Member member) {
-    _members[member.id] = member;
-  }
-
-  void remove(String id) {
-    _members.remove(id);
-  }
 
   late final int maxInGuild;
 

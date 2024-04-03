@@ -1,4 +1,3 @@
-import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
@@ -17,19 +16,17 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final Snowflake serverId = Snowflake(message.payload['guild_id']);
-    final server = await marshaller.dataStore.server.getServer(serverId);
+    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
 
-    final before = await marshaller.dataStore.member
-        .getMember(guildId: serverId, memberId: Snowflake(message.payload['user']['id']));
+    final before = server.members.list[message.payload['user']['id']];
 
     final after = await marshaller.serializers.member
         .serialize({...message.payload, 'guild_roles': server.roles.list});
 
-    server.members.add(after);
+    server.members.list.update(after.id, (_) => after);
 
-    await marshaller.cache.put(server.id, await marshaller.serializers.server.deserialize(server));
-    await marshaller.cache.put(after.id, await marshaller.serializers.member.deserialize(after));
+    final rawServer = await marshaller.serializers.server.deserialize(server);
+    await marshaller.cache.put(server.id, rawServer);
 
     dispatch(event: MineralEvent.serverMemberUpdate, params: [before, after]);
   }
