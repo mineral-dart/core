@@ -22,7 +22,9 @@ final class Client {
 
   CacheProviderContract? _cache;
   final List<EnvSchema> _schemas = [];
-  late SendPort? _devPort;
+
+  SendPort? _devPort;
+  bool _hasDefinedDevPort = false;
 
   Client() {
     _logger = Logger(_env.get(AppEnv.logLevel));
@@ -60,6 +62,7 @@ final class Client {
 
   Client setHmrDevPort(SendPort? devPort) {
     _devPort = devPort;
+    _hasDefinedDevPort = true;
     return this;
   }
 
@@ -96,6 +99,11 @@ final class Client {
     final httpVersion = _env.get<int>(AppEnv.httpVersion);
     final shardVersion = _env.get<int>(AppEnv.wssVersion);
     final intent = _env.get<int>(AppEnv.intent);
+    final hmr = _env.get<bool>(AppEnv.hmr);
+
+    if (hmr && !_hasDefinedDevPort) {
+      throw Exception('HMR is enabled but no dev port defined');
+    }
 
     final http = HttpClient(
         config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
