@@ -76,22 +76,26 @@ final class Kernel implements KernelContract {
   @override
   Future<void> init() async {
     final useHmr = environment.get<bool>(AppEnv.hmr);
-    if (Isolate.current.debugName == 'main' && useHmr) {
-      stdout
-        ..write('\x1b[0;0H')
-        ..write('\x1b[2J');
 
+    if (Isolate.current.debugName == 'main') {
       final packageFile = File(join(Directory.current.path, 'pubspec.yaml'));
+
       final packageFileContent = await packageFile.readAsString();
       final package = loadYaml(packageFileContent);
 
       final coreVersion = package['dependencies']['mineral'];
 
-      stdout
-        ..writeln('${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('hmr running…')}')
-        ..writeln('> Github : https://github.com/mineral-dart')
-        ..writeln('> Discord : https://discord.gg/JKj2FwEf3b')
-        ..writeln();
+      if (useHmr) {
+        stdout
+          ..write('\x1b[0;0H')
+          ..write('\x1b[2J')
+          ..writeln('${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('hmr running…')}')
+          ..writeln('> Github : https://github.com/mineral-dart')
+          ..writeln('> Discord : https://discord.gg/JKj2FwEf3b')
+          ..writeln();
+      } else {
+        stdout.writeln('${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('is running for production…')}');
+      }
     }
 
     if (useHmr) {
