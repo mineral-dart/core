@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mineral/application/container/ioc_container.dart';
 import 'package:mineral/application/environment/app_env.dart';
 import 'package:mineral/application/environment/env_schema.dart';
 import 'package:mineral/application/environment/environment.dart';
+import 'package:mineral/application/hmr/watcher_config.dart';
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/http/http_client_config.dart';
@@ -25,6 +27,8 @@ final class Client {
 
   SendPort? _devPort;
   bool _hasDefinedDevPort = false;
+
+  final WatcherConfig _watcherConfig = WatcherConfig();
 
   Client() {
     _logger = Logger(_env.get(AppEnv.logLevel));
@@ -68,6 +72,16 @@ final class Client {
 
   Client validateEnvironment(List<EnvSchema> schema) {
     _schemas.addAll(schema);
+    return this;
+  }
+
+  Client addFileWatcher(File file) {
+    _watcherConfig.watchedFiles.add(file);
+    return this;
+  }
+
+  Client addFolderWatcher(Directory folder) {
+    _watcherConfig.watchedFolders.add(folder);
     return this;
   }
 
@@ -119,12 +133,14 @@ final class Client {
     final DataListenerContract dataListener = DataListener(_logger, marshaller);
 
     final kernel = Kernel(_devPort,
+        watcherConfig: _watcherConfig,
         logger: _logger,
         environment: _env,
         httpClient: http,
         config: shardConfig,
         dataListener: dataListener,
-        dataStore: dataStore);
+        dataStore: dataStore,
+    );
 
     return MineralClient(kernel);
   }

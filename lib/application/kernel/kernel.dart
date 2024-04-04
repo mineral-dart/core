@@ -4,6 +4,7 @@ import 'package:mineral/application/container/ioc_container.dart';
 import 'package:mineral/application/environment/app_env.dart';
 import 'package:mineral/application/environment/environment.dart';
 import 'package:mineral/application/hmr/hot_module_reloading.dart';
+import 'package:mineral/application/hmr/watcher_config.dart';
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/logger/logger.dart';
@@ -15,6 +16,8 @@ import 'package:mineral/domains/wss/sharding_config.dart';
 
 final class Kernel implements KernelContract {
   final SendPort? _devPort;
+
+  final WatcherConfig watcherConfig;
 
   @override
   final Map<int, Shard> shards = {};
@@ -43,7 +46,8 @@ final class Kernel implements KernelContract {
       required this.httpClient,
       required this.config,
       required this.dataListener,
-      required this.dataStore}) {
+      required this.dataStore,
+      required this.watcherConfig}) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
@@ -66,7 +70,7 @@ final class Kernel implements KernelContract {
   Future<void> init() async {
     final useHmr = environment.get<bool>(AppEnv.hmr);
     if (useHmr) {
-      final hmr = HotModuleReloading(_devPort, dataStore, dataListener, createShards, shards);
+      final hmr = HotModuleReloading(_devPort, watcherConfig, dataStore, dataListener, createShards, shards);
       await hmr.spawn();
     } else {
       createShards();

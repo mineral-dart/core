@@ -1,26 +1,37 @@
 import 'dart:io';
 
-import 'package:mineral/application/hmr/directory_watcher_element.dart';
+import 'package:mineral/application/hmr/entities/directory_watcher_element.dart';
+import 'package:mineral/application/hmr/entities/file_watcher_element.dart';
+import 'package:mineral/application/hmr/entities/watcher_element.dart';
 import 'package:watcher/watcher.dart';
 
 final class Watcher {
   final Directory appRoot;
-  late final List<DirectoryWatcherElement> watchers = [];
+  late final List<WatcherElement> watchers = [];
   final bool allowReload;
   void Function(WatchEvent event) onReload;
 
-  Watcher({ required this.allowReload, required this.appRoot, required List<Directory> roots, required this.onReload }) {
-    watchers.addAll(List.from(
-        roots.map((root) =>
-            DirectoryWatcherElement(
-                appRoot: appRoot,
-                watcherRoot: root,
-                addFile: onReload,
-                editFile: onReload,
-                removeFile: onReload
-            )
+  Watcher({ required this.allowReload, required this.appRoot, required List<Directory> folders, required List<File> files, required this.onReload }) {
+    watchers.addAll(List.from([
+      ...folders.map((folder) =>
+          DirectoryWatcherElement(
+              appRoot: appRoot,
+              watcherRoot: folder,
+              addFile: onReload,
+              editFile: onReload,
+              removeFile: onReload
+          )
+        ),
+      ...files.map((file) =>
+          FileWatcherElement(
+              appRoot: appRoot,
+              watchedFile: file,
+              addFile: onReload,
+              editFile: onReload,
+              removeFile: onReload
+          )
         )
-    ));
+    ]));
   }
 
   void watch() {

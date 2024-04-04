@@ -1,7 +1,8 @@
 import 'dart:io';
+import 'package:mineral/application/hmr/entities/watcher_element.dart';
 import 'package:watcher/watcher.dart';
 
-final class DirectoryWatcherElement {
+final class DirectoryWatcherElement implements WatcherElement {
   final Directory appRoot;
   final Directory watcherRoot;
   late final DirectoryWatcher _watcher;
@@ -20,10 +21,12 @@ final class DirectoryWatcherElement {
     _watcher = DirectoryWatcher(watcherRoot.path);
   }
 
+  @override
   void watch() {
     _watcher.events.listen(dispatch);
   }
 
+  @override
   void dispatch (WatchEvent event) {
     return switch (event.type) {
       ChangeType.ADD => addFile(event),
