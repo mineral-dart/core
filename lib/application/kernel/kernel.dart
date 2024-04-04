@@ -75,7 +75,8 @@ final class Kernel implements KernelContract {
 
   @override
   Future<void> init() async {
-    if (Isolate.current.debugName == 'main') {
+    final useHmr = environment.get<bool>(AppEnv.hmr);
+    if (Isolate.current.debugName == 'main' && useHmr) {
       stdout
         ..write('\x1b[0;0H')
         ..write('\x1b[2J');
@@ -93,7 +94,6 @@ final class Kernel implements KernelContract {
         ..writeln();
     }
 
-    final useHmr = environment.get<bool>(AppEnv.hmr);
     if (useHmr) {
       hmr = HotModuleReloading(
           _devPort, watcherConfig, dataStore, dataListener, createShards, shards);
