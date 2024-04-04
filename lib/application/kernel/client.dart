@@ -75,12 +75,12 @@ final class Client {
     return this;
   }
 
-  Client addFileWatcher(File file) {
+  Client addWatchedFile(File file) {
     _watcherConfig.watchedFiles.add(file);
     return this;
   }
 
-  Client addFolderWatcher(Directory folder) {
+  Client addWatchedDirectory(Directory folder) {
     _watcherConfig.watchedFolders.add(folder);
     return this;
   }
