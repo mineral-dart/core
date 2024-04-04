@@ -5,7 +5,9 @@ import 'package:watcher/watcher.dart' as watcher;
 
 final class WatcherBuilder {
   final Directory _appRoot;
-  final List<Directory> _watchers = [];
+  final List<Directory> _folderWatchers = [];
+  final List<File> _fileWatchers = [];
+
   bool _allowReload = false;
   void Function(watcher.WatchEvent) _onReload = (_) {};
 
@@ -17,7 +19,12 @@ final class WatcherBuilder {
   }
 
   WatcherBuilder addWatchFolder (Directory value) {
-    _watchers.add(value);
+    _folderWatchers.add(value);
+    return this;
+  }
+
+  WatcherBuilder addWatchFile (File value) {
+    _fileWatchers.add(value);
     return this;
   }
 
@@ -29,7 +36,8 @@ final class WatcherBuilder {
   Watcher build () => Watcher(
       allowReload: _allowReload,
       appRoot: _appRoot,
-      roots: _watchers,
+      folders: _folderWatchers,
+      files: _fileWatchers,
       onReload: _onReload
   );
 }

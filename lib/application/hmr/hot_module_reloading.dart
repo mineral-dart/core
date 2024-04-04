@@ -3,6 +3,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mineral/application/hmr/watcher_builder.dart';
+import 'package:mineral/application/hmr/watcher_config.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/wss/shard.dart';
@@ -11,6 +12,7 @@ import 'package:path/path.dart';
 import 'package:watcher/watcher.dart';
 
 final class HotModuleReloading {
+  final WatcherConfig _watcherConfig;
   final SendPort? _devPort;
 
   Isolate? _devIsolate;
@@ -22,7 +24,8 @@ final class HotModuleReloading {
   final Map<int, Shard> _shards;
   final Function() _createShards;
 
-  HotModuleReloading(this._devPort, this._datastore, this._dataListener, this._createShards, this._shards);
+  HotModuleReloading(this._devPort, this._watcherConfig, this._datastore, this._dataListener,
+      this._createShards, this._shards);
 
   Future<void> spawn() async {
     if (Isolate.current.debugName == 'dev') {
@@ -42,12 +45,19 @@ final class HotModuleReloading {
   }
 
   void _createHotModuleLoader() {
-    WatcherBuilder(Directory.current)
+    final watcher = WatcherBuilder(Directory.current)
         .setAllowReload(true)
-        .addWatchFolder(Directory(join(Directory.current.path, 'lib')))
-        .onReload(_handleModify)
-        .build()
-        .watch();
+        .addWatchFolder(Directory(join(Directory.current.path, 'lib')));
+
+    for (final file in _watcherConfig.watchedFiles) {
+      watcher.addWatchFile(file);
+    }
+
+    for (final folder in _watcherConfig.watchedFolders) {
+      watcher.addWatchFolder(folder);
+    }
+
+    watcher.onReload(_handleModify).build().watch();
   }
 
   void _createDevelopmentIsolate() {
@@ -70,10 +80,6 @@ final class HotModuleReloading {
   }
 
   void _handleModify(WatchEvent event) {
-    if (!event.path.endsWith('.dart')) {
-      return;
-    }
-
     if (Platform.isLinux && duration != null) {
       if (DateTime.now().difference(duration!) < Duration(milliseconds: 5)) {
         return;
