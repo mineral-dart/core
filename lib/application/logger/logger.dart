@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:logging/logging.dart' as logging;
 import 'package:mineral/application/container/ioc_container.dart';
 import 'package:mineral/application/io/ansi.dart';
@@ -42,7 +44,7 @@ final class Logger implements LoggerContract {
         _ => 'UNKNOWN: ${record.time}: ${record.message}'
       };
 
-      print(message);
+      stdout.writeln(message);
     });
   }
 

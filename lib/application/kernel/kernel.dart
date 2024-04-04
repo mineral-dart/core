@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mineral/application/container/ioc_container.dart';
@@ -40,6 +41,9 @@ final class Kernel implements KernelContract {
   @override
   final DataStoreContract dataStore;
 
+  @override
+  HotModuleReloading? hmr;
+
   Kernel(this._devPort,
       {required this.logger,
       required this.environment,
@@ -68,10 +72,16 @@ final class Kernel implements KernelContract {
 
   @override
   Future<void> init() async {
+    if (Isolate.current.debugName == 'main') {
+      stdout
+        ..write('\x1b[0;0H')
+        ..write('\x1b[2J');
+    }
+
     final useHmr = environment.get<bool>(AppEnv.hmr);
     if (useHmr) {
-      final hmr = HotModuleReloading(_devPort, watcherConfig, dataStore, dataListener, createShards, shards);
-      await hmr.spawn();
+      hmr = HotModuleReloading(_devPort, watcherConfig, dataStore, dataListener, createShards, shards);
+      await hmr?.spawn();
     } else {
       createShards();
     }
