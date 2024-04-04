@@ -101,7 +101,8 @@ final class Shard implements ShardContract {
             if ([PacketType.ready.name, PacketType.guildCreate.name].contains((message.content as ShardMessage).type)) {
               onceEventQueue.add(jsonDecode(message.originalContent));
             }
-            dispatchEvent.dispatch(message.content);
+
+            dispatchEvent.dispatch(message);
           default:
             print('Unknown op code ! $code');
         }

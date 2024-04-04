@@ -1,4 +1,5 @@
 import 'package:mineral/application/environment/environment.dart';
+import 'package:mineral/application/hmr/hot_module_reloading.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
@@ -20,6 +21,8 @@ abstract interface class KernelContract {
   DataListenerContract get dataListener;
 
   DataStoreContract get dataStore;
+
+  HotModuleReloading? get hmr;
 
   Future<void> init();
 }

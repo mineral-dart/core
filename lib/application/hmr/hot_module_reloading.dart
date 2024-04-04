@@ -1,9 +1,11 @@
+import 'dart:async';
 import 'dart:collection';
 import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mineral/application/hmr/watcher_builder.dart';
 import 'package:mineral/application/hmr/watcher_config.dart';
+import 'package:mineral/application/io/ansi.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/wss/shard.dart';
@@ -16,7 +18,7 @@ final class HotModuleReloading {
   final SendPort? _devPort;
 
   Isolate? _devIsolate;
-  SendPort? _devSendPort;
+  SendPort? devSendPort;
   DateTime? duration;
 
   final DataStoreContract _datastore;
@@ -67,13 +69,13 @@ final class HotModuleReloading {
     Isolate.spawnUri(Uri.file(uri.path), [], port.sendPort, debugName: 'dev')
         .then((Isolate isolate) async {
       _devIsolate = isolate;
-      _devSendPort = await port.first;
+      devSendPort = await port.first;
 
       _shards.forEach((key, value) {
         final Queue<Map<String, dynamic>> queue = Queue.from(value.onceEventQueue);
         while (queue.isNotEmpty) {
           final response = queue.removeFirst();
-          _devSendPort?.send(response);
+          devSendPort?.send(response);
         }
       });
     });
@@ -87,22 +89,29 @@ final class HotModuleReloading {
     }
 
     final String location = event.path.replaceFirst(Directory.current.path, '').substring(1);
+    final now = DateTime.now();
+    final time = '${now.hour}:${now.minute}:${now.second}';
 
-    switch (event.type) {
-      case ChangeType.ADD:
-        print('File added: $location');
-      case ChangeType.MODIFY:
-        print('File modified: $location');
-      case ChangeType.REMOVE:
-        print('File removed: $location');
-    }
+    String formatMessage(String action) =>
+        '$time ${lightBlue.wrap('[mineral]')} ${lightGreen.wrap('hmr $action')} ${styleDim.wrap(location)}';
+
+    stdout
+      ..write('\x1b[0;0H')
+      ..write('\x1b[2J');
+
+    final message = switch (event.type) {
+      ChangeType.ADD => formatMessage('create'),
+      ChangeType.MODIFY => formatMessage('update'),
+      ChangeType.REMOVE => formatMessage('delete'),
+      _ => '',
+    };
+
+    stdout.writeln(message);
 
     _devIsolate?.kill(priority: Isolate.immediate);
     _devIsolate = null;
 
     _createDevelopmentIsolate();
-
-    print('Restarting application...');
 
     if (Platform.isLinux) {
       duration = DateTime.now();
