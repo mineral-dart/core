@@ -1,3 +1,5 @@
+import 'dart:isolate';
+
 import 'package:mineral/application/container/ioc_container.dart';
 import 'package:mineral/application/environment/app_env.dart';
 import 'package:mineral/application/environment/env_schema.dart';
@@ -20,6 +22,7 @@ final class Client {
 
   CacheProviderContract? _cache;
   final List<EnvSchema> _schemas = [];
+  late SendPort? _devPort;
 
   Client() {
     _logger = Logger(_env.get(AppEnv.logLevel));
@@ -52,6 +55,11 @@ final class Client {
 
   Client setHmr(bool hmr) {
     _env.list[AppEnv.hmr.key] = hmr.toString();
+    return this;
+  }
+
+  Client setHmrDevPort(SendPort? devPort) {
+    _devPort = devPort;
     return this;
   }
 
@@ -102,7 +110,7 @@ final class Client {
 
     final DataListenerContract dataListener = DataListener(_logger, marshaller);
 
-    final kernel = Kernel(
+    final kernel = Kernel(_devPort,
         logger: _logger,
         environment: _env,
         httpClient: http,
