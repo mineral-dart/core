@@ -17,6 +17,9 @@ final class HotModuleReloading {
   final WatcherConfig _watcherConfig;
   final SendPort? _devPort;
 
+  String fileLocation = '';
+  int fileRefreshCount = 0;
+
   Isolate? _devIsolate;
   SendPort? devSendPort;
   DateTime? duration;
@@ -92,8 +95,15 @@ final class HotModuleReloading {
     final now = DateTime.now();
     final time = '${now.hour}:${now.minute}:${now.second}';
 
+    if (fileLocation == location) {
+      fileRefreshCount++;
+    } else {
+      fileLocation = location;
+      fileRefreshCount = 1;
+    }
+
     String formatMessage(String action) =>
-        '$time ${lightBlue.wrap('[mineral]')} ${lightGreen.wrap('hmr $action')} ${styleDim.wrap(location)}';
+        '$time ${lightBlue.wrap('[mineral]')} ${lightGreen.wrap('hmr $action')} ${styleDim.wrap(location)} ${yellow.wrap('(x$fileRefreshCount)')}';
 
     stdout
       ..write('\x1b[0;0H')
