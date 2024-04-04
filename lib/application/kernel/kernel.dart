@@ -8,12 +8,15 @@ import 'package:mineral/application/hmr/hot_module_reloading.dart';
 import 'package:mineral/application/hmr/watcher_config.dart';
 import 'package:mineral/application/http/header.dart';
 import 'package:mineral/application/http/http_client.dart';
+import 'package:mineral/application/io/ansi.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
+import 'package:path/path.dart';
+import 'package:yaml/yaml.dart';
 
 final class Kernel implements KernelContract {
   final SendPort? _devPort;
@@ -76,11 +79,24 @@ final class Kernel implements KernelContract {
       stdout
         ..write('\x1b[0;0H')
         ..write('\x1b[2J');
+
+      final packageFile = File(join(Directory.current.path, 'pubspec.yaml'));
+      final packageFileContent = await packageFile.readAsString();
+      final package = loadYaml(packageFileContent);
+
+      final coreVersion = package['dependencies']['mineral'];
+
+      stdout
+        ..writeln('${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('hmr running…')}')
+        ..writeln('> Github : https://github.com/mineral-dart')
+        ..writeln('> Discord : https://discord.gg/JKj2FwEf3b')
+        ..writeln();
     }
 
     final useHmr = environment.get<bool>(AppEnv.hmr);
     if (useHmr) {
-      hmr = HotModuleReloading(_devPort, watcherConfig, dataStore, dataListener, createShards, shards);
+      hmr = HotModuleReloading(
+          _devPort, watcherConfig, dataStore, dataListener, createShards, shards);
       await hmr?.spawn();
     } else {
       createShards();
