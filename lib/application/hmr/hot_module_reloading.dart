@@ -116,7 +116,9 @@ final class HotModuleReloading {
       _ => '',
     };
 
-    stdout.writeln(message);
+    stdout
+      ..writeln(message)
+      ..writeln();
 
     _devIsolate?.kill(priority: Isolate.immediate);
     _devIsolate = null;
