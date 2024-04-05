@@ -18,6 +18,8 @@ enum PacketType {
   guildBanAdd('GUILD_BAN_ADD'),
   guildBanRemove('GUILD_BAN_REMOVE'),
 
+  guildAuditLogEntryCreate('GUILD_AUDIT_LOG_ENTRY_CREATE'),
+
   presenceUpdate('PRESENCE_UPDATE'),
 
   guildRoleCreate('GUILD_ROLE_CREATE'),
