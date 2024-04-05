@@ -3,8 +3,8 @@ import 'package:mineral/api/server/managers/emoji_manager.dart';
 import 'package:mineral/api/server/managers/sticker_manager.dart';
 
 final class ServerAsset {
-  final EmojiManager emojis;
-  final StickerManager stickers;
+  EmojiManager emojis;
+  StickerManager stickers;
   final ImageAsset? icon;
   final ImageAsset? splash;
   final ImageAsset? banner;

@@ -26,6 +26,9 @@ enum PacketType {
   guildRoleUpdate('GUILD_ROLE_UPDATE'),
   guildRoleDelete('GUILD_ROLE_DELETE'),
 
+  guildEmojisUpdate('GUILD_EMOJIS_UPDATE'),
+  guildStickersUpdate('GUILD_STICKERS_UPDATE'),
+
   channelPinsUpdate('CHANNEL_PINS_UPDATE');
 
   final String name;

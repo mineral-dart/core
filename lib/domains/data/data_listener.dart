@@ -9,6 +9,7 @@ import 'package:mineral/domains/data/packets/guild_ban_add_packet.dart';
 import 'package:mineral/domains/data/packets/guild_ban_remove_packet.dart';
 import 'package:mineral/domains/data/packets/guild_create_packet.dart';
 import 'package:mineral/domains/data/packets/guild_delete_packet.dart';
+import 'package:mineral/domains/data/packets/guild_emojis_update_packet.dart';
 import 'package:mineral/domains/data/packets/guild_member_add_packet.dart';
 import 'package:mineral/domains/data/packets/guild_member_chunk_packet.dart';
 import 'package:mineral/domains/data/packets/guild_member_remove_packet.dart';
@@ -16,6 +17,7 @@ import 'package:mineral/domains/data/packets/guild_member_update_packet.dart';
 import 'package:mineral/domains/data/packets/guild_role_create_packet.dart';
 import 'package:mineral/domains/data/packets/guild_role_delete_packet.dart';
 import 'package:mineral/domains/data/packets/guild_role_update_packet.dart';
+import 'package:mineral/domains/data/packets/guild_stickers_update_packet.dart';
 import 'package:mineral/domains/data/packets/guild_update_packet.dart';
 import 'package:mineral/domains/data/packets/message_create_packet.dart';
 import 'package:mineral/domains/data/packets/presence_update_packet.dart';
@@ -63,6 +65,8 @@ final class DataListener implements DataListenerContract {
     subscribe(PresenceUpdatePacket.new);
     subscribe(GuildBanAddPacket.new);
     subscribe(GuildBanRemovePacket.new);
+    subscribe(GuildEmojisUpdatePacket.new);
+    subscribe(GuildStickersUpdatePacket.new);
   }
 
   void subscribe(ListenablePacket Function(LoggerContract, MarshallerContract) factory) {

@@ -7,6 +7,7 @@ import 'package:mineral/domains/data/events/server/server_channel_pins_update_ev
 import 'package:mineral/domains/data/events/server/server_channel_update_event.dart';
 import 'package:mineral/domains/data/events/server/server_create_event.dart';
 import 'package:mineral/domains/data/events/server/server_delete_event.dart';
+import 'package:mineral/domains/data/events/server/server_emojis_update_event.dart';
 import 'package:mineral/domains/data/events/server/server_member_add_event.dart';
 import 'package:mineral/domains/data/events/server/server_member_remove_event.dart';
 import 'package:mineral/domains/data/events/server/server_member_update_event.dart';
@@ -15,6 +16,7 @@ import 'package:mineral/domains/data/events/server/server_presence_update_event.
 import 'package:mineral/domains/data/events/server/server_roles_create_event.dart';
 import 'package:mineral/domains/data/events/server/server_roles_remove_event.dart';
 import 'package:mineral/domains/data/events/server/server_roles_update_event.dart';
+import 'package:mineral/domains/data/events/server/server_stickers_update_event.dart';
 import 'package:mineral/domains/data/events/server/server_update_event.dart';
 import 'package:mineral/domains/shared/mineral_event.dart';
 
@@ -73,4 +75,10 @@ final class ServerBucket {
 
   void banRemove(ServerBanRemoveEventHandler handle) =>
       _events.make(MineralEvent.serverBanRemove, handle);
+
+  void emojisUpdate(ServerEmojisUpdateEventHandler handle) =>
+      _events.make(MineralEvent.serverEmojisUpdate, handle);
+
+  void stickersUpdate(ServerStickersUpdateEventHandler handle) =>
+      _events.make(MineralEvent.serverStickersUpdate, handle);
 }
