@@ -1,16 +1,20 @@
+import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/member.dart';
+import 'package:mineral/domains/data_store/data_store.dart';
+import 'package:mineral/domains/data_store/parts/member_part.dart';
+
 final class MemberVoice {
-  final bool isDeaf;
-  final bool isMute;
+  MemberPart get _memberMethods => DataStore.singleton().member;
+  final Member _member;
 
-  MemberVoice({
-    required this.isDeaf,
-    required this.isMute,
-  });
+  MemberVoice(this._member);
 
-  factory MemberVoice.fromJson(Map<String, dynamic> json) {
-    return MemberVoice(
-      isDeaf: json['deaf'] ?? false,
-      isMute: json['mute'] ?? false,
+  Future<void> move(Snowflake channelId, {String? reason}) async {
+    await _memberMethods.updateMember(
+      serverId: _member.server.id,
+      memberId: _member.id,
+      payload: {'channel_id': channelId},
+      reason: reason,
     );
   }
 }
