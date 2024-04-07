@@ -21,13 +21,18 @@ class Placeholder implements PlaceholderContract {
     }
   }
 
+  Placeholder addEntry(String key, dynamic value) {
+    _injectEntryMap(identifier, Map<String, dynamic>.from({ key: value}));
+    return this;
+  }
+
   void _injectEntryMap(String? identifier, Map<String, dynamic> values) {
     final mapEntry = Map<String, dynamic>.from(values.map((key, value) {
       final hasIdentifier = key.contains('.');
       final finalKey = !hasIdentifier
           ? identifier != null
-              ? '$identifier.$key'
-              : key
+          ? '$identifier.$key'
+          : key
           : key;
 
       return MapEntry(finalKey, value);
@@ -45,15 +50,15 @@ class Placeholder implements PlaceholderContract {
     String finalValue = value;
     if (values != null) {
       final currentValues = Map<String, dynamic>.from(values.map((key, value) =>
-          identifier != null ? MapEntry('$identifier.$key', value) : MapEntry(key, value)));
+      identifier != null ? MapEntry('$identifier.$key', value) : MapEntry(key, value)));
 
-      finalValue = replace(value, currentValues);
+      finalValue = _replace(value, currentValues);
     }
 
-    return replace(finalValue, this.values);
+    return _replace(finalValue, this.values);
   }
 
-  String replace(String value, Map<String, dynamic> map) {
+  String _replace(String value, Map<String, dynamic> map) {
     return map.entries.fold(value, (acc, element) {
       final finalValue = switch (element.value) {
         String() => element.value,
@@ -62,21 +67,8 @@ class Placeholder implements PlaceholderContract {
       };
 
       return acc
-        .replaceAll('{{${element.key}}}', finalValue)
-        .replaceAll('{{ ${element.key} }}', finalValue);
+          .replaceFirst(' ', '')
+          .replaceAll('{{${element.key}}}', finalValue)
     });
   }
-
-// @override
-// String apply(String value, { Map<String, dynamic>? values }) => (values ?? this.values).entries.fold(value, (acc, element) {
-//   print(element.key);
-//
-//   final finalValue = switch (element.value) {
-//     String() => element.value,
-//     int() => element.value.toString(),
-//     _ => throw Exception('Invalid type')
-//   };
-//
-//   return acc.replaceAll('{${element.key}}', finalValue);
-// });
 }
