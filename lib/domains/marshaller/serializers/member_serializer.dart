@@ -6,7 +6,6 @@ import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/member_timeout.dart';
-import 'package:mineral/api/server/member_voice.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
 import 'package:mineral/domains/shared/helper.dart';
@@ -40,7 +39,6 @@ final class MemberSerializer implements SerializerContract<Member> {
           duration: Helper.createOrNull(
               field: json['communication_disabled_until'],
               fn: () => DateTime.parse(json['communication_disabled_until']))),
-      voice: MemberVoice.fromJson(json),
       mfAEnabled: json['user']['mfa_enabled'] ?? false,
       locale: json['user']['locale'],
       premiumType: PremiumTier.values.firstWhere((e) => e == json['user']['premium_type'], orElse: () => PremiumTier.none),

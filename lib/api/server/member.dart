@@ -8,8 +8,14 @@ import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/member_timeout.dart';
 import 'package:mineral/api/server/member_voice.dart';
 import 'package:mineral/api/server/server.dart';
+import 'package:mineral/domains/data_store/data_store.dart';
+import 'package:mineral/domains/data_store/parts/member_part.dart';
 
 final class Member {
+  MemberPart get _memberMethods => DataStore.singleton().member;
+
+  late final MemberVoice voice;
+
   final Snowflake id;
   final String username;
   final String? nickname;
@@ -24,7 +30,6 @@ final class Member {
   final bool isBot;
   final bool isPending;
   final MemberTimeout timeout;
-  final MemberVoice voice;
   final bool mfAEnabled;
   final String? locale;
   final PremiumTier premiumType;
@@ -42,6 +47,11 @@ final class Member {
 
   bool hasRejoined() => flags.contains(MemberFlag.didRejoin);
 
+  Future<void> setNickname(String value, String? reason) async {
+    await _memberMethods.updateMember(
+        serverId: server.id, memberId: id, payload: {'nick': value}, reason: reason);
+  }
+
   Member({
     required this.id,
     required this.username,
@@ -56,7 +66,6 @@ final class Member {
     required this.isBot,
     required this.isPending,
     required this.timeout,
-    required this.voice,
     required this.mfAEnabled,
     required this.locale,
     required this.premiumType,
@@ -65,5 +74,7 @@ final class Member {
     required this.pending,
     required this.accentColor,
     required this.presence,
-  });
+  }) {
+    voice = MemberVoice(this);
+  }
 }

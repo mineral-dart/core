@@ -4,9 +4,11 @@ import 'dart:io';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/application/http/http_client_status.dart';
+import 'package:mineral/application/http/http_request_option.dart';
 import 'package:mineral/application/http/response.dart';
 import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/data_store/data_store_part.dart';
+import 'package:mineral/domains/http/discord_header.dart';
 
 final class MemberPart implements DataStorePart {
   final DataStore _dataStore;
@@ -63,6 +65,28 @@ final class MemberPart implements DataStorePart {
         'guild_roles': roles,
       });
     }));
+  }
+
+  Future<Member> updateMember(
+      {required Snowflake serverId,
+      required Snowflake memberId,
+      required Map<String, dynamic> payload,
+      required String? reason}) async {
+    final response = await _dataStore.client.patch('/guilds/$serverId/members/$memberId',
+        body: payload,
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+
+    final member = await switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        _dataStore.marshaller.serializers.member.serialize(response.body),
+      int() when status.isError(response.statusCode) => throw HttpException(response.body),
+      _ => throw Exception('Unknown status code: ${response.statusCode}'),
+    };
+
+    final rawMember = await _dataStore.marshaller.serializers.member.deserialize(member);
+    await _dataStore.marshaller.cache.put(memberId, rawMember);
+
+    return member;
   }
 
   Future<List<Member>> _serializeMembersResponse(Response response) {
