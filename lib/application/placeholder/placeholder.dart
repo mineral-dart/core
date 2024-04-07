@@ -22,7 +22,7 @@ class Placeholder implements PlaceholderContract {
   }
 
   Placeholder addEntry(String key, dynamic value) {
-    _injectEntryMap(identifier, Map<String, dynamic>.from({ key: value}));
+    _injectEntryMap(identifier, Map<String, dynamic>.from({key: value}));
     return this;
   }
 
@@ -31,8 +31,8 @@ class Placeholder implements PlaceholderContract {
       final hasIdentifier = key.contains('.');
       final finalKey = !hasIdentifier
           ? identifier != null
-          ? '$identifier.$key'
-          : key
+              ? '$identifier.$key'
+              : key
           : key;
 
       return MapEntry(finalKey, value);
@@ -50,7 +50,7 @@ class Placeholder implements PlaceholderContract {
     String finalValue = value;
     if (values != null) {
       final currentValues = Map<String, dynamic>.from(values.map((key, value) =>
-      identifier != null ? MapEntry('$identifier.$key', value) : MapEntry(key, value)));
+          identifier != null ? MapEntry('$identifier.$key', value) : MapEntry(key, value)));
 
       finalValue = _replace(value, currentValues);
     }
@@ -67,8 +67,8 @@ class Placeholder implements PlaceholderContract {
       };
 
       return acc
-          .replaceFirst(' ', '')
-          .replaceAll('{{${element.key}}}', finalValue)
+          .replaceAllMapped(RegExp(r'\{\{\s*([^}]*)\s*\}\}'), (Match m) => '{{${m[1]?.trim()}}}')
+          .replaceAll('{{${element.key}}}', finalValue);
     });
   }
 }
