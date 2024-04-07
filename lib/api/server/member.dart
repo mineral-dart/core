@@ -47,10 +47,11 @@ final class Member {
 
   bool hasRejoined() => flags.contains(MemberFlag.didRejoin);
 
-  Future<void> setNickname(String value, String? reason) async {
-    await _memberMethods.updateMember(
-        serverId: server.id, memberId: id, payload: {'nick': value}, reason: reason);
-  }
+  Future<void> setNickname(String value, String? reason) => _memberMethods.updateMember(
+      serverId: server.id, memberId: id, payload: {'nick': value}, reason: reason);
+
+  Future<void> ban({Duration? deleteSince, String? reason}) async =>
+      _memberMethods.banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
 
   Member({
     required this.id,

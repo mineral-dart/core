@@ -89,6 +89,20 @@ final class MemberPart implements DataStorePart {
     return member;
   }
 
+  Future<void> banMember(
+      {required Snowflake serverId,
+      required Duration? deleteSince,
+      required Snowflake memberId,
+      String? reason}) async {
+    final response = await _dataStore.client.put('/guilds/$serverId/bans/$memberId',
+        body: {'delete_message_seconds': deleteSince?.inSeconds},
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+
+    if (status.isSuccess(response.statusCode)) {
+      return;
+    }
+  }
+
   Future<List<Member>> _serializeMembersResponse(Response response) {
     final awaitedMembers = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => List.from(response.body)
