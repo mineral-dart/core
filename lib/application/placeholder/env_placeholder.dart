@@ -1,3 +1,4 @@
+import 'package:mineral/application/container/ioc_container.dart';
 import 'package:mineral/application/environment/environment.dart';
 import 'package:mineral/application/placeholder/placeholder.dart';
 import 'package:recase/recase.dart';
@@ -11,8 +12,9 @@ final class EnvPlaceholder implements PlaceholderContract {
   @override
   Map<String, dynamic> get values => _values;
 
-  EnvPlaceholder({required EnvContract environment}) {
-    _injectEntryMap(identifier, environment.list);
+  EnvPlaceholder() {
+    final env = ioc.resolve<EnvContract>('environment');
+    _injectEntryMap(identifier, env.list);
   }
 
   void _injectEntryMap(String identifier, Map<String, dynamic> values) {
