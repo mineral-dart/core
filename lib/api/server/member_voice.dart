@@ -18,6 +18,15 @@ final class MemberVoice {
     );
   }
 
+  Future<void> disconnect({String? reason}) async {
+    await _memberMethods.updateMember(
+      serverId: _member.server.id,
+      memberId: _member.id,
+      payload: {'channel_id': null},
+      reason: reason,
+    );
+  }
+
   Future<void> mute({String? reason}) async {
     await _memberMethods.updateMember(
       serverId: _member.server.id,
