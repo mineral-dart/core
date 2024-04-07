@@ -2,6 +2,7 @@ import 'package:mineral/api/common/permissions.dart';
 import 'package:mineral/api/common/premium_tier.dart';
 import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/builders/member_builder.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
 import 'package:mineral/api/server/member_assets.dart';
@@ -71,6 +72,14 @@ final class Member {
       memberId: id,
       reason: reason,
       payload: {'communication_disabled_until': null});
+
+  Future<void> edit(MemberBuilder builder, {String? reason}) =>
+      _memberMethods.updateMember(serverId: server.id, memberId: id, reason: reason, payload: {
+        'nick': nickname,
+        'mute': builder.isMuted,
+        'deaf': builder.isDeafened,
+        'exclude': builder.isExcluded,
+      });
 
   Member({
     required this.id,
