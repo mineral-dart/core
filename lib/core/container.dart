@@ -6,5 +6,5 @@ mixin Logger {
 }
 
 mixin Environment {
-  env_service.EnvContract get logger => env_service.Environment.singleton();
+  env_service.EnvContract get env => env_service.Environment.singleton();
 }
