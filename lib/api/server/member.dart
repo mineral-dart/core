@@ -50,8 +50,11 @@ final class Member {
   Future<void> setNickname(String value, String? reason) => _memberMethods.updateMember(
       serverId: server.id, memberId: id, payload: {'nick': value}, reason: reason);
 
-  Future<void> ban({Duration? deleteSince, String? reason}) async =>
+  Future<void> ban({Duration? deleteSince, String? reason}) =>
       _memberMethods.banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
+
+  Future<void> kick({String? reason}) =>
+      _memberMethods.kickMember(serverId: server.id, memberId: id, reason: reason);
 
   Member({
     required this.id,
