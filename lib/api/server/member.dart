@@ -56,6 +56,22 @@ final class Member {
   Future<void> kick({String? reason}) =>
       _memberMethods.kickMember(serverId: server.id, memberId: id, reason: reason);
 
+  Future<void> exclude({Duration? duration, String? reason}) {
+    final timeout = duration != null ? DateTime.now().add(duration) : DateTime.now();
+
+    return _memberMethods.updateMember(
+        serverId: server.id,
+        memberId: id,
+        reason: reason,
+        payload: {'communication_disabled_until': timeout.toIso8601String()});
+  }
+
+  Future<void> unExclude({Duration? duration, String? reason}) => _memberMethods.updateMember(
+      serverId: server.id,
+      memberId: id,
+      reason: reason,
+      payload: {'communication_disabled_until': null});
+
   Member({
     required this.id,
     required this.username,
