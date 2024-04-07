@@ -17,4 +17,40 @@ final class MemberVoice {
       reason: reason,
     );
   }
+
+  Future<void> mute({String? reason}) async {
+    await _memberMethods.updateMember(
+      serverId: _member.server.id,
+      memberId: _member.id,
+      payload: {'mute': true},
+      reason: reason,
+    );
+  }
+
+  Future<void> unMute({String? reason}) async {
+    await _memberMethods.updateMember(
+      serverId: _member.server.id,
+      memberId: _member.id,
+      payload: {'mute': false},
+      reason: reason,
+    );
+  }
+
+  Future<void> deafen({String? reason}) async {
+    await _memberMethods.updateMember(
+      serverId: _member.server.id,
+      memberId: _member.id,
+      payload: {'deaf': true},
+      reason: reason,
+    );
+  }
+
+  Future<void> unDeafen({String? reason}) async {
+    await _memberMethods.updateMember(
+      serverId: _member.server.id,
+      memberId: _member.id,
+      payload: {'deaf': false},
+      reason: reason,
+    );
+  }
 }
