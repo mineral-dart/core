@@ -9,12 +9,12 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   Future<ServerMessage> serialize(
       MarshallerContract marshaller, Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
+    final server = await marshaller.dataStore.server.getServer(json['guild_id']);
+    final member = server.members.list[json['author']['id']];
+
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
 
-    final member = await marshaller.dataStore.member
-        .getMember(memberId: json['author']['id'], guildId: json['guild_id']);
-
-    return ServerMessage(messageProperties, author: member);
+    return ServerMessage(messageProperties, author: member!);
   }
 
   @override
