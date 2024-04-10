@@ -4,6 +4,7 @@ enum PacketType {
   messageCreate('MESSAGE_CREATE'),
   messageUpdate('MESSAGE_UPDATE'),
   messageDelete('MESSAGE_DELETE'),
+  messageDeleteBulk('MESSAGE_DELETE_BULK'),
 
   guildCreate('GUILD_CREATE'),
   guildUpdate('GUILD_UPDATE'),
