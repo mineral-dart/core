@@ -33,8 +33,8 @@ final class PollSerializer implements SerializerContract<Poll> {
       },
       'answers': poll.answers.map((e) => e.toJson()).toList(),
       'duration': poll.expireAt?.inHours,
-      'isAllowMultiple': poll.isAllowMultiple,
-      'layout': poll.layout.value,
+      'allow_multiselect': poll.isAllowMultiple,
+      'layout_type': poll.layout.value,
     };
   }
 }
