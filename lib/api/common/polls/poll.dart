@@ -14,6 +14,6 @@ final class Poll {
     required this.answers,
     required this.expireAt,
     required this.isAllowMultiple,
-    required this.layout,
+    this.layout = PollLayout.initial,
   });
 }
