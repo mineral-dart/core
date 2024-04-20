@@ -17,25 +17,32 @@ final class RolePart implements DataStorePart {
 
   RolePart(this._dataStore);
 
-  Future<void> addRoles(
+  Future<void> addRole(
+      {required Snowflake memberId,
+      required Snowflake serverId,
+      required Snowflake roleId,
+      required String? reason}) async {
+    await _dataStore.client.put('/guilds/$serverId/members/$memberId/roles/$roleId',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+  }
+
+  Future<void> removeRole(
+      {required Snowflake memberId,
+      required Snowflake serverId,
+      required Snowflake roleId,
+      required String? reason}) async {
+    await _dataStore.client.delete('/guilds/$serverId/members/$memberId/roles/$roleId',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+  }
+
+  Future<void> syncRoles(
       {required Snowflake memberId,
       required Snowflake serverId,
       required List<Snowflake> roleIds,
       required String? reason}) async {
-    if (roleIds.isEmpty) {
-      return;
-    }
-
-    if (roleIds.length == 1) {
-      await _dataStore.client.put('/guilds/$serverId/members/$memberId/roles/${roleIds.first}',
-          option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
-    }
-
-    if (roleIds.length > 1) {
-      await _dataStore.client.patch('/guilds/$serverId/members/$memberId',
-          body: {'roles': roleIds},
-          option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
-    }
+    await _dataStore.client.patch('/guilds/$serverId/members/$memberId',
+        body: {'roles': roleIds},
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
   Future<Role?> updateRole(

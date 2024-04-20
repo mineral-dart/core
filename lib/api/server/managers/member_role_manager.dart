@@ -16,19 +16,9 @@ final class MemberRoleManager {
 
   MemberRoleManager(this._roles);
 
-  Future<void> add({List<Snowflake>? many, Snowflake? only, String? reason}) async {
-    final List<Snowflake> ids = [];
-
-    if (many != null) {
-      ids.addAll(many);
-    }
-
-    if (only != null) {
-      ids.add(only);
-    }
-
-    return _roleMethods.addRoles(
-        memberId: member.id, serverId: server.id, roleIds: ids, reason: reason);
+  Future<void> add(Snowflake roleId, {String? reason}) async {
+    return _roleMethods.addRole(
+        memberId: member.id, serverId: server.id, roleId: roleId, reason: reason);
   }
 
   factory MemberRoleManager.fromList(List<Role> payload) {
