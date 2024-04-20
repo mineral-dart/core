@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
+import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
@@ -25,8 +26,7 @@ final class ChannelPart implements DataStorePart {
   Future<T?> getChannel<T extends Channel>(Snowflake id) async {
     final cachedChannel = await _dataStore.marshaller.cache.get(id);
     if (cachedChannel != null) {
-      return _dataStore.marshaller.serializers.channels.serialize(cachedChannel)
-          as Future<T?>;
+      return _dataStore.marshaller.serializers.channels.serialize(cachedChannel) as Future<T?>;
     }
 
     final response = await _dataStore.client.get('/channels/$id');
@@ -87,19 +87,22 @@ final class ChannelPart implements DataStorePart {
     };
   }
 
-  Future<T> createMessage<T extends Message>(
-      Snowflake? guildId, Snowflake channelId, String? content, List<MessageEmbed>? embeds) async {
+  Future<T> createMessage<T extends Message>(Snowflake? guildId, Snowflake channelId,
+      String? content, List<MessageEmbed>? embeds, Poll? poll) async {
     final response = await _dataStore.client.post('/channels/$channelId/messages', body: {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
-          fn: () async => embeds?.map(_dataStore.marshaller.serializers.embed.deserialize).toList())
+          fn: () async =>
+              embeds?.map(_dataStore.marshaller.serializers.embed.deserialize).toList()),
+      'poll': await Helper.createOrNullAsync(
+          field: poll, fn: () async => _dataStore.marshaller.serializers.poll.deserialize(poll!))
     });
 
     final message = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => _dataStore.marshaller.serializers.message
           .serialize({...response.body, 'guild_id': guildId}),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     };
 

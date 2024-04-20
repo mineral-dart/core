@@ -3,6 +3,7 @@ import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/emoji.dart';
 import 'package:mineral/api/common/message.dart';
+import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/sticker.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/member.dart';
@@ -18,6 +19,7 @@ import 'package:mineral/domains/marshaller/serializers/embed_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/emoji_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/member_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/message_serializer.dart';
+import 'package:mineral/domains/marshaller/serializers/poll_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/role_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_assets_serializer.dart';
 import 'package:mineral/domains/marshaller/serializers/server_serializer.dart';
@@ -53,6 +55,8 @@ abstract interface class SerializerBucket {
   SerializerContract<Message> get message;
 
   SerializerContract<MessageEmbed> get embed;
+
+  SerializerContract<Poll> get poll;
 }
 
 final class SerializerBucketImpl<T> implements SerializerBucket {
@@ -95,6 +99,9 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   @override
   final SerializerContract<MessageEmbed> embed;
 
+  @override
+  final SerializerContract<Poll> poll;
+
   SerializerBucketImpl(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
@@ -108,5 +115,6 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
         sticker = StickerSerializer(marshaller),
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
         message = MessageSerializer(marshaller),
-        embed = EmbedSerializer(marshaller);
+        embed = EmbedSerializer(marshaller),
+        poll = PollSerializer(marshaller);
 }

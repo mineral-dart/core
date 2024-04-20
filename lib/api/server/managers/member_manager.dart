@@ -6,14 +6,16 @@ final class MemberManager {
 
   MemberManager(this._members);
 
-  Map<Snowflake, Member> get list {
+  Map<Snowflake, Member> get list => _members;
+
+  Map<Snowflake, Member> get humans {
     return _members.entries.where((element) => !element.value.isBot).fold({}, (value, element) {
       return {...value, element.key: element.value};
     });
   }
 
   Map<Snowflake, Member> get bots {
-    return _members.entries.where((element) => !element.value.isBot).fold({}, (value, element) {
+    return _members.entries.where((element) => element.value.isBot).fold({}, (value, element) {
       return {...value, element.key: element.value};
     });
   }

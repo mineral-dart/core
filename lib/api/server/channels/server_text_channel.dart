@@ -3,6 +3,7 @@ import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/managers/message_manager.dart';
+import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
@@ -61,8 +62,8 @@ final class ServerTextChannel extends ServerChannel {
   Future<void> setDefaultThreadRateLimitPerUser(int value, {String? reason}) =>
       _methods.setDefaultThreadRateLimitPerUser(value, reason);
 
-  Future<void> send({String? content, List<MessageEmbed>? embeds}) =>
-      _methods.send(guildId: _properties.guildId, content: content, embeds: embeds);
+  Future<void> send({String? content, List<MessageEmbed>? embeds, Poll? poll}) =>
+      _methods.send(guildId: _properties.guildId, content: content, embeds: embeds, poll: poll);
 
   Future<void> delete({String? reason}) => _methods.delete(reason);
 }
