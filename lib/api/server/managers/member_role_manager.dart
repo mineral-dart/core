@@ -31,6 +31,11 @@ final class MemberRoleManager {
         memberId: member.id, serverId: server.id, roleIds: roleIds, reason: reason);
   }
 
+  Future<void> clear({String? reason}) async {
+    return _roleMethods.syncRoles(
+        memberId: member.id, serverId: server.id, roleIds: [], reason: reason);
+  }
+
   factory MemberRoleManager.fromList(List<Role> payload) {
     final roles = Map<Snowflake, Role>.from(payload.fold({}, (value, element) {
       return {...value, element.id: element};
