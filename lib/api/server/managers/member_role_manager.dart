@@ -21,6 +21,11 @@ final class MemberRoleManager {
         memberId: member.id, serverId: server.id, roleId: roleId, reason: reason);
   }
 
+  Future<void> remove(Snowflake roleId, {String? reason}) async {
+    return _roleMethods.removeRole(
+        memberId: member.id, serverId: server.id, roleId: roleId, reason: reason);
+  }
+
   factory MemberRoleManager.fromList(List<Role> payload) {
     final roles = Map<Snowflake, Role>.from(payload.fold({}, (value, element) {
       return {...value, element.id: element};
