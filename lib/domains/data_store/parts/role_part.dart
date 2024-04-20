@@ -17,6 +17,27 @@ final class RolePart implements DataStorePart {
 
   RolePart(this._dataStore);
 
+  Future<void> addRoles(
+      {required Snowflake memberId,
+      required Snowflake serverId,
+      required List<Snowflake> roleIds,
+      required String? reason}) async {
+    if (roleIds.isEmpty) {
+      return;
+    }
+
+    if (roleIds.length == 1) {
+      await _dataStore.client.put('/guilds/$serverId/members/$memberId/roles/${roleIds.first}',
+          option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    }
+
+    if (roleIds.length > 1) {
+      await _dataStore.client.patch('/guilds/$serverId/members/$memberId',
+          body: {'roles': roleIds},
+          option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    }
+  }
+
   Future<Role?> updateRole(
       {required Snowflake id,
       required Snowflake serverId,

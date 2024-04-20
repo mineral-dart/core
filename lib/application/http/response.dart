@@ -47,12 +47,14 @@ final class ResponseImpl<T> implements Response<T> {
       required this.reasonPhrase,
       required this.method});
 
-  factory ResponseImpl.fromHttpResponse(http.Response response) => ResponseImpl._(
-      statusCode: response.statusCode,
-      headers: response.headers.entries.map((entry) => Header(entry.key, entry.value)).toSet(),
-      bodyString: response.body,
-      body: jsonDecode(response.body),
-      uri: response.request!.url,
-      reasonPhrase: response.reasonPhrase,
-      method: response.request!.method);
+  factory ResponseImpl.fromHttpResponse(http.Response response) {
+    return ResponseImpl._(
+        statusCode: response.statusCode,
+        headers: response.headers.entries.map((entry) => Header(entry.key, entry.value)).toSet(),
+        bodyString: response.body,
+        body: response.body.isNotEmpty ? jsonDecode(response.body) : {},
+        uri: response.request!.url,
+        reasonPhrase: response.reasonPhrase,
+        method: response.request!.method);
+  }
 }

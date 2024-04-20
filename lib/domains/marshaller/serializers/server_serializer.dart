@@ -1,4 +1,3 @@
-import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/managers/channel_manager.dart';
 import 'package:mineral/api/server/managers/member_manager.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
@@ -47,6 +46,8 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     for (final member in server.members.list.values) {
       member.server = server;
+
+      member.roles.server = server;
     }
 
     return server;

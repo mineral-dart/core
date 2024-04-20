@@ -2,7 +2,7 @@ import 'package:mineral/api/common/permissions.dart';
 import 'package:mineral/api/common/premium_tier.dart';
 import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
-import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/server/managers/member_role_manager.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/member_timeout.dart';
@@ -21,7 +21,7 @@ final class MemberSerializer implements SerializerContract<Member> {
     final serverRoles = json.entries.firstWhere((element) => element.key == 'guild_roles',
         orElse: () => throw FormatException('Server roles not found in member structure'));
 
-    return Member(
+    final member = Member(
       id: json['user']['id'],
       username: json['user']['nick'] ?? json['user']['username'],
       nickname: json['nick'] ?? json['user']['display_name'],
@@ -32,7 +32,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       premiumSince: Helper.createOrNull(
           field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
       publicFlags: json['user']['public_flags'],
-      roles: RoleManager.fromList(serverRoles.value),
+      roles: MemberRoleManager.fromList(serverRoles.value),
       isBot: json['user']['bot'] ?? false,
       isPending: json['pending'] ?? false,
       timeout: MemberTimeout(
@@ -53,6 +53,9 @@ final class MemberSerializer implements SerializerContract<Member> {
       accentColor: json['accent_color'],
       presence: json['presence'] != null ? Presence.fromJson(json['presence']) : null,
     );
+
+    member.roles.member = member;
+    return member;
   }
 
   @override

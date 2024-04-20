@@ -4,7 +4,7 @@ import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/builders/member_builder.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
-import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/server/managers/member_role_manager.dart';
 import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/member_timeout.dart';
 import 'package:mineral/api/server/member_voice.dart';
@@ -27,7 +27,7 @@ final class Member {
   final DateTime? premiumSince;
   final int? publicFlags;
   late final Server server;
-  final RoleManager roles;
+  final MemberRoleManager roles;
   final bool isBot;
   final bool isPending;
   final MemberTimeout timeout;
