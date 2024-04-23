@@ -6,16 +6,12 @@ import 'package:mineral/infrastructure/internals/marshaller/types/message_factor
 
 final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   @override
-  Future<ServerMessage> serialize(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<ServerMessage> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
     final reactionSerializer = DataStore.singleton().marshaller.serializers.reactionEmoji;
     final reactions = <ReactionEmoji<ServerChannel>>[];
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json, reactions);
-    final member = await marshaller.dataStore.member.getMember(memberId: json['author']['id'], guildId: json['guild_id']);
-    final server = await marshaller.dataStore.server.getServer(json['guild_id']);
-
-    final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
+    final member = await marshaller.dataStore.member.getMember(memberId: json['author']['id'], guildId: json['guild_id']); // todo: getting error with reacting
 
     for (final reactionRaw in json['reactions'] ?? []) {
       reactionRaw['message'] = json;
@@ -25,7 +21,7 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
     }
 
     return ServerMessage(messageProperties, author: member)
-    ..channel = channel;
+      ..channel = channel;
   }
 
   @override
