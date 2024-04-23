@@ -2,7 +2,6 @@ import 'package:mineral/api/common/message_type.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/server/channels/server_announcement_channel.dart';
-import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
@@ -37,12 +36,8 @@ final class MessageCreatePacket implements ListenablePacket {
   Future<void> sendServerMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
     final server = await marshaller.dataStore.server.getServer(json['guild_id']);
     final channel = server.channels.list[json['channel_id']];
-
     final message = await marshaller.serializers.message.serialize(json);
-
-    if (channel is ServerChannel) {
-      message.channel = channel;
-    }
+    final rawMessage = await marshaller.serializers.message.deserialize(message);
 
     switch (channel) {
       case ServerTextChannel(): channel.messages.list.putIfAbsent(message.id, () => message as ServerMessage);
@@ -52,6 +47,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
     await marshaller.cache.put(server.id, rawServer);
+    await marshaller.cache.put(message.id, rawMessage);
 
     dispatch(event: Event.serverMessageCreate, params: [message]);
   }
@@ -61,12 +57,13 @@ final class MessageCreatePacket implements ListenablePacket {
     final message = await marshaller.serializers.message.serialize(json);
 
     if (channel is PrivateChannel) {
-      message.channel = channel;
       channel.messages.list.putIfAbsent(message.id, () => message as PrivateMessage);
     }
 
+    final rawMessage = await marshaller.serializers.message.deserialize(message);
     final rawChannel = await marshaller.serializers.channels.deserialize(channel);
-    await marshaller.cache.put(message.id, rawChannel);
+    await marshaller.cache.put(channel?.id, rawChannel);
+    await marshaller.cache.put(message.id, rawMessage);
 
     dispatch(event: Event.privateMessageCreate, params: [message]);
   }
