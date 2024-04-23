@@ -1,6 +1,7 @@
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/message_properties.dart';
+import 'package:mineral/api/common/reaction_emoji.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/user.dart';
@@ -25,6 +26,9 @@ final class PrivateMessage implements Message<PrivateChannel> {
   DateTime get createdAt => _properties.createdAt;
 
   DateTime? get updatedAt => _properties.updatedAt;
+
+  @override
+  List<ReactionEmoji<PrivateChannel>> get reactions => _properties.reactions;
 
   final String userId;
 

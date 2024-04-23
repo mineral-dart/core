@@ -9,12 +9,23 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   Future<ServerMessage> serialize(
       MarshallerContract marshaller, Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
+    final reactionSerializer = DataStore.singleton().marshaller.serializers.reactionEmoji;
+    final reactions = <ReactionEmoji<ServerChannel>>[];
+    final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json, reactions);
+    final member = await marshaller.dataStore.member.getMember(memberId: json['author']['id'], guildId: json['guild_id']);
     final server = await marshaller.dataStore.server.getServer(json['guild_id']);
-    final member = server.members.list[json['author']['id']];
 
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
 
-    return ServerMessage(messageProperties, author: member!);
+    for (final reactionRaw in json['reactions'] ?? []) {
+      reactionRaw['message'] = json;
+      reactionRaw['channel_id'] = json['channel_id'];
+      final reaction = await reactionSerializer.serialize(reactionRaw) as ReactionEmoji<ServerChannel>;
+      messageProperties.reactions.add(reaction);
+    }
+
+    return ServerMessage(messageProperties, author: member)
+    ..channel = channel;
   }
 
   @override
@@ -22,11 +33,12 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
     return {
       'id': message.id,
       'content': message.content,
+      'author': await marshaller.serializers.member.deserialize(message.author),
       'embeds': message.embeds.map(marshaller.serializers.embed.deserialize).toList(),
       'channel': message.channel.id,
       'guild_id': message.channel.guildId,
-      'created_at': message.createdAt.toIso8601String(),
-      'updated_at': message.updatedAt?.toIso8601String(),
+      'timestamp': message.createdAt.toIso8601String(),
+      'edited_timestamp': message.updatedAt?.toIso8601String(),
     };
   }
 }
