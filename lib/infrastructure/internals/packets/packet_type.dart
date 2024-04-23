@@ -6,6 +6,10 @@ enum PacketType {
   messageDelete('MESSAGE_DELETE'),
   messageDeleteBulk('MESSAGE_DELETE_BULK'),
 
+  messageReactionAdd('MESSAGE_REACTION_ADD'),
+  messageReactionRemove('MESSAGE_REACTION_REMOVE'),
+  messageReactionRemoveAll('MESSAGE_REACTION_REMOVE_ALL'),
+
   guildCreate('GUILD_CREATE'),
   guildUpdate('GUILD_UPDATE'),
   guildDelete('GUILD_DELETE'),
