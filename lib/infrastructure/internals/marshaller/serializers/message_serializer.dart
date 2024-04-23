@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
+import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/messages/private_message_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/messages/server_message_factory.dart';
@@ -28,9 +29,11 @@ final class MessageSerializer implements SerializerContract<Message> {
   }
 
   @override
-  Map<String, dynamic> deserialize(Message object) {
-    return {
-      'id': object.id,
+  Future<Map<String, dynamic>> deserialize(Message object) {
+    return switch(object) {
+      ServerMessage() => _serverMessageFactory.deserialize(marshaller, object),
+      PrivateMessage() => _privateMessageFactory.deserialize(marshaller, object),
+      _ => throw Exception('Message type not found ${object.runtimeType}'),
     };
   }
 }
