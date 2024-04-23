@@ -85,14 +85,28 @@ final class ChannelProperties {
                       marshaller.serializers.channelPermissionOverwrite.serialize(json))
                   .toList(),
             ));
+    List<User>? recipients;
 
-    final recipients = await Helper.createOrNullAsync(
-        field: element['recipients'],
-        fn: () async => Future.wait(
-              List.from(element['recipients'])
-                  .map((json) async => marshaller.serializers.user.serialize(json))
-                  .toList(),
-            ));
+    switch(element['recipients']) {
+      case const (List<Object>):
+        recipients = await Helper.createOrNullAsync(
+          field: element['recipients'],
+          fn: () async => Future.wait(
+            List.from(element['recipients'])
+                .map((json) async => marshaller.serializers.user.serialize(json))
+                .toList(),
+          ));
+      case const (List<String>):
+        recipients = await Helper.createOrNullAsync(
+          field: element['recipients'],
+          fn: () async => Future.wait(
+            List.from(element['recipients'])
+                .map((json) async => marshaller.dataStore.user.getUser(json))
+                .toList(),
+          ));
+      default:
+        recipients = [];
+    }
 
     return ChannelProperties(
       id: Snowflake(element['id']),
