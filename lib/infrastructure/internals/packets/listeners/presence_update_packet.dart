@@ -19,11 +19,10 @@ final class PresenceUpdatePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
     final member = server.members.list[message.payload['user']['id']];
-
     final presence = Presence.fromJson(message.payload);
-    member!.presence = presence;
-
     final rawServer = await marshaller.serializers.server.deserialize(server);
+
+    member?.presence = presence;
     await marshaller.cache.put(server.id, rawServer);
 
     dispatch(event: Event.serverPresenceUpdate, params: [member, server]);
