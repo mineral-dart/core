@@ -22,7 +22,7 @@ final class MessageSerializer implements SerializerContract<Message> {
     final factory = switch(channel) {
       ServerChannel() => _serverMessageFactory,
       PrivateChannel() => _privateMessageFactory,
-      _ => throw Exception('Channel type not found ${channel.runtimeType}'),
+      _ => throw Exception('Message type not found ${channel.runtimeType}'),
     } as MessageFactory;
 
     return factory.serialize(marshaller, json);

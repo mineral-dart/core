@@ -28,7 +28,6 @@ final class ReactionEmojiSerializer implements SerializerContract<ReactionEmoji<
       server = await _marshaller.dataStore.server.getServer(json['server_id']);
     }
 
-
     if (json['users'] != null) {
       for (final userRaw in json['users']) {
         users.add(await _marshaller.serializers.user.serialize(userRaw));
