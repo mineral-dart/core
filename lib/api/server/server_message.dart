@@ -30,9 +30,9 @@ final class ServerMessage extends Message<ServerChannel> {
 
   DateTime? get updatedAt => _properties.updatedAt;
 
-  final Member author;
+  final Member? author;
 
   ServerMessage(this._properties, {
-    required this.author,
+    this.author,
   });
 }

@@ -29,7 +29,6 @@ final class MessageReactionAddPacket implements ListenablePacket {
     };
   }
 
-
   Future<void> sendPrivateReactionMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
     final message = await marshaller.dataStore.message.getMessage(json['message_id'], json['channel_id']) as PrivateMessage;
     final reaction = await marshaller.serializers.reactionEmoji.serialize(json)
@@ -43,8 +42,9 @@ final class MessageReactionAddPacket implements ListenablePacket {
     final message = await marshaller.dataStore.message.getMessage(json['message_id'], json['channel_id'], serverId: json['guild_id']) as ServerMessage;
     final reaction = await marshaller.serializers.reactionEmoji.serialize(json)
     ..message = message;
-    final member = await marshaller.dataStore.member.getMember(guildId: json['guild_id'], memberId: json['user_id']);
+    final member = await marshaller.dataStore.member.getMemberOrNull(guildId: json['guild_id'], memberId: json['user_id']);
+    final server = await marshaller.dataStore.server.getServer(json['guild_id']);
 
-    dispatch(event: MineralEvent.serverMessageReactionAdd, params: [message, reaction, member.server, member]);
+    dispatch(event: MineralEvent.serverMessageReactionAdd, params: [message, reaction, server, member]);
   }
 }

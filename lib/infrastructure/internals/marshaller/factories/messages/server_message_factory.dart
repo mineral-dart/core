@@ -11,7 +11,7 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
     final reactionSerializer = DataStore.singleton().marshaller.serializers.reactionEmoji;
     final reactions = <ReactionEmoji<ServerChannel>>[];
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json, reactions);
-    final member = await marshaller.dataStore.member.getMember(memberId: json['author']['id'], guildId: json['guild_id']); // todo: getting error with reacting
+    final member = await marshaller.dataStore.member.getMemberOrNull(memberId: json['author']['id'], guildId: json['guild_id']);
 
     for (final reactionRaw in json['reactions'] ?? []) {
       reactionRaw['message'] = json;
@@ -20,8 +20,7 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
       messageProperties.reactions.add(reaction);
     }
 
-    return ServerMessage(messageProperties, author: member)
-      ..channel = channel;
+    return ServerMessage(messageProperties, author: member)..channel = channel;
   }
 
   @override
@@ -29,7 +28,7 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
     return {
       'id': message.id,
       'content': message.content,
-      'author': await marshaller.serializers.member.deserialize(message.author),
+      'author': message.author != null ? await marshaller.serializers.member.deserialize(message.author!) : null,
       'embeds': message.embeds.map(marshaller.serializers.embed.deserialize).toList(),
       'channel': message.channel.id,
       'guild_id': message.channel.guildId,

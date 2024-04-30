@@ -15,7 +15,7 @@ final class MemberPart implements DataStorePart {
 
   MemberPart(this._dataStore);
 
-  Future<Member> getMember({required Snowflake guildId, required Snowflake memberId}) async {
+  Future<Member?> getMemberOrNull({required Snowflake guildId, required Snowflake memberId}) async {
     final cachedRawMember = await _dataStore.marshaller.cache.get(memberId);
     final roles = await _dataStore.server.getRoles(guildId);
     final server = await _dataStore.marshaller.cache.get(guildId);
@@ -30,19 +30,32 @@ final class MemberPart implements DataStorePart {
     final response = await _dataStore.client.get('/guilds/$guildId/members/$memberId');
     final member = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        _dataStore.marshaller.serializers.member.serialize({
-          ...response.body,
-          'guild_roles': roles,
-        }),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
+          _dataStore.marshaller.serializers.member.serialize({
+            ...response.body,
+            'guild_roles': roles,
+          }),
+      int() when status.isError(response.statusCode) => null,
+      _ => null,
     };
+
+    if(member == null) {
+      return null;
+    }
 
     final rawMember = await _dataStore.marshaller.serializers.member.deserialize(member);
     rawMember['guild'] = server;
     await _dataStore.marshaller.cache.put(memberId, rawMember);
 
     member.server = await _dataStore.marshaller.serializers.server.serialize(server);
+
+    return member;
+  }
+
+  Future<Member> getMemberOrFail({required Snowflake guildId, required Snowflake memberId}) async {
+    final member = await getMemberOrNull(guildId: guildId, memberId: memberId);
+    if (member == null) {
+      throw Exception('Member not found');
+    }
 
     return member;
   }
