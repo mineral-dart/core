@@ -6,7 +6,6 @@ final class Emoji extends PartialEmoji {
   final String? globalName;
   final Map<Snowflake, Role> roles;
   final bool managed;
-  final bool animated;
   final bool available;
 
   Emoji({
@@ -15,7 +14,7 @@ final class Emoji extends PartialEmoji {
     required this.globalName,
     required this.roles,
     required this.managed,
-    required this.animated,
     required this.available,
-  }) : super(id, name);
+    required bool animated,
+  }) : super(id, name, animated);
 }

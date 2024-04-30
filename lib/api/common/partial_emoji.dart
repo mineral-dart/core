@@ -1,15 +1,13 @@
+import 'package:mineral/api/common/emoji.dart';
 import 'package:mineral/api/common/snowflake.dart';
 
 class PartialEmoji {
   final Snowflake id;
   final String name;
+  final bool animated;
 
-  const PartialEmoji(this.id, this.name);
+  const PartialEmoji(this.id, this.name, this.animated);
 
-  factory PartialEmoji.fromJson(Map<String, dynamic> json) {
-    return PartialEmoji(
-      Snowflake(json['id']),
-      json['name'],
-    );
-  }
+  factory PartialEmoji.fromUnicode(String value) => PartialEmoji(Snowflake(''), value, false);
+  factory PartialEmoji.fromEmoji(Emoji emoji) => PartialEmoji(emoji.id, emoji.name, emoji.animated);
 }
