@@ -46,8 +46,8 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     for (final member in server.members.list.values) {
       member.server = server;
-
       member.roles.server = server;
+      member.flags.server = server;
     }
 
     return server;

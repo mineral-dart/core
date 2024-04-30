@@ -6,6 +6,7 @@ import 'package:mineral/api/server/builders/member_builder.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/member_role_manager.dart';
 import 'package:mineral/api/server/member_assets.dart';
+import 'package:mineral/api/server/member_flags.dart';
 import 'package:mineral/api/server/member_timeout.dart';
 import 'package:mineral/api/server/member_voice.dart';
 import 'package:mineral/api/server/server.dart';
@@ -23,7 +24,6 @@ final class Member {
   final String? globalName;
   final String discriminator;
   final MemberAssets assets;
-  final List<MemberFlag> flags;
   final DateTime? premiumSince;
   final int? publicFlags;
   late final Server server;
@@ -38,15 +38,16 @@ final class Member {
   final Permissions permissions;
   final bool pending;
   final int? accentColor;
+  final MemberFlagsManager flags;
   Presence? presence;
 
-  bool canByPassVerification() => flags.contains(MemberFlag.bypassedVerification);
+  bool canByPassVerification() => flags.list.contains(MemberFlag.bypassedVerification);
 
-  bool hasCompletedOnboarding() => flags.contains(MemberFlag.completedOnboarding);
+  bool hasCompletedOnboarding() => flags.list.contains(MemberFlag.completedOnboarding);
 
-  bool hasStartedOnboarding() => flags.contains(MemberFlag.startedOnboarding);
+  bool hasStartedOnboarding() => flags.list.contains(MemberFlag.startedOnboarding);
 
-  bool hasRejoined() => flags.contains(MemberFlag.didRejoin);
+  bool hasRejoined() => flags.list.contains(MemberFlag.didRejoin);
 
   Future<void> setNickname(String value, String? reason) => _memberMethods.updateMember(
       serverId: server.id, memberId: id, payload: {'nick': value}, reason: reason);

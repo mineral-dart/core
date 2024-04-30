@@ -5,6 +5,7 @@ import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/member_role_manager.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/member_assets.dart';
+import 'package:mineral/api/server/member_flags.dart';
 import 'package:mineral/api/server/member_timeout.dart';
 import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/marshaller/types/serializer.dart';
@@ -28,7 +29,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       globalName: json['user']['global_name'],
       discriminator: json['user']['discriminator'],
       assets: MemberAssets.fromJson(json['user']),
-      flags: bitfieldToList(MemberFlag.values, json['flags']),
+      flags: MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
       premiumSince: Helper.createOrNull(
           field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
       publicFlags: json['user']['public_flags'],
@@ -55,6 +56,8 @@ final class MemberSerializer implements SerializerContract<Member> {
     );
 
     member.roles.member = member;
+    member.flags.member = member;
+
     return member;
   }
 
@@ -75,12 +78,12 @@ final class MemberSerializer implements SerializerContract<Member> {
         'avatar_decoration': member.assets.avatarDecoration?.hash,
         'banner': member.assets.banner?.hash,
         'bot': member.isBot,
-        'flags': listToBitfield(member.flags),
+        'flags': listToBitfield(member.flags.list),
         'public_flags': member.publicFlags,
       },
       'roles': roles,
       'premium_since': member.premiumSince?.toIso8601String(),
-      'flags': listToBitfield(member.flags),
+      'flags': listToBitfield(member.flags.list),
       'pending': member.isPending,
       'communication_disabled_until': member.timeout.duration?.toIso8601String(),
     };
