@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/polls/poll_answer.dart';
 import 'package:mineral/api/common/polls/poll_layout.dart';
@@ -29,7 +27,6 @@ final class PollSerializer implements SerializerContract<Poll> {
 
   @override
   Map<String, dynamic> deserialize(Poll poll) {
-    print(poll.answers.map((e) => jsonEncode(e.toJson())).toList());
     return {
       'question': {
         'text': poll.question.content,
