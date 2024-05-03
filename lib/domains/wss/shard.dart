@@ -1,9 +1,9 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:mineral/application/logger/logger.dart';
-import 'package:mineral/application/wss/websocket_client.dart';
-import 'package:mineral/application/wss/websocket_message.dart';
+import 'package:mineral/infrastructure/logger/logger.dart';
+import 'package:mineral/infrastructure/wss/websocket_client.dart';
+import 'package:mineral/infrastructure/wss/websocket_message.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/constants/op_code.dart';

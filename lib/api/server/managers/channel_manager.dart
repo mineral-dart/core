@@ -3,7 +3,7 @@ import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
-import 'package:mineral/application/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/marshaller/marshaller.dart';
 
 enum _ServerNamedChannel {
   afkChannel,
