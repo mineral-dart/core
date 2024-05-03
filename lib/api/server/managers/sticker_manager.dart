@@ -1,6 +1,6 @@
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/sticker.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
+import 'package:mineral/application/marshaller/marshaller.dart';
 
 final class StickerManager {
   final Map<Snowflake, Sticker> _stickers;
