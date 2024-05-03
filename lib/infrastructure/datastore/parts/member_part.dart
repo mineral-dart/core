@@ -3,15 +3,15 @@ import 'dart:io';
 
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/member.dart';
-import 'package:mineral/infrastructure/http/http_client_status.dart';
-import 'package:mineral/infrastructure/http/http_request_option.dart';
-import 'package:mineral/infrastructure/http/response.dart';
-import 'package:mineral/infrastructure/data_store/data_store.dart';
-import 'package:mineral/infrastructure/data_store/data_store_part.dart';
+import 'package:mineral/infrastructure/datastore/data_store.dart';
+import 'package:mineral/infrastructure/datastore/data_store_part.dart';
 import 'package:mineral/domains/http/discord_header.dart';
+import 'package:mineral/infrastructure/services/http/http_client_status.dart';
+import 'package:mineral/infrastructure/services/http/http_request_option.dart';
+import 'package:mineral/infrastructure/services/http/response.dart';
 
 final class MemberPart implements DataStorePart {
-  final DataStore _dataStore;
+  final DataStoreContract _dataStore;
 
   HttpClientStatus get status => _dataStore.client.status;
 

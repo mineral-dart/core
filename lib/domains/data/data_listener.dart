@@ -1,4 +1,3 @@
-import 'package:mineral/infrastructure/logger/logger.dart';
 import 'package:mineral/domains/data/dispatchers/event_dispatcher.dart';
 import 'package:mineral/domains/data/dispatchers/packet_dispatcher.dart';
 import 'package:mineral/domains/data/packets/channel_create_packet.dart';
@@ -24,6 +23,7 @@ import 'package:mineral/domains/data/packets/presence_update_packet.dart';
 import 'package:mineral/domains/data/packets/ready_packet.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/infrastructure/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 abstract interface class DataListenerContract {
   PacketDispatcherContract get packets;

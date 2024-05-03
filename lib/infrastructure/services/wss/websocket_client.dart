@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:io' as io;
 
-import 'package:mineral/infrastructure/wss/interceptor.dart';
-import 'package:mineral/infrastructure/wss/websocket_message.dart';
-import 'package:mineral/infrastructure/wss/websocket_requested_message.dart';
+import 'package:mineral/infrastructure/services/wss/interceptor.dart';
+import 'package:mineral/infrastructure/services/wss/websocket_message.dart';
+import 'package:mineral/infrastructure/services/wss/websocket_requested_message.dart';
 
 abstract interface class WebsocketClient {
   String get name;

@@ -1,6 +1,6 @@
-import 'package:mineral/infrastructure/environment/environment.dart';
 import 'package:mineral/domains/data/event_bucket.dart';
 import 'package:mineral/domains/data/types/listenable_event.dart';
+import 'package:mineral/domains/environment/environment.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 
 abstract interface class MineralClientContract {

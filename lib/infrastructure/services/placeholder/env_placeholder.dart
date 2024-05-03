@@ -1,6 +1,6 @@
+import 'package:mineral/domains/environment/environment.dart';
 import 'package:mineral/infrastructure/container/ioc_container.dart';
-import 'package:mineral/infrastructure/environment/environment.dart';
-import 'package:mineral/infrastructure/placeholder/placeholder.dart';
+import 'package:mineral/infrastructure/services/placeholder/placeholder.dart';
 import 'package:recase/recase.dart';
 
 final class EnvPlaceholder implements PlaceholderContract {

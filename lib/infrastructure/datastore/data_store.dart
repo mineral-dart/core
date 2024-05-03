@@ -1,10 +1,10 @@
 import 'package:mineral/infrastructure/container/ioc_container.dart';
-import 'package:mineral/infrastructure/http/http_client.dart';
-import 'package:mineral/infrastructure/data_store/parts/channel_part.dart';
-import 'package:mineral/infrastructure/data_store/parts/member_part.dart';
-import 'package:mineral/infrastructure/data_store/parts/role_part.dart';
-import 'package:mineral/infrastructure/data_store/parts/server_part.dart';
+import 'package:mineral/infrastructure/datastore/parts/channel_part.dart';
+import 'package:mineral/infrastructure/datastore/parts/member_part.dart';
+import 'package:mineral/infrastructure/datastore/parts/role_part.dart';
+import 'package:mineral/infrastructure/datastore/parts/server_part.dart';
 import 'package:mineral/infrastructure/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/services/http/http_client.dart';
 
 abstract class DataStoreContract {
   HttpClient get client;
@@ -45,5 +45,5 @@ final class DataStore implements DataStoreContract {
     role = RolePart(this);
   }
 
-  factory DataStore.singleton() => ioc.resolve('data_store');
+  factory DataStore.singleton() => ioc.resolve('datastore');
 }

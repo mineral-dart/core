@@ -1,6 +1,6 @@
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/infrastructure/logger/logger.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
 import 'package:mineral/infrastructure/marshaller/marshaller.dart';

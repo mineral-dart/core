@@ -1,22 +1,22 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:mineral/domains/environment/app_env.dart';
+import 'package:mineral/domains/environment/env_schema.dart';
+import 'package:mineral/domains/environment/environment.dart';
 import 'package:mineral/infrastructure/container/ioc_container.dart';
-import 'package:mineral/infrastructure/environment/app_env.dart';
-import 'package:mineral/infrastructure/environment/env_schema.dart';
-import 'package:mineral/infrastructure/environment/environment.dart';
+import 'package:mineral/infrastructure/datastore/data_store.dart';
 import 'package:mineral/infrastructure/hmr/watcher_config.dart';
-import 'package:mineral/infrastructure/http/header.dart';
-import 'package:mineral/infrastructure/http/http_client.dart';
-import 'package:mineral/infrastructure/http/http_client_config.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/kernel/mineral_client.dart';
-import 'package:mineral/infrastructure/logger/logger.dart';
 import 'package:mineral/domains/cache/contracts/cache_provider_contract.dart';
 import 'package:mineral/domains/data/data_listener.dart';
-import 'package:mineral/infrastructure/data_store/data_store.dart';
 import 'package:mineral/infrastructure/marshaller/marshaller.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
+import 'package:mineral/infrastructure/services/http/header.dart';
+import 'package:mineral/infrastructure/services/http/http_client.dart';
+import 'package:mineral/infrastructure/services/http/http_client_config.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class Client {
   late final LoggerContract _logger;
