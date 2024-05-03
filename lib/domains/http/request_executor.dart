@@ -1,10 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:mineral/infrastructure/http/http_client.dart';
-import 'package:mineral/infrastructure/http/response.dart';
-import 'package:mineral/infrastructure/logger/logger.dart';
 import 'package:mineral/domains/http/http_endpoint.dart';
+import 'package:mineral/infrastructure/services/http/http_client.dart';
+import 'package:mineral/infrastructure/services/http/response.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 abstract interface class RequestExecutorContract {
   HttpClientContract get client;

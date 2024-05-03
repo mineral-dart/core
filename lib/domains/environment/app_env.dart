@@ -1,4 +1,4 @@
-import 'package:mineral/infrastructure/environment/env_schema.dart';
+import 'package:mineral/domains/environment/env_schema.dart';
 
 enum AppEnv implements EnvSchema {
   token('TOKEN'),

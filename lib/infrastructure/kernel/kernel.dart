@@ -1,20 +1,20 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:mineral/domains/environment/app_env.dart';
+import 'package:mineral/domains/environment/environment.dart';
 import 'package:mineral/infrastructure/container/ioc_container.dart';
-import 'package:mineral/infrastructure/environment/app_env.dart';
-import 'package:mineral/infrastructure/environment/environment.dart';
+import 'package:mineral/infrastructure/datastore/data_store.dart';
 import 'package:mineral/infrastructure/hmr/hot_module_reloading.dart';
 import 'package:mineral/infrastructure/hmr/watcher_config.dart';
-import 'package:mineral/infrastructure/http/header.dart';
-import 'package:mineral/infrastructure/http/http_client.dart';
 import 'package:mineral/infrastructure/io/ansi.dart';
-import 'package:mineral/infrastructure/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
-import 'package:mineral/infrastructure/data_store/data_store.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
+import 'package:mineral/infrastructure/services/http/header.dart';
+import 'package:mineral/infrastructure/services/http/http_client.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
 
@@ -61,7 +61,7 @@ final class Kernel implements KernelContract {
 
     ioc
       ..bind('logger', () => logger)
-      ..bind('data_store', () => dataStore);
+      ..bind('datastore', () => dataStore);
   }
 
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {

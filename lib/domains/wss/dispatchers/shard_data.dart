@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:mineral/infrastructure/hmr/hot_module_reloading.dart';
-import 'package:mineral/infrastructure/wss/websocket_message.dart';
+import 'package:mineral/infrastructure/services/wss/websocket_message.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/shard_message.dart';
 

@@ -1,7 +1,7 @@
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/member.dart';
-import 'package:mineral/infrastructure/data_store/data_store.dart';
-import 'package:mineral/infrastructure/data_store/parts/member_part.dart';
+import 'package:mineral/infrastructure/datastore/data_store.dart';
+import 'package:mineral/infrastructure/datastore/parts/member_part.dart';
 
 final class MemberVoice {
   MemberPart get _memberMethods => DataStore.singleton().member;

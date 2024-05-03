@@ -10,8 +10,8 @@ import 'package:mineral/api/server/member_flags.dart';
 import 'package:mineral/api/server/member_timeout.dart';
 import 'package:mineral/api/server/member_voice.dart';
 import 'package:mineral/api/server/server.dart';
-import 'package:mineral/infrastructure/data_store/data_store.dart';
-import 'package:mineral/infrastructure/data_store/parts/member_part.dart';
+import 'package:mineral/infrastructure/datastore/data_store.dart';
+import 'package:mineral/infrastructure/datastore/parts/member_part.dart';
 
 final class Member {
   MemberPart get _memberMethods => DataStore.singleton().member;

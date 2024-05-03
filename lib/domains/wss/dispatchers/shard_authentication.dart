@@ -1,10 +1,10 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:mineral/infrastructure/logger/logger.dart';
 import 'package:mineral/domains/wss/builders/discord_message_builder.dart';
 import 'package:mineral/domains/wss/constants/op_code.dart';
 import 'package:mineral/domains/wss/shard.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 abstract interface class ShardAuthentication {
   void setupRequirements(Map<String, dynamic> payload);

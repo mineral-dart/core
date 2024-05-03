@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:mineral/infrastructure/http/request.dart';
-import 'package:mineral/infrastructure/http/response.dart';
+import 'package:mineral/infrastructure/services/http/request.dart';
+import 'package:mineral/infrastructure/services/http/response.dart';
 
 typedef RequestInterceptor = FutureOr<Request> Function(Request);
 typedef ResponseInterceptor = FutureOr<Response> Function(Response);

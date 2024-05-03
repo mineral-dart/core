@@ -8,13 +8,13 @@ import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/infrastructure/data_store/data_store.dart';
-import 'package:mineral/infrastructure/data_store/data_store_part.dart';
-import 'package:mineral/infrastructure/http/http_client_status.dart';
-import 'package:mineral/infrastructure/http/http_request_option.dart';
-import 'package:mineral/infrastructure/http/response.dart';
 import 'package:mineral/domains/http/discord_header.dart';
 import 'package:mineral/domains/shared/helper.dart';
+import 'package:mineral/infrastructure/datastore/data_store.dart';
+import 'package:mineral/infrastructure/datastore/data_store_part.dart';
+import 'package:mineral/infrastructure/services/http/http_client_status.dart';
+import 'package:mineral/infrastructure/services/http/http_request_option.dart';
+import 'package:mineral/infrastructure/services/http/response.dart';
 
 final class ChannelPart implements DataStorePart {
   final DataStore _dataStore;

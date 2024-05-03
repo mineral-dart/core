@@ -1,13 +1,13 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:mineral/infrastructure/http/header.dart';
-import 'package:mineral/infrastructure/http/http_client_config.dart';
-import 'package:mineral/infrastructure/http/http_client_status.dart';
-import 'package:mineral/infrastructure/http/http_interceptor.dart';
-import 'package:mineral/infrastructure/http/http_request_option.dart';
-import 'package:mineral/infrastructure/http/request.dart';
-import 'package:mineral/infrastructure/http/response.dart';
+import 'package:mineral/infrastructure/services/http/header.dart';
+import 'package:mineral/infrastructure/services/http/http_client_config.dart';
+import 'package:mineral/infrastructure/services/http/http_client_status.dart';
+import 'package:mineral/infrastructure/services/http/http_interceptor.dart';
+import 'package:mineral/infrastructure/services/http/http_request_option.dart';
+import 'package:mineral/infrastructure/services/http/request.dart';
+import 'package:mineral/infrastructure/services/http/response.dart';
 
 abstract interface class HttpClientContract {
   HttpClientStatus get status;
