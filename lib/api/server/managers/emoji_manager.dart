@@ -1,7 +1,7 @@
 import 'package:mineral/api/common/emoji.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
+import 'package:mineral/application/marshaller/marshaller.dart';
 
 final class EmojiManager {
   final Map<Snowflake, Emoji> _emojis;

@@ -3,11 +3,11 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:mineral/application/data_store/data_store.dart';
 import 'package:mineral/application/hmr/watcher_builder.dart';
 import 'package:mineral/application/hmr/watcher_config.dart';
 import 'package:mineral/application/io/ansi.dart';
 import 'package:mineral/domains/data/data_listener.dart';
-import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/shard_message.dart';
 import 'package:path/path.dart';

@@ -3,7 +3,7 @@ import 'package:mineral/application/hmr/hot_module_reloading.dart';
 import 'package:mineral/application/http/http_client.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
-import 'package:mineral/domains/data_store/data_store.dart';
+import 'package:mineral/application/data_store/data_store.dart';
 import 'package:mineral/domains/wss/shard.dart';
 import 'package:mineral/domains/wss/sharding_config.dart';
 
