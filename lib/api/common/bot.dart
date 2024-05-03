@@ -46,8 +46,8 @@ final class Bot {
     presences: json['presences'],
     guildIds: List<String>.from(json['guilds'].map((element) => element['id'])),
     application: PartialApplication(
-      id: json['application']['id'],
-      flags: json['application']['flags'],
+      id: json['infrastructure']['id'],
+      flags: json['infrastructure']['flags'],
     ),
   );
 }

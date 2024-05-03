@@ -2,8 +2,8 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server.dart';
-import 'package:mineral/application/data_store/data_store.dart';
-import 'package:mineral/application/data_store/parts/role_part.dart';
+import 'package:mineral/infrastructure/data_store/data_store.dart';
+import 'package:mineral/infrastructure/data_store/parts/role_part.dart';
 
 final class MemberRoleManager {
   RolePart get _roleMethods => DataStore.singleton().role;

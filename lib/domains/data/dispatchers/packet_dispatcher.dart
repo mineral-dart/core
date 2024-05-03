@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mineral/application/logger/logger.dart';
+import 'package:mineral/infrastructure/logger/logger.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
 import 'package:mineral/domains/data/types/packet_type.dart';
