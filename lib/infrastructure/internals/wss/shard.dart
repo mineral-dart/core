@@ -3,11 +3,11 @@ import 'dart:convert';
 
 import 'package:mineral/domains/data/types/packet_type.dart';
 import 'package:mineral/domains/shared/types/kernel_contract.dart';
-import 'package:mineral/domains/wss/constants/op_code.dart';
-import 'package:mineral/domains/wss/dispatchers/shard_authentication.dart';
-import 'package:mineral/domains/wss/dispatchers/shard_data.dart';
-import 'package:mineral/domains/wss/dispatchers/shard_network_error.dart';
-import 'package:mineral/domains/wss/shard_message.dart';
+import 'package:mineral/infrastructure/internals/wss/constants/op_code.dart';
+import 'package:mineral/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
+import 'package:mineral/infrastructure/internals/wss/dispatchers/shard_data.dart';
+import 'package:mineral/infrastructure/internals/wss/dispatchers/shard_network_error.dart';
+import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
 import 'package:mineral/infrastructure/services/wss/websocket_client.dart';
 import 'package:mineral/infrastructure/services/wss/websocket_message.dart';

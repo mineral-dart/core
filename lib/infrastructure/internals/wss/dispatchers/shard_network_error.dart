@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:mineral/domains/wss/constants/shard_disconnect_error.dart';
-import 'package:mineral/domains/wss/shard.dart';
+import 'package:mineral/infrastructure/internals/wss/constants/shard_disconnect_error.dart';
+import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 abstract interface class ShardNetworkError {
