@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:mineral/infrastructure/hmr/entities/watcher_element.dart';
+import 'package:mineral/infrastructure/internals/hmr/entities/watcher_element.dart';
 import 'package:watcher/watcher.dart';
 
 final class FileWatcherElement implements WatcherElement {
