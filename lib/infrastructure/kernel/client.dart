@@ -4,7 +4,7 @@ import 'dart:isolate';
 import 'package:mineral/domains/environment/app_env.dart';
 import 'package:mineral/domains/environment/env_schema.dart';
 import 'package:mineral/domains/environment/environment.dart';
-import 'package:mineral/infrastructure/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/hmr/watcher_config.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';

@@ -1,4 +1,4 @@
-import 'package:mineral/infrastructure/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/domains/cache/contracts/cache_provider_contract.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializer_bucket.dart';
