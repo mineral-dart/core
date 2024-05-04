@@ -3,7 +3,7 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:mineral/infrastructure/datastore/data_store.dart';
+import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/hmr/watcher_builder.dart';
 import 'package:mineral/infrastructure/hmr/watcher_config.dart';
 import 'package:mineral/infrastructure/io/ansi.dart';
