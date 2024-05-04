@@ -1,7 +1,7 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/infrastructure/datastore/data_store.dart';
+import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/domains/shared/helper.dart';
 
 final class MessageProperties<T extends Channel> {

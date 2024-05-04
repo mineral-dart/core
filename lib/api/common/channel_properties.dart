@@ -2,9 +2,9 @@ import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/private/user.dart';
-import 'package:mineral/infrastructure/datastore/data_store.dart';
-import 'package:mineral/infrastructure/datastore/parts/channel_part.dart';
-import 'package:mineral/infrastructure/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
+import 'package:mineral/infrastructure/internals/datastore/parts/channel_part.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/domains/shared/helper.dart';
 import 'package:mineral/domains/shared/utils.dart';
 
