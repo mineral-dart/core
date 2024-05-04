@@ -1,5 +1,5 @@
 import 'package:mineral/domains/environment/environment.dart';
-import 'package:mineral/infrastructure/hmr/hot_module_reloading.dart';
+import 'package:mineral/infrastructure/internals/hmr/hot_module_reloading.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/internals/wss/sharding_config.dart';

@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:mineral/infrastructure/hmr/watcher.dart';
+import 'package:mineral/infrastructure/internals/hmr/watcher.dart';
 import 'package:watcher/watcher.dart' as watcher;
 
 final class WatcherBuilder {

@@ -6,7 +6,7 @@ import 'package:mineral/domains/environment/env_schema.dart';
 import 'package:mineral/domains/environment/environment.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/infrastructure/hmr/watcher_config.dart';
+import 'package:mineral/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/kernel/mineral_client.dart';
 import 'package:mineral/domains/cache/contracts/cache_provider_contract.dart';
