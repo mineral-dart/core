@@ -1,4 +1,4 @@
-import 'package:mineral/infrastructure/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/channel_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/member_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/role_part.dart';

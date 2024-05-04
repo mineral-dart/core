@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:logging/logging.dart' as logging;
-import 'package:mineral/infrastructure/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/io/ansi.dart';
 
 abstract interface class LoggerContract {
