@@ -5,7 +5,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store_part.dart';
-import 'package:mineral/domains/http/discord_header.dart';
+import 'package:mineral/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';
 import 'package:mineral/infrastructure/services/http/http_request_option.dart';
 import 'package:mineral/infrastructure/services/http/response.dart';
