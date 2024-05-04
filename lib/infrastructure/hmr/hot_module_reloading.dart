@@ -8,8 +8,8 @@ import 'package:mineral/infrastructure/hmr/watcher_builder.dart';
 import 'package:mineral/infrastructure/hmr/watcher_config.dart';
 import 'package:mineral/infrastructure/io/ansi.dart';
 import 'package:mineral/domains/data/data_listener.dart';
-import 'package:mineral/domains/wss/shard.dart';
-import 'package:mineral/domains/wss/shard_message.dart';
+import 'package:mineral/infrastructure/internals/wss/shard.dart';
+import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 import 'package:path/path.dart';
 import 'package:watcher/watcher.dart';
 

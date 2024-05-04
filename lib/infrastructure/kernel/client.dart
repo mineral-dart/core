@@ -12,7 +12,7 @@ import 'package:mineral/infrastructure/kernel/mineral_client.dart';
 import 'package:mineral/domains/cache/contracts/cache_provider_contract.dart';
 import 'package:mineral/domains/data/data_listener.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/domains/wss/sharding_config.dart';
+import 'package:mineral/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/infrastructure/services/http/header.dart';
 import 'package:mineral/infrastructure/services/http/http_client.dart';
 import 'package:mineral/infrastructure/services/http/http_client_config.dart';

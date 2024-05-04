@@ -1,4 +1,4 @@
-import 'package:mineral/domains/wss/constants/op_code.dart';
+import 'package:mineral/infrastructure/internals/wss/constants/op_code.dart';
 
 abstract interface class ShardMessage<T> {
   String? get type;
