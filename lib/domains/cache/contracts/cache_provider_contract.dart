@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mineral/infrastructure/services/logger/logger.dart';
 
-abstract interface class CacheProviderContract<K> {
+abstract interface class CacheProviderContract {
   String get name;
 
   abstract LoggerContract logger;
@@ -11,12 +11,12 @@ abstract interface class CacheProviderContract<K> {
 
   Future<int> length();
   Future<List<T>> getAll<T extends dynamic>();
-  Future<T?> get<T>(K? key);
-  Future<T> getOrFail<T>(K key, { Exception Function()? onFail });
-  Future<bool> has(K key);
-  Future<void> put<T>(K key, T object);
-  Future<void> remove(K key);
-  Future<void> removeMany(List<K> key);
+  Future<String?> get(String? key);
+  Future<String> getOrFail(String key, { Exception Function()? onFail });
+  Future<bool> has(String key);
+  Future<void> put<T>(String key, T object);
+  Future<void> remove(String key);
+  Future<void> removeMany(List<String> key);
   Future<void> clear();
 
   Future<void> dispose();
