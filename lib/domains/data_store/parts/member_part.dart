@@ -16,15 +16,12 @@ final class MemberPart implements DataStorePart {
   MemberPart(this._dataStore);
 
   Future<Member?> getMemberOrNull({required Snowflake guildId, required Snowflake memberId}) async {
-    final cachedRawMember = await _dataStore.marshaller.cache.get(memberId);
     final roles = await _dataStore.server.getRoles(guildId);
-    final server = await _dataStore.marshaller.cache.get(guildId);
+    final serverRaw = await _dataStore.marshaller.cache.get(guildId);
+    final server = await _dataStore.marshaller.serializers.server.serialize(serverRaw);
 
-    if (cachedRawMember != null) {
-      return await _dataStore.marshaller.serializers.member.serialize({
-        ...cachedRawMember,
-        'guild_roles': roles,
-      })..server = await _dataStore.marshaller.serializers.server.serialize(server);
+    if (server.members.list.containsKey(memberId)) {
+      return server.members.list[memberId];
     }
 
     final response = await _dataStore.client.get('/guilds/$guildId/members/$memberId');
@@ -46,7 +43,7 @@ final class MemberPart implements DataStorePart {
     rawMember['guild'] = server;
     await _dataStore.marshaller.cache.put(memberId, rawMember);
 
-    member.server = await _dataStore.marshaller.serializers.server.serialize(server);
+    member.server = await _dataStore.marshaller.serializers.server.serialize(serverRaw);
 
     return member;
   }
