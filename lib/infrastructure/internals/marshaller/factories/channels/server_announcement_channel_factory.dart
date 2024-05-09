@@ -4,7 +4,7 @@ import 'package:mineral/api/server/channels/server_announcement_channel.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/channel_factory.dart';
-import 'package:mineral/domains/shared/helper.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
 
 final class ServerAnnouncementChannelFactory
     implements ChannelFactoryContract<ServerAnnouncementChannel> {

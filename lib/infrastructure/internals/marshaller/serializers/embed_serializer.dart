@@ -1,17 +1,13 @@
-import 'package:collection/collection.dart';
 import 'package:mineral/api/common/color.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/embed/message_embed_assets.dart';
 import 'package:mineral/api/common/embed/message_embed_field.dart';
 import 'package:mineral/api/common/embed/message_embed_provider.dart';
 import 'package:mineral/api/common/embed/message_embed_type.dart';
-import 'package:mineral/api/common/emoji.dart';
-import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/server/role.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/domains/shared/helper.dart';
-import 'package:mineral/domains/shared/utils.dart';
 
 final class EmbedSerializer implements SerializerContract<MessageEmbed> {
   final MarshallerContract _marshaller;

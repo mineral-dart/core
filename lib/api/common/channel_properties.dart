@@ -5,8 +5,8 @@ import 'package:mineral/api/private/user.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/channel_part.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/helper.dart';
-import 'package:mineral/domains/shared/utils.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 
 final class ChannelProperties {
   ChannelPart get dataStoreChannel => DataStore.singleton().channel;

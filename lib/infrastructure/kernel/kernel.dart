@@ -9,7 +9,7 @@ import 'package:mineral/infrastructure/internals/hmr/hot_module_reloading.dart';
 import 'package:mineral/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/infrastructure/io/ansi.dart';
 import 'package:mineral/domains/data/data_listener.dart';
-import 'package:mineral/domains/shared/types/kernel_contract.dart';
+import 'package:mineral/infrastructure/commons/types/kernel_contract.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/infrastructure/services/http/header.dart';

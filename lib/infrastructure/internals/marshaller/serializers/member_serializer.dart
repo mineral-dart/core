@@ -9,8 +9,8 @@ import 'package:mineral/api/server/member_flags.dart';
 import 'package:mineral/api/server/member_timeout.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/domains/shared/helper.dart';
-import 'package:mineral/domains/shared/utils.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 
 final class MemberSerializer implements SerializerContract<Member> {
   final MarshallerContract _marshaller;

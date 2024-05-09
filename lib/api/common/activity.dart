@@ -1,6 +1,6 @@
 import 'package:mineral/api/common/activity_emoji.dart';
 import 'package:mineral/api/common/types/activity_type.dart';
-import 'package:mineral/domains/shared/helper.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
 
 final class Activity {
   final String name;

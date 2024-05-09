@@ -3,8 +3,6 @@ import 'package:mineral/api/common/embed/message_embed_assets.dart';
 import 'package:mineral/api/common/embed/message_embed_field.dart';
 import 'package:mineral/api/common/embed/message_embed_provider.dart';
 import 'package:mineral/api/common/embed/message_embed_type.dart';
-import 'package:mineral/domains/shared/helper.dart';
-import 'package:mineral/domains/shared/utils.dart';
 
 final class MessageEmbed {
   final String? title;

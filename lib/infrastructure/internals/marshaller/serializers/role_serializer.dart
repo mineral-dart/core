@@ -4,7 +4,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/domains/shared/utils.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 
 final class RoleSerializer implements SerializerContract<Role> {
   final MarshallerContract marshaller;

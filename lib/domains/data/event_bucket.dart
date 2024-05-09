@@ -1,8 +1,8 @@
 import 'package:mineral/domains/data/event_buckets/private_bucket.dart';
 import 'package:mineral/domains/data/event_buckets/server_bucket.dart';
 import 'package:mineral/domains/data/events/common/ready_event.dart';
-import 'package:mineral/domains/shared/mineral_event.dart';
-import 'package:mineral/domains/shared/types/kernel_contract.dart';
+import 'package:mineral/infrastructure/commons/mineral_event.dart';
+import 'package:mineral/infrastructure/commons/types/kernel_contract.dart';
 
 final class EventBucket {
   final KernelContract _kernel;

@@ -1,4 +1,4 @@
-import 'package:mineral/domains/shared/utils.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 
 final class MessageEmbedAuthor {
   final String name;

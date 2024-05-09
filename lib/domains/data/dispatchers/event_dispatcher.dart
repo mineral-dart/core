@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:mineral/domains/data/internal_event_params.dart';
-import 'package:mineral/domains/shared/mineral_event.dart';
+import 'package:mineral/infrastructure/commons/mineral_event.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract interface class EventDispatcherContract {

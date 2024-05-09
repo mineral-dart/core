@@ -5,8 +5,8 @@ import 'package:mineral/api/server/enums/forum_layout_types.dart';
 import 'package:mineral/api/server/enums/sort_order_forum.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/channel_factory.dart';
-import 'package:mineral/domains/shared/helper.dart';
-import 'package:mineral/domains/shared/utils.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 
 final class ServerForumChannelFactory implements ChannelFactoryContract<ServerForumChannel> {
   @override

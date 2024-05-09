@@ -7,7 +7,7 @@ import 'package:mineral/api/server/enums/verification_level.dart';
 import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/domains/shared/utils.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 
 final class ServerSettingsSerializer implements SerializerContract<ServerSettings> {
   final MarshallerContract _marshaller;

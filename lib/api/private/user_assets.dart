@@ -1,5 +1,5 @@
 import 'package:mineral/api/common/image_asset.dart';
-import 'package:mineral/domains/shared/helper.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
 
 final class UserAssets {
   final ImageAsset? avatar;

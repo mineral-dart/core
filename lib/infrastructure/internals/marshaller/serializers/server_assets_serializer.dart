@@ -5,7 +5,7 @@ import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/domains/shared/helper.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
 
 final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
   final MarshallerContract _marshaller;
