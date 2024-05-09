@@ -56,10 +56,11 @@ final class MemberPart implements DataStorePart {
       return members;
     }
 
-    final rawServer = await _dataStore.marshaller.cache.get(guildId);
+    final rawServer = await _dataStore.marshaller.cache.getOrFail(guildId);
     final roles = await _dataStore.server.getRoles(guildId);
+
     return Future.wait(List.from(rawServer['members']).map((id) async {
-      final rawMember = await _dataStore.marshaller.cache.get(id);
+      final rawMember = await _dataStore.marshaller.cache.getOrFail(Snowflake(id));
       return _dataStore.marshaller.serializers.member.serialize({
         ...rawMember,
         'guild_roles': roles,
