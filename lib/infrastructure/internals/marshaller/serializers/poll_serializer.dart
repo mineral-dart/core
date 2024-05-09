@@ -2,10 +2,10 @@ import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/polls/poll_answer.dart';
 import 'package:mineral/api/common/polls/poll_layout.dart';
 import 'package:mineral/api/common/polls/poll_question.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/domains/shared/helper.dart';
-import 'package:mineral/domains/shared/utils.dart';
 
 final class PollSerializer implements SerializerContract<Poll> {
   final MarshallerContract _marshaller;

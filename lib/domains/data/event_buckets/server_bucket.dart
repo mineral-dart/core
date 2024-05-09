@@ -18,7 +18,7 @@ import 'package:mineral/domains/data/events/server/server_roles_remove_event.dar
 import 'package:mineral/domains/data/events/server/server_roles_update_event.dart';
 import 'package:mineral/domains/data/events/server/server_stickers_update_event.dart';
 import 'package:mineral/domains/data/events/server/server_update_event.dart';
-import 'package:mineral/domains/shared/mineral_event.dart';
+import 'package:mineral/infrastructure/commons/mineral_event.dart';
 
 final class ServerBucket {
   final EventBucket _events;

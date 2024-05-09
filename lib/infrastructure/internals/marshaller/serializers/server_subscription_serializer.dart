@@ -2,7 +2,7 @@ import 'package:mineral/api/common/premium_tier.dart';
 import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/domains/shared/utils.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 
 final class ServerSubscriptionSerializer implements SerializerContract<ServerSubscription> {
   final MarshallerContract _marshaller;

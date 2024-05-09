@@ -9,7 +9,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/infrastructure/internals/http/discord_header.dart';
-import 'package:mineral/domains/shared/helper.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store_part.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';

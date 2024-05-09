@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:mineral/domains/data/types/packet_type.dart';
-import 'package:mineral/domains/shared/mineral_event.dart';
+import 'package:mineral/infrastructure/commons/mineral_event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 
 typedef DispatchEvent = Function({required EventList event, required List params});

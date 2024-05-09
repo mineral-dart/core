@@ -2,7 +2,7 @@ import 'package:mineral/api/common/embed/message_embed_author.dart';
 import 'package:mineral/api/common/embed/message_embed_color.dart';
 import 'package:mineral/api/common/embed/message_embed_footer.dart';
 import 'package:mineral/api/common/embed/message_embed_image.dart';
-import 'package:mineral/domains/shared/helper.dart';
+import 'package:mineral/infrastructure/commons/helper.dart';
 
 final class MessageEmbedAssets {
   final MessageEmbedImage? image;
