@@ -1,7 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:mineral/domains/data/types/packet_type.dart';
+import 'package:mineral/domains/events/types/packet_type.dart';
 import 'package:mineral/infrastructure/commons/types/kernel_contract.dart';
 import 'package:mineral/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/infrastructure/internals/wss/dispatchers/shard_authentication.dart';

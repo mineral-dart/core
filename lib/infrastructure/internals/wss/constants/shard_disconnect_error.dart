@@ -2,7 +2,7 @@ enum ShardDisconnectError {
   normal(1000, 'Normal', false),
   goingAway(1001, 'Going away', false),
   disconnect(1002, 'Disconnect', false),
-  invalidData(1003, 'Invalid data', false),
+  invalidData(1003, 'Invalid contracts', false),
   policyViolation(1008, 'Policy violation', false),
   tooBig(1009, 'Message too big', false),
   extensionRequired(1010, 'Extension required', false),
