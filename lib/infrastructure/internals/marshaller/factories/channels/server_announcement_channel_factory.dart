@@ -18,7 +18,7 @@ final class ServerAnnouncementChannelFactory
     final categoryChannel = await Helper.createOrNullAsync(
         field: json['parent_id'],
         fn: () async {
-          final rawCategory = await marshaller.cache.get(json['parent_id']);
+          final rawCategory = await marshaller.cache.getOrFail(json['parent_id']);
           return marshaller.serializers.channels.serialize(rawCategory) as ServerCategoryChannel;
         }
     );

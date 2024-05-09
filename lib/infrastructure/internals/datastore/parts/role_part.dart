@@ -56,8 +56,10 @@ final class RolePart implements DataStorePart {
 
     final Role? role = await serializeRoleResponse(response);
 
-    final rawRole = _dataStore.marshaller.serializers.role.deserialize(response.body);
-    await _dataStore.marshaller.cache.put(role?.id, rawRole);
+    if (role != null) {
+      final rawRole = _dataStore.marshaller.serializers.role.deserialize(response.body);
+      await _dataStore.marshaller.cache.put(role.id, rawRole);
+    }
 
     return role;
   }
