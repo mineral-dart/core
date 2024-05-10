@@ -1,4 +1,3 @@
-import 'package:mineral/api/common/message_type.dart';
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/application/logger/logger.dart';
@@ -8,21 +7,17 @@ import 'package:mineral/domains/marshaller/marshaller.dart';
 import 'package:mineral/domains/shared/mineral_event.dart';
 import 'package:mineral/domains/wss/shard_message.dart';
 
-final class MessageReactionAddPacket implements ListenablePacket {
+final class MessageReactionRemoveAllPacket implements ListenablePacket {
   @override
-  PacketType get packetType => PacketType.messageReactionAdd;
+  PacketType get packetType => PacketType.messageReactionRemoveAll;
 
   final LoggerContract logger;
   final MarshallerContract marshaller;
 
-  const MessageReactionAddPacket(this.logger, this.marshaller);
+  const MessageReactionRemoveAllPacket(this.logger, this.marshaller);
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    if (![MessageType.initial.value, MessageType.reply.value].contains(message.payload['type'])) {
-      return;
-    }
-
     return switch (message.payload['guild_id']) {
       String() => sendServerReactionMessage(dispatch, message.payload),
       _ => sendPrivateReactionMessage(dispatch, message.payload),
@@ -31,26 +26,24 @@ final class MessageReactionAddPacket implements ListenablePacket {
 
   Future<void> sendPrivateReactionMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
     final message = await marshaller.dataStore.message.getMessage(json['message_id'], json['channel_id']) as PrivateMessage;
-    final reaction = await marshaller.serializers.reactionEmoji.serialize(json)
-      ..message = message;
-    final user = await marshaller.dataStore.user.getUser(json['user_id']);
+
+    message.reactions.clear();
 
     final messageRaw = await marshaller.serializers.message.deserialize(message);
     await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
 
-    dispatch(event: MineralEvent.privateMessageReactionAdd, params: [message, reaction, message.channel, user]);
+    dispatch(event: MineralEvent.privateMessageReactionRemoveAll, params: [message, message.channel]);
   }
 
   Future<void> sendServerReactionMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
     final message = await marshaller.dataStore.message.getMessage(json['message_id'], json['channel_id'], serverId: json['guild_id']) as ServerMessage;
-    final reaction = await marshaller.serializers.reactionEmoji.serialize(json)
-    ..message = message;
-    final member = await marshaller.dataStore.member.getMemberOrNull(guildId: json['guild_id'], memberId: json['user_id']);
     final server = await marshaller.dataStore.server.getServer(json['guild_id']);
+
+    message.reactions.clear();
 
     final messageRaw = await marshaller.serializers.message.deserialize(message);
     await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
 
-    dispatch(event: MineralEvent.serverMessageReactionAdd, params: [message, reaction, server, member]);
+    dispatch(event: MineralEvent.serverMessageReactionRemoveAll, params: [message, server]);
   }
 }

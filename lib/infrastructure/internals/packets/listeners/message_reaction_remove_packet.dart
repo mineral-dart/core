@@ -4,6 +4,7 @@ import 'package:mineral/api/common/reaction_emoji.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/private/user.dart';
+import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/application/logger/logger.dart';
 import 'package:mineral/domains/data/types/listenable_packet.dart';
@@ -55,6 +56,9 @@ final class MessageReactionRemovePacket implements ListenablePacket {
       message.reactions.remove(reaction);
     }
 
+    final messageRaw = await marshaller.serializers.message.deserialize(message);
+    await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
+
     dispatch(event: MineralEvent.privateMessageReactionRemove, params: [message, reaction, message.channel, user]);
   }
 
@@ -63,14 +67,25 @@ final class MessageReactionRemovePacket implements ListenablePacket {
     final member = await marshaller.dataStore.member.getMemberOrNull(guildId: json['guild_id'], memberId: json['user_id']);
     final server = await marshaller.dataStore.server.getServer(json['guild_id']);
     final user = await marshaller.dataStore.user.getUser(json['user_id']);
-    final reaction = message.reactions.firstWhere((element) => element.emoji.id == json['emoji']['id'] && element.emoji.name == json['emoji']['name']);
+    ReactionEmoji<ServerChannel>? reaction = message.reactions.firstWhereOrNull((element) => element.emoji.id == json['emoji']['id'] && element.emoji.name == json['emoji']['name']);
 
+    if (reaction == null) {
+      final emoji = await marshaller.serializers.emojis.serialize({
+        ...json['emoji'],
+        'guildRoles': Iterable.empty(),
+        'roles': Iterable.empty(),
+      });
+      reaction = ReactionEmoji<ServerChannel>(emoji: emoji, users: <User>[], channel: message.channel);
+    }
     if (reaction.users.contains(user)) {
       reaction.users.remove(user);
     }
     if (reaction.users.isEmpty) {
       message.reactions.remove(reaction);
     }
+
+    final messageRaw = await marshaller.serializers.message.deserialize(message);
+    await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
 
     dispatch(event: MineralEvent.serverMessageReactionRemove, params: [message, reaction, server, member]);
   }
