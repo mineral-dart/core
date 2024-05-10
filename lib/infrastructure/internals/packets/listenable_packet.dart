@@ -1,10 +1,10 @@
 import 'dart:async';
 
+import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 
-typedef DispatchEvent = Function({required EventList event, required List params});
+typedef DispatchEvent = Function({required Event event, required List params});
 
 abstract interface class ListenablePacket<T> {
   PacketType get packetType;

@@ -2,7 +2,7 @@ import 'package:mineral/infrastructure/services/logger/logger.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
+import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 
 final class GuildBanAddPacket implements ListenablePacket {
@@ -22,7 +22,7 @@ final class GuildBanAddPacket implements ListenablePacket {
 
     logger.trace('GuildBanAddPacket: ${user.username} was ban in ${server.name}');
 
-    dispatch(event: MineralEvent.serverBanAdd, params: [member, user, server]);
+    dispatch(event: Event.serverBanAdd, params: [member, user, server]);
 
     server.members.list.remove(user.id);
   }

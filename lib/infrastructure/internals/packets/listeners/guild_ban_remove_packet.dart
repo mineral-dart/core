@@ -2,7 +2,7 @@ import 'package:mineral/infrastructure/services/logger/logger.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
+import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 
 final class GuildBanRemovePacket implements ListenablePacket {
@@ -19,6 +19,6 @@ final class GuildBanRemovePacket implements ListenablePacket {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
     final user = await marshaller.serializers.user.serialize(message.payload['user']);
 
-    dispatch(event: MineralEvent.serverBanRemove, params: [user, server]);
+    dispatch(event: Event.serverBanRemove, params: [user, server]);
   }
 }

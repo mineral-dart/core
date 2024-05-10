@@ -18,7 +18,7 @@ import 'package:mineral/domains/events/contracts/server/server_roles_remove_even
 import 'package:mineral/domains/events/contracts/server/server_roles_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_stickers_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_update_event.dart';
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
+import 'package:mineral/domains/events/event.dart';
 
 final class ServerBucket {
   final EventBucket _events;
@@ -26,59 +26,59 @@ final class ServerBucket {
   ServerBucket(this._events);
 
   void serverCreate(ServerCreateEventHandler handle) =>
-      _events.make(MineralEvent.serverCreate, handle);
+      _events.make(Event.serverCreate, handle);
 
   void serverUpdate(ServerUpdateEventHandler handle) =>
-      _events.make(MineralEvent.serverUpdate, handle);
+      _events.make(Event.serverUpdate, handle);
 
   void serverDelete(ServerDeleteEventHandler handle) =>
-      _events.make(MineralEvent.serverDelete, handle);
+      _events.make(Event.serverDelete, handle);
 
   void messageCreate(ServerMessageEventHandler handle) =>
-      _events.make(MineralEvent.serverMessageCreate, handle);
+      _events.make(Event.serverMessageCreate, handle);
 
   void channelCreate(ServerChannelCreateEventHandler handle) =>
-      _events.make(MineralEvent.serverChannelCreate, handle);
+      _events.make(Event.serverChannelCreate, handle);
 
   void channelUpdate(ServerChannelUpdateEventHandler handle) =>
-      _events.make(MineralEvent.serverChannelUpdate, handle);
+      _events.make(Event.serverChannelUpdate, handle);
 
   void channelDelete(ServerChannelDeleteEventHandler handle) =>
-      _events.make(MineralEvent.serverChannelDelete, handle);
+      _events.make(Event.serverChannelDelete, handle);
 
   void channelPinsUpdate(ServerChannelPinsUpdateEventHandler handle) =>
-      _events.make(MineralEvent.serverChannelPinsUpdate, handle);
+      _events.make(Event.serverChannelPinsUpdate, handle);
 
   void memberAdd(ServerMemberAddEventHandler handle) =>
-      _events.make(MineralEvent.serverMemberAdd, handle);
+      _events.make(Event.serverMemberAdd, handle);
 
   void memberRemove(ServerMemberRemoveEventHandler handle) =>
-      _events.make(MineralEvent.serverMemberRemove, handle);
+      _events.make(Event.serverMemberRemove, handle);
 
   void memberUpdate(ServerMemberUpdateEventHandler handle) =>
-      _events.make(MineralEvent.serverMemberUpdate, handle);
+      _events.make(Event.serverMemberUpdate, handle);
 
   void roleCreate(ServerRolesCreateEventHandler handle) =>
-      _events.make(MineralEvent.serverRoleCreate, handle);
+      _events.make(Event.serverRoleCreate, handle);
 
   void roleUpdate(ServerRolesUpdateEventHandler handle) =>
-      _events.make(MineralEvent.serverRoleUpdate, handle);
+      _events.make(Event.serverRoleUpdate, handle);
 
   void roleDelete(ServerRolesDeleteEventHandler handle) =>
-      _events.make(MineralEvent.serverRoleDelete, handle);
+      _events.make(Event.serverRoleDelete, handle);
 
   void presenceUpdate(ServerPresenceUpdateEventHandler handle) =>
-      _events.make(MineralEvent.serverPresenceUpdate, handle);
+      _events.make(Event.serverPresenceUpdate, handle);
 
   void banAdd(ServerBanAddEventHandler handle) =>
-      _events.make(MineralEvent.serverBanAdd, handle);
+      _events.make(Event.serverBanAdd, handle);
 
   void banRemove(ServerBanRemoveEventHandler handle) =>
-      _events.make(MineralEvent.serverBanRemove, handle);
+      _events.make(Event.serverBanRemove, handle);
 
   void emojisUpdate(ServerEmojisUpdateEventHandler handle) =>
-      _events.make(MineralEvent.serverEmojisUpdate, handle);
+      _events.make(Event.serverEmojisUpdate, handle);
 
   void stickersUpdate(ServerStickersUpdateEventHandler handle) =>
-      _events.make(MineralEvent.serverStickersUpdate, handle);
+      _events.make(Event.serverStickersUpdate, handle);
 }

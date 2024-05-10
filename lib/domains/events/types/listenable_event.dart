@@ -1,5 +1,5 @@
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
+import 'package:mineral/domains/events/event.dart';
 
 abstract interface class ListenableEvent {
-  EventList get event;
+  Event get event;
 }

@@ -5,7 +5,7 @@ import 'package:mineral/infrastructure/services/logger/logger.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
+import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 
 final class ReadyPacket implements ListenablePacket {
@@ -22,6 +22,6 @@ final class ReadyPacket implements ListenablePacket {
     final client = Bot.fromJson(message.payload);
 
     logger.trace(jsonEncode(message.payload));
-    dispatch(event: MineralEvent.ready, params: [client]);
+    dispatch(event: Event.ready, params: [client]);
   }
 }
