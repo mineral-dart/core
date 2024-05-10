@@ -1,7 +1,7 @@
 import 'dart:io';
 
-import 'package:mineral/domains/environment/env_schema.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/environment/env_schema.dart';
 
 abstract interface class EnvContract {
   Map<String, String> get list;
