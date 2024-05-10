@@ -3,20 +3,44 @@ import 'dart:isolate';
 
 import 'package:mineral/domains/environment/app_env.dart';
 import 'package:mineral/domains/environment/environment.dart';
-import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/domains/events/event_listener.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/hmr/hot_module_reloading.dart';
 import 'package:mineral/infrastructure/internals/hmr/watcher_config.dart';
-import 'package:mineral/infrastructure/io/ansi.dart';
-import 'package:mineral/domains/events/data_listener.dart';
-import 'package:mineral/infrastructure/commons/types/kernel_contract.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_listener.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/internals/wss/sharding_config.dart';
+import 'package:mineral/infrastructure/io/ansi.dart';
 import 'package:mineral/infrastructure/services/http/header.dart';
 import 'package:mineral/infrastructure/services/http/http_client.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
 import 'package:path/path.dart';
 import 'package:yaml/yaml.dart';
+
+abstract interface class KernelContract {
+  Map<int, Shard> get shards;
+
+  ShardingConfigContract get config;
+
+  LoggerContract get logger;
+
+  EnvContract get environment;
+
+  HttpClientContract get httpClient;
+
+  PacketListenerContract get packetListener;
+
+  EventListenerContract get eventListener;
+
+  MarshallerContract get marshaller;
+
+  DataStoreContract get dataStore;
+
+  HotModuleReloading? get hmr;
+
+  Future<void> init();
+}
 
 final class Kernel implements KernelContract {
   final SendPort? _devPort;
@@ -39,7 +63,13 @@ final class Kernel implements KernelContract {
   final HttpClientContract httpClient;
 
   @override
-  final DataListenerContract dataListener;
+  final PacketListenerContract packetListener;
+
+  @override
+  final EventListenerContract eventListener;
+
+  @override
+  final MarshallerContract marshaller;
 
   @override
   final DataStoreContract dataStore;
@@ -52,20 +82,19 @@ final class Kernel implements KernelContract {
       required this.environment,
       required this.httpClient,
       required this.config,
-      required this.dataListener,
+      required this.packetListener,
+      required this.eventListener,
+      required this.marshaller,
       required this.dataStore,
       required this.watcherConfig}) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
-
-    ioc
-      ..bind('logger', () => logger)
-      ..bind('datastore', () => dataStore);
   }
 
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {
     final response = await httpClient.get('/gateway/bot');
+    print(response.bodyString);
     return switch (response.statusCode) {
       200 => response.body,
       401 => throw Exception('This token is invalid or revocated !'),
@@ -94,13 +123,13 @@ final class Kernel implements KernelContract {
           ..writeln('> Discord : https://discord.gg/JKj2FwEf3b')
           ..writeln();
       } else {
-        stdout.writeln('${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('is running for production…')}');
+        stdout.writeln(
+            '${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('is running for production…')}');
       }
     }
 
     if (useHmr) {
-      hmr = HotModuleReloading(
-          _devPort, watcherConfig, dataStore, dataListener, createShards, shards);
+      hmr = HotModuleReloading(_devPort, watcherConfig, this, createShards, shards);
       await hmr?.spawn();
     } else {
       createShards();

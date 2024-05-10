@@ -3,13 +3,12 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/hmr/watcher_builder.dart';
 import 'package:mineral/infrastructure/internals/hmr/watcher_config.dart';
-import 'package:mineral/infrastructure/io/ansi.dart';
-import 'package:mineral/domains/events/data_listener.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/io/ansi.dart';
+import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:path/path.dart';
 import 'package:watcher/watcher.dart';
 
@@ -24,13 +23,12 @@ final class HotModuleReloading {
   SendPort? devSendPort;
   DateTime? duration;
 
-  final DataStoreContract _datastore;
-  final DataListenerContract _dataListener;
+  final KernelContract _kernel;
   final Map<int, Shard> _shards;
   final Function() _createShards;
 
-  HotModuleReloading(this._devPort, this._watcherConfig, this._datastore, this._dataListener,
-      this._createShards, this._shards);
+  HotModuleReloading(
+      this._devPort, this._watcherConfig, this._kernel, this._createShards, this._shards);
 
   Future<void> spawn() async {
     if (Isolate.current.debugName == 'dev') {
@@ -38,9 +36,9 @@ final class HotModuleReloading {
       final Stream stream = port.asBroadcastStream();
 
       _devPort!.send(port.sendPort);
-      await _datastore.marshaller.cache.init();
+      await _kernel.marshaller.cache.init();
       await for (final Map<String, dynamic> message in stream) {
-        _dataListener.packets.dispatch(ShardMessageImpl.of(message));
+        _kernel.packetListener.dispatcher.dispatch(ShardMessageImpl.of(message));
       }
     } else {
       _createHotModuleLoader();

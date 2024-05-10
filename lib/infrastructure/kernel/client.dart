@@ -4,13 +4,14 @@ import 'dart:isolate';
 import 'package:mineral/domains/environment/app_env.dart';
 import 'package:mineral/domains/environment/env_schema.dart';
 import 'package:mineral/domains/environment/environment.dart';
+import 'package:mineral/domains/events/event_listener.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/kernel/mineral_client.dart';
 import 'package:mineral/infrastructure/internals/cache/cache_provider_contract.dart';
-import 'package:mineral/domains/events/data_listener.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_listener.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/infrastructure/services/http/header.dart';
@@ -122,25 +123,39 @@ final class Client {
     final http = HttpClient(
         config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
       Header.userAgent('Mineral'),
-      Header.contentType('infrastructure/json'),
+      Header.contentType('application/json'),
     }));
 
     final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
-    final MarshallerContract marshaller = Marshaller(_logger, _cache!);
-    final DataStoreContract dataStore = DataStore(http, marshaller);
+    final marshaller = Marshaller(_logger, _cache!);
+    final datastore = DataStore(http);
 
-    final DataListenerContract dataListener = DataListener(_logger, marshaller);
+    ioc
+      ..bind('marshaller', () => marshaller)
+      ..bind('datastore', () => datastore);
 
-    final kernel = Kernel(_devPort,
-        watcherConfig: _watcherConfig,
-        logger: _logger,
-        environment: _env,
-        httpClient: http,
-        config: shardConfig,
-        dataListener: dataListener,
-        dataStore: dataStore,
+    final packetListener = PacketListener();
+    final eventListener = EventListener();
+
+    final kernel = Kernel(
+      _devPort,
+      watcherConfig: _watcherConfig,
+      logger: _logger,
+      environment: _env,
+      httpClient: http,
+      config: shardConfig,
+      packetListener: packetListener,
+      eventListener: eventListener,
+      marshaller: marshaller,
+      dataStore: datastore,
     );
+
+    datastore.kernel = kernel;
+    packetListener.kernel = kernel;
+
+    datastore.init();
+    packetListener.init();
 
     return MineralClient(kernel);
   }

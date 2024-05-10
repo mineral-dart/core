@@ -30,4 +30,6 @@ final class Marshaller implements MarshallerContract {
   Marshaller(this.logger, this.cache) {
     serializers = SerializerBucketImpl(this);
   }
+
+  factory Marshaller.singleton() => ioc.resolve('marshaller');
 }

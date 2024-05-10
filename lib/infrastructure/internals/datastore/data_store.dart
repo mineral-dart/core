@@ -4,11 +4,11 @@ import 'package:mineral/infrastructure/internals/datastore/parts/member_part.dar
 import 'package:mineral/infrastructure/internals/datastore/parts/role_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/server_part.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client.dart';
 
 abstract class DataStoreContract {
   HttpClient get client;
-  MarshallerContract get marshaller;
 
   ChannelPart get channel;
 
@@ -23,8 +23,7 @@ final class DataStore implements DataStoreContract {
   @override
   final HttpClient client;
 
-  @override
-  final MarshallerContract marshaller;
+  late final KernelContract kernel;
 
   @override
   late final ChannelPart channel;
@@ -38,11 +37,13 @@ final class DataStore implements DataStoreContract {
   @override
   late final RolePart role;
 
-  DataStore(this.client, this.marshaller) {
-    channel = ChannelPart(this);
-    server = ServerPart(this);
-    member = MemberPart(this);
-    role = RolePart(this);
+  DataStore(this.client);
+
+  void init() {
+    channel = ChannelPart(kernel);
+    server = ServerPart(kernel);
+    member = MemberPart(kernel);
+    role = RolePart(kernel);
   }
 
   factory DataStore.singleton() => ioc.resolve('datastore');

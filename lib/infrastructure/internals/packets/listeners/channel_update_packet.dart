@@ -1,20 +1,20 @@
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
-import 'package:mineral/domains/events/types/listenable_packet.dart';
-import 'package:mineral/domains/events/types/packet_type.dart';
+import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/commons/mineral_event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 
-final class ChannelCreatePacket implements ListenablePacket {
+final class ChannelUpdatePacket implements ListenablePacket {
   @override
-  PacketType get packetType => PacketType.channelCreate;
+  PacketType get packetType => PacketType.channelUpdate;
 
   final LoggerContract logger;
   final MarshallerContract marshaller;
 
-  const ChannelCreatePacket(this.logger, this.marshaller);
+  const ChannelUpdatePacket(this.logger, this.marshaller);
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
@@ -29,20 +29,23 @@ final class ChannelCreatePacket implements ListenablePacket {
 
   Future<void> registerServerChannel(ServerChannel channel, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(channel.guildId);
+    final before = server.channels.list[channel.id];
 
     channel.server = server;
-    server.channels.list.putIfAbsent(channel.id, () => channel);
+    server.channels.list.update(channel.id, (_) => channel);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
     await marshaller.cache.put(server.id, rawServer);
 
-    dispatch(event: MineralEvent.serverChannelCreate, params: [channel]);
+    dispatch(event: MineralEvent.serverChannelUpdate, params: [before, channel]);
   }
 
   Future<void> registerPrivateChannel(PrivateChannel channel, DispatchEvent dispatch) async {
+    final before = marshaller.dataStore.channel.getChannel(channel.id);
+
     final rawChannel = await marshaller.serializers.channels.deserialize(channel);
     await marshaller.cache.put(channel.id, rawChannel);
 
-    dispatch(event: MineralEvent.privateChannelCreate, params: [channel]);
+    dispatch(event: MineralEvent.serverChannelUpdate, params: [before, channel]);
   }
 }

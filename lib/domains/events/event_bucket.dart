@@ -2,7 +2,7 @@ import 'package:mineral/domains/events/event_buckets/private_bucket.dart';
 import 'package:mineral/domains/events/event_buckets/server_bucket.dart';
 import 'package:mineral/domains/events/contracts/common/ready_event.dart';
 import 'package:mineral/infrastructure/commons/mineral_event.dart';
-import 'package:mineral/infrastructure/commons/types/kernel_contract.dart';
+import 'package:mineral/infrastructure/kernel/kernel.dart';
 
 final class EventBucket {
   final KernelContract _kernel;
@@ -20,7 +20,7 @@ final class EventBucket {
   void ready(ReadyEventHandler handle) => _registerEvent(event: MineralEvent.ready, handle: handle);
 
   void _registerEvent<T extends Function>({required EventList event, required T handle}) =>
-      _kernel.dataListener.events.listen(
+      _kernel.eventListener.listen(
         event: event,
         handle: handle,
       );

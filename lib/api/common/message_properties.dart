@@ -1,8 +1,8 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 final class MessageProperties<T extends Channel> {
   final Snowflake id;
@@ -22,7 +22,7 @@ final class MessageProperties<T extends Channel> {
   });
 
   factory MessageProperties.fromJson(T channel, Map<String, dynamic> json) {
-    final embedSerializer = DataStore.singleton().marshaller.serializers.embed;
+    final embedSerializer = Marshaller.singleton().serializers.embed;
     final embeds = List.from(json['embeds'])
         .map((element) => embedSerializer.serialize(element) as MessageEmbed)
         .toList();

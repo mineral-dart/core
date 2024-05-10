@@ -35,6 +35,6 @@ final class ShardDataImpl implements ShardData {
   }
 
   void dispatchWithoutHmr(WebsocketMessage message) {
-    _shard.kernel.dataListener.packets.dispatch(message.content);
+    _shard.kernel.packetListener.dispatcher.dispatch(message.content);
   }
 }

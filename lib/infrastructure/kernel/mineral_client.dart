@@ -1,13 +1,15 @@
 import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 import 'package:mineral/domains/environment/environment.dart';
-import 'package:mineral/infrastructure/commons/types/kernel_contract.dart';
+import 'package:mineral/infrastructure/kernel/kernel.dart';
 
 abstract interface class MineralClientContract {
   EnvContract get environment;
+
   EventBucket get events;
 
   void register(ListenableEvent Function() event);
+
   Future<void> init();
 }
 
@@ -30,8 +32,7 @@ final class MineralClient implements MineralClientContract {
 
     switch (instance) {
       case ListenableEvent():
-        _kernel.dataListener.events
-            .listen(event: instance.event, handle: (instance as dynamic).handle);
+        _kernel.eventListener.listen(event: instance.event, handle: (instance as dynamic).handle);
     }
   }
 
