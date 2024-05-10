@@ -1,14 +1,14 @@
 import 'dart:async';
 
 import 'package:mineral/api/private/private_message.dart';
+import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
 
-typedef PrivateMessageEventHandler = FutureOr<void> Function(PrivateMessage);
+typedef PrivateMessageCreateEventHandler = FutureOr<void> Function(PrivateMessage);
 
-abstract class PrivateMessageEvent implements ListenableEvent {
+abstract class PrivateMessageCreateEvent implements ListenableEvent {
   @override
-  EventList get event => MineralEvent.privateMessageCreate;
+  Event get event => Event.privateMessageCreate;
 
   FutureOr<void> handle(PrivateMessage message);
 }

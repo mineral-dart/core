@@ -1,8 +1,8 @@
 import 'dart:async';
 
+import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/event_dispatcher.dart';
 import 'package:mineral/domains/events/internal_event_params.dart';
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -11,7 +11,7 @@ abstract interface class EventListenerContract {
 
   EventDispatcherContract get dispatcher;
 
-  StreamSubscription listen({required EventList event, required Function handle});
+  StreamSubscription listen<T extends Function>({required Event event, required T handle});
 }
 
 final class EventListener implements EventListenerContract {
@@ -28,9 +28,9 @@ final class EventListener implements EventListenerContract {
   }
 
   @override
-  StreamSubscription listen({required EventList event, required Function handle}) {
+  StreamSubscription listen<T extends Function>({required Event event, required T handle}) {
     return _events.stream
-        .where((message) => message.event == event.name)
-        .listen((message) => Function.apply(handle, message.params));
+        .where((element) => element.event == event)
+        .listen((element) => Function.apply(handle, element.params));
   }
 }

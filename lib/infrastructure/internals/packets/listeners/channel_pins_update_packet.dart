@@ -4,7 +4,7 @@ import 'package:mineral/infrastructure/services/logger/logger.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
+import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 
 final class ChannelPinsUpdatePacket implements ListenablePacket {
@@ -34,13 +34,13 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
     final rawServer = await marshaller.serializers.server.deserialize(server);
     await marshaller.cache.put(server.id, rawServer);
 
-    dispatch(event: MineralEvent.serverChannelPinsUpdate, params: [server, channel]);
+    dispatch(event: Event.serverChannelPinsUpdate, params: [server, channel]);
   }
 
   Future<void> registerPrivateChannelPins(PrivateChannel channel, DispatchEvent dispatch) async {
     final rawChannel = await marshaller.serializers.channels.deserialize(channel);
     await marshaller.cache.put(channel.id, rawChannel);
 
-    dispatch(event: MineralEvent.privateChannelPinsUpdate, params: [channel]);
+    dispatch(event: Event.privateChannelPinsUpdate, params: [channel]);
   }
 }

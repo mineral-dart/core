@@ -3,7 +3,7 @@ import 'package:mineral/infrastructure/services/logger/logger.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/infrastructure/commons/mineral_event.dart';
+import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 
 final class GuildDeletePacket implements ListenablePacket {
@@ -20,7 +20,7 @@ final class GuildDeletePacket implements ListenablePacket {
     final Snowflake serverId = Snowflake(message.payload['id']);
     final server = await marshaller.dataStore.server.getServer(serverId);
 
-    dispatch(event: MineralEvent.serverDelete, params: [server]);
+    dispatch(event: Event.serverDelete, params: [server]);
 
     marshaller.cache.remove(serverId);
   }
