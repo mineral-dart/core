@@ -1,26 +1,17 @@
-import 'dart:async';
-
 import 'package:mineral/domains/events/internal_event_params.dart';
 import 'package:mineral/infrastructure/commons/mineral_event.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract interface class EventDispatcherContract {
-  StreamSubscription listen({required EventList event, required Function handle});
-
   void dispatch({required EventList event, required List params});
 
   void dispose();
 }
 
 final class EventDispatcher implements EventDispatcherContract {
-  final BehaviorSubject<InternalEventParams> _events = BehaviorSubject();
+  final BehaviorSubject<InternalEventParams> _events;
 
-  @override
-  StreamSubscription listen({required EventList event, required Function handle}) {
-    return _events.stream
-        .where((message) => message.event == event.name)
-        .listen((message) => Function.apply(handle, message.params));
-  }
+  EventDispatcher(this._events);
 
   @override
   void dispatch({required EventList event, required List params}) {

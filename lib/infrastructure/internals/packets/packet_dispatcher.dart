@@ -1,10 +1,9 @@
 import 'dart:convert';
 
-import 'package:mineral/domains/events/data_listener.dart';
-import 'package:mineral/domains/events/types/listenable_packet.dart';
-import 'package:mineral/domains/events/types/packet_type.dart';
+import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/infrastructure/services/logger/logger.dart';
+import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract interface class PacketDispatcherContract {
@@ -17,17 +16,15 @@ abstract interface class PacketDispatcherContract {
 
 final class PacketDispatcher implements PacketDispatcherContract {
   final BehaviorSubject<ShardMessage> _packets = BehaviorSubject();
+  final KernelContract _kernel;
 
-  final DataListenerContract _manager;
-  final LoggerContract _logger;
-
-  PacketDispatcher(this._manager, this._logger);
+  PacketDispatcher(this._kernel);
 
   @override
   void listen(PacketType packet, Function(ShardMessage, DispatchEvent) listener) {
     _packets.stream.where((event) => event.type == packet.name).listen((ShardMessage message) {
-      _logger.trace(jsonEncode(message.serialize()));
-      Function.apply(listener, [message, _manager.events.dispatch]);
+      _kernel.logger.trace(jsonEncode(message.serialize()));
+      Function.apply(listener, [message, _kernel.eventListener.dispatcher.dispatch]);
     });
   }
 
