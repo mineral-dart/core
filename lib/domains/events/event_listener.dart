@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mineral/domains/events/dispatchers/event_dispatcher.dart';
+import 'package:mineral/domains/events/event_dispatcher.dart';
 import 'package:mineral/domains/events/internal_event_params.dart';
 import 'package:mineral/infrastructure/commons/mineral_event.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
