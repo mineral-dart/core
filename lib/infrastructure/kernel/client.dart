@@ -1,19 +1,19 @@
 import 'dart:io';
 import 'dart:isolate';
 
-import 'package:mineral/domains/environment/app_env.dart';
-import 'package:mineral/domains/environment/env_schema.dart';
-import 'package:mineral/domains/environment/environment.dart';
 import 'package:mineral/domains/events/event_listener.dart';
+import 'package:mineral/infrastructure/internals/cache/cache_provider_contract.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
+import 'package:mineral/infrastructure/internals/environment/app_env.dart';
+import 'package:mineral/infrastructure/internals/environment/env_schema.dart';
+import 'package:mineral/infrastructure/internals/environment/environment.dart';
 import 'package:mineral/infrastructure/internals/hmr/watcher_config.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_listener.dart';
+import 'package:mineral/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/kernel/mineral_client.dart';
-import 'package:mineral/infrastructure/internals/cache/cache_provider_contract.dart';
-import 'package:mineral/infrastructure/internals/packets/packet_listener.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/infrastructure/services/http/header.dart';
 import 'package:mineral/infrastructure/services/http/http_client.dart';
 import 'package:mineral/infrastructure/services/http/http_client_config.dart';

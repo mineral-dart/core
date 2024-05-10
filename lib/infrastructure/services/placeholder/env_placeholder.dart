@@ -1,5 +1,5 @@
-import 'package:mineral/domains/environment/environment.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/environment/environment.dart';
 import 'package:mineral/infrastructure/services/placeholder/placeholder.dart';
 import 'package:recase/recase.dart';
 
