@@ -9,6 +9,7 @@ enum PacketType {
   messageReactionAdd('MESSAGE_REACTION_ADD'),
   messageReactionRemove('MESSAGE_REACTION_REMOVE'),
   messageReactionRemoveAll('MESSAGE_REACTION_REMOVE_ALL'),
+  messageReactionRemoveEmoji('MESSAGE_REACTION_REMOVE_EMOJI'),
 
   guildCreate('GUILD_CREATE'),
   guildUpdate('GUILD_UPDATE'),
