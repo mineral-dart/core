@@ -50,7 +50,7 @@ final class HotModuleReloading {
   void _createHotModuleLoader() {
     final watcher = WatcherBuilder(Directory.current)
         .setAllowReload(true)
-        .addWatchFolder(Directory(join(Directory.current.path, 'lib')));
+        .addWatchFolder(Directory(join(Directory.current.path, 'src')));
 
     for (final file in _watcherConfig.watchedFiles) {
       watcher.addWatchFile(file);
@@ -65,7 +65,7 @@ final class HotModuleReloading {
 
   void _createDevelopmentIsolate() {
     final port = ReceivePort();
-    final uri = Uri.parse(join(Directory.current.path, 'lib', 'main.dart'));
+    final uri = Uri.parse(join(Directory.current.path, 'src', 'main.dart'));
 
     Isolate.spawnUri(Uri.file(uri.path), [], port.sendPort, debugName: 'dev')
         .then((Isolate isolate) async {
