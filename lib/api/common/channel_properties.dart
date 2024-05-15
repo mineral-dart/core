@@ -75,56 +75,32 @@ final class ChannelProperties {
     required this.defaultForumLayout,
   });
 
-  static Future<ChannelProperties> make(
-      MarshallerContract marshaller, Map<String, dynamic> element) async {
+  static Future<ChannelProperties> make(MarshallerContract marshaller, Map<String, dynamic> element) async {
     final permissionOverwrites = await Helper.createOrNullAsync(
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
-              List.from(element['permission_overwrites'])
-                  .map((json) async =>
-                      marshaller.serializers.channelPermissionOverwrite.serialize(json))
-                  .toList(),
+              List.from(element['permission_overwrites']).map((json) async => marshaller.serializers.channelPermissionOverwrite.serialize(json)).toList(),
             ));
-    List<User>? recipients;
 
-    switch(element['recipients']) {
-      case const (List<Object>):
-        recipients = await Helper.createOrNullAsync(
-          field: element['recipients'],
-          fn: () async => Future.wait(
-            List.from(element['recipients'])
-                .map((json) async => marshaller.serializers.user.serialize(json))
-                .toList(),
-          ));
-      case const (List<String>):
-        recipients = await Helper.createOrNullAsync(
-          field: element['recipients'],
-          fn: () async => Future.wait(
-            List.from(element['recipients'])
-                .map((json) async => marshaller.dataStore.user.getUser(json))
-                .toList(),
-          ));
-      default:
-        recipients = [];
-    }
+    final List<User> recipients = switch (element['recipients']) {
+      final List list => await Future.wait(list.map((json) async => marshaller.serializers.user.serialize(json)).toList()),
+      _ => [],
+    };
 
     return ChannelProperties(
       id: Snowflake(element['id']),
       type: findInEnum(ChannelType.values, element['type']),
       name: element['name'],
       description: element['description'],
-      guildId: Helper.createOrNull(
-          field: element['guild_id'], fn: () => Snowflake(element['guild_id'])),
-      categoryId: Helper.createOrNull(
-          field: element['parent_id'], fn: () => Snowflake(element['parent_id'])),
+      guildId: Helper.createOrNull(field: element['guild_id'], fn: () => Snowflake(element['guild_id'])),
+      categoryId: Helper.createOrNull(field: element['parent_id'], fn: () => Snowflake(element['parent_id'])),
       position: element['position'],
       nsfw: element['nsfw'] ?? false,
-      lastMessageId: Helper.createOrNull(
-          field: element['last_message_id'], fn: () => Snowflake(element['last_message_id'])),
+      lastMessageId: Helper.createOrNull(field: element['last_message_id'], fn: () => Snowflake(element['last_message_id'])),
       bitrate: element['bitrate'],
       userLimit: element['user_limit'],
       rateLimitPerUser: element['rate_limit_per_user'],
-      recipients: recipients ?? [],
+      recipients: recipients,
       icon: element['icon'],
       ownerId: element['owner_id'],
       applicationId: element['application_id'],
