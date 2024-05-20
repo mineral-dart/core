@@ -1,5 +1,6 @@
 import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
+import 'package:mineral/infrastructure/commons/listenable.dart';
 import 'package:mineral/infrastructure/internals/environment/environment.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 
@@ -8,7 +9,7 @@ abstract interface class MineralClientContract {
 
   EventBucket get events;
 
-  void register(ListenableEvent Function() event);
+  void register(Listenable Function() event);
 
   Future<void> init();
 }
@@ -27,7 +28,7 @@ final class MineralClient implements MineralClientContract {
         _kernel = kernel;
 
   @override
-  void register(ListenableEvent Function() event) {
+  void register(Listenable Function() event) {
     final instance = event();
 
     switch (instance) {

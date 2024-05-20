@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mineral/domains/events/event_listener.dart';
+import 'package:mineral/domains/providers/provider.dart';
+import 'package:mineral/domains/providers/provider_manager.dart';
 import 'package:mineral/infrastructure/internals/cache/cache_provider_contract.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
@@ -25,6 +27,7 @@ final class Client {
 
   CacheProviderContract? _cache;
   final List<EnvSchema> _schemas = [];
+  final List<ProviderContract Function(MineralClientContract)> _providers = [];
 
   SendPort? _devPort;
   bool _hasDefinedDevPort = false;
@@ -86,6 +89,11 @@ final class Client {
     return this;
   }
 
+  Client registerProvider<T extends ProviderContract>(T Function(MineralClientContract) provider) {
+    _providers.add(provider);
+    return this;
+  }
+
   void _validateEnvironment() {
     _env
       ..validate(AppEnv.values)
@@ -137,6 +145,7 @@ final class Client {
 
     final packetListener = PacketListener();
     final eventListener = EventListener();
+    final providerManager = ProviderManager();
 
     final kernel = Kernel(
       _devPort,
@@ -146,6 +155,7 @@ final class Client {
       httpClient: http,
       config: shardConfig,
       packetListener: packetListener,
+      providerManager: providerManager,
       eventListener: eventListener,
       marshaller: marshaller,
       dataStore: datastore,
@@ -157,6 +167,12 @@ final class Client {
     datastore.init();
     packetListener.init();
 
-    return MineralClient(kernel);
+    final client = MineralClient(kernel);
+
+    for (final provider in _providers) {
+      providerManager.register(provider(client));
+    }
+
+    return client;
   }
 }

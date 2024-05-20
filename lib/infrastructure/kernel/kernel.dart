@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mineral/domains/events/event_listener.dart';
+import 'package:mineral/domains/providers/provider_manager.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/infrastructure/internals/environment/environment.dart';
@@ -32,6 +33,8 @@ abstract interface class KernelContract {
   PacketListenerContract get packetListener;
 
   EventListenerContract get eventListener;
+
+  ProviderManagerContract get providerManager;
 
   MarshallerContract get marshaller;
 
@@ -69,6 +72,9 @@ final class Kernel implements KernelContract {
   final EventListenerContract eventListener;
 
   @override
+  final ProviderManagerContract providerManager;
+
+  @override
   final MarshallerContract marshaller;
 
   @override
@@ -84,6 +90,7 @@ final class Kernel implements KernelContract {
       required this.config,
       required this.packetListener,
       required this.eventListener,
+      required this.providerManager,
       required this.marshaller,
       required this.dataStore,
       required this.watcherConfig}) {
@@ -105,6 +112,10 @@ final class Kernel implements KernelContract {
   @override
   Future<void> init() async {
     final useHmr = environment.get<bool>(AppEnv.hmr);
+
+    if ((useHmr && Isolate.current.debugName != 'main') || !useHmr) {
+      await providerManager.ready();
+    }
 
     if (Isolate.current.debugName == 'main') {
       final packageFile = File(join(Directory.current.path, 'pubspec.yaml'));
