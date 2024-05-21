@@ -62,7 +62,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
     final rawMessage = await marshaller.serializers.message.deserialize(message);
     final rawChannel = await marshaller.serializers.channels.deserialize(channel);
-    await marshaller.cache.put(channel?.id, rawChannel);
+    await marshaller.cache.put(channel!.id, rawChannel);
     await marshaller.cache.put(message.id, rawMessage);
 
     dispatch(event: Event.privateMessageCreate, params: [message]);

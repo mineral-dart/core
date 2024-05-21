@@ -64,6 +64,6 @@ final class MessageDeletePacket implements ListenablePacket {
 
     await marshaller.cache.remove(json['id']);
 
-    dispatch(event: Event.serverMessageDelete, params: [message]);
+    dispatch(event: Event.privateMessageDelete, params: [message]);
   }
 }

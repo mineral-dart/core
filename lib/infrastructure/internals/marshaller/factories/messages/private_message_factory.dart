@@ -1,7 +1,7 @@
 import 'package:mineral/api/common/message_properties.dart';
+import 'package:mineral/api/common/reaction_emoji.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/private_message.dart';
-import 'package:mineral/domains/data_store/data_store.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/message_factory.dart';
 
@@ -9,7 +9,7 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
   @override
   Future<PrivateMessage> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
-    final reactionSerializer = DataStore.singleton().marshaller.serializers.reactionEmoji;
+    final reactionSerializer = Marshaller.singleton().serializers.reactionEmoji;
     final reactions = <ReactionEmoji<PrivateChannel>>[];
     final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json, reactions);
     final user = await marshaller.serializers.user.serialize(json['author']);

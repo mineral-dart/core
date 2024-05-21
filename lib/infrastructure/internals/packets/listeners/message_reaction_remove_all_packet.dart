@@ -1,11 +1,11 @@
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/server/server_message.dart';
-import 'package:mineral/application/logger/logger.dart';
-import 'package:mineral/domains/data/types/listenable_packet.dart';
-import 'package:mineral/domains/data/types/packet_type.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/mineral_event.dart';
-import 'package:mineral/domains/wss/shard_message.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
+import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class MessageReactionRemoveAllPacket implements ListenablePacket {
   @override
@@ -30,9 +30,9 @@ final class MessageReactionRemoveAllPacket implements ListenablePacket {
     message.reactions.clear();
 
     final messageRaw = await marshaller.serializers.message.deserialize(message);
-    await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
+    await marshaller.cache.put(message.id, messageRaw);
 
-    dispatch(event: MineralEvent.privateMessageReactionRemoveAll, params: [message, message.channel]);
+    dispatch(event: Event.privateMessageReactionRemoveAll, params: [message, message.channel]);
   }
 
   Future<void> sendServerReactionMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
@@ -42,8 +42,8 @@ final class MessageReactionRemoveAllPacket implements ListenablePacket {
     message.reactions.clear();
 
     final messageRaw = await marshaller.serializers.message.deserialize(message);
-    await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
+    await marshaller.cache.put(message.id, messageRaw);
 
-    dispatch(event: MineralEvent.serverMessageReactionRemoveAll, params: [message, server]);
+    dispatch(event: Event.serverMessageReactionRemoveAll, params: [message, server]);
   }
 }

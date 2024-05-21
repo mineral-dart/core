@@ -17,30 +17,44 @@ final class MemberPart implements DataStorePart {
 
   MemberPart(this._kernel);
 
-  Future<Member> getMember({required Snowflake guildId, required Snowflake memberId}) async {
-    final cachedRawMember = await _kernel.marshaller.cache.get(memberId);
+  Future<Member?> getMemberOrNull({required Snowflake guildId, required Snowflake memberId}) async {
     final roles = await _kernel.dataStore.server.getRoles(guildId);
+    final serverRaw = await _kernel.marshaller.cache.getOrFail(guildId);
+    final server = await _kernel.marshaller.serializers.server.serialize(serverRaw);
 
-    if (cachedRawMember != null) {
-      return _kernel.marshaller.serializers.member.serialize({
-        ...cachedRawMember,
-        'guild_roles': roles,
-      });
+    if (server.members.list.containsKey(memberId)) {
+      return server.members.list[memberId];
     }
 
     final response = await _kernel.dataStore.client.get('/guilds/$guildId/members/$memberId');
     final member = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        _kernel.marshaller.serializers.member.serialize({
-          ...response.body,
-          'guild_roles': roles,
-        }),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
+          _kernel.marshaller.serializers.member.serialize({
+            ...response.body,
+            'guild_roles': roles,
+          }),
+      int() when status.isError(response.statusCode) => null,
+      _ => null,
     };
 
+    if(member == null) {
+      return null;
+    }
+
     final rawMember = await _kernel.marshaller.serializers.member.deserialize(member);
+    rawMember['guild'] = server;
     await _kernel.marshaller.cache.put(memberId, rawMember);
+
+    member.server = await _kernel.marshaller.serializers.server.serialize(serverRaw);
+
+    return member;
+  }
+
+  Future<Member> getMemberOrFail({required Snowflake guildId, required Snowflake memberId}) async {
+    final member = await getMemberOrNull(guildId: guildId, memberId: memberId);
+    if (member == null) {
+      throw Exception('Member not found');
+    }
 
     return member;
   }

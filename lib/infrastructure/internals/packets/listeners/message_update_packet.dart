@@ -6,12 +6,12 @@ import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
-import 'package:mineral/application/logger/logger.dart';
-import 'package:mineral/domains/data/types/listenable_packet.dart';
-import 'package:mineral/domains/data/types/packet_type.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/mineral_event.dart';
-import 'package:mineral/domains/wss/shard_message.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
+import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class MessageUpdatePacket implements ListenablePacket {
   @override
@@ -64,7 +64,7 @@ final class MessageUpdatePacket implements ListenablePacket {
     await marshaller.cache.put(message.id, rawMessage);
 
 
-    dispatch(event: MineralEvent.serverMessageUpdate, params: [oldMessage, message]);
+    dispatch(event: Event.serverMessageUpdate, params: [oldMessage, message]);
   }
 
   Future<void> updatePrivateMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
@@ -81,6 +81,6 @@ final class MessageUpdatePacket implements ListenablePacket {
     final rawChannel = await marshaller.serializers.channels.deserialize(channel);
     await marshaller.cache.put(message.id, rawChannel);
 
-    dispatch(event: MineralEvent.privateMessageUpdate, params: [oldMessage, message]);
+    dispatch(event: Event.privateMessageUpdate, params: [oldMessage, message]);
   }
 }

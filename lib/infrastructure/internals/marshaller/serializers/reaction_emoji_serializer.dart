@@ -7,8 +7,8 @@ import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/server.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/marshaller/types/serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class ReactionEmojiSerializer implements SerializerContract<ReactionEmoji<Channel>> {
   final MarshallerContract _marshaller;

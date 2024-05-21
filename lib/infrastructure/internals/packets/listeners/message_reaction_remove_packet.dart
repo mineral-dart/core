@@ -6,12 +6,12 @@ import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
-import 'package:mineral/application/logger/logger.dart';
-import 'package:mineral/domains/data/types/listenable_packet.dart';
-import 'package:mineral/domains/data/types/packet_type.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/mineral_event.dart';
-import 'package:mineral/domains/wss/shard_message.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
+import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class MessageReactionRemovePacket implements ListenablePacket {
   @override
@@ -57,9 +57,9 @@ final class MessageReactionRemovePacket implements ListenablePacket {
     }
 
     final messageRaw = await marshaller.serializers.message.deserialize(message);
-    await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
+    await marshaller.cache.put(message.id, messageRaw);
 
-    dispatch(event: MineralEvent.privateMessageReactionRemove, params: [message, reaction, message.channel, user]);
+    dispatch(event: Event.privateMessageReactionRemove, params: [message, reaction, message.channel, user]);
   }
 
   Future<void> sendServerReactionMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
@@ -85,8 +85,8 @@ final class MessageReactionRemovePacket implements ListenablePacket {
     }
 
     final messageRaw = await marshaller.serializers.message.deserialize(message);
-    await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
+    await marshaller.cache.put(message.id, messageRaw);
 
-    dispatch(event: MineralEvent.serverMessageReactionRemove, params: [message, reaction, server, member]);
+    dispatch(event: Event.serverMessageReactionRemove, params: [message, reaction, server, member]);
   }
 }

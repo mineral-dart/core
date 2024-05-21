@@ -4,12 +4,12 @@ import 'package:mineral/api/server/channels/server_announcement_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
-import 'package:mineral/application/logger/logger.dart';
-import 'package:mineral/domains/data/types/listenable_packet.dart';
-import 'package:mineral/domains/data/types/packet_type.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/mineral_event.dart';
-import 'package:mineral/domains/wss/shard_message.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
+import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class MessageDeleteBulkPacket implements ListenablePacket {
   @override
@@ -58,7 +58,7 @@ final class MessageDeleteBulkPacket implements ListenablePacket {
     final rawServer = await marshaller.serializers.server.deserialize(server);
     await marshaller.cache.put(server.id, rawServer);
 
-    dispatch(event: MineralEvent.serverMessageDeleteBulk, params: [messages, server]);
+    dispatch(event: Event.serverMessageDeleteBulk, params: [messages, server]);
   }
 
   Future<void> deletePrivateMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
@@ -79,6 +79,6 @@ final class MessageDeleteBulkPacket implements ListenablePacket {
       }
     }
 
-    dispatch(event: MineralEvent.serverMessageDeleteBulk, params: [messages, channel]);
+    dispatch(event: Event.serverMessageDeleteBulk, params: [messages, channel]);
   }
 }

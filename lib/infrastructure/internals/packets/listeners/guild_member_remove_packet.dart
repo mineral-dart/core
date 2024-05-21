@@ -1,9 +1,9 @@
-import 'package:mineral/infrastructure/services/logger/logger.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class GuildMemberRemovePacket implements ListenablePacket {
   @override
@@ -17,14 +17,14 @@ final class GuildMemberRemovePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
-
     final member = server.members.list[message.payload['user']['id']];
+    final user = await marshaller.dataStore.user.getUser(message.payload['user']['id']);
 
     server.members.list.remove(member?.id);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
     await marshaller.cache.put(server.id, rawServer);
 
-    dispatch(event: Event.serverMemberRemove, params: [member, server]);
+    dispatch(event: Event.serverMemberRemove, params: [member, user, server]);
   }
 }

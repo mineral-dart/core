@@ -4,6 +4,7 @@ import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/emoji.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/polls/poll.dart';
+import 'package:mineral/api/common/reaction_emoji.dart';
 import 'package:mineral/api/common/sticker.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/member.dart';
@@ -12,21 +13,23 @@ import 'package:mineral/api/server/server.dart';
 import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/api/server/server_subscription.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/marshaller/serializers/channel_permission_overwrite_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/channel_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/embed_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/emoji_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/member_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/message_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/role_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/server_assets_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/server_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/server_settings_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/server_subscription_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/sticker_serializer.dart';
-import 'package:mineral/domains/marshaller/serializers/user_serializer.dart';
-import 'package:mineral/domains/marshaller/types/serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_permission_overwrite_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/embed_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/emoji_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/member_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/message_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/poll_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/reaction_emoji_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/role_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/server_assets_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/server_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/server_settings_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/server_subscription_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/sticker_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/user_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
 abstract interface class SerializerBucket {
   SerializerContract<Channel?> get channels;
@@ -56,6 +59,8 @@ abstract interface class SerializerBucket {
   SerializerContract<MessageEmbed> get embed;
 
   SerializerContract<Poll> get poll;
+
+  SerializerContract<ReactionEmoji> get reactionEmoji;
 }
 
 final class SerializerBucketImpl<T> implements SerializerBucket {
@@ -101,6 +106,9 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   @override
   final SerializerContract<Poll> poll;
 
+  @override
+  final SerializerContract<ReactionEmoji> reactionEmoji;
+
   SerializerBucketImpl(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
@@ -115,5 +123,6 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
         message = MessageSerializer(marshaller),
         embed = EmbedSerializer(marshaller),
-        poll = PollSerializer(marshaller);
+        poll = PollSerializer(marshaller),
+        reactionEmoji = ReactionEmojiSerializer(marshaller);
 }

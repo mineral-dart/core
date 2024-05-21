@@ -1,11 +1,11 @@
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/server/server_message.dart';
-import 'package:mineral/application/logger/logger.dart';
-import 'package:mineral/domains/data/types/listenable_packet.dart';
-import 'package:mineral/domains/data/types/packet_type.dart';
-import 'package:mineral/domains/marshaller/marshaller.dart';
-import 'package:mineral/domains/shared/mineral_event.dart';
-import 'package:mineral/domains/wss/shard_message.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
+import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class MessageReactionRemoveEmojiPacket implements ListenablePacket {
   @override
@@ -31,9 +31,9 @@ final class MessageReactionRemoveEmojiPacket implements ListenablePacket {
     message.reactions.removeWhere((element) => element.emoji == emoji);
 
     final messageRaw = await marshaller.serializers.message.deserialize(message);
-    await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
+    await marshaller.cache.put(message.id, messageRaw);
 
-    dispatch(event: MineralEvent.privateMessageReactionRemoveEmoji, params: [message, emoji, message.channel]);
+    dispatch(event: Event.privateMessageReactionRemoveEmoji, params: [message, emoji, message.channel]);
   }
 
   Future<void> sendServerReactionMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
@@ -48,8 +48,8 @@ final class MessageReactionRemoveEmojiPacket implements ListenablePacket {
     message.reactions.removeWhere((element) => element.emoji == emoji);
 
     final messageRaw = await marshaller.serializers.message.deserialize(message);
-    await marshaller.dataStore.marshaller.cache.put(message.id, messageRaw);
+    await marshaller.cache.put(message.id, messageRaw);
 
-    dispatch(event: MineralEvent.serverMessageReactionRemoveEmoji, params: [message, emoji, server]);
+    dispatch(event: Event.serverMessageReactionRemoveEmoji, params: [message, emoji, server]);
   }
 }

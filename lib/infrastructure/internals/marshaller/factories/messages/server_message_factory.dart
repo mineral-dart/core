@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/message_properties.dart';
+import 'package:mineral/api/common/reaction_emoji.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
@@ -8,7 +9,7 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   @override
   Future<ServerMessage> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
-    final reactionSerializer = DataStore.singleton().marshaller.serializers.reactionEmoji;
+    final reactionSerializer =Marshaller.singleton().serializers.reactionEmoji;
     final reactions = <ReactionEmoji<ServerChannel>>[];
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json, reactions);
     final member = await marshaller.dataStore.member.getMemberOrNull(memberId: json['author']['id'], guildId: json['guild_id']);

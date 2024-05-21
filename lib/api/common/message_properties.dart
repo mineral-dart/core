@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
+import 'package:mineral/api/common/reaction_emoji.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
@@ -9,6 +10,7 @@ final class MessageProperties<T extends Channel> {
   final String content;
   final Snowflake channelId;
   final List<MessageEmbed> embeds;
+  final List<ReactionEmoji<T>> reactions;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -19,9 +21,10 @@ final class MessageProperties<T extends Channel> {
     required this.embeds,
     required this.createdAt,
     required this.updatedAt,
+    this.reactions = const [],
   });
 
-  factory MessageProperties.fromJson(T channel, Map<String, dynamic> json) {
+  factory MessageProperties.fromJson(T channel, Map<String, dynamic> json, List<ReactionEmoji<T>> reactions) {
     final embedSerializer = Marshaller.singleton().serializers.embed;
     final embeds = List.from(json['embeds'])
         .map((element) => embedSerializer.serialize(element) as MessageEmbed)
@@ -35,6 +38,7 @@ final class MessageProperties<T extends Channel> {
       createdAt: DateTime.parse(json['timestamp']),
       updatedAt: Helper.createOrNull(
           field: json['edited_timestamp'], fn: () => DateTime.parse(json['edited_timestamp'])),
+      reactions: reactions,
     );
   }
 }

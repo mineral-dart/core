@@ -2,6 +2,7 @@ import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
+import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/messages/private_message_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/messages/server_message_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
