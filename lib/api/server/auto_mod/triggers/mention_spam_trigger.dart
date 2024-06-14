@@ -1,5 +1,4 @@
 import 'package:mineral/api/server/auto_mod/auto_moderation_trigger.dart';
-import 'package:mineral/api/server/auto_mod/enums/preset_type.dart';
 import 'package:mineral/api/server/auto_mod/enums/trigger_type.dart';
 
 final class MentionSpamTrigger implements AutoModerationTrigger {
@@ -13,4 +12,12 @@ final class MentionSpamTrigger implements AutoModerationTrigger {
     required this.mentionTotalLimit,
     required this.hasMentionRaidProtectionEnabled,
   });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'mention_total_limit': mentionTotalLimit,
+      'mention_raid_protection_enabled': hasMentionRaidProtectionEnabled,
+    };
+  }
 }

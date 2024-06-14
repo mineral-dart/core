@@ -13,4 +13,13 @@ final class KeywordPresetTrigger implements AutoModerationTrigger {
     this.presets = const [],
     this.allowList = const [],
   });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type,
+      'presets': presets.map((preset) => preset.toString()).toList(),
+      'allowList': allowList,
+    };
+  }
 }

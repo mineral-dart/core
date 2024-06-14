@@ -50,12 +50,16 @@ final class AutoModerationBuilder<T extends AutoModerationTrigger> {
   Map<String, dynamic> build() {
     return {
       'name': name,
-      'eventType': eventType?.value,
-      'trigger': trigger,
-      'isEnabled': isEnabled,
-      'actions': actions,
-      'exemptRoles': exemptRoles,
-      'exemptChannels': exemptChannels,
+      'event_type': eventType?.value,
+      'trigger_type': trigger?.type.value,
+      'trigger_metadata': trigger?.toJson(),
+      'enabled': isEnabled,
+      'actions': actions.map((action) => action.toJson()).toList(),
+      'exempt_roles':
+          exemptRoles.isNotEmpty ? exemptRoles.map((role) => role.value).toList() : null,
+      'exempt_channels': exemptChannels.isNotEmpty
+          ? exemptChannels.map((channel) => channel.value).toList()
+          : null,
     };
   }
 }

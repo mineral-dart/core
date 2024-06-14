@@ -8,4 +8,12 @@ final class SendMessageAction implements AutoModerationAction {
   final String channelId;
 
   SendMessageAction({required this.channelId});
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.value,
+      'channel_id': channelId,
+    };
+  }
 }

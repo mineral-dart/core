@@ -14,4 +14,13 @@ final class KeywordTrigger implements AutoModerationTrigger {
     this.regexPatterns = const[],
     this.allowList = const [],
   });
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'keyword_filter': keywordFilter,
+      'regex_patterns': regexPatterns,
+      'allow_list': allowList,
+    };
+  }
 }

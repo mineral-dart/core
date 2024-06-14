@@ -8,4 +8,12 @@ final class TimeoutAction implements AutoModerationAction {
   final Duration duration;
 
   TimeoutAction({required this.duration});
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.value,
+      'duration_seconds': duration.inSeconds,
+    };
+  }
 }

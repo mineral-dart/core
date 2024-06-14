@@ -8,4 +8,12 @@ final class BlockMessageAction implements AutoModerationAction {
   final String? message;
 
   BlockMessageAction({this.message});
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'type': type.value,
+      'custom_message': message,
+    };
+  }
 }
