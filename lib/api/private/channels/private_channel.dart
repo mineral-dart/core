@@ -17,7 +17,7 @@ final class PrivateChannel extends Channel {
   @override
   ChannelType get type => _properties.type;
 
-  String get name => _properties.name!;
+  String get name => _properties.name ?? recipients.map((e) => e.username).join(', ');
 
   String get description => _properties.description!;
 
