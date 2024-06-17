@@ -1,6 +1,8 @@
 enum PacketType {
   ready('READY'),
+
   messageCreate('MESSAGE_CREATE'),
+  messageReactionAdd('MESSAGE_REACTION_ADD'),
 
   guildCreate('GUILD_CREATE'),
   guildUpdate('GUILD_UPDATE'),
