@@ -23,10 +23,10 @@ final class ChannelPart implements DataStorePart {
 
   ChannelPart(this._kernel);
 
-  Future<T?> getChannel<T extends Channel>(Snowflake id) async {
+  Future<T> getChannel<T extends Channel>(Snowflake id) async {
     final cachedChannel = await _kernel.marshaller.cache.get(id);
     if (cachedChannel != null) {
-      return _kernel.marshaller.serializers.channels.serialize(cachedChannel) as Future<T?>;
+      return _kernel.marshaller.serializers.channels.serialize(cachedChannel) as Future<T>;
     }
 
     final response = await _kernel.dataStore.client.get('/channels/$id');
@@ -34,7 +34,7 @@ final class ChannelPart implements DataStorePart {
 
     _putInCache(channel, id, response);
 
-    return channel as T?;
+    return channel as T;
   }
 
   Future<T?> createServerChannel<T extends Channel>(
@@ -142,5 +142,22 @@ final class ChannelPart implements DataStorePart {
       _kernel.marshaller.cache.put(server.id, rawServer),
       _kernel.marshaller.cache.put(channel.id, rawChannel)
     ]);
+  }
+
+  Future<Message> getMessage<T extends Message>(Snowflake channelId, Snowflake messageId, { Snowflake? guildId }) async {
+    final cachedMessage = await _kernel.marshaller.cache.get(messageId);
+    if (cachedMessage != null) {
+      return _kernel.marshaller.serializers.message.serialize(cachedMessage);
+    }
+
+    final response = await _kernel.dataStore.client.get('/channels/$channelId/messages/$messageId');
+    final message = await _kernel.marshaller.serializers.message.serialize({
+      ...response.body,
+      'guild_id': guildId,
+    });
+
+    await _kernel.marshaller.cache.put(messageId, response.body);
+
+    return message;
   }
 }
