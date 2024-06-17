@@ -3,17 +3,13 @@ import 'package:mineral/api/common/reaction.dart';
 import 'package:mineral/api/common/reaction_properties.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/private_message.dart';
-import 'package:mineral/api/private/user.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 final class PrivateReaction implements Reaction<PrivateMessage> {
   final ReactionProperties _properties;
   final marshaller = Marshaller.singleton();
-  final User user;
 
-  PrivateReaction(this._properties, {
-    required this.user,
-  });
+  PrivateReaction(this._properties);
 
   @override
   bool get burst => _properties.burst;
@@ -26,6 +22,9 @@ final class PrivateReaction implements Reaction<PrivateMessage> {
 
   @override
   Emoji get emoji => _properties.emoji;
+
+  @override
+  int get count => _properties.count;
 
   @override
   late final PrivateMessage message;
