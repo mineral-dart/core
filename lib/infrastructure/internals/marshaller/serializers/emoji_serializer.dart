@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/emoji.dart';
+import 'package:mineral/api/common/partial_emoji.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
@@ -12,6 +13,18 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
 
   @override
   Emoji serialize(Map<String, dynamic> json) {
+    if (json['id'] == null) {
+      return Emoji(
+        id: null,
+        name: json['name'],
+        globalName: json['global_name'],
+        roles: {},
+        managed: json['managed'] ?? false,
+        animated: json['animated'] ?? false,
+        available: json['available'] ?? false,
+      );
+    }
+
     final guildRoles = List<Role>.from(json['guildRoles']);
 
     final Map<Snowflake, Role> roles = List<String>.from(json['roles']).fold({}, (value, element) {
@@ -26,7 +39,7 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
     });
 
     return Emoji(
-      id: json['id'],
+      id: json['id'] ?? null,
       name: json['name'],
       globalName: json['global_name'],
       roles: roles,
