@@ -30,7 +30,7 @@ final class MessageReactionAddPacket implements ListenablePacket {
 
   Future<void> listenPrivate(Map payload, DispatchEvent dispatch) async {
     final user = await marshaller.dataStore.user.getUser(payload['user_id']);
-    final channel = await marshaller.dataStore.channel.getChannel<PrivateChannel>(payload['channel_id']);
+    final channel = await marshaller.dataStore.channel.getChannel(payload['channel_id']) as PrivateChannel;
     final message = await marshaller.dataStore.channel.getMessage<PrivateMessage>(payload['channel_id'], payload['message_id']) as PrivateMessage;
 
     print('User ${user.username} reacted to a message in channel ${channel.name}, message: ${message.content}');
@@ -39,7 +39,7 @@ final class MessageReactionAddPacket implements ListenablePacket {
 
   Future<void> listenServer(Map payload, DispatchEvent dispatch) async {
       final member = await marshaller.dataStore.member.getMember(guildId: payload['guild_id'], memberId: payload['user_id']);
-      final channel = await marshaller.dataStore.channel.getChannel<ServerChannel>(payload['channel_id']);
+      final channel = await marshaller.dataStore.channel.getChannel(payload['channel_id']) as ServerChannel;
       final message = await marshaller.dataStore.channel.getMessage<ServerMessage>(payload['channel_id'], payload['message_id'], guildId: payload['guild_id']);
 
       print('Member ${member.username} reacted to a message in channel ${channel.name}, message: ${message.content}, reaction: ${payload['emoji']}');
