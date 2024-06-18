@@ -43,9 +43,9 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       name: json['name'],
       globalName: json['global_name'],
       roles: roles,
-      managed: json['managed'],
-      animated: json['animated'],
-      available: json['available'],
+      managed: json['managed'] ?? false,
+      animated: json['animated'] ?? false,
+      available: json['available'] ?? false,
     );
   }
 

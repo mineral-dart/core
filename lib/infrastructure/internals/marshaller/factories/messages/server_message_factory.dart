@@ -16,7 +16,7 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
     final member = server.members.list[json['author']['id']];
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
 
-    final reactionProperties = List.from(json['reactions']).map((e) => ReactionProperties.fromJson(e)).toList();
+    final reactionProperties = List.from(json['reactions'] ?? {}).map((e) => ReactionProperties.fromJson(e)).toList();
     final reactions = reactionProperties.map(ServerReaction.new).toList();
     final message = ServerMessage(messageProperties, author: member!, reactions: reactions)
       ..channel = channel;
