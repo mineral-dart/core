@@ -156,7 +156,10 @@ final class ChannelPart implements DataStorePart {
       'guild_id': guildId,
     });
 
-    await _kernel.marshaller.cache.put(messageId, response.body);
+    await _kernel.marshaller.cache.put(messageId, {
+      ...response.body,
+      'guild_id': guildId,
+    });
 
     return message;
   }

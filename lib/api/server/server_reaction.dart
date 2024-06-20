@@ -26,4 +26,12 @@ final class ServerReaction implements Reaction<ServerMessage> {
 
   @override
   late final ServerMessage message;
+
+  void incrementCount() {
+    _properties.count++;
+  }
+
+  void decrementCount() {
+    _properties.count--;
+  }
 }

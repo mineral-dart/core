@@ -12,7 +12,7 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
   final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
   final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
   final user = await marshaller.serializers.user.serialize(json['author']);
-  final reactionsProperties = List.from(json['reactions']).map((e) => ReactionProperties.fromJson(e)).toList();
+  final reactionsProperties = List.from(json['reactions']).map((e) => ReactionProperties.fromJson(e, null)).toList();
   final reactions = reactionsProperties.map(PrivateReaction.new).toList();
   final message = PrivateMessage(messageProperties, userId: json['author']['id'], user: user, reactions: reactions)
     ..channel = channel;

@@ -13,17 +13,24 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
     print(json);
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
     final server = await marshaller.dataStore.server.getServer(json['guild_id']);
-    final member = server.members.list[json['author']['id']];
+    final author = server.members.list[json['author']['id']];
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
 
-    final reactionProperties = List.from(json['reactions'] ?? {}).map((e) => ReactionProperties.fromJson(e)).toList();
-    final reactions = reactionProperties.map(ServerReaction.new).toList();
-    final message = ServerMessage(messageProperties, author: member!, reactions: reactions)
+    final List<ServerReaction> reactions = [];
+
+    for (final reaction in json['reactions']) {
+      final member = reaction['member'] != null ? await marshaller.serializers.member.serialize(reaction['member']) : null;
+      final reactionPropertie = ReactionProperties.fromJson(reaction, member);
+      final serverReaction = ServerReaction(reactionPropertie)
+        ..channel = channel;
+      reactions.add(serverReaction);
+    }
+
+    final message = ServerMessage(messageProperties, author: author!, reactions: reactions)
       ..channel = channel;
 
     reactions.forEach((reaction) {
-      reaction..channel = message.channel
-      ..message = message;
+      reaction.message = message;
     });
 
     return message;

@@ -5,7 +5,7 @@ import 'package:mineral/api/server/member.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 final class ReactionProperties<T extends Message> {
-  final int count;
+  int count;
   final Snowflake? guildId;
   final Member? member;
   final Emoji emoji;
@@ -24,7 +24,7 @@ final class ReactionProperties<T extends Message> {
     required this.burstColors,
   });
 
-  factory ReactionProperties.fromJson(Map<String, dynamic> json) {
+  factory ReactionProperties.fromJson(Map<String, dynamic> json, Member? member) {
     final marshaller = Marshaller.singleton();
     final emoji = marshaller.serializers.emojis.serialize({
       ...json['emoji'],
@@ -33,9 +33,9 @@ final class ReactionProperties<T extends Message> {
     }) as Emoji;
 
     return ReactionProperties(
-      count: json['count'],
+      count: json['count'] ?? 0,
       guildId: json['guild_id'] != null ? Snowflake(json['guild_id']) : null,
-      member: json['member'] != null ? Marshaller.singleton().serializers.member.serialize(json['member']) as Member : null,
+      member: member,
       emoji: emoji,
       authorId: json['author_id'] != null ? Snowflake(json['author_id']) : null,
       burst: json['burst'] ?? false,
