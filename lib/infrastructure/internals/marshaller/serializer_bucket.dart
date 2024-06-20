@@ -6,6 +6,7 @@ import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/sticker.dart';
 import 'package:mineral/api/private/user.dart';
+import 'package:mineral/api/server/auto_mod/auto_moderation.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server.dart';
@@ -13,6 +14,7 @@ import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/auto_moderation_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_permission_overwrite_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/embed_serializer.dart';
@@ -57,6 +59,8 @@ abstract interface class SerializerBucket {
   SerializerContract<MessageEmbed> get embed;
 
   SerializerContract<Poll> get poll;
+
+  SerializerContract<AutoModeration> get autoModeration;
 }
 
 final class SerializerBucketImpl<T> implements SerializerBucket {
@@ -102,6 +106,9 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   @override
   final SerializerContract<Poll> poll;
 
+  @override
+  final SerializerContract<AutoModeration> autoModeration;
+
   SerializerBucketImpl(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
@@ -116,5 +123,6 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
         message = MessageSerializer(marshaller),
         embed = EmbedSerializer(marshaller),
-        poll = PollSerializer(marshaller);
+        poll = PollSerializer(marshaller),
+        autoModeration = AutoModerationSerializer(marshaller);
 }

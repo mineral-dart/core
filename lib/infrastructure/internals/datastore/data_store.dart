@@ -1,9 +1,9 @@
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/datastore/parts/auto_mod_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/channel_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/member_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/role_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/server_part.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client.dart';
 
@@ -17,6 +17,8 @@ abstract class DataStoreContract {
   MemberPart get member;
 
   RolePart get role;
+
+  AutoModPart get autoMod;
 }
 
 final class DataStore implements DataStoreContract {
@@ -37,6 +39,9 @@ final class DataStore implements DataStoreContract {
   @override
   late final RolePart role;
 
+  @override
+  late final AutoModPart autoMod;
+
   DataStore(this.client);
 
   void init() {
@@ -44,6 +49,7 @@ final class DataStore implements DataStoreContract {
     server = ServerPart(kernel);
     member = MemberPart(kernel);
     role = RolePart(kernel);
+    autoMod = AutoModPart(kernel);
   }
 
   factory DataStore.singleton() => ioc.resolve('datastore');

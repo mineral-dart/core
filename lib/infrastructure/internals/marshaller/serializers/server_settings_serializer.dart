@@ -4,10 +4,11 @@ import 'package:mineral/api/server/enums/mfa_level.dart';
 import 'package:mineral/api/server/enums/nsfw_level.dart';
 import 'package:mineral/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
+import 'package:mineral/api/server/managers/moderation_rule_manager.dart';
 import 'package:mineral/api/server/server_settings.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/infrastructure/commons/utils.dart';
 
 final class ServerSettingsSerializer implements SerializerContract<ServerSettings> {
   final MarshallerContract _marshaller;
@@ -16,6 +17,8 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
 
   @override
   Future<ServerSettings> serialize(Map<String, dynamic> json) async {
+    final moderationRulesManager = ModerationRuleManager(_marshaller);
+
     return ServerSettings(
         bitfieldPermission: json['permissions'],
         afkTimeout: json['afk_timeout'],
@@ -32,12 +35,14 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
         subscription: await _marshaller.serializers.serverSubscription.serialize(json),
         preferredLocale: json['preferred_locale'],
         maxVideoChannelUsers: json['max_video_channel_users'],
-        nsfwLevel: findInEnum(NsfwLevel.values, json['nsfw_level']));
+        nsfwLevel: findInEnum(NsfwLevel.values, json['nsfw_level']),
+        moderationRules: moderationRulesManager);
   }
 
   @override
   Future<Map<String, dynamic>> deserialize(ServerSettings object) async {
-    final subscriptions = await _marshaller.serializers.serverSubscription.deserialize(object.subscription);
+    final subscriptions =
+        await _marshaller.serializers.serverSubscription.deserialize(object.subscription);
 
     return {
       'permissions': object.bitfieldPermission,

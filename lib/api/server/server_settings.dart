@@ -4,6 +4,7 @@ import 'package:mineral/api/server/enums/mfa_level.dart';
 import 'package:mineral/api/server/enums/nsfw_level.dart';
 import 'package:mineral/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/api/server/enums/verification_level.dart';
+import 'package:mineral/api/server/managers/moderation_rule_manager.dart';
 import 'package:mineral/api/server/server_subscription.dart';
 
 final class ServerSettings {
@@ -21,6 +22,7 @@ final class ServerSettings {
   final String preferredLocale;
   final int? maxVideoChannelUsers;
   final NsfwLevel nsfwLevel;
+  final ModerationRuleManager moderationRules;
 
   ServerSettings({
     required this.bitfieldPermission,
@@ -37,5 +39,6 @@ final class ServerSettings {
     required this.preferredLocale,
     required this.maxVideoChannelUsers,
     required this.nsfwLevel,
+    required this.moderationRules,
   });
 }

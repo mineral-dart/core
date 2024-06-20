@@ -37,8 +37,7 @@ final class ServerPart implements DataStorePart {
       _kernel.marshaller.cache.put(id, serverResponse.body),
       ...server.channels.list.values
           .map((channel) => _kernel.marshaller.cache.put(channel.id, channel)),
-      ...server.members.list.values
-          .map((member) => _kernel.marshaller.cache.put(member.id, member))
+      ...server.members.list.values.map((member) => _kernel.marshaller.cache.put(member.id, member))
     ]);
 
     return server;
@@ -59,7 +58,7 @@ final class ServerPart implements DataStorePart {
     return role;
   }
 
-  Future<List<Role>> getRoles(Snowflake guildId, { bool force = false }) async {
+  Future<List<Role>> getRoles(Snowflake guildId, {bool force = false}) async {
     if (force) {
       final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles');
       final roles = await _serializeRolesResponse(response);

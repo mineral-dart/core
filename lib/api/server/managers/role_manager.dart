@@ -8,6 +8,9 @@ final class RoleManager {
 
   Map<Snowflake, Role> get list => _roles;
 
+  Role getOrFail(String id) => _roles.values
+      .firstWhere((element) => element.id == id, orElse: () => throw Exception('Role not found'));
+
   factory RoleManager.fromList(List<Role> payload) {
     final roles = Map<Snowflake, Role>.from(payload.fold({}, (value, element) {
       return {...value, element.id: element};
