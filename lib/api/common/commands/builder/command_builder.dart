@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:mineral/api/common/commands/builder/command_group_builder.dart';
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
+import 'package:mineral/api/common/commands/command_type.dart';
 
 final class CommandBuilder {
   String? _name;
@@ -56,6 +57,7 @@ final class CommandBuilder {
     return {
       'name': _name,
       'description': _description,
+      if (_subCommands.isEmpty && _groups.isEmpty) 'type': CommandType.subCommand.value,
       'options': options,
     };
   }

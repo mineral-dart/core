@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mineral/api/common/commands/command_option.dart';
+import 'package:mineral/api/common/commands/command_type.dart';
 
 final class SubCommandBuilder {
   String? _name;
@@ -32,6 +33,7 @@ final class SubCommandBuilder {
     return {
       'name': _name,
       'description': _description,
+      'type': CommandType.subCommand.value,
       'options': _options.map((e) => e.toJson()).toList(),
     };
   }
