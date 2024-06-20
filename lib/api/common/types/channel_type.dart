@@ -15,6 +15,8 @@ enum ChannelType implements EnhancedEnum<int>{
   guildForum(15),
   guildMedia(16);
 
+  @override
   final int value;
+
   const ChannelType(this.value);
 }

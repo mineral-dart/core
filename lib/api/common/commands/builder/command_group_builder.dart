@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
+import 'package:mineral/api/common/commands/command_type.dart';
 
 final class CommandGroupBuilder {
   String? _name;
@@ -26,6 +27,7 @@ final class CommandGroupBuilder {
     return {
       'name': _name,
       'description': _description,
+      'type': CommandType.subCommandGroup.value,
       'options': _commands.map((e) => e.toJson()).toList(),
     };
   }
