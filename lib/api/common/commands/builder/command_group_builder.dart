@@ -6,6 +6,8 @@ final class CommandGroupBuilder {
   String? _description;
   final List<SubCommandBuilder> _commands = [];
 
+  CommandGroupBuilder();
+
   CommandGroupBuilder setName(String name) {
     _name = name;
     return this;
@@ -30,5 +32,21 @@ final class CommandGroupBuilder {
       'type': CommandType.subCommandGroup.value,
       'options': _commands.map((e) => e.toJson()).toList(),
     };
+  }
+
+  factory CommandGroupBuilder.fromJson(Map json) {
+    final builder = CommandGroupBuilder()
+      ..setName(json['name'])
+      ..setDescription(json['description']);
+
+    for (final command in json['commands']) {
+      builder.addSubCommand((builder) {
+        builder
+          ..setName(command['name'])
+          ..setDescription(command['description']);
+      });
+    }
+
+    return builder;
   }
 }

@@ -3,6 +3,8 @@ import 'dart:isolate';
 
 import 'package:mineral/domains/events/event_listener.dart';
 import 'package:mineral/domains/providers/provider_manager.dart';
+import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/infrastructure/internals/environment/environment.dart';
@@ -41,6 +43,8 @@ abstract interface class KernelContract {
   DataStoreContract get dataStore;
 
   HotModuleReloading? get hmr;
+
+  InteractionManagerContract get interactionManager;
 
   Future<void> init();
 }
@@ -83,6 +87,9 @@ final class Kernel implements KernelContract {
   @override
   HotModuleReloading? hmr;
 
+  @override
+  final InteractionManagerContract interactionManager = InteractionManager();
+
   Kernel(this._devPort,
       {required this.logger,
       required this.environment,
@@ -109,8 +116,12 @@ final class Kernel implements KernelContract {
     };
   }
 
+
+
   @override
   Future<void> init() async {
+    ioc.bind('kernel', () => this);
+    await interactionManager.init();
     final useHmr = environment.get<bool>(AppEnv.hmr);
 
     if ((useHmr && Isolate.current.debugName != 'main') || !useHmr) {
@@ -145,6 +156,7 @@ final class Kernel implements KernelContract {
     } else {
       createShards();
     }
+
   }
 
   Future<void> createShards() async {
@@ -157,5 +169,9 @@ final class Kernel implements KernelContract {
 
       await shard.init();
     }
+  }
+
+  factory Kernel.singleton() {
+    return ioc.resolve('kernel');
   }
 }
