@@ -1,5 +1,8 @@
 enum PacketType {
   ready('READY'),
+
+  interactionCreate('INTERACTION_CREATE'),
+
   messageCreate('MESSAGE_CREATE'),
 
   guildCreate('GUILD_CREATE'),

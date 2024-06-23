@@ -9,6 +9,8 @@ final class SubCommandBuilder {
   final List<CommandOption> _options = [];
   FutureOr<void> Function()? _handle;
 
+  SubCommandBuilder();
+
   SubCommandBuilder setName(String name) {
     _name = name;
     return this;
@@ -36,5 +38,18 @@ final class SubCommandBuilder {
       'type': CommandType.subCommand.value,
       'options': _options.map((e) => e.toJson()).toList(),
     };
+  }
+
+
+  factory SubCommandBuilder.fromJson(Map json) {
+    final builder = SubCommandBuilder()
+      ..setName(json['name'])
+      ..setDescription(json['description']);
+
+    for (final option in json['options']) {
+      builder.addOption(CommandOption.fromJson(option));
+    }
+
+    return builder;
   }
 }

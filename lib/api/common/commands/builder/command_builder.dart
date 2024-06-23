@@ -4,6 +4,7 @@ import 'package:mineral/api/common/commands/builder/command_group_builder.dart';
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
+import 'package:mineral/infrastructure/interaction/commands/command.dart';
 
 final class CommandBuilder {
   String? _name;
@@ -60,6 +61,18 @@ final class CommandBuilder {
       if (_subCommands.isEmpty && _groups.isEmpty) 'type': CommandType.subCommand.value,
       'options': options,
     };
+  }
+
+  Command toCommand() {
+    return Command(
+      name: _name,
+      description: _description,
+      options: _options,
+      subCommands: _subCommands,
+      groups: _groups,
+      handle: _handle,
+      builder: this,
+    );
   }
 }
 
