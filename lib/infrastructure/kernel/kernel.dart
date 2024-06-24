@@ -88,7 +88,7 @@ final class Kernel implements KernelContract {
   HotModuleReloading? hmr;
 
   @override
-  final InteractionManagerContract interactionManager = InteractionManager();
+  final InteractionManagerContract interactionManager;
 
   Kernel(this._devPort,
       {required this.logger,
@@ -100,7 +100,9 @@ final class Kernel implements KernelContract {
       required this.providerManager,
       required this.marshaller,
       required this.dataStore,
-      required this.watcherConfig}) {
+      required this.watcherConfig,
+      required this.interactionManager,
+      }) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
@@ -120,8 +122,6 @@ final class Kernel implements KernelContract {
 
   @override
   Future<void> init() async {
-    ioc.bind('kernel', () => this);
-    await interactionManager.init();
     final useHmr = environment.get<bool>(AppEnv.hmr);
 
     if ((useHmr && Isolate.current.debugName != 'main') || !useHmr) {
@@ -169,9 +169,5 @@ final class Kernel implements KernelContract {
 
       await shard.init();
     }
-  }
-
-  factory Kernel.singleton() {
-    return ioc.resolve('kernel');
   }
 }
