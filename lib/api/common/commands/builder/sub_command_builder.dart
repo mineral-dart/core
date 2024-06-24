@@ -4,41 +4,42 @@ import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
 
 final class SubCommandBuilder {
-  String? _name;
-  String? _description;
-  final List<CommandOption> _options = [];
-  FutureOr<void> Function()? _handle;
+  String? name;
+  String? description;
+  final List<CommandOption> options = [];
+  FutureOr<void> Function()? handle;
 
   SubCommandBuilder();
 
   SubCommandBuilder setName(String name) {
-    _name = name;
+    this.name = name;
     return this;
   }
 
   SubCommandBuilder setDescription(String description) {
-    _description = description;
+    this.description = description;
     return this;
   }
 
   SubCommandBuilder addOption<T extends CommandOption>(T option) {
-    _options.add(option);
+    options.add(option);
     return this;
   }
 
-  SubCommandBuilder handle(FutureOr<void> Function() fn) {
-    _handle = fn;
+  SubCommandBuilder setHandle(FutureOr<void> Function() fn) {
+    handle = fn;
     return this;
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': _name,
-      'description': _description,
+      'name': name,
+      'description': description,
       'type': CommandType.subCommand.value,
-      'options': _options.map((e) => e.toJson()).toList(),
+      'options': options.map((e) => e.toJson()).toList(),
     };
   }
+
 
 
   factory SubCommandBuilder.fromJson(Map json) {
