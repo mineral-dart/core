@@ -2,12 +2,13 @@ import 'dart:async';
 
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
+import 'package:mineral/infrastructure/interaction/command/command_context.dart';
 
 final class SubCommandBuilder {
   String? name;
   String? description;
   final List<CommandOption> options = [];
-  FutureOr<void> Function()? handle;
+  FutureOr<void> Function(CommandContext, List)? handle;
 
   SubCommandBuilder();
 
@@ -26,7 +27,7 @@ final class SubCommandBuilder {
     return this;
   }
 
-  SubCommandBuilder setHandle(FutureOr<void> Function() fn) {
+  SubCommandBuilder setHandle(FutureOr<void> Function(CommandContext, List) fn) {
     handle = fn;
     return this;
   }

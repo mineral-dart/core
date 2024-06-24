@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:mineral/infrastructure/interaction/command/command_context.dart';
 import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
 import 'package:mineral/infrastructure/interaction/interaction_type.dart';
 
@@ -24,10 +25,10 @@ final class InteractionDispatcher implements InteractionDispatcherContract {
   }
 
   Future<void> _handleCommand(Map<String, dynamic> data) async {
-    final (String, FutureOr<void> Function()) command = _interactionManager.commandsHandler.firstWhere((command) => command.$1 == data['data']['name']);
+    final (String, FutureOr<void> Function(CommandContext, List)) command = _interactionManager.commandsHandler.firstWhere((command) => command.$1 == data['data']['name']);
 
-    switch (data['data']['type']) {
-
+    switch (data['data']['context']) {
+      // todo implement context (guild & global)
     }
 
     await Function.apply(command.$2, []);

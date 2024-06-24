@@ -2,14 +2,15 @@ import 'dart:async';
 
 import 'package:mineral/api/common/bot.dart';
 import 'package:mineral/api/common/commands/builder/command_builder.dart';
-import 'package:mineral/api/common/commands/command_context.dart';
+import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/server/server.dart';
+import 'package:mineral/infrastructure/interaction/command/command_context.dart';
 import 'package:mineral/infrastructure/interaction/interaction_dispatcher.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 
 abstract class InteractionManagerContract {
-  final List<(String, FutureOr<void> Function() handler)> commandsHandler = [];
+  final List<(String, FutureOr<void> Function(CommandContext, List) handler)> commandsHandler = [];
   final List<CommandBuilder> commands = [];
   late InteractionDispatcherContract dispatcher;
 
@@ -20,7 +21,7 @@ abstract class InteractionManagerContract {
 
 final class InteractionManager implements InteractionManagerContract {
   @override
-  final List<(String, FutureOr<void> Function() handler)> commandsHandler = [];
+  final List<(String, FutureOr<void> Function(CommandContext, List) handler)> commandsHandler = [];
 
   @override
   final List<CommandBuilder> commands = [];
@@ -46,7 +47,7 @@ final class InteractionManager implements InteractionManagerContract {
 
   @override
   Future<void> registerGlobal(Bot bot) async {
-    final List<CommandBuilder> globalCommands = commands.where((command) => command.context == CommandContext.global).toList();
+    final List<CommandBuilder> globalCommands = commands.where((command) => command.context == CommandContextType.global).toList();
 
     await _dataStore.client.put('/applications/${bot.id}/commands', body: [
       ...globalCommands.map((e) => e.toJson())
@@ -55,7 +56,7 @@ final class InteractionManager implements InteractionManagerContract {
 
   @override
   Future<void> registerServer(Bot bot, Server server) async {
-    final List<CommandBuilder> guildCommands = commands.where((command) => command.context == CommandContext.guild).toList();
+    final List<CommandBuilder> guildCommands = commands.where((command) => command.context == CommandContextType.guild).toList();
 
     await _dataStore.client.put('/applications/${bot.id}/guilds/${server.id}/commands', body: [
       ...guildCommands.map((e) => e.toJson())
