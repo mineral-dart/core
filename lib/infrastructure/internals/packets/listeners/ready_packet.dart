@@ -1,12 +1,15 @@
 import 'dart:convert';
+import 'dart:isolate';
 
 import 'package:mineral/api/common/bot.dart';
-import 'package:mineral/infrastructure/services/logger/logger.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class ReadyPacket implements ListenablePacket {
   @override
@@ -14,14 +17,23 @@ final class ReadyPacket implements ListenablePacket {
 
   final LoggerContract logger;
   final MarshallerContract marshaller;
+  bool isAlreadyUsed = false;
 
-  const ReadyPacket(this.logger, this.marshaller);
+  ReadyPacket(this.logger, this.marshaller);
 
   @override
-  void listen(ShardMessage message, DispatchEvent dispatch) {
-    final client = Bot.fromJson(message.payload);
+  Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final bot = Bot.fromJson(message.payload);
+    ioc.bind('bot', () => bot);
+    final InteractionManager interactionManager = ioc.resolve('interactionManager');
 
     logger.trace(jsonEncode(message.payload));
-    dispatch(event: Event.ready, params: [client]);
+
+    if(!isAlreadyUsed) {
+      await interactionManager.registerGlobal(bot);
+      isAlreadyUsed = true;
+    }
+
+    dispatch(event: Event.ready, params: [bot]);
   }
 }
