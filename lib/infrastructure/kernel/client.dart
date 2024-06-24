@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:mineral/domains/events/event_listener.dart';
 import 'package:mineral/domains/providers/provider.dart';
 import 'package:mineral/domains/providers/provider_manager.dart';
+import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
 import 'package:mineral/infrastructure/internals/cache/cache_provider_contract.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
@@ -138,10 +139,12 @@ final class Client {
 
     final marshaller = Marshaller(_logger, _cache!);
     final datastore = DataStore(http);
+    final interactionManager = InteractionManager(datastore);
 
     ioc
       ..bind('marshaller', () => marshaller)
-      ..bind('datastore', () => datastore);
+      ..bind('datastore', () => datastore)
+      ..bind('interactionManager', () => interactionManager);
 
     final packetListener = PacketListener();
     final eventListener = EventListener();
@@ -159,6 +162,7 @@ final class Client {
       eventListener: eventListener,
       marshaller: marshaller,
       dataStore: datastore,
+      interactionManager: interactionManager,
     );
 
     datastore.kernel = kernel;
