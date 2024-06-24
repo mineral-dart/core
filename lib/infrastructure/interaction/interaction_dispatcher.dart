@@ -1,4 +1,4 @@
-import 'package:mineral/infrastructure/interaction/commands/command.dart';
+import 'dart:async';
 import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
 import 'package:mineral/infrastructure/interaction/interaction_type.dart';
 
@@ -14,6 +14,7 @@ final class InteractionDispatcher implements InteractionDispatcherContract {
   @override
   Future<void> dispatch(Map<String, dynamic> data) async {
     final interactionType = InteractionType.values.firstWhere((e) => e.value == data['type']);
+
     switch (interactionType) {
       case InteractionType.applicationCommand:
         await _handleCommand(data);
@@ -23,12 +24,12 @@ final class InteractionDispatcher implements InteractionDispatcherContract {
   }
 
   Future<void> _handleCommand(Map<String, dynamic> data) async {
-    final Command? command = _interactionManager.commands[data['data']['name']];
+    final (String, FutureOr<void> Function()) command = _interactionManager.commandsHandler.firstWhere((command) => command.$1 == data['data']['name']);
 
-    if (command == null) {
-      throw Exception('Command not found: ${data['data']['name']}');
+    switch (data['data']['type']) {
+
     }
 
-    await command.handle!();
+    await Function.apply(command.$2, []);
   }
 }

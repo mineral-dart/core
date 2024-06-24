@@ -2,13 +2,14 @@ import 'dart:async';
 
 import 'package:mineral/api/common/commands/builder/command_group_builder.dart';
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
+import 'package:mineral/api/common/commands/command_context.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
-import 'package:mineral/infrastructure/interaction/commands/command.dart';
 
 final class CommandBuilder {
   String? _name;
   String? _description;
+  CommandContext context = CommandContext.guild;
   final List<CommandOption> _options = [];
   final List<SubCommandBuilder> _subCommands = [];
   final List<CommandGroupBuilder> _groups = [];
@@ -16,6 +17,11 @@ final class CommandBuilder {
 
   CommandBuilder setName(String name) {
     _name = name;
+    return this;
+  }
+
+  CommandBuilder setContext(CommandContext context) {
+    this.context = context;
     return this;
   }
 
@@ -63,16 +69,24 @@ final class CommandBuilder {
     };
   }
 
-  Command toCommand() {
-    return Command(
-      name: _name,
-      description: _description,
-      options: _options,
-      subCommands: _subCommands,
-      groups: _groups,
-      handle: _handle,
-      builder: this,
-    );
+  List<(String, FutureOr<void> Function() handler)> reduceHandlers() {
+    if (_subCommands.isEmpty && _groups.isEmpty) {
+     return [('$_name', _handle!)];
+    }
+
+    final List<(String, FutureOr<void> Function() handler)> handlers = [];
+
+    for (final subCommand in _subCommands) {
+      handlers.add(('$_name.${subCommand.name}', subCommand.handle!));
+    }
+
+    for (final group in _groups) {
+      for (final subCommand in group.commands) {
+        handlers.add(('$_name.${group.name}.${subCommand.name}', subCommand.handle!));
+      }
+    }
+
+    return handlers;
   }
 }
 
