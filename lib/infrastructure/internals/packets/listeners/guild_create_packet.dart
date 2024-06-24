@@ -1,9 +1,12 @@
-import 'package:mineral/infrastructure/services/logger/logger.dart';
+import 'package:mineral/api/common/bot.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class GuildCreatePacket implements ListenablePacket {
   @override
@@ -24,6 +27,10 @@ final class GuildCreatePacket implements ListenablePacket {
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
     await marshaller.cache.put(server.id, rawServer);
+
+    final InteractionManager interactionManager = ioc.resolve('interactionManager');
+    final Bot bot = ioc.resolve('bot');
+    await interactionManager.registerServer(bot, server);
 
     dispatch(event: Event.serverCreate, params: [server]);
   }
