@@ -2,25 +2,26 @@ import 'dart:async';
 
 import 'package:mineral/api/common/commands/builder/command_group_builder.dart';
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
-import 'package:mineral/api/common/commands/command_context.dart';
+import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
+import 'package:mineral/infrastructure/interaction/command/command_context.dart';
 
 final class CommandBuilder {
   String? _name;
   String? _description;
-  CommandContext context = CommandContext.guild;
+  CommandContextType context = CommandContextType.guild;
   final List<CommandOption> _options = [];
   final List<SubCommandBuilder> _subCommands = [];
   final List<CommandGroupBuilder> _groups = [];
-  FutureOr<void> Function()? _handle;
+  FutureOr<void> Function(CommandContext, List)? _handle;
 
   CommandBuilder setName(String name) {
     _name = name;
     return this;
   }
 
-  CommandBuilder setContext(CommandContext context) {
+  CommandBuilder setContext(CommandContextType context) {
     this.context = context;
     return this;
   }
@@ -35,7 +36,7 @@ final class CommandBuilder {
     return this;
   }
 
-  CommandBuilder handle(FutureOr<void> Function() fn) {
+  CommandBuilder handle(FutureOr<void> Function(CommandContext, List) fn) {
     _handle = fn;
     return this;
   }
@@ -69,12 +70,12 @@ final class CommandBuilder {
     };
   }
 
-  List<(String, FutureOr<void> Function() handler)> reduceHandlers() {
+  List<(String, FutureOr<void> Function(CommandContext, List) handler)> reduceHandlers() {
     if (_subCommands.isEmpty && _groups.isEmpty) {
      return [('$_name', _handle!)];
     }
 
-    final List<(String, FutureOr<void> Function() handler)> handlers = [];
+    final List<(String, FutureOr<void> Function(CommandContext, List) handler)> handlers = [];
 
     for (final subCommand in _subCommands) {
       handlers.add(('$_name.${subCommand.name}', subCommand.handle!));
