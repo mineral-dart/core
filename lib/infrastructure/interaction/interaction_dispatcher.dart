@@ -1,5 +1,6 @@
 import 'package:mineral/infrastructure/interaction/commands/command.dart';
 import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
+import 'package:mineral/infrastructure/interaction/interaction_type.dart';
 
 abstract class InteractionDispatcherContract {
   Future<void> dispatch(Map<String, dynamic> data);
@@ -12,8 +13,9 @@ final class InteractionDispatcher implements InteractionDispatcherContract {
 
   @override
   Future<void> dispatch(Map<String, dynamic> data) async {
-    switch (data['type'] as int) {
-      case 2:
+    final interactionType = InteractionType.values.firstWhere((e) => e.value == data['type']);
+    switch (interactionType) {
+      case InteractionType.applicationCommand:
         await _handleCommand(data);
       default:
         throw Exception('Unknown interaction type: ${data['type']}');
