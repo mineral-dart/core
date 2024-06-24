@@ -59,30 +59,30 @@ final class HttpClient implements HttpClientContract {
 
   @override
   Future<Response<T>> patch<T>(String endpoint,
-      {HttpRequestOption? option, Map<String, dynamic>? body}) {
+      {HttpRequestOption? option, Object? body}) {
     return _request('PATCH', endpoint, option, body);
   }
 
   @override
   Future<Response<T>> post<T>(String endpoint,
-      {HttpRequestOption? option, Map<String, dynamic>? body}) {
+      {HttpRequestOption? option, Object? body}) {
     return _request('POST', endpoint, option, body);
   }
 
   @override
   Future<Response<T>> put<T>(String endpoint,
-      {HttpRequestOption? option, Map<String, dynamic>? body}) {
+      {HttpRequestOption? option, Object? body}) {
     return _request('PUT', endpoint, option, body);
   }
 
   @override
   Future<Response<T>> send<T>(String method, String endpoint,
-      {HttpRequestOption? option, Map<String, dynamic>? body}) {
+      {HttpRequestOption? option, Object? body}) {
     return _request(method, endpoint, option, body);
   }
 
   Future<Response<T>> _request<T>(
-      String method, String endpoint, HttpRequestOption? option, Map<String, dynamic>? body) async {
+      String method, String endpoint, HttpRequestOption? option, Object? body) async {
     String url = '${config.baseUrl}$endpoint';
 
     if (option case HttpRequestOption(queryParameters: final params)) {
