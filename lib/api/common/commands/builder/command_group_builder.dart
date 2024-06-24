@@ -2,35 +2,35 @@ import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
 
 final class CommandGroupBuilder {
-  String? _name;
-  String? _description;
-  final List<SubCommandBuilder> _commands = [];
+  String? name;
+  String? description;
+  final List<SubCommandBuilder> commands = [];
 
   CommandGroupBuilder();
 
   CommandGroupBuilder setName(String name) {
-    _name = name;
+    this.name = name;
     return this;
   }
 
   CommandGroupBuilder setDescription(String description) {
-    _description = description;
+    this.description = description;
     return this;
   }
 
   CommandGroupBuilder addSubCommand(void Function(SubCommandBuilder) command) {
     final builder = SubCommandBuilder();
     command(builder);
-    _commands.add(builder);
+    commands.add(builder);
     return this;
   }
 
   Map<String, dynamic> toJson() {
     return {
-      'name': _name,
-      'description': _description,
+      'name': name,
+      'description': description,
       'type': CommandType.subCommandGroup.value,
-      'options': _commands.map((e) => e.toJson()).toList(),
+      'options': commands.map((e) => e.toJson()).toList(),
     };
   }
 
