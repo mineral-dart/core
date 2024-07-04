@@ -14,7 +14,7 @@ final class CommandBuilder {
   final List<CommandOption> _options = [];
   final List<SubCommandBuilder> _subCommands = [];
   final List<CommandGroupBuilder> _groups = [];
-  FutureOr<void> Function(CommandContext, List)? _handle;
+  Function? _handle;
 
   CommandBuilder setName(String name) {
     _name = name;
@@ -36,7 +36,13 @@ final class CommandBuilder {
     return this;
   }
 
-  CommandBuilder handle(FutureOr<void> Function(CommandContext, List) fn) {
+  CommandBuilder handle(Function fn) {
+    final firstArg = fn.toString().split('(')[1].split(')')[0].split(' ')[0];
+
+    if (!firstArg.contains('CommandContext')) {
+      throw Exception('The first argument of the handler function must be CommandContext');
+    }
+
     _handle = fn;
     return this;
   }
@@ -70,7 +76,7 @@ final class CommandBuilder {
     };
   }
 
-  List<(String, FutureOr<void> Function(CommandContext, List) handler)> reduceHandlers() {
+  List<(String, Function handler)> reduceHandlers() {
     if (_subCommands.isEmpty && _groups.isEmpty) {
      return [('$_name', _handle!)];
     }

@@ -4,13 +4,12 @@ import 'package:mineral/api/common/bot.dart';
 import 'package:mineral/api/common/commands/builder/command_builder.dart';
 import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/server/server.dart';
-import 'package:mineral/infrastructure/interaction/command/command_context.dart';
 import 'package:mineral/infrastructure/interaction/interaction_dispatcher.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 
 abstract class InteractionManagerContract {
-  final List<(String, FutureOr<void> Function(CommandContext, List) handler)> commandsHandler = [];
+  final List<(String, Function handler)> commandsHandler = [];
   final List<CommandBuilder> commands = [];
   late InteractionDispatcherContract dispatcher;
 
@@ -21,7 +20,7 @@ abstract class InteractionManagerContract {
 
 final class InteractionManager implements InteractionManagerContract {
   @override
-  final List<(String, FutureOr<void> Function(CommandContext, List) handler)> commandsHandler = [];
+  final List<(String, Function handler)> commandsHandler = [];
 
   @override
   final List<CommandBuilder> commands = [];
