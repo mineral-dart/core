@@ -139,7 +139,7 @@ final class Client {
 
     final marshaller = Marshaller(_logger, _cache!);
     final datastore = DataStore(http);
-    final interactionManager = InteractionManager(datastore);
+    final interactionManager = InteractionManager(marshaller);
 
     ioc
       ..bind('marshaller', () => marshaller)
