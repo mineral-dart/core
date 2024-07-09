@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:convert';
 
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
@@ -58,7 +59,7 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
 
   @override
   void ack() {
-    Logger.singleton().trace('Received heartbeat ack');
+    ioc.resolve<LoggerContract>().trace('Received heartbeat ack');
   }
 
   @override

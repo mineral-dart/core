@@ -28,8 +28,8 @@ final class GuildCreatePacket implements ListenablePacket {
     final rawServer = await marshaller.serializers.server.deserialize(server);
     await marshaller.cache.put(server.id, rawServer);
 
-    final CommandInteractionManagerContract interactionManager = ioc.resolve('commandInteractionManager');
-    final Bot bot = ioc.resolve('bot');
+    final interactionManager = ioc.resolve<CommandInteractionManagerContract>();
+    final bot = ioc.resolve<Bot>();
     await interactionManager.registerServer(bot, server);
 
     dispatch(event: Event.serverCreate, params: [server]);

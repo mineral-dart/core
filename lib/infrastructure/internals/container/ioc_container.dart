@@ -1,13 +1,13 @@
 final class IocContainer {
   static late final IocContainer _instance;
 
-  final Map<dynamic, dynamic> _services = {};
+  final Map<Type, dynamic> _services = {};
 
   IocContainer._() {
     IocContainer._instance = this;
   }
 
-  void bind<T>(String key, T Function() fn) {
+  void bind<T>(Type key, T Function() fn) {
     _services[key] = fn();
   }
 
@@ -16,8 +16,8 @@ final class IocContainer {
     return _services[T];
   }
 
-  T resolve<T>(String key) {
-    return _services[key];
+  T resolve<T>() {
+    return _services[T];
   }
 
   factory IocContainer.init() => IocContainer._();

@@ -1,6 +1,7 @@
 import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/server.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/member_part.dart';
 
@@ -10,7 +11,7 @@ final class MemberFlagsManager {
   late final Server server;
   late final Member member;
 
-  MemberPart get _memberMethods => DataStore.singleton().member;
+  MemberPart get _memberMethods => ioc.resolve<DataStoreContract>().member;
 
   List<MemberFlag> get list => _flags;
 

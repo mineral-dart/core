@@ -2,6 +2,7 @@ import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 final class MessageProperties<T extends Channel> {
@@ -22,7 +23,7 @@ final class MessageProperties<T extends Channel> {
   });
 
   factory MessageProperties.fromJson(T channel, Map<String, dynamic> json) {
-    final embedSerializer = Marshaller.singleton().serializers.embed;
+    final embedSerializer = ioc.resolve<MarshallerContract>().serializers.embed;
     final embeds = List.from(json['embeds'])
         .map((element) => embedSerializer.serialize(element) as MessageEmbed)
         .toList();

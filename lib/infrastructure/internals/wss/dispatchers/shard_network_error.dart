@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/wss/constants/shard_disconnect_error.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
@@ -20,7 +21,7 @@ final class ShardNetworkErrorImpl implements ShardNetworkError {
     }
 
     if ([1005].contains(payload)) {
-      Logger.singleton().trace('Unknown error with empty exit code');
+      ioc.resolve<LoggerContract>().trace('Unknown error with empty exit code');
       exit(1);
     }
 

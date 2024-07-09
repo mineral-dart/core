@@ -10,11 +10,12 @@ import 'package:mineral/api/server/member_flags.dart';
 import 'package:mineral/api/server/member_timeout.dart';
 import 'package:mineral/api/server/member_voice.dart';
 import 'package:mineral/api/server/server.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/member_part.dart';
 
 final class Member {
-  MemberPart get _memberMethods => DataStore.singleton().member;
+  MemberPart get _memberMethods => ioc.resolve<DataStoreContract>().member;
 
   late final MemberVoice voice;
 
