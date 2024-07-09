@@ -13,21 +13,6 @@ abstract interface class CommandOption {
   List<ChannelType>? get channelTypes;
 
   Map<String, dynamic> toJson();
-
-  factory CommandOption.fromJson(Map<dynamic, dynamic> json) {
-    final type = CommandOptionType.values[json['type']];
-    final channelTypes = json['channel_types'] != null
-        ? (json['channel_types'] as List).map((e) => ChannelType.values[e]).toList()
-        : null;
-
-    return Option._(
-      json['name'],
-      json['description'],
-      type,
-      channelTypes,
-      json['required'],
-    );
-  }
 }
 
 final class Option<T> implements CommandOption {
