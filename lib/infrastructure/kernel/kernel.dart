@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:mineral/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/domains/events/event_listener.dart';
 import 'package:mineral/domains/providers/provider_manager.dart';
-import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
-import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/infrastructure/internals/environment/environment.dart';
@@ -44,7 +43,7 @@ abstract interface class KernelContract {
 
   HotModuleReloading? get hmr;
 
-  InteractionManagerContract get interactionManager;
+  CommandInteractionManagerContract get commands;
 
   Future<void> init();
 }
@@ -88,7 +87,7 @@ final class Kernel implements KernelContract {
   HotModuleReloading? hmr;
 
   @override
-  final InteractionManagerContract interactionManager;
+  final CommandInteractionManagerContract commands;
 
   Kernel(this._devPort,
       {required this.logger,
@@ -101,7 +100,7 @@ final class Kernel implements KernelContract {
       required this.marshaller,
       required this.dataStore,
       required this.watcherConfig,
-      required this.interactionManager,
+      required this.commands,
       }) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),

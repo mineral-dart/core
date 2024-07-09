@@ -4,11 +4,12 @@ import 'package:mineral/api/common/bot.dart';
 import 'package:mineral/api/common/commands/builder/command_builder.dart';
 import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/server/server.dart';
-import 'package:mineral/infrastructure/interaction/interaction_dispatcher.dart';
+import 'package:mineral/domains/commands/command_interaction_dispatcher.dart';
+import 'package:mineral/domains/types/interaction_dispatcher_contract.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
-abstract class InteractionManagerContract {
+abstract class CommandInteractionManagerContract {
   final List<(String, Function handler)> commandsHandler = [];
   final List<CommandBuilder> commands = [];
   late InteractionDispatcherContract dispatcher;
@@ -18,7 +19,7 @@ abstract class InteractionManagerContract {
   void addCommand(CommandBuilder command);
 }
 
-final class InteractionManager implements InteractionManagerContract {
+final class CommandInteractionManager implements CommandInteractionManagerContract {
   @override
   final List<(String, Function handler)> commandsHandler = [];
 
@@ -30,8 +31,8 @@ final class InteractionManager implements InteractionManagerContract {
 
   final MarshallerContract _marshaller;
 
-  InteractionManager(this._marshaller) {
-    dispatcher = InteractionDispatcher(this, _marshaller);
+  CommandInteractionManager(this._marshaller) {
+    dispatcher = CommandInteractionDispatcher(this, _marshaller);
   }
 
   @override
@@ -62,7 +63,7 @@ final class InteractionManager implements InteractionManagerContract {
     ]);
   }
 
-  factory InteractionManager.singleton() {
-    return ioc.resolve('interactionManager');
+  factory CommandInteractionManager.singleton() {
+    return ioc.resolve('commandInteractionManager');
   }
 }
