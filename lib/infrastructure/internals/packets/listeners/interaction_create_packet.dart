@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/domains/commands/command_interaction_manager.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
@@ -18,12 +19,12 @@ final class InteractionCreatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final interactions = [
-      CommandInteractionManager.singleton(),
+      ioc.resolve<CommandInteractionManagerContract>(),
     ];
 
     final interaction = interactions.firstWhereOrNull((interaction) => interaction.dispatcher.type.value == message.payload['type']);
     if (interaction == null) {
-      Logger.singleton().warn('Interaction type ${message.payload['type']} not found');
+      ioc.resolve<LoggerContract>().warn('Interaction type ${message.payload['type']} not found');
       return;
     }
 

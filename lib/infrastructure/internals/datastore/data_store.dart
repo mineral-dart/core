@@ -1,9 +1,7 @@
-import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/channel_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/member_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/role_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/server_part.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client.dart';
 
@@ -45,6 +43,4 @@ final class DataStore implements DataStoreContract {
     member = MemberPart(kernel);
     role = RolePart(kernel);
   }
-
-  factory DataStore.singleton() => ioc.resolve('datastore');
 }

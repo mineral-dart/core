@@ -113,8 +113,8 @@ final class Client {
 
   MineralClientContract build() {
     ioc
-      ..bind('logger', () => _logger)
-      ..bind('environment', () => _env);
+      ..bind(LoggerContract, () => _logger)
+      ..bind(EnvContract, () => _env);
 
     _validateEnvironment();
     _createCache();
@@ -142,9 +142,9 @@ final class Client {
     final commandInteractionManager = CommandInteractionManager(marshaller);
 
     ioc
-      ..bind('marshaller', () => marshaller)
-      ..bind('datastore', () => datastore)
-      ..bind('commandInteractionManager', () => commandInteractionManager);
+      ..bind(MarshallerContract, () => marshaller)
+      ..bind(DataStoreContract, () => datastore)
+      ..bind(CommandInteractionManagerContract, () => commandInteractionManager);
 
     final packetListener = PacketListener();
     final eventListener = EventListener();

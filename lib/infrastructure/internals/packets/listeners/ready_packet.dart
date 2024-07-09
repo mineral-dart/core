@@ -23,8 +23,8 @@ final class ReadyPacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final bot = Bot.fromJson(message.payload);
-    ioc.bind('bot', () => bot);
-    final CommandInteractionManagerContract interactionManager = ioc.resolve('commandInteractionManager');
+    ioc.bind(Bot, () => bot);
+    final interactionManager = ioc.resolve<CommandInteractionManagerContract>();
 
     logger.trace(jsonEncode(message.payload));
 

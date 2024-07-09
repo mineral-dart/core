@@ -2,11 +2,12 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/role_part.dart';
 
 final class MemberRoleManager {
-  RolePart get _roleMethods => DataStore.singleton().role;
+  RolePart get _roleMethods => ioc.resolve<DataStoreContract>().role;
 
   late final Server server;
   late final Member member;

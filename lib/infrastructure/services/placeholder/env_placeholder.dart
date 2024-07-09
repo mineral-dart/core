@@ -13,7 +13,7 @@ final class EnvPlaceholder implements PlaceholderContract {
   Map<String, dynamic> get values => _values;
 
   EnvPlaceholder() {
-    final env = ioc.resolve<EnvContract>('environment');
+    final env = ioc.resolve<EnvContract>();
     _injectEntryMap(identifier, env.list);
   }
 

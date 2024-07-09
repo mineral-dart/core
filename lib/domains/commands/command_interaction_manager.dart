@@ -6,7 +6,6 @@ import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/commands/command_interaction_dispatcher.dart';
 import 'package:mineral/domains/types/interaction_dispatcher_contract.dart';
-import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 abstract class CommandInteractionManagerContract {
@@ -61,9 +60,5 @@ final class CommandInteractionManager implements CommandInteractionManagerContra
     await _marshaller.dataStore.client.put('/applications/${bot.id}/guilds/${server.id}/commands', body: [
       ...guildCommands.map((e) => e.toJson())
     ]);
-  }
-
-  factory CommandInteractionManager.singleton() {
-    return ioc.resolve('commandInteractionManager');
   }
 }

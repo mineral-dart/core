@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:convert';
 
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
@@ -56,6 +57,7 @@ final class Shard implements ShardContract {
 
   @override
   Future<void> init() async {
+    final logger = ioc.resolve<LoggerContract>();
     client = WebsocketClientImpl(
         name: shardName,
         url: url,
@@ -68,13 +70,13 @@ final class Shard implements ShardContract {
         },
         onOpen: (message) {
           if (message.content case ShardMessage(:final payload)) {
-            Logger.singleton().trace(jsonEncode(payload));
+            logger.trace(jsonEncode(payload));
           }
         });
 
     client.interceptor.message
       ..add((WebsocketMessage message) async {
-        Logger.singleton().trace({
+        logger.trace({
           'shard': shardName,
           'message': message.content,
         });

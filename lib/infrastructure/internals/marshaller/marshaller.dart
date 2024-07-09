@@ -16,7 +16,7 @@ abstract interface class MarshallerContract {
 
 final class Marshaller implements MarshallerContract {
   @override
-  DataStoreContract get dataStore => ioc.resolve('datastore');
+  DataStoreContract get dataStore => ioc.resolve<DataStoreContract>();
 
   @override
   final LoggerContract logger;
@@ -30,6 +30,4 @@ final class Marshaller implements MarshallerContract {
   Marshaller(this.logger, this.cache) {
     serializers = SerializerBucketImpl(this);
   }
-
-  factory Marshaller.singleton() => ioc.resolve('marshaller');
 }
