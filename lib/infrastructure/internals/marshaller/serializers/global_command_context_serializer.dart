@@ -1,11 +1,7 @@
-import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/infrastructure/interaction/command/global_command_context.dart';
-import 'package:mineral/infrastructure/interaction/command/global_command_context.dart';
-import 'package:mineral/infrastructure/interaction/command/global_command_context.dart';
+import 'package:mineral/domains/commands/contexts/global_command_context.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
-import 'package:mineral/infrastructure/commons/utils.dart';
 
 final class GlobalCommandContextSerializer implements SerializerContract<GlobalCommandContext> {
   final MarshallerContract marshaller;

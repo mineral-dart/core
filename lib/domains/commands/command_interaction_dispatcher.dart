@@ -1,36 +1,30 @@
 import 'dart:async';
-import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/commands/command_option_type.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
-import 'package:mineral/infrastructure/interaction/command/guild_command_context.dart';
-import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
-import 'package:mineral/infrastructure/interaction/interaction_type.dart';
+import 'package:mineral/api/common/types/interaction_type.dart';
+import 'package:mineral/domains/commands/command_interaction_manager.dart';
+import 'package:mineral/domains/commands/contexts/guild_command_context.dart';
+import 'package:mineral/domains/types/interaction_dispatcher_contract.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
-abstract class InteractionDispatcherContract {
-  Future<void> dispatch(Map<String, dynamic> data);
-}
+final class CommandInteractionDispatcher implements InteractionDispatcherContract {
+  @override
+  InteractionType get type => InteractionType.applicationCommand;
 
-final class InteractionDispatcher implements InteractionDispatcherContract {
-  final InteractionManagerContract _interactionManager;
+  final CommandInteractionManagerContract _interactionManager;
   final MarshallerContract _marshaller;
 
-  InteractionDispatcher(this._interactionManager, this._marshaller);
+  CommandInteractionDispatcher(this._interactionManager, this._marshaller);
 
   @override
   Future<void> dispatch(Map<String, dynamic> data) async {
-    final interactionType = InteractionType.values.firstWhere((e) => e.value == data['type']);
-
-    return switch (interactionType) {
-      InteractionType.applicationCommand => await _handleCommand(data),
-      _ => throw Exception('Unknown interaction type: ${data['type']}'),
-    };
+    await _handleCommand(data);
   }
 
   Future<void> _handleGroups(Map<String, dynamic> data, Map<String, dynamic> group) async {
     data['data']['options'] = group['options'];
-
     return _handleSubCommand(data, group);
   }
 
@@ -45,7 +39,7 @@ final class InteractionDispatcher implements InteractionDispatcherContract {
     for (final option in data['data']['options']) {
       final type = CommandType.values.firstWhereOrNull((e) => e.value == option['type']);
 
-      if(type == null) {
+      if (type == null) {
         continue;
       }
 

@@ -1,11 +1,8 @@
-import 'dart:async';
-
 import 'package:mineral/api/common/commands/builder/command_group_builder.dart';
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
 import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
-import 'package:mineral/infrastructure/interaction/command/command_context.dart';
 
 final class CommandBuilder {
   String? _name;

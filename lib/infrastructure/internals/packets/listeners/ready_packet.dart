@@ -1,9 +1,8 @@
 import 'dart:convert';
-import 'dart:isolate';
 
 import 'package:mineral/api/common/bot.dart';
+import 'package:mineral/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/domains/events/event.dart';
-import 'package:mineral/infrastructure/interaction/interaction_manager.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
@@ -25,7 +24,7 @@ final class ReadyPacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final bot = Bot.fromJson(message.payload);
     ioc.bind('bot', () => bot);
-    final InteractionManager interactionManager = ioc.resolve('interactionManager');
+    final CommandInteractionManagerContract interactionManager = ioc.resolve('commandInteractionManager');
 
     logger.trace(jsonEncode(message.payload));
 

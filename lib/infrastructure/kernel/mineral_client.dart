@@ -43,7 +43,7 @@ final class MineralClient implements MineralClientContract {
 
   @override
   void registerCommand(CommandBuilder builder) {
-    _kernel.interactionManager.addCommand(builder);
+    _kernel.commands.addCommand(builder);
   }
 
   @override

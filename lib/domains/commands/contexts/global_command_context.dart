@@ -1,10 +1,9 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/user.dart';
-import 'package:mineral/api/server/server.dart';
-import 'package:mineral/infrastructure/interaction/command/command_context.dart';
+import 'package:mineral/domains/commands/command_context.dart';
 
-final class ServerCommandContext implements CommandContext {
+final class GlobalCommandContext implements CommandContext {
   @override
   final Snowflake id;
   @override
@@ -16,16 +15,13 @@ final class ServerCommandContext implements CommandContext {
 
   final User user;
   final Channel? channel;
-  final Server server;
 
-
-  ServerCommandContext({
+  GlobalCommandContext({
     required this.id,
     required this.applicationId,
     required this.token,
     required this.version,
     required this.user,
-    required this.server,
     this.channel,
   });
 
