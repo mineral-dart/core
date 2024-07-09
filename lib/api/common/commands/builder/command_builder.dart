@@ -81,7 +81,7 @@ final class CommandBuilder {
      return [('$_name', _handle!)];
     }
 
-    final List<(String, FutureOr<void> Function(CommandContext, List) handler)> handlers = [];
+    final List<(String, Function handler)> handlers = [];
 
     for (final subCommand in _subCommands) {
       handlers.add(('$_name.${subCommand.name}', subCommand.handle!));

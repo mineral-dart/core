@@ -8,7 +8,7 @@ final class SubCommandBuilder {
   String? name;
   String? description;
   final List<CommandOption> options = [];
-  FutureOr<void> Function(CommandContext, List)? handle;
+  Function? handle;
 
   SubCommandBuilder();
 
@@ -27,7 +27,13 @@ final class SubCommandBuilder {
     return this;
   }
 
-  SubCommandBuilder setHandle(FutureOr<void> Function(CommandContext, List) fn) {
+  SubCommandBuilder setHandle(Function fn) {
+    final firstArg = fn.toString().split('(')[1].split(')')[0].split(' ')[0];
+
+    if (!firstArg.contains('CommandContext')) {
+      throw Exception('The first argument of the handler function must be CommandContext');
+    }
+
     handle = fn;
     return this;
   }
@@ -39,19 +45,5 @@ final class SubCommandBuilder {
       'type': CommandType.subCommand.value,
       'options': options.map((e) => e.toJson()).toList(),
     };
-  }
-
-
-
-  factory SubCommandBuilder.fromJson(Map json) {
-    final builder = SubCommandBuilder()
-      ..setName(json['name'])
-      ..setDescription(json['description']);
-
-    for (final option in json['options']) {
-      builder.addOption(CommandOption.fromJson(option));
-    }
-
-    return builder;
   }
 }
