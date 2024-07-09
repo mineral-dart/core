@@ -12,11 +12,15 @@ import 'package:mineral/api/server/server.dart';
 import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/api/server/server_subscription.dart';
+import 'package:mineral/infrastructure/interaction/command/global_command_context.dart';
+import 'package:mineral/infrastructure/interaction/command/guild_command_context.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_permission_overwrite_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/embed_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/emoji_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/global_command_context_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/server_command_context_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/member_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/message_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/poll_serializer.dart';
@@ -57,6 +61,10 @@ abstract interface class SerializerBucket {
   SerializerContract<MessageEmbed> get embed;
 
   SerializerContract<Poll> get poll;
+
+  SerializerContract<GlobalCommandContext> get globalCommandContext;
+
+  SerializerContract<ServerCommandContext> get guildCommandContext;
 }
 
 final class SerializerBucketImpl<T> implements SerializerBucket {
@@ -102,6 +110,12 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
   @override
   final SerializerContract<Poll> poll;
 
+  @override
+  final SerializerContract<GlobalCommandContext> globalCommandContext;
+
+  @override
+  final SerializerContract<ServerCommandContext> guildCommandContext;
+
   SerializerBucketImpl(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
@@ -116,5 +130,7 @@ final class SerializerBucketImpl<T> implements SerializerBucket {
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
         message = MessageSerializer(marshaller),
         embed = EmbedSerializer(marshaller),
+        globalCommandContext = GlobalCommandContextSerializer(marshaller),
+        guildCommandContext = ServerCommandContextSerializer(marshaller),
         poll = PollSerializer(marshaller);
 }
