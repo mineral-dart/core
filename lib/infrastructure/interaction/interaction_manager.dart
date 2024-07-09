@@ -6,7 +6,7 @@ import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/infrastructure/interaction/interaction_dispatcher.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
-import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 abstract class InteractionManagerContract {
   final List<(String, Function handler)> commandsHandler = [];
@@ -28,10 +28,10 @@ final class InteractionManager implements InteractionManagerContract {
   @override
   late InteractionDispatcherContract dispatcher;
 
-  final DataStoreContract _dataStore;
+  final MarshallerContract _marshaller;
 
-  InteractionManager(this._dataStore) {
-    dispatcher = InteractionDispatcher(this);
+  InteractionManager(this._marshaller) {
+    dispatcher = InteractionDispatcher(this, _marshaller);
   }
 
   @override
@@ -48,7 +48,7 @@ final class InteractionManager implements InteractionManagerContract {
   Future<void> registerGlobal(Bot bot) async {
     final List<CommandBuilder> globalCommands = commands.where((command) => command.context == CommandContextType.global).toList();
 
-    await _dataStore.client.put('/applications/${bot.id}/commands', body: [
+    await _marshaller.dataStore.client.put('/applications/${bot.id}/commands', body: [
       ...globalCommands.map((e) => e.toJson())
     ]);
   }
@@ -57,7 +57,7 @@ final class InteractionManager implements InteractionManagerContract {
   Future<void> registerServer(Bot bot, Server server) async {
     final List<CommandBuilder> guildCommands = commands.where((command) => command.context == CommandContextType.guild).toList();
 
-    await _dataStore.client.put('/applications/${bot.id}/guilds/${server.id}/commands', body: [
+    await _marshaller.dataStore.client.put('/applications/${bot.id}/guilds/${server.id}/commands', body: [
       ...guildCommands.map((e) => e.toJson())
     ]);
   }
