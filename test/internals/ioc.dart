@@ -4,12 +4,15 @@ import 'package:test/test.dart';
 
 abstract interface class AbstractClass {}
 
-final class Foo implements AbstractClass {}
 final class FooWithoutAbstract {}
+final class Foo implements AbstractClass {}
+final class Bar implements AbstractClass {}
 
 void main() {
   group('service ioc', () {
     final ioc = IocContainer();
+
+    tearDown(ioc.dispose);
 
     test('can bind service with concrete type', () {
       ioc.bind(Foo, Foo.new);
@@ -24,6 +27,27 @@ void main() {
     test("can't resolve service by abstract class when haven't", () {
       ioc.bind(AbstractClass, FooWithoutAbstract.new);
       expect(() => ioc.resolve<FooWithoutAbstract>(), throwsException);
+    });
+
+    test('can override service', () {
+      ioc.bind(AbstractClass, Foo.new);
+      expect(ioc.resolve<AbstractClass>(), isA<Foo>());
+
+      ioc.override(AbstractClass, Bar.new);
+      expect(ioc.resolve<AbstractClass>(), isA<Bar>());
+    });
+
+    test('cannot override a non-existent service', () {
+      expect(() => ioc.override(AbstractClass, Bar.new), throwsException);
+    });
+
+    test('can override service then restore it', () {
+      ioc
+        ..bind(AbstractClass, Foo.new)
+        ..override(AbstractClass, Bar.new)
+        ..restore(AbstractClass);
+
+      expect(ioc.resolve<AbstractClass>(), isA<Foo>());
     });
   });
 }
