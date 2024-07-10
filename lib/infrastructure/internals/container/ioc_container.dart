@@ -1,11 +1,5 @@
 final class IocContainer {
-  static late final IocContainer _instance;
-
   final Map<Type, dynamic> _services = {};
-
-  IocContainer._() {
-    IocContainer._instance = this;
-  }
 
   void bind<T>(Type key, T Function() fn) {
     _services[key] = fn();
@@ -17,10 +11,13 @@ final class IocContainer {
   }
 
   T resolve<T>() {
-    return _services[T];
-  }
+    final service = _services[T];
 
-  factory IocContainer.init() => IocContainer._();
+    return switch(service) {
+      null => throw Exception('Service not found'),
+      _ => service,
+    };
+  }
 }
 
-final ioc = IocContainer.init();
+final ioc = IocContainer();
