@@ -1,8 +1,11 @@
 final class IocContainer {
   final Map<Type, dynamic> _services = {};
+  final Map<Type, dynamic> _defaults = {};
 
   void bind<T>(Type key, T Function() fn) {
-    _services[key] = fn();
+    final service = fn();
+    _services[key] = service;
+    _defaults[key] = service;
   }
 
   T make<T>(T Function() clazz) {
@@ -17,6 +20,27 @@ final class IocContainer {
       null => throw Exception('Service not found'),
       _ => service,
     };
+  }
+
+  void override<T>(T key, T Function() clazz) {
+    if (!_services.containsKey(key)) {
+      throw Exception('Service not exists, you can\t override it');
+    }
+
+    _services[key as Type] = clazz();
+  }
+
+  void restore<T extends Type>(T key) {
+    if (!_services.containsKey(key)) {
+      throw Exception('Service not exists, you can\t restore it');
+    }
+
+    _services[key] = _defaults[key];
+  }
+
+  void dispose() {
+    _services.clear();
+    _defaults.clear();
   }
 }
 
