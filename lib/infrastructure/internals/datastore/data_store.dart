@@ -18,9 +18,9 @@ abstract class DataStoreContract {
 
   RolePart get role;
 
-  InteractionPart get interaction;
-
   ServerMessagePart get serverMessage;
+
+  InteractionPart get interaction;
 }
 
 final class DataStore implements DataStoreContract {
@@ -55,6 +55,7 @@ final class DataStore implements DataStoreContract {
     member = MemberPart(kernel);
     role = RolePart(kernel);
     interaction = InteractionPart(kernel);
+    serverMessage = ServerMessagePart(kernel);
     serverMessage = ServerMessagePart(kernel);
   }
 }

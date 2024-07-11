@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/server_message.dart';
@@ -18,7 +16,7 @@ final class ServerMessagePart implements DataStorePart {
 
   Future<ServerMessage?> update({ required Snowflake id, required Snowflake channelId, required Map<String, dynamic> payload }) async {
     final response = await _kernel.dataStore.client.patch('/channels/$channelId/messages/$id', body: payload);
-  
+
     final ServerMessage? serverMessage = await serializeResponse(response);
 
     if (serverMessage != null) {
@@ -72,7 +70,7 @@ final class ServerMessagePart implements DataStorePart {
     return switch(response.statusCode) {
       int() when (status.isSuccess(response.statusCode)) =>
         _kernel.marshaller.serializers.message.serialize(response.body),
-      int() when (status.isError(response.statusCode)) => 
+      int() when (status.isError(response.statusCode)) =>
         throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
     } as Future<ServerMessage?>;

@@ -45,6 +45,23 @@ final class ServerMessage extends Message<ServerChannel> {
     required this.author,
   });
 
+  Future<void> edit(String content) async {
+    _dataStoreServerMessage
+        .update(id: id, channelId: channelId, payload: {'content': content});
+  }
+
+  Future<void> reply({String? content, List<MessageEmbed>? embeds}) async {
+    if (channel.type != ChannelType.guildText) {
+      return;
+    }
+
+    _dataStoreServerMessage.reply(id: id, channelId: channelId, content: content, embeds: embeds);
+  }
+
+  Future<void> delete() async {
+    await _dataStoreServerMessage.delete(id: id, channelId: channelId);
+  }
+
   Future<ServerMessage?> edit(String content) async {
     return _dataStoreServerMessage
         .update(id: id, channelId: channelId, payload: {'content': content});
