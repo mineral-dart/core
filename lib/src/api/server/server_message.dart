@@ -6,6 +6,8 @@ import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/member.dart';
 
 final class ServerMessage extends Message<ServerChannel> {
+  ServerMessagePart get _dataStoreServerMessage =>
+      ioc.resolve<DataStoreContract>().serverMessage;
   final MessageProperties<ServerChannel> _properties;
 
   @override
@@ -28,8 +30,24 @@ final class ServerMessage extends Message<ServerChannel> {
 
   final Member author;
 
-  ServerMessage(
-    this._properties, {
+  ServerMessage(this._properties, {
     required this.author,
   });
+
+  Future<void> edit(String content) async {
+    _dataStoreServerMessage
+        .update(id: id, channelId: channelId, payload: {'content': content});
+  }
+
+  Future<void> reply({String? content, List<MessageEmbed>? embeds}) async {
+    if (channel.type != ChannelType.guildText) {
+      return;
+    }
+
+    _dataStoreServerMessage.reply(id: id, channelId: channelId, content: content, embeds: embeds);
+  }
+
+  Future<void> delete() async {
+    await _dataStoreServerMessage.delete(id: id, channelId: channelId);
+  }
 }
