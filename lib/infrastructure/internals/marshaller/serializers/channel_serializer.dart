@@ -4,6 +4,7 @@ import 'package:mineral/infrastructure/internals/marshaller/factories/channels/p
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/server_announcement_channel_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/server_category_channel_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/server_forum_channel_factory.dart';
+import 'package:mineral/infrastructure/internals/marshaller/factories/channels/server_stage_channel_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/server_text_channel_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/server_voice_channel_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
@@ -19,6 +20,7 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
     ServerCategoryChannelFactory(),
     ServerAnnouncementChannelFactory(),
     ServerForumChannelFactory(),
+    ServerStageChannelFactory(),
     PrivateChannelFactory(),
   ];
 

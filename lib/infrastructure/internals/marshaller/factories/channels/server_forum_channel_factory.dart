@@ -41,6 +41,7 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
       'position': channel.position,
       'guild_id': channel.guildId,
       'permission_overwrites': permissions,
+      'parent_id': channel.category?.id,
     };
   }
 }
