@@ -24,7 +24,7 @@ final class Activity {
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
       name: json['name'],
-      type: ActivityType.values[json['type']],
+      type: ActivityType.values.firstWhere((element) => element.value == json['type'], orElse: () => ActivityType.unknown),
       url: json['url'],
       createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at']),
       details: json['details'],

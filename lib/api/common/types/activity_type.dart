@@ -6,7 +6,8 @@ enum ActivityType implements EnhancedEnum<int> {
   listening(2),
   watching(3),
   custom(4),
-  competing(5);
+  competing(5),
+  unknown(9999);
 
   final int value;
   const ActivityType(this.value);
