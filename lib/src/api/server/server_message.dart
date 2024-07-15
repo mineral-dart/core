@@ -8,6 +8,7 @@ import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/message_properties.dart';
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/member.dart';
@@ -50,7 +51,7 @@ final class ServerMessage extends Message<ServerChannel> {
   }
 
   Future<void> reply({String? content, List<MessageEmbed>? embeds}) async {
-    if (channel is ServerTextChannel) {
+    if (channel.type != ChannelType.guildText) {
       return;
     }
 
@@ -63,6 +64,14 @@ final class ServerMessage extends Message<ServerChannel> {
 
   Future<void> unpin() async {
     await _dataStoreServerMessage.unpin(id: id, channelId: channelId);
+  }
+
+  Future<void> crosspost() async {
+    if (channel.type != ChannelType.guildAnnouncement) {
+      return;
+    }
+
+    await _dataStoreServerMessage.crosspost(id: id, channelId: channelId);
   }
 
   Future<void> delete() async {
