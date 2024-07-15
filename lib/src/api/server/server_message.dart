@@ -4,6 +4,16 @@ import 'package:mineral/src/api/common/message_properties.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/member.dart';
+import 'package:mineral/api/common/embed/message_embed.dart';
+import 'package:mineral/api/common/message.dart';
+import 'package:mineral/api/common/message_properties.dart';
+import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/channels/server_channel.dart';
+import 'package:mineral/api/server/channels/server_text_channel.dart';
+import 'package:mineral/api/server/member.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
+import 'package:mineral/infrastructure/internals/datastore/parts/server_message_part.dart';
 
 final class ServerMessage extends Message<ServerChannel> {
   ServerMessagePart get _dataStoreServerMessage =>
@@ -30,7 +40,8 @@ final class ServerMessage extends Message<ServerChannel> {
 
   final Member author;
 
-  ServerMessage(this._properties, {
+  ServerMessage(
+    this._properties, {
     required this.author,
   });
 
@@ -49,6 +60,10 @@ final class ServerMessage extends Message<ServerChannel> {
 
   Future<void> pin() async {
     await _dataStoreServerMessage.pin(id: id, channelId: channelId);
+  }
+
+  Future<void> unpin() async {
+    await _dataStoreServerMessage.unpin(id: id, channelId: channelId);
   }
 
   Future<void> delete() async {
