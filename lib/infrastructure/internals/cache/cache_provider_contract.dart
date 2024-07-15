@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 abstract interface class CacheProviderContract {
@@ -12,8 +11,8 @@ abstract interface class CacheProviderContract {
 
   Future<int> length();
   Future<List<Map<String, dynamic>>> getAll();
-  Future<Map<String, dynamic>?> get(String? key);
-  Future<Map<String, dynamic>> getOrFail(String key, { Exception Function()? onFail });
+  FutureOr<Map<String, dynamic>?> get(String? key);
+  FutureOr<Map<String, dynamic>> getOrFail(String key, { Exception Function()? onFail });
   Future<bool> has(String key);
   Future<void> put<T>(String key, T object);
   Future<void> remove(String key);

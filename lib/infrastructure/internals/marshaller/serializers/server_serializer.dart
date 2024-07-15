@@ -1,6 +1,7 @@
 import 'package:mineral/api/server/managers/channel_manager.dart';
 import 'package:mineral/api/server/managers/member_manager.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
@@ -12,15 +13,23 @@ final class ServerSerializer implements SerializerContract<Server> {
 
   @override
   Future<Server> serializeRemote(Map<String, dynamic> json) async {
-    final serializedRoles = await Future.wait(List.from(json['roles'])
-        .where((element) => element['id'] != json['id'])
-        .map((element) async => _marshaller.serializers.role.serializeRemote(element)));
+    final List<Role> serializedRoles = [];
+    final roleWithoutEveryone =
+        List.from(json['roles']).where((element) => element['id'] != json['id']);
+
+    for (final element in roleWithoutEveryone) {
+      final role = await _marshaller.serializers.role.serializeRemote(element);
+
+      serializedRoles.add(role);
+      await _marshaller.putRole(role.id.value, role);
+    }
 
     final serializedMembers = await Future.wait(List.from(json['members']).map((element) async =>
-        _marshaller.serializers.member.serializeRemote({...element, 'guild_roles': serializedRoles})));
+        _marshaller.serializers.member
+            .serializeRemote({...element, 'guild_roles': serializedRoles})));
 
-    final channelManager = await ChannelManager.fromJson(
-        marshaller: _marshaller, guildId: json['id'], json: json);
+    final channelManager =
+        await ChannelManager.fromJson(marshaller: _marshaller, guildId: json['id'], json: json);
 
     final roleManager = RoleManager.fromList(serializedRoles);
     final owner = serializedMembers.firstWhere((member) => member.id == json['owner_id']);
