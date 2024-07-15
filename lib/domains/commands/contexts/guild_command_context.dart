@@ -3,6 +3,8 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/commands/command_context.dart';
+import 'package:mineral/domains/interactions/interaction.dart';
+import 'package:mineral/domains/types/interaction_contract.dart';
 
 final class ServerCommandContext implements CommandContext {
   @override
@@ -17,6 +19,7 @@ final class ServerCommandContext implements CommandContext {
   final User user;
   final Channel? channel;
   final Server server;
+  late final InteractionContract interaction;
 
   ServerCommandContext({
     required this.id,
@@ -26,10 +29,7 @@ final class ServerCommandContext implements CommandContext {
     required this.user,
     required this.server,
     this.channel,
-  });
-
-  @override
-  Future<void> reply() {
-    throw UnimplementedError();
+  }) {
+    interaction = Interaction(token, id);
   }
 }
