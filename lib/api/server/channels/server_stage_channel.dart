@@ -33,10 +33,12 @@ final class ServerStageChannel extends ServerChannel {
 
   String? get description => _properties.description;
 
-  late final ServerCategoryChannel? category;
-
   @override
   Snowflake get guildId => _properties.guildId!;
+
+  Snowflake? get categoryId => _properties.categoryId;
+
+  late final ServerCategoryChannel? category;
 
   ServerStageChannel(this._properties) : _methods = ChannelMethods(_properties.id);
 
