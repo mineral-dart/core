@@ -76,14 +76,14 @@ final class ChannelProperties {
     required this.defaultForumLayout,
   });
 
-  static Future<ChannelProperties> make(
+  static Future<ChannelProperties> serializeRemote(
       MarshallerContract marshaller, Map<String, dynamic> element) async {
     final permissionOverwrites = await Helper.createOrNullAsync(
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
               List.from(element['permission_overwrites'])
                   .map((json) async =>
-                      marshaller.serializers.channelPermissionOverwrite.serialize(json))
+                      marshaller.serializers.channelPermissionOverwrite.serializeRemote(json))
                   .toList(),
             ));
 
@@ -91,7 +91,7 @@ final class ChannelProperties {
         field: element['recipients'],
         fn: () async => Future.wait(
               List.from(element['recipients'])
-                  .map((json) async => marshaller.serializers.user.serialize(json))
+                  .map((json) async => marshaller.serializers.user.serializeRemote(json))
                   .toList(),
             ));
 

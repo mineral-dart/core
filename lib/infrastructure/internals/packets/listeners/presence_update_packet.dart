@@ -25,7 +25,7 @@ final class PresenceUpdatePacket implements ListenablePacket {
     member!.presence = presence;
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(server.id, rawServer);
+    await marshaller.cache.put(server.id.value, rawServer);
 
     dispatch(event: Event.serverPresenceUpdate, params: [member, server, presence]);
   }

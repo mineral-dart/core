@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/private_channel_factory.dart';
@@ -27,7 +29,7 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
   ChannelSerializer(this._marshaller);
 
   @override
-  Future<T> serialize(Map<String, dynamic> json) async {
+  Future<T> serializeRemote(Map<String, dynamic> json) async {
     final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
 
     if (channelFactory == null) {
@@ -35,7 +37,12 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
       return null as T;
     }
 
-    return channelFactory.make(_marshaller, json['guild_id'] ?? json['id'], json) as Future<T>;
+    return channelFactory.serializeRemote(_marshaller, json['guild_id'] ?? json['id'], json) as Future<T>;
+  }
+
+  @override
+  Future<T> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

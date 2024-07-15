@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/domains/commands/contexts/global_command_context.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
@@ -9,15 +11,20 @@ final class GlobalCommandContextSerializer implements SerializerContract<GlobalC
   GlobalCommandContextSerializer(this.marshaller);
 
   @override
-  Future<GlobalCommandContext> serialize(Map<String, dynamic> json) async {
+  Future<GlobalCommandContext> serializeRemote(Map<String, dynamic> json) async {
     return GlobalCommandContext(
       id: Snowflake(json['id']),
       applicationId: Snowflake(json['application_id']),
       version: json['version'],
       token: json['token'],
-      channel: await marshaller.serializers.channels.serialize(json['channel']),
-      user: await marshaller.serializers.user.serialize(json['user']),
+      channel: await marshaller.serializers.channels.serializeRemote(json['channel']),
+      user: await marshaller.serializers.user.serializeRemote(json['user']),
     );
+  }
+
+  @override
+  Future<GlobalCommandContext> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

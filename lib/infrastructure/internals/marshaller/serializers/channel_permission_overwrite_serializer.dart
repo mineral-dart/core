@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
@@ -10,13 +12,18 @@ final class ChannelPermissionOverwriteSerializer implements SerializerContract<C
   ChannelPermissionOverwriteSerializer(this.marshaller);
 
   @override
-  ChannelPermissionOverwrite serialize(Map<String, dynamic> json) {
+  ChannelPermissionOverwrite serializeRemote(Map<String, dynamic> json) {
     return ChannelPermissionOverwrite(
       id: Snowflake(json['id']),
       type: findInEnum(ChannelPermissionOverwriteType.values, json['type']),
       allow: json['allow'],
       deny: json['deny'],
     );
+  }
+
+  @override
+  Future<ChannelPermissionOverwrite> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

@@ -16,7 +16,7 @@ final class MessageSerializer implements SerializerContract<Message> {
   MessageSerializer(this.marshaller);
 
   @override
-  Future<Message> serialize(Map<String, dynamic> json) async {
+  Future<Message> serializeRemote(Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
     final factory = switch(channel) {
       ServerChannel() => _serverMessageFactory,
@@ -24,7 +24,12 @@ final class MessageSerializer implements SerializerContract<Message> {
       _ => throw Exception('Channel type not found ${channel.runtimeType}'),
     } as MessageFactory;
 
-    return factory.serialize(marshaller, json);
+    return factory.serializeRemote(marshaller, json);
+  }
+
+  @override
+  Future<Message> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

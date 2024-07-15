@@ -58,7 +58,7 @@ final class RolePart implements DataStorePart {
 
     if (role != null) {
       final rawRole = _kernel.marshaller.serializers.role.deserialize(response.body);
-      await _kernel.marshaller.cache.put(role.id, rawRole);
+      await _kernel.marshaller.cache.put(role.id.value, rawRole);
     }
 
     return role;
@@ -73,7 +73,7 @@ final class RolePart implements DataStorePart {
   Future<Role?> serializeRoleResponse(Response response) {
     return switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        _kernel.marshaller.serializers.role.serialize(response.body),
+        _kernel.marshaller.serializers.role.serializeRemote(response.body),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
     } as Future<Role?>;

@@ -13,9 +13,9 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
   ChannelType get type => ChannelType.guildForum;
 
   @override
-  Future<ServerForumChannel> make(
+  Future<ServerForumChannel> serializeRemote(
       MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    final properties = await ChannelProperties.make(marshaller, json);
+    final properties = await ChannelProperties.serializeRemote(marshaller, json);
 
     return ServerForumChannel(
       properties,
@@ -26,6 +26,11 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
           field: json['default_forum_layout'],
           fn: () => findInEnum(ForumLayoutType.values, json['default_forum_layout'])),
     );
+  }
+
+  @override
+  Future<ServerForumChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override
@@ -41,7 +46,7 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
       'position': channel.position,
       'guild_id': channel.guildId,
       'permission_overwrites': permissions,
-      'parent_id': channel.category?.id,
+      // 'parent_id': channel.category?.id,
     };
   }
 }

@@ -9,11 +9,16 @@ final class ServerStageChannelFactory implements ChannelFactoryContract<ServerSt
   ChannelType get type => ChannelType.guildStageVoice;
 
   @override
-  Future<ServerStageChannel> make(
+  Future<ServerStageChannel> serializeRemote(
       MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    final properties = await ChannelProperties.make(marshaller, json);
+    final properties = await ChannelProperties.serializeRemote(marshaller, json);
 
     return ServerStageChannel(properties);
+  }
+
+  @override
+  Future<ServerStageChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override
@@ -30,7 +35,7 @@ final class ServerStageChannelFactory implements ChannelFactoryContract<ServerSt
       'guild_id': channel.guildId,
       'topic': channel.description,
       'permission_overwrites': permissions,
-      'parent_id': channel.category?.id,
+      // 'parent_id': channel.category?.id,
     };
   }
 }

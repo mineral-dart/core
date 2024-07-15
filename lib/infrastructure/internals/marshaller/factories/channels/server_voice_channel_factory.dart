@@ -9,9 +9,14 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
   ChannelType get type => ChannelType.guildVoice;
 
   @override
-  Future<ServerVoiceChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    final properties = await ChannelProperties.make(marshaller, json);
+  Future<ServerVoiceChannel> serializeRemote(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+    final properties = await ChannelProperties.serializeRemote(marshaller, json);
     return ServerVoiceChannel(properties);
+  }
+
+  @override
+  Future<ServerVoiceChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

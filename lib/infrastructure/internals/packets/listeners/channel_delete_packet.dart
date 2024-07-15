@@ -18,7 +18,7 @@ final class ChannelDeletePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final channel = await marshaller.serializers.channels.serialize(message.payload);
+    final channel = await marshaller.serializers.channels.serializeRemote(message.payload);
 
     switch (channel) {
       case ServerChannel():
@@ -33,8 +33,8 @@ final class ChannelDeletePacket implements ListenablePacket {
     server.channels.list.remove(channel.id);
 
     await Future.wait([
-      marshaller.cache.put(guildId, await marshaller.serializers.server.deserialize(server)),
-      marshaller.cache.remove(channel.id)
+      marshaller.cache.put(guildId.value, await marshaller.serializers.server.deserialize(server)),
+      marshaller.cache.remove(channel.id.value)
     ]);
 
     dispatch(event: Event.serverChannelDelete, params: [channel]);

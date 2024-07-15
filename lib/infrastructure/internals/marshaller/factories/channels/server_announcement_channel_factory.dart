@@ -12,20 +12,25 @@ final class ServerAnnouncementChannelFactory
   ChannelType get type => ChannelType.guildAnnouncement;
 
   @override
-  Future<ServerAnnouncementChannel> make(MarshallerContract marshaller, String guildId,
+  Future<ServerAnnouncementChannel> serializeRemote(MarshallerContract marshaller, String guildId,
       Map<String, dynamic> json) async {
-    final properties = await ChannelProperties.make(marshaller, json);
+    final properties = await ChannelProperties.serializeRemote(marshaller, json);
     final categoryChannel = await Helper.createOrNullAsync(
         field: json['parent_id'],
         fn: () async {
           final rawCategory = await marshaller.cache.getOrFail(json['parent_id']);
-          return marshaller.serializers.channels.serialize(rawCategory) as ServerCategoryChannel;
+          return marshaller.serializers.channels.serializeRemote(rawCategory) as ServerCategoryChannel;
         }
     );
 
     return ServerAnnouncementChannel(properties,
       category: categoryChannel,
     );
+  }
+
+  @override
+  Future<ServerAnnouncementChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override
@@ -42,7 +47,7 @@ final class ServerAnnouncementChannelFactory
       'name': channel.name,
       'topic': channel.description,
       'nsfw': channel.isNsfw,
-      'parent_id': channel.category?.id,
+      // 'parent_id': channel.category?.id,
       'guild_id': channel.guildId,
     };
   }

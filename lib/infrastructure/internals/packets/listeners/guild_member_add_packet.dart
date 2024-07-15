@@ -20,7 +20,7 @@ final class GuildMemberAddPacket implements ListenablePacket {
     final Snowflake serverId = Snowflake(message.payload['guild_id']);
     final server = await marshaller.dataStore.server.getServer(serverId);
 
-    final member = await marshaller.serializers.member.serialize({
+    final member = await marshaller.serializers.member.serializeRemote({
       ...message.payload,
       'guild_roles': server.roles.list
     });
@@ -28,7 +28,7 @@ final class GuildMemberAddPacket implements ListenablePacket {
     server.members.list.putIfAbsent(member.id, () => member);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(server.id, rawServer);
+    await marshaller.cache.put(server.id.value, rawServer);
 
     dispatch(event: Event.serverMemberAdd, params: [member, server]);
   }

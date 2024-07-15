@@ -6,7 +6,7 @@ import 'package:mineral/infrastructure/internals/marshaller/types/message_factor
 
 final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   @override
-  Future<ServerMessage> serialize(
+  Future<ServerMessage> serializeRemote(
       MarshallerContract marshaller, Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
     final server = await marshaller.dataStore.server.getServer(json['guild_id']);
@@ -18,7 +18,14 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, ServerMessage message) async {
+  Future<ServerMessage> serializeCache(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Map<String, dynamic>> deserialize(
+      MarshallerContract marshaller, ServerMessage message) async {
     return {
       'id': message.id,
       'content': message.content,

@@ -9,16 +9,21 @@ final class ServerCommandContextSerializer implements SerializerContract<ServerC
   ServerCommandContextSerializer(this.marshaller);
 
   @override
-  Future<ServerCommandContext> serialize(Map<String, dynamic> json) async {
+  Future<ServerCommandContext> serializeRemote(Map<String, dynamic> json) async {
     return ServerCommandContext(
       id: Snowflake(json['id']),
       applicationId: Snowflake(json['application_id']),
       version: json['version'],
       token: json['token'],
-      channel: await marshaller.serializers.channels.serialize(json['channel']),
-      user: await marshaller.serializers.user.serialize(json['member']['user']),
+      channel: await marshaller.serializers.channels.serializeRemote(json['channel']),
+      user: await marshaller.serializers.user.serializeRemote(json['member']['user']),
       server: await marshaller.dataStore.server.getServer(json['guild_id']),
     );
+  }
+
+  @override
+  Future<ServerCommandContext> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override
