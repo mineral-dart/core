@@ -12,6 +12,4 @@ abstract class CommandContext {
     required this.token,
     required this.version,
   });
-
-  Future<void> reply();
 }
