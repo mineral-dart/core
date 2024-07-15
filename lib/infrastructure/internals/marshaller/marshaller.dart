@@ -1,14 +1,13 @@
 import 'dart:async';
 
 import 'package:mineral/api/common/channel.dart';
-import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
+import 'package:mineral/infrastructure/internals/cache/cache_provider_contract.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/infrastructure/internals/cache/cache_provider_contract.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializer_bucket.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
 
@@ -25,17 +24,25 @@ abstract interface class MarshallerContract {
 
   Future<({User? instance, Map<String, dynamic>? struct})> getUser(String id);
 
+  Future<void> deleteUser(String id);
+
   Future<void> putChannel<T extends Channel>(String id, T channel);
 
   Future<({T? instance, Map<String, dynamic>? struct})> getChannel<T extends Channel>(String id);
+
+  Future<void> deleteChannel(String id);
 
   Future<void> putServer(String id, Server channel);
 
   Future<({Server? instance, Map<String, dynamic>? struct})> getServer<Server>(String id);
 
+  Future<void> deleteServer(String id);
+
   Future<void> putMember(String id, Member member);
 
   Future<({Member? instance, Map<String, dynamic>? struct})> getMember(String id);
+
+  Future<void> deleteMember(String id);
 }
 
 final class Marshaller implements MarshallerContract {
@@ -81,6 +88,11 @@ final class Marshaller implements MarshallerContract {
     );
   }
 
+  Future<void> _delete(String id, String key) async {
+    final cachedElements = await cache.getOrFail(key);
+    cachedElements.remove(id);
+  }
+
   @override
   Future<void> putUser(String id, User user) async {
     _put<User>(id, key: 'users', element: user, fn: serializers.user.deserialize);
@@ -90,6 +102,9 @@ final class Marshaller implements MarshallerContract {
   Future<({User? instance, Map<String, dynamic>? struct})> getUser(String id) async {
     return _get<User>(id, key: 'users', fn: serializers.user.serializeCache);
   }
+
+  @override
+  Future<void> deleteUser(String id) => _delete(id, 'users');
 
   @override
   Future<void> putChannel<T extends Channel>(String id, T channel) async {
@@ -105,17 +120,23 @@ final class Marshaller implements MarshallerContract {
   }
 
   @override
+  Future<void> deleteChannel(String id) => _delete(id, 'channels');
+
+  @override
   Future<void> putServer(String id, Server channel) async {
-    _put<Server>(id, key: 'channels', element: channel, fn: serializers.server.deserialize);
+    _put<Server>(id, key: 'servers', element: channel, fn: serializers.server.deserialize);
   }
 
   @override
   Future<({Server? instance, Map<String, dynamic>? struct})> getServer<Server>(String id) async {
     return _get<Server>(id,
-        key: 'channels',
+        key: 'servers',
         fn: (Map<String, dynamic> channel) async =>
             serializers.server.serializeCache(channel) as Future<Server>);
   }
+
+  @override
+  Future<void> deleteServer(String id) => _delete(id, 'servers');
 
   @override
   Future<void> putMember(String id, Member member) async {
@@ -126,4 +147,7 @@ final class Marshaller implements MarshallerContract {
   Future<({Member? instance, Map<String, dynamic>? struct})> getMember(String id) async {
     return _get<Member>(id, key: 'members', fn: serializers.member.serializeCache);
   }
+
+  @override
+  Future<void> deleteMember(String id) => _delete(id, 'members');
 }
