@@ -8,8 +8,8 @@ import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/message_properties.dart';
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
+import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
@@ -46,12 +46,11 @@ final class ServerMessage extends Message<ServerChannel> {
   });
 
   Future<void> edit(String content) async {
-    _dataStoreServerMessage
-        .update(id: id, channelId: channelId, payload: {'content': content});
+    _dataStoreServerMessage.update(id: id, channelId: channelId, payload: {'content': content});
   }
 
   Future<void> reply({String? content, List<MessageEmbed>? embeds}) async {
-    if (channel.type != ChannelType.guildText) {
+    if (channel is ServerTextChannel) {
       return;
     }
 
@@ -60,6 +59,10 @@ final class ServerMessage extends Message<ServerChannel> {
 
   Future<void> pin() async {
     await _dataStoreServerMessage.pin(id: id, channelId: channelId);
+  }
+
+  Future<void> unpin() async {
+    await _dataStoreServerMessage.unpin(id: id, channelId: channelId);
   }
 
   Future<void> delete() async {
