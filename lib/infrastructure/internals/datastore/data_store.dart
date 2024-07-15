@@ -1,4 +1,5 @@
 import 'package:mineral/infrastructure/internals/datastore/parts/channel_part.dart';
+import 'package:mineral/infrastructure/internals/datastore/parts/interaction_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/member_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/role_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/server_part.dart';
@@ -15,6 +16,8 @@ abstract class DataStoreContract {
   MemberPart get member;
 
   RolePart get role;
+
+  InteractionPart get interaction;
 }
 
 final class DataStore implements DataStoreContract {
@@ -35,6 +38,9 @@ final class DataStore implements DataStoreContract {
   @override
   late final RolePart role;
 
+  @override
+  late final InteractionPart interaction;
+
   DataStore(this.client);
 
   void init() {
@@ -42,5 +48,6 @@ final class DataStore implements DataStoreContract {
     server = ServerPart(kernel);
     member = MemberPart(kernel);
     role = RolePart(kernel);
+    interaction = InteractionPart(kernel);
   }
 }
