@@ -12,12 +12,12 @@ abstract interface class CacheProviderContract {
 
   Future<int> length();
   Future<List<Map<String, dynamic>>> getAll();
-  Future<Map<String, dynamic>?> get(Snowflake? key);
-  Future<Map<String, dynamic>> getOrFail(Snowflake key, { Exception Function()? onFail });
-  Future<bool> has(Snowflake key);
-  Future<void> put<T>(Snowflake key, T object);
-  Future<void> remove(Snowflake key);
-  Future<void> removeMany(List<Snowflake> key);
+  Future<Map<String, dynamic>?> get(String? key);
+  Future<Map<String, dynamic>> getOrFail(String key, { Exception Function()? onFail });
+  Future<bool> has(String key);
+  Future<void> put<T>(String key, T object);
+  Future<void> remove(String key);
+  Future<void> removeMany(List<String> key);
   Future<void> clear();
 
   Future<void> dispose();
