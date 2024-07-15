@@ -5,5 +5,6 @@ abstract class Message<T extends Channel> {
   Snowflake get id;
   String? get content;
   Snowflake get channelId;
+  bool get isPinned;
   abstract T channel;
 }

@@ -4,6 +4,7 @@ enum PacketType {
   interactionCreate('INTERACTION_CREATE'),
 
   messageCreate('MESSAGE_CREATE'),
+  messageUpdate('MESSAGE_UPDATE'),
 
   guildCreate('GUILD_CREATE'),
   guildUpdate('GUILD_UPDATE'),

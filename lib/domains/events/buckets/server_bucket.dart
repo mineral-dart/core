@@ -3,7 +3,7 @@ import 'package:mineral/domains/events/contracts/server/server_ban_add_event.dar
 import 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_delete_event.dart';
-import 'package:mineral/domains/events/contracts/server/server_channel_pins_update_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_message_pin_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_delete_event.dart';
@@ -46,8 +46,8 @@ final class ServerBucket {
   void channelDelete(ServerChannelDeleteEventHandler handle) =>
       _events.make(Event.serverChannelDelete, handle);
 
-  void channelPinsUpdate(ServerChannelPinsUpdateEventHandler handle) =>
-      _events.make(Event.serverChannelPinsUpdate, handle);
+  void channelPinsUpdate(ServerMessagePinUpdateEventHandler handle) =>
+      _events.make(Event.serverMessagePinUpdate, handle);
 
   void memberAdd(ServerMemberAddEventHandler handle) =>
       _events.make(Event.serverMemberAdd, handle);

@@ -4,11 +4,11 @@ import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef PrivateChannelPinsUpdateEventHandler = FutureOr<void> Function(PrivateChannel?);
+typedef PrivateMessagePinUpdateEventHandler = FutureOr<void> Function(PrivateChannel?);
 
-abstract class PrivateChannelPinsUpdateEvent implements ListenableEvent {
+abstract class PrivateMessagePinUpdateEvent implements ListenableEvent {
   @override
-  Event get event => Event.privateChannelPinsUpdate;
+  Event get event => Event.privateMessagePinUpdate;
 
   FutureOr<void> handle(PrivateChannel channel);
 }

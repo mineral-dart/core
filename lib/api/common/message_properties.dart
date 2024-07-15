@@ -8,6 +8,7 @@ import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 final class MessageProperties<T extends Channel> {
   final Snowflake id;
   final String content;
+  final bool isPinned;
   final Snowflake channelId;
   final List<MessageEmbed> embeds;
   final DateTime createdAt;
@@ -16,6 +17,7 @@ final class MessageProperties<T extends Channel> {
   MessageProperties({
     required this.id,
     required this.content,
+    required this.isPinned,
     required this.channelId,
     required this.embeds,
     required this.createdAt,
@@ -31,6 +33,7 @@ final class MessageProperties<T extends Channel> {
     return MessageProperties(
       id: Snowflake(json['id']),
       content: json['content'],
+      isPinned: json['pinned'],
       channelId: json['channel_id'],
       embeds: embeds,
       createdAt: DateTime.parse(json['timestamp']),

@@ -2,7 +2,6 @@ import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/channel_create_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/channel_delete_packet.dart';
-import 'package:mineral/infrastructure/internals/packets/listeners/channel_pins_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/channel_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_ban_add_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_ban_remove_packet.dart';
@@ -20,6 +19,7 @@ import 'package:mineral/infrastructure/internals/packets/listeners/guild_sticker
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/interaction_create_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/message_create_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/listeners/message_pin_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/presence_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/ready_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_dispatcher.dart';
@@ -59,7 +59,7 @@ final class PacketListener implements PacketListenerContract {
     subscribe(ChannelCreatePacket.new);
     subscribe(ChannelUpdatePacket.new);
     subscribe(ChannelDeletePacket.new);
-    subscribe(ChannelPinsUpdatePacket.new);
+    subscribe(MessagePinUpdatePacket.new);
     subscribe(GuildMemberAddPacket.new);
     subscribe(GuildMemberRemovePacket.new);
     subscribe(GuildMemberUpdatePacket.new);

@@ -14,6 +14,9 @@ final class PrivateMessage implements Message<PrivateChannel> {
   @override
   String get content => _properties.content;
 
+  @override
+  bool get isPinned => _properties.isPinned;
+
   List<MessageEmbed> get embeds => _properties.embeds;
 
   @override
