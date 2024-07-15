@@ -15,7 +15,7 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
   ServerSettingsSerializer(this._marshaller);
 
   @override
-  Future<ServerSettings> serialize(Map<String, dynamic> json) async {
+  Future<ServerSettings> serializeRemote(Map<String, dynamic> json) async {
     return ServerSettings(
         bitfieldPermission: json['permissions'],
         afkTimeout: json['afk_timeout'],
@@ -29,10 +29,15 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
         mfaLevel: findInEnum(MfaLevel.values, json['mfa_level']),
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
         vanityUrlCode: json['vanity_url_code'],
-        subscription: await _marshaller.serializers.serverSubscription.serialize(json),
+        subscription: await _marshaller.serializers.serverSubscription.serializeRemote(json),
         preferredLocale: json['preferred_locale'],
         maxVideoChannelUsers: json['max_video_channel_users'],
         nsfwLevel: findInEnum(NsfwLevel.values, json['nsfw_level']));
+  }
+
+  @override
+  Future<ServerSettings> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

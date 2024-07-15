@@ -23,7 +23,7 @@ final class GuildMemberChunkPacket implements ListenablePacket {
     final presences = message.payload['presences'];
 
     for (final rawMember in members) {
-      final member = await marshaller.serializers.member.serialize(rawMember);
+      final member = await marshaller.serializers.member.serializeRemote(rawMember);
       server.members.list.putIfAbsent(member.id, () => member);
     }
 
@@ -33,6 +33,6 @@ final class GuildMemberChunkPacket implements ListenablePacket {
     }
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(server.id, rawServer);
+    await marshaller.cache.put(server.id.value, rawServer);
   }
 }

@@ -24,9 +24,9 @@ final class ChannelPart implements DataStorePart {
   ChannelPart(this._kernel);
 
   Future<T?> getChannel<T extends Channel>(Snowflake id) async {
-    final cachedChannel = await _kernel.marshaller.cache.get(id);
+    final cachedChannel = await _kernel.marshaller.cache.get(id.value);
     if (cachedChannel != null) {
-      return _kernel.marshaller.serializers.channels.serialize(cachedChannel) as Future<T?>;
+      return _kernel.marshaller.serializers.channels.serializeRemote(cachedChannel) as Future<T?>;
     }
 
     final response = await _kernel.dataStore.client.get('/channels/$id');
@@ -81,7 +81,7 @@ final class ChannelPart implements DataStorePart {
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
     return switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => _kernel.marshaller.cache.remove(id),
+      int() when status.isSuccess(response.statusCode) => _kernel.marshaller.cache.remove(id.value),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     };
@@ -101,12 +101,12 @@ final class ChannelPart implements DataStorePart {
 
     final message = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => _kernel.marshaller.serializers.message
-          .serialize({...response.body, 'guild_id': guildId}),
+          .serializeRemote({...response.body, 'guild_id': guildId}),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     };
 
-    await _kernel.marshaller.cache.put(message.id, {...response.body, 'guild_id': guildId});
+    await _kernel.marshaller.cache.put(message.id.value, {...response.body, 'guild_id': guildId});
 
     return message as T;
   }
@@ -114,7 +114,7 @@ final class ChannelPart implements DataStorePart {
   Future<T?> serializeChannelResponse<T extends Channel>(Response response) {
     return switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        _kernel.marshaller.serializers.channels.serialize(response.body),
+        _kernel.marshaller.serializers.channels.serializeRemote(response.body),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
     } as Future<T?>;
@@ -125,7 +125,7 @@ final class ChannelPart implements DataStorePart {
       case ServerChannel():
         _updateCacheFromChannelServer(id, channel, response.body);
       case PrivateChannel():
-        _kernel.marshaller.cache.put(channel.id, response.body);
+        _kernel.marshaller.cache.put(channel.id.value, response.body);
       default:
         throw Exception('Unknown channel type: $channel');
     }
@@ -139,8 +139,8 @@ final class ChannelPart implements DataStorePart {
     final rawServer = await _kernel.marshaller.serializers.server.deserialize(server);
 
     await Future.wait([
-      _kernel.marshaller.cache.put(server.id, rawServer),
-      _kernel.marshaller.cache.put(channel.id, rawChannel)
+      _kernel.marshaller.cache.put(server.id.value, rawServer),
+      _kernel.marshaller.cache.put(channel.id.value, rawChannel)
     ]);
   }
 }

@@ -9,9 +9,14 @@ final class PrivateChannelFactory implements ChannelFactoryContract<PrivateChann
   ChannelType get type => ChannelType.dm;
 
   @override
-  Future<PrivateChannel> make(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    final properties = await ChannelProperties.make(marshaller, json);
+  Future<PrivateChannel> serializeRemote(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+    final properties = await ChannelProperties.serializeRemote(marshaller, json);
     return PrivateChannel(properties);
+  }
+
+  @override
+  Future<PrivateChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

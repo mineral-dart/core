@@ -12,7 +12,7 @@ final class RoleSerializer implements SerializerContract<Role> {
   RoleSerializer(this.marshaller);
 
   @override
-  Future<Role> serialize(Map<String, dynamic> json) async {
+  Future<Role> serializeRemote(Map<String, dynamic> json) async {
     return Role(
       id: Snowflake(json['id']),
       name: json['name'],
@@ -30,6 +30,11 @@ final class RoleSerializer implements SerializerContract<Role> {
       icon: json['icon'],
       unicodeEmoji: json['unicode_emoji'],
     );
+  }
+
+  @override
+  Future<Role> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

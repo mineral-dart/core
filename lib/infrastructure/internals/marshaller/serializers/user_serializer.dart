@@ -10,7 +10,7 @@ final class UserSerializer implements SerializerContract<User> {
   UserSerializer(this._marshaller);
 
   @override
-  Future<User> serialize(Map<String, dynamic> json) async {
+  Future<User> serializeRemote(Map<String, dynamic> json) async {
     return User(
       id: json['id'],
       username: json['username'],
@@ -29,6 +29,11 @@ final class UserSerializer implements SerializerContract<User> {
       createdAt: json['created_at'],
       presence: json['presence'] != null ? Presence.fromJson(json['presence']) : null,
     );
+  }
+
+  @override
+  Future<User> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

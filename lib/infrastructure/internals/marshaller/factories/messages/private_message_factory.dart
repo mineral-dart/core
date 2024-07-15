@@ -5,18 +5,26 @@ import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/message_factory.dart';
 
 final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
-@override
-  Future<PrivateMessage> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
-  final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
-  final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
+  @override
+  Future<PrivateMessage> serializeRemote(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
+    final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
 
-  final user = await marshaller.serializers.user.serialize(json['author']);
+    final user = await marshaller.serializers.user.serializeRemote(json['author']);
 
-  return PrivateMessage(messageProperties, userId: json['author']['id'], user: user);
+    return PrivateMessage(messageProperties, userId: json['author']['id'], user: user);
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, PrivateMessage message) async {
+  Future<PrivateMessage> serializeCache(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    throw UnimplementedError();
+  }
+
+  @override
+  Future<Map<String, dynamic>> deserialize(
+      MarshallerContract marshaller, PrivateMessage message) async {
     return {
       'id': message.id,
       'content': message.content,

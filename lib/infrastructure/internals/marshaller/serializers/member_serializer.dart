@@ -18,7 +18,7 @@ final class MemberSerializer implements SerializerContract<Member> {
   MemberSerializer(this._marshaller);
 
   @override
-  Future<Member> serialize(Map<String, dynamic> json) async {
+  Future<Member> serializeRemote(Map<String, dynamic> json) async {
     final serverRoles = json.entries.firstWhere((element) => element.key == 'guild_roles',
         orElse: () => throw FormatException('Server roles not found in member structure'));
 
@@ -59,6 +59,11 @@ final class MemberSerializer implements SerializerContract<Member> {
     member.flags.member = member;
 
     return member;
+  }
+
+  @override
+  Future<Member> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

@@ -18,7 +18,7 @@ final class ChannelUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final channel = await marshaller.serializers.channels.serialize(message.payload);
+    final channel = await marshaller.serializers.channels.serializeRemote(message.payload);
 
     return switch (channel) {
       ServerChannel() => registerServerChannel(channel, dispatch),
@@ -35,7 +35,7 @@ final class ChannelUpdatePacket implements ListenablePacket {
     server.channels.list.update(channel.id, (_) => channel);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(server.id, rawServer);
+    await marshaller.cache.put(server.id.value, rawServer);
 
     dispatch(event: Event.serverChannelUpdate, params: [before, channel]);
   }
@@ -44,7 +44,7 @@ final class ChannelUpdatePacket implements ListenablePacket {
     final before = marshaller.dataStore.channel.getChannel(channel.id);
 
     final rawChannel = await marshaller.serializers.channels.deserialize(channel);
-    await marshaller.cache.put(channel.id, rawChannel);
+    await marshaller.cache.put(channel.id.value, rawChannel);
 
     dispatch(event: Event.serverChannelUpdate, params: [before, channel]);
   }

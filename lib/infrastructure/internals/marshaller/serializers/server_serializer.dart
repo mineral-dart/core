@@ -11,13 +11,13 @@ final class ServerSerializer implements SerializerContract<Server> {
   ServerSerializer(this._marshaller);
 
   @override
-  Future<Server> serialize(Map<String, dynamic> json) async {
+  Future<Server> serializeRemote(Map<String, dynamic> json) async {
     final serializedRoles = await Future.wait(List.from(json['roles'])
         .where((element) => element['id'] != json['id'])
-        .map((element) async => _marshaller.serializers.role.serialize(element)));
+        .map((element) async => _marshaller.serializers.role.serializeRemote(element)));
 
     final serializedMembers = await Future.wait(List.from(json['members']).map((element) async =>
-        _marshaller.serializers.member.serialize({...element, 'guild_roles': serializedRoles})));
+        _marshaller.serializers.member.serializeRemote({...element, 'guild_roles': serializedRoles})));
 
     final channelManager = await ChannelManager.fromJson(
         marshaller: _marshaller, guildId: json['id'], json: json);
@@ -25,13 +25,13 @@ final class ServerSerializer implements SerializerContract<Server> {
     final roleManager = RoleManager.fromList(serializedRoles);
     final owner = serializedMembers.firstWhere((member) => member.id == json['owner_id']);
     final serverAssets = await _marshaller.serializers.serversAsset
-        .serialize({'guildRoles': serializedRoles, ...json});
+        .serializeRemote({'guildRoles': serializedRoles, ...json});
 
     final server = Server(
       id: json['id'],
       name: json['name'],
       members: MemberManager.fromList(serializedMembers),
-      settings: await _marshaller.serializers.serverSettings.serialize(json),
+      settings: await _marshaller.serializers.serverSettings.serializeRemote(json),
       roles: roleManager,
       channels: channelManager,
       description: json['description'],
@@ -51,6 +51,11 @@ final class ServerSerializer implements SerializerContract<Server> {
     }
 
     return server;
+  }
+
+  @override
+  Future<Server> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

@@ -52,7 +52,7 @@ final class ChannelManager {
       required Map<String, dynamic> json}) async {
     final awaitedChannels = await Future.wait(List.from(json['channels'])
         .where((element) => element['type'] != ChannelType.guildCategory.value)
-        .map((element) async => marshaller.serializers.channels.serialize({
+        .map((element) async => marshaller.serializers.channels.serializeRemote({
               ...element,
               'guild_id': guildId,
             })));

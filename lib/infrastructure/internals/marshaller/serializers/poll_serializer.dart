@@ -13,7 +13,7 @@ final class PollSerializer implements SerializerContract<Poll> {
   PollSerializer(this._marshaller);
 
   @override
-  Poll serialize(Map<String, dynamic> json) {
+  Poll serializeRemote(Map<String, dynamic> json) {
     return Poll(
         question: PollQuestion(content: json['question']['text']),
         answers: List.from(json['answers'])
@@ -23,6 +23,11 @@ final class PollSerializer implements SerializerContract<Poll> {
             Helper.createOrNull(field: json['expiry'], fn: () => DateTime.parse(json['expiry']).difference(DateTime.now())),
         isAllowMultiple: json['allow_multiselect'],
         layout: findInEnum(PollLayout.values, json['layout_type']));
+  }
+
+  @override
+  Future<Poll> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

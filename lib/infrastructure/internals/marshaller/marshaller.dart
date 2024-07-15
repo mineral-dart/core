@@ -88,7 +88,7 @@ final class Marshaller implements MarshallerContract {
 
   @override
   Future<({User? instance, Map<String, dynamic>? struct})> getUser(String id) async {
-    return _get<User>(id, key: 'users', fn: serializers.user.serialize);
+    return _get<User>(id, key: 'users', fn: serializers.user.serializeCache);
   }
 
   @override
@@ -101,7 +101,7 @@ final class Marshaller implements MarshallerContract {
       String id) async {
     return _get<T>(id,
         key: 'channels',
-        fn: (Map<String, dynamic> channel) => serializers.channels.serialize(channel) as Future<T>);
+        fn: (Map<String, dynamic> channel) => serializers.channels.serializeCache(channel) as Future<T>);
   }
 
   @override
@@ -114,7 +114,7 @@ final class Marshaller implements MarshallerContract {
     return _get<Server>(id,
         key: 'channels',
         fn: (Map<String, dynamic> channel) async =>
-            serializers.server.serialize(channel) as Future<Server>);
+            serializers.server.serializeCache(channel) as Future<Server>);
   }
 
   @override
@@ -124,6 +124,6 @@ final class Marshaller implements MarshallerContract {
 
   @override
   Future<({Member? instance, Map<String, dynamic>? struct})> getMember(String id) async {
-    return _get<Member>(id, key: 'members', fn: serializers.member.serialize);
+    return _get<Member>(id, key: 'members', fn: serializers.member.serializeCache);
   }
 }
