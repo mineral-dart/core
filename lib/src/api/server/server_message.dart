@@ -58,6 +58,10 @@ final class ServerMessage extends Message<ServerChannel> {
     _dataStoreServerMessage.reply(id: id, channelId: channelId, content: content, embeds: embeds);
   }
 
+  Future<void> pin() async {
+    await _dataStoreServerMessage.pin(id: id, channelId: channelId);
+  }
+
   Future<void> delete() async {
     await _dataStoreServerMessage.delete(id: id, channelId: channelId);
   }

@@ -62,6 +62,10 @@ final class ServerMessagePart implements DataStorePart {
     await _kernel.dataStore.client.post('/channels/$channelId/messages/$id/crosspost');
   }
 
+  Future<void> pin({ required Snowflake id, required Snowflake channelId }) async {
+    await _kernel.dataStore.client.put('/channels/$channelId/pins/$id');
+  }
+
   Future<void> delete({ required Snowflake id, required Snowflake channelId }) async {
     await _kernel.dataStore.client.delete('/channels/$channelId/messages/$id');
   }
