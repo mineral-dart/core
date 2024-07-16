@@ -10,7 +10,6 @@ import 'package:mineral/api/common/message_properties.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
@@ -46,8 +45,8 @@ final class ServerMessage extends Message<ServerChannel> {
     required this.author,
   });
 
-  Future<void> edit(String content) async {
-    _dataStoreServerMessage
+  Future<ServerMessage?> edit(String content) async {
+    return _dataStoreServerMessage
         .update(id: id, channelId: channelId, payload: {'content': content});
   }
 
@@ -56,7 +55,8 @@ final class ServerMessage extends Message<ServerChannel> {
       return;
     }
 
-    _dataStoreServerMessage.reply(id: id, channelId: channelId, content: content, embeds: embeds);
+    _dataStoreServerMessage.reply(
+        id: id, channelId: channelId, content: content, embeds: embeds);
   }
 
   Future<void> pin() async {
