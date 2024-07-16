@@ -15,8 +15,9 @@ final class PrivateChannelFactory implements ChannelFactoryContract<PrivateChann
   }
 
   @override
-  Future<PrivateChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) {
-    throw UnimplementedError();
+  Future<PrivateChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+    final properties = await ChannelProperties.serializeCache(marshaller, json);
+    return PrivateChannel(properties);
   }
 
   @override

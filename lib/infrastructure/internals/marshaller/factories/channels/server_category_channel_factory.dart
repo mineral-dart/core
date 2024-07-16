@@ -15,8 +15,9 @@ final class ServerCategoryChannelFactory implements ChannelFactoryContract<Serve
   }
 
   @override
-  Future<ServerCategoryChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) {
-    throw UnimplementedError();
+  Future<ServerCategoryChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+    final properties = await ChannelProperties.serializeRemote(marshaller, json);
+    return ServerCategoryChannel(properties);
   }
 
   @override
@@ -26,7 +27,9 @@ final class ServerCategoryChannelFactory implements ChannelFactoryContract<Serve
 
     return {
       'id': channel.id.value,
+      'name': channel.name,
       'type': channel.type.value,
+      'position': channel.position,
       'permission_overwrites': permissions,
       'guild_id': channel.guildId,
     };

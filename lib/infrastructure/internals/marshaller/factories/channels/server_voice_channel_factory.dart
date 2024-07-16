@@ -15,8 +15,9 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
   }
 
   @override
-  Future<ServerVoiceChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) {
-    throw UnimplementedError();
+  Future<ServerVoiceChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+    final properties = await ChannelProperties.serializeCache(marshaller, json);
+    return ServerVoiceChannel(properties);
   }
 
   @override
@@ -31,6 +32,7 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
       'position': channel.position,
       'guild_id': channel.guildId,
       'permission_overwrites': permissions,
+      'parent_id': channel.categoryId,
     };
   }
 }
