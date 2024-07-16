@@ -23,31 +23,31 @@ abstract interface class MarshallerContract {
 
   Future<void> putUser(String id, User user);
 
-  Future<({User? instance, Map<String, dynamic>? struct})> getUser(String id);
+  Future<({User? instance, Map<String, dynamic>? struct})> getUser(String? id);
 
   Future<void> deleteUser(String id);
 
   Future<void> putChannel<T extends Channel>(String id, T channel);
 
-  Future<({T? instance, Map<String, dynamic>? struct})> getChannel<T extends Channel>(String id);
+  Future<({T? instance, Map<String, dynamic>? struct})> getChannel<T extends Channel>(String? id);
 
   Future<void> deleteChannel(String id);
 
   Future<void> putServer(String id, Server channel);
 
-  Future<({Server? instance, Map<String, dynamic>? struct})> getServer<Server>(String id);
+  Future<({Server? instance, Map<String, dynamic>? struct})> getServer<Server>(String? id);
 
   Future<void> deleteServer(String id);
 
   Future<void> putMember(String id, Member member);
 
-  Future<({Member? instance, Map<String, dynamic>? struct})> getMember(String id);
+  Future<({Member? instance, Map<String, dynamic>? struct})> getMember(String? id);
 
   Future<void> deleteMember(String id);
 
   Future<void> putRole(String id, Role member);
 
-  Future<({Role? instance, Map<String, dynamic>? struct})> getRole(String id);
+  Future<({Role? instance, Map<String, dynamic>? struct})> getRole(String? id);
 
   Future<void> deleteRole(String id);
 }
@@ -83,9 +83,9 @@ final class Marshaller implements MarshallerContract {
     cache.put(key, {...cachedElements, id: rawElement});
   }
 
-  Future<({T? instance, Map<String, dynamic>? struct})> _get<T>(String id,
+  Future<({T? instance, Map<String, dynamic>? struct})> _get<T>(String? id,
       {required String key, required FutureOr<T?> Function(Map<String, dynamic>) fn}) async {
-    final cachedElements = await cache.getOrFail('members');
+    final cachedElements = await cache.getOrFail(key);
 
     return (
       struct: cachedElements[id] as Map<String, dynamic>?,
@@ -105,7 +105,7 @@ final class Marshaller implements MarshallerContract {
   }
 
   @override
-  Future<({User? instance, Map<String, dynamic>? struct})> getUser(String id) async {
+  Future<({User? instance, Map<String, dynamic>? struct})> getUser(String? id) async {
     return _get<User>(id, key: 'users', fn: serializers.user.serializeCache);
   }
 
@@ -119,7 +119,7 @@ final class Marshaller implements MarshallerContract {
 
   @override
   Future<({T? instance, Map<String, dynamic>? struct})> getChannel<T extends Channel>(
-      String id) async {
+      String? id) async {
     return _get<T>(id,
         key: 'channels',
         fn: (Map<String, dynamic> channel) =>
@@ -135,7 +135,7 @@ final class Marshaller implements MarshallerContract {
   }
 
   @override
-  Future<({Server? instance, Map<String, dynamic>? struct})> getServer<Server>(String id) async {
+  Future<({Server? instance, Map<String, dynamic>? struct})> getServer<Server>(String? id) async {
     return _get<Server>(id,
         key: 'servers',
         fn: (Map<String, dynamic> channel) async =>
@@ -151,7 +151,7 @@ final class Marshaller implements MarshallerContract {
   }
 
   @override
-  Future<({Member? instance, Map<String, dynamic>? struct})> getMember(String id) async {
+  Future<({Member? instance, Map<String, dynamic>? struct})> getMember(String? id) async {
     return _get<Member>(id, key: 'members', fn: serializers.member.serializeCache);
   }
 
@@ -163,7 +163,7 @@ final class Marshaller implements MarshallerContract {
       _put<Role>(id, key: 'roles', element: role, fn: serializers.role.deserialize);
 
   @override
-  Future<({Role? instance, Map<String, dynamic>? struct})> getRole(String id) async =>
+  Future<({Role? instance, Map<String, dynamic>? struct})> getRole(String? id) async =>
       _get<Role>(id, key: 'roles', fn: serializers.role.serializeCache);
 
   @override

@@ -40,7 +40,7 @@ final class ServerAnnouncementChannel extends ServerChannel {
 
   late final ServerCategoryChannel? category;
 
-  ServerAnnouncementChannel(this._properties, {required this.category})
+  ServerAnnouncementChannel(this._properties)
       : _methods = ChannelMethods(_properties.id);
 
   Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);

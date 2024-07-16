@@ -29,15 +29,25 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
   }
 
   @override
-  Future<ServerForumChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) {
-    throw UnimplementedError();
+  Future<ServerForumChannel> serializeCache(
+      MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+    final properties = await ChannelProperties.serializeCache(marshaller, json);
+    return ServerForumChannel(
+      properties,
+      sortOrder: Helper.createOrNull(
+          field: json['default_sort_order'],
+          fn: () => findInEnum(SortOrderType.values, json['default_sort_order'])),
+      layoutType: Helper.createOrNull(
+          field: json['default_forum_layout'],
+          fn: () => findInEnum(ForumLayoutType.values, json['default_forum_layout'])),
+    );
   }
 
   @override
   Future<Map<String, dynamic>> deserialize(
       MarshallerContract marshaller, ServerForumChannel channel) async {
-    final permissions = await Future.wait(channel.permissions.map((element) async =>
-        marshaller.serializers.channelPermissionOverwrite.deserialize(element)));
+    final permissions = await Future.wait(channel.permissions.map(
+        (element) async => marshaller.serializers.channelPermissionOverwrite.deserialize(element)));
 
     return {
       'id': channel.id.value,
@@ -46,7 +56,7 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
       'position': channel.position,
       'guild_id': channel.guildId,
       'permission_overwrites': permissions,
-      // 'parent_id': channel.category?.id,
+      'parent_id': channel.categoryId,
     };
   }
 }
