@@ -92,31 +92,7 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     for (final channel in server.channels.list.values) {
       channel.server = server;
-
-      switch (channel) {
-        case ServerCategoryChannel():
-          break;
-        case ServerTextChannel(:final categoryId):
-          final categoryChannel =
-              await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-        case ServerVoiceChannel(:final categoryId):
-          final categoryChannel =
-              await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-        case ServerAnnouncementChannel(:final categoryId):
-          final categoryChannel =
-              await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-        case ServerForumChannel(:final categoryId):
-          final categoryChannel =
-              await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-        case ServerStageChannel(:final categoryId):
-          final categoryChannel =
-              await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-      }
+      await assignCategoryChannel(channel);
     }
 
     for (final member in server.members.list.values) {
@@ -174,31 +150,7 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     for (final channel in server.channels.list.values) {
       channel.server = server;
-
-      switch (channel) {
-        case ServerCategoryChannel():
-          break;
-        case ServerTextChannel(:final categoryId):
-          final categoryChannel =
-          await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-        case ServerVoiceChannel(:final categoryId):
-          final categoryChannel =
-          await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-        case ServerAnnouncementChannel(:final categoryId):
-          final categoryChannel =
-          await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-        case ServerForumChannel(:final categoryId):
-          final categoryChannel =
-          await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-        case ServerStageChannel(:final categoryId):
-          final categoryChannel =
-          await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-          channel.category = categoryChannel.instance;
-      }
+      await assignCategoryChannel(channel);
     }
 
     for (final member in server.members.list.values) {
@@ -232,5 +184,32 @@ final class ServerSerializer implements SerializerContract<Server> {
       ...assets,
       ...settings,
     };
+  }
+
+  Future<void> assignCategoryChannel(ServerChannel channel) async {
+    switch (channel) {
+      case ServerCategoryChannel():
+        break;
+      case ServerTextChannel(:final categoryId):
+        final categoryChannel =
+            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
+        channel.category = categoryChannel.instance;
+      case ServerVoiceChannel(:final categoryId):
+        final categoryChannel =
+            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
+        channel.category = categoryChannel.instance;
+      case ServerAnnouncementChannel(:final categoryId):
+        final categoryChannel =
+            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
+        channel.category = categoryChannel.instance;
+      case ServerForumChannel(:final categoryId):
+        final categoryChannel =
+            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
+        channel.category = categoryChannel.instance;
+      case ServerStageChannel(:final categoryId):
+        final categoryChannel =
+            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
+        channel.category = categoryChannel.instance;
+    }
   }
 }
