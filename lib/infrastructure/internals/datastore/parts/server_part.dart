@@ -17,9 +17,9 @@ final class ServerPart implements DataStorePart {
   ServerPart(this._kernel);
 
   Future<Server> getServer(Snowflake id) async {
-    final cachedRawServer = await _kernel.marshaller.cache.get(id.value);
-    if (cachedRawServer != null) {
-      return _kernel.marshaller.serializers.server.serializeRemote(cachedRawServer);
+    final (:struct, :instance) = await _kernel.marshaller.getServer(id.value);
+    if (instance != null) {
+      return instance;
     }
 
     final [serverResponse, channelsResponse, membersResponse] = await Future.wait([
