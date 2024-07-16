@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/role.dart';
@@ -35,11 +36,11 @@ abstract interface class MarshallerContract {
 
   Future<void> putServer(String id, Server channel);
 
-  Future<({Server? instance, Map<String, dynamic>? struct})> getServer<Server>(String? id);
+  Future<({Server? instance, Map<String, dynamic>? struct})> getServer(String? id);
 
   Future<void> deleteServer(String id);
 
-  Future<void> putMember(String id, Member member);
+  Future<void> putMember(String serverId, Member member);
 
   Future<({Member? instance, Map<String, dynamic>? struct})> getMember(String? id);
 
@@ -79,8 +80,9 @@ final class Marshaller implements MarshallerContract {
       {required String key, required T element, required Function(T) fn}) async {
     final rawElement = await fn(element);
     final cachedElements = await cache.getOrFail(key);
+    cachedElements[id] = rawElement;
 
-    cache.put(key, {...cachedElements, id: rawElement});
+    cache.put(key, cachedElements);
   }
 
   Future<({T? instance, Map<String, dynamic>? struct})> _get<T>(String? id,
@@ -135,7 +137,7 @@ final class Marshaller implements MarshallerContract {
   }
 
   @override
-  Future<({Server? instance, Map<String, dynamic>? struct})> getServer<Server>(String? id) async {
+  Future<({Server? instance, Map<String, dynamic>? struct})> getServer(String? id) async {
     return _get<Server>(id,
         key: 'servers',
         fn: (Map<String, dynamic> channel) async =>
@@ -146,8 +148,8 @@ final class Marshaller implements MarshallerContract {
   Future<void> deleteServer(String id) => _delete(id, 'servers');
 
   @override
-  Future<void> putMember(String id, Member member) async {
-    _put<Member>(id, key: 'members', element: member, fn: serializers.member.deserialize);
+  Future<void> putMember(String serverId, Member member) async {
+    _put<Member>('$serverId.${member.id}', key: 'members', element: member, fn: serializers.member.deserialize);
   }
 
   @override

@@ -33,8 +33,24 @@ final class RoleSerializer implements SerializerContract<Role> {
   }
 
   @override
-  Future<Role> serializeCache(Map<String, dynamic> json) {
-    throw UnimplementedError();
+  Future<Role> serializeCache(Map<String, dynamic> json) async {
+    return Role(
+      id: Snowflake(json['id']),
+      name: json['name'],
+      color: Color.of(json['color'] ?? 0),
+      hoist: json['hoist'] ?? false,
+      position: json['position'] ?? 0,
+      permissions: switch(json['permissions']) {
+        int() => Permissions.fromInt(json['permissions']),
+        String() => Permissions.fromInt(int.parse(json['permissions'])),
+        _ => Permissions.fromInt(0),
+      },
+      managed: json['managed'],
+      mentionable: json['mentionable'],
+      flags: json['flags'],
+      icon: json['icon'],
+      unicodeEmoji: json['unicode_emoji'],
+    );
   }
 
   @override
