@@ -17,9 +17,8 @@ final class ServerPart implements DataStorePart {
   ServerPart(this._kernel);
 
   Future<Server> getServer(Snowflake id) async {
-    final (:struct, :instance) = await _kernel.marshaller.getServer(id.value);
-    if (instance != null) {
-      return instance;
+    if (await _kernel.marshaller.cache.has(id.value)) {
+      return _kernel.marshaller.serializers.server.serializeCache({ 'id': id.value });
     }
 
     final [serverResponse, channelsResponse, membersResponse] = await Future.wait([
@@ -28,10 +27,11 @@ final class ServerPart implements DataStorePart {
       _kernel.dataStore.client.get('/guilds/$id/members')
     ]);
 
-    serverResponse.body['channels'] = channelsResponse.body;
-    serverResponse.body['members'] = membersResponse.body;
-
-    final server = await _kernel.marshaller.serializers.server.serializeRemote(serverResponse.body);
+    final server = await _kernel.marshaller.serializers.server.serializeRemote({
+      ...serverResponse.body,
+      'channels': channelsResponse.body,
+      'members': membersResponse.body
+    });
 
     await Future.wait([
       _kernel.marshaller.cache.put(id.value, serverResponse.body),

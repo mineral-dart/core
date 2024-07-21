@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_announcement_channel.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
@@ -29,7 +30,10 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     final List<Role> serializedRoles = await roleWithoutEveryone.map((element) async {
       final role = await _marshaller.serializers.role.serializeRemote(element);
-      await _marshaller.putRole(role.id.value, role);
+
+      final rawRole = await _marshaller.serializers.role.deserialize(role);
+      _marshaller.cache.put('server-${json['id']}/role-${role.id}', rawRole);
+
       return role;
     }).wait;
 
@@ -37,7 +41,9 @@ final class ServerSerializer implements SerializerContract<Server> {
       final member = await _marshaller.serializers.member
           .serializeRemote({...element, 'guild_roles': serializedRoles});
 
-      await _marshaller.putMember(json['id'], member);
+      final rawMember = await _marshaller.serializers.member.deserialize(member);
+      _marshaller.cache.put('server-${json['id']}/member-${member.id}', rawMember);
+
       return member;
     }).wait;
 
@@ -54,10 +60,13 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     await availableCategoryChannels.map((element) async {
       final channel = await serializeChannel(element);
+
       if (channel is ServerCategoryChannel) {
         channelManager.list.putIfAbsent(channel.id, () => channel);
 
-        await _marshaller.putChannel<ServerCategoryChannel>(channel.id.value, channel);
+        final rawChannel = await _marshaller.serializers.channels.deserialize(channel);
+        await _marshaller.cache.put('server-${json['id']}/channel-${channel.id}', rawChannel);
+
         return channel;
       }
     }).wait;
@@ -67,7 +76,9 @@ final class ServerSerializer implements SerializerContract<Server> {
       if (channel is ServerChannel) {
         channelManager.list.putIfAbsent(channel.id, () => channel);
 
-        await _marshaller.putChannel<ServerChannel>(channel.id.value, channel);
+        final rawChannel = await _marshaller.serializers.channels.deserialize(channel);
+        await _marshaller.cache.put('server-${json['id']}/channel-${channel.id}', rawChannel);
+
         return channel;
       }
     }).wait;
@@ -92,7 +103,7 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     for (final channel in server.channels.list.values) {
       channel.server = server;
-      await assignCategoryChannel(channel);
+      await assignCategoryChannel(server.id, channel);
     }
 
     for (final member in server.members.list.values) {
@@ -105,52 +116,51 @@ final class ServerSerializer implements SerializerContract<Server> {
   }
 
   @override
-  Future<Server> serializeCache(Map<String, dynamic> json) async {
-    final roleIds = List.from(json['roles']);
-    final List<Role> serializedRoles = await roleIds.map((element) async {
-      final role = await _marshaller.getRole(element);
-      return role.instance!;
+  Future<Server> serializeCache(Map<String, dynamic> payload) async {
+    final serverKey = 'server-${payload['id']}';
+    final rawServer = await _marshaller.cache.getOrFail(serverKey);
+    final channelManager = ChannelManager(rawServer);
+
+    final roles = await getCacheFromPrefix('$serverKey/role-');
+    final List<Role> serializedRoles = await roles.map((element) async {
+      return _marshaller.serializers.role.serializeCache(element.value);
     }).wait;
 
-    final memberIds = List.from(json['members']);
-    final serializedMembers = await memberIds.map((element) async {
-      final member = await _marshaller.getMember(element);
-      return member.instance!;
+    final members = await getCacheFromPrefix('$serverKey/member-');
+    final serializedMembers = await members.map((element) async {
+      return _marshaller.serializers.member.serializeCache(element.value);
     }).wait;
 
-    final channelManager = ChannelManager(json);
-
-
-    final channelIds = List.from(json['channels']);
-    await channelIds.map((element) async {
-      final channel = await _marshaller.getChannel(element);
-      if (channel.instance case final ServerChannel channel) {
+    final channels =  await getCacheFromPrefix('$serverKey/channel-');
+    await channels.map((element) async {
+      final channel = await _marshaller.serializers.channels.serializeCache(element.value);
+      if (channel case final ServerChannel channel) {
         channelManager.list.putIfAbsent(channel.id, () => channel);
         return channel;
       }
     }).wait;
 
     final roleManager = RoleManager.fromList(serializedRoles);
-    final owner = serializedMembers.firstWhere((member) => member.id == json['owner_id']);
+    final owner = serializedMembers.firstWhere((member) => member.id == rawServer['owner_id']);
     final serverAssets = await _marshaller.serializers.serversAsset
-        .serializeRemote({'guildRoles': serializedRoles, ...json});
+        .serializeCache({'guildRoles': serializedRoles, ...rawServer});
 
     final server = Server(
-      id: json['id'],
-      name: json['name'],
+      id: rawServer['id'],
+      name: rawServer['name'],
       members: MemberManager.fromList(serializedMembers),
-      settings: await _marshaller.serializers.serverSettings.serializeRemote(json),
+      settings: await _marshaller.serializers.serverSettings.serializeCache(rawServer),
       roles: roleManager,
       channels: channelManager,
-      description: json['description'],
-      applicationId: json['application_id'],
+      description: rawServer['description'],
+      applicationId: rawServer['application_id'],
       assets: serverAssets,
       owner: owner,
     );
 
     for (final channel in server.channels.list.values) {
       channel.server = server;
-      await assignCategoryChannel(channel);
+      await assignCategoryChannel(server.id, channel);
     }
 
     for (final member in server.members.list.values) {
@@ -167,16 +177,13 @@ final class ServerSerializer implements SerializerContract<Server> {
     final assets = await _marshaller.serializers.serversAsset.deserialize(server.assets);
     final settings = await _marshaller.serializers.serverSettings.deserialize(server.settings);
 
-    final members = server.members.list.values
-        .map((member) => '${server.id.value}.${member.id}');
+    final members = server.members.list.values.map((member) => '${server.id.value}.${member.id}');
 
     return {
       'id': server.id,
       'owner_id': server.owner.id,
       'name': server.name,
       'members': members,
-      'roles': server.roles.list.keys.toList(),
-      'channels': server.channels.list.keys.toList(),
       'description': server.description,
       'applicationId': server.applicationId,
       'assets': await _marshaller.serializers.serversAsset.deserialize(server.assets),
@@ -186,30 +193,39 @@ final class ServerSerializer implements SerializerContract<Server> {
     };
   }
 
-  Future<void> assignCategoryChannel(ServerChannel channel) async {
-    switch (channel) {
-      case ServerCategoryChannel():
-        break;
-      case ServerTextChannel(:final categoryId):
-        final categoryChannel =
-            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-        channel.category = categoryChannel.instance;
-      case ServerVoiceChannel(:final categoryId):
-        final categoryChannel =
-            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-        channel.category = categoryChannel.instance;
-      case ServerAnnouncementChannel(:final categoryId):
-        final categoryChannel =
-            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-        channel.category = categoryChannel.instance;
-      case ServerForumChannel(:final categoryId):
-        final categoryChannel =
-            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-        channel.category = categoryChannel.instance;
-      case ServerStageChannel(:final categoryId):
-        final categoryChannel =
-            await _marshaller.getChannel<ServerCategoryChannel>(categoryId?.value);
-        channel.category = categoryChannel.instance;
+  Future<Iterable<MapEntry<String, dynamic>>> getCacheFromPrefix(String key) async {
+    final cache = await _marshaller.cache.getInternalValues();
+    return cache.entries.where((element) => element.key.startsWith(key));
+  }
+
+  Future<void> assignCategoryChannel(Snowflake serverId, ServerChannel channel) async {
+    final categoryId = switch (channel) {
+      ServerTextChannel(:final categoryId) => categoryId,
+      ServerVoiceChannel(:final categoryId) => categoryId,
+      ServerAnnouncementChannel(:final categoryId) => categoryId,
+      ServerForumChannel(:final categoryId) => categoryId,
+      ServerStageChannel(:final categoryId) => categoryId,
+      _ => null,
+    };
+
+    final rawChannel = await _marshaller.cache.get('server-$serverId/channel-$categoryId');
+    final category = rawChannel != null
+        ? await _marshaller.serializers.channels.serializeCache(rawChannel)
+        : null;
+
+    if (category is ServerCategoryChannel?) {
+      switch (channel) {
+        case ServerTextChannel():
+          channel.category = category;
+        case ServerVoiceChannel():
+          channel.category = category;
+        case ServerAnnouncementChannel():
+          channel.category = category;
+        case ServerForumChannel():
+          channel.category = category;
+        case ServerStageChannel():
+          channel.category = category;
+      }
     }
   }
 }

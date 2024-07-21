@@ -20,7 +20,7 @@ final class GuildCreatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.serializers.server.serializeRemote(message.payload);
-    await marshaller.putServer(server.id.value, server);
+    await marshaller.cache.put(server.id.value, server);
 
     final bot = ioc.resolve<Bot>();
 
