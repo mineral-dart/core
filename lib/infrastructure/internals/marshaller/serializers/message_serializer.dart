@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/message.dart';
+import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/messages/private_message_factory.dart';
@@ -17,7 +18,7 @@ final class MessageSerializer implements SerializerContract<Message> {
 
   @override
   Future<Message> serializeRemote(Map<String, dynamic> json) async {
-    final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
+    final channel = await marshaller.dataStore.channel.getChannel(Snowflake(json['channel_id']), serverId: Snowflake(json['guild_id']));
     final factory = switch(channel) {
       ServerChannel() => _serverMessageFactory,
       PrivateChannel() => _privateMessageFactory,

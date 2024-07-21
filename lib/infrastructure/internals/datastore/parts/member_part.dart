@@ -77,8 +77,6 @@ final class MemberPart implements DataStorePart {
         body: payload,
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    print(response.bodyString);
-
     final member = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         _kernel.marshaller.serializers.member.serializeRemote(response.body),

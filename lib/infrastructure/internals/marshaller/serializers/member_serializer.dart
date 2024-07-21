@@ -65,7 +65,8 @@ final class MemberSerializer implements SerializerContract<Member> {
   @override
   Future<Member> serializeCache(Map<String, dynamic> json) async {
     final List<Role> serializedRoles = await List.from(json['roles']).map((element) async {
-      return _marshaller.serializers.role.serializeCache(element);
+      final rawChannel = await _marshaller.cache.get('server-${json['guild_id']}/role-$element');
+      return _marshaller.serializers.role.serializeCache(rawChannel!);
     }).wait;
 
     final member = Member(
