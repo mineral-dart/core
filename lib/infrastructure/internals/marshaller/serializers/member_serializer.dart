@@ -43,10 +43,11 @@ final class MemberSerializer implements SerializerContract<Member> {
               fn: () => DateTime.parse(json['communication_disabled_until']))),
       mfAEnabled: json['user']['mfa_enabled'] ?? false,
       locale: json['user']['locale'],
-      premiumType: PremiumTier.values.firstWhere((e) => e == json['user']['premium_type'], orElse: () => PremiumTier.none),
+      premiumType: PremiumTier.values
+          .firstWhere((e) => e == json['user']['premium_type'], orElse: () => PremiumTier.none),
       joinedAt: Helper.createOrNull(
           field: json['joined_at'], fn: () => DateTime.parse(json['joined_at'])),
-      permissions: switch(json['permissions']) {
+      permissions: switch (json['permissions']) {
         int() => Permissions.fromInt(json['permissions']),
         String() => Permissions.fromInt(int.parse(json['permissions'])),
         _ => Permissions.fromInt(0),
@@ -65,8 +66,10 @@ final class MemberSerializer implements SerializerContract<Member> {
   @override
   Future<Member> serializeCache(Map<String, dynamic> json) async {
     final List<Role> serializedRoles = await List.from(json['roles']).map((element) async {
-      final rawChannel = await _marshaller.cache.get('server-${json['guild_id']}/role-$element');
-      return _marshaller.serializers.role.serializeCache(rawChannel!);
+      final cacheKey = _marshaller.cacheKey.serverRole(serverId: json['guild_id'], roleId: element);
+
+      final rawRole = await _marshaller.cache.getOrFail(cacheKey);
+      return _marshaller.serializers.role.serializeCache(rawRole);
     }).wait;
 
     final member = Member(
@@ -89,10 +92,11 @@ final class MemberSerializer implements SerializerContract<Member> {
               fn: () => DateTime.parse(json['communication_disabled_until']))),
       mfAEnabled: json['user']['mfa_enabled'] ?? false,
       locale: json['user']['locale'],
-      premiumType: PremiumTier.values.firstWhere((e) => e == json['user']['premium_type'], orElse: () => PremiumTier.none),
+      premiumType: PremiumTier.values
+          .firstWhere((e) => e == json['user']['premium_type'], orElse: () => PremiumTier.none),
       joinedAt: Helper.createOrNull(
           field: json['joined_at'], fn: () => DateTime.parse(json['joined_at'])),
-      permissions: switch(json['permissions']) {
+      permissions: switch (json['permissions']) {
         int() => Permissions.fromInt(json['permissions']),
         String() => Permissions.fromInt(int.parse(json['permissions'])),
         _ => Permissions.fromInt(0),
