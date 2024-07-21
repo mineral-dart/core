@@ -6,24 +6,25 @@ import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 import 'package:mineral/infrastructure/commons/utils.dart';
 
-final class ChannelPermissionOverwriteSerializer implements SerializerContract<ChannelPermissionOverwrite> {
+final class ChannelPermissionOverwriteSerializer
+    implements SerializerContract<ChannelPermissionOverwrite> {
   final MarshallerContract marshaller;
 
   ChannelPermissionOverwriteSerializer(this.marshaller);
 
   @override
-  ChannelPermissionOverwrite serializeRemote(Map<String, dynamic> json) {
-    return ChannelPermissionOverwrite(
-      id: Snowflake(json['id']),
-      type: findInEnum(ChannelPermissionOverwriteType.values, json['type']),
-      allow: json['allow'],
-      deny: json['deny'],
-    );
-  }
+  ChannelPermissionOverwrite serializeRemote(Map<String, dynamic> json) => _serialize(json);
 
   @override
-  Future<ChannelPermissionOverwrite> serializeCache(Map<String, dynamic> json) {
-    throw UnimplementedError();
+  ChannelPermissionOverwrite serializeCache(Map<String, dynamic> json) => _serialize(json);
+
+  ChannelPermissionOverwrite _serialize(Map<String, dynamic> payload) {
+    return ChannelPermissionOverwrite(
+      id: Snowflake(payload['id']),
+      type: findInEnum(ChannelPermissionOverwriteType.values, payload['type']),
+      allow: payload['allow'],
+      deny: payload['deny'],
+    );
   }
 
   @override
