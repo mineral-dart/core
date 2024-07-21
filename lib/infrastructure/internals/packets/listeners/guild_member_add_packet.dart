@@ -1,10 +1,10 @@
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/infrastructure/services/logger/logger.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class GuildMemberAddPacket implements ListenablePacket {
   @override
@@ -17,18 +17,21 @@ final class GuildMemberAddPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final Snowflake serverId = Snowflake(message.payload['guild_id']);
-    final server = await marshaller.dataStore.server.getServer(serverId);
+    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+    final member = await marshaller.serializers.member
+        .serializeRemote({...message.payload, 'guild_roles': server.roles.list});
 
-    final member = await marshaller.serializers.member.serializeRemote({
-      ...message.payload,
-      'guild_roles': server.roles.list
-    });
+    final serverCacheKey = marshaller.cacheKey.server(server.id);
+    final memberCacheKey =
+        marshaller.cacheKey.serverMember(serverId: server.id, memberId: member.id);
 
     server.members.list.putIfAbsent(member.id, () => member);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(server.id.value, rawServer);
+    await Future.wait([
+      marshaller.cache.put(memberCacheKey, member),
+      marshaller.cache.put(serverCacheKey, rawServer)
+    ]);
 
     dispatch(event: Event.serverMemberAdd, params: [member, server]);
   }
