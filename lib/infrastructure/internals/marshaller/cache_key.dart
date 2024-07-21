@@ -12,6 +12,10 @@ abstract interface class CacheKeyContract {
   String serverMember({required Snowflake serverId, required Snowflake memberId});
 
   String serverEmoji({required Snowflake serverId, required Snowflake emojiId});
+
+  String serverMessage({required Snowflake serverId, required Snowflake messageId});
+
+  String privateMessage({required Snowflake channelId, required Snowflake messageId});
 }
 
 final class CacheKey implements CacheKeyContract {
@@ -36,4 +40,12 @@ final class CacheKey implements CacheKeyContract {
   @override
   String serverEmoji({required Snowflake serverId, required Snowflake emojiId}) =>
       '${server(serverId)}/emoji-$emojiId';
+
+  @override
+  String serverMessage({required Snowflake serverId, required Snowflake messageId}) =>
+      '${server(serverId)}/message-$messageId';
+
+  @override
+  String privateMessage({required Snowflake channelId, required Snowflake messageId}) =>
+      '${privateChannel(channelId)}/message-$messageId';
 }
