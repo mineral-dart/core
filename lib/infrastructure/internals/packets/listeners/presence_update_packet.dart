@@ -21,7 +21,10 @@ final class PresenceUpdatePacket implements ListenablePacket {
     final rawMember = await marshaller.cache.get('server-${server.id.value}/member-${message.payload['user']['id']}');
 
     if (rawMember != null) {
-      final member = await marshaller.serializers.member.serializeCache(rawMember);
+      final member = await marshaller.serializers.member.serializeCache({
+        ...rawMember,
+        'guild_id': server.id.value,
+      });
 
       final presence = Presence.fromJson(message.payload);
       member.presence = presence;
