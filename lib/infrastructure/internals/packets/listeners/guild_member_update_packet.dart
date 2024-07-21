@@ -1,9 +1,9 @@
-import 'package:mineral/infrastructure/services/logger/logger.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class GuildMemberUpdatePacket implements ListenablePacket {
   @override
@@ -18,15 +18,27 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
 
-    final before = server.members.list[message.payload['user']['id']];
+    final before = marshaller.dataStore.member.getMember(
+      guildId: server.id,
+      memberId: message.payload['user']['id'],
+    );
 
     final after = await marshaller.serializers.member
         .serializeRemote({...message.payload, 'guild_roles': server.roles.list.values.toList()});
 
     server.members.list.update(after.id, (_) => after);
 
+    final serverCacheKey = marshaller.cacheKey.server(server.id);
+    final memberCacheKey =
+        marshaller.cacheKey.serverMember(serverId: server.id, memberId: after.id);
+
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(server.id.value, rawServer);
+    final rawMember = await marshaller.serializers.member.deserialize(after);
+
+    await Future.wait([
+      marshaller.cache.put(serverCacheKey, rawServer),
+      marshaller.cache.put(memberCacheKey, rawMember),
+    ]);
 
     dispatch(event: Event.serverMemberUpdate, params: [before, after]);
   }
