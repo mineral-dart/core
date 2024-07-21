@@ -10,6 +10,7 @@ abstract interface class CacheProviderContract {
   FutureOr<void> init();
 
   Future<int> length();
+  Future<Map<String, dynamic>> getInternalValues();
   Future<List<Map<String, dynamic>>> getAll();
   FutureOr<Map<String, dynamic>?> get(String? key);
   FutureOr<Map<String, dynamic>> getOrFail(String key, { Exception Function()? onFail });

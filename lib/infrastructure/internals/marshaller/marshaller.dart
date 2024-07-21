@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:mineral/api/common/channel.dart';
-import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/role.dart';
@@ -68,12 +67,6 @@ final class Marshaller implements MarshallerContract {
 
   Marshaller(this.logger, this.cache) {
     serializers = SerializerBucketImpl(this);
-    cache
-      ..put('channels', <String, dynamic>{})
-      ..put('users', <String, dynamic>{})
-      ..put('servers', <String, dynamic>{})
-      ..put('members', <String, dynamic>{})
-      ..put('roles', <String, dynamic>{});
   }
 
   Future<void> _put<T>(String id,
