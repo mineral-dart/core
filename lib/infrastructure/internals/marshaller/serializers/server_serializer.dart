@@ -118,6 +118,7 @@ final class ServerSerializer implements SerializerContract<Server> {
   @override
   Future<Server> serializeCache(Map<String, dynamic> payload) async {
     final serverKey = 'server-${payload['id']}';
+
     final rawServer = await _marshaller.cache.getOrFail(serverKey);
     final channelManager = ChannelManager(rawServer);
 
@@ -128,7 +129,10 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     final members = await getCacheFromPrefix('$serverKey/member-');
     final serializedMembers = await members.map((element) async {
-      return _marshaller.serializers.member.serializeCache(element.value);
+      return _marshaller.serializers.member.serializeCache({
+        ...element.value,
+        'guild_id': payload['id'],
+      });
     }).wait;
 
     final channels =  await getCacheFromPrefix('$serverKey/channel-');

@@ -23,10 +23,14 @@ final class ChannelPart implements DataStorePart {
 
   ChannelPart(this._kernel);
 
-  Future<T?> getChannel<T extends Channel>(Snowflake id) async {
-    final cachedChannel = await _kernel.marshaller.cache.get(id.value);
+  Future<T?> getChannel<T extends Channel>(Snowflake id, { Snowflake? serverId }) async {
+    final String key = serverId != null
+        ? 'server-$serverId/channel-$id'
+        : 'channel-$id';
+
+    final cachedChannel = await _kernel.marshaller.cache.get(key);
     if (cachedChannel != null) {
-      return _kernel.marshaller.serializers.channels.serializeRemote(cachedChannel) as Future<T?>;
+      return _kernel.marshaller.serializers.channels.serializeCache(cachedChannel) as Future<T?>;
     }
 
     final response = await _kernel.dataStore.client.get('/channels/$id');
@@ -125,7 +129,7 @@ final class ChannelPart implements DataStorePart {
       case ServerChannel():
         _updateCacheFromChannelServer(id, channel, response.body);
       case PrivateChannel():
-        _kernel.marshaller.cache.put(channel.id.value, response.body);
+        _kernel.marshaller.cache.put('channel-${channel.id}', response.body);
       default:
         throw Exception('Unknown channel type: $channel');
     }
@@ -139,8 +143,8 @@ final class ChannelPart implements DataStorePart {
     final rawServer = await _kernel.marshaller.serializers.server.deserialize(server);
 
     await Future.wait([
-      _kernel.marshaller.cache.put(server.id.value, rawServer),
-      _kernel.marshaller.cache.put(channel.id.value, rawChannel)
+      _kernel.marshaller.cache.put('server-${server.id}', rawServer),
+      _kernel.marshaller.cache.put('server-${server.id}/channel-${channel.id}', rawChannel)
     ]);
   }
 }
