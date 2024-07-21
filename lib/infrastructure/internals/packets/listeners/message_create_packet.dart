@@ -50,8 +50,15 @@ final class MessageCreatePacket implements ListenablePacket {
       case ServerAnnouncementChannel(): channel.messages.list.putIfAbsent(message.id, () => message as ServerMessage);
     }
 
+    final serverCacheKey = marshaller.cacheKey.server(server.id);
+    final messageCacheKey = marshaller.cacheKey.serverMessage(serverId: server.id, messageId: message.id);
+
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(server.id.value, rawServer);
+
+    await Future.wait([
+      marshaller.cache.put(serverCacheKey, rawServer),
+      marshaller.cache.put(messageCacheKey, message),
+    ]);
 
     dispatch(event: Event.serverMessageCreate, params: [message]);
   }
@@ -63,11 +70,19 @@ final class MessageCreatePacket implements ListenablePacket {
     if (channel is PrivateChannel) {
       message.channel = channel;
       channel.messages.list.putIfAbsent(message.id, () => message as PrivateMessage);
+
+      final channelCacheKey = marshaller.cacheKey.privateChannel(channel.id);
+      final messageCacheKey = marshaller.cacheKey.privateMessage(channelId: channel.id, messageId: message.id);
+
+      final rawChannel = await marshaller.serializers.channels.deserialize(channel);
+      final rawMessage = await marshaller.serializers.message.deserialize(message);
+
+      await Future.wait([
+        marshaller.cache.put(channelCacheKey, rawChannel),
+        marshaller.cache.put(messageCacheKey, rawMessage),
+      ]);
+
+      dispatch(event: Event.privateMessageCreate, params: [message]);
     }
-
-    final rawChannel = await marshaller.serializers.channels.deserialize(channel);
-    await marshaller.cache.put(message.id.value, rawChannel);
-
-    dispatch(event: Event.privateMessageCreate, params: [message]);
   }
 }
