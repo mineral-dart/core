@@ -23,10 +23,10 @@ final class ChannelPart implements DataStorePart {
 
   ChannelPart(this._kernel);
 
-  Future<T?> getChannel<T extends Channel>(Snowflake id, { Snowflake? serverId }) async {
+  Future<T?> getChannel<T extends Channel>(Snowflake id, {Snowflake? serverId}) async {
     final String key = serverId != null
-        ? 'server-$serverId/channel-$id'
-        : 'channel-$id';
+        ? _kernel.marshaller.cacheKey.serverChannel(serverId: serverId, channelId: id)
+        : _kernel.marshaller.cacheKey.privateChannel(id);
 
     final cachedChannel = await _kernel.marshaller.cache.get(key);
     if (cachedChannel != null) {
@@ -57,8 +57,8 @@ final class ChannelPart implements DataStorePart {
 
   Future<PrivateChannel?> createPrivateChannel(
       {required Snowflake id, required Snowflake recipientId}) async {
-    final response =
-        await _kernel.dataStore.client.post('/users/@me/channels', body: {'recipient_id': recipientId});
+    final response = await _kernel.dataStore.client
+        .post('/users/@me/channels', body: {'recipient_id': recipientId});
 
     final Channel? channel = await serializeChannelResponse(response);
     _putInCache(channel, id, response);
@@ -97,8 +97,7 @@ final class ChannelPart implements DataStorePart {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
-          fn: () async =>
-              embeds?.map(_kernel.marshaller.serializers.embed.deserialize).toList()),
+          fn: () async => embeds?.map(_kernel.marshaller.serializers.embed.deserialize).toList()),
       'poll': await Helper.createOrNullAsync(
           field: poll, fn: () async => _kernel.marshaller.serializers.poll.deserialize(poll!))
     });
