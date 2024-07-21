@@ -129,3 +129,4 @@ final class Member {
     voice = MemberVoice(this);
   }
 }
+
