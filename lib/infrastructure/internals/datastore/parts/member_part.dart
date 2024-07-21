@@ -18,7 +18,10 @@ final class MemberPart implements DataStorePart {
   MemberPart(this._kernel);
 
   Future<Member> getMember({required Snowflake guildId, required Snowflake memberId}) async {
-    final cachedRawMember = await _kernel.marshaller.cache.get(memberId.value);
+    final cacheKeys = _kernel.marshaller.cacheKey;
+    final memberCacheKey = cacheKeys.serverMember(serverId: guildId, memberId: memberId);
+
+    final cachedRawMember = await _kernel.marshaller.cache.get(memberCacheKey);
     final roles = await _kernel.dataStore.server.getRoles(guildId);
 
     if (cachedRawMember != null) {

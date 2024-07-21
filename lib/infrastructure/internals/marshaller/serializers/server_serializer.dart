@@ -30,9 +30,10 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     final List<Role> serializedRoles = await roleWithoutEveryone.map((element) async {
       final role = await _marshaller.serializers.role.serializeRemote(element);
+      final cacheKey = _marshaller.cacheKey.serverRole(serverId: json['id'], roleId: role.id);
 
       final rawRole = await _marshaller.serializers.role.deserialize(role);
-      _marshaller.cache.put('server-${json['id']}/role-${role.id}', rawRole);
+      await _marshaller.cache.put(cacheKey, rawRole);
 
       return role;
     }).wait;
@@ -40,9 +41,10 @@ final class ServerSerializer implements SerializerContract<Server> {
     final serializedMembers = await List.from(json['members']).map((element) async {
       final member = await _marshaller.serializers.member
           .serializeRemote({...element, 'guild_roles': serializedRoles});
+      final cacheKey = _marshaller.cacheKey.serverMember(serverId: json['id'], memberId: member.id);
 
       final rawMember = await _marshaller.serializers.member.deserialize(member);
-      _marshaller.cache.put('server-${json['id']}/member-${member.id}', rawMember);
+      _marshaller.cache.put(cacheKey, rawMember);
 
       return member;
     }).wait;
@@ -64,8 +66,11 @@ final class ServerSerializer implements SerializerContract<Server> {
       if (channel is ServerCategoryChannel) {
         channelManager.list.putIfAbsent(channel.id, () => channel);
 
+        final cacheKey =
+            _marshaller.cacheKey.serverChannel(serverId: json['id'], channelId: channel.id);
+
         final rawChannel = await _marshaller.serializers.channels.deserialize(channel);
-        await _marshaller.cache.put('server-${json['id']}/channel-${channel.id}', rawChannel);
+        await _marshaller.cache.put(cacheKey, rawChannel);
 
         return channel;
       }
@@ -76,8 +81,11 @@ final class ServerSerializer implements SerializerContract<Server> {
       if (channel is ServerChannel) {
         channelManager.list.putIfAbsent(channel.id, () => channel);
 
+        final cacheKey =
+        _marshaller.cacheKey.serverChannel(serverId: json['id'], channelId: channel.id);
+
         final rawChannel = await _marshaller.serializers.channels.deserialize(channel);
-        await _marshaller.cache.put('server-${json['id']}/channel-${channel.id}', rawChannel);
+        await _marshaller.cache.put(cacheKey, rawChannel);
 
         return channel;
       }
@@ -117,7 +125,7 @@ final class ServerSerializer implements SerializerContract<Server> {
 
   @override
   Future<Server> serializeCache(Map<String, dynamic> payload) async {
-    final serverKey = 'server-${payload['id']}';
+    final serverKey = _marshaller.cacheKey.server(payload['id']);
 
     final rawServer = await _marshaller.cache.getOrFail(serverKey);
     final channelManager = ChannelManager(rawServer);
@@ -135,7 +143,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       });
     }).wait;
 
-    final channels =  await getCacheFromPrefix('$serverKey/channel-');
+    final channels = await getCacheFromPrefix('$serverKey/channel-');
     await channels.map((element) async {
       final channel = await _marshaller.serializers.channels.serializeCache(element.value);
       if (channel case final ServerChannel channel) {
