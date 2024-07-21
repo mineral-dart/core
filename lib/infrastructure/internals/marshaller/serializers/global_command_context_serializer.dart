@@ -23,8 +23,15 @@ final class GlobalCommandContextSerializer implements SerializerContract<GlobalC
   }
 
   @override
-  Future<GlobalCommandContext> serializeCache(Map<String, dynamic> json) {
-    throw UnimplementedError();
+  Future<GlobalCommandContext> serializeCache(Map<String, dynamic> json) async {
+    return GlobalCommandContext(
+      id: Snowflake(json['id']),
+      applicationId: Snowflake(json['application_id']),
+      version: json['version'],
+      token: json['token'],
+      channel: await marshaller.serializers.channels.serializeCache(json['channel']),
+      user: await marshaller.serializers.user.serializeCache(json['user']),
+    );
   }
 
   @override
