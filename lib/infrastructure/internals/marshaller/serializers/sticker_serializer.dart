@@ -11,7 +11,12 @@ final class StickerSerializer implements SerializerContract<Sticker> {
   StickerSerializer(this._marshaller);
 
   @override
-  Sticker serializeRemote(Map<String, dynamic> json) {
+  Sticker serializeRemote(Map<String, dynamic> json) => _serialize(json);
+
+  @override
+  Sticker serializeCache(Map<String, dynamic> json) => _serialize(json);
+
+  Sticker _serialize(Map<String, dynamic> json) {
     return Sticker(
       id: Snowflake(json['id']),
       name: json['name'],
@@ -24,11 +29,6 @@ final class StickerSerializer implements SerializerContract<Sticker> {
       formatType: FormatType.values.firstWhere((element) => element.value == json['format_type']),
       sortValue: json['sort_value'],
     );
-  }
-
-  @override
-  Future<Sticker> serializeCache(Map<String, dynamic> json) {
-    throw UnimplementedError();
   }
 
   @override
