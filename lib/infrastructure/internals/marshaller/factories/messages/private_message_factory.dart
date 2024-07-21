@@ -6,7 +6,7 @@ import 'package:mineral/infrastructure/internals/marshaller/types/message_factor
 
 final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
   @override
-  Future<PrivateMessage> serializeRemote(
+  Future<PrivateMessage> serialize(
       MarshallerContract marshaller, Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
     final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
@@ -17,19 +17,13 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
   }
 
   @override
-  Future<PrivateMessage> serializeCache(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
-    throw UnimplementedError();
-  }
-
-  @override
   Future<Map<String, dynamic>> deserialize(
       MarshallerContract marshaller, PrivateMessage message) async {
     return {
       'id': message.id,
       'content': message.content,
       'embeds': message.embeds.map(marshaller.serializers.embed.deserialize).toList(),
-      'channel': message.channel.id,
+      'channel_id': message.channel.id,
       'created_at': message.createdAt.toIso8601String(),
       'updated_at': message.updatedAt?.toIso8601String(),
     };
