@@ -1,20 +1,28 @@
 import 'package:mineral/api/common/commands/builder/command_group_builder.dart';
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
+import 'package:mineral/api/common/commands/builder/translation.dart';
 import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
+import 'package:mineral/api/common/lang.dart';
 
 final class CommandBuilder {
   String? _name;
+  Map<String, String>? _nameLocalizations;
   String? _description;
+  Map<String, String>? _descriptionLocalizations;
   CommandContextType context = CommandContextType.guild;
   final List<CommandOption> _options = [];
   final List<SubCommandBuilder> _subCommands = [];
   final List<CommandGroupBuilder> _groups = [];
   Function? _handle;
 
-  CommandBuilder setName(String name) {
+  CommandBuilder setName(String name, {Translation? translation}) {
     _name = name;
+    if (translation != null) {
+      _nameLocalizations = _extractTranslations('name', translation);
+    }
+
     return this;
   }
 
@@ -23,8 +31,11 @@ final class CommandBuilder {
     return this;
   }
 
-  CommandBuilder setDescription(String description) {
+  CommandBuilder setDescription(String description, {Translation? translation}) {
     _description = description;
+    if (translation != null) {
+      _descriptionLocalizations = _extractTranslations('description', translation);
+    }
     return this;
   }
 
@@ -58,6 +69,19 @@ final class CommandBuilder {
     return this;
   }
 
+  Map<String, String>? _extractTranslations(String key, Translation translations) {
+    if (translations.translations[key] case final Map<Lang, String> elements) {
+      return elements.entries.fold({}, (acc, element) {
+        return {
+          ...?acc,
+          element.key.uid: element.value
+        };
+      });
+    }
+
+    return null;
+  }
+
   Map<String, dynamic> toJson() {
     final List<Map<String, dynamic>> options = [
       for (final option in _options) option.toJson(),
@@ -65,9 +89,20 @@ final class CommandBuilder {
       for (final group in _groups) group.toJson(),
     ];
 
+    print({
+      'name': _name,
+      'name_localizations': _nameLocalizations,
+      'description': _description,
+      'description_localizations': _descriptionLocalizations,
+      if (_subCommands.isEmpty && _groups.isEmpty) 'type': CommandType.subCommand.value,
+      'options': options,
+    });
+
     return {
       'name': _name,
+      'name_localizations': _nameLocalizations,
       'description': _description,
+      'description_localizations': _descriptionLocalizations,
       if (_subCommands.isEmpty && _groups.isEmpty) 'type': CommandType.subCommand.value,
       'options': options,
     };
@@ -75,7 +110,7 @@ final class CommandBuilder {
 
   List<(String, Function handler)> reduceHandlers() {
     if (_subCommands.isEmpty && _groups.isEmpty) {
-     return [('$_name', _handle!)];
+      return [('$_name', _handle!)];
     }
 
     final List<(String, Function handler)> handlers = [];
