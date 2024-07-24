@@ -14,9 +14,9 @@ final class CommandBuilder {
   String? _description;
   Map<String, String>? _descriptionLocalizations;
   CommandContextType context = CommandContextType.guild;
-  final List<CommandOption> _options = [];
-  final List<SubCommandBuilder> _subCommands = [];
-  final List<CommandGroupBuilder> _groups = [];
+  final List<CommandOption> options = [];
+  final List<SubCommandBuilder> subCommands = [];
+  final List<CommandGroupBuilder> groups = [];
   Function? _handle;
 
   CommandBuilder setName(String name, {Translation? translation}) {
@@ -42,11 +42,11 @@ final class CommandBuilder {
   }
 
   CommandBuilder addOption<T extends CommandOption>(T option) {
-    _options.add(option);
+    options.add(option);
     return this;
   }
 
-  CommandBuilder handle(Function fn) {
+  CommandBuilder setHandle(Function fn) {
     final firstArg = fn.toString().split('(')[1].split(')')[0].split(' ')[0];
 
     if (!firstArg.contains('CommandContext')) {
@@ -61,7 +61,7 @@ final class CommandBuilder {
     final builder = SubCommandBuilder();
     command(builder);
 
-    _subCommands.add(builder);
+    subCommands.add(builder);
     return this;
   }
 
@@ -69,15 +69,15 @@ final class CommandBuilder {
     final builder = CommandGroupBuilder();
     group(builder);
 
-    _groups.add(builder);
+    groups.add(builder);
     return this;
   }
 
   Map<String, dynamic> toJson() {
     final List<Map<String, dynamic>> options = [
-      for (final option in _options) option.toJson(),
-      for (final subCommand in _subCommands) subCommand.toJson(),
-      for (final group in _groups) group.toJson(),
+      for (final option in this.options) option.toJson(),
+      for (final subCommand in subCommands) subCommand.toJson(),
+      for (final group in groups) group.toJson(),
     ];
 
     return {
@@ -85,23 +85,23 @@ final class CommandBuilder {
       'name_localizations': _nameLocalizations,
       'description': _description,
       'description_localizations': _descriptionLocalizations,
-      if (_subCommands.isEmpty && _groups.isEmpty) 'type': CommandType.subCommand.value,
+      if (subCommands.isEmpty && groups.isEmpty) 'type': CommandType.subCommand.value,
       'options': options,
     };
   }
 
   List<(String, Function handler)> reduceHandlers() {
-    if (_subCommands.isEmpty && _groups.isEmpty) {
+    if (subCommands.isEmpty && groups.isEmpty) {
       return [('$_name', _handle!)];
     }
 
     final List<(String, Function handler)> handlers = [];
 
-    for (final subCommand in _subCommands) {
+    for (final subCommand in subCommands) {
       handlers.add(('$_name.${subCommand.name}', subCommand.handle!));
     }
 
-    for (final group in _groups) {
+    for (final group in groups) {
       for (final subCommand in group.commands) {
         handlers.add(('$_name.${group.name}.${subCommand.name}', subCommand.handle!));
       }
