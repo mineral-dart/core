@@ -2,11 +2,13 @@ import 'package:mineral/api/common/commands/builder/command_group_builder.dart';
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
 import 'package:mineral/api/common/commands/builder/translation.dart';
 import 'package:mineral/api/common/commands/command_context_type.dart';
+import 'package:mineral/api/common/commands/command_helper.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
-import 'package:mineral/api/common/lang.dart';
 
 final class CommandBuilder {
+  final CommandHelper _helper = CommandHelper();
+
   String? _name;
   Map<String, String>? _nameLocalizations;
   String? _description;
@@ -20,7 +22,7 @@ final class CommandBuilder {
   CommandBuilder setName(String name, {Translation? translation}) {
     _name = name;
     if (translation != null) {
-      _nameLocalizations = _extractTranslations('name', translation);
+      _nameLocalizations = _helper.extractTranslations('name', translation);
     }
 
     return this;
@@ -34,7 +36,7 @@ final class CommandBuilder {
   CommandBuilder setDescription(String description, {Translation? translation}) {
     _description = description;
     if (translation != null) {
-      _descriptionLocalizations = _extractTranslations('description', translation);
+      _descriptionLocalizations = _helper.extractTranslations('description', translation);
     }
     return this;
   }
@@ -58,6 +60,7 @@ final class CommandBuilder {
   CommandBuilder addSubCommand(SubCommandBuilder Function(SubCommandBuilder) command) {
     final builder = SubCommandBuilder();
     command(builder);
+
     _subCommands.add(builder);
     return this;
   }
@@ -65,21 +68,9 @@ final class CommandBuilder {
   CommandBuilder createGroup(CommandGroupBuilder Function(CommandGroupBuilder) group) {
     final builder = CommandGroupBuilder();
     group(builder);
+
     _groups.add(builder);
     return this;
-  }
-
-  Map<String, String>? _extractTranslations(String key, Translation translations) {
-    if (translations.translations[key] case final Map<Lang, String> elements) {
-      return elements.entries.fold({}, (acc, element) {
-        return {
-          ...?acc,
-          element.key.uid: element.value
-        };
-      });
-    }
-
-    return null;
   }
 
   Map<String, dynamic> toJson() {
@@ -88,15 +79,6 @@ final class CommandBuilder {
       for (final subCommand in _subCommands) subCommand.toJson(),
       for (final group in _groups) group.toJson(),
     ];
-
-    print({
-      'name': _name,
-      'name_localizations': _nameLocalizations,
-      'description': _description,
-      'description_localizations': _descriptionLocalizations,
-      if (_subCommands.isEmpty && _groups.isEmpty) 'type': CommandType.subCommand.value,
-      'options': options,
-    });
 
     return {
       'name': _name,
