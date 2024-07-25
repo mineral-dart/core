@@ -64,7 +64,7 @@ final class CommandDefinition {
 
   void _declareOptions(SubCommandBuilder command, MapEntry<String, dynamic> element) {
     final options = element.value['options'] ?? [];
-    print([element.key, element.value]);
+
     for (final Map<String, dynamic> element in options) {
       final String name = _extractDefaultValue('option', 'name', element);
       final String description = _extractDefaultValue('option', 'description', element);
@@ -203,7 +203,7 @@ final class CommandDefinition {
 
   CommandDefinition using(File file) {
     final String stringContent = file.readAsStringSync();
-    final content = switch (file.path) {
+    final content = switch(file.path) {
       final String path when path.contains('.json') => jsonDecode(stringContent),
       final String path when path.contains('.yaml') => (loadYaml(stringContent) as YamlMap).toMap(),
       _ => throw Exception('File type not supported')
