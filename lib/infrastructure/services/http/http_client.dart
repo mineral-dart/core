@@ -109,6 +109,7 @@ final class HttpClient implements HttpClientContract {
     final http.Response res = await http.Response.fromStream(streamedResponse);
 
     Response response = ResponseImpl.fromHttpResponse(res);
+    print(jsonEncode(request.body));
 
     for (final handle in interceptor.response) {
       response = await handle(response);
