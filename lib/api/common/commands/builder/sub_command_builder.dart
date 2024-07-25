@@ -38,12 +38,6 @@ final class SubCommandBuilder {
   }
 
   SubCommandBuilder setHandle(Function fn) {
-    final firstArg = fn.toString().split('(')[1].split(')')[0].split(' ')[0];
-
-    if (!firstArg.contains('CommandContext')) {
-      throw Exception('The first argument of the handler function must be CommandContext');
-    }
-
     handle = fn;
     return this;
   }
