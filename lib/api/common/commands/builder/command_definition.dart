@@ -76,12 +76,10 @@ final class CommandDefinition {
           Option.double(name: name, description: description, required: required),
         final String value when value == 'string' =>
           Option.boolean(name: name, description: description, required: required),
-        _ => null
+        _ => throw Exception('Unknown option type')
       };
 
-      if (option != null) {
-        command.addOption(option);
-      }
+      command.addOption(option);
     }
   }
 
