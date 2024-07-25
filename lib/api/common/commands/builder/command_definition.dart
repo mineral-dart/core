@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
@@ -171,8 +172,11 @@ final class CommandDefinition {
 
   CommandDefinition using(File file) {
     final String stringContent = file.readAsStringSync();
-    final YamlMap yamlMap = loadYaml(stringContent);
-    final content = yamlMap.toMap();
+    final content = switch(file.path) {
+      final String path when path.contains('.json') => jsonDecode(stringContent),
+      final String path when path.contains('.yaml') => (loadYaml(stringContent) as YamlMap).toMap(),
+      _ => throw Exception('File type not supported')
+    };
 
     _declareCommand(content);
     _declareGroups(content);
