@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:mineral/api/common/commands/builder/command_builder.dart';
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
 import 'package:mineral/api/common/commands/builder/translation.dart';
+import 'package:mineral/api/common/commands/command_choice_option.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/lang.dart';
 import 'package:yaml/yaml.dart';
@@ -63,6 +64,7 @@ final class CommandDefinition {
 
   void _declareOptions(SubCommandBuilder command, MapEntry<String, dynamic> element) {
     final options = element.value['options'] ?? [];
+    print([element.key, element.value]);
     for (final Map<String, dynamic> element in options) {
       final String name = _extractDefaultValue('option', 'name', element);
       final String description = _extractDefaultValue('option', 'description', element);
@@ -77,6 +79,35 @@ final class CommandDefinition {
           Option.double(name: name, description: description, required: required),
         final String value when value == 'string' =>
           Option.boolean(name: name, description: description, required: required),
+        final String value when value == 'user' =>
+          Option.user(name: name, description: description, required: required),
+        final String value when value == 'channel' =>
+          Option.channel(name: name, description: description, required: required),
+        final String value when value == 'role' =>
+          Option.role(name: name, description: description, required: required),
+        final String value when value == 'mention' =>
+          Option.mentionable(name: name, description: description, required: required),
+        final String value when value == 'choice.string' => ChoiceOption.string(
+            name: name,
+            description: description,
+            required: required,
+            choices: List.from(element['choices'] ?? [])
+                .map((element) => Choice<String>(element['name'], element['value']))
+                .toList()),
+        final String value when value == 'choice.integer' => ChoiceOption.integer(
+            name: name,
+            description: description,
+            required: required,
+            choices: List.from(element['choices'] ?? [])
+                .map((element) => Choice(element['name'], int.parse(element['value'])))
+                .toList()),
+        final String value when value == 'choice.double' => ChoiceOption.double(
+            name: name,
+            description: description,
+            required: required,
+            choices: List.from(element['choices'] ?? [])
+                .map((element) => Choice(element['name'], double.parse(element['value'])))
+                .toList()),
         _ => throw Exception('Unknown option type')
       };
 
@@ -172,7 +203,7 @@ final class CommandDefinition {
 
   CommandDefinition using(File file) {
     final String stringContent = file.readAsStringSync();
-    final content = switch(file.path) {
+    final content = switch (file.path) {
       final String path when path.contains('.json') => jsonDecode(stringContent),
       final String path when path.contains('.yaml') => (loadYaml(stringContent) as YamlMap).toMap(),
       _ => throw Exception('File type not supported')
