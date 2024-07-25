@@ -4,6 +4,7 @@ import 'package:collection/collection.dart';
 import 'package:mineral/api/common/commands/builder/command_builder.dart';
 import 'package:mineral/api/common/commands/builder/sub_command_builder.dart';
 import 'package:mineral/api/common/commands/builder/translation.dart';
+import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/lang.dart';
 import 'package:yaml/yaml.dart';
 
@@ -59,6 +60,31 @@ final class CommandDefinition {
     }
   }
 
+  void _declareOptions(SubCommandBuilder command, MapEntry<String, dynamic> element) {
+    final options = element.value['options'] ?? [];
+    for (final Map<String, dynamic> element in options) {
+      final String name = _extractDefaultValue('option', 'name', element);
+      final String description = _extractDefaultValue('option', 'description', element);
+      final bool required = element['required'] ?? false;
+
+      final option = switch (element['type']) {
+        final String value when value == 'string' =>
+          Option.string(name: name, description: description, required: required),
+        final String value when value == 'integer' =>
+          Option.integer(name: name, description: description, required: required),
+        final String value when value == 'double' =>
+          Option.double(name: name, description: description, required: required),
+        final String value when value == 'string' =>
+          Option.boolean(name: name, description: description, required: required),
+        _ => null
+      };
+
+      if (option != null) {
+        command.addOption(option);
+      }
+    }
+  }
+
   void _declareSubCommands(Map<String, dynamic> content) {
     final Map<String, dynamic> commandList = content['commands'] ?? {};
 
@@ -78,6 +104,8 @@ final class CommandDefinition {
                 ..setName(defaultName, translation: Translation({'name': nameTranslations}))
                 ..setDescription(defaultDescription,
                     translation: Translation({'description': descriptionTranslations}));
+
+              _declareOptions(command, element);
             });
 
           final int currentGroupIndex = command.groups.indexOf(currentGroup);
@@ -87,10 +115,12 @@ final class CommandDefinition {
               () => command.groups[currentGroupIndex].commands[currentSubCommandIndex];
         } else {
           command.addSubCommand((command) {
-            return command
+            command
               ..setName(defaultName, translation: Translation({'name': nameTranslations}))
               ..setDescription(defaultDescription,
                   translation: Translation({'description': descriptionTranslations}));
+
+            _declareOptions(command, element);
           });
           final currentSubCommandIndex = command.subCommands.indexOf(command.subCommands.last);
           _commandMapper[element.key] = () => command.subCommands[currentSubCommandIndex];
@@ -121,9 +151,9 @@ final class CommandDefinition {
     }
   }
 
-  CommandDefinition overrideCommand<T>(String key, Function(T) fn) {
+  CommandDefinition context<T>(String key, Function(T) fn) {
     final command = _commandMapper.entries.firstWhere((element) => element.key == key);
-    command.value();
+    fn(command.value());
 
     return this;
   }

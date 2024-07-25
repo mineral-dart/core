@@ -57,7 +57,7 @@ final class CommandBuilder {
     return this;
   }
 
-  CommandBuilder addSubCommand(SubCommandBuilder Function(SubCommandBuilder) command) {
+  CommandBuilder addSubCommand(Function(SubCommandBuilder) command) {
     final builder = SubCommandBuilder();
     command(builder);
 
