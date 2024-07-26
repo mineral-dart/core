@@ -32,7 +32,7 @@ final class Member {
   final bool isBot;
   final bool isPending;
   final MemberTimeout timeout;
-  final bool mfAEnabled;
+  final bool mfaEnabled;
   final String? locale;
   final PremiumTier premiumType;
   final DateTime? joinedAt;
@@ -85,9 +85,6 @@ final class Member {
 
   Future<void> disnableMfa({String? reason}) => _memberMethods.updateMember(
     serverId: server.id, memberId: id, payload: {'mfa_enable': false}, reason: reason);
-
-  Future<void> setLocale(String value, {String? reason}) => _memberMethods.updateMember(
-    serverId: server.id, memberId: id, payload: {'locale': value}, reason: reason);
     
   Future<void> unExclude({Duration? duration, String? reason}) => _memberMethods.updateMember(
       serverId: server.id,
@@ -117,7 +114,7 @@ final class Member {
     required this.isBot,
     required this.isPending,
     required this.timeout,
-    required this.mfAEnabled,
+    required this.mfaEnabled,
     required this.locale,
     required this.premiumType,
     required this.joinedAt,
