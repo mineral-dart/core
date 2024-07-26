@@ -1,4 +1,3 @@
-import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
@@ -28,8 +27,9 @@ final class GuildMemberAddPacket implements ListenablePacket {
     server.members.list.putIfAbsent(member.id, () => member);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
+    final rawMember = await marshaller.serializers.member.deserialize(member);
     await Future.wait([
-      marshaller.cache.put(memberCacheKey, member),
+      marshaller.cache.put(memberCacheKey, rawMember),
       marshaller.cache.put(serverCacheKey, rawServer)
     ]);
 

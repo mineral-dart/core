@@ -54,10 +54,11 @@ final class MessageCreatePacket implements ListenablePacket {
     final messageCacheKey = marshaller.cacheKey.serverMessage(serverId: server.id, messageId: message.id);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
+    final rawMessage = await marshaller.serializers.message.deserialize(message);
 
     await Future.wait([
       marshaller.cache.put(serverCacheKey, rawServer),
-      marshaller.cache.put(messageCacheKey, message),
+      marshaller.cache.put(messageCacheKey, rawMessage),
     ]);
 
     dispatch(event: Event.serverMessageCreate, params: [message]);
