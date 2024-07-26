@@ -23,10 +23,12 @@ final class CommandGroupBuilder {
     return this;
   }
 
-  CommandGroupBuilder setDescription(String description, {Translation? translation}) {
+  CommandGroupBuilder setDescription(String description,
+      {Translation? translation}) {
     _description = description;
     if (translation != null) {
-      _descriptionLocalizations = _helper.extractTranslations('description', translation);
+      _descriptionLocalizations =
+          _helper.extractTranslations('description', translation);
     }
     return this;
   }

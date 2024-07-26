@@ -5,8 +5,9 @@ import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/common/commands/command_helper.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
+import 'package:mineral/domains/commands/command_builder.dart';
 
-final class CommandBuilder {
+final class CommandDeclarationBuilder<T> implements CommandBuilder {
   final CommandHelper _helper = CommandHelper();
 
   String? _name;
@@ -19,7 +20,7 @@ final class CommandBuilder {
   final List<CommandGroupBuilder> groups = [];
   Function? _handle;
 
-  CommandBuilder setName(String name, {Translation? translation}) {
+  CommandDeclarationBuilder setName(String name, {Translation? translation}) {
     _name = name;
     if (translation != null) {
       _nameLocalizations = _helper.extractTranslations('name', translation);
@@ -28,36 +29,32 @@ final class CommandBuilder {
     return this;
   }
 
-  CommandBuilder setContext(CommandContextType context) {
+  CommandDeclarationBuilder setContext(CommandContextType context) {
     this.context = context;
     return this;
   }
 
-  CommandBuilder setDescription(String description, {Translation? translation}) {
+  CommandDeclarationBuilder setDescription(String description,
+      {Translation? translation}) {
     _description = description;
     if (translation != null) {
-      _descriptionLocalizations = _helper.extractTranslations('description', translation);
+      _descriptionLocalizations =
+          _helper.extractTranslations('description', translation);
     }
     return this;
   }
 
-  CommandBuilder addOption<T extends CommandOption>(T option) {
+  CommandDeclarationBuilder addOption<T extends CommandOption>(T option) {
     options.add(option);
     return this;
   }
 
-  CommandBuilder setHandle(Function fn) {
-    final firstArg = fn.toString().split('(')[1].split(')')[0].split(' ')[0];
-
-    if (!firstArg.contains('CommandContext')) {
-      throw Exception('The first argument of the handler function must be CommandContext');
-    }
-
+  CommandDeclarationBuilder setHandle(Function fn) {
     _handle = fn;
     return this;
   }
 
-  CommandBuilder addSubCommand(Function(SubCommandBuilder) command) {
+  CommandDeclarationBuilder addSubCommand(Function(SubCommandBuilder) command) {
     final builder = SubCommandBuilder();
     command(builder);
 
@@ -65,7 +62,8 @@ final class CommandBuilder {
     return this;
   }
 
-  CommandBuilder createGroup(CommandGroupBuilder Function(CommandGroupBuilder) group) {
+  CommandDeclarationBuilder createGroup(
+      CommandGroupBuilder Function(CommandGroupBuilder) group) {
     final builder = CommandGroupBuilder();
     group(builder);
 
@@ -85,7 +83,8 @@ final class CommandBuilder {
       'name_localizations': _nameLocalizations,
       'description': _description,
       'description_localizations': _descriptionLocalizations,
-      if (subCommands.isEmpty && groups.isEmpty) 'type': CommandType.subCommand.value,
+      if (subCommands.isEmpty && groups.isEmpty)
+        'type': CommandType.subCommand.value,
       'options': options,
     };
   }
@@ -103,11 +102,11 @@ final class CommandBuilder {
 
     for (final group in groups) {
       for (final subCommand in group.commands) {
-        handlers.add(('$_name.${group.name}.${subCommand.name}', subCommand.handle!));
+        handlers.add(
+            ('$_name.${group.name}.${subCommand.name}', subCommand.handle!));
       }
     }
 
     return handlers;
   }
 }
-
