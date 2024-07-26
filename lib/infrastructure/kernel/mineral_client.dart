@@ -1,4 +1,4 @@
-import 'package:mineral/domains/commands/command_builder.dart';
+import 'package:mineral/api/common/commands/command_contract.dart';
 import 'package:mineral/domains/commands/command_declaration_bucket.dart';
 import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
@@ -15,7 +15,7 @@ abstract interface class MineralClientContract {
 
   void register(Listenable Function() event);
 
-  void registerCommand(CommandBuilder builder);
+  void registerCommand(CommandContract Function() command);
 
   Future<void> init();
 }
@@ -51,8 +51,9 @@ final class MineralClient implements MineralClientContract {
   }
 
   @override
-  void registerCommand(CommandBuilder builder) {
-    _kernel.commands.addCommand(builder);
+  void registerCommand(CommandContract Function() command) {
+    final instance = command();
+    _kernel.commands.addCommand(instance.build());
   }
 
   @override
