@@ -89,19 +89,20 @@ final class Kernel implements KernelContract {
   @override
   final CommandInteractionManagerContract commands;
 
-  Kernel(this._devPort,
-      {required this.logger,
-      required this.environment,
-      required this.httpClient,
-      required this.config,
-      required this.packetListener,
-      required this.eventListener,
-      required this.providerManager,
-      required this.marshaller,
-      required this.dataStore,
-      required this.watcherConfig,
-      required this.commands,
-      }) {
+  Kernel(
+    this._devPort, {
+    required this.logger,
+    required this.environment,
+    required this.httpClient,
+    required this.config,
+    required this.packetListener,
+    required this.eventListener,
+    required this.providerManager,
+    required this.marshaller,
+    required this.dataStore,
+    required this.watcherConfig,
+    required this.commands,
+  }) {
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
@@ -109,15 +110,12 @@ final class Kernel implements KernelContract {
 
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {
     final response = await httpClient.get('/gateway/bot');
-    print(response.bodyString);
     return switch (response.statusCode) {
       200 => response.body,
       401 => throw Exception('This token is invalid or revocated !'),
       _ => throw Exception(response.body['message']),
     };
   }
-
-
 
   @override
   Future<void> init() async {
@@ -139,7 +137,8 @@ final class Kernel implements KernelContract {
         stdout
           ..write('\x1b[0;0H')
           ..write('\x1b[2J')
-          ..writeln('${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('hmr running…')}')
+          ..writeln(
+              '${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('hmr running…')}')
           ..writeln('> Github : https://github.com/mineral-dart')
           ..writeln('> Discord : https://discord.gg/JKj2FwEf3b')
           ..writeln();
@@ -150,20 +149,23 @@ final class Kernel implements KernelContract {
     }
 
     if (useHmr) {
-      hmr = HotModuleReloading(_devPort, watcherConfig, this, createShards, shards);
+      hmr = HotModuleReloading(
+          _devPort, watcherConfig, this, createShards, shards);
       await hmr?.spawn();
     } else {
       createShards();
     }
-
   }
 
   Future<void> createShards() async {
-    final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
+    final {'url': String endpoint, 'shards': int shardCount} =
+        await getWebsocketEndpoint();
 
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
-      final shard =
-          Shard(shardName: 'shard #$i', url: '$endpoint/?v=${config.version}', kernel: this);
+      final shard = Shard(
+          shardName: 'shard #$i',
+          url: '$endpoint/?v=${config.version}',
+          kernel: this);
       shards.putIfAbsent(i, () => shard);
 
       await shard.init();

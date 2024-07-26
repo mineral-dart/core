@@ -1,4 +1,5 @@
-import 'package:mineral/api/common/commands/builder/command_builder.dart';
+import 'package:mineral/domains/commands/command_builder.dart';
+import 'package:mineral/domains/commands/command_declaration_bucket.dart';
 import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 import 'package:mineral/infrastructure/commons/listenable.dart';
@@ -7,9 +8,13 @@ import 'package:mineral/infrastructure/kernel/kernel.dart';
 
 abstract interface class MineralClientContract {
   EnvContract get environment;
+
   EventBucket get events;
 
+  CommandBucket get commands;
+
   void register(Listenable Function() event);
+
   void registerCommand(CommandBuilder builder);
 
   Future<void> init();
@@ -22,10 +27,14 @@ final class MineralClient implements MineralClientContract {
   late final EventBucket events;
 
   @override
+  late final CommandBucket commands;
+
+  @override
   EnvContract get environment => _kernel.environment;
 
   MineralClient(KernelContract kernel)
       : events = EventBucket(kernel),
+        commands = CommandBucket(kernel),
         _kernel = kernel;
 
   @override

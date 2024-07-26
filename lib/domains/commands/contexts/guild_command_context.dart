@@ -18,7 +18,6 @@ final class ServerCommandContext implements CommandContext {
   final Channel? channel;
   final Server server;
 
-
   ServerCommandContext({
     required this.id,
     required this.applicationId,
