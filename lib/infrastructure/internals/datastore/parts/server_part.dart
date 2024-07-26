@@ -18,8 +18,9 @@ final class ServerPart implements DataStorePart {
 
   Future<Server> getServer(Snowflake id) async {
     final cacheKey = _kernel.marshaller.cacheKey;
+    final serverCacheKey = cacheKey.server(id);
 
-    if (await _kernel.marshaller.cache.has(id.value)) {
+    if (await _kernel.marshaller.cache.has(serverCacheKey)) {
       return _kernel.marshaller.serializers.server.serializeCache({'id': id.value});
     }
 
@@ -35,7 +36,6 @@ final class ServerPart implements DataStorePart {
       'members': membersResponse.body
     });
 
-    final serverCacheKey = cacheKey.server(server.id);
     final rawServer = await _kernel.marshaller.serializers.server.deserialize(server);
 
     await Future.wait([
