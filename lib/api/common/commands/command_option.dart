@@ -31,7 +31,8 @@ final class Option<T> implements CommandOption {
   @override
   final List<ChannelType>? channelTypes;
 
-  const Option._(this.name, this.description, this.type, this.channelTypes, this.isRequired);
+  const Option._(this.name, this.description, this.type, this.channelTypes,
+      this.isRequired);
 
   @override
   Map<String, dynamic> toJson() {
@@ -45,22 +46,33 @@ final class Option<T> implements CommandOption {
   }
 
   factory Option.string(
-          {required String name, required String description, bool required = false}) =>
+          {required String name,
+          required String description,
+          bool required = false}) =>
       Option._(name, description, CommandOptionType.string, null, required);
 
   factory Option.integer(
-          {required String name, required String description, bool required = false}) =>
+          {required String name,
+          required String description,
+          bool required = false}) =>
       Option._(name, description, CommandOptionType.integer, null, required);
 
   factory Option.double(
-          {required String name, required String description, bool required = false}) =>
+          {required String name,
+          required String description,
+          bool required = false}) =>
       Option._(name, description, CommandOptionType.double, null, required);
 
   factory Option.boolean(
-          {required String name, required String description, bool required = false}) =>
+          {required String name,
+          required String description,
+          bool required = false}) =>
       Option._(name, description, CommandOptionType.boolean, null, required);
 
-  factory Option.user({required String name, required String description, bool required = false}) =>
+  factory Option.user(
+          {required String name,
+          required String description,
+          bool required = false}) =>
       Option._(name, description, CommandOptionType.user, null, required);
 
   factory Option.channel(
@@ -68,16 +80,25 @@ final class Option<T> implements CommandOption {
           required String description,
           List<ChannelType> channels = const [],
           bool required = false}) =>
-      Option._(name, description, CommandOptionType.channel, channels, required);
+      Option._(
+          name, description, CommandOptionType.channel, channels, required);
 
-  factory Option.role({required String name, required String description, bool required = false}) =>
+  factory Option.role(
+          {required String name,
+          required String description,
+          bool required = false}) =>
       Option._(name, description, CommandOptionType.role, null, required);
 
   factory Option.mentionable(
-          {required String name, required String description, bool required = false}) =>
-      Option._(name, description, CommandOptionType.mentionable, null, required);
+          {required String name,
+          required String description,
+          bool required = false}) =>
+      Option._(
+          name, description, CommandOptionType.mentionable, null, required);
 
   factory Option.attachment(
-          {required String name, required String description, bool required = false}) =>
+          {required String name,
+          required String description,
+          bool required = false}) =>
       Option._(name, description, CommandOptionType.attachment, null, required);
 }

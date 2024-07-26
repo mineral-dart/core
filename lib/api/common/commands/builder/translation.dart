@@ -19,7 +19,8 @@ final class Translation {
     final stringContent = file.readAsStringSync();
 
     final Map<String, dynamic> content = switch (file) {
-      File(:final uri) when uri.path.endsWith('.json') => jsonDecode(stringContent),
+      File(:final uri) when uri.path.endsWith('.json') =>
+        jsonDecode(stringContent),
       // File(:final uri) when uri.path.endsWith('.toml') => TomlDocument.parse(stringContent),
       File(:final uri) when uri.path.endsWith('.yaml') =>
         (loadYaml(stringContent) as YamlMap).toMap(),
@@ -35,8 +36,8 @@ final class Translation {
 
       for (final MapEntry element in translation.value.entries) {
         final lang = Lang.values.firstWhere((lang) => lang.uid == element.key,
-            orElse: () =>
-                throw Exception('Lang "${element.key}" not exists is the available languages'));
+            orElse: () => throw Exception(
+                'Lang "${element.key}" not exists is the available languages'));
 
         map.putIfAbsent(lang, () => element.value);
       }
