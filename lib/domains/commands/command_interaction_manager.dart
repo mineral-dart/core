@@ -46,9 +46,9 @@ final class CommandInteractionManager
     }
 
     final handlers = switch (command) {
-      final CommandDeclarationBuilder command => command.reduceHandlers(),
+      final CommandDeclarationBuilder command => command.reduceHandlers(command.name!),
       final CommandDefinitionBuilder definition =>
-        definition.command.reduceHandlers(),
+        definition.command.reduceHandlers(definition.command.name!),
       final _ => throw Exception('Unknown command type')
     };
 

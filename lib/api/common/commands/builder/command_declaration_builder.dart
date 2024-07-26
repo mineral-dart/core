@@ -7,10 +7,10 @@ import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
 import 'package:mineral/domains/commands/command_builder.dart';
 
-final class CommandDeclarationBuilder<T> implements CommandBuilder {
+final class CommandDeclarationBuilder implements CommandBuilder {
   final CommandHelper _helper = CommandHelper();
 
-  String? _name;
+  String? name;
   Map<String, String>? _nameLocalizations;
   String? _description;
   Map<String, String>? _descriptionLocalizations;
@@ -21,7 +21,7 @@ final class CommandDeclarationBuilder<T> implements CommandBuilder {
   Function? _handle;
 
   CommandDeclarationBuilder setName(String name, {Translation? translation}) {
-    _name = name;
+    this.name = name;
     if (translation != null) {
       _nameLocalizations = _helper.extractTranslations('name', translation);
     }
@@ -79,7 +79,7 @@ final class CommandDeclarationBuilder<T> implements CommandBuilder {
     ];
 
     return {
-      'name': _name,
+      'name': name,
       'name_localizations': _nameLocalizations,
       'description': _description,
       'description_localizations': _descriptionLocalizations,
@@ -89,21 +89,25 @@ final class CommandDeclarationBuilder<T> implements CommandBuilder {
     };
   }
 
-  List<(String, Function handler)> reduceHandlers() {
+  List<(String, Function handler)> reduceHandlers(String commandName) {
     if (subCommands.isEmpty && groups.isEmpty) {
-      return [('$_name', _handle!)];
+      return [('$name', _handle!)];
     }
 
     final List<(String, Function handler)> handlers = [];
 
     for (final subCommand in subCommands) {
-      handlers.add(('$_name.${subCommand.name}', subCommand.handle!));
+      if (subCommand.handle case null) {
+        throw Exception('Command "$commandName.${subCommand.name}" has no handler');
+      }
+
+      handlers.add(('$name.${subCommand.name}', subCommand.handle!));
     }
 
     for (final group in groups) {
       for (final subCommand in group.commands) {
         handlers.add(
-            ('$_name.${group.name}.${subCommand.name}', subCommand.handle!));
+            ('$name.${group.name}.${subCommand.name}', subCommand.handle!));
       }
     }
 
