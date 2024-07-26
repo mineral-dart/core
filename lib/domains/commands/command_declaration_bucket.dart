@@ -19,7 +19,6 @@ final class CommandBucket {
     final builder = CommandDefinitionBuilder();
     fn(builder);
 
-    print(builder.command.toJson());
     _kernel.commands.addCommand(builder.command);
   }
 }
