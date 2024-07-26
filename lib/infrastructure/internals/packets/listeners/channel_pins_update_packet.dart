@@ -35,10 +35,11 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
     server.channels.list.update(channel.id, (_) => channel);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
+    final rawChannel = await marshaller.serializers.channels.deserialize(channel);
 
     await Future.wait([
       marshaller.cache.put(serverCacheKey, rawServer),
-      marshaller.cache.put(channelCacheKey, channel)
+      marshaller.cache.put(channelCacheKey, rawChannel)
     ]);
 
     dispatch(event: Event.serverChannelPinsUpdate, params: [server, channel]);

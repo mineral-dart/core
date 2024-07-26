@@ -25,7 +25,9 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
 
     await emojiManager.list.values.map((emoji) async {
       final emojiCacheKey = marshaller.cacheKey.serverEmoji(serverId: server.id, emojiId: emoji.id!);
-      return marshaller.cache.put(emojiCacheKey, emoji);
+      final rawEmoji = await marshaller.serializers.emojis.deserialize(emoji);
+
+      return marshaller.cache.put(emojiCacheKey, rawEmoji);
     }).wait;
 
     server.assets.emojis = emojiManager;

@@ -43,7 +43,7 @@ final class MemberPart implements DataStorePart {
     };
 
     final rawMember = await _kernel.marshaller.serializers.member.deserialize(member);
-    await _kernel.marshaller.cache.put(memberId.value, rawMember);
+    await _kernel.marshaller.cache.put(memberCacheKey, rawMember);
 
     return member;
   }
