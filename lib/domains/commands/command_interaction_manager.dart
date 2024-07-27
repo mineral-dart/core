@@ -69,7 +69,7 @@ final class CommandInteractionManager
   @override
   Future<void> registerServer(Bot bot, Server server) async {
     final List<CommandBuilder> guildCommands =
-        _getContext(CommandContextType.guild);
+        _getContext(CommandContextType.server);
     final payload = _serializeCommand(guildCommands);
 
     await _marshaller.dataStore.client.put(
