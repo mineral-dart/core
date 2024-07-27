@@ -82,7 +82,7 @@ final class ServerSerializer implements SerializerContract<Server> {
         channelManager.list.putIfAbsent(channel.id, () => channel);
 
         final cacheKey =
-        _marshaller.cacheKey.serverChannel(serverId: json['id'], channelId: channel.id);
+            _marshaller.cacheKey.serverChannel(serverId: json['id'], channelId: channel.id);
 
         final rawChannel = await _marshaller.serializers.channels.deserialize(channel);
         await _marshaller.cache.put(cacheKey, rawChannel);
@@ -130,21 +130,21 @@ final class ServerSerializer implements SerializerContract<Server> {
     final rawServer = await _marshaller.cache.getOrFail(serverKey);
     final channelManager = ChannelManager(rawServer);
 
-    final roles = await getCacheFromPrefix('$serverKey/role-');
-    final List<Role> serializedRoles = await roles.map((element) async {
+    final roles = await _marshaller.cache.whereKeyStartsWithOrFail('$serverKey/role-');
+    final List<Role> serializedRoles = await roles.entries.map((element) async {
       return _marshaller.serializers.role.serializeCache(element.value);
     }).wait;
 
-    final members = await getCacheFromPrefix('$serverKey/member-');
-    final serializedMembers = await members.map((element) async {
+    final members = await _marshaller.cache.whereKeyStartsWithOrFail('$serverKey/member-');
+    final serializedMembers = await members.entries.map((element) async {
       return _marshaller.serializers.member.serializeCache({
         ...element.value,
         'guild_id': payload['id'],
       });
     }).wait;
 
-    final channels = await getCacheFromPrefix('$serverKey/channel-');
-    await channels.map((element) async {
+    final channels = await _marshaller.cache.whereKeyStartsWithOrFail('$serverKey/channel-');
+    await channels.entries.map((element) async {
       final channel = await _marshaller.serializers.channels.serializeCache(element.value);
       if (channel case final ServerChannel channel) {
         channelManager.list.putIfAbsent(channel.id, () => channel);
@@ -189,7 +189,9 @@ final class ServerSerializer implements SerializerContract<Server> {
     final assets = await _marshaller.serializers.serversAsset.deserialize(server.assets);
     final settings = await _marshaller.serializers.serverSettings.deserialize(server.settings);
 
-    final members = server.members.list.values.map((member) => '${server.id.value}.${member.id}');
+    final members = server.members.list.values.map((member) {
+      return _marshaller.cacheKey.serverMember(serverId: server.id, memberId: member.id);
+    }).toList();
 
     return {
       'id': server.id,
@@ -203,11 +205,6 @@ final class ServerSerializer implements SerializerContract<Server> {
       ...assets,
       ...settings,
     };
-  }
-
-  Future<Iterable<MapEntry<String, dynamic>>> getCacheFromPrefix(String key) async {
-    final cache = await _marshaller.cache.getInternalValues();
-    return cache.entries.where((element) => element.key.startsWith(key));
   }
 
   Future<void> assignCategoryChannel(Snowflake serverId, ServerChannel channel) async {
