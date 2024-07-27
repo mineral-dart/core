@@ -1,16 +1,11 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/server/member.dart';
-import 'package:mineral/domains/types/flags_type.dart';
+import 'package:mineral/api/common/types/message_flag_type.dart';
 import 'package:mineral/domains/types/interaction_callback_type.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store_part.dart';
-import 'package:mineral/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';
-import 'package:mineral/infrastructure/services/http/http_request_option.dart';
-import 'package:mineral/infrastructure/services/http/response.dart';
 
 final class InteractionPart implements DataStorePart {
   final KernelContract _kernel;
@@ -37,7 +32,7 @@ final class InteractionPart implements DataStorePart {
     await replyInteraction(id, token, {
       'type': InteractionCallbackType.deferredUpdateMessage.value,
       'data': {
-        'flags': FlagsType.ephemeral.value,
+        'flags': MessageFlagType.ephemeral.value,
       }
     });
   }
@@ -60,7 +55,7 @@ final class InteractionPart implements DataStorePart {
     await replyInteraction(id, token, {
       'type': InteractionCallbackType.deferredUpdateMessage.value,
       'data': {
-        'flags': FlagsType.ephemeral.value,
+        'flags': MessageFlagType.ephemeral.value,
       }
     });
   }
