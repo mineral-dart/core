@@ -18,7 +18,7 @@ final class GuildMemberAddPacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
     final member = await marshaller.serializers.member
-        .serializeRemote({...message.payload, 'guild_roles': server.roles.list});
+        .serializeRemote({...message.payload, 'guild_roles': server.roles.list.values.toList()});
 
     final serverCacheKey = marshaller.cacheKey.server(server.id);
     final memberCacheKey =
