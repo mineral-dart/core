@@ -32,7 +32,7 @@ final class Member {
   final bool isBot;
   final bool isPending;
   final MemberTimeout timeout;
-  final bool mfAEnabled;
+  final bool mfaEnabled;
   final String? locale;
   final PremiumTier premiumType;
   final DateTime? joinedAt;
@@ -50,8 +50,19 @@ final class Member {
 
   bool hasRejoined() => flags.list.contains(MemberFlag.didRejoin);
 
+  Future<void> setUsername(String value, String? reason) => _memberMethods.updateMember(
+    serverId: server.id, memberId: id, payload: {'username': value}, reason: reason);
+
   Future<void> setNickname(String value, String? reason) => _memberMethods.updateMember(
       serverId: server.id, memberId: id, payload: {'nick': value}, reason: reason);
+
+  Future<void> setTimeout(Duration duration, {String? reason}) {
+    final timeout = DateTime.now().add(duration);
+    return _memberMethods.updateMember(
+      serverId: server.id, 
+      memberId: id, payload: {'communication_disabled_until': timeout.toIso8601String()}, 
+      reason: reason);
+  }
 
   Future<void> ban({Duration? deleteSince, String? reason}) =>
       _memberMethods.banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
@@ -69,6 +80,12 @@ final class Member {
         payload: {'communication_disabled_until': timeout.toIso8601String()});
   }
 
+  Future<void> enableMfa({String? reason}) => _memberMethods.updateMember(
+    serverId: server.id, memberId: id, payload: {'mfa_enable': true}, reason: reason);
+
+  Future<void> disnableMfa({String? reason}) => _memberMethods.updateMember(
+    serverId: server.id, memberId: id, payload: {'mfa_enable': false}, reason: reason);
+    
   Future<void> unExclude({Duration? duration, String? reason}) => _memberMethods.updateMember(
       serverId: server.id,
       memberId: id,
@@ -97,7 +114,7 @@ final class Member {
     required this.isBot,
     required this.isPending,
     required this.timeout,
-    required this.mfAEnabled,
+    required this.mfaEnabled,
     required this.locale,
     required this.premiumType,
     required this.joinedAt,
