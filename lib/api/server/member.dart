@@ -59,8 +59,8 @@ final class Member {
   Future<void> setTimeout(Duration duration, {String? reason}) {
     final timeout = DateTime.now().add(duration);
     return _memberMethods.updateMember(
-      serverId: server.id, 
-      memberId: id, payload: {'communication_disabled_until': timeout.toIso8601String()}, 
+      serverId: server.id,
+      memberId: id, payload: {'communication_disabled_until': timeout.toIso8601String()},
       reason: reason);
   }
 
@@ -83,9 +83,9 @@ final class Member {
   Future<void> enableMfa({String? reason}) => _memberMethods.updateMember(
     serverId: server.id, memberId: id, payload: {'mfa_enable': true}, reason: reason);
 
-  Future<void> disnableMfa({String? reason}) => _memberMethods.updateMember(
+  Future<void> disableMfa({String? reason}) => _memberMethods.updateMember(
     serverId: server.id, memberId: id, payload: {'mfa_enable': false}, reason: reason);
-    
+
   Future<void> unExclude({Duration? duration, String? reason}) => _memberMethods.updateMember(
       serverId: server.id,
       memberId: id,
