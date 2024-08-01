@@ -25,8 +25,6 @@ final class GuildBanAddPacket implements ListenablePacket {
     final rawServer = await marshaller.serializers.server.deserialize(server);
     final serverCacheKey = marshaller.cacheKey.server(server.id);
 
-    logger.trace('GuildBanAddPacket: ${user.username} was ban in ${server.name}');
-
     server.members.list.remove(user.id);
 
     await Future.wait([
