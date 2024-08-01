@@ -51,7 +51,7 @@ final class Member {
   bool hasRejoined() => flags.list.contains(MemberFlag.didRejoin);
 
   Future<void> setUsername(String value, String? reason) => _memberMethods.updateMember(
-    serverId: server.id, memberId: id, payload: {'username': value}, reason: reason);
+      serverId: server.id, memberId: id, payload: {'username': value}, reason: reason);
 
   Future<void> setNickname(String value, String? reason) => _memberMethods.updateMember(
       serverId: server.id, memberId: id, payload: {'nick': value}, reason: reason);
@@ -59,9 +59,10 @@ final class Member {
   Future<void> setTimeout(Duration duration, {String? reason}) {
     final timeout = DateTime.now().add(duration);
     return _memberMethods.updateMember(
-      serverId: server.id,
-      memberId: id, payload: {'communication_disabled_until': timeout.toIso8601String()},
-      reason: reason);
+        serverId: server.id,
+        memberId: id,
+        payload: {'communication_disabled_until': timeout.toIso8601String()},
+        reason: reason);
   }
 
   Future<void> ban({Duration? deleteSince, String? reason}) =>
@@ -81,10 +82,13 @@ final class Member {
   }
 
   Future<void> enableMfa({String? reason}) => _memberMethods.updateMember(
-    serverId: server.id, memberId: id, payload: {'mfa_enable': true}, reason: reason);
+      serverId: server.id, memberId: id, payload: {'mfa_enable': true}, reason: reason);
 
   Future<void> disableMfa({String? reason}) => _memberMethods.updateMember(
-    serverId: server.id, memberId: id, payload: {'mfa_enable': false}, reason: reason);
+      serverId: server.id, memberId: id, payload: {'mfa_enable': false}, reason: reason);
+
+  Future<void> toggleMfa({String? reason}) =>
+      mfaEnabled ? disableMfa(reason: reason) : enableMfa(reason: reason);
 
   Future<void> unExclude({Duration? duration, String? reason}) => _memberMethods.updateMember(
       serverId: server.id,
