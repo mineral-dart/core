@@ -23,7 +23,7 @@ final class ButtonBuilder {
   static PremiumButtonBuilder premium(String skuId) => PremiumButtonBuilder(skuId);
 }
 
-final class BasicButtonBuilder with ButtonImpl implements ButtonBuilderContract {
+final class BasicButtonBuilder with ButtonImpl<BasicButtonBuilder> implements ButtonBuilderContract {
   final ButtonType _type;
   final String _customId;
 
@@ -54,7 +54,7 @@ final class PremiumButtonBuilder implements ButtonBuilderContract {
   }
 }
 
-final class LinkButtonBuilder with ButtonImpl {
+final class LinkButtonBuilder with ButtonImpl<LinkButtonBuilder> implements ButtonBuilderContract {
   final ButtonType _type = ButtonType.link;
   String? _url;
 
@@ -73,22 +73,22 @@ final class LinkButtonBuilder with ButtonImpl {
   }
 }
 
-mixin ButtonImpl {
+mixin ButtonImpl<T extends ButtonBuilderContract> {
   String? _label;
   PartialEmoji? _emoji;
   bool _disabled = false;
 
-  T setLabel<T>(String label) {
+  T setLabel(String label) {
     _label = label;
     return this as T;
   }
 
-  T setEmoji<T>(PartialEmoji emoji) {
+  T setEmoji(PartialEmoji emoji) {
     _emoji = emoji;
     return this as T;
   }
 
-  T setDisabled<T>(bool disabled) {
+  T setDisabled(bool disabled) {
     _disabled = disabled;
     return this as T;
   }
