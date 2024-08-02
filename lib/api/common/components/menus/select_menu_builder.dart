@@ -1,12 +1,11 @@
 import 'package:mineral/api/common/components/component_type.dart';
 import 'package:mineral/api/common/components/menus/select_menu_option.dart';
+import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/partial_emoji.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 
-abstract interface class SelectMenuBuilderContract {
-  Map<String, dynamic> toJson();
-}
+abstract interface class SelectMenuBuilderContract implements MessageComponent {}
 
 final class SelectMenuBuilder {
   static SelectMenuTextBuilder<String> text(String customId) => SelectMenuTextBuilder(customId);
