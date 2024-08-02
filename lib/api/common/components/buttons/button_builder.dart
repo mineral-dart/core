@@ -1,6 +1,10 @@
 import 'package:mineral/api/common/components/buttons/button_type.dart';
 import 'package:mineral/api/common/partial_emoji.dart';
 
+abstract interface class ButtonBuilderContract {
+  Map<String, dynamic> toJson();
+}
+
 final class ButtonBuilder {
   static BasicButtonBuilder primary(String customId) =>
       BasicButtonBuilder(ButtonType.primary, customId);
@@ -19,7 +23,7 @@ final class ButtonBuilder {
   static PremiumButtonBuilder premium(String skuId) => PremiumButtonBuilder(skuId);
 }
 
-final class BasicButtonBuilder with ButtonImpl {
+final class BasicButtonBuilder with ButtonImpl implements ButtonBuilderContract {
   final ButtonType _type;
   final String _customId;
 
@@ -35,12 +39,13 @@ final class BasicButtonBuilder with ButtonImpl {
   }
 }
 
-final class PremiumButtonBuilder {
+final class PremiumButtonBuilder implements ButtonBuilderContract {
   final ButtonType _type = ButtonType.premium;
   final String _skuId;
 
   PremiumButtonBuilder(this._skuId);
 
+  @override
   Map<String, dynamic> toJson() {
     return {
       'type': _type.value,
