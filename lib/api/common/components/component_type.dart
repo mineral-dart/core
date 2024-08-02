@@ -1,0 +1,17 @@
+import 'package:mineral/api/common/types/enhanced_enum.dart';
+
+enum ComponentType implements EnhancedEnum<int> {
+  actionRow(1),
+  button(2),
+  textSelectMenu(3),
+  textInput(4),
+  userSelectMenu(5),
+  roleSelectMenu(6),
+  mentionableSelectMenu(7),
+  channelSelectMenu(8);
+
+  @override
+  final int value;
+
+  const ComponentType(this.value);
+}
