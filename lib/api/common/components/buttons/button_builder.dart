@@ -1,9 +1,8 @@
 import 'package:mineral/api/common/components/buttons/button_type.dart';
+import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/partial_emoji.dart';
 
-abstract interface class ButtonBuilderContract {
-  Map<String, dynamic> toJson();
-}
+abstract interface class ButtonBuilderContract implements MessageComponent {}
 
 final class ButtonBuilder {
   static BasicButtonBuilder primary(String customId) =>
