@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/components/buttons/button_type.dart';
+import 'package:mineral/api/common/components/component_type.dart';
 import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/partial_emoji.dart';
 
@@ -33,7 +34,8 @@ final class BasicButtonBuilder with ButtonImpl<BasicButtonBuilder> implements Bu
     return {
       ...super.toJson(),
       'custom_id': _customId,
-      'type': _type.value,
+      'type': ComponentType.button.value,
+      'style': _type.value,
     };
   }
 }
@@ -47,7 +49,8 @@ final class PremiumButtonBuilder implements ButtonBuilderContract {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'type': _type.value,
+      'type': ComponentType.button.value,
+      'style': _type.value,
       'sku_id': _skuId,
     };
   }
@@ -66,7 +69,8 @@ final class LinkButtonBuilder with ButtonImpl<LinkButtonBuilder> implements Butt
   Map<String, dynamic> toJson() {
     return {
       ...super.toJson(),
-      'type': _type.value,
+      'type': ComponentType.button.value,
+      'style': _type.value,
       'url': _url,
     };
   }
