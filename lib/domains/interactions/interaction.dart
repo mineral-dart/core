@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/bot.dart';
 import 'package:mineral/api/common/components/dialogs/dialog_builder.dart';
+import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/message_flag_type.dart';
@@ -16,17 +17,26 @@ final class Interaction implements InteractionContract {
   final Snowflake _botId = ioc.resolve<Bot>().id;
 
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
+
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   Interaction(this._token, this._id);
 
   @override
-  Future<InteractionContract> reply({String? content, List<MessageEmbed> embeds = const [], bool ephemeral = false}) async {
-   await _datastore.interaction.replyInteraction(_id, _token, {
+  Future<InteractionContract> reply(
+      {String? content,
+      List<MessageEmbed> embeds = const [],
+      List<MessageComponent> components = const [],
+      bool ephemeral = false}) async {
+    await _datastore.interaction.replyInteraction(_id, _token, {
       'type': InteractionCallbackType.channelMessageWithSource.value,
       'data': {
         'content': content,
-        'embeds': await Helper.createOrNullAsync(field: embeds, fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+        'embeds': await Helper.createOrNullAsync(
+            field: embeds,
+            fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+        'components': Helper.createOrNull(
+            field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
         'flags': ephemeral ? MessageFlagType.ephemeral.value : MessageFlagType.none.value,
       }
     });
@@ -35,10 +45,17 @@ final class Interaction implements InteractionContract {
   }
 
   @override
-  Future<InteractionContract> editReply({String? content, List<MessageEmbed> embeds = const [] }) async {
+  Future<InteractionContract> editReply(
+      {String? content,
+      List<MessageEmbed> embeds = const [],
+      List<MessageComponent> components = const []}) async {
     await _datastore.interaction.editInteraction(_botId, _token, {
       'content': content,
-      'embeds': await Helper.createOrNullAsync(field: embeds, fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+      'embeds': await Helper.createOrNullAsync(
+          field: embeds,
+          fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+      'components': Helper.createOrNull(
+          field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
     });
     return this;
   }
@@ -54,20 +71,36 @@ final class Interaction implements InteractionContract {
   }
 
   @override
-  Future<InteractionContract> followUp({String? content, List<MessageEmbed> embeds = const [], bool ephemeral = false}) async {
+  Future<InteractionContract> followUp(
+      {String? content,
+      List<MessageEmbed> embeds = const [],
+      List<MessageComponent> components = const [],
+      bool ephemeral = false}) async {
     await _datastore.interaction.followUpInteraction(_botId, _token, {
       'content': content,
-      'embeds': await Helper.createOrNullAsync(field: embeds, fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+      'embeds': await Helper.createOrNullAsync(
+          field: embeds,
+          fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+      'components': Helper.createOrNull(
+          field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
       'flags': ephemeral ? MessageFlagType.ephemeral.value : MessageFlagType.none.value,
     });
     return this;
   }
 
   @override
-  Future<InteractionContract> editFollowUp({String? content, List<MessageEmbed> embeds = const [], bool ephemeral = false}) async {
+  Future<InteractionContract> editFollowUp(
+      {String? content,
+      List<MessageEmbed> embeds = const [],
+      List<MessageComponent> components = const [],
+      bool ephemeral = false}) async {
     await _datastore.interaction.editFollowUpInteraction(_botId, _token, _id, {
       'content': content,
-      'embeds': await Helper.createOrNullAsync(field: embeds, fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+      'embeds': await Helper.createOrNullAsync(
+          field: embeds,
+          fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+      'components': Helper.createOrNull(
+          field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
     });
     return this;
   }
@@ -84,10 +117,18 @@ final class Interaction implements InteractionContract {
   }
 
   @override
-  Future<InteractionContract> editWait({String? content, List<MessageEmbed> embeds = const [], bool ephemeral = false}) async {
+  Future<InteractionContract> editWait(
+      {String? content,
+      List<MessageEmbed> embeds = const [],
+      List<MessageComponent> components = const [],
+      bool ephemeral = false}) async {
     await _datastore.interaction.editWaitInteraction(_botId, _token, _id, {
       'content': content,
-      'embeds': await Helper.createOrNullAsync(field: embeds, fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+      'embeds': await Helper.createOrNullAsync(
+          field: embeds,
+          fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+      'components': Helper.createOrNull(
+          field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
     });
     return this;
   }
