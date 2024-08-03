@@ -99,5 +99,18 @@ abstract class InteractionContract {
   /// ```
   Future<void> deleteDefer();
 
+  /// Use to send a dialog to the interaction.
+  ///
+  /// Usage:
+  /// ```dart
+  /// final dialog = DialogBuilder('unique_custom_id')
+  ///   ..setTitle('Hello')
+  ///   ..text('hello', (input) => input
+  ///     ..setLabel('Hello')
+  ///     ..setPlaceholder('World');
+  ///   );
+  ///
+  /// await interaction.dialog(dialog);
+  /// ```
   Future<void> dialog(DialogBuilder dialog);
 }
