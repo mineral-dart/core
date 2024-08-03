@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/bot.dart';
+import 'package:mineral/api/common/components/dialogs/dialog_builder.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/message_flag_type.dart';
@@ -94,5 +95,10 @@ final class Interaction implements InteractionContract {
   @override
   Future<void> deleteDefer() async {
     await _datastore.interaction.deleteWaitInteraction(_botId, _token, _id);
+  }
+
+  @override
+  Future<void> dialog(DialogBuilder dialog) async {
+    await _datastore.interaction.sendDialog(_id, _token, dialog);
   }
 }

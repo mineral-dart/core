@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/polls/poll.dart';
@@ -91,15 +92,21 @@ final class ChannelPart implements DataStorePart {
     };
   }
 
-  Future<T> createMessage<T extends Message>(Snowflake? guildId, Snowflake channelId,
-      String? content, List<MessageEmbed>? embeds, Poll? poll) async {
+  Future<T> createMessage<T extends Message>(
+      Snowflake? guildId,
+      Snowflake channelId,
+      String? content,
+      List<MessageEmbed>? embeds,
+      Poll? poll,
+      List<MessageComponent>? components) async {
     final response = await _kernel.dataStore.client.post('/channels/$channelId/messages', body: {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
           fn: () async => embeds?.map(_kernel.marshaller.serializers.embed.deserialize).toList()),
       'poll': await Helper.createOrNullAsync(
-          field: poll, fn: () async => _kernel.marshaller.serializers.poll.deserialize(poll!))
+          field: poll, fn: () async => _kernel.marshaller.serializers.poll.deserialize(poll!)),
+      'components': components?.map((e) => e.toJson()).toList(),
     });
 
     final message = await switch (response.statusCode) {

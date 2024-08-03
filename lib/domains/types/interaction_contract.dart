@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/components/dialogs/dialog_builder.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 
 abstract class InteractionContract {
@@ -79,4 +80,6 @@ abstract class InteractionContract {
   /// await interaction.deleteDefer();
   /// ```
   Future<void> deleteDefer();
+
+  Future<void> dialog(DialogBuilder dialog);
 }
