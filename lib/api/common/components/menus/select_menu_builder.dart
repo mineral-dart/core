@@ -9,10 +9,15 @@ abstract interface class SelectMenuBuilderContract implements MessageComponent {
 
 final class SelectMenuBuilder {
   static SelectMenuTextBuilder<String> text(String customId) => SelectMenuTextBuilder(customId);
+
   static SelectMenuChannelBuilder channel(String customId) => SelectMenuChannelBuilder(customId);
+
   static SelectMenuUserBuilder user(String customId) => SelectMenuUserBuilder(customId);
+
   static SelectMenuRoleBuilder role(String customId) => SelectMenuRoleBuilder(customId);
-  static SelectMenuMentionableBuilder mentionable(String customId) => SelectMenuMentionableBuilder(customId);
+
+  static SelectMenuMentionableBuilder mentionable(String customId) =>
+      SelectMenuMentionableBuilder(customId);
 }
 
 final class SelectMenuTextBuilder<T>
@@ -51,9 +56,8 @@ final class SelectMenuTextBuilder<T>
 }
 
 final class SelectMenuChannelBuilder
-    with SelectMenuImpl<SelectMenuTextBuilder>
+    with SelectMenuImpl<SelectMenuChannelBuilder>
     implements SelectMenuBuilderContract {
-
   final String _customId;
 
   final List<Snowflake> _defaultChannels = [];
@@ -66,26 +70,28 @@ final class SelectMenuChannelBuilder
     return this;
   }
 
+  SelectMenuChannelBuilder setChannelTypes(List<ChannelType> types) {
+    _channelTypes.addAll(types);
+    return this;
+  }
+
   @override
   Map<String, dynamic> toJson() {
     return {
       ...super.toJson(),
       'type': ComponentType.channelSelectMenu.value,
       'custom_id': _customId,
-      'channel_types': _channelTypes.isNotEmpty
-          ? _channelTypes.map((e) => e.value).toList()
-          : null,
+      'channel_types': _channelTypes.isNotEmpty ? _channelTypes.map((e) => e.value).toList() : null,
       'default_values': _defaultChannels.isNotEmpty
-          ? _defaultChannels.map((e) => {'id': e.value, 'type': 'channel' }).toList()
+          ? _defaultChannels.map((e) => {'id': e.value, 'type': 'channel'}).toList()
           : null,
     };
   }
 }
 
 final class SelectMenuUserBuilder
-    with SelectMenuImpl<SelectMenuTextBuilder>
+    with SelectMenuImpl<SelectMenuUserBuilder>
     implements SelectMenuBuilderContract {
-
   final String _customId;
 
   SelectMenuUserBuilder(this._customId);
@@ -101,9 +107,8 @@ final class SelectMenuUserBuilder
 }
 
 final class SelectMenuRoleBuilder
-    with SelectMenuImpl<SelectMenuTextBuilder>
+    with SelectMenuImpl<SelectMenuRoleBuilder>
     implements SelectMenuBuilderContract {
-
   final String _customId;
 
   SelectMenuRoleBuilder(this._customId);
@@ -119,9 +124,8 @@ final class SelectMenuRoleBuilder
 }
 
 final class SelectMenuMentionableBuilder
-    with SelectMenuImpl<SelectMenuTextBuilder>
+    with SelectMenuImpl<SelectMenuMentionableBuilder>
     implements SelectMenuBuilderContract {
-
   final String _customId;
 
   SelectMenuMentionableBuilder(this._customId);
