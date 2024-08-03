@@ -7,6 +7,10 @@ final class RowBuilder implements MessageComponent {
   RowBuilder();
 
   void addComponent(MessageComponent component) {
+    if (_components.length >= 5) {
+      throw FormatException('A row can only have 5 components');
+    }
+
     _components.add(component);
   }
 
