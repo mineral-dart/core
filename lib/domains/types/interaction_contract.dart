@@ -1,4 +1,5 @@
 import 'package:mineral/api/common/components/dialogs/dialog_builder.dart';
+import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 
 abstract class InteractionContract {
@@ -8,14 +9,19 @@ abstract class InteractionContract {
   /// ```dart
   /// final interaction = await interaction.reply(content: 'Hello Mineral');
   /// ```
-  Future<InteractionContract> reply({String content, List<MessageEmbed> embeds, bool ephemeral = false}); // todo: add components
+  Future<InteractionContract> reply(
+      {String content,
+      List<MessageEmbed> embeds,
+      List<MessageComponent> components,
+      bool ephemeral = false});
 
   /// Use to edit the reply to the interaction.
   /// Usage:
   ///
   /// ```dart
   /// final interaction = await interaction.editReply(content: 'New Hello Mineral');
-  Future<InteractionContract> editReply({String content, List<MessageEmbed> embeds});
+  Future<InteractionContract> editReply(
+      {String content, List<MessageEmbed> embeds, List<MessageComponent> components});
 
   /// Use to delete the reply to the interaction. Need a reply to delete.
   /// Usage:
@@ -39,7 +45,11 @@ abstract class InteractionContract {
   /// ```dart
   /// final interaction = await interaction.followUp(content: 'Hello Mineral');
   /// ```
-  Future<InteractionContract> followUp({String content, List<MessageEmbed> embeds, bool ephemeral = false});
+  Future<InteractionContract> followUp(
+      {String content,
+      List<MessageEmbed> embeds,
+      List<MessageComponent> components,
+      bool ephemeral = false});
 
   /// Use to edit the follow up message.
   /// Usage:
@@ -47,7 +57,11 @@ abstract class InteractionContract {
   /// ```dart
   /// final interaction = await interaction.editFollowUp(content: 'New Hello Mineral');
   /// ```
-  Future<InteractionContract> editFollowUp({String content, List<MessageEmbed> embeds, bool ephemeral = false});
+  Future<InteractionContract> editFollowUp(
+      {String content,
+      List<MessageEmbed> embeds,
+      List<MessageComponent> components,
+      bool ephemeral = false});
 
   /// Use to delete the follow up message.
   /// Usage:
@@ -71,7 +85,11 @@ abstract class InteractionContract {
   /// ```dart
   /// await interaction.editDefer(content: 'Hello Mineral');
   /// ```
-  Future<InteractionContract> editWait({String content, List<MessageEmbed> embeds, bool ephemeral = false});
+  Future<InteractionContract> editWait(
+      {String content,
+      List<MessageEmbed> embeds,
+      List<MessageComponent> components,
+      bool ephemeral = false});
 
   /// Use to delete the deferred message.
   /// Usage:
