@@ -56,6 +56,5 @@ final class DataStore implements DataStoreContract {
     role = RolePart(kernel);
     interaction = InteractionPart(kernel);
     serverMessage = ServerMessagePart(kernel);
-    serverMessage = ServerMessagePart(kernel);
   }
 }
