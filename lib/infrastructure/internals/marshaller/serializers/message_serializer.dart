@@ -27,7 +27,7 @@ final class MessageSerializer implements SerializerContract {
       _ => throw Exception('Channel type not found ${channel.runtimeType}'),
     } as MessageFactory;
 
-    return factory.serialize(marshaller, json);
+    return factory.serializeRemote(marshaller, json);
   }
 
   @override
