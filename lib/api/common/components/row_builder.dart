@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/components/component_type.dart';
 import 'package:mineral/api/common/components/message_component.dart';
+import 'package:mineral/infrastructure/io/exceptions/too_many_element_exception.dart';
 
 final class RowBuilder implements MessageComponent {
   final List<MessageComponent> _components = [];
@@ -7,8 +8,13 @@ final class RowBuilder implements MessageComponent {
   RowBuilder();
 
   void addComponent(MessageComponent component) {
+    if (component is RowBuilder) {
+      throw Exception('You can not add a RowBuilder to another RowBuilder.');
+    }
+
     if (_components.length >= 5) {
-      throw FormatException('A row can only have 5 components');
+      throw TooManyElementException(
+          'You give ${_components.length + 1} components but this row can only have 5.');
     }
 
     _components.add(component);
