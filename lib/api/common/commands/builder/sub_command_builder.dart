@@ -2,6 +2,7 @@ import 'package:mineral/api/common/commands/builder/translation.dart';
 import 'package:mineral/api/common/commands/command_helper.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
+import 'package:mineral/infrastructure/io/exceptions/missing_property_exception.dart';
 
 final class SubCommandBuilder {
   final CommandHelper _helper = CommandHelper();
@@ -45,6 +46,14 @@ final class SubCommandBuilder {
   }
 
   Map<String, dynamic> toJson() {
+    if (name == null) {
+      throw MissingPropertyException('Command name is required');
+    }
+
+    if (_description == null) {
+      throw MissingPropertyException('Command description is required');
+    }
+
     return {
       'name': name,
       'name_localizations': _nameLocalizations,

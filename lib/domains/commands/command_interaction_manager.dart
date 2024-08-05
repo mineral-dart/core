@@ -9,6 +9,7 @@ import 'package:mineral/domains/commands/command_builder.dart';
 import 'package:mineral/domains/commands/command_interaction_dispatcher.dart';
 import 'package:mineral/domains/types/interaction_dispatcher_contract.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/infrastructure/io/exceptions/missing_property_exception.dart';
 
 abstract class CommandInteractionManagerContract {
   final List<(String, Function handler)> commandsHandler = [];
@@ -43,6 +44,16 @@ final class CommandInteractionManager
   void addCommand(CommandBuilder command) {
     if (commands.contains(command)) {
       throw Exception('Command $command already exists');
+    }
+
+    final name = switch(command) {
+      final CommandDeclarationBuilder command => command.name,
+      final CommandDefinitionBuilder definition => definition.command.name,
+      final _ => throw Exception('Unknown command type')
+    };
+
+    if (name == null) {
+      throw MissingPropertyException('Command name is required');
     }
 
     final handlers = switch (command) {

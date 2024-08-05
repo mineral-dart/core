@@ -6,6 +6,8 @@ import 'package:mineral/api/common/commands/command_helper.dart';
 import 'package:mineral/api/common/commands/command_option.dart';
 import 'package:mineral/api/common/commands/command_type.dart';
 import 'package:mineral/domains/commands/command_builder.dart';
+import 'package:mineral/infrastructure/io/exceptions/missing_method_exception.dart';
+import 'package:mineral/infrastructure/io/exceptions/missing_property_exception.dart';
 
 final class CommandDeclarationBuilder implements CommandBuilder {
   final CommandHelper _helper = CommandHelper();
@@ -72,6 +74,14 @@ final class CommandDeclarationBuilder implements CommandBuilder {
   }
 
   Map<String, dynamic> toJson() {
+    if (name == null) {
+      throw MissingPropertyException('Command name is required');
+    }
+
+    if (_description == null) {
+      throw MissingPropertyException('Command description is required');
+    }
+
     final List<Map<String, dynamic>> options = [
       for (final option in this.options) option.toJson(),
       for (final subCommand in subCommands) subCommand.toJson(),
@@ -98,7 +108,7 @@ final class CommandDeclarationBuilder implements CommandBuilder {
 
     for (final subCommand in subCommands) {
       if (subCommand.handle case null) {
-        throw Exception('Command "$commandName.${subCommand.name}" has no handler');
+        throw MissingMethodException('Command "$commandName.${subCommand.name}" has no handler');
       }
 
       handlers.add(('$name.${subCommand.name}', subCommand.handle!));
