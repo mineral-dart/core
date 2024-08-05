@@ -6,7 +6,7 @@ import 'package:mineral/api/common/commands/command_type.dart';
 import 'package:mineral/api/common/types/interaction_type.dart';
 import 'package:mineral/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/domains/commands/contexts/guild_command_context.dart';
-import 'package:mineral/domains/types/interaction_dispatcher_contract.dart';
+import 'package:mineral/infrastructure/internals/interactions/types/interaction_dispatcher_contract.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 final class CommandInteractionDispatcher implements InteractionDispatcherContract {
