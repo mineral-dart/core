@@ -4,11 +4,11 @@ import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/message_flag_type.dart';
-import 'package:mineral/domains/types/interaction_callback_type.dart';
-import 'package:mineral/domains/types/interaction_contract.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
+import 'package:mineral/infrastructure/internals/interactions/types/interaction_callback_type.dart';
+import 'package:mineral/infrastructure/internals/interactions/types/interaction_contract.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 final class Interaction implements InteractionContract {

@@ -7,7 +7,7 @@ import 'package:mineral/api/common/commands/command_context_type.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/commands/command_builder.dart';
 import 'package:mineral/domains/commands/command_interaction_dispatcher.dart';
-import 'package:mineral/domains/types/interaction_dispatcher_contract.dart';
+import 'package:mineral/infrastructure/internals/interactions/types/interaction_dispatcher_contract.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/io/exceptions/missing_property_exception.dart';
 

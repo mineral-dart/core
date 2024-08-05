@@ -3,8 +3,8 @@ import 'dart:async';
 import 'package:mineral/api/common/components/dialogs/dialog_builder.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/message_flag_type.dart';
-import 'package:mineral/domains/types/interaction_callback_type.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store_part.dart';
+import 'package:mineral/infrastructure/internals/interactions/types/interaction_callback_type.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';
 
