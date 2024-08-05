@@ -1,3 +1,13 @@
+import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/managers/channel_manager.dart';
+import 'package:mineral/api/server/managers/member_manager.dart';
+import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/server/member.dart';
+import 'package:mineral/api/server/server_assets.dart';
+import 'package:mineral/api/server/server_settings.dart';
+import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
+import 'package:mineral/infrastructure/internals/datastore/parts/server_part.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/managers/channel_manager.dart';
 import 'package:mineral/src/api/server/managers/member_manager.dart';
@@ -8,6 +18,8 @@ import 'package:mineral/src/api/server/server_assets.dart';
 import 'package:mineral/src/api/server/server_settings.dart';
 
 final class Server {
+  ServerPart get _serverPart => ioc.resolve<DataStoreContract>().server;
+
   final Snowflake id;
   final String? applicationId;
   final String name;
@@ -33,4 +45,8 @@ final class Server {
     required this.owner,
     required this.threads,
   });
+
+  Future<void> setName(String newName, {String? reason}) async {
+    await _serverPart.updateServer(id.value, {'name': newName}, reason);
+  }
 }
