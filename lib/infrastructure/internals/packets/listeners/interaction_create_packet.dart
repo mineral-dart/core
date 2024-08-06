@@ -6,6 +6,8 @@ import 'package:mineral/api/common/types/interaction_type.dart';
 import 'package:mineral/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/domains/components/buttons/contexts/private_button_context.dart';
 import 'package:mineral/domains/components/buttons/contexts/server_button_context.dart';
+import 'package:mineral/domains/components/dialog/contexts/private_dialog_context.dart';
+import 'package:mineral/domains/components/dialog/contexts/server_dialog_context.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
@@ -31,11 +33,13 @@ final class InteractionCreatePacket implements ListenablePacket {
     return switch (type) {
       InteractionType.applicationCommand => interactionManager.dispatcher.dispatch(message.payload),
       InteractionType.messageComponent => dispatchMessageComponent(message.payload, dispatch),
+      InteractionType.modal => dispatchModalComponent(message.payload, dispatch),
       _ => logger.warn('Interaction type ${message.payload['type']} not found')
     };
   }
 
-  Future<void> dispatchMessageComponent(Map<String, dynamic> payload, DispatchEvent dispatch) async {
+  Future<void> dispatchMessageComponent(
+      Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final String? serverId = payload['guild']?['id'];
 
     final metadata = payload['message']['interaction_metadata'];
@@ -54,7 +58,8 @@ final class InteractionCreatePacket implements ListenablePacket {
 
   Future<void> _handleServerButton(Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final message = await marshaller.dataStore.message.getServerMessage(
-        messageId: Snowflake(payload['message']['id']), channelId: Snowflake(payload['channel_id']));
+        messageId: Snowflake(payload['message']['id']),
+        channelId: Snowflake(payload['channel_id']));
 
     final metadata = payload['message']['interaction_metadata'];
     final type = ButtonType.values.firstWhereOrNull((e) => e.value == metadata['type']);
@@ -79,7 +84,8 @@ final class InteractionCreatePacket implements ListenablePacket {
 
   Future<void> _handlePrivateButton(Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final message = await marshaller.dataStore.message.getPrivateMessage(
-        messageId: Snowflake(payload['message']['id']), channelId: Snowflake(payload['channel_id']));
+        messageId: Snowflake(payload['message']['id']),
+        channelId: Snowflake(payload['channel_id']));
 
     final metadata = payload['message']['interaction_metadata'];
     final type = ButtonType.values.firstWhereOrNull((e) => e.value == metadata['type']);
@@ -100,5 +106,34 @@ final class InteractionCreatePacket implements ListenablePacket {
     );
 
     dispatch(event: Event.serverButtonClick, params: [ctx]);
+  }
+
+  Future<void> dispatchModalComponent(Map<String, dynamic> payload, DispatchEvent dispatch) async {
+    switch (payload['guild_id']) {
+      case String():
+        final context = ServerDialogContext(
+          customId: payload['data']['custom_id'],
+          id: Snowflake(payload['id']),
+          applicationId: Snowflake(payload['application_id']),
+          token: payload['token'],
+          version: payload['version'],
+          member: await marshaller.dataStore.member.getMember(
+            guildId: Snowflake(payload['guild_id']),
+            memberId: Snowflake(payload['member']['user']['id']),
+          ),
+        );
+        dispatch(event: Event.serverDialogSubmit, params: [context]);
+      default:
+        final context = PrivateDialogContext(
+          customId: payload['data']['custom_id'],
+          id: Snowflake(payload['id']),
+          applicationId: Snowflake(payload['application_id']),
+          token: payload['token'],
+          version: payload['version'],
+          user: await marshaller.serializers.user.serializeRemote(payload['user']),
+        );
+
+        dispatch(event: Event.privateDialogSubmit, params: [context]);
+    }
   }
 }

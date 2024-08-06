@@ -1,13 +1,13 @@
-import 'package:mineral/domains/events/contracts/server/server_button_click_event.dart';
-import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_button_click_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_delete_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_pins_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_delete_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_dialog_submit_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_emojis_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_member_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_member_remove_event.dart';
@@ -20,6 +20,7 @@ import 'package:mineral/domains/events/contracts/server/server_roles_update_even
 import 'package:mineral/domains/events/contracts/server/server_stickers_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_update_event.dart';
 import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/domains/events/event_bucket.dart';
 
 final class ServerBucket {
   final EventBucket _events;
@@ -85,4 +86,7 @@ final class ServerBucket {
 
   void buttonClick(ServerButtonClickEventHandler handle) =>
       _events.make(Event.serverButtonClick, handle);
+
+  void dialogSubmit(ServerDialogSubmitEventHandler handle) =>
+      _events.make(Event.serverDialogSubmit, handle);
 }
