@@ -83,6 +83,6 @@ final class ServerBucket {
   void stickersUpdate(ServerStickersUpdateEventHandler handle) =>
       _events.make(Event.serverStickersUpdate, handle);
 
-  void serverButtonClick(ServerButtonClickEventHandler handle) =>
+  void buttonClick(ServerButtonClickEventHandler handle) =>
       _events.make(Event.serverButtonClick, handle);
 }

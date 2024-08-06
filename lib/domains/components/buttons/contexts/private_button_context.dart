@@ -1,11 +1,13 @@
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/private/private_message.dart';
+import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/domains/components/buttons/button_context.dart';
 import 'package:mineral/infrastructure/internals/interactions/interaction.dart';
 import 'package:mineral/infrastructure/internals/interactions/types/interaction_contract.dart';
 
-final class ServerButtonContext implements ButtonContext {
+final class PrivateButtonContext implements ButtonContext {
   @override
   final Snowflake id;
 
@@ -18,19 +20,19 @@ final class ServerButtonContext implements ButtonContext {
   @override
   final int version;
 
-  final Member member;
+  final User user;
 
-  final ServerMessage message;
+  final PrivateMessage message;
 
   late final InteractionContract interaction;
 
-  ServerButtonContext({
+  PrivateButtonContext({
     required this.id,
     required this.applicationId,
     required this.token,
     required this.version,
     required this.message,
-    required this.member,
+    required this.user,
   }) {
     interaction = Interaction(token, id);
   }

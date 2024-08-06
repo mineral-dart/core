@@ -17,7 +17,7 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
     final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
     final user = await marshaller.serializers.user.serializeRemote(json['author']);
 
-    return PrivateMessage(messageProperties, userId: json['author']['id'], user: user);
+    return PrivateMessage(messageProperties, userId: json['author']['id'], author: user);
   }
 
   @override

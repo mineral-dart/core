@@ -1,3 +1,4 @@
+import 'package:mineral/domains/events/contracts/private/private_button_click_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_channel_create_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_channel_pins_update_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_message_create_event.dart';
@@ -17,4 +18,7 @@ final class PrivateBucket {
 
   void channelPinsUpdate(PrivateChannelPinsUpdateEventHandler handle) =>
       _events.make(Event.privateChannelPinsUpdate, handle);
+
+  void buttonClick(PrivateButtonClickEventHandler handle) =>
+      _events.make(Event.privateButtonClick, handle);
 }

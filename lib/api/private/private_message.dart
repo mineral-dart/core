@@ -28,10 +28,10 @@ final class PrivateMessage implements Message<PrivateChannel> {
 
   final String userId;
 
-  final User user;
+  final User author;
 
   PrivateMessage(this._properties, {
     required this.userId,
-    required this.user,
+    required this.author,
   });
 }
