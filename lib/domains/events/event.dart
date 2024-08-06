@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/types/enhanced_enum.dart';
 import 'package:mineral/domains/events/contracts/common/ready_event.dart';
+import 'package:mineral/domains/events/contracts/private/private_button_click_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_channel_create_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_channel_delete_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_channel_pins_update_event.dart';
@@ -56,7 +57,8 @@ enum Event implements EnhancedEnum, EventType {
   privateMessageCreate(PrivateMessageCreateEvent),
   privateChannelCreate(PrivateChannelCreateEvent),
   privateChannelUpdate(PrivateChannelUpdateEvent),
-  privateChannelDelete(PrivateChannelDeleteEvent);
+  privateChannelDelete(PrivateChannelDeleteEvent),
+  privateButtonClick(PrivateButtonClickEvent);
 
   @override
   final value;

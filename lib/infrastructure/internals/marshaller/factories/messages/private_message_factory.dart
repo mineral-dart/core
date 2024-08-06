@@ -13,7 +13,7 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
 
     final user = await marshaller.serializers.user.serializeRemote(json['author']);
 
-    return PrivateMessage(messageProperties, userId: json['author']['id'], user: user);
+    return PrivateMessage(messageProperties, userId: json['author']['id'], author: user);
   }
 
   @override

@@ -4,6 +4,7 @@ import 'package:mineral/api/common/components/component_type.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/interaction_type.dart';
 import 'package:mineral/domains/commands/command_interaction_manager.dart';
+import 'package:mineral/domains/components/buttons/contexts/private_button_context.dart';
 import 'package:mineral/domains/components/buttons/contexts/server_button_context.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
@@ -47,7 +48,7 @@ final class InteractionCreatePacket implements ListenablePacket {
 
     return switch (serverId) {
       String() => _handleServerButton(payload, dispatch),
-      _ => _handlePrivateButton(payload),
+      _ => _handlePrivateButton(payload, dispatch),
     };
   }
 
@@ -75,5 +76,27 @@ final class InteractionCreatePacket implements ListenablePacket {
     dispatch(event: Event.serverButtonClick, params: [ctx]);
   }
 
-  Future<void> _handlePrivateButton(Map<String, dynamic> data) async {}
+  Future<void> _handlePrivateButton(Map<String, dynamic> payload, DispatchEvent dispatch) async {
+    final message = await marshaller.dataStore.message.getPrivateMessage(
+        messageId: Snowflake(payload['message']['id']), channelId: Snowflake(payload['channel_id']));
+
+    final metadata = payload['message']['interaction_metadata'];
+    final type = ButtonType.values.firstWhereOrNull((e) => e.value == metadata['type']);
+
+    if (type == null) {
+      logger.warn('Button type ${metadata['type']} not found');
+      return;
+    }
+
+    final ctx = PrivateButtonContext(
+      id: Snowflake(payload['id']),
+      applicationId: Snowflake(payload['application_id']),
+      version: payload['version'],
+      token: payload['token'],
+      message: message,
+      user: message.author,
+    );
+
+    dispatch(event: Event.serverButtonClick, params: [ctx]);
+  }
 }
