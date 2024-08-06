@@ -18,6 +18,9 @@ final class ServerButtonContext implements ButtonContext {
   @override
   final int version;
 
+  @override
+  final String customId;
+
   final Member member;
 
   final ServerMessage message;
@@ -29,6 +32,7 @@ final class ServerButtonContext implements ButtonContext {
     required this.applicationId,
     required this.token,
     required this.version,
+    required this.customId,
     required this.message,
     required this.member,
   }) {

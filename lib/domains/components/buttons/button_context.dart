@@ -5,4 +5,5 @@ abstract interface class ButtonContext {
   Snowflake get applicationId;
   String get token;
   int get version;
+  String get customId;
 }
