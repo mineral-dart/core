@@ -31,7 +31,7 @@ final class ChannelUpdatePacket implements ListenablePacket {
     final server = await marshaller.dataStore.server.getServer(channel.guildId);
     final serverCacheKey = marshaller.cacheKey.server(server.id);
     final channelCacheKey =
-        marshaller.cacheKey.serverChannel(serverId: server.id, channelId: channel.id);
+        marshaller.cacheKey.channel(channel.id);
 
     final before = server.channels.list[channel.id];
 
@@ -49,7 +49,7 @@ final class ChannelUpdatePacket implements ListenablePacket {
   }
 
   Future<void> registerPrivateChannel(PrivateChannel channel, DispatchEvent dispatch) async {
-    final cacheKey = marshaller.cacheKey.privateChannel(channel.id);
+    final cacheKey = marshaller.cacheKey.channel(channel.id);
     final before = marshaller.dataStore.channel.getChannel(channel.id);
 
     final rawChannel = await marshaller.serializers.channels.deserialize(channel);

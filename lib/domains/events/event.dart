@@ -7,6 +7,7 @@ import 'package:mineral/domains/events/contracts/private/private_channel_update_
 import 'package:mineral/domains/events/contracts/private/private_message_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_button_click_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_delete_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_pins_update_event.dart';
@@ -49,6 +50,7 @@ enum Event implements EnhancedEnum, EventType {
   serverRoleCreate(ServerRolesCreateEvent),
   serverRoleUpdate(ServerRolesUpdateEvent),
   serverRoleDelete(ServerRolesDeleteEvent),
+  serverButtonClick(ServerButtonClickEvent),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent),

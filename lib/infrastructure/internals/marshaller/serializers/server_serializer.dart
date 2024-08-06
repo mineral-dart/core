@@ -66,8 +66,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       if (channel is ServerCategoryChannel) {
         channelManager.list.putIfAbsent(channel.id, () => channel);
 
-        final cacheKey =
-            _marshaller.cacheKey.serverChannel(serverId: json['id'], channelId: channel.id);
+        final cacheKey = _marshaller.cacheKey.channel(channel.id);
 
         final rawChannel = await _marshaller.serializers.channels.deserialize(channel);
         await _marshaller.cache.put(cacheKey, rawChannel);
@@ -81,8 +80,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       if (channel is ServerChannel) {
         channelManager.list.putIfAbsent(channel.id, () => channel);
 
-        final cacheKey =
-            _marshaller.cacheKey.serverChannel(serverId: json['id'], channelId: channel.id);
+        final cacheKey = _marshaller.cacheKey.channel(channel.id);
 
         final rawChannel = await _marshaller.serializers.channels.deserialize(channel);
         await _marshaller.cache.put(cacheKey, rawChannel);
@@ -143,10 +141,11 @@ final class ServerSerializer implements SerializerContract<Server> {
       });
     }).wait;
 
-    final channels = await _marshaller.cache.whereKeyStartsWithOrFail('$serverKey/channel-');
-    await channels.entries.map((element) async {
-      final channel = await _marshaller.serializers.channels.serializeCache(element.value);
-      if (channel case final ServerChannel channel) {
+    await List.from(rawServer['channels']).map((key) async {
+      final rawChannel = await _marshaller.cache.getOrFail(key);
+
+      final channel = await _marshaller.serializers.channels.serializeCache(rawChannel);
+      if (channel is ServerChannel) {
         channelManager.list.putIfAbsent(channel.id, () => channel);
         return channel;
       }
@@ -193,11 +192,16 @@ final class ServerSerializer implements SerializerContract<Server> {
       return _marshaller.cacheKey.serverMember(serverId: server.id, memberId: member.id);
     }).toList();
 
+    final channels = server.channels.list.values.map((channel) {
+      return _marshaller.cacheKey.channel(channel.id);
+    }).toList();
+
     return {
       'id': server.id,
       'owner_id': server.owner.id,
       'name': server.name,
       'members': members,
+      'channels': channels,
       'description': server.description,
       'applicationId': server.applicationId,
       'assets': await _marshaller.serializers.serversAsset.deserialize(server.assets),
