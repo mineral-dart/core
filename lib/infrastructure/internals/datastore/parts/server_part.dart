@@ -41,7 +41,7 @@ final class ServerPart implements DataStorePart {
     await Future.wait([
       _kernel.marshaller.cache.put(serverCacheKey, rawServer),
       ...server.channels.list.values.map((channel) {
-        final channelCacheKey = cacheKey.serverChannel(serverId: id, channelId: channel.id);
+        final channelCacheKey = cacheKey.channel(channel.id);
         final rawChannel = _kernel.marshaller.serializers.channels.deserialize(channel);
 
         return _kernel.marshaller.cache.put(channelCacheKey, rawChannel);
@@ -80,7 +80,8 @@ final class ServerPart implements DataStorePart {
       final roles = await _serializeRolesResponse(response);
 
       for (final role in roles) {
-        final roleCacheKey = _kernel.marshaller.cacheKey.serverRole(serverId: guildId, roleId: role.id);
+        final roleCacheKey =
+            _kernel.marshaller.cacheKey.serverRole(serverId: guildId, roleId: role.id);
         final rawRole = await _kernel.marshaller.serializers.role.deserialize(role);
 
         await _kernel.marshaller.cache.put(roleCacheKey, rawRole);

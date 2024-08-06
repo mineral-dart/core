@@ -1,3 +1,4 @@
+import 'package:mineral/domains/events/contracts/server/server_button_click_event.dart';
 import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
@@ -81,4 +82,7 @@ final class ServerBucket {
 
   void stickersUpdate(ServerStickersUpdateEventHandler handle) =>
       _events.make(Event.serverStickersUpdate, handle);
+
+  void serverButtonClick(ServerButtonClickEventHandler handle) =>
+      _events.make(Event.serverButtonClick, handle);
 }

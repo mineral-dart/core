@@ -29,7 +29,7 @@ final class ChannelDeletePacket implements ListenablePacket {
   Future<void> registerServerChannel(Snowflake guildId, ServerChannel channel, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(guildId);
     final serverCacheKey = marshaller.cacheKey.server(server.id);
-    final channelCacheKey = marshaller.cacheKey.serverChannel(serverId: server.id, channelId: channel.id);
+    final channelCacheKey = marshaller.cacheKey.channel(channel.id);
 
     channel.server = server;
     server.channels.list.remove(channel.id);

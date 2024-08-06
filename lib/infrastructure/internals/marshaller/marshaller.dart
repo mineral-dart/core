@@ -34,6 +34,6 @@ final class Marshaller implements MarshallerContract {
   final CacheKeyContract cacheKey = CacheKey();
 
   Marshaller(this.logger, this.cache) {
-    serializers = SerializerBucketImpl(this);
+    serializers = SerializerBucket(this);
   }
 }

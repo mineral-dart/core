@@ -12,6 +12,7 @@ import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store_part.dart';
 import 'package:mineral/infrastructure/internals/http/discord_header.dart';
+import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';
 import 'package:mineral/infrastructure/services/http/http_request_option.dart';
@@ -24,10 +25,8 @@ final class ChannelPart implements DataStorePart {
 
   ChannelPart(this._kernel);
 
-  Future<T?> getChannel<T extends Channel>(Snowflake id, {Snowflake? serverId}) async {
-    final String key = serverId != null
-        ? _kernel.marshaller.cacheKey.serverChannel(serverId: serverId, channelId: id)
-        : _kernel.marshaller.cacheKey.privateChannel(id);
+  Future<T?> getChannel<T extends Channel>(Snowflake id) async {
+    final String key = _kernel.marshaller.cacheKey.channel(id);
 
     final cachedChannel = await _kernel.marshaller.cache.get(key);
     if (cachedChannel != null) {
@@ -109,12 +108,14 @@ final class ChannelPart implements DataStorePart {
       'components': components?.map((e) => e.toJson()).toList(),
     });
 
-    final message = await switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => _kernel.marshaller.serializers.message
-          .serializeRemote({...response.body, 'guild_id': guildId}),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
+    final channel = await _kernel.dataStore.channel.getChannel(channelId);
+    final serializer = switch (channel) {
+      ServerChannel() => _kernel.marshaller.serializers.serverMessage,
+      PrivateChannel() => _kernel.marshaller.serializers.privateMessage,
+      _ => throw Exception('Unknown channel type: $channel'),
+    } as SerializerContract<T>;
+
+    final Message message = await serializer.serializeRemote(response.body);
 
     await _kernel.marshaller.cache.put(message.id.value, {...response.body, 'guild_id': guildId});
 

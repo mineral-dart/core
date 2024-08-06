@@ -30,7 +30,7 @@ final class ChannelCreatePacket implements ListenablePacket {
   Future<void> registerServerChannel(ServerChannel channel, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(channel.guildId);
     final serverCacheKey = marshaller.cacheKey.server(server.id);
-    final channelCacheKey = marshaller.cacheKey.serverChannel(serverId: server.id, channelId: channel.id);
+    final channelCacheKey = marshaller.cacheKey.channel(channel.id);
 
     channel.server = server;
     server.channels.list.putIfAbsent(channel.id, () => channel);
@@ -45,7 +45,7 @@ final class ChannelCreatePacket implements ListenablePacket {
   }
 
   Future<void> registerPrivateChannel(PrivateChannel channel, DispatchEvent dispatch) async {
-    final cacheKey = marshaller.cacheKey.privateChannel(channel.id);
+    final cacheKey = marshaller.cacheKey.channel(channel.id);
 
     final rawChannel = await marshaller.serializers.channels.deserialize(channel);
     await marshaller.cache.put(cacheKey, rawChannel);
