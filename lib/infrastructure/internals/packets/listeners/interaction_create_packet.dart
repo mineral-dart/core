@@ -69,6 +69,7 @@ final class InteractionCreatePacket implements ListenablePacket {
       applicationId: Snowflake(payload['application_id']),
       version: payload['version'],
       token: payload['token'],
+      customId: payload['data']['custom_id'],
       message: message,
       member: message.author,
     );
@@ -93,6 +94,7 @@ final class InteractionCreatePacket implements ListenablePacket {
       applicationId: Snowflake(payload['application_id']),
       version: payload['version'],
       token: payload['token'],
+      customId: payload['data']['custom_id'],
       message: message,
       user: message.author,
     );
