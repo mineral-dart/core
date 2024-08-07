@@ -67,4 +67,8 @@ final class Server {
   Future<void> setAfkTimeout(int value, {String? reason}) async {
     await _serverPart.updateServer(id, {'afk_timeout': value}, reason);
   }
+
+  Future<void> setAfkChannel(String? channelId, {String? reason}) async {
+    await _serverPart.updateServer(id, {'afk_channel_id': channelId}, reason);
+  }
 }
