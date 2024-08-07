@@ -63,4 +63,8 @@ final class Server {
   Future<void> setExplicitContentFilter(ExplicitContentFilter value, {String? reason}) async {
     await _serverPart.updateServer(id, {'explicit_content_filter': value.value}, reason);
   }
+
+  Future<void> setAfkTimeout(int value, {String? reason}) async {
+    await _serverPart.updateServer(id, {'afk_timeout': value}, reason);
+  }
 }
