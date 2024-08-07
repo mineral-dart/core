@@ -71,4 +71,8 @@ final class Server {
   Future<void> setAfkChannel(String? channelId, {String? reason}) async {
     await _serverPart.updateServer(id, {'afk_channel_id': channelId}, reason);
   }
+
+  Future<void> setSystemChannel(String? channelId, {String? reason}) async {
+    await _serverPart.updateServer(id, {'system_channel_id': channelId}, reason);
+  }
 }
