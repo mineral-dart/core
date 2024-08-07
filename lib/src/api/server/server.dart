@@ -1,4 +1,6 @@
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/enums/default_message_notification.dart';
+import 'package:mineral/api/server/enums/explicit_content_filter.dart';
 import 'package:mineral/api/server/managers/channel_manager.dart';
 import 'package:mineral/api/server/managers/member_manager.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
@@ -46,7 +48,19 @@ final class Server {
     required this.threads,
   });
 
-  Future<void> setName(String newName, {String? reason}) async {
-    await _serverPart.updateServer(id.value, {'name': newName}, reason);
+  Future<void> setName(String name, {String? reason}) async {
+    await _serverPart.updateServer(id, {'name': name}, reason);
+  }
+
+  Future<void> setDescription(String description, {String? reason}) async {
+    await _serverPart.updateServer(id, {'description': description}, reason);
+  }
+
+  Future<void> setDefaultMessageNotifications(DefaultMessageNotification value, {String? reason}) async {
+    await _serverPart.updateServer(id, {'default_message_notifications': value.value}, reason);
+  }
+
+  Future<void> setExplicitContentFilter(ExplicitContentFilter value, {String? reason}) async {
+    await _serverPart.updateServer(id, {'explicit_content_filter': value.value}, reason);
   }
 }
