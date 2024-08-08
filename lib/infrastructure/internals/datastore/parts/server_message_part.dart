@@ -14,23 +14,23 @@ final class ServerMessagePart implements DataStorePart {
 
   ServerMessagePart(this._kernel);
 
-  Future<ServerMessage?> update(
+  Future<ServerMessage> update(
       {required Snowflake id,
       required Snowflake channelId,
       required Map<String, dynamic> payload}) async {
-    final response =
-        await _kernel.dataStore.client.patch('/channels/$channelId/messages/$id', body: payload);
+    final response = await _kernel.dataStore.client
+        .patch('/channels/$channelId/messages/$id', body: payload);
 
-    final ServerMessage? serverMessage =
-        await _kernel.marshaller.serializers.message.serializeRemote(response.body);
+    final ServerMessage serverMessage = await _kernel
+        .marshaller.serializers.message
+        .serializeRemote(response.body);
 
-    if (serverMessage != null) {
-      final serverKey = _kernel.marshaller.cacheKey
-          .serverMessage(serverId: serverMessage.channel.server.id, messageId: serverMessage.id);
-      final rawServerMessage = _kernel.marshaller.serializers.message.deserialize(response.body);
+    final serverKey = _kernel.marshaller.cacheKey.serverMessage(
+        serverId: serverMessage.channel.server.id, messageId: serverMessage.id);
+    final rawServerMessage =
+        _kernel.marshaller.serializers.message.deserialize(response.body);
 
-      await _kernel.marshaller.cache.put(serverKey, rawServerMessage);
-    }
+    await _kernel.marshaller.cache.put(serverKey, rawServerMessage);
 
     return serverMessage;
   }
@@ -41,16 +41,20 @@ final class ServerMessagePart implements DataStorePart {
       required Snowflake serverId,
       String? content,
       List<MessageEmbed>? embeds}) async {
-    final response = await _kernel.dataStore.client.post('/channels/$channelId/messages', body: {
+    final response = await _kernel.dataStore.client
+        .post('/channels/$channelId/messages', body: {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
-          fn: () async => embeds?.map(_kernel.marshaller.serializers.embed.deserialize).toList()),
+          fn: () async => embeds
+              ?.map(_kernel.marshaller.serializers.embed.deserialize)
+              .toList()),
       'message_reference': {'message_id': id, 'channel_id': channelId}
     });
 
     final server = await _kernel.dataStore.server.getServer(serverId);
-    final channel = await _kernel.dataStore.channel.getChannel(channelId, serverId: serverId);
+    final channel = await _kernel.dataStore.channel
+        .getChannel(channelId, serverId: serverId);
     final ServerMessage? serverMessage =
         await _kernel.marshaller.serializers.message.serializeRemote({
       ...response.body,
@@ -63,11 +67,13 @@ final class ServerMessagePart implements DataStorePart {
     }
 
     if (serverMessage != null) {
-      final messageKey = _kernel.marshaller.cacheKey
-          .serverMessage(serverId: serverMessage.channel.server.id, messageId: serverMessage.id);
+      final messageKey = _kernel.marshaller.cacheKey.serverMessage(
+          serverId: serverMessage.channel.server.id,
+          messageId: serverMessage.id);
       final message = await _kernel.marshaller.serializers.message
           .serializeRemote({...response.body, 'guild_id': serverId});
-      final rawServerMessage = await _kernel.marshaller.serializers.message.deserialize(message);
+      final rawServerMessage =
+          await _kernel.marshaller.serializers.message.deserialize(message);
 
       await _kernel.marshaller.cache.put(messageKey, rawServerMessage);
     }
@@ -75,19 +81,24 @@ final class ServerMessagePart implements DataStorePart {
     return serverMessage;
   }
 
-  Future<void> pin({required Snowflake id, required Snowflake channelId}) async {
+  Future<void> pin(
+      {required Snowflake id, required Snowflake channelId}) async {
     await _kernel.dataStore.client.put('/channels/$channelId/pins/$id');
   }
 
-  Future<void> unpin({required Snowflake id, required Snowflake channelId}) async {
+  Future<void> unpin(
+      {required Snowflake id, required Snowflake channelId}) async {
     await _kernel.dataStore.client.delete('/channels/$channelId/pins/$id');
   }
 
-  Future<void> crosspost({required Snowflake id, required Snowflake channelId}) async {
-    await _kernel.dataStore.client.post('/channels/$channelId/messages/$id/crosspost');
+  Future<void> crosspost(
+      {required Snowflake id, required Snowflake channelId}) async {
+    await _kernel.dataStore.client
+        .post('/channels/$channelId/messages/$id/crosspost');
   }
 
-  Future<void> delete({required Snowflake id, required Snowflake channelId}) async {
+  Future<void> delete(
+      {required Snowflake id, required Snowflake channelId}) async {
     await _kernel.dataStore.client.delete('/channels/$channelId/messages/$id');
   }
 }
