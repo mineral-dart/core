@@ -10,6 +10,7 @@ import 'package:mineral/domains/components/dialog/contexts/private_dialog_contex
 import 'package:mineral/domains/components/dialog/contexts/server_dialog_context.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/infrastructure/internals/interactions/types/interaction_context_type.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
@@ -109,9 +110,22 @@ final class InteractionCreatePacket implements ListenablePacket {
   }
 
   Future<void> dispatchModalComponent(Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    switch (payload['guild_id']) {
-      case String():
-        final context = ServerDialogContext(
+    final interactionContext = InteractionContextType.values
+        .firstWhereOrNull((element) => element.value == payload['context']);
+
+    final Map<Symbol, dynamic> parameters = List.from(payload['data']['components']).map((row) {
+      final component = row['components'][0];
+      return {Symbol(component['custom_id']): component['value']};
+    }).fold({}, (prev, curr) => {...prev, ...curr});
+
+    final event = switch (interactionContext) {
+      InteractionContextType.server => Event.serverDialogSubmit,
+      InteractionContextType.privateChannel => Event.privateDialogSubmit,
+      _ => null
+    };
+
+    final ctx = switch (interactionContext) {
+      InteractionContextType.server => ServerDialogContext(
           customId: payload['data']['custom_id'],
           id: Snowflake(payload['id']),
           applicationId: Snowflake(payload['application_id']),
@@ -121,19 +135,27 @@ final class InteractionCreatePacket implements ListenablePacket {
             guildId: Snowflake(payload['guild_id']),
             memberId: Snowflake(payload['member']['user']['id']),
           ),
-        );
-        dispatch(event: Event.serverDialogSubmit, params: [context]);
-      default:
-        final context = PrivateDialogContext(
+        ),
+      InteractionContextType.privateChannel => PrivateDialogContext(
           customId: payload['data']['custom_id'],
           id: Snowflake(payload['id']),
           applicationId: Snowflake(payload['application_id']),
           token: payload['token'],
           version: payload['version'],
           user: await marshaller.serializers.user.serializeRemote(payload['user']),
-        );
+        ),
+      _ => null
+    };
 
-        dispatch(event: Event.privateDialogSubmit, params: [context]);
+    if ([event, ctx].contains(null)) {
+      logger.warn('Interaction context ${payload['context']} not found');
+      return;
     }
+
+    dispatch(
+      event: event!,
+      params: [ctx],
+      namedParams: parameters,
+    );
   }
 }

@@ -31,6 +31,6 @@ final class EventListener implements EventListenerContract {
   StreamSubscription listen<T extends Function>({required Event event, required T handle}) {
     return _events.stream
         .where((element) => element.event == event)
-        .listen((element) => Function.apply(handle, element.params));
+        .listen((element) => Function.apply(handle, element.params, element.namedParams));
   }
 }
