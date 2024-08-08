@@ -1,9 +1,3 @@
-import 'package:mineral/src/api/common/embed/message_embed.dart';
-import 'package:mineral/src/api/common/message.dart';
-import 'package:mineral/src/api/common/message_properties.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/server/channels/server_channel.dart';
-import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/message_properties.dart';
@@ -46,8 +40,8 @@ final class ServerMessage extends Message<ServerChannel> {
     required this.author,
   });
 
-  Future<void> edit(String content) async {
-    _dataStoreServerMessage.update(id: id, channelId: channelId, payload: {'content': content});
+  Future<void> edit(String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components) async {
+    _dataStoreServerMessage.update(id: id, channelId: channelId, content: content, embeds: embeds, components: components);
   }
 
   Future<void> reply({String? content, List<MessageEmbed>? embeds}) async {

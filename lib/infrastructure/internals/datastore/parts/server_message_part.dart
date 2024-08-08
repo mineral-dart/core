@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
@@ -14,12 +15,23 @@ final class ServerMessagePart implements DataStorePart {
 
   ServerMessagePart(this._kernel);
 
-  Future<ServerMessage> update(
-      {required Snowflake id,
-      required Snowflake channelId,
-      required Map<String, dynamic> payload}) async {
+  Future<ServerMessage> update({
+    required Snowflake id,
+    required Snowflake channelId,
+    String? content,
+    List<MessageEmbed>? embeds,
+    List<MessageComponent>? components,
+  }) async {
     final response = await _kernel.dataStore.client
-        .patch('/channels/$channelId/messages/$id', body: payload);
+        .patch('/channels/$channelId/messages/$id', body: {
+      'content': content,
+      'embeds': await Helper.createOrNullAsync(
+          field: embeds,
+          fn: () async => embeds
+              ?.map(_kernel.marshaller.serializers.embed.deserialize)
+              .toList()),
+        'components': components?.map((c) => c.toJson()).toList()
+    });
 
     final ServerMessage serverMessage = await _kernel
         .marshaller.serializers.message
