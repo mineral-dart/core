@@ -80,10 +80,8 @@ final class ServerMessagePart implements DataStorePart {
 
     final messageKey = _kernel.marshaller.cacheKey.serverMessage(
         serverId: serverMessage.channel.server.id, messageId: serverMessage.id);
-    final message = await _kernel.marshaller.serializers.message
-        .serializeRemote({...response.body, 'guild_id': serverId});
     final rawServerMessage =
-        await _kernel.marshaller.serializers.message.deserialize(message);
+        await _kernel.marshaller.serializers.message.deserialize(serverMessage);
 
     await _kernel.marshaller.cache.put(messageKey, rawServerMessage);
 
