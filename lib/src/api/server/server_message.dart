@@ -51,10 +51,6 @@ final class ServerMessage extends Message<ServerChannel> {
   }
 
   Future<void> reply({String? content, List<MessageEmbed>? embeds}) async {
-    if (channel.type != ChannelType.guildText) {
-      return;
-    }
-
     _dataStoreServerMessage.reply(
         id: id, channelId: channelId, serverId: channel.guildId, content: content, embeds: embeds);
   }
