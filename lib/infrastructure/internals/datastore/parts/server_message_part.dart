@@ -30,7 +30,7 @@ final class ServerMessagePart implements DataStorePart {
           fn: () async => embeds
               ?.map(_kernel.marshaller.serializers.embed.deserialize)
               .toList()),
-        'components': components?.map((c) => c.toJson()).toList()
+      'components': components?.map((c) => c.toJson()).toList()
     });
 
     final ServerMessage serverMessage = await _kernel
@@ -47,7 +47,7 @@ final class ServerMessagePart implements DataStorePart {
     return serverMessage;
   }
 
-  Future<ServerMessage?> reply(
+  Future<ServerMessage> reply(
       {required Snowflake id,
       required Snowflake channelId,
       required Snowflake serverId,
@@ -66,29 +66,26 @@ final class ServerMessagePart implements DataStorePart {
 
     final server = await _kernel.dataStore.server.getServer(serverId);
     final channel = await _kernel.dataStore.channel
-        .getChannel(channelId, serverId: serverId);
-    final ServerMessage? serverMessage =
+        .getChannel<ServerChannel>(channelId, serverId: serverId);
+    final ServerMessage serverMessage =
         await _kernel.marshaller.serializers.message.serializeRemote({
       ...response.body,
       'guild_id': serverId,
     });
 
-    if (channel is ServerChannel) {
+    if (channel != null) {
       channel.server = server;
-      serverMessage?.channel = channel;
+      serverMessage.channel = channel;
     }
 
-    if (serverMessage != null) {
-      final messageKey = _kernel.marshaller.cacheKey.serverMessage(
-          serverId: serverMessage.channel.server.id,
-          messageId: serverMessage.id);
-      final message = await _kernel.marshaller.serializers.message
-          .serializeRemote({...response.body, 'guild_id': serverId});
-      final rawServerMessage =
-          await _kernel.marshaller.serializers.message.deserialize(message);
+    final messageKey = _kernel.marshaller.cacheKey.serverMessage(
+        serverId: serverMessage.channel.server.id, messageId: serverMessage.id);
+    final message = await _kernel.marshaller.serializers.message
+        .serializeRemote({...response.body, 'guild_id': serverId});
+    final rawServerMessage =
+        await _kernel.marshaller.serializers.message.deserialize(message);
 
-      await _kernel.marshaller.cache.put(messageKey, rawServerMessage);
-    }
+    await _kernel.marshaller.cache.put(messageKey, rawServerMessage);
 
     return serverMessage;
   }
