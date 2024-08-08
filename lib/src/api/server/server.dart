@@ -87,4 +87,8 @@ final class Server {
   Future<void> enablePremiumProgressBar(bool value, {String? reason}) async {
     await _serverPart.updateServer(id, {'premium_progress_bar_enabled': value}, reason);
   }
+
+  Future<void> setSafetyAlertsChannel(String? channelId, {String? reason}) async {
+    await _serverPart.updateServer(id, {'safety_alerts_channel_id': channelId}, reason);
+  }
 }

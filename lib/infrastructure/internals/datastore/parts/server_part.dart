@@ -25,6 +25,8 @@ final class ServerPart implements DataStorePart {
         option: HttpRequestOptionImpl(
             headers: {DiscordHeader.auditLogReason(reason)}));
 
+    print('${response.statusCode} / ${response.bodyString}');
+
     final Server? server = await _serializeServerResponse(response);
 
     if (server != null) {
