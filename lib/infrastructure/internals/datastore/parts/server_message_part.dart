@@ -52,7 +52,8 @@ final class ServerMessagePart implements DataStorePart {
       required Snowflake channelId,
       required Snowflake serverId,
       String? content,
-      List<MessageEmbed>? embeds}) async {
+      List<MessageEmbed>? embeds,
+      List<MessageComponent>? components}) async {
     final response = await _kernel.dataStore.client
         .post('/channels/$channelId/messages', body: {
       'content': content,
@@ -61,6 +62,7 @@ final class ServerMessagePart implements DataStorePart {
           fn: () async => embeds
               ?.map(_kernel.marshaller.serializers.embed.deserialize)
               .toList()),
+      'components': components?.map((c) => c.toJson()).toList(),
       'message_reference': {'message_id': id, 'channel_id': channelId}
     });
 

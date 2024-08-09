@@ -12,7 +12,8 @@ import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/server_message_part.dart';
 
 final class ServerMessage extends Message<ServerChannel> {
-  ServerMessagePart get _dataStoreServerMessage => ioc.resolve<DataStoreContract>().serverMessage;
+  ServerMessagePart get _dataStoreServerMessage =>
+      ioc.resolve<DataStoreContract>().serverMessage;
   final MessageProperties<ServerChannel> _properties;
 
   @override
@@ -40,13 +41,27 @@ final class ServerMessage extends Message<ServerChannel> {
     required this.author,
   });
 
-  Future<void> edit(String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components) async {
-    _dataStoreServerMessage.update(id: id, channelId: channelId, content: content, embeds: embeds, components: components);
+  Future<void> edit(String? content, List<MessageEmbed>? embeds,
+      List<MessageComponent>? components) async {
+    _dataStoreServerMessage.update(
+        id: id,
+        channelId: channelId,
+        content: content,
+        embeds: embeds,
+        components: components);
   }
 
-  Future<void> reply({String? content, List<MessageEmbed>? embeds}) async {
+  Future<void> reply(
+      {String? content,
+      List<MessageEmbed>? embeds,
+      List<MessageComponent>? components}) async {
     _dataStoreServerMessage.reply(
-        id: id, channelId: channelId, serverId: channel.guildId, content: content, embeds: embeds);
+        id: id,
+        channelId: channelId,
+        serverId: channel.guildId,
+        content: content,
+        embeds: embeds,
+        components: components);
   }
 
   Future<void> pin() async {
