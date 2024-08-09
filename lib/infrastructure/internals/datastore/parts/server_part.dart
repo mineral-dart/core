@@ -83,4 +83,27 @@ final class ServerPart implements DataStorePart {
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     } as Future<List<Role>>;
   }
+
+  Future<void> setOwner(Snowflake guildId, Snowflake newOwnerId) async {
+  final server = await getServer(guildId);
+
+  final response = await _kernel.dataStore.client.patch(
+    '/guilds/$guildId',
+    body: {'owner_id': newOwnerId.toString()},
+  );
+
+  if (response.statusCode == 200) {
+    server.ownerId = newOwnerId;
+    await _kernel.marshaller.cache.put(guildId, server);
+
+
+    await Future.wait([
+      ...server.roles.list.values.map((role) => _kernel.marshaller.cache.put(role.id, role)),
+      ...server.members.list.values.map((member) => _kernel.marshaller.cache.put(member.id, member))
+    ]);
+  } else {
+    throw HttpException('Failed to set new owner. Status code: ${response.statusCode}');
+  }
+}
+
 }
