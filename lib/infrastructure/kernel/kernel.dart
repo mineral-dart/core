@@ -46,6 +46,9 @@ abstract interface class KernelContract {
   CommandInteractionManagerContract get commands;
 
   Future<void> init();
+
+  // Ajout de la propriété ou méthode cacheKey
+  String cacheKey(Snowflake serverId);
 }
 
 final class Kernel implements KernelContract {
@@ -112,12 +115,10 @@ final class Kernel implements KernelContract {
     print(response.bodyString);
     return switch (response.statusCode) {
       200 => response.body,
-      401 => throw Exception('This token is invalid or revocated !'),
+      401 => throw Exception('This token is invalid or revoked!'),
       _ => throw Exception(response.body['message']),
     };
   }
-
-
 
   @override
   Future<void> init() async {
@@ -155,7 +156,6 @@ final class Kernel implements KernelContract {
     } else {
       createShards();
     }
-
   }
 
   Future<void> createShards() async {

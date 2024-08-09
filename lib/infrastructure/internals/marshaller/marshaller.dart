@@ -4,6 +4,18 @@ import 'package:mineral/infrastructure/internals/cache/cache_provider_contract.d
 import 'package:mineral/infrastructure/internals/marshaller/serializer_bucket.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
 
+// Définition de l'interface CacheKeyContract
+abstract interface class CacheKeyContract {
+  String server(Snowflake id);
+}
+
+class CacheKey implements CacheKeyContract {
+  @override
+  String server(Snowflake id) {
+    return 'server_$id';
+  }
+}
+
 abstract interface class MarshallerContract {
   DataStoreContract get dataStore;
 
@@ -12,6 +24,8 @@ abstract interface class MarshallerContract {
   SerializerBucket get serializers;
 
   CacheProviderContract get cache;
+
+  CacheKeyContract get cacheKey;  // Ajout de la propriété cacheKey
 }
 
 final class Marshaller implements MarshallerContract {
@@ -26,6 +40,9 @@ final class Marshaller implements MarshallerContract {
 
   @override
   final CacheProviderContract cache;
+
+  @override
+  final CacheKeyContract cacheKey = CacheKey();  // Ajout de la propriété cacheKey
 
   Marshaller(this.logger, this.cache) {
     serializers = SerializerBucketImpl(this);
