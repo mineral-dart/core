@@ -127,4 +127,19 @@ final class MemberPart implements DataStorePart {
 
     return Future.wait(awaitedMembers);
   }
+
+  Future<void> deleteServer(Snowflake id, {String? reason}) async {
+  final response = await _kernel.dataStore.client.delete(
+    '/guilds/$id',
+    option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})
+  );
+
+  if (status.isSuccess(response.statusCode)) {
+    final cacheKey = _kernel.marshaller.cacheKey.server(id);
+    await _kernel.marshaller.cache.remove(cacheKey);
+  } else {
+    throw HttpException(response.body);
+  }
+}
+
 }
