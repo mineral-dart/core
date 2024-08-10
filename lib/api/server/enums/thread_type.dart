@@ -1,0 +1,4 @@
+enum ThreadType {
+  private,
+  public;
+}
