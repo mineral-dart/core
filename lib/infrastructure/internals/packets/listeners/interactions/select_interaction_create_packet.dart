@@ -72,6 +72,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
           _dispatchRoleSelectMenu(ctx, message.payload, dispatch);
         case ComponentType.userSelectMenu:
           _dispatchUserSelectMenu(ctx, message.payload, dispatch);
+        case ComponentType.textSelectMenu:
+          _dispatchTextSelectMenu(ctx, message.payload, dispatch);
         default:
           logger.warn('Select menu type $selectMenuType not found');
       }
@@ -156,5 +158,22 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
         event: event,
         params: [ctx, resolvedResource],
         constraint: (String? customId) => customId == ctx.customId);
+  }
+
+  Future<void> _dispatchTextSelectMenu(
+      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
+    final List<String> resolvedText = List.from(payload['data']['values']);
+
+    return switch (ctx) {
+      ServerSelectContext() => dispatch(
+          event: Event.serverTextSelect,
+          params: [ctx, resolvedText],
+          constraint: (String? customId) => customId == ctx.customId),
+      PrivateSelectContext() => dispatch(
+          event: Event.privateTextSelect,
+          params: [ctx, resolvedText],
+          constraint: (String? customId) => customId == ctx.customId),
+      _ => logger.warn('Select context $ctx not found'),
+    };
   }
 }

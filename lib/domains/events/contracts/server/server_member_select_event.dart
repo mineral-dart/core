@@ -13,5 +13,5 @@ abstract class ServerMemberSelectEvent implements ListenableEvent {
 
   String? get customId;
 
-  FutureOr<void> handle(ServerSelectContext ctx, List<Member> roles);
+  FutureOr<void> handle(ServerSelectContext ctx, List<Member> members);
 }

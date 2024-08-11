@@ -2,7 +2,12 @@ import 'package:mineral/api/common/commands/command_contract.dart';
 import 'package:mineral/domains/commands/command_declaration_bucket.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_dialog_submit_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_member_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_role_select_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_text_select_event.dart';
+import 'package:mineral/domains/events/contracts/private/private_dialog_submit_event.dart';
+import 'package:mineral/domains/events/contracts/private/private_user_select_event.dart';
+import 'package:mineral/domains/events/contracts/private/private_text_select_event.dart';
 import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 import 'package:mineral/infrastructure/commons/listenable.dart';
@@ -53,6 +58,11 @@ final class MineralClient implements MineralClientContract {
             final ServerDialogSubmitEvent instance => instance.customId,
             final ServerChannelSelectEvent instance => instance.customId,
             final ServerRoleSelectEvent instance => instance.customId,
+            final ServerMemberSelectEvent instance => instance.customId,
+            final ServerTextSelectEvent instance => instance.customId,
+            final PrivateDialogSubmitEvent instance => instance.customId,
+            final PrivateUserSelectEvent instance => instance.customId,
+            final PrivateTextSelectEvent instance => instance.customId,
             _ => null
           }
         );
