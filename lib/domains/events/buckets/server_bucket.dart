@@ -4,6 +4,7 @@ import 'package:mineral/domains/events/contracts/server/server_button_click_even
 import 'package:mineral/domains/events/contracts/server/server_channel_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_delete_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_pins_update_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_channel_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_delete_event.dart';
@@ -83,4 +84,7 @@ final class ServerBucket {
 
   void dialogSubmit<T>(ServerDialogSubmitEventHandler<T> handle, {String? customId}) =>
       _events.make(Event.serverDialogSubmit, handle, customId: customId);
+
+  void selectChannel(ServerChannelSelectEventHandler handle, {String? customId}) =>
+      _events.make(Event.serverChannelSelect, handle, customId: customId);
 }

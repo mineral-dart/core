@@ -10,7 +10,7 @@ abstract class ServerDialogSubmitEvent implements ListenableEvent {
   @override
   Event get event => Event.serverDialogSubmit;
 
-  String get customId;
+  String? get customId;
 
   FutureOr<void> handle(ServerDialogContext ctx);
 }
