@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/components/buttons/button_type.dart';
 import 'package:mineral/api/common/components/component_type.dart';
@@ -8,6 +10,7 @@ import 'package:mineral/domains/components/buttons/contexts/private_button_conte
 import 'package:mineral/domains/components/buttons/contexts/server_button_context.dart';
 import 'package:mineral/domains/components/dialog/contexts/private_dialog_context.dart';
 import 'package:mineral/domains/components/dialog/contexts/server_dialog_context.dart';
+import 'package:mineral/domains/components/selects/contexts/server_select_context.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/interactions/types/interaction_context_type.dart';
@@ -31,9 +34,15 @@ final class InteractionCreatePacket implements ListenablePacket {
     final interactionManager = ioc.resolve<CommandInteractionManagerContract>();
     final type = InteractionType.values.firstWhereOrNull((e) => e.value == message.payload['type']);
 
+    final componentType = ComponentType.values
+        .firstWhereOrNull((e) => e.value == message.payload['data']['component_type']);
+
     return switch (type) {
       InteractionType.applicationCommand => interactionManager.dispatcher.dispatch(message.payload),
-      InteractionType.messageComponent => dispatchMessageComponent(message.payload, dispatch),
+      InteractionType.messageComponent when componentType == ComponentType.button =>
+        dispatchMessageComponent(message.payload, dispatch),
+      InteractionType.messageComponent when ComponentType.selectMenus.contains(componentType) =>
+        dispatchSelectComponent(message.payload, dispatch),
       InteractionType.modal => dispatchModalComponent(message.payload, dispatch),
       _ => logger.warn('Interaction type ${message.payload['type']} not found')
     };
@@ -153,9 +162,55 @@ final class InteractionCreatePacket implements ListenablePacket {
     }
 
     dispatch(
-      event: event!,
-      params: [ctx, parameters],
-      constraint: (String? customId) => customId == ctx!.customId
+        event: event!,
+        params: [ctx, parameters],
+        constraint: (String? customId) => customId == ctx!.customId);
+  }
+
+  Future<void> dispatchSelectComponent(Map<String, dynamic> payload, DispatchEvent dispatch) async {
+    final selectMenuType =
+        ComponentType.values.firstWhereOrNull((e) => e.value == payload['data']['component_type']);
+
+    print(selectMenuType);
+
+    switch (selectMenuType) {
+      case ComponentType.channelSelectMenu:
+        _dispatchSelectMenu(payload, dispatch);
+      default:
+        logger.warn('Select menu type $selectMenuType not found');
+    }
+  }
+
+  Future<void> _dispatchSelectMenu(Map<String, dynamic> payload, DispatchEvent dispatch) async {
+    final resolvedData = payload['data']['resolved'];
+    final channelIds = Map.from(resolvedData['channels']).keys;
+
+    final ctx = ServerSelectContext(
+      id: Snowflake(payload['id']),
+      applicationId: Snowflake(payload['application_id']),
+      token: payload['token'],
+      version: payload['version'],
+      customId: payload['data']['custom_id'],
+      message: await marshaller.dataStore.message.getServerMessage(
+        messageId: Snowflake(payload['message']['id']),
+        channelId: Snowflake(payload['channel_id']),
+      ),
+      member: await marshaller.dataStore.member.getMember(
+        guildId: Snowflake(payload['guild_id']),
+        memberId: Snowflake(payload['member']['user']['id']),
+      ),
     );
+
+    final data = await Future.wait(channelIds.map((id) async {
+      final cacheKey = marshaller.cacheKey.channel(Snowflake(id));
+      final rawChannel = await marshaller.cache.getOrFail(cacheKey);
+
+      return marshaller.serializers.channels.serializeCache(rawChannel);
+    }));
+
+    dispatch(
+        event: Event.serverChannelSelect,
+        params: [ctx, data],
+        constraint: (String? customId) => customId == ctx.customId);
   }
 }
