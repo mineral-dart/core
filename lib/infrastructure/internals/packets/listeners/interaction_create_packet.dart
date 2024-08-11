@@ -1,10 +1,9 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/components/buttons/button_type.dart';
 import 'package:mineral/api/common/components/component_type.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/interaction_type.dart';
+import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/domains/components/buttons/contexts/private_button_context.dart';
 import 'package:mineral/domains/components/buttons/contexts/server_button_context.dart';
@@ -201,11 +200,11 @@ final class InteractionCreatePacket implements ListenablePacket {
       ),
     );
 
-    final data = await Future.wait(channelIds.map((id) async {
+    final List<ServerChannel> data = await Future.wait(channelIds.map((id) async {
       final cacheKey = marshaller.cacheKey.channel(Snowflake(id));
       final rawChannel = await marshaller.cache.getOrFail(cacheKey);
 
-      return marshaller.serializers.channels.serializeCache(rawChannel);
+      return marshaller.serializers.channels.serializeCache(rawChannel) as Future<ServerChannel>;
     }));
 
     dispatch(

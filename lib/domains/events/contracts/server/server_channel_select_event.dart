@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/domains/components/dialog/contexts/server_dialog_context.dart';
 import 'package:mineral/domains/components/selects/contexts/server_select_context.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
@@ -12,7 +11,7 @@ abstract class ServerChannelSelectEvent implements ListenableEvent {
   @override
   Event get event => Event.serverChannelSelect;
 
-  String get customId;
+  String? get customId;
 
   FutureOr<void> handle(ServerSelectContext ctx, List<ServerChannel> channels);
 }
