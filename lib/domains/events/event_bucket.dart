@@ -15,13 +15,12 @@ final class EventBucket {
     private = PrivateBucket(this);
   }
 
-  void make<T extends Function>(Event event, T handle) => _registerEvent<T>(event: event, handle: handle);
+  void make<T extends Function>(Event event, T handle, {String? customId}) =>
+      _registerEvent<T>(event: event, handle: handle, customId: customId);
 
   void ready(ReadyEventHandler handle) => _registerEvent(event: Event.ready, handle: handle);
 
-  void _registerEvent<T extends Function>({required Event event, required T handle}) =>
-    _kernel.eventListener.listen(
-      event: event,
-      handle: handle,
-    );
+  void _registerEvent<T extends Function>(
+          {required Event event, required T handle, String? customId}) =>
+      _kernel.eventListener.listen(event: event, handle: handle, customId: customId);
 }

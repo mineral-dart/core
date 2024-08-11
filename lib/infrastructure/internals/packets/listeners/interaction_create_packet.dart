@@ -154,8 +154,8 @@ final class InteractionCreatePacket implements ListenablePacket {
 
     dispatch(
       event: event!,
-      params: [ctx],
-      namedParams: parameters,
+      params: [ctx, parameters],
+      constraint: (String? customId) => customId == ctx!.customId
     );
   }
 }

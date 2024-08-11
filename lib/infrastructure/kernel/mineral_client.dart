@@ -1,5 +1,6 @@
 import 'package:mineral/api/common/commands/command_contract.dart';
 import 'package:mineral/domains/commands/command_declaration_bucket.dart';
+import 'package:mineral/domains/events/contracts/server/server_dialog_submit_event.dart';
 import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 import 'package:mineral/infrastructure/commons/listenable.dart';
@@ -46,6 +47,10 @@ final class MineralClient implements MineralClientContract {
         _kernel.eventListener.listen(
           event: instance.event,
           handle: (instance as dynamic).handle as Function,
+          customId: switch(instance) {
+            final ServerDialogSubmitEvent instance => instance.customId,
+            _ => null
+          }
         );
     }
   }

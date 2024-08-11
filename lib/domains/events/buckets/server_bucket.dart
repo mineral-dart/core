@@ -27,14 +27,11 @@ final class ServerBucket {
 
   ServerBucket(this._events);
 
-  void serverCreate(ServerCreateEventHandler handle) =>
-      _events.make(Event.serverCreate, handle);
+  void serverCreate(ServerCreateEventHandler handle) => _events.make(Event.serverCreate, handle);
 
-  void serverUpdate(ServerUpdateEventHandler handle) =>
-      _events.make(Event.serverUpdate, handle);
+  void serverUpdate(ServerUpdateEventHandler handle) => _events.make(Event.serverUpdate, handle);
 
-  void serverDelete(ServerDeleteEventHandler handle) =>
-      _events.make(Event.serverDelete, handle);
+  void serverDelete(ServerDeleteEventHandler handle) => _events.make(Event.serverDelete, handle);
 
   void messageCreate(ServerMessageEventHandler handle) =>
       _events.make(Event.serverMessageCreate, handle);
@@ -51,8 +48,7 @@ final class ServerBucket {
   void channelPinsUpdate(ServerChannelPinsUpdateEventHandler handle) =>
       _events.make(Event.serverChannelPinsUpdate, handle);
 
-  void memberAdd(ServerMemberAddEventHandler handle) =>
-      _events.make(Event.serverMemberAdd, handle);
+  void memberAdd(ServerMemberAddEventHandler handle) => _events.make(Event.serverMemberAdd, handle);
 
   void memberRemove(ServerMemberRemoveEventHandler handle) =>
       _events.make(Event.serverMemberRemove, handle);
@@ -72,11 +68,9 @@ final class ServerBucket {
   void presenceUpdate(ServerPresenceUpdateEventHandler handle) =>
       _events.make(Event.serverPresenceUpdate, handle);
 
-  void banAdd(ServerBanAddEventHandler handle) =>
-      _events.make(Event.serverBanAdd, handle);
+  void banAdd(ServerBanAddEventHandler handle) => _events.make(Event.serverBanAdd, handle);
 
-  void banRemove(ServerBanRemoveEventHandler handle) =>
-      _events.make(Event.serverBanRemove, handle);
+  void banRemove(ServerBanRemoveEventHandler handle) => _events.make(Event.serverBanRemove, handle);
 
   void emojisUpdate(ServerEmojisUpdateEventHandler handle) =>
       _events.make(Event.serverEmojisUpdate, handle);
@@ -87,6 +81,6 @@ final class ServerBucket {
   void buttonClick(ServerButtonClickEventHandler handle) =>
       _events.make(Event.serverButtonClick, handle);
 
-  void dialogSubmit(ServerDialogSubmitEventHandler handle) =>
-      _events.make(Event.serverDialogSubmit, handle);
+  void dialogSubmit<T>(ServerDialogSubmitEventHandler<T> handle, {String? customId}) =>
+      _events.make(Event.serverDialogSubmit, handle, customId: customId);
 }
