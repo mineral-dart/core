@@ -10,6 +10,14 @@ enum ComponentType implements EnhancedEnum<int> {
   mentionableSelectMenu(7),
   channelSelectMenu(8);
 
+  static const selectMenus = [
+    textSelectMenu,
+    userSelectMenu,
+    roleSelectMenu,
+    mentionableSelectMenu,
+    channelSelectMenu,
+  ];
+
   @override
   final int value;
 
