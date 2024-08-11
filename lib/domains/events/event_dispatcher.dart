@@ -3,7 +3,7 @@ import 'package:mineral/domains/events/internal_event_params.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract interface class EventDispatcherContract {
-  void dispatch({required Event event, required List params, Map<Symbol, dynamic>? namedParams});
+  void dispatch({required Event event, required List params});
 
   void dispose();
 }
@@ -14,8 +14,8 @@ final class EventDispatcher implements EventDispatcherContract {
   EventDispatcher(this._events);
 
   @override
-  void dispatch({required Event event, required List params, Map<Symbol, dynamic>? namedParams}) {
-    _events.add(InternalEventParams(event, params, namedParams));
+  void dispatch({required Event event, required List params, bool Function(String?)? constraint}) {
+    _events.add(InternalEventParams(event, params, constraint));
   }
 
   @override
