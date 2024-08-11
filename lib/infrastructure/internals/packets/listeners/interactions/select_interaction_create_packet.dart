@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/components/component_type.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/interaction_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
+import 'package:mineral/api/server/role.dart';
 import 'package:mineral/domains/components/selects/button_context.dart';
 import 'package:mineral/domains/components/selects/contexts/private_select_context.dart';
 import 'package:mineral/domains/components/selects/contexts/server_select_context.dart';
@@ -67,6 +70,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
       switch (selectMenuType) {
         case ComponentType.channelSelectMenu:
           _dispatchChannelSelectMenu(ctx, message.payload, dispatch);
+        case ComponentType.roleSelectMenu:
+          _dispatchRoleSelectMenu(ctx, message.payload, dispatch);
         default:
           logger.warn('Select menu type $selectMenuType not found');
       }
@@ -98,5 +103,24 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
           constraint: (String? customId) => customId == ctx.customId),
       _ => logger.warn('Select context $ctx not found'),
     };
+  }
+
+  Future<void> _dispatchRoleSelectMenu(
+      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
+    final resolvedData = payload['data']['resolved'];
+    final roleIds = Map.from(resolvedData['roles']).keys;
+
+    final List<Role> resolvedRoles = await Future.wait(roleIds.map((id) async {
+      final cacheKey =
+          marshaller.cacheKey.serverRole(serverId: payload['guild_id'], roleId: Snowflake(id));
+      final rawRole = await marshaller.cache.getOrFail(cacheKey);
+
+      return marshaller.serializers.role.serializeCache(rawRole);
+    }));
+
+    dispatch(
+        event: Event.serverRoleSelect,
+        params: [ctx, resolvedRoles],
+        constraint: (String? customId) => customId == ctx.customId);
   }
 }

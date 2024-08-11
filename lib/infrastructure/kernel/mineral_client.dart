@@ -2,6 +2,7 @@ import 'package:mineral/api/common/commands/command_contract.dart';
 import 'package:mineral/domains/commands/command_declaration_bucket.dart';
 import 'package:mineral/domains/events/contracts/server/server_channel_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_dialog_submit_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_role_select_event.dart';
 import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 import 'package:mineral/infrastructure/commons/listenable.dart';
@@ -51,6 +52,7 @@ final class MineralClient implements MineralClientContract {
           customId: switch(instance) {
             final ServerDialogSubmitEvent instance => instance.customId,
             final ServerChannelSelectEvent instance => instance.customId,
+            final ServerRoleSelectEvent instance => instance.customId,
             _ => null
           }
         );
