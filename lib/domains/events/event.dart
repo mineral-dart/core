@@ -7,6 +7,7 @@ import 'package:mineral/domains/events/contracts/private/private_channel_pins_up
 import 'package:mineral/domains/events/contracts/private/private_channel_update_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_dialog_submit_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_message_create_event.dart';
+import 'package:mineral/domains/events/contracts/private/private_text_select_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_user_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
@@ -31,6 +32,7 @@ import 'package:mineral/domains/events/contracts/server/server_roles_create_even
 import 'package:mineral/domains/events/contracts/server/server_roles_remove_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_roles_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_stickers_update_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_text_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_update_event.dart';
 
 interface class EventType {}
@@ -62,6 +64,7 @@ enum Event implements EnhancedEnum, EventType {
   serverChannelSelect(ServerChannelSelectEvent),
   serverRoleSelect(ServerRoleSelectEvent),
   serverMemberSelect(ServerMemberSelectEvent),
+  serverTextSelect(ServerTextSelectEvent),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent),
@@ -70,7 +73,8 @@ enum Event implements EnhancedEnum, EventType {
   privateChannelDelete(PrivateChannelDeleteEvent),
   privateButtonClick(PrivateButtonClickEvent),
   privateDialogSubmit(PrivateDialogSubmitEvent),
-  privateUserSelect(PrivateUserSelectEvent);
+  privateUserSelect(PrivateUserSelectEvent),
+  privateTextSelect(PrivateTextSelectEvent);
 
   @override
   final Type value;
