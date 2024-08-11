@@ -7,6 +7,7 @@ import 'package:mineral/domains/events/contracts/private/private_channel_pins_up
 import 'package:mineral/domains/events/contracts/private/private_channel_update_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_dialog_submit_event.dart';
 import 'package:mineral/domains/events/contracts/private/private_message_create_event.dart';
+import 'package:mineral/domains/events/contracts/private/private_user_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_button_click_event.dart';
@@ -21,6 +22,7 @@ import 'package:mineral/domains/events/contracts/server/server_dialog_submit_eve
 import 'package:mineral/domains/events/contracts/server/server_emojis_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_member_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_member_remove_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_member_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_member_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_message_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_presence_update_event.dart';
@@ -59,6 +61,7 @@ enum Event implements EnhancedEnum, EventType {
   serverDialogSubmit(ServerDialogSubmitEvent),
   serverChannelSelect(ServerChannelSelectEvent),
   serverRoleSelect(ServerRoleSelectEvent),
+  serverMemberSelect(ServerMemberSelectEvent),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent),
@@ -66,7 +69,8 @@ enum Event implements EnhancedEnum, EventType {
   privateChannelUpdate(PrivateChannelUpdateEvent),
   privateChannelDelete(PrivateChannelDeleteEvent),
   privateButtonClick(PrivateButtonClickEvent),
-  privateDialogSubmit(PrivateDialogSubmitEvent);
+  privateDialogSubmit(PrivateDialogSubmitEvent),
+  privateUserSelect(PrivateUserSelectEvent);
 
   @override
   final Type value;

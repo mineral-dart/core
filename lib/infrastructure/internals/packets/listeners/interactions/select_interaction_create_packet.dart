@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/components/component_type.dart';
@@ -72,6 +70,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
           _dispatchChannelSelectMenu(ctx, message.payload, dispatch);
         case ComponentType.roleSelectMenu:
           _dispatchRoleSelectMenu(ctx, message.payload, dispatch);
+        case ComponentType.userSelectMenu:
+          _dispatchUserSelectMenu(ctx, message.payload, dispatch);
         default:
           logger.warn('Select menu type $selectMenuType not found');
       }
@@ -121,6 +121,40 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     dispatch(
         event: Event.serverRoleSelect,
         params: [ctx, resolvedRoles],
+        constraint: (String? customId) => customId == ctx.customId);
+  }
+
+  Future<void> _dispatchUserSelectMenu(
+      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
+    final resolvedData = payload['data']['resolved'];
+    final userIds = Map.from(resolvedData['users']).keys;
+
+    final event = switch (ctx) {
+      ServerSelectContext() => Event.serverMemberSelect,
+      PrivateSelectContext() => Event.privateUserSelect,
+      _ => null,
+    };
+
+    if (event == null) {
+      logger.warn('Select context $ctx not found');
+      return;
+    }
+
+    final resolvedResource = await switch (ctx) {
+      ServerSelectContext() => Future.wait(userIds.map((id) {
+          return marshaller.dataStore.member.getMember(
+            guildId: Snowflake(payload['guild_id']),
+            memberId: Snowflake(id),
+          );
+        })),
+      PrivateSelectContext() =>
+        Future.wait(userIds.map((id) => marshaller.dataStore.user.getUser(id))),
+      _ => Future.value([]),
+    };
+
+    dispatch(
+        event: event,
+        params: [ctx, resolvedResource],
         constraint: (String? customId) => customId == ctx.customId);
   }
 }

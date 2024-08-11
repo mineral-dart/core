@@ -12,6 +12,7 @@ import 'package:mineral/domains/events/contracts/server/server_dialog_submit_eve
 import 'package:mineral/domains/events/contracts/server/server_emojis_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_member_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_member_remove_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_member_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_member_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_message_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_presence_update_event.dart';
@@ -91,4 +92,7 @@ final class ServerBucket {
 
   void selectRole(ServerRoleSelectEventHandler handle, {String? customId}) =>
       _events.make(Event.serverRoleSelect, handle, customId: customId);
+
+  void selectMember(ServerMemberSelectEventHandler handle, {String? customId}) =>
+      _events.make(Event.serverMemberSelect, handle, customId: customId);
 }
