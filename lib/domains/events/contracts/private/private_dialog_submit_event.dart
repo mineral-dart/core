@@ -10,7 +10,7 @@ abstract class PrivateDialogSubmitEvent implements ListenableEvent {
   @override
   Event get event => Event.privateDialogSubmit;
 
-  String? get customId;
+  String? customId;
 
   FutureOr<void> handle(PrivateDialogContext ctx);
 }

@@ -10,7 +10,5 @@ abstract class PrivateMessageCreateEvent implements ListenableEvent {
   @override
   Event get event => Event.privateMessageCreate;
 
-  String? get customId;
-
   FutureOr<void> handle(PrivateMessage message);
 }
