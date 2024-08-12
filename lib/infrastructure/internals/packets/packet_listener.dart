@@ -17,6 +17,7 @@ import 'package:mineral/infrastructure/internals/packets/listeners/guild_role_cr
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_role_delete_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_role_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_stickers_update_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/listeners/guild_thread_create_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/interactions/button_interaction_create_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/interactions/command_interaction_create_packet.dart';
@@ -82,5 +83,6 @@ final class PacketListener implements PacketListenerContract {
     subscribe(CommandInteractionCreatePacket.new);
     subscribe(SelectInteractionCreatePacket.new);
     subscribe(DialogInteractionCreatePacket.new);
+    subscribe(GuildThreadCreatePacket.new);
   }
 }

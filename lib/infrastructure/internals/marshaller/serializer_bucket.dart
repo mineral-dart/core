@@ -6,6 +6,7 @@ import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/sticker.dart';
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/private/user.dart';
+import 'package:mineral/api/server/channels/thread_channel.dart';
 import 'package:mineral/api/private/user_assets.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/member_assets.dart';
@@ -34,6 +35,7 @@ import 'package:mineral/infrastructure/internals/marshaller/serializers/server_s
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_subscription_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/sticker_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/user_assets_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/thread_channel_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/user_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
@@ -72,6 +74,8 @@ final class SerializerBucket {
 
   final SerializerContract<Poll> poll;
 
+  final SerializerContract<ThreadChannel> threads;
+
   SerializerBucket(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
@@ -90,4 +94,9 @@ final class SerializerBucket {
         privateMessage = PrivateMessageSerializer(marshaller),
         embed = EmbedSerializer(marshaller),
         poll = PollSerializer(marshaller);
+        embed = EmbedSerializer(),
+        globalCommandContext = GlobalCommandContextSerializer(marshaller),
+        guildCommandContext = ServerCommandContextSerializer(marshaller),
+        poll = PollSerializer(),
+        threads = ThreadChannelSerializer(marshaller);
 }
