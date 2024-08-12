@@ -5,6 +5,8 @@ enum PacketType {
 
   messageCreate('MESSAGE_CREATE'),
 
+  guildThreadCreate('THREAD_CREATE'),
+
   guildCreate('GUILD_CREATE'),
   guildUpdate('GUILD_UPDATE'),
   guildDelete('GUILD_DELETE'),
