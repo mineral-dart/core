@@ -82,8 +82,8 @@ final class ServerBucket {
   void stickersUpdate(ServerStickersUpdateEventHandler handle) =>
       _events.make(Event.serverStickersUpdate, handle);
 
-  void buttonClick(ServerButtonClickEventHandler handle) =>
-      _events.make(Event.serverButtonClick, handle);
+  void buttonClick(ServerButtonClickEventHandler handle, {String? customId}) =>
+      _events.make(Event.serverButtonClick, handle, customId: customId);
 
   void dialogSubmit<T>(ServerDialogSubmitEventHandler<T> handle, {String? customId}) =>
       _events.make(Event.serverDialogSubmit, handle, customId: customId);
