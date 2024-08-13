@@ -14,6 +14,7 @@ import 'package:mineral/infrastructure/internals/packets/packet_listener.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/infrastructure/io/ansi.dart';
+import 'package:mineral/infrastructure/io/exceptions/token_exception.dart';
 import 'package:mineral/infrastructure/services/http/header.dart';
 import 'package:mineral/infrastructure/services/http/http_client.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
@@ -111,9 +112,9 @@ final class Kernel implements KernelContract {
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {
     final response = await httpClient.get('/gateway/bot');
     return switch (response.statusCode) {
-      200 => response.body,
-      401 => throw Exception('This token is invalid or revocated !'),
-      _ => throw Exception(response.body['message']),
+      int() when httpClient.status.isSuccess(response.statusCode) => response.body,
+      int() when httpClient.status.isError(response.statusCode) => throw TokenException('This token is invalid or revocated !', body: response.body['message']),
+      _ => throw TokenException('This token is invalid or revocated !', body: response.body['message']),
     };
   }
 
