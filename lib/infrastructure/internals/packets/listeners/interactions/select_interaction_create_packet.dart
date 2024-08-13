@@ -36,33 +36,9 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
       final selectMenuType = ComponentType.values
           .firstWhereOrNull((e) => e.value == message.payload['data']['component_type']);
 
-      final ctx = switch (message.payload['guild_id']) {
-        String() => ServerSelectContext(
-            id: Snowflake(message.payload['id']),
-            applicationId: Snowflake(message.payload['application_id']),
-            token: message.payload['token'],
-            version: message.payload['version'],
-            customId: message.payload['data']['custom_id'],
-            message: await marshaller.dataStore.message.getServerMessage(
-              messageId: Snowflake(message.payload['message']['id']),
-              channelId: Snowflake(message.payload['channel_id']),
-            ),
-            member: await marshaller.dataStore.member.getMember(
-              guildId: Snowflake(message.payload['guild_id']),
-              memberId: Snowflake(message.payload['member']['user']['id']),
-            ),
-          ),
-        _ => PrivateSelectContext(
-            id: Snowflake(message.payload['id']),
-            applicationId: Snowflake(message.payload['application_id']),
-            token: message.payload['token'],
-            version: message.payload['version'],
-            customId: message.payload['data']['custom_id'],
-            message: await marshaller.dataStore.message.getPrivateMessage(
-              messageId: Snowflake(message.payload['message']['id']),
-              channelId: Snowflake(message.payload['channel_id']),
-            ),
-            user: await marshaller.serializers.user.serializeRemote(message.payload['user'])),
+      final ctx = await switch (message.payload['guild_id']) {
+        String() => ServerSelectContext.fromMap(marshaller, message.payload),
+        _ => PrivateSelectContext.fromMap(marshaller, message.payload),
       };
 
       switch (selectMenuType) {
