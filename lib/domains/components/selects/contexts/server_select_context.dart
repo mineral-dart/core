@@ -5,6 +5,7 @@ import 'package:mineral/domains/components/buttons/button_context.dart';
 import 'package:mineral/domains/components/selects/button_context.dart';
 import 'package:mineral/infrastructure/internals/interactions/interaction.dart';
 import 'package:mineral/infrastructure/internals/interactions/types/interaction_contract.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 final class ServerSelectContext implements SelectContext {
   @override
@@ -38,5 +39,23 @@ final class ServerSelectContext implements SelectContext {
     required this.member,
   }) {
     interaction = Interaction(token, id);
+  }
+
+  static Future<ServerSelectContext> fromMap(MarshallerContract marshaller, Map<String, dynamic> payload) async{
+    return ServerSelectContext(
+      customId: payload['data']['custom_id'],
+      id: Snowflake(payload['id']),
+      applicationId: Snowflake(payload['application_id']),
+      token: payload['token'],
+      version: payload['version'],
+      message: await marshaller.dataStore.message.getServerMessage(
+        messageId: Snowflake(payload['message']['id']),
+        channelId: Snowflake(payload['channel_id']),
+      ),
+      member: await marshaller.dataStore.member.getMember(
+        guildId: Snowflake(payload['guild_id']),
+        memberId: Snowflake(payload['member']['user']['id']),
+      ),
+    );
   }
 }
