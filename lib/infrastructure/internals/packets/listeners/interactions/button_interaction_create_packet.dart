@@ -69,7 +69,10 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       member: message.author,
     );
 
-    dispatch(event: Event.serverButtonClick, params: [ctx]);
+    dispatch(
+        event: Event.serverButtonClick,
+        params: [ctx],
+        constraint: (String? customId) => customId == ctx.customId);
   }
 
   Future<void> _handlePrivateButton(Map<String, dynamic> payload, DispatchEvent dispatch) async {
@@ -95,6 +98,9 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       user: message.author,
     );
 
-    dispatch(event: Event.serverButtonClick, params: [ctx]);
+    dispatch(
+        event: Event.serverButtonClick,
+        params: [ctx],
+        constraint: (String? customId) => customId == ctx.customId);
   }
 }
