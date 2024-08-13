@@ -1,5 +1,4 @@
 import 'package:collection/collection.dart';
-import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/interaction_type.dart';
 import 'package:mineral/domains/components/dialog/contexts/private_dialog_context.dart';
 import 'package:mineral/domains/components/dialog/contexts/server_dialog_context.dart';
@@ -40,26 +39,11 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
         _ => null
       };
 
-      final ctx = switch (interactionContext) {
-        InteractionContextType.server => ServerDialogContext(
-            customId: message.payload['data']['custom_id'],
-            id: Snowflake(message.payload['id']),
-            applicationId: Snowflake(message.payload['application_id']),
-            token: message.payload['token'],
-            version: message.payload['version'],
-            member: await marshaller.dataStore.member.getMember(
-              guildId: Snowflake(message.payload['guild_id']),
-              memberId: Snowflake(message.payload['member']['user']['id']),
-            ),
-          ),
-        InteractionContextType.privateChannel => PrivateDialogContext(
-            customId: message.payload['data']['custom_id'],
-            id: Snowflake(message.payload['id']),
-            applicationId: Snowflake(message.payload['application_id']),
-            token: message.payload['token'],
-            version: message.payload['version'],
-            user: await marshaller.serializers.user.serializeRemote(message.payload['user']),
-          ),
+      final ctx = await switch (interactionContext) {
+        InteractionContextType.server =>
+          ServerDialogContext.fromMap(marshaller, message.payload['data']),
+        InteractionContextType.privateChannel =>
+          PrivateDialogContext.fromMap(marshaller, message.payload['data']),
         _ => null
       };
 

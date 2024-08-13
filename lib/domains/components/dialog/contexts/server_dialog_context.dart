@@ -3,6 +3,7 @@ import 'package:mineral/api/server/member.dart';
 import 'package:mineral/domains/components/dialog/dialog_context.dart';
 import 'package:mineral/infrastructure/internals/interactions/interaction.dart';
 import 'package:mineral/infrastructure/internals/interactions/types/interaction_contract.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 final class ServerDialogContext implements DialogContext {
   @override
@@ -33,5 +34,19 @@ final class ServerDialogContext implements DialogContext {
     required this.member,
   }) {
     interaction = Interaction(token, id);
+  }
+
+  static Future<ServerDialogContext> fromMap(MarshallerContract marshaller, Map<String, dynamic> payload) async{
+    return ServerDialogContext(
+      customId: payload['data']['custom_id'],
+      id: Snowflake(payload['id']),
+      applicationId: Snowflake(payload['application_id']),
+      token: payload['token'],
+      version: payload['version'],
+      member: await marshaller.dataStore.member.getMember(
+        guildId: Snowflake(payload['guild_id']),
+        memberId: Snowflake(payload['member']['user']['id']),
+      ),
+    );
   }
 }
