@@ -10,6 +10,7 @@ abstract class ServerButtonClickEvent implements ListenableEvent {
   @override
   Event get event => Event.serverButtonClick;
 
+  @override
   String? customId;
 
   FutureOr<void> handle(ServerButtonContext ctx);

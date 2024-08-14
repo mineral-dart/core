@@ -11,5 +11,8 @@ abstract class ServerMemberUpdateEvent implements ListenableEvent {
   @override
   Event get event => Event.serverMemberUpdate;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(Member after, Member before, Server server);
 }

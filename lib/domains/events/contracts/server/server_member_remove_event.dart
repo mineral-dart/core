@@ -11,5 +11,8 @@ abstract class ServerMemberRemoveEvent implements ListenableEvent {
   @override
   Event get event => Event.serverMemberRemove;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(User? user, Server server);
 }

@@ -10,7 +10,8 @@ abstract class PrivateTextSelectEvent implements ListenableEvent {
   @override
   Event get event => Event.serverTextSelect;
 
-  String? get customId;
+  @override
+  String? customId;
 
   FutureOr<void> handle(PrivateSelectContext ctx, List<String> values);
 }

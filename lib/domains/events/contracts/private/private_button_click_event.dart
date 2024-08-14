@@ -10,5 +10,8 @@ abstract class PrivateButtonClickEvent implements ListenableEvent {
   @override
   Event get event => Event.privateButtonClick;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(PrivateButtonContext ctx);
 }

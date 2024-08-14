@@ -11,5 +11,8 @@ abstract class ServerChannelPinsUpdateEvent implements ListenableEvent {
   @override
   Event get event => Event.serverChannelPinsUpdate;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(Server server, ServerChannel channel);
 }
