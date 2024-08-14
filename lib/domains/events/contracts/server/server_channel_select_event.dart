@@ -11,7 +11,8 @@ abstract class ServerChannelSelectEvent implements ListenableEvent {
   @override
   Event get event => Event.serverChannelSelect;
 
-  String? get customId;
+  @override
+  String? customId;
 
   FutureOr<void> handle(ServerSelectContext ctx, List<ServerChannel> channels);
 }

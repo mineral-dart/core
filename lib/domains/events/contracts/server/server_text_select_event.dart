@@ -10,7 +10,8 @@ abstract class ServerTextSelectEvent implements ListenableEvent {
   @override
   Event get event => Event.serverTextSelect;
 
-  String? get customId;
+  @override
+  String? customId;
 
   FutureOr<void> handle(ServerSelectContext ctx, List<String> values);
 }

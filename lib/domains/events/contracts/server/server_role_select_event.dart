@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/domains/components/selects/contexts/server_select_context.dart';
 import 'package:mineral/domains/events/event.dart';
@@ -12,7 +11,8 @@ abstract class ServerRoleSelectEvent implements ListenableEvent {
   @override
   Event get event => Event.serverRoleSelect;
 
-  String? get customId;
+  @override
+  String? customId;
 
   FutureOr<void> handle(ServerSelectContext ctx, List<Role> roles);
 }

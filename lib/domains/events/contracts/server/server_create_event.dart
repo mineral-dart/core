@@ -10,5 +10,8 @@ abstract class ServerCreateEvent implements ListenableEvent {
   @override
   Event get event => Event.serverCreate;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(Server server);
 }

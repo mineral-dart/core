@@ -10,5 +10,8 @@ abstract class ReadyEvent implements ListenableEvent {
   @override
   Event get event => Event.ready;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(Bot bot);
 }

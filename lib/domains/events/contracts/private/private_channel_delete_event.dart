@@ -10,5 +10,8 @@ abstract class PrivateChannelDeleteEvent implements ListenableEvent {
   @override
   Event get event => Event.privateChannelDelete;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(PrivateChannel channel);
 }
