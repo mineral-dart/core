@@ -34,13 +34,13 @@ class ThreadChannel extends ServerChannel {
 
   String? get description => _properties.description;
 
-  Snowflake? get channelId => _properties.channelId;
+  Snowflake get channelId => _properties.channelId!;
 
   int? get rateLimitPerUser => _properties.rateLimitPerUser;
 
   int get memberCount => _properties.memberCount ?? 0;
 
-  List<ThreadMember> get members => _properties.members;
+  List<ThreadMember> members = [];
 
   ThreadMember get owner => _properties.owner!;
 
@@ -49,7 +49,7 @@ class ThreadChannel extends ServerChannel {
   ThreadMetadata get metadata => _properties.metadata;
 
   @override
-  Snowflake get guildId => _properties.guildId!;
+  Snowflake get serverId => _properties.guildId!;
 
   late final ServerCategoryChannel? category;
 

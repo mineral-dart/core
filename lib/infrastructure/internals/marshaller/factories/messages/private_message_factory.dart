@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/message_properties.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/private/private_message.dart';
@@ -8,7 +9,7 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
   @override
   Future<PrivateMessage> serialize(
       MarshallerContract marshaller, Map<String, dynamic> json) async {
-    final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
+    final channel = json['channel'] as Channel;
     final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
 
     final user = await marshaller.serializers.user.serialize(json['author']);
