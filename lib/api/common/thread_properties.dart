@@ -90,7 +90,6 @@ final class ThreadProperties {
             ));
 
     final channel = await marshaller.dataStore.channel.getChannel(Snowflake(element['parent_id']));
-    final server = await marshaller.dataStore.server.getServer(Snowflake(element['guild_id']));
 
     return ThreadProperties(
       id: Snowflake(element['id']),
@@ -106,7 +105,7 @@ final class ThreadProperties {
       bitrate: element['bitrate'],
       userLimit: element['user_limit'],
       rateLimitPerUser: element['rate_limit_per_user'],
-      owner: element['member'] != null ? await ThreadMember.serialize(marshaller, element['member'], server) : null,
+      owner: element['member'] != null ? await ThreadMember.serialize(marshaller, element['member']) : null,
       lastPinTimestamp: element['last_pin_timestamp'],
       rtcRegion: element['rtc_region'],
       videoQualityMode: element['video_quality_mode'],
@@ -131,20 +130,19 @@ final class ThreadProperties {
 
   static Future<ThreadProperties> serializeCache(
       MarshallerContract marshaller, Map<String, dynamic> element) async {
-    final server = await marshaller.dataStore.server.getServer(Snowflake(element['guild_id']));
     final ChannelType type = ChannelType.values.firstWhere((e) => e.value == element['type']);
     final permissionOverwrites = await Helper.createOrNullAsync(
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
           List.from(element['permission_overwrites'])
               .map((json) async =>
-              marshaller.serializers.channelPermissionOverwrite.serializeRemote(json))
+              marshaller.serializers.channelPermissionOverwrite.serializeCache(json))
               .toList(),
         ));
-    print("test thread serialize cache");
 
-    final channel = await marshaller.dataStore.channel.getChannel(Snowflake(element['parent_id']));
-
+    final channelKey = marshaller.cacheKey.serverChannel(serverId: element['guild_id'], channelId: element['parent_id']);
+    final channelRaw = await marshaller.cache.getOrFail(channelKey);
+    final channel = await marshaller.serializers.channels.serializeCache(channelRaw);
 
     return ThreadProperties(
       id: Snowflake(element['id']),
@@ -175,7 +173,7 @@ final class ThreadProperties {
       defaultForumLayout: element['default_forum_layout'],
       members: [],
       metadata: ThreadMetadata.serialize(element['thread_metadata'], type),
-      owner: await ThreadMember.serialize(marshaller, element, server),
+      owner: await ThreadMember.serialize(marshaller, element),
       memberCount: element['member_count'],
       isPublic: type == ChannelType.guildPublicThread,
       type: type,
