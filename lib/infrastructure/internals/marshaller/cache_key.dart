@@ -35,6 +35,10 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
+  String privateMessage({required Snowflake channelId, required Snowflake messageId});
+
+  String threadChannel({required Snowflake serverId, required Snowflake threadId});
+}
   String memberAssets(Snowflake serverId, Snowflake memberId, {bool ref = false}) {
     final key = '${member(serverId, memberId)}/assets';
     return ref ? 'ref:$key' : key;
@@ -66,4 +70,8 @@ final class CacheKey {
 
   String sticker(Snowflake serverId, Snowflake stickerId) =>
       '${server(serverId)}/stickers/$stickerId';
+
+  @override
+  String threadChannel({required Snowflake serverId, required Snowflake threadId}) =>
+      '${server(serverId)}/thread-$threadId';
 }
