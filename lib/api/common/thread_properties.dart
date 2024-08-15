@@ -5,14 +5,9 @@ import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/threads/thread_member.dart';
 import 'package:mineral/api/server/threads/thread_metadata.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
-import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
-import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/infrastructure/internals/datastore/parts/channel_part.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 
 final class ThreadProperties {
-  ChannelPart get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
-
   final Snowflake id;
   final ChannelType type;
   final ServerTextChannel? channel;
@@ -88,7 +83,6 @@ final class ThreadProperties {
                       marshaller.serializers.channelPermissionOverwrite.serializeRemote(json))
                   .toList(),
             ));
-
     final channel = await marshaller.dataStore.channel.getChannel(Snowflake(element['parent_id']));
 
     return ThreadProperties(
@@ -105,7 +99,6 @@ final class ThreadProperties {
       bitrate: element['bitrate'],
       userLimit: element['user_limit'],
       rateLimitPerUser: element['rate_limit_per_user'],
-      owner: element['member'] != null ? await ThreadMember.serialize(marshaller, element['member']) : null,
       lastPinTimestamp: element['last_pin_timestamp'],
       rtcRegion: element['rtc_region'],
       videoQualityMode: element['video_quality_mode'],
@@ -121,6 +114,7 @@ final class ThreadProperties {
       defaultForumLayout: element['default_forum_layout'],
       members: [],
       metadata: ThreadMetadata.serialize(element['thread_metadata'], type),
+      owner: await ThreadMember.serialize(marshaller, element),
       memberCount: element['member_count'],
       isPublic: type == ChannelType.guildPublicThread,
       type: type,
