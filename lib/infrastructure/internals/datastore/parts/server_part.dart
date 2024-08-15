@@ -20,8 +20,9 @@ final class ServerPart implements DataStorePart {
     final cacheKey = _kernel.marshaller.cacheKey;
     final serverCacheKey = cacheKey.server(id);
 
-    if (await _kernel.marshaller.cache.has(serverCacheKey)) {
-      return _kernel.marshaller.serializers.server.serializeCache({'id': id.value});
+    final rawServer = await _kernel.marshaller.cache.get(serverCacheKey);
+    if (rawServer != null) {
+      return _kernel.marshaller.serializers.server.serializeCache(rawServer);
     }
 
     final [serverResponse, channelsResponse, membersResponse] = await Future.wait([
@@ -36,10 +37,8 @@ final class ServerPart implements DataStorePart {
       'members': membersResponse.body
     });
 
-    final rawServer = await _kernel.marshaller.serializers.server.deserialize(server);
-
     await Future.wait([
-      _kernel.marshaller.cache.put(serverCacheKey, rawServer),
+      _kernel.marshaller.cache.put(serverCacheKey, await _kernel.marshaller.serializers.server.deserialize(server)),
       ...server.channels.list.values.map((channel) {
         final channelCacheKey = cacheKey.channel(channel.id);
         final rawChannel = _kernel.marshaller.serializers.channels.deserialize(channel);
