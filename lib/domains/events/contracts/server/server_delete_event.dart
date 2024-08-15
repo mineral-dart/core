@@ -10,5 +10,8 @@ abstract class ServerDeleteEvent implements ListenableEvent {
   @override
   Event get event => Event.serverDelete;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(Server server);
 }

@@ -10,5 +10,8 @@ abstract class ServerEmojisUpdateEvent implements ListenableEvent {
   @override
   Event get event => Event.serverEmojisUpdate;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(EmojiManager emojisManager, Server server);
 }

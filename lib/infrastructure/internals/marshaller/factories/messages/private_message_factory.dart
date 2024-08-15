@@ -5,23 +5,25 @@ import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/message_factory.dart';
 
 final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
-@override
-  Future<PrivateMessage> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
-  final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
-  final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
+  @override
+  Future<PrivateMessage> serialize(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
+    final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
 
-  final user = await marshaller.serializers.user.serialize(json['author']);
+    final user = await marshaller.serializers.user.serializeRemote(json['author']);
 
-  return PrivateMessage(messageProperties, userId: json['author']['id'], user: user);
+    return PrivateMessage(messageProperties, userId: json['author']['id'], author: user);
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, PrivateMessage message) async {
+  Future<Map<String, dynamic>> deserialize(
+      MarshallerContract marshaller, PrivateMessage message) async {
     return {
       'id': message.id,
       'content': message.content,
       'embeds': message.embeds.map(marshaller.serializers.embed.deserialize).toList(),
-      'channel': message.channel.id,
+      'channel_id': message.channel.id,
       'created_at': message.createdAt.toIso8601String(),
       'updated_at': message.updatedAt?.toIso8601String(),
     };

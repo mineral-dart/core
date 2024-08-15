@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:mineral/api/common/channel.dart';
+import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/polls/poll.dart';
@@ -11,6 +12,7 @@ import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store_part.dart';
 import 'package:mineral/infrastructure/internals/http/discord_header.dart';
+import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';
 import 'package:mineral/infrastructure/services/http/http_request_option.dart';
@@ -24,9 +26,11 @@ final class ChannelPart implements DataStorePart {
   ChannelPart(this._kernel);
 
   Future<T?> getChannel<T extends Channel>(Snowflake id) async {
-    final cachedChannel = await _kernel.marshaller.cache.get(id);
+    final String key = _kernel.marshaller.cacheKey.channel(id);
+
+    final cachedChannel = await _kernel.marshaller.cache.get(key);
     if (cachedChannel != null) {
-      return _kernel.marshaller.serializers.channels.serialize(cachedChannel) as Future<T?>;
+      return _kernel.marshaller.serializers.channels.serializeCache(cachedChannel) as Future<T?>;
     }
 
     final response = await _kernel.dataStore.client.get('/channels/$id');
@@ -53,8 +57,8 @@ final class ChannelPart implements DataStorePart {
 
   Future<PrivateChannel?> createPrivateChannel(
       {required Snowflake id, required Snowflake recipientId}) async {
-    final response =
-        await _kernel.dataStore.client.post('/users/@me/channels', body: {'recipient_id': recipientId});
+    final response = await _kernel.dataStore.client
+        .post('/users/@me/channels', body: {'recipient_id': recipientId});
 
     final Channel? channel = await serializeChannelResponse(response);
     _putInCache(channel, id, response);
@@ -81,32 +85,39 @@ final class ChannelPart implements DataStorePart {
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
     return switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => _kernel.marshaller.cache.remove(id),
+      int() when status.isSuccess(response.statusCode) => _kernel.marshaller.cache.remove(id.value),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     };
   }
 
-  Future<T> createMessage<T extends Message>(Snowflake? guildId, Snowflake channelId,
-      String? content, List<MessageEmbed>? embeds, Poll? poll) async {
+  Future<T> createMessage<T extends Message>(
+      Snowflake? guildId,
+      Snowflake channelId,
+      String? content,
+      List<MessageEmbed>? embeds,
+      Poll? poll,
+      List<MessageComponent>? components) async {
     final response = await _kernel.dataStore.client.post('/channels/$channelId/messages', body: {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
-          fn: () async =>
-              embeds?.map(_kernel.marshaller.serializers.embed.deserialize).toList()),
+          fn: () async => embeds?.map(_kernel.marshaller.serializers.embed.deserialize).toList()),
       'poll': await Helper.createOrNullAsync(
-          field: poll, fn: () async => _kernel.marshaller.serializers.poll.deserialize(poll!))
+          field: poll, fn: () async => _kernel.marshaller.serializers.poll.deserialize(poll!)),
+      'components': components?.map((e) => e.toJson()).toList(),
     });
 
-    final message = await switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => _kernel.marshaller.serializers.message
-          .serialize({...response.body, 'guild_id': guildId}),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
+    final channel = await _kernel.dataStore.channel.getChannel(channelId);
+    final serializer = switch (channel) {
+      ServerChannel() => _kernel.marshaller.serializers.serverMessage,
+      PrivateChannel() => _kernel.marshaller.serializers.privateMessage,
+      _ => throw Exception('Unknown channel type: $channel'),
+    } as SerializerContract<T>;
 
-    await _kernel.marshaller.cache.put(message.id, {...response.body, 'guild_id': guildId});
+    final Message message = await serializer.serializeRemote(response.body);
+
+    await _kernel.marshaller.cache.put(message.id.value, {...response.body, 'guild_id': guildId});
 
     return message as T;
   }
@@ -114,7 +125,7 @@ final class ChannelPart implements DataStorePart {
   Future<T?> serializeChannelResponse<T extends Channel>(Response response) {
     return switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        _kernel.marshaller.serializers.channels.serialize(response.body),
+        _kernel.marshaller.serializers.channels.serializeRemote(response.body),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
     } as Future<T?>;
@@ -125,7 +136,7 @@ final class ChannelPart implements DataStorePart {
       case ServerChannel():
         _updateCacheFromChannelServer(id, channel, response.body);
       case PrivateChannel():
-        _kernel.marshaller.cache.put(channel.id, response.body);
+        _kernel.marshaller.cache.put('channel-${channel.id}', response.body);
       default:
         throw Exception('Unknown channel type: $channel');
     }
@@ -139,8 +150,8 @@ final class ChannelPart implements DataStorePart {
     final rawServer = await _kernel.marshaller.serializers.server.deserialize(server);
 
     await Future.wait([
-      _kernel.marshaller.cache.put(server.id, rawServer),
-      _kernel.marshaller.cache.put(channel.id, rawChannel)
+      _kernel.marshaller.cache.put('server-${server.id}', rawServer),
+      _kernel.marshaller.cache.put('server-${server.id}/channel-${channel.id}', rawChannel)
     ]);
   }
 }

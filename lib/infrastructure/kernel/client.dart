@@ -90,7 +90,8 @@ final class Client {
     return this;
   }
 
-  Client registerProvider<T extends ProviderContract>(T Function(MineralClientContract) provider) {
+  Client registerProvider<T extends ProviderContract>(
+      T Function(MineralClientContract) provider) {
     _providers.add(provider);
     return this;
   }
@@ -130,12 +131,15 @@ final class Client {
     }
 
     final http = HttpClient(
-        config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
-      Header.userAgent('Mineral'),
-      Header.contentType('application/json'),
-    }));
+        config: HttpClientConfigImpl(
+            baseUrl: 'https://discord.com/api/v$httpVersion',
+            headers: {
+          Header.userAgent('Mineral'),
+          Header.contentType('application/json'),
+        }));
 
-    final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
+    final shardConfig =
+        ShardingConfig(token: token, intent: intent, version: shardVersion);
 
     final marshaller = Marshaller(_logger, _cache!);
     final datastore = DataStore(http);
@@ -144,7 +148,8 @@ final class Client {
     ioc
       ..bind(MarshallerContract, () => marshaller)
       ..bind(DataStoreContract, () => datastore)
-      ..bind(CommandInteractionManagerContract, () => commandInteractionManager);
+      ..bind(
+          CommandInteractionManagerContract, () => commandInteractionManager);
 
     final packetListener = PacketListener();
     final eventListener = EventListener();

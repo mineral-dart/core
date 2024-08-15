@@ -18,7 +18,7 @@ final class ChannelDeletePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final channel = await marshaller.serializers.channels.serialize(message.payload);
+    final channel = await marshaller.serializers.channels.serializeRemote(message.payload);
 
     switch (channel) {
       case ServerChannel():
@@ -28,13 +28,16 @@ final class ChannelDeletePacket implements ListenablePacket {
 
   Future<void> registerServerChannel(Snowflake guildId, ServerChannel channel, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(guildId);
+    final serverCacheKey = marshaller.cacheKey.server(server.id);
+    final channelCacheKey = marshaller.cacheKey.channel(channel.id);
 
     channel.server = server;
     server.channels.list.remove(channel.id);
 
+    final rawServer = await marshaller.serializers.server.deserialize(server);
     await Future.wait([
-      marshaller.cache.put(guildId, await marshaller.serializers.server.deserialize(server)),
-      marshaller.cache.remove(channel.id)
+      marshaller.cache.put(serverCacheKey, rawServer),
+      marshaller.cache.remove(channelCacheKey)
     ]);
 
     dispatch(event: Event.serverChannelDelete, params: [channel]);

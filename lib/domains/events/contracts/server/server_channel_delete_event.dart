@@ -10,5 +10,8 @@ abstract class ServerChannelDeleteEvent implements ListenableEvent {
   @override
   Event get event => Event.serverChannelDelete;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(ServerChannel? channel);
 }

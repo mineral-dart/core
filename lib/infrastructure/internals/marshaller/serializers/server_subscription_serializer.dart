@@ -10,7 +10,12 @@ final class ServerSubscriptionSerializer implements SerializerContract<ServerSub
   ServerSubscriptionSerializer(this._marshaller);
 
   @override
-  ServerSubscription serialize(Map<String, dynamic> json) {
+  ServerSubscription serializeRemote(Map<String, dynamic> json) => _serialize(json);
+
+  @override
+  ServerSubscription serializeCache(Map<String, dynamic> json) => _serialize(json);
+
+  ServerSubscription _serialize(Map<String, dynamic> json) {
     return ServerSubscription(
       tier: findInEnum(PremiumTier.values, json['premium_tier']),
       subscriptionCount: json['premium_subscription_count'],

@@ -10,5 +10,8 @@ abstract class ServerStickersUpdateEvent implements ListenableEvent {
   @override
   Event get event => Event.serverStickersUpdate;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(StickerManager stickerManager, Server server);
 }

@@ -1,3 +1,6 @@
+import 'dart:async';
+
+import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/color.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/embed/message_embed_assets.dart';
@@ -15,7 +18,7 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
   EmbedSerializer(this._marshaller);
 
   @override
-  MessageEmbed serialize(Map<String, dynamic> json) {
+  MessageEmbed serializeRemote(Map<String, dynamic> json) {
     return MessageEmbed(
       title: json['title'],
       description: json['description'],
@@ -32,6 +35,11 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
           field: json['fields'], fn: () => json['fields'].map(MessageEmbedField.fromJson).toList()),
       color: Helper.createOrNull(field: json['color'], fn: () => Color.of(json['color'])),
     );
+  }
+
+  @override
+  Future<MessageEmbed> serializeCache(Map<String, dynamic> json) {
+    throw UnimplementedError();
   }
 
   @override

@@ -5,6 +5,7 @@ import 'package:mineral/api/common/managers/message_manager.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/common/video_quality.dart';
+import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
 
@@ -31,6 +32,10 @@ final class ServerVoiceChannel extends ServerChannel {
 
   @override
   Snowflake get guildId => _properties.guildId!;
+
+  Snowflake? get categoryId => _properties.categoryId;
+
+  late final ServerCategoryChannel? category;
 
   ServerVoiceChannel(this._properties) : _methods = ChannelMethods(_properties.id);
 

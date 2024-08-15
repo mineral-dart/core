@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/snowflake.dart';
@@ -109,8 +110,8 @@ final class ChannelMethods {
     );
   }
 
-  Future<void> send({ Snowflake? guildId, String? content, List<MessageEmbed>? embeds, Poll? poll}) async {
-    await dataStoreChannel.createMessage(guildId, id, content, embeds, poll);
+  Future<void> send({ Snowflake? guildId, String? content, List<MessageEmbed>? embeds, Poll? poll, List<MessageComponent>? components}) async {
+    await dataStoreChannel.createMessage(guildId, id, content, embeds, poll, components);
   }
 
   Future<void> delete(String? reason) async {

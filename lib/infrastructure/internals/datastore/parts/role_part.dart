@@ -17,6 +17,25 @@ final class RolePart implements DataStorePart {
 
   RolePart(this._kernel);
 
+  Future<Role> getRole({required Snowflake guildId, required Snowflake roleId}) async {
+    final cacheKey = _kernel.marshaller.cacheKey.serverRole(serverId: guildId, roleId: roleId);
+    final rawRole = await _kernel.marshaller.cache.get(cacheKey);
+
+    if (rawRole != null) {
+      return _kernel.marshaller.serializers.role.serializeRemote(rawRole);
+    }
+
+    final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles/$roleId');
+    final role = await serializeRoleResponse(response);
+
+    if (role != null) {
+      final rawRole = _kernel.marshaller.serializers.role.deserialize(response.body);
+      await _kernel.marshaller.cache.put(cacheKey, rawRole);
+    }
+
+    return role!;
+  }
+
   Future<void> addRole(
       {required Snowflake memberId,
       required Snowflake serverId,
@@ -57,8 +76,10 @@ final class RolePart implements DataStorePart {
     final Role? role = await serializeRoleResponse(response);
 
     if (role != null) {
+      final roleCacheKey = _kernel.marshaller.cacheKey.serverRole(serverId: serverId, roleId: id);
       final rawRole = _kernel.marshaller.serializers.role.deserialize(response.body);
-      await _kernel.marshaller.cache.put(role.id, rawRole);
+
+      await _kernel.marshaller.cache.put(roleCacheKey, rawRole);
     }
 
     return role;
@@ -73,7 +94,7 @@ final class RolePart implements DataStorePart {
   Future<Role?> serializeRoleResponse(Response response) {
     return switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        _kernel.marshaller.serializers.role.serialize(response.body),
+        _kernel.marshaller.serializers.role.serializeRemote(response.body),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
     } as Future<Role?>;

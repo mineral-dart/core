@@ -17,11 +17,11 @@ final class GuildDeletePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final Snowflake serverId = Snowflake(message.payload['id']);
-    final server = await marshaller.dataStore.server.getServer(serverId);
+    final cacheKey = marshaller.cacheKey.server(message.payload['id']);
+    final server = await marshaller.dataStore.server.getServer(message.payload['id']);
 
     dispatch(event: Event.serverDelete, params: [server]);
 
-    marshaller.cache.remove(serverId);
+    marshaller.cache.remove(cacheKey);
   }
 }

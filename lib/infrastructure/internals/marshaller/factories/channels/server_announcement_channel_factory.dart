@@ -1,10 +1,8 @@
 import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_announcement_channel.dart';
-import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/channel_factory.dart';
-import 'package:mineral/infrastructure/commons/helper.dart';
 
 final class ServerAnnouncementChannelFactory
     implements ChannelFactoryContract<ServerAnnouncementChannel> {
@@ -12,20 +10,17 @@ final class ServerAnnouncementChannelFactory
   ChannelType get type => ChannelType.guildAnnouncement;
 
   @override
-  Future<ServerAnnouncementChannel> make(MarshallerContract marshaller, String guildId,
+  Future<ServerAnnouncementChannel> serializeRemote(MarshallerContract marshaller, String guildId,
       Map<String, dynamic> json) async {
-    final properties = await ChannelProperties.make(marshaller, json);
-    final categoryChannel = await Helper.createOrNullAsync(
-        field: json['parent_id'],
-        fn: () async {
-          final rawCategory = await marshaller.cache.getOrFail(json['parent_id']);
-          return marshaller.serializers.channels.serialize(rawCategory) as ServerCategoryChannel;
-        }
-    );
+    final properties = await ChannelProperties.serializeRemote(marshaller, json);
 
-    return ServerAnnouncementChannel(properties,
-      category: categoryChannel,
-    );
+    return ServerAnnouncementChannel(properties);
+  }
+
+  @override
+  Future<ServerAnnouncementChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+    final properties = await ChannelProperties.serializeCache(marshaller, json);
+    return ServerAnnouncementChannel(properties);
   }
 
   @override
@@ -42,7 +37,7 @@ final class ServerAnnouncementChannelFactory
       'name': channel.name,
       'topic': channel.description,
       'nsfw': channel.isNsfw,
-      'parent_id': channel.category?.id,
+      'parent_id': channel.categoryId,
       'guild_id': channel.guildId,
     };
   }

@@ -17,9 +17,11 @@ final class ServerPart implements DataStorePart {
   ServerPart(this._kernel);
 
   Future<Server> getServer(Snowflake id) async {
-    final cachedRawServer = await _kernel.marshaller.cache.get(id);
-    if (cachedRawServer != null) {
-      return _kernel.marshaller.serializers.server.serialize(cachedRawServer);
+    final cacheKey = _kernel.marshaller.cacheKey;
+    final serverCacheKey = cacheKey.server(id);
+
+    if (await _kernel.marshaller.cache.has(serverCacheKey)) {
+      return _kernel.marshaller.serializers.server.serializeCache({'id': id.value});
     }
 
     final [serverResponse, channelsResponse, membersResponse] = await Future.wait([
@@ -28,44 +30,61 @@ final class ServerPart implements DataStorePart {
       _kernel.dataStore.client.get('/guilds/$id/members')
     ]);
 
-    serverResponse.body['channels'] = channelsResponse.body;
-    serverResponse.body['members'] = membersResponse.body;
+    final server = await _kernel.marshaller.serializers.server.serializeRemote({
+      ...serverResponse.body,
+      'channels': channelsResponse.body,
+      'members': membersResponse.body
+    });
 
-    final server = await _kernel.marshaller.serializers.server.serialize(serverResponse.body);
+    final rawServer = await _kernel.marshaller.serializers.server.deserialize(server);
 
     await Future.wait([
-      _kernel.marshaller.cache.put(id, serverResponse.body),
-      ...server.channels.list.values
-          .map((channel) => _kernel.marshaller.cache.put(channel.id, channel)),
-      ...server.members.list.values
-          .map((member) => _kernel.marshaller.cache.put(member.id, member))
+      _kernel.marshaller.cache.put(serverCacheKey, rawServer),
+      ...server.channels.list.values.map((channel) {
+        final channelCacheKey = cacheKey.channel(channel.id);
+        final rawChannel = _kernel.marshaller.serializers.channels.deserialize(channel);
+
+        return _kernel.marshaller.cache.put(channelCacheKey, rawChannel);
+      }),
+      ...server.members.list.values.map((member) {
+        final memberCacheKey = cacheKey.serverMember(serverId: id, memberId: member.id);
+        final rawMember = _kernel.marshaller.serializers.member.deserialize(member);
+
+        return _kernel.marshaller.cache.put(memberCacheKey, rawMember);
+      })
     ]);
 
     return server;
   }
 
   Future<Role> getRole(Snowflake guildId, Snowflake id) async {
-    final cachedRawRole = await _kernel.marshaller.cache.get(id);
+    final cachedRawRole = await _kernel.marshaller.cache.get(id.value);
     if (cachedRawRole != null) {
-      return _kernel.marshaller.serializers.role.serialize(cachedRawRole);
+      return _kernel.marshaller.serializers.role.serializeRemote(cachedRawRole);
     }
 
     final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles');
     final roles = await _serializeRolesResponse(response);
     final role = roles.firstWhere((role) => role.id == id);
 
-    await _kernel.marshaller.cache.put(id, role);
+    final roleCacheKey = _kernel.marshaller.cacheKey.serverRole(serverId: guildId, roleId: id);
+    final rawRole = await _kernel.marshaller.serializers.role.deserialize(role);
+    await _kernel.marshaller.cache.put(roleCacheKey, rawRole);
 
     return role;
   }
 
-  Future<List<Role>> getRoles(Snowflake guildId, { bool force = false }) async {
+  Future<List<Role>> getRoles(Snowflake guildId, {bool force = false}) async {
     if (force) {
       final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles');
       final roles = await _serializeRolesResponse(response);
 
       for (final role in roles) {
-        await _kernel.marshaller.cache.put(role.id, role);
+        final roleCacheKey =
+            _kernel.marshaller.cacheKey.serverRole(serverId: guildId, roleId: role.id);
+        final rawRole = await _kernel.marshaller.serializers.role.deserialize(role);
+
+        await _kernel.marshaller.cache.put(roleCacheKey, rawRole);
       }
 
       return roles;
@@ -78,7 +97,7 @@ final class ServerPart implements DataStorePart {
   Future<List<Role>> _serializeRolesResponse(Response response) {
     return switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => List.from(response.body)
-          .map((element) => _kernel.marshaller.serializers.channels.serialize(element)),
+          .map((element) => _kernel.marshaller.serializers.channels.serializeRemote(element)),
       int() when status.isError(response.statusCode) => throw HttpException(response.body),
       _ => throw Exception('Unknown status code: ${response.statusCode}'),
     } as Future<List<Role>>;

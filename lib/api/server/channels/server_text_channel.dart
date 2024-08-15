@@ -1,6 +1,7 @@
 import 'package:mineral/api/common/channel_methods.dart';
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/channel_properties.dart';
+import 'package:mineral/api/common/components/message_component.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/managers/message_manager.dart';
 import 'package:mineral/api/common/polls/poll.dart';
@@ -33,10 +34,12 @@ final class ServerTextChannel extends ServerChannel {
 
   String? get description => _properties.description;
 
-  late final ServerCategoryChannel? category;
-
   @override
   Snowflake get guildId => _properties.guildId!;
+
+  Snowflake? get categoryId => _properties.categoryId;
+
+  late final ServerCategoryChannel? category;
 
   ServerTextChannel(this._properties) : _methods = ChannelMethods(_properties.id);
 
@@ -62,8 +65,17 @@ final class ServerTextChannel extends ServerChannel {
   Future<void> setDefaultThreadRateLimitPerUser(int value, {String? reason}) =>
       _methods.setDefaultThreadRateLimitPerUser(value, reason);
 
-  Future<void> send({String? content, List<MessageEmbed>? embeds, Poll? poll}) =>
-      _methods.send(guildId: _properties.guildId, content: content, embeds: embeds, poll: poll);
+  Future<void> send(
+          {String? content,
+          List<MessageEmbed>? embeds,
+          Poll? poll,
+          List<MessageComponent>? components}) =>
+      _methods.send(
+          guildId: _properties.guildId,
+          content: content,
+          embeds: embeds,
+          poll: poll,
+          components: components);
 
   Future<void> delete({String? reason}) => _methods.delete(reason);
 }

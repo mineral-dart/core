@@ -1,5 +1,5 @@
 enum CommandContextType {
-  guild(0),
+  server(0),
   global(1);
 
   final int value;

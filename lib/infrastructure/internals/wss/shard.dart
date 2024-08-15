@@ -105,8 +105,13 @@ final class Shard implements ShardContract {
             }
 
             dispatchEvent.dispatch(message);
+          case OpCode.heartbeat:
+            authentication.heartbeat();
           default:
             print('Unknown op code ! $code');
+
+            // Unknown op code ! OpCode.heartbeat
+            print(message.originalContent);
         }
       }
     });

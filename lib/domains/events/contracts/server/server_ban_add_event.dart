@@ -12,5 +12,8 @@ abstract class ServerBanAddEvent implements ListenableEvent {
   @override
   Event get event => Event.serverBanAdd;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(Member? member, User user, Server server);
 }

@@ -11,7 +11,12 @@ final class StickerSerializer implements SerializerContract<Sticker> {
   StickerSerializer(this._marshaller);
 
   @override
-  Sticker serialize(Map<String, dynamic> json) {
+  Sticker serializeRemote(Map<String, dynamic> json) => _serialize(json);
+
+  @override
+  Sticker serializeCache(Map<String, dynamic> json) => _serialize(json);
+
+  Sticker _serialize(Map<String, dynamic> json) {
     return Sticker(
       id: Snowflake(json['id']),
       name: json['name'],

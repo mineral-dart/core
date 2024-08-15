@@ -11,5 +11,8 @@ abstract class ServerRolesDeleteEvent implements ListenableEvent {
   @override
   Event get event => Event.serverRoleDelete;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(Role? role, Server server);
 }

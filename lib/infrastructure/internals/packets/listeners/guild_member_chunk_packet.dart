@@ -17,13 +17,19 @@ final class GuildMemberChunkPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final Snowflake serverId = message.payload['guild_id'];
-    final server = await marshaller.dataStore.server.getServer(serverId);
+    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+    final serverCacheKey = marshaller.cacheKey.server(server.id);
+
     final members = message.payload['members'];
     final presences = message.payload['presences'];
 
-    for (final rawMember in members) {
-      final member = await marshaller.serializers.member.serialize(rawMember);
+    for (final element in members) {
+      final member = await marshaller.serializers.member.serializeRemote(element);
+      final memberCacheKey = marshaller.cacheKey.serverMember(serverId: server.id, memberId: member.id);
+
+      final rawMember = await marshaller.serializers.member.deserialize(member);
+      await marshaller.cache.put(memberCacheKey, rawMember);
+
       server.members.list.putIfAbsent(member.id, () => member);
     }
 
@@ -33,6 +39,6 @@ final class GuildMemberChunkPacket implements ListenablePacket {
     }
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(server.id, rawServer);
+    await marshaller.cache.put(serverCacheKey, rawServer);
   }
 }

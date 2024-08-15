@@ -11,5 +11,8 @@ abstract class ServerRolesUpdateEvent implements ListenableEvent {
   @override
   Event get event => Event.serverRoleUpdate;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(Role before, Role after, Server server);
 }

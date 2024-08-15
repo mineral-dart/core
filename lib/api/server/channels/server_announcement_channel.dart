@@ -33,12 +33,14 @@ final class ServerAnnouncementChannel extends ServerChannel {
 
   bool get isNsfw => _properties.nsfw;
 
-  ServerCategoryChannel? category;
-
   @override
   Snowflake get guildId => _properties.guildId!;
 
-  ServerAnnouncementChannel(this._properties, {required this.category})
+  Snowflake? get categoryId => _properties.categoryId;
+
+  late final ServerCategoryChannel? category;
+
+  ServerAnnouncementChannel(this._properties)
       : _methods = ChannelMethods(_properties.id);
 
   Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);

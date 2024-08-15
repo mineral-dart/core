@@ -1,6 +1,7 @@
 import 'package:mineral/api/common/permissions.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/role.dart';
+import 'package:mineral/infrastructure/commons/utils.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
@@ -10,14 +11,19 @@ final class RoleSerializer implements SerializerContract<Role> {
   RoleSerializer(this.marshaller);
 
   @override
-  Future<Role> serialize(Map<String, dynamic> json) async {
+  Role serializeRemote(Map<String, dynamic> json) => _serialize(json);
+
+  @override
+  Role serializeCache(Map<String, dynamic> json) => _serialize(json);
+
+  Role _serialize(Map<String, dynamic> json) {
     return Role(
       id: Snowflake(json['id']),
       name: json['name'],
       color: json['color'],
       hoist: json['hoist'],
       position: json['position'],
-      permissions: switch(json['permissions']) {
+      permissions: switch (json['permissions']) {
         int() => Permissions.fromInt(json['permissions']),
         String() => Permissions.fromInt(int.parse(json['permissions'])),
         _ => Permissions.fromInt(0),
@@ -38,7 +44,7 @@ final class RoleSerializer implements SerializerContract<Role> {
       'color': object.color,
       'hoist': object.hoist,
       'position': object.position,
-      'permissions': object.permissions,
+      'permissions': listToBitfield(object.permissions.list),
       'managed': object.managed,
       'mentionable': object.mentionable,
       'flags': object.flags,

@@ -14,8 +14,8 @@ final class EventDispatcher implements EventDispatcherContract {
   EventDispatcher(this._events);
 
   @override
-  void dispatch({required Event event, required List params}) {
-    _events.add(InternalEventParams(event, params));
+  void dispatch({required Event event, required List params, bool Function(String?)? constraint}) {
+    _events.add(InternalEventParams(event, params, constraint));
   }
 
   @override

@@ -16,6 +16,8 @@ abstract interface class ShardAuthentication {
 
   void reconnect();
 
+  void heartbeat();
+
   void ack();
 
   void resume();

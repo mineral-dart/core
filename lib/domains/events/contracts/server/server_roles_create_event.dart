@@ -11,5 +11,8 @@ abstract class ServerRolesCreateEvent implements ListenableEvent {
   @override
   Event get event => Event.serverRoleCreate;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(Role role, Server server);
 }

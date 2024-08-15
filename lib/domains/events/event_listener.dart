@@ -11,7 +11,8 @@ abstract interface class EventListenerContract {
 
   EventDispatcherContract get dispatcher;
 
-  StreamSubscription listen<T extends Function>({required Event event, required T handle});
+  StreamSubscription listen<T extends Function>(
+      {required Event event, required T handle, required String? customId});
 }
 
 final class EventListener implements EventListenerContract {
@@ -28,9 +29,13 @@ final class EventListener implements EventListenerContract {
   }
 
   @override
-  StreamSubscription listen<T extends Function>({required Event event, required T handle}) {
-    return _events.stream
-        .where((element) => element.event == event)
-        .listen((element) => Function.apply(handle, element.params));
+  StreamSubscription listen<T extends Function>(
+      {required Event event, required T handle, required String? customId}) {
+    return _events.stream.where((element) => element.event == event).where((element) {
+      return switch (element.constraint) {
+        final bool Function(String?) constraint => constraint(customId),
+        _ => true
+      };
+    }).listen((element) => Function.apply(handle, element.params));
   }
 }

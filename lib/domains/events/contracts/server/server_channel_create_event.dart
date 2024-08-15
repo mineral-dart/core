@@ -10,5 +10,8 @@ abstract class ServerChannelCreateEvent implements ListenableEvent {
   @override
   Event get event => Event.serverChannelCreate;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(ServerChannel channel);
 }

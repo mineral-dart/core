@@ -10,5 +10,8 @@ abstract class PrivateChannelUpdateEvent implements ListenableEvent {
   @override
   Event get event => Event.privateChannelUpdate;
 
+  @override
+  String? customId;
+
   FutureOr<void> handle(PrivateChannel channel);
 }
