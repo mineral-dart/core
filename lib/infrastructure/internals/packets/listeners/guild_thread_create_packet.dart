@@ -20,10 +20,14 @@ final class GuildThreadCreatePacket implements ListenablePacket {
     final payload = message.payload;
 
     final server = await marshaller.dataStore.server.getServer(payload['guild_id']);
-    final thread = await marshaller.serializers.threads.serializeCache(payload);
+    final thread = await marshaller.serializers.thread.serializeCache(payload);
 
-    final threadCacheKey = marshaller.cacheKey.serverChannel(serverId: server.id, channelId: thread.id);
-    final threadRaw = await marshaller.serializers.threads.deserialize(thread);
+    thread.server = server;
+    thread.owner.member.server = server;
+
+    final threadCacheKey = marshaller.cacheKey.threadChannel(serverId: server.id, threadId: thread.id);
+    final threadRaw = await marshaller.serializers.channels.deserialize(thread);
+
     await marshaller.cache.put(threadCacheKey, threadRaw);
 
     dispatch(event: Event.serverThreadCreate, params: [thread, server]);

@@ -16,8 +16,6 @@ import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/api/server/server_subscription.dart';
-import 'package:mineral/domains/commands/contexts/global_command_context.dart';
-import 'package:mineral/domains/commands/contexts/server_command_context.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_permission_overwrite_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_serializer.dart';
@@ -35,7 +33,7 @@ import 'package:mineral/infrastructure/internals/marshaller/serializers/server_s
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_subscription_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/sticker_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/user_assets_serializer.dart';
-import 'package:mineral/infrastructure/internals/marshaller/serializers/thread_channel_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/thread_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/user_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
@@ -74,7 +72,7 @@ final class SerializerBucket {
 
   final SerializerContract<Poll> poll;
 
-  final SerializerContract<ThreadChannel> threads;
+  final SerializerContract<ThreadChannel> thread;
 
   SerializerBucket(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
@@ -92,11 +90,7 @@ final class SerializerBucket {
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
         serverMessage = ServerMessageSerializer(marshaller),
         privateMessage = PrivateMessageSerializer(marshaller),
-        embed = EmbedSerializer(marshaller),
-        poll = PollSerializer(marshaller);
         embed = EmbedSerializer(),
-        globalCommandContext = GlobalCommandContextSerializer(marshaller),
-        guildCommandContext = ServerCommandContextSerializer(marshaller),
         poll = PollSerializer(),
-        threads = ThreadChannelSerializer(marshaller);
+        thread = ThreadSerializer(marshaller);
 }
