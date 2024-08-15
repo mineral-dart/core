@@ -1,11 +1,10 @@
 final class TokenException implements Exception {
   final String message;
-  final dynamic body;
 
-  TokenException(this.message, {this.body});
+  TokenException(this.message);
 
   @override
   String toString() {
-    return 'TokenException: $message\n$body';
+    return 'TokenException: $message';
   }
 }
