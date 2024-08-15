@@ -17,8 +17,8 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(
-      MarshallerContract marshaller, PrivateMessage message) async {
+  Map<String, dynamic> deserialize(
+      MarshallerContract marshaller, PrivateMessage message) {
     return {
       'id': message.id,
       'content': message.content,
