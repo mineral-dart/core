@@ -2,6 +2,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
+import 'package:mineral/api/server/channels/thread_channel.dart';
 
 enum _ServerNamedChannel {
   afkChannel,
@@ -15,6 +16,7 @@ enum _ServerNamedChannel {
 final class ChannelManager {
   final Map<_ServerNamedChannel, Snowflake?> _namedChannels = {};
   final Map<Snowflake, ServerChannel> _channels;
+  final Map<Snowflake, ThreadChannel> threads = {}; // todo
 
   ChannelManager(this._channels, Map<String, dynamic> json) {
     _namedChannels
