@@ -2,6 +2,7 @@ import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/private/user.dart';
+import 'package:mineral/api/server/channels/thread_channel.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/commons/utils.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
@@ -42,6 +43,7 @@ final class ChannelProperties {
   final dynamic defaultReactions;
   final int? defaultSortOrder;
   final int? defaultForumLayout;
+  final List<ThreadChannel> threads;
 
   ChannelProperties({
     required this.id,
@@ -74,6 +76,7 @@ final class ChannelProperties {
     required this.defaultReactions,
     required this.defaultSortOrder,
     required this.defaultForumLayout,
+    required this.threads,
   });
 
   static Future<ChannelProperties> serializeRemote(
@@ -129,6 +132,7 @@ final class ChannelProperties {
       defaultReactions: element['default_reactions'],
       defaultSortOrder: element['default_sort_order'],
       defaultForumLayout: element['default_forum_layout'],
+      threads: [],
     );
   }
 
@@ -185,6 +189,7 @@ final class ChannelProperties {
       defaultReactions: element['default_reactions'],
       defaultSortOrder: element['default_sort_order'],
       defaultForumLayout: element['default_forum_layout'],
+      threads: [],
     );
   }
 }
