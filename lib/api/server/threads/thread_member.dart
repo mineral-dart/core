@@ -18,15 +18,15 @@ final class ThreadMember {
   });
 
   static Future<ThreadMember> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
-    final serverCacheKey = marshaller.cacheKey.serverMember(serverId: json['guild_id'], memberId: json['owner_id']);
-    final rawMember = await marshaller.cache.getOrFail(serverCacheKey);
+    final serverMemberCacheKey = marshaller.cacheKey.serverMember(serverId: json['guild_id'], memberId: json['owner_id']);
+    final rawMember = await marshaller.cache.getOrFail(serverMemberCacheKey);
     final member = await marshaller.serializers.member.serializeCache(rawMember);
 
     return ThreadMember(
-      id: Snowflake(json['id']),
+      id: Snowflake(json['owner_id']),
       userId: Snowflake(json['owner_id']),
       joinedAt: DateTime.parse(json['joined_at'] ?? DateTime.now().toIso8601String()),
-      flags: json['flags'],
+      flags: json['flags'] ?? 0,
       member: member,
     );
   }

@@ -1,11 +1,15 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/message_type.dart';
+import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_announcement_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/api/server/channels/thread_channel.dart';
+import 'package:mineral/api/server/server_message.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
@@ -29,11 +33,33 @@ final class MessageCreatePacket implements ListenablePacket {
     }
 
     final channel = await marshaller.dataStore.channel.getChannel(message.payload['channel_id']);
+
+    if ([ChannelType.guildPrivateThread.value, ChannelType.guildPublicThread.value].contains(channel!.type.value)) {
+      await sendThread(dispatch, message.payload);
+      return;
+    }
+
     return switch (channel) {
       ServerChannel() => sendServerMessage(dispatch, channel, message.payload),
       Channel() => sendPrivateMessage(dispatch, channel, message.payload),
       _ => logger.error('Unknown channel type: ${channel.runtimeType}'),
     };
+  }
+
+  Future<void> sendThread(DispatchEvent dispatch, Map<String, dynamic> json) async {
+    final server = await marshaller.dataStore.server.getServer(json['guild_id']);
+    final thread = server.channels.threads.values.firstWhere((element) => element.id == json['channel_id']);
+
+    final message = await marshaller.serializers.serverMessage.serializeCache({
+      ...json,
+      'channel': thread,
+      'guild_id': server.id,
+    });
+
+    message.channel = thread;
+    thread.messages.list.putIfAbsent(message.id, () => message as ServerMessage);
+
+    dispatch(event: Event.serverMessageCreate, params: [message]);
   }
 
   Future<void> sendServerMessage(DispatchEvent dispatch, ServerChannel channel, Map<String, dynamic> json) async {
