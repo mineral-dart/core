@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/message_properties.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
@@ -8,7 +9,7 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   @override
   Future<ServerMessage> serialize(
       MarshallerContract marshaller, Map<String, dynamic> json) async {
-    final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
+    final channel = json['channel'] as Channel;
     final server = await marshaller.dataStore.server.getServer(json['guild_id']);
     final member = server.members.list[json['author']['id']];
 
