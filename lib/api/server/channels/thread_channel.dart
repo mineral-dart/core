@@ -30,7 +30,7 @@ class ThreadChannel extends ServerChannel {
   String get name => _properties.name!;
 
   @override
-  List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
+  List<ChannelPermissionOverwrite> get permissions => _properties.permissions ?? [];
 
   String? get description => _properties.description;
 
@@ -48,6 +48,7 @@ class ThreadChannel extends ServerChannel {
 
   ThreadMetadata get metadata => _properties.metadata;
 
+  @override
   Snowflake get guildId => _properties.guildId!;
 
   late final ServerCategoryChannel? category;
