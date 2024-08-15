@@ -27,21 +27,16 @@ final class PublicThreadChannelFactory implements ChannelFactoryContract<ThreadC
       'type': channel.type.value,
       'name': channel.name,
       'description': channel.description,
-      'guild_id': channel.guildId.value,
+      'guild_id': channel.serverId.value,
       'owner_id': channel.owner.id.value,
+      'parent_id': channel.channelId?.value,
       'thread_metadata': {
         'archived': channel.metadata.archived,
         'auto_archive_duration': channel.metadata.autoArchiveDuration,
         'locked': channel.metadata.locked,
-        'archive_timestamp': channel.metadata.archiveTimestamp,
+        'archive_timestamp': channel.metadata.archiveTimestamp?.toIso8601String(),
         'invitable': channel.metadata.invitable,
         'is_public': channel.metadata.isPublic,
-      },
-      'thread_member': {
-        'id': channel.owner.id.value,
-        'member': await marshaller.serializers.member.deserialize(channel.owner.member),
-        'join_timestamp': channel.owner.joinedAt.toIso8601String(),
-        'flags': channel.owner.flags,
       },
       'members': await Future.wait(channel.members.map((member) async {
         return {

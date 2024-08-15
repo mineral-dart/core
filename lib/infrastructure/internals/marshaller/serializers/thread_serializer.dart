@@ -2,32 +2,33 @@ import 'package:mineral/api/common/thread_properties.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/thread_channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/infrastructure/internals/marshaller/types/channel_factory.dart';
+import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class PrivateThreadChannelFactory implements ChannelFactoryContract<ThreadChannel> {
-  @override
-  ChannelType get type => ChannelType.guildPrivateThread;
+final class ThreadSerializer implements SerializerContract<ThreadChannel> {
+  final MarshallerContract _marshaller;
+
+  ThreadSerializer(this._marshaller);
 
   @override
-  Future<ThreadChannel> serializeRemote(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    final properties = await ThreadProperties.serializeRemote(marshaller, json);
+  Future<ThreadChannel> serializeRemote(Map<String, dynamic> json) async {
+    final properties = await ThreadProperties.serializeRemote(_marshaller, json);
     return ThreadChannel(properties, ChannelType.guildPrivateThread);
   }
 
   @override
-  Future<ThreadChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    final properties = await ThreadProperties.serializeCache(marshaller, json);
+  Future<ThreadChannel> serializeCache(Map<String, dynamic> json) async {
+    final properties = await ThreadProperties.serializeCache(_marshaller, json);
     return ThreadChannel(properties, ChannelType.guildPrivateThread);
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, ThreadChannel channel) async {
+  Future<Map<String, dynamic>> deserialize(ThreadChannel channel) async {
     return {
       'id': channel.id.value,
       'type': channel.type.value,
       'name': channel.name,
       'description': channel.description,
-      'guild_id': channel.serverId.value,
+      'guild_id': channel.serverId,
       'owner_id': channel.owner.id.value,
       'parent_id': channel.channelId?.value,
       'thread_metadata': {
@@ -41,7 +42,7 @@ final class PrivateThreadChannelFactory implements ChannelFactoryContract<Thread
       'members': await Future.wait(channel.members.map((member) async {
         return {
           'id': member.id.value,
-          'member': await marshaller.serializers.member.deserialize(member.member),
+          'member': await _marshaller.serializers.member.deserialize(member.member),
           'join_timestamp': member.joinedAt.toIso8601String(),
           'flags': member.flags,
         };
