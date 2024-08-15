@@ -20,4 +20,23 @@ enum ChannelType implements EnhancedEnum<int>{
   final int value;
 
   const ChannelType(this.value);
+
+  static List<ChannelType> serverTypes = [
+    guildText,
+    guildVoice,
+    guildCategory,
+    guildAnnouncement,
+    announcementThread,
+    guildPublicThread,
+    guildPrivateThread,
+    guildStageVoice,
+    guildDirectory,
+    guildForum,
+    guildMedia
+  ];
+
+  static List<ChannelType> privateTypes = [
+    dm,
+    groupDm
+  ];
 }
