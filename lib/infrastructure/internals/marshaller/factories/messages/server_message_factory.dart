@@ -18,8 +18,8 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(
-      MarshallerContract marshaller, ServerMessage message) async {
+  Map<String, dynamic> deserialize(
+      MarshallerContract marshaller, ServerMessage message) {
     return {
       'id': message.id,
       'content': message.content,
