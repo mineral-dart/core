@@ -26,8 +26,10 @@ class ThreadChannel extends ServerChannel {
   @override
   ChannelType type;
 
+  @override
   String get name => _properties.name!;
 
+  @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
 
   String? get description => _properties.description;
