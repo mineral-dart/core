@@ -1,3 +1,5 @@
+import 'package:mineral/domains/events/contracts/server/server_thread_create_event.dart';
+import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_button_click_event.dart';
@@ -99,4 +101,7 @@ final class ServerBucket {
 
   void selectText(ServerTextSelectEventHandler handle, {String? customId}) =>
       _events.make(Event.serverTextSelect, handle, customId: customId);
+
+  void threadCreate(ServerThreadCreateEventHandler handle) =>
+      _events.make(Event.serverThreadCreate, handle);
 }
