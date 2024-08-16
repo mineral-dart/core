@@ -44,7 +44,6 @@ final class MemberSerializer implements SerializerContract<Member> {
       'premium_type': json['user']['premium_type'],
       'joined_at': json['joined_at'],
       'permissions': json['permissions'],
-      'pending': json['pending'] ?? false,
       'accent_color': json['accent_color'],
       // TODO : presence
     };
@@ -76,7 +75,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       publicFlags: json['public_flags'],
       roles: MemberRoleManager.fromList(roles),
       isBot: json['is_bot'] ?? false,
-      isPending: json['pending'] ?? false,
+      isPending: json['is_pending'] ?? false,
       timeout: MemberTimeout(
           duration: Helper.createOrNull(
               field: json['communication_disabled_until'],
@@ -93,7 +92,8 @@ final class MemberSerializer implements SerializerContract<Member> {
         _ => Permissions.fromInt(0),
       },
       accentColor: json['accent_color'],
-      presence: json['presence'] != null ? Presence.fromJson(json['presence']) : null,
+      // TODO : presence
+      presence: null,
     );
 
     member.roles.member = member;
@@ -103,26 +103,41 @@ final class MemberSerializer implements SerializerContract<Member> {
   }
 
   @override
-  Map<String, dynamic> deserialize(Member member) {
+  Future<Map<String, dynamic>> deserialize(Member member) async {
+    final rawAsset = await _marshaller.serializers.memberAssets.deserialize(member.assets);
+    final rawRoles = await member.roles.list.entries.map((role) async {
+      final cacheKey = _marshaller.cacheKey.serverRole(member.server.id, role.key);
+      return {cacheKey: await _marshaller.serializers.role.deserialize(role.value)};
+    }).wait;
+
+    await _marshaller.cache.putMany({
+      _marshaller.cacheKey.memberAssets(member.server.id, member.id): rawAsset,
+      ...rawRoles.fold({}, (prev, element) => {...prev, ...element}),
+    });
+
     return {
-      'nick': member.nickname,
-      'user': {
-        'id': member.id,
-        'username': member.username,
-        'discriminator': member.discriminator,
-        'global_name': member.globalName,
-        'avatar': member.assets.avatar?.hash,
-        'avatar_decoration': member.assets.avatarDecoration?.hash,
-        'banner': member.assets.banner?.hash,
-        'bot': member.isBot,
-        'flags': listToBitfield(member.flags.list),
-        'public_flags': member.publicFlags,
-      },
-      'roles': member.roles.list.keys.toList(),
-      'premium_since': member.premiumSince?.toIso8601String(),
+      'id': member.id,
+      'username': member.username,
+      'nickname': member.nickname,
+      'global_name': member.globalName,
+      'discriminator': member.discriminator,
+      'assets': _marshaller.cacheKey.memberAssets(member.server.id, member.id),
       'flags': listToBitfield(member.flags.list),
-      'pending': member.isPending,
-      'communication_disabled_until': member.timeout.duration?.toIso8601String(),
+      'roles': member.roles.list.keys
+          .map((id) => _marshaller.cacheKey.serverRole(member.server.id, id))
+          .toList(),
+      'premium_since': member.premiumSince?.toIso8601String(),
+      'public_flags': member.publicFlags,
+      'is_bot': member.isBot,
+      'is_pending': member.isPending,
+      'timeout': member.timeout.duration?.toIso8601String(),
+      'mfa_enabled': member.mfaEnabled,
+      'locale': member.locale,
+      'premium_type': member.premiumType.value,
+      'joined_at': member.joinedAt?.toIso8601String(),
+      'permissions': listToBitfield(member.permissions.list),
+      'accent_color': member.accentColor,
+      // TODO : presence
     };
   }
 }
