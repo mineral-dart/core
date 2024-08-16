@@ -15,22 +15,18 @@ final class UserPart implements DataStorePart {
   UserPart(this._kernel);
 
   Future<User> getUser(Snowflake userId) async {
-    final cachedRawUser = await _kernel.marshaller.cache.get(userId.value);
+    final cacheKey = _kernel.marshaller.cacheKey.user(userId);
+    final cachedRawUser = await _kernel.marshaller.cache.get(cacheKey);
     if (cachedRawUser != null) {
-      return _kernel.marshaller.serializers.user.serializeCache(cachedRawUser);
+      return _kernel.marshaller.serializers.user.serialize(cachedRawUser);
     }
 
     final response = await _kernel.dataStore.client.get('/users/$userId');
-    final user = await switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        _kernel.marshaller.serializers.user.serializeRemote(response.body),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
+    if (status.isError(response.statusCode)) {
+      throw HttpException(response.body);
+    }
 
-    final rawUser = await _kernel.marshaller.serializers.user.deserialize(user);
-    await _kernel.marshaller.cache.put(userId.value, rawUser);
-
-    return user;
+    final payload = await _kernel.marshaller.serializers.user.normalize(response.body);
+    return _kernel.marshaller.serializers.user.serialize(payload);
   }
 }
