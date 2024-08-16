@@ -41,30 +41,132 @@ final class ServerTextChannel extends ServerChannel {
 
   late final ServerCategoryChannel? category;
 
-  ServerTextChannel(this._properties) : _methods = ChannelMethods(_properties.id);
+  ServerTextChannel(this._properties)
+      : _methods = ChannelMethods(_properties.id);
 
-  Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);
+  /// Sets the channel's name.
+  ///
+  /// - `name` The new name for the channel.
+  /// - `reason` (optional) The reason for the change.
+  ///
+  /// Example:
+  /// ```dart
+  /// channel.setName("welcome");
+  /// ```
+  Future<void> setName(String name, {String? reason}) =>
+      _methods.setName(name, reason);
 
+  /// Sets the channel's description.
+  ///
+  /// - `description` The new description for the channel.
+  /// - `reason` (optional) The reason for the change.
+  /// 
+  /// Example:
+  /// ```dart
+  /// channel.setDescription("A channel for the news.");
+  /// ```
   Future<void> setDescription(String description, {String? reason}) =>
       _methods.setDescription(description, reason);
 
+  /// Moves the channel into a new catory.
+  ///
+  /// - `categoryId` The new channel's category id.
+  /// - `reason` (optional) The reason for the change.
+  /// 
+  /// Example:
+  /// ```dart
+  /// channel.setCategory("1269941999021199380");
+  /// ```
   Future<void> setCategory(String categoryId, {String? reason}) =>
       _methods.setCategory(categoryId, reason);
 
+  /// Sets the channel's position in the category or in the channels list.
+  ///
+  /// - `position` The new channel's position.
+  /// - `reason` (optional) The reason for the change.
+  /// 
+  /// Example:
+  /// ```dart
+  /// channel.setPosition(5);
+  /// ```
   Future<void> setPosition(int position, {String? reason}) =>
       _methods.setPosition(position, reason);
 
-  Future<void> setNsfw(bool nsfw, {String? reason}) => _methods.setNsfw(nsfw, reason);
+  /// Enables or disables NSFW (Not Safe For Work) mode for the channel.
+  ///
+  /// - `nsfw` A boolean that indicates if NSFW mode is enabled or not.
+  /// - `reason` (optional) The reason for the change.
+  /// 
+  /// Example:
+  /// ```dart
+  /// channel.setNsfw(true);
+  /// ```
+  Future<void> setNsfw(bool nsfw, {String? reason}) =>
+      _methods.setNsfw(nsfw, reason);
 
+  /// Sets the rate limit per user for the channel.
+  ///
+  ///- `rateLimitPerUser` The new rate limit per user (in minutes) that can be from 0 to 21600.
+  /// - `reason` (optional) The reason for the change.
+  /// 
+  /// Example:
+  /// ```dart
+  /// channel.setRateLimitPerUser(3600);
+  /// ```
   Future<void> setRateLimitPerUser(int rateLimitPerUser, {String? reason}) =>
       _methods.setRateLimitPerUser(rateLimitPerUser, reason);
 
-  Future<void> setDefaultAutoArchiveDuration(int defaultAutoArchiveDuration, {String? reason}) =>
-      _methods.setDefaultAutoArchiveDuration(defaultAutoArchiveDuration, reason);
+  /// Sets auto archive duration.
+  ///
+  ///- `defaultAutoArchiveDuration` The new auto ar duration (in minutes) that can be `60`, `1440`, `4320` or `10080`.
+  /// - `reason` (optional) The reason for the change.
+  /// 
+  /// Example:
+  /// ```dart
+  /// channel.setDefaultAutoArchiveDuration(60);
+  /// ```
+  Future<void> setDefaultAutoArchiveDuration(int defaultAutoArchiveDuration,
+          {String? reason}) =>
+      _methods.setDefaultAutoArchiveDuration(
+          defaultAutoArchiveDuration, reason);
 
+  /// Sets the thread rate limit per user for the channel.
+  ///
+  ///- `value` The new thread rate limit per user.
+  /// - `reason` (optional) The reason for the change.
+  /// 
+  /// Example:
+  /// ```dart
+  /// channel.setDefaultThreadRateLimitPerUser(5);
+  /// ```
   Future<void> setDefaultThreadRateLimitPerUser(int value, {String? reason}) =>
       _methods.setDefaultThreadRateLimitPerUser(value, reason);
 
+  /// Sends a message in the channel.
+  ///
+  ///- `content` (optional) The message's content.
+  /// - `embeds` (optional) A list of embeds to include in the message.
+  /// - `poll` (optional) A poll to include in the message.
+  /// - `components` (optional) A list of message components to include in the message.
+  /// 
+  /// Note: A least one of `content`, `embeds`, `components` or `poll` is required.
+  /// 
+  /// Examples:
+  /// ```dart
+  /// channel.send(content: "Hello world!");
+  /// ```
+  /// 
+  /// ```dart
+  /// channel.send(embeds: [embed]);
+  /// ```
+  /// 
+  /// ```dart
+  /// channel.send(poll: poll);
+  /// ```
+  /// 
+  /// ```dart
+  /// channel.send(components: [button]);
+  /// ```
   Future<void> send(
           {String? content,
           List<MessageEmbed>? embeds,
@@ -77,5 +179,13 @@ final class ServerTextChannel extends ServerChannel {
           poll: poll,
           components: components);
 
+  /// Deletes the channel.
+  ///
+  /// - `reason` (optional) The reason for the change.
+  /// 
+  /// Example:
+  /// ```dart
+  /// channel.delete();
+  /// ```
   Future<void> delete({String? reason}) => _methods.delete(reason);
 }
