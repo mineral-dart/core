@@ -18,22 +18,20 @@ final class RolePart implements DataStorePart {
   RolePart(this._kernel);
 
   Future<Role> getRole({required Snowflake guildId, required Snowflake roleId}) async {
-    final cacheKey = _kernel.marshaller.cacheKey.serverRole(serverId: guildId, roleId: roleId);
+    final cacheKey = _kernel.marshaller.cacheKey.serverRole(guildId, roleId);
     final rawRole = await _kernel.marshaller.cache.get(cacheKey);
 
     if (rawRole != null) {
-      return _kernel.marshaller.serializers.role.serializeRemote(rawRole);
+      return _kernel.marshaller.serializers.role.serialize(rawRole);
     }
 
     final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles/$roleId');
-    final role = await serializeRoleResponse(response);
-
-    if (role != null) {
-      final rawRole = _kernel.marshaller.serializers.role.deserialize(response.body);
-      await _kernel.marshaller.cache.put(cacheKey, rawRole);
+    if (status.isError(response.statusCode)) {
+      throw HttpException(response.body);
     }
 
-    return role!;
+    final payload = await _kernel.marshaller.serializers.role.normalize(response.body);
+    return _kernel.marshaller.serializers.role.serialize(payload);
   }
 
   Future<void> addRole(
@@ -73,30 +71,17 @@ final class RolePart implements DataStorePart {
         body: payload,
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    final Role? role = await serializeRoleResponse(response);
-
-    if (role != null) {
-      final roleCacheKey = _kernel.marshaller.cacheKey.serverRole(serverId: serverId, roleId: id);
-      final rawRole = _kernel.marshaller.serializers.role.deserialize(response.body);
-
-      await _kernel.marshaller.cache.put(roleCacheKey, rawRole);
+    if (status.isError(response.statusCode)) {
+      throw HttpException(response.body);
     }
 
-    return role;
+    final body = await _kernel.marshaller.serializers.role.normalize(response.body);
+    return _kernel.marshaller.serializers.role.serialize(body);
   }
 
   Future<void> deleteRole(
       {required Snowflake id, required Snowflake guildId, required String? reason}) async {
     await _kernel.dataStore.client.delete('/guilds/$guildId/roles/$id',
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
-  }
-
-  Future<Role?> serializeRoleResponse(Response response) {
-    return switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        _kernel.marshaller.serializers.role.serializeRemote(response.body),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
-    } as Future<Role?>;
   }
 }

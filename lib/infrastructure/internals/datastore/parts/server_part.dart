@@ -2,12 +2,12 @@ import 'dart:async';
 import 'dart:io';
 
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store_part.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';
-import 'package:mineral/infrastructure/services/http/response.dart';
 
 final class ServerPart implements DataStorePart {
   final KernelContract _kernel;
@@ -22,83 +22,54 @@ final class ServerPart implements DataStorePart {
 
     final rawServer = await _kernel.marshaller.cache.get(serverCacheKey);
     if (rawServer != null) {
-      return _kernel.marshaller.serializers.server.serializeCache(rawServer);
+      return _kernel.marshaller.serializers.server.serialize(rawServer);
     }
 
-    final [serverResponse, channelsResponse, membersResponse] = await Future.wait([
-      _kernel.dataStore.client.get('/guilds/$id'),
-      _kernel.dataStore.client.get('/guilds/$id/channels'),
-      _kernel.dataStore.client.get('/guilds/$id/members')
-    ]);
+    final serverResponse = await _kernel.dataStore.client.get('/guilds/$id');
 
-    final server = await _kernel.marshaller.serializers.server.serializeRemote({
-      ...serverResponse.body,
-      'channels': channelsResponse.body,
-      'members': membersResponse.body
-    });
+    await getChannels(id);
+    await _kernel.dataStore.member.getMembers(id);
 
-    await _kernel.marshaller.cache.putMany({
-      serverCacheKey: await _kernel.marshaller.serializers.server.deserialize(server),
-      ...server.channels.list.values.fold({}, (acc, channel) {
-        final channelCacheKey = cacheKey.channel(channel.id);
-        final rawChannel = _kernel.marshaller.serializers.channels.deserialize(channel);
-
-        return { ...acc, channelCacheKey: rawChannel };
-      }),
-      ...server.members.list.values.fold({}, (acc, member) {
-        final memberCacheKey = cacheKey.serverMember(serverId: id, memberId: member.id);
-        final rawMember = _kernel.marshaller.serializers.member.deserialize(member);
-
-        return { ...acc, memberCacheKey: rawMember };
-      })
-    });
-
-    return server;
+    return _kernel.marshaller.serializers.server.serialize(serverResponse.body);
   }
 
-  Future<Role> getRole(Snowflake guildId, Snowflake id) async {
-    final cachedRawRole = await _kernel.marshaller.cache.get(id.value);
-    if (cachedRawRole != null) {
-      return _kernel.marshaller.serializers.role.serializeRemote(cachedRawRole);
+  Future<List<T>> getChannels<T extends ServerChannel>(Snowflake id) async {
+    final response = await _kernel.dataStore.client.get('/guilds/$id/channels');
+    if (status.isError(response.statusCode)) {
+      throw HttpException(response.body);
     }
 
-    final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles');
-    final roles = await _serializeRolesResponse(response);
-    final role = roles.firstWhere((role) => role.id == id);
+    return Future.wait(List.from(response.body).map((element) async {
+      final channel = await _kernel.marshaller.serializers.channels.normalize(element);
+      return _kernel.marshaller.serializers.channels.serialize(channel) as Future<T>;
+    }).toList());
+  }
 
-    final roleCacheKey = _kernel.marshaller.cacheKey.serverRole(serverId: guildId, roleId: id);
-    final rawRole = await _kernel.marshaller.serializers.role.deserialize(role);
-    await _kernel.marshaller.cache.put(roleCacheKey, rawRole);
+  Future<Role> getRole(Snowflake serverId, Snowflake roleId) async {
+    final roleCacheKey = _kernel.marshaller.cacheKey.serverRole(serverId, roleId);
+    final cachedRawRole = await _kernel.marshaller.cache.get(roleCacheKey);
+    if (cachedRawRole != null) {
+      return _kernel.marshaller.serializers.role.serialize(cachedRawRole);
+    }
 
-    return role;
+    final response = await _kernel.dataStore.client.get('/guilds/$serverId/roles/$roleId');
+    if (status.isError(response.statusCode)) {
+      throw HttpException(response.body);
+    }
+
+    final rolePayload = await _kernel.marshaller.serializers.role.normalize(response.body);
+    return _kernel.marshaller.serializers.role.serialize(rolePayload);
   }
 
   Future<List<Role>> getRoles(Snowflake guildId, {bool force = false}) async {
-    if (force) {
-      final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles');
-      final roles = await _serializeRolesResponse(response);
-
-      for (final role in roles) {
-        final roleCacheKey =
-            _kernel.marshaller.cacheKey.serverRole(serverId: guildId, roleId: role.id);
-        final rawRole = await _kernel.marshaller.serializers.role.deserialize(role);
-
-        await _kernel.marshaller.cache.put(roleCacheKey, rawRole);
-      }
-
-      return roles;
+    final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles');
+    if (status.isError(response.statusCode)) {
+      throw HttpException(response.body);
     }
 
-    final rowServer = await _kernel.dataStore.server.getServer(guildId);
-    return rowServer.roles.list.values.toList();
-  }
-
-  Future<List<Role>> _serializeRolesResponse(Response response) {
-    return switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => List.from(response.body)
-          .map((element) => _kernel.marshaller.serializers.channels.serializeRemote(element)),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    } as Future<List<Role>>;
+    return Future.wait(List.from(response.body).map((element) async {
+      final payload = await _kernel.marshaller.serializers.role.normalize(element);
+      return _kernel.marshaller.serializers.role.serialize(payload);
+    }).toList());
   }
 }
