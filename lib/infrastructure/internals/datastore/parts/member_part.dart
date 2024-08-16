@@ -8,7 +8,6 @@ import 'package:mineral/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';
 import 'package:mineral/infrastructure/services/http/http_request_option.dart';
-import 'package:mineral/infrastructure/services/http/response.dart';
 
 final class MemberPart implements DataStorePart {
   final KernelContract _kernel;
@@ -19,56 +18,47 @@ final class MemberPart implements DataStorePart {
 
   Future<Member> getMember({required Snowflake guildId, required Snowflake memberId}) async {
     final cacheKeys = _kernel.marshaller.cacheKey;
-    final memberCacheKey = cacheKeys.serverMember(serverId: guildId, memberId: memberId);
+    final memberCacheKey = cacheKeys.member(guildId, memberId);
 
-    final cachedRawMember = await _kernel.marshaller.cache.get(memberCacheKey);
-    final roles = await _kernel.dataStore.server.getRoles(guildId);
+    Map<String, dynamic>? cachedRawMember = await _kernel.marshaller.cache.get(memberCacheKey);
 
     if (cachedRawMember != null) {
-      return _kernel.marshaller.serializers.member.serializeRemote({
-        ...cachedRawMember,
-        'guild_roles': roles,
-      });
+      return _kernel.marshaller.serializers.member.serialize(cachedRawMember);
     }
 
     final response = await _kernel.dataStore.client.get('/guilds/$guildId/members/$memberId');
-    final member = await switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        _kernel.marshaller.serializers.member.serializeRemote({
-          ...response.body,
-          'guild_roles': roles,
-        }),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
+    if (status.isError(response.statusCode)) {
+      throw HttpException(response.body);
+    }
 
-    final rawMember = await _kernel.marshaller.serializers.member.deserialize(member);
-    await _kernel.marshaller.cache.put(memberCacheKey, rawMember);
+    await _kernel.marshaller.serializers.member.normalize(response.body);
 
-    return member;
+    cachedRawMember = await _kernel.marshaller.cache.getOrFail(memberCacheKey);
+
+    return _kernel.marshaller.serializers.member.serialize(cachedRawMember);
   }
 
   Future<List<Member>> getMembers(Snowflake guildId, {bool force = false}) async {
-    if (force) {
-      final response = await _kernel.dataStore.client.get('/guilds/$guildId/members');
-      final members = await _serializeMembersResponse(response);
+    final serverCacheKey = _kernel.marshaller.cacheKey.server(guildId);
+    final rawServer = await _kernel.marshaller.cache.getOrFail(serverCacheKey);
 
-      await Future.wait(
-          members.map((member) async => _kernel.marshaller.serializers.member.deserialize(member)));
-
-      return members;
+    final rawMemberIds = List<String>.from(rawServer['members']);
+    final rawCachedMembers = await _kernel.marshaller.cache.getMany(rawMemberIds);
+    if (rawMemberIds.length == rawCachedMembers.length) {
+      return Future.wait(rawCachedMembers.nonNulls
+          .map((element) async => _kernel.marshaller.serializers.member.serialize(element))
+          .toList());
     }
 
-    final rawServer = await _kernel.marshaller.cache.getOrFail(guildId.value);
-    final roles = await _kernel.dataStore.server.getRoles(guildId);
+    final response = await _kernel.dataStore.client.get('/guilds/$guildId/members');
+    if (status.isError(response.statusCode)) {
+      throw HttpException(response.body);
+    }
 
-    return Future.wait(List.from(rawServer['members']).map((id) async {
-      final rawMember = await _kernel.marshaller.cache.getOrFail(id);
-      return _kernel.marshaller.serializers.member.serializeRemote({
-        ...rawMember,
-        'guild_roles': roles,
-      });
-    }));
+    return List.from(response.body).map((id) async {
+      final payload = await _kernel.marshaller.serializers.member.normalize(id);
+      return _kernel.marshaller.serializers.member.serialize(payload);
+    }).wait;
   }
 
   Future<Member> updateMember(
@@ -80,17 +70,12 @@ final class MemberPart implements DataStorePart {
         body: payload,
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    final member = await switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        _kernel.marshaller.serializers.member.serializeRemote(response.body),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
+    if (status.isError(response.statusCode)) {
+      throw HttpException(response.body);
+    }
 
-    final rawMember = await _kernel.marshaller.serializers.member.deserialize(member);
-    await _kernel.marshaller.cache.put(memberId.value, rawMember);
-
-    return member;
+    final rawMember = await _kernel.marshaller.serializers.member.normalize(response.body);
+    return _kernel.marshaller.serializers.member.serialize(rawMember);
   }
 
   Future<void> banMember(
@@ -115,17 +100,5 @@ final class MemberPart implements DataStorePart {
     if (status.isSuccess(response.statusCode)) {
       return;
     }
-  }
-
-  Future<List<Member>> _serializeMembersResponse(Response response) {
-    final awaitedMembers = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => List.from(response.body)
-          .map((element) async => _kernel.marshaller.serializers.member.serializeRemote(element))
-          .toList(),
-      int() when status.isError(response.statusCode) => throw HttpException(response.body),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
-
-    return Future.wait(awaitedMembers);
   }
 }
