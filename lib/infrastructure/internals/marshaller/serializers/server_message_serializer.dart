@@ -11,23 +11,24 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
   ServerMessageSerializer(this.marshaller);
 
   @override
-  Future<ServerMessage> serializeRemote(Map<String, dynamic> json) async {
-    final channel = await marshaller.dataStore.channel.getChannel<ServerChannel>(Snowflake(json['channel_id']));
+  Future<void> normalize(Map<String, dynamic> json) async {
+    final payload = {
+      'id': json['id'],
+      'content': json['content'],
+      'embeds': json['embeds'],
+     // 'components': json['components'],
+      'channel_id': json['channel_id'],
+      'guild_id': json['guild_id'],
+      'timestamp': json['timestamp'],
+      'edited_timestamp': json['edited_timestamp'],
+    };
 
-    if (channel == null) {
-      throw Exception('Channel not found');
-    }
-
-    final server = await marshaller.dataStore.server.getServer(channel.guildId);
-    final member = server.members.list[json['author']['id']];
-
-    final messageProperties = MessageProperties.fromJson(channel, json);
-
-    return ServerMessage(messageProperties, author: member!);
+    final cacheKey = marshaller.cacheKey.serverMessage(messageId: json['id'], channelId: Snowflake(json['channel_id']));
+    await marshaller.cache.put(cacheKey, payload);
   }
 
   @override
-  Future<ServerMessage> serializeCache(Map<String, dynamic> json) async {
+  Future<ServerMessage> serialize(Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel
         .getChannel(Snowflake(json['channel_id']));
 

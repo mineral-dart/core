@@ -83,7 +83,7 @@ final class ChannelProperties {
         fn: () async => Future.wait(
               List.from(element['permission_overwrites'])
                   .map((json) async =>
-                      marshaller.serializers.channelPermissionOverwrite.serializeRemote(json))
+                      marshaller.serializers.channelPermissionOverwrite.serialize(json))
                   .toList(),
             ));
 
@@ -91,7 +91,7 @@ final class ChannelProperties {
         field: element['recipients'],
         fn: () async => Future.wait(
               List.from(element['recipients'])
-                  .map((json) async => marshaller.serializers.user.serializeRemote(json))
+                  .map((json) async => marshaller.serializers.user.serialize(json))
                   .toList(),
             ));
 
@@ -139,7 +139,7 @@ final class ChannelProperties {
         fn: () async => Future.wait(
           List.from(element['permission_overwrites'])
               .map((json) async =>
-              marshaller.serializers.channelPermissionOverwrite.serializeRemote(json))
+              marshaller.serializers.channelPermissionOverwrite.serialize(json))
               .toList(),
         ));
 
@@ -147,7 +147,7 @@ final class ChannelProperties {
         field: element['recipients'],
         fn: () async => Future.wait(
           List.from(element['recipients'])
-              .map((json) async => marshaller.serializers.user.serializeRemote(json))
+              .map((json) async => marshaller.serializers.user.serialize(json))
               .toList(),
         ));
 

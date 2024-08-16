@@ -5,12 +5,12 @@ import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dar
 
 final class ServerSubscriptionSerializer implements SerializerContract<ServerSubscription> {
   @override
-  ServerSubscription serializeRemote(Map<String, dynamic> json) => _serialize(json);
+  Future<void> normalize(Map<String, dynamic> json) async {
+    throw UnimplementedError();
+  }
 
   @override
-  ServerSubscription serializeCache(Map<String, dynamic> json) => _serialize(json);
-
-  ServerSubscription _serialize(Map<String, dynamic> json) {
+  ServerSubscription serialize(Map<String, dynamic> json) {
     return ServerSubscription(
       tier: findInEnum(PremiumTier.values, json['premium_tier']),
       subscriptionCount: json['premium_subscription_count'],
