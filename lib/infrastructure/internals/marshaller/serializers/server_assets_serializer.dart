@@ -13,7 +13,7 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
   ServerAssetsSerializer(this._marshaller);
 
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final cacheKey = _marshaller.cacheKey.serverAssets(json['id']);
 
     await List.from(json['roles']).map((element) async {
@@ -39,6 +39,8 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
     };
 
     _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

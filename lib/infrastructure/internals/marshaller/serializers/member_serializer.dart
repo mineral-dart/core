@@ -17,7 +17,7 @@ final class MemberSerializer implements SerializerContract<Member> {
   MemberSerializer(this._marshaller);
 
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     await _marshaller.serializers.memberAssets.normalize({
       ...json,
       'member_id': json['id'],
@@ -50,6 +50,8 @@ final class MemberSerializer implements SerializerContract<Member> {
 
     final cacheKey = _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
     await _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

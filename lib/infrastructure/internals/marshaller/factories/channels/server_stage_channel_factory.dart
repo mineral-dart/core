@@ -9,7 +9,7 @@ final class ServerStageChannelFactory implements ChannelFactoryContract<ServerSt
   ChannelType get type => ChannelType.guildStageVoice;
 
   @override
-  Future<void> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -23,6 +23,8 @@ final class ServerStageChannelFactory implements ChannelFactoryContract<ServerSt
 
     final cacheKey = marshaller.cacheKey.channel(json['id']);
     await marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

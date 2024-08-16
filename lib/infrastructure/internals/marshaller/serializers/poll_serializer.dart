@@ -10,7 +10,7 @@ import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dar
 
 final class PollSerializer implements SerializerContract<Poll> {
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'message_id': json['message_id'],
       'question_text': json['question']['text'],
@@ -22,6 +22,8 @@ final class PollSerializer implements SerializerContract<Poll> {
 
     final cacheKey = _marshaller.cacheKey.poll(json['message_id']);
     await _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

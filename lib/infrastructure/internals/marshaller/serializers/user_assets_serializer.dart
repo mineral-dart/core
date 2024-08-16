@@ -12,7 +12,7 @@ final class UserAssetsSerializer implements SerializerContract<UserAssets> {
   UserAssetsSerializer(this._marshaller);
 
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'user_id': json['user_id'],
       'avatar': json['avatar'],
@@ -22,6 +22,8 @@ final class UserAssetsSerializer implements SerializerContract<UserAssets> {
 
     final cacheKey = _marshaller.cacheKey.userAssets(json['user_id']);
     await _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

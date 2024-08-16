@@ -21,7 +21,7 @@ final class ServerSerializer implements SerializerContract<Server> {
   ServerSerializer(this._marshaller);
 
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     await List.from(json['members']).map((element) async {
       return _marshaller.serializers.member.normalize({...element, 'server_id': json['id']});
     }).wait;
@@ -50,6 +50,8 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     final serverCacheKey = _marshaller.cacheKey.server(json['id']);
     await _marshaller.cache.put(serverCacheKey, serverPayload);
+
+    return serverPayload;
   }
 
   @override

@@ -11,7 +11,7 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
   PrivateMessageSerializer(this.marshaller);
 
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'content': json['content'],
@@ -23,6 +23,8 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
 
     final cacheKey = marshaller.cacheKey.privateMessage(messageId: json['id'], channelId: Snowflake(json['channel_id']));
     await marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

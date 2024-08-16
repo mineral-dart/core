@@ -10,7 +10,7 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
   EmojiSerializer(this._marshaller);
 
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'name': json['name'],
@@ -24,6 +24,8 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
 
     final cacheKey = _marshaller.cacheKey.serverEmoji(json['server_id'], json['id']);
     await _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

@@ -15,7 +15,7 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
   ServerSettingsSerializer(this._marshaller);
 
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'permissions': json['permissions'],
       'afk_timeout': json['afk_timeout'],
@@ -37,6 +37,8 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
 
     final cacheKey = _marshaller.cacheKey.serverSettings(json['id']);
     await _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

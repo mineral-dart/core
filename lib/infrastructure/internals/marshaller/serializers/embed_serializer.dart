@@ -12,7 +12,7 @@ import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dar
 
 final class EmbedSerializer implements SerializerContract<MessageEmbed> {
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'title': json['title'],
       'description': json['description'],
@@ -27,6 +27,8 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
 
     final cacheKey = _marshaller.cacheKey.embed(json['id']);
     await _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

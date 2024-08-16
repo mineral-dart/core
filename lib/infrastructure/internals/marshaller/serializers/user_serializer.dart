@@ -7,7 +7,7 @@ import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dar
 
 final class UserSerializer implements SerializerContract<User> {
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     await _marshaller.serializers.userAssets.normalize({
       ...json,
       'user_id': json['id'],
@@ -32,6 +32,8 @@ final class UserSerializer implements SerializerContract<User> {
 
     final cacheKey = _marshaller.cacheKey.user(json['id']);
     await _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override
