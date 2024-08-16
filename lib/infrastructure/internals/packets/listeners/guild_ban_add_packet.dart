@@ -3,7 +3,6 @@ import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class GuildBanAddPacket implements ListenablePacket {
   @override
@@ -27,10 +26,8 @@ final class GuildBanAddPacket implements ListenablePacket {
 
     server.members.list.remove(user.id);
 
-    await Future.wait([
-      marshaller.cache.remove(memberCacheKey),
-      marshaller.cache.put(serverCacheKey, rawServer),
-    ]);
+    await marshaller.cache.remove(memberCacheKey);
+    await marshaller.cache.put(serverCacheKey, rawServer);
 
     dispatch(event: Event.serverBanAdd, params: [member, user, server]);
   }

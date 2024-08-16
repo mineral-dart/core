@@ -28,10 +28,8 @@ final class GuildRoleDeletePacket implements ListenablePacket {
     final roleCacheKey = marshaller.cacheKey.serverRole(serverId: server.id, roleId: role.id);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    await Future.wait([
-      marshaller.cache.put(serverCacheKey, rawServer),
-      marshaller.cache.remove(roleCacheKey),
-    ]);
+    await marshaller.cache.put(serverCacheKey, rawServer);
+    await marshaller.cache.remove(roleCacheKey);
 
     dispatch(event: Event.serverRoleDelete, params: [role, server]);
   }

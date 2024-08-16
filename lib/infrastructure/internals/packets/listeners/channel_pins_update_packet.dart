@@ -29,18 +29,16 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
 
   Future<void> registerServerChannelPins(ServerChannel channel, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(channel.guildId);
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
-    final channelCacheKey = marshaller.cacheKey.channel(channel.id);
 
     server.channels.list.update(channel.id, (_) => channel);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
     final rawChannel = await marshaller.serializers.channels.deserialize(channel);
 
-    await Future.wait([
-      marshaller.cache.put(serverCacheKey, rawServer),
-      marshaller.cache.put(channelCacheKey, rawChannel)
-    ]);
+    await marshaller.cache.putMany({
+      marshaller.cacheKey.server(server.id): rawServer,
+      marshaller.cacheKey.channel(channel.id): rawChannel
+    });
 
     dispatch(event: Event.serverChannelPinsUpdate, params: [server, channel]);
   }
