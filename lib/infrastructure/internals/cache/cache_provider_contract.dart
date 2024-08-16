@@ -9,29 +9,33 @@ abstract interface class CacheProviderContract {
 
   FutureOr<void> init();
 
-  Future<int> length();
+  FutureOr<int> length();
 
-  Future<Map<String, dynamic>> inspect();
+  FutureOr<Map<String, dynamic>> inspect();
 
   FutureOr<Map<String, dynamic>?> get(String? key);
 
+  FutureOr<List<Map<String, dynamic>?>> getMany(List<String> keys);
+
   FutureOr<Map<String, dynamic>> getOrFail(String key, {Exception Function()? onFail});
 
-  Future<Map<String, dynamic>?> whereKeyStartsWith(String prefix);
+  FutureOr<Map<String, dynamic>?> whereKeyStartsWith(String prefix);
 
-  Future<Map<String, dynamic>> whereKeyStartsWithOrFail(String prefix, {Exception Function()? onFail});
+  FutureOr<Map<String, dynamic>> whereKeyStartsWithOrFail(String prefix, {Exception Function()? onFail});
 
-  Future<bool> has(String key);
+  FutureOr<bool> has(String key);
 
-  Future<void> put<T>(String key, T object);
+  FutureOr<void> put<T>(String key, T object);
 
-  Future<void> remove(String key);
+  FutureOr<void> putMany<T>(Map<String, T> object);
 
-  Future<void> removeMany(List<String> key);
+  FutureOr<void> remove(String key);
 
-  Future<void> clear();
+  FutureOr<void> removeMany(List<String> key);
 
-  Future<void> dispose();
+  FutureOr<void> clear();
 
-  Future<bool> getHealth();
+  FutureOr<void> dispose();
+
+  FutureOr<bool> getHealth();
 }

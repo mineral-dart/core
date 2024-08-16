@@ -149,9 +149,9 @@ final class ChannelPart implements DataStorePart {
 
     final rawServer = await _kernel.marshaller.serializers.server.deserialize(server);
 
-    await Future.wait([
-      _kernel.marshaller.cache.put('server-${server.id}', rawServer),
-      _kernel.marshaller.cache.put('server-${server.id}/channel-${channel.id}', rawChannel)
-    ]);
+    await _kernel.marshaller.cache.putMany({
+      _kernel.marshaller.cacheKey.server(server.id): rawServer,
+      _kernel.marshaller.cacheKey.channel(channel.id): rawChannel,
+    });
   }
 }

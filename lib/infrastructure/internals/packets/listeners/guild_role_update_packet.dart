@@ -23,17 +23,14 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
 
     server.roles.list.update(after.id, (_) => after);
 
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
-    final roleCacheKey = marshaller.cacheKey.serverRole(serverId: server.id, roleId: after.id);
-
     final rawServer = await marshaller.serializers.server.deserialize(server);
     final rawRole = await marshaller.serializers.role.deserialize(after);
 
     dispatch(event: Event.serverRoleUpdate, params: [before, after, server]);
 
-    await Future.wait([
-      marshaller.cache.put(serverCacheKey, rawServer),
-      marshaller.cache.put(roleCacheKey, rawRole),
-    ]);
+    await marshaller.cache.putMany({
+      marshaller.cacheKey.server(server.id): rawServer,
+      marshaller.cacheKey.serverRole(serverId: server.id, roleId: after.id): rawRole,
+    });
   }
 }

@@ -20,18 +20,15 @@ final class GuildMemberAddPacket implements ListenablePacket {
     final member = await marshaller.serializers.member
         .serializeRemote({...message.payload, 'guild_roles': server.roles.list.values.toList()});
 
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
-    final memberCacheKey =
-        marshaller.cacheKey.serverMember(serverId: server.id, memberId: member.id);
-
     server.members.list.putIfAbsent(member.id, () => member);
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
     final rawMember = await marshaller.serializers.member.deserialize(member);
-    await Future.wait([
-      marshaller.cache.put(memberCacheKey, rawMember),
-      marshaller.cache.put(serverCacheKey, rawServer)
-    ]);
+
+    await marshaller.cache.putMany({
+      marshaller.cacheKey.server(server.id): rawServer,
+      marshaller.cacheKey.serverMember(serverId: server.id, memberId: member.id): rawMember
+    });
 
     dispatch(event: Event.serverMemberAdd, params: [member, server]);
   }

@@ -28,17 +28,13 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
 
     server.members.list.update(after.id, (_) => after);
 
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
-    final memberCacheKey =
-        marshaller.cacheKey.serverMember(serverId: server.id, memberId: after.id);
-
     final rawServer = await marshaller.serializers.server.deserialize(server);
     final rawMember = await marshaller.serializers.member.deserialize(after);
 
-    await Future.wait([
-      marshaller.cache.put(serverCacheKey, rawServer),
-      marshaller.cache.put(memberCacheKey, rawMember),
-    ]);
+    await marshaller.cache.putMany({
+      marshaller.cacheKey.server(server.id): rawServer,
+      marshaller.cacheKey.serverMember(serverId: server.id, memberId: after.id): rawMember
+    });
 
     dispatch(event: Event.serverMemberUpdate, params: [before, after]);
   }

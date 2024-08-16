@@ -37,21 +37,21 @@ final class ServerPart implements DataStorePart {
       'members': membersResponse.body
     });
 
-    await Future.wait([
-      _kernel.marshaller.cache.put(serverCacheKey, await _kernel.marshaller.serializers.server.deserialize(server)),
-      ...server.channels.list.values.map((channel) {
+    await _kernel.marshaller.cache.putMany({
+      serverCacheKey: await _kernel.marshaller.serializers.server.deserialize(server),
+      ...server.channels.list.values.fold({}, (acc, channel) {
         final channelCacheKey = cacheKey.channel(channel.id);
         final rawChannel = _kernel.marshaller.serializers.channels.deserialize(channel);
 
-        return _kernel.marshaller.cache.put(channelCacheKey, rawChannel);
+        return { ...acc, channelCacheKey: rawChannel };
       }),
-      ...server.members.list.values.map((member) {
+      ...server.members.list.values.fold({}, (acc, member) {
         final memberCacheKey = cacheKey.serverMember(serverId: id, memberId: member.id);
         final rawMember = _kernel.marshaller.serializers.member.deserialize(member);
 
-        return _kernel.marshaller.cache.put(memberCacheKey, rawMember);
+        return { ...acc, memberCacheKey: rawMember };
       })
-    ]);
+    });
 
     return server;
   }
