@@ -1,46 +1,53 @@
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:uuid/uuid.dart';
 
-abstract interface class CacheKeyContract {
-  String server(Snowflake id);
+final class CacheKey {
+  String server(Snowflake id, {bool ref = false}) {
+    final key = 'server/$id';
+    return ref ? '$key:ref' : key;
+  }
 
-  String channel(Snowflake id);
+  String serverAssets(Snowflake serverId, {bool ref = false}) {
+    final key = '${server(serverId)}/assets';
+    return ref ? 'ref:$key' : key;
+  }
 
-  String serverRole({required Snowflake serverId, required Snowflake roleId});
+  String serverSettings(Snowflake serverId, {bool ref = false}) {
+    final key = '${server(serverId)}/settings';
+    return ref ? 'ref:$key' : key;
+  }
 
-  String serverMember({required Snowflake serverId, required Snowflake memberId});
+  String channel(Snowflake channelId, {Snowflake? serverId}) =>
+      serverId != null ? '${server(serverId)}/channels/$channelId' : 'channel/$channelId';
 
-  String serverEmoji({required Snowflake serverId, required Snowflake emojiId});
+  String channelPermission(Snowflake channelId, {Snowflake? serverId}) =>
+      '${channel(channelId, serverId: serverId)}/permissions';
 
-  String serverMessage({required Snowflake channelId, required Snowflake messageId});
+  String serverRole(Snowflake serverId, Snowflake roleId, {bool ref = false}) =>
+      '${server(serverId)}/role/$roleId';
 
-  String privateMessage({required Snowflake channelId, required Snowflake messageId});
-}
+  String member(Snowflake serverId, Snowflake memberId, {bool ref = false}) {
+    final key = '${server(serverId)}/members/$memberId';
+    return ref ? 'ref:$key' : key;
+  }
 
-final class CacheKey implements CacheKeyContract {
-  @override
-  String server(Snowflake id) => 'server-$id';
+  String memberAssets(Snowflake serverId, Snowflake memberId, {bool ref = false}) {
+    final key = '${member(serverId, memberId)}/assets';
+    return ref ? 'ref:$key' : key;
+  }
 
-  @override
-  String channel(Snowflake channelId) =>
-      'channel-$channelId';
+  String serverEmoji(Snowflake serverId, Snowflake emojiId, {bool ref = false}) {
+    final key = '${server(serverId)}/emojis/$emojiId';
+    return ref ? 'ref:$key' : key;
+  }
 
-  @override
-  String serverRole({required Snowflake serverId, required Snowflake roleId}) =>
-      '${server(serverId)}/role-$roleId';
-
-  @override
-  String serverMember({required Snowflake serverId, required Snowflake memberId}) =>
-      '${server(serverId)}/member-$memberId';
-
-  @override
-  String serverEmoji({required Snowflake serverId, required Snowflake emojiId}) =>
-      '${server(serverId)}/emoji-$emojiId';
-
-  @override
   String serverMessage({required Snowflake channelId, required Snowflake messageId}) =>
       '${channel(channelId)}/message-$messageId';
 
-  @override
   String privateMessage({required Snowflake channelId, required Snowflake messageId}) =>
       '${channel(channelId)}/message-$messageId';
+
+  String embed(Snowflake messageId, { String? uid }) => 'messages/$messageId/embeds/${uid ?? Uuid().v4()}';
+
+  String poll(Snowflake messageId, { String? uid }) => 'messages/$messageId/polls/${uid ?? Uuid().v4()}';
 }

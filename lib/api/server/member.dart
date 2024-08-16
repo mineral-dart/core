@@ -37,7 +37,6 @@ final class Member {
   final PremiumTier premiumType;
   final DateTime? joinedAt;
   final Permissions permissions;
-  final bool pending;
   final int? accentColor;
   final MemberFlagsManager flags;
   Presence? presence;
@@ -114,7 +113,6 @@ final class Member {
     required this.premiumType,
     required this.joinedAt,
     required this.permissions,
-    required this.pending,
     required this.accentColor,
     required this.presence,
   }) {

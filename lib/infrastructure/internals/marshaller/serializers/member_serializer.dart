@@ -4,10 +4,8 @@ import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/member_role_manager.dart';
 import 'package:mineral/api/server/member.dart';
-import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/member_flags.dart';
 import 'package:mineral/api/server/member_timeout.dart';
-import 'package:mineral/api/server/role.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/commons/utils.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
@@ -19,81 +17,74 @@ final class MemberSerializer implements SerializerContract<Member> {
   MemberSerializer(this._marshaller);
 
   @override
-  Future<Member> serializeRemote(Map<String, dynamic> json) async {
-    final serverRoles = json.entries.firstWhere((element) => element.key == 'guild_roles',
-        orElse: () => throw FormatException('Server roles not found in member structure'));
+  Future<void> normalize(Map<String, dynamic> json) async {
+    await _marshaller.serializers.memberAssets.normalize({
+      ...json,
+      'member_id': json['id'],
+    });
 
-    final member = Member(
-      id: json['user']['id'],
-      username: json['user']['nick'] ?? json['user']['username'],
-      nickname: json['nick'] ?? json['user']['display_name'],
-      globalName: json['user']['global_name'],
-      discriminator: json['user']['discriminator'],
-      assets: MemberAssets.fromJson(json['user']),
-      flags: MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
-      premiumSince: Helper.createOrNull(
-          field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
-      publicFlags: json['user']['public_flags'],
-      roles: MemberRoleManager.fromList(serverRoles.value),
-      isBot: json['user']['bot'] ?? false,
-      isPending: json['pending'] ?? false,
-      timeout: MemberTimeout(
-          duration: Helper.createOrNull(
-              field: json['communication_disabled_until'],
-              fn: () => DateTime.parse(json['communication_disabled_until']))),
-      mfaEnabled: json['user']['mfa_enabled'] ?? false,
-      locale: json['user']['locale'],
-      premiumType: PremiumTier.values
-          .firstWhere((e) => e == json['user']['premium_type'], orElse: () => PremiumTier.none),
-      joinedAt: Helper.createOrNull(
-          field: json['joined_at'], fn: () => DateTime.parse(json['joined_at'])),
-      permissions: switch (json['permissions']) {
-        int() => Permissions.fromInt(json['permissions']),
-        String() => Permissions.fromInt(int.parse(json['permissions'])),
-        _ => Permissions.fromInt(0),
-      },
-      pending: json['pending'] ?? false,
-      accentColor: json['accent_color'],
-      presence: json['presence'] != null ? Presence.fromJson(json['presence']) : null,
-    );
+    final payload = {
+      'id': json['user']['id'],
+      'username': json['user']['username'],
+      'nickname': json['nick'],
+      'global_name': json['user']['global_name'],
+      'discriminator': json['user']['discriminator'],
+      'assets': _marshaller.cacheKey.memberAssets(json['server_id'], json['user']['id']),
+      'flags': json['flags'],
+      'roles': List.from(json['roles'])
+          .map((element) => _marshaller.cacheKey.serverRole(json['server_id_id'], element['id']))
+          .toList(),
+      'premium_since': json['premium_since'],
+      'public_flags': json['user']['public_flags'],
+      'is_bot': json['user']['bot'] ?? false,
+      'is_pending': json['pending'] ?? false,
+      'timeout': json['communication_disabled_until'],
+      'mfa_enabled': json['user']['mfa_enabled'] ?? false,
+      'locale': json['user']['locale'],
+      'premium_type': json['user']['premium_type'],
+      'joined_at': json['joined_at'],
+      'permissions': json['permissions'],
+      'pending': json['pending'] ?? false,
+      'accent_color': json['accent_color'],
+      // TODO : presence
+    };
 
-    member.roles.member = member;
-    member.flags.member = member;
-
-    return member;
+    final cacheKey = _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
+    await _marshaller.cache.put(cacheKey, payload);
   }
 
   @override
-  Future<Member> serializeCache(Map<String, dynamic> json) async {
-    final List<Role> serializedRoles = await List.from(json['roles']).map((element) async {
-      final cacheKey = _marshaller.cacheKey.serverRole(serverId: json['guild_id'], roleId: element);
+  Future<Member> serialize(Map<String, dynamic> json) async {
+    final rawAssets = await _marshaller.cache.getOrFail(json['assets']);
+    final assets = await _marshaller.serializers.memberAssets.serialize(rawAssets);
 
-      final rawRole = await _marshaller.cache.getOrFail(cacheKey);
-      return _marshaller.serializers.role.serializeCache(rawRole);
+    final rawRoles = await _marshaller.cache.getMany(json['roles']);
+    final roles = await rawRoles.nonNulls.map((element) async {
+      return _marshaller.serializers.role.serialize(element);
     }).wait;
 
     final member = Member(
-      id: json['user']['id'],
-      username: json['user']['nick'] ?? json['user']['username'],
-      nickname: json['nick'] ?? json['user']['display_name'],
-      globalName: json['user']['global_name'],
-      discriminator: json['user']['discriminator'],
-      assets: MemberAssets.fromJson(json['user']),
+      id: json['id'],
+      username: json['nick'] ?? json['username'],
+      nickname: json['nick'] ?? json['display_name'],
+      globalName: json['global_name'],
+      discriminator: json['discriminator'],
+      assets: assets,
       flags: MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
       premiumSince: Helper.createOrNull(
           field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
-      publicFlags: json['user']['public_flags'],
-      roles: MemberRoleManager.fromList(serializedRoles),
-      isBot: json['user']['bot'] ?? false,
+      publicFlags: json['public_flags'],
+      roles: MemberRoleManager.fromList(roles),
+      isBot: json['is_bot'] ?? false,
       isPending: json['pending'] ?? false,
       timeout: MemberTimeout(
           duration: Helper.createOrNull(
               field: json['communication_disabled_until'],
               fn: () => DateTime.parse(json['communication_disabled_until']))),
-      mfaEnabled: json['user']['mfa_enabled'] ?? false,
-      locale: json['user']['locale'],
+      mfaEnabled: json['mfa_enabled'] ?? false,
+      locale: json['locale'],
       premiumType: PremiumTier.values
-          .firstWhere((e) => e == json['user']['premium_type'], orElse: () => PremiumTier.none),
+          .firstWhere((e) => e == json['premium_type'], orElse: () => PremiumTier.none),
       joinedAt: Helper.createOrNull(
           field: json['joined_at'], fn: () => DateTime.parse(json['joined_at'])),
       permissions: switch (json['permissions']) {
@@ -101,7 +92,6 @@ final class MemberSerializer implements SerializerContract<Member> {
         String() => Permissions.fromInt(int.parse(json['permissions'])),
         _ => Permissions.fromInt(0),
       },
-      pending: json['pending'] ?? false,
       accentColor: json['accent_color'],
       presence: json['presence'] != null ? Presence.fromJson(json['presence']) : null,
     );

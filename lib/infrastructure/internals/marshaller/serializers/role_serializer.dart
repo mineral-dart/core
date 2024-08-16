@@ -12,10 +12,25 @@ final class RoleSerializer implements SerializerContract<Role> {
   RoleSerializer(this.marshaller);
 
   @override
-  Future<Role> serializeRemote(Map<String, dynamic> json) async => _serialize(json);
+  Future<void> normalize(Map<String, dynamic> json) async {
+    final payload = {
+      'id': json['id'],
+      'name': json['name'],
+      'color': json['color'],
+      'hoist': json['hoist'],
+      'position': json['position'],
+      'permissions': json['permissions'],
+      'managed': json['managed'],
+      'mentionable': json['mentionable'],
+      'flags': json['flags'],
+    };
+
+    final cacheKey = marshaller.cacheKey.serverRole(json['server_id'], json['id']);
+    await marshaller.cache.put(cacheKey, payload);
+  }
 
   @override
-  Future<Role> serializeCache(Map<String, dynamic> json) async => _serialize(json);
+  Future<Role> serialize(Map<String, dynamic> json) async => _serialize(json);
 
   Role _serialize(Map<String, dynamic> payload) {
     return Role(
