@@ -25,7 +25,7 @@ final class MessageProperties<T extends Channel> {
   factory MessageProperties.fromJson(T channel, Map<String, dynamic> json) {
     final embedSerializer = ioc.resolve<MarshallerContract>().serializers.embed;
     final embeds = List.from(json['embeds'])
-        .map((element) => embedSerializer.serializeRemote(element) as MessageEmbed)
+        .map((element) => embedSerializer.serialize(element) as MessageEmbed)
         .toList();
 
     return MessageProperties(

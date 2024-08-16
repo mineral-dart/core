@@ -11,7 +11,7 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
     final messageProperties = MessageProperties.fromJson(channel as PrivateChannel, json);
 
-    final user = await marshaller.serializers.user.serializeRemote(json['author']);
+    final user = await marshaller.serializers.user.serialize(json['author']);
 
     return PrivateMessage(messageProperties, userId: json['author']['id'], author: user);
   }

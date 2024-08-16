@@ -13,7 +13,7 @@ final class EmojiManager {
   factory EmojiManager.fromJson(MarshallerContract marshaller,
       {required List<Role> roles, required List<dynamic> payload}) {
     return EmojiManager(Map<Snowflake, Emoji>.from(payload.fold({}, (value, element) {
-      final emoji = marshaller.serializers.emojis.serializeRemote({
+      final emoji = marshaller.serializers.emojis.serialize({
         'guildRoles': roles,
         ...element,
       }) as Emoji;
