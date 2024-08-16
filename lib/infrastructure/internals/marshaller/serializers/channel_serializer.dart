@@ -29,18 +29,18 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
   ChannelSerializer(this._marshaller);
 
   @override
-  Future<T> serializeRemote(Map<String, dynamic> json) async {
+  Future<T> normalize(Map<String, dynamic> json) async {
     final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
     if (channelFactory == null) {
       _marshaller.logger.warn('Channel type not found ${json['type']}');
       return null as T;
     }
 
-    return channelFactory.serializeRemote(_marshaller, json['guild_id'] ?? json['id'], json) as Future<T>;
+    return channelFactory.normalize(_marshaller, json) as Future<T>;
   }
 
   @override
-  Future<T> serializeCache(Map<String, dynamic> json) {
+  Future<T> serialize(Map<String, dynamic> json) {
     final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
 
     if (channelFactory == null) {
@@ -48,7 +48,7 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
       throw Exception('Channel type not found ${json['type']}');
     }
 
-    return channelFactory.serializeCache(_marshaller, json['guild_id'] ?? json['id'], json) as Future<T>;
+    return channelFactory.serialize(_marshaller, json) as Future<T>;
   }
 
   @override

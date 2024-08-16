@@ -9,13 +9,23 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
   ChannelType get type => ChannelType.guildVoice;
 
   @override
-  Future<ServerVoiceChannel> serializeRemote(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
-    final properties = await ChannelProperties.serializeRemote(marshaller, json);
-    return ServerVoiceChannel(properties);
+  Future<void> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+    final payload = {
+      'id': json['id'],
+      'type': json['type'],
+      'position': json['position'],
+      'name': json['name'],
+      'guild_id': json['guild_id'],
+      'parent_id': json['parent_id'],
+      'permission_overwrites': json['permission_overwrites'],
+    };
+
+    final cacheKey = marshaller.cacheKey.channel(json['id']);
+    await marshaller.cache.put(cacheKey, payload);
   }
 
   @override
-  Future<ServerVoiceChannel> serializeCache(MarshallerContract marshaller, String guildId, Map<String, dynamic> json) async {
+  Future<ServerVoiceChannel> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
     final properties = await ChannelProperties.serializeCache(marshaller, json);
     return ServerVoiceChannel(properties);
   }
