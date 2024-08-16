@@ -1,9 +1,6 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:mineral/api/common/emoji.dart';
-import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/server/role.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
@@ -13,42 +10,32 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
   EmojiSerializer(this._marshaller);
 
   @override
-  Emoji serializeRemote(Map<String, dynamic> json) {
-    final guildRoles = List<Role>.from(json['guildRoles']);
+  Future<void> normalize(Map<String, dynamic> json) async {
+    final payload = {
+      'id': json['id'],
+      'name': json['name'],
+      'managed': json['managed'] ?? false,
+      'available': json['available'] ?? false,
+      'animated': json['animated'] ?? false,
+      'roles': List.from(json['roles'])
+          .map((element) => _marshaller.cacheKey.serverEmoji(json['server_id'], element['id']))
+          .toList(),
+    };
 
-    final Map<Snowflake, Role> roles = List<String>.from(json['roles']).fold({}, (value, element) {
-      final role = guildRoles.firstWhereOrNull((role) => role.id.value == element);
-
-      if (role == null) {
-        // Todo add report case
-        return value;
-      }
-
-      return {...value, role.id: role};
-    });
-
-    return Emoji(
-      id: json['id'],
-      name: json['name'],
-      globalName: json['global_name'],
-      roles: roles,
-      managed: json['managed'],
-      animated: json['animated'],
-      available: json['available'],
-    );
+    final cacheKey = _marshaller.cacheKey.serverEmoji(json['server_id'], json['id']);
+    await _marshaller.cache.put(cacheKey, payload);
   }
 
   @override
-  Future<Emoji> serializeCache(Map<String, dynamic> json) async {
-    final roles = await List.from(json['roles']).map((id) async {
-      final rawRole = await _marshaller.cache.getOrFail('server-${json['serverId']}/role-$id');
-      return _marshaller.serializers.role.serializeCache(rawRole);
+  Future<Emoji> serialize(Map<String, dynamic> json) async {
+    final rawRoles = await _marshaller.cache.getMany(json['roles']);
+    final roles = await rawRoles.nonNulls.map((element) async {
+      return _marshaller.serializers.role.serialize(element);
     }).wait;
 
     return Emoji(
       id: json['id'],
       name: json['name'],
-      globalName: json['global_name'],
       roles: roles.fold({}, (value, element) => {...value, element.id: element}),
       managed: json['managed'],
       animated: json['animated'],

@@ -14,7 +14,7 @@ abstract interface class MarshallerContract {
 
   CacheProviderContract get cache;
 
-  CacheKeyContract get cacheKey;
+  CacheKey get cacheKey;
 }
 
 final class Marshaller implements MarshallerContract {
@@ -31,7 +31,7 @@ final class Marshaller implements MarshallerContract {
   final CacheProviderContract cache;
 
   @override
-  final CacheKeyContract cacheKey = CacheKey();
+  final CacheKey cacheKey = CacheKey();
 
   Marshaller(this.logger, this.cache) {
     serializers = SerializerBucket(this);

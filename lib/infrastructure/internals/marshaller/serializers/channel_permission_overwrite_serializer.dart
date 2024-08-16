@@ -11,17 +11,26 @@ final class ChannelPermissionOverwriteSerializer
   ChannelPermissionOverwriteSerializer(this.marshaller);
 
   @override
-  ChannelPermissionOverwrite serializeRemote(Map<String, dynamic> json) => _serialize(json);
+  Future<void> normalize(Map<String, dynamic> json) async {
+    final payload = {
+      'id': json['id'],
+      'type': json['type'],
+      'allow': json['allow'],
+      'deny': json['deny'],
+    };
+
+    final cacheKey = marshaller.cacheKey
+        .channelPermission(Snowflake(payload['id']), serverId: json['server_id']);
+    await marshaller.cache.put(cacheKey, payload);
+  }
 
   @override
-  ChannelPermissionOverwrite serializeCache(Map<String, dynamic> json) => _serialize(json);
-
-  ChannelPermissionOverwrite _serialize(Map<String, dynamic> payload) {
+  ChannelPermissionOverwrite serialize(Map<String, dynamic> json) {
     return ChannelPermissionOverwrite(
-      id: Snowflake(payload['id']),
-      type: findInEnum(ChannelPermissionOverwriteType.values, payload['type']),
-      allow: payload['allow'],
-      deny: payload['deny'],
+      id: Snowflake(json['id']),
+      type: findInEnum(ChannelPermissionOverwriteType.values, json['type']),
+      allow: json['allow'],
+      deny: json['deny'],
     );
   }
 

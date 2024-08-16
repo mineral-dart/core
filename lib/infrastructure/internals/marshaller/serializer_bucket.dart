@@ -7,6 +7,7 @@ import 'package:mineral/api/common/sticker.dart';
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/server/member.dart';
+import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/api/server/server_assets.dart';
@@ -21,6 +22,7 @@ import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_
 import 'package:mineral/infrastructure/internals/marshaller/serializers/embed_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/emoji_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/global_command_context_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/member_assets_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/member_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/poll_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/private_message_serializer.dart';
@@ -41,6 +43,8 @@ final class SerializerBucket {
   final SerializerContract<Server> server;
 
   final SerializerContract<Member> member;
+
+  final SerializerContract<MemberAssets> memberAssets;
 
   final SerializerContract<User> user;
 
@@ -74,18 +78,19 @@ final class SerializerBucket {
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
         member = MemberSerializer(marshaller),
-        user = UserSerializer(),
+        memberAssets = MemberAssetsSerializer(marshaller),
+        user = UserSerializer(marshaller),
         role = RoleSerializer(marshaller),
-        serverSubscription = ServerSubscriptionSerializer(),
+        serverSubscription = ServerSubscriptionSerializer(marshaller),
         serverSettings = ServerSettingsSerializer(marshaller),
         serversAsset = ServerAssetsSerializer(marshaller),
         emojis = EmojiSerializer(marshaller),
-        sticker = StickerSerializer(),
+        sticker = StickerSerializer(marshaller),
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
         serverMessage = ServerMessageSerializer(marshaller),
         privateMessage = PrivateMessageSerializer(marshaller),
-        embed = EmbedSerializer(),
+        embed = EmbedSerializer(marshaller),
         globalCommandContext = GlobalCommandContextSerializer(marshaller),
         guildCommandContext = ServerCommandContextSerializer(marshaller),
-        poll = PollSerializer();
+        poll = PollSerializer(marshaller);
 }

@@ -13,10 +13,36 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
   ServerAssetsSerializer(this._marshaller);
 
   @override
-  ServerAsset serializeRemote(Map<String, dynamic> json) => _serialize(json);
+  Future<void> normalize(Map<String, dynamic> json) async {
+    final cacheKey = _marshaller.cacheKey.serverAssets(json['id']);
+
+    await List.from(json['roles']).map((element) async {
+      return _marshaller.serializers.role.normalize({...element, 'server_id': json['id']});
+    }).wait;
+
+    await List.from(json['emojis']).map((element) async {
+      return _marshaller.serializers.emojis.normalize({...element, 'server_id': json['id']});
+    }).wait;
+
+    final payload = {
+      'icon': json['icon'],
+      'icon_hash': json['icon_hash'],
+      'splash': json['splash'],
+      'discovery_splash': json['discovery_splash'],
+      'banner': json['banner'],
+      'roles': List.from(json['roles'])
+          .map((element) => _marshaller.cacheKey.serverRole(json['id'], element['id']))
+          .toList(),
+      'emojis': List.from(json['emojis'])
+          .map((element) => _marshaller.cacheKey.serverEmoji(json['id'], element['id']))
+          .toList(),
+    };
+
+    _marshaller.cache.put(cacheKey, payload);
+  }
 
   @override
-  ServerAsset serializeCache(Map<String, dynamic> json) => _serialize(json);
+  ServerAsset serialize(Map<String, dynamic> json) => _serialize(json);
 
   ServerAsset _serialize(Map<String, dynamic> json) {
     final guildRoles = List<Role>.from(json['guildRoles']);

@@ -12,7 +12,25 @@ import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dar
 
 final class EmbedSerializer implements SerializerContract<MessageEmbed> {
   @override
-  MessageEmbed serializeRemote(Map<String, dynamic> json) {
+  Future<void> normalize(Map<String, dynamic> json) async {
+    final payload = {
+      'title': json['title'],
+      'description': json['description'],
+      'type': json['type'],
+      'url': json['url'],
+      'timestamp': json['timestamp'],
+      'assets': json['assets'],
+      'provider': json['provider'],
+      'fields': json['fields'],
+      'color': json['color']
+    };
+
+    final cacheKey = _marshaller.cacheKey.embed(json['id']);
+    await _marshaller.cache.put(cacheKey, payload);
+  }
+
+  @override
+  Future<MessageEmbed> serialize(Map<String, dynamic> json) async {
     return MessageEmbed(
       title: json['title'],
       description: json['description'],
@@ -29,11 +47,6 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
           field: json['fields'], fn: () => json['fields'].map(MessageEmbedField.fromJson).toList()),
       color: Helper.createOrNull(field: json['color'], fn: () => Color.of(json['color'])),
     );
-  }
-
-  @override
-  Future<MessageEmbed> serializeCache(Map<String, dynamic> json) {
-    throw UnimplementedError();
   }
 
   @override
