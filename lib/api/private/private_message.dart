@@ -26,7 +26,7 @@ final class PrivateMessage implements Message<PrivateChannel> {
 
   DateTime? get updatedAt => _properties.updatedAt;
 
-  final String userId;
+  final Snowflake userId;
 
   final User author;
 
