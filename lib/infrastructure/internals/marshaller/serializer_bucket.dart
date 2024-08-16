@@ -6,6 +6,7 @@ import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/sticker.dart';
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/private/user.dart';
+import 'package:mineral/api/private/user_assets.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/role.dart';
@@ -34,6 +35,7 @@ import 'package:mineral/infrastructure/internals/marshaller/serializers/server_s
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_settings_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_subscription_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/sticker_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/user_assets_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/user_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
@@ -47,6 +49,8 @@ final class SerializerBucket {
   final SerializerContract<MemberAssets> memberAssets;
 
   final SerializerContract<User> user;
+
+  final SerializerContract<UserAssets> userAssets;
 
   final SerializerContract<Role> role;
 
@@ -80,6 +84,7 @@ final class SerializerBucket {
         member = MemberSerializer(marshaller),
         memberAssets = MemberAssetsSerializer(marshaller),
         user = UserSerializer(marshaller),
+        userAssets = UserAssetsSerializer(marshaller),
         role = RoleSerializer(marshaller),
         serverSubscription = ServerSubscriptionSerializer(marshaller),
         serverSettings = ServerSettingsSerializer(marshaller),

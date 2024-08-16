@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/premium_tier.dart';
 import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/private/user.dart';
 import 'package:mineral/api/private/user_assets.dart';
@@ -6,29 +7,58 @@ import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dar
 
 final class UserSerializer implements SerializerContract<User> {
   @override
-  User serializeRemote(Map<String, dynamic> json) => _serialize(json);
+  Future<void> normalize(Map<String, dynamic> json) async {
+    await _marshaller.serializers.userAssets.normalize({
+      ...json,
+      'user_id': json['id'],
+    });
+
+    final payload = {
+      'id': json['id'],
+      'username': json['username'],
+      'discriminator': json['discriminator'],
+      'flags': json['flags'],
+      'public_flags': json['public_flags'],
+      'avatar': json['avatar'],
+      'is_bot': json['bot'],
+      'system': json['system'],
+      'mfa_enabled': json['mfa_enabled'],
+      'locale': json['locale'],
+      'verified': json['verified'],
+      'email': json['email'],
+      'premium_type': json['premium_type'],
+      'assets': _marshaller.cacheKey.userAssets(json['id']),
+    };
+
+    final cacheKey = _marshaller.cacheKey.user(json['id']);
+    await _marshaller.cache.put(cacheKey, payload);
+  }
 
   @override
-  User serializeCache(Map<String, dynamic> json) => _serialize(json);
+  Future<User> serialize(Map<String, dynamic> json) async {
+    final rawAssets = await _marshaller.cache.getOrFail(json['assets']);
+    final assets = await _marshaller.serializers.userAssets.serialize(rawAssets);
 
-  User _serialize(Map<String, dynamic> json) {
     return User(
       id: json['id'],
       username: json['username'],
       discriminator: json['discriminator'],
       avatar: json['avatar'],
-      bot: json['bot'],
+      bot: json['is_bot'],
       system: json['system'],
       mfaEnabled: json['mfa_enabled'],
       locale: json['locale'],
       verified: json['verified'],
       email: json['email'],
       flags: json['flags'],
-      premiumType: json['premium_type'],
+      premiumType: PremiumTier.values
+          .firstWhere((e) => e == json['premium_type'], orElse: () => PremiumTier.none),
       publicFlags: json['public_flags'],
-      assets: UserAssets.fromJson(json),
-      createdAt: json['created_at'],
-      presence: json['presence'] != null ? Presence.fromJson(json['presence']) : null,
+      assets: assets,
+      createdAt: Helper.createOrNull(
+          field: json['created_at'], fn: () => DateTime.parse(json['created_at'])),
+      // TODO: Implement presence deserialization
+      presence: null,
     );
   }
 
@@ -41,42 +71,15 @@ final class UserSerializer implements SerializerContract<User> {
       'flags': user.flags,
       'public_flags': user.publicFlags,
       'avatar': user.avatar,
-      'bot': user.bot,
+      'is_bot': user.bot,
       'system': user.system,
       'mfa_enabled': user.mfaEnabled,
       'locale': user.locale,
       'verified': user.verified,
       'email': user.email,
       'premium_type': user.premiumType?.value,
-      'assets': {
-        'avatar': user.assets.avatar?.hash,
-        'avatar_decoration_data': {
-          'sku_id': user.assets.avatarDecoration?.hash,
-        },
-        'banner': user.assets.banner?.hash,
-      },
       'created_at': user.createdAt?.toIso8601String(),
-      'presence': Helper.createOrNull(
-        field: user.presence,
-        fn: () => {
-          'since': user.presence!.since?.toIso8601String(),
-          'activities': user.presence!.activities.map((element) => {
-            'name': element.name,
-            'type': element.type.value,
-            'url': element.url,
-            'created_at': element.createdAt.toIso8601String(),
-            'details': element.details,
-            'state': element.state,
-            'emoji': element.emoji != null ? {
-              'name': element.emoji!.name,
-              'id': element.emoji!.id,
-              'animated': element.emoji!.animated,
-            } : null,
-          }).toList(),
-          'status': user.presence!.status.value,
-          'afk': user.presence!.afk,
-        }
-      ),
+      // TODO: Implement presence serialization
     };
   }
 }

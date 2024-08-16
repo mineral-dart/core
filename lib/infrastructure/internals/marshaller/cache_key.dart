@@ -36,6 +36,16 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
+  String user(Snowflake userId, {bool ref = false}) {
+    final key = 'users/$userId';
+    return ref ? 'ref:$key' : key;
+  }
+
+  String userAssets(Snowflake userId, {bool ref = false}) {
+    final key = '${user(userId)}/assets';
+    return ref ? 'ref:$key' : key;
+  }
+
   String serverEmoji(Snowflake serverId, Snowflake emojiId, {bool ref = false}) {
     final key = '${server(serverId)}/emojis/$emojiId';
     return ref ? 'ref:$key' : key;
