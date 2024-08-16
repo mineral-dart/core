@@ -6,7 +6,7 @@ import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dar
 
 final class StickerSerializer implements SerializerContract<Sticker> {
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'name': json['name'],
@@ -22,6 +22,8 @@ final class StickerSerializer implements SerializerContract<Sticker> {
 
     final cacheKey = _marshaller.cacheKey.sticker(json['id']);
     await _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

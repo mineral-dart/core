@@ -29,14 +29,14 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
   ChannelSerializer(this._marshaller);
 
   @override
-  Future<T> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
     if (channelFactory == null) {
       _marshaller.logger.warn('Channel type not found ${json['type']}');
-      return null as T;
+      return {};
     }
 
-    return channelFactory.normalize(_marshaller, json) as Future<T>;
+    return channelFactory.normalize(_marshaller, json);
   }
 
   @override

@@ -9,7 +9,7 @@ final class ServerCategoryChannelFactory implements ChannelFactoryContract<Serve
   ChannelType get type => ChannelType.guildCategory;
 
   @override
-  Future<void> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -23,6 +23,8 @@ final class ServerCategoryChannelFactory implements ChannelFactoryContract<Serve
 
     final cacheKey = marshaller.cacheKey.channel(json['id']);
     await marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

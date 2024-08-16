@@ -11,7 +11,7 @@ final class ChannelPermissionOverwriteSerializer
   ChannelPermissionOverwriteSerializer(this.marshaller);
 
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -22,6 +22,8 @@ final class ChannelPermissionOverwriteSerializer
     final cacheKey = marshaller.cacheKey
         .channelPermission(Snowflake(payload['id']), serverId: json['server_id']);
     await marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

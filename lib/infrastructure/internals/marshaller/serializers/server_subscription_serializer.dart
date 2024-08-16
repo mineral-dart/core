@@ -5,7 +5,7 @@ import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dar
 
 final class ServerSubscriptionSerializer implements SerializerContract<ServerSubscription> {
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     throw UnimplementedError();
   }
 

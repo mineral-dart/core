@@ -12,7 +12,7 @@ final class RoleSerializer implements SerializerContract<Role> {
   RoleSerializer(this.marshaller);
 
   @override
-  Future<void> normalize(Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'name': json['name'],
@@ -27,6 +27,8 @@ final class RoleSerializer implements SerializerContract<Role> {
 
     final cacheKey = marshaller.cacheKey.serverRole(json['server_id'], json['id']);
     await marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

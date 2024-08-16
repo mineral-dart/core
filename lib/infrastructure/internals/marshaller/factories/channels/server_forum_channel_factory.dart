@@ -13,7 +13,7 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
   ChannelType get type => ChannelType.guildForum;
 
   @override
-  Future<void> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -27,6 +27,8 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
 
     final cacheKey = marshaller.cacheKey.channel(json['id']);
     await marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override
