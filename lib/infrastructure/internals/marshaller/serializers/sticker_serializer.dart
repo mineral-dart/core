@@ -6,12 +6,26 @@ import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dar
 
 final class StickerSerializer implements SerializerContract<Sticker> {
   @override
-  Sticker serializeRemote(Map<String, dynamic> json) => _serialize(json);
+  Future<void> normalize(Map<String, dynamic> json) async {
+    final payload = {
+      'id': json['id'],
+      'name': json['name'],
+      'type': json['type'],
+      'available': json['available'],
+      'pack_id': json['pack_id'],
+      'description': json['description'],
+      'tags': json['tags'],
+      'asset': json['asset'],
+      'format_type': json['format_type'],
+      'sort_value': json['sort_value'],
+    };
+
+    final cacheKey = _marshaller.cacheKey.sticker(json['id']);
+    await _marshaller.cache.put(cacheKey, payload);
+  }
 
   @override
-  Sticker serializeCache(Map<String, dynamic> json) => _serialize(json);
-
-  Sticker _serialize(Map<String, dynamic> json) {
+  Sticker serialize(Map<String, dynamic> json) {
     return Sticker(
       id: Snowflake(json['id']),
       name: json['name'],
