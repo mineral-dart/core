@@ -17,8 +17,8 @@ final class GlobalCommandContextSerializer implements SerializerContract<GlobalC
       applicationId: Snowflake(json['application_id']),
       version: json['version'],
       token: json['token'],
-      channel: await marshaller.serializers.channels.serializeRemote(json['channel']),
-      user: await marshaller.serializers.user.serializeRemote(json['user']),
+      channel: await marshaller.serializers.channels.serialize(json['channel']),
+      user: await marshaller.serializers.user.serialize(json['user']),
     );
   }
 
@@ -29,8 +29,8 @@ final class GlobalCommandContextSerializer implements SerializerContract<GlobalC
       applicationId: Snowflake(json['application_id']),
       version: json['version'],
       token: json['token'],
-      channel: await marshaller.serializers.channels.serializeCache(json['channel']),
-      user: await marshaller.serializers.user.serializeCache(json['user']),
+      channel: await marshaller.serializers.channels.serialize(json['channel']),
+      user: await marshaller.serializers.user.serialize(json['user']),
     );
   }
 
