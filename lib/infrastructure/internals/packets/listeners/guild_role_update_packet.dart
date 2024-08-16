@@ -19,7 +19,7 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
 
     final before = server.roles.list[message.payload['role']['id']];
-    final after = await marshaller.serializers.role.serializeRemote(message.payload['role']);
+    final after = await marshaller.serializers.role.serialize(message.payload['role']);
 
     server.roles.list.update(after.id, (_) => after);
 
@@ -30,7 +30,7 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
 
     await marshaller.cache.putMany({
       marshaller.cacheKey.server(server.id): rawServer,
-      marshaller.cacheKey.serverRole(serverId: server.id, roleId: after.id): rawRole,
+      marshaller.cacheKey.serverRole(server.id, after.id): rawRole,
     });
   }
 }

@@ -66,7 +66,7 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
         final cacheKey = marshaller.cacheKey.channel(Snowflake(id));
         final rawChannel = await marshaller.cache.getOrFail(cacheKey);
 
-        return marshaller.serializers.channels.serializeCache(rawChannel) as Future<T>;
+        return marshaller.serializers.channelsserialize(rawChannel) as Future<T>;
       }));
     }
 
@@ -93,7 +93,7 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
           marshaller.cacheKey.serverRole(serverId: payload['guild_id'], roleId: Snowflake(id));
       final rawRole = await marshaller.cache.getOrFail(cacheKey);
 
-      return marshaller.serializers.role.serializeCache(rawRole);
+      return marshaller.serializers.roleserialize(rawRole);
     }));
 
     dispatch(

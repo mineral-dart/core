@@ -18,7 +18,7 @@ final class ChannelDeletePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final channel = await marshaller.serializers.channels.serializeRemote(message.payload);
+    final channel = await marshaller.serializers.channels.serialize(message.payload);
 
     switch (channel) {
       case ServerChannel():

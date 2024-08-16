@@ -23,8 +23,8 @@ final class GuildMemberChunkPacket implements ListenablePacket {
     final presences = message.payload['presences'];
 
     for (final element in members) {
-      final member = await marshaller.serializers.member.serializeRemote(element);
-      final memberCacheKey = marshaller.cacheKey.serverMember(serverId: server.id, memberId: member.id);
+      final member = await marshaller.serializers.member.serialize(element);
+      final memberCacheKey = marshaller.cacheKey.member(server.id, member.id);
 
       final rawMember = await marshaller.serializers.member.deserialize(member);
       await marshaller.cache.put(memberCacheKey, rawMember);
