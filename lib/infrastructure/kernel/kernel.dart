@@ -47,6 +47,9 @@ abstract interface class KernelContract {
   CommandInteractionManagerContract get commands;
 
   Future<void> init();
+
+  // Ajout de la propriété ou méthode cacheKey
+  String cacheKey(Snowflake serverId);
 }
 
 final class Kernel implements KernelContract {

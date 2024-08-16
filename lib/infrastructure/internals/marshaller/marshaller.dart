@@ -5,6 +5,18 @@ import 'package:mineral/infrastructure/internals/marshaller/cache_key.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializer_bucket.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
 
+// Définition de l'interface CacheKeyContract
+abstract interface class CacheKeyContract {
+  String server(Snowflake id);
+}
+
+class CacheKey implements CacheKeyContract {
+  @override
+  String server(Snowflake id) {
+    return 'server_$id';
+  }
+}
+
 abstract interface class MarshallerContract {
   DataStoreContract get dataStore;
 

@@ -56,6 +56,14 @@ final class Member {
   Future<void> setNickname(String value, String? reason) => _memberMethods.updateMember(
       serverId: server.id, memberId: id, payload: {'nick': value}, reason: reason);
 
+  Future<void> setTimeout(Duration duration, {String? reason}) {
+    final timeout = DateTime.now().add(duration);
+    return _memberMethods.updateMember(
+      serverId: server.id, 
+      memberId: id, payload: {'communication_disabled_until': timeout.toIso8601String()}, 
+      reason: reason);
+  }
+
   Future<void> ban({Duration? deleteSince, String? reason}) =>
       _memberMethods.banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
 
