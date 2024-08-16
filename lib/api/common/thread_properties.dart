@@ -134,7 +134,7 @@ final class ThreadProperties {
               .toList(),
         ));
 
-    final channelKey = marshaller.cacheKey.serverChannel(serverId: element['guild_id'], channelId: element['parent_id']);
+    final channelKey = marshaller.cacheKey.channel(element['parent_id']);
     final channelRaw = await marshaller.cache.getOrFail(channelKey);
     final channel = await marshaller.serializers.channels.serializeCache(channelRaw);
 
