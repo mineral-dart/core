@@ -36,7 +36,7 @@ final class MessageCreatePacket implements ListenablePacket {
     final server = await marshaller.dataStore.server.getServer(json['message_reference']['guild_id']);
     final channel = server.channels.list[json['channel_id']];
 
-    final message = await marshaller.serializers.serverMessage.serializeRemote(json);
+    final message = await marshaller.serializers.serverMessage.serialize(json);
 
     if (channel is ServerChannel) {
       message.channel = channel;
@@ -61,7 +61,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
   Future<void> sendPrivateMessage(DispatchEvent dispatch, Map<String, dynamic> json) async {
     final channel = await marshaller.dataStore.channel.getChannel(json['channel_id']);
-    final message = await marshaller.serializers.privateMessage.serializeRemote(json);
+    final message = await marshaller.serializers.privateMessage.serialize(json);
 
     if (channel is PrivateChannel) {
       message.channel = channel;

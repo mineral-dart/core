@@ -21,11 +21,11 @@ final class GuildMemberRemovePacket implements ListenablePacket {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
     final serverCacheKey = marshaller.cacheKey.server(server.id);
     final memberCacheKey =
-        marshaller.cacheKey.serverMember(serverId: server.id, memberId: memberId);
+        marshaller.cacheKey.member(server.id, memberId);
 
     final rawMember = await marshaller.cache.get(memberCacheKey);
     final user =
-        rawMember != null ? await marshaller.serializers.user.serializeCache(rawMember) : null;
+        rawMember != null ? await marshaller.serializers.user.serialize(rawMember) : null;
 
     server.members.list.remove(memberId);
 

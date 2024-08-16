@@ -17,7 +17,7 @@ final class GuildBanRemovePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
-    final user = await marshaller.serializers.user.serializeRemote(message.payload['user']);
+    final user = await marshaller.serializers.user.serialize(message.payload['user']);
 
     dispatch(event: Event.serverBanRemove, params: [user, server]);
   }

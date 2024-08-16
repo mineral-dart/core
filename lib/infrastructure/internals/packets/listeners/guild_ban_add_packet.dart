@@ -16,11 +16,11 @@ final class GuildBanAddPacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
-    final user = await marshaller.serializers.user.serializeRemote(message.payload['user']);
+    final user = await marshaller.serializers.user.serialize(message.payload['user']);
     final member = server.members.list[user.id];
     final memberId = message.payload['user']['id'];
 
-    final memberCacheKey = marshaller.cacheKey.serverMember(serverId: server.id, memberId: memberId);
+    final memberCacheKey = marshaller.cacheKey.member(server.id, memberId);
     final rawServer = await marshaller.serializers.server.deserialize(server);
     final serverCacheKey = marshaller.cacheKey.server(server.id);
 
