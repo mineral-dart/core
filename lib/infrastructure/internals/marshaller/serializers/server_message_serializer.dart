@@ -18,7 +18,7 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
       'embeds': json['embeds'],
      // 'components': json['components'],
       'channel_id': json['channel_id'],
-      'guild_id': json['guild_id'],
+      'server_id': json['guild_id'],
       'timestamp': json['timestamp'],
       'edited_timestamp': json['edited_timestamp'],
     };
@@ -34,7 +34,7 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
     final channel = await marshaller.dataStore.channel
         .getChannel(Snowflake(json['channel_id']));
 
-    final server = await marshaller.dataStore.server.getServer(json['guild_id']);
+    final server = await marshaller.dataStore.server.getServer(json['server_id']);
     final member = server.members.list[json['author_id']];
 
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
@@ -54,7 +54,7 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
       'embeds': embeds,
       'author_id': object.author.id.value,
       'channel_id': object.channel.id.value,
-      'guild_id': object.channel.guildId.value,
+      'server_id': object.channel.guildId.value,
       'timestamp': object.createdAt.toIso8601String(),
       'edited_timestamp': object.updatedAt?.toIso8601String(),
     };

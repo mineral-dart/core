@@ -8,7 +8,6 @@ import 'package:mineral/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';
 import 'package:mineral/infrastructure/services/http/http_request_option.dart';
-import 'package:mineral/infrastructure/services/http/response.dart';
 
 final class RolePart implements DataStorePart {
   final KernelContract _kernel;

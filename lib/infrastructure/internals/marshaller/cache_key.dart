@@ -17,8 +17,7 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
-  String channel(Snowflake channelId, {Snowflake? serverId}) =>
-      serverId != null ? '${server(serverId)}/channels/$channelId' : 'channel/$channelId';
+  String channel(Snowflake channelId) => 'channels/$channelId';
 
   String channelPermission(Snowflake channelId, {Snowflake? serverId}) =>
       '${channel(channelId, serverId: serverId)}/permissions';
@@ -51,11 +50,8 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
-  String serverMessage({required Snowflake channelId, required Snowflake messageId}) =>
-      '${channel(channelId)}/message-$messageId';
-
-  String privateMessage({required Snowflake channelId, required Snowflake messageId}) =>
-      '${channel(channelId)}/message-$messageId';
+  String message(Snowflake channelId, Snowflake messageId) =>
+      '${channel(channelId)}/messages/$messageId';
 
   String embed(Snowflake messageId, { String? uid }) => 'messages/$messageId/embeds/${uid ?? Uuid().v4()}';
 
