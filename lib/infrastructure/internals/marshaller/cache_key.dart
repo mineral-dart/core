@@ -20,7 +20,7 @@ final class CacheKey {
   String channel(Snowflake channelId) => 'channels/$channelId';
 
   String channelPermission(Snowflake channelId, {Snowflake? serverId}) =>
-      '${channel(channelId, serverId: serverId)}/permissions';
+      '${channel(channelId)}/permissions';
 
   String serverRole(Snowflake serverId, Snowflake roleId, {bool ref = false}) =>
       '${server(serverId)}/role/$roleId';

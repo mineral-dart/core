@@ -53,7 +53,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
     await marshaller.cache.putMany({
       marshaller.cacheKey.server(server.id): rawServer,
-      marshaller.cacheKey.serverMessage(channelId: channel!.id, messageId: message.id): rawMessage,
+      marshaller.cacheKey.message(channel!.id, message.id): rawMessage,
     });
 
     dispatch(event: Event.serverMessageCreate, params: [message]);
@@ -72,7 +72,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
       await marshaller.cache.putMany({
         marshaller.cacheKey.channel(channel.id): rawChannel,
-        marshaller.cacheKey.privateMessage(channelId: channel.id, messageId: message.id): rawMessage,
+        marshaller.cacheKey.message(channel.id, message.id): rawMessage,
       });
 
       dispatch(event: Event.privateMessageCreate, params: [message]);
