@@ -40,7 +40,7 @@ final class PrivateSelectContext implements SelectContext {
     interaction = Interaction(token, id);
   }
 
-  static Future<PrivateSelectContext> fromMap(MarshallerContract marshaller, Map<String, dynamic> payload) async{
+  static Future<PrivateSelectContext> fromMap(MarshallerContract marshaller, Map<String, dynamic> payload) async {
     return PrivateSelectContext(
       customId: payload['data']['custom_id'],
       id: Snowflake(payload['id']),
@@ -51,7 +51,7 @@ final class PrivateSelectContext implements SelectContext {
         messageId: Snowflake(payload['message']['id']),
         channelId: Snowflake(payload['channel_id']),
       ),
-      user: await marshaller.serializers.user.serializeRemote(payload['user']),
+      user: await marshaller.serializers.user.serialize(payload['user']),
     );
   }
 }

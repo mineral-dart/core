@@ -55,8 +55,8 @@ final class CommandInteractionDispatcher implements InteractionDispatcherContrac
         .firstWhere((command) => command.$1 == data['data']['name']);
 
     final commandContext = switch (data['data']['guild_id']) {
-      String() => await _marshaller.serializers.guildCommandContext.serializeRemote(data),
-      _ => await _marshaller.serializers.globalCommandContext.serializeRemote(data),
+      String() => await _marshaller.serializers.serverCommandContext.serialize(data),
+      _ => await _marshaller.serializers.globalCommandContext.serialize(data),
     };
 
     final Map<Symbol, dynamic> options = {};
@@ -74,12 +74,12 @@ final class CommandInteractionDispatcher implements InteractionDispatcherContrac
           CommandOptionType.user => switch (commandContext) {
               ServerCommandContext() => await _marshaller.dataStore.member
                   .getMember(guildId: commandContext.server.id, memberId: option['value']),
-              _ => _marshaller.serializers.user.serializeRemote(option['value']),
+              _ => _marshaller.serializers.user.serialize(option['value']),
             },
           CommandOptionType.channel =>
-            await _marshaller.serializers.channels.serializeRemote(option['value']),
+            await _marshaller.serializers.channels.serialize(option['value']),
           CommandOptionType.role =>
-            await _marshaller.serializers.role.serializeRemote(option['value']),
+            await _marshaller.serializers.role.serialize(option['value']),
           // TODO attachement
           _ => option['value'],
         };
