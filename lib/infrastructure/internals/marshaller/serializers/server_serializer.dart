@@ -44,7 +44,7 @@ final class ServerSerializer implements SerializerContract<Server> {
           .map((element) => _marshaller.cacheKey.member(json['id'], element['id']))
           .toList(),
       'channels': List.from(json['channels'])
-          .map((element) => _marshaller.cacheKey.channel(element['id'], serverId: json['id']))
+          .map((element) => _marshaller.cacheKey.channel(element['id']))
           .toList(),
     };
 
@@ -123,7 +123,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       'members':
           server.members.list.keys.map((id) => _marshaller.cacheKey.member(server.id, id)).toList(),
       'channels': server.channels.list.keys
-          .map((id) => _marshaller.cacheKey.channel(id, serverId: server.id))
+          .map((id) => _marshaller.cacheKey.channel(id))
           .toList(),
     };
   }
@@ -142,7 +142,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       return;
     }
 
-    final channelCacheKey = _marshaller.cacheKey.channel(categoryId, serverId: serverId);
+    final channelCacheKey = _marshaller.cacheKey.channel(categoryId);
     final rawChannel = await _marshaller.cache.get(channelCacheKey);
     final category =
         rawChannel != null ? await _marshaller.serializers.channels.serialize(rawChannel) : null;
