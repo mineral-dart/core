@@ -43,7 +43,7 @@ final class PrivateDialogContext implements DialogContext {
       applicationId: Snowflake(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
-      user: await marshaller.serializers.user.serializeRemote(payload['user']),
+      user: await marshaller.serializers.user.serialize(payload['user']),
     );
   }
 }
