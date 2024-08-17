@@ -76,7 +76,7 @@ final class SerializerBucket {
 
   final SerializerContract<GlobalCommandContext> globalCommandContext;
 
-  final SerializerContract<ServerCommandContext> guildCommandContext;
+  final SerializerContract<ServerCommandContext> serverCommandContext;
 
   SerializerBucket(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
@@ -96,6 +96,6 @@ final class SerializerBucket {
         privateMessage = PrivateMessageSerializer(marshaller),
         embed = EmbedSerializer(marshaller),
         globalCommandContext = GlobalCommandContextSerializer(marshaller),
-        guildCommandContext = ServerCommandContextSerializer(marshaller),
+        serverCommandContext = ServerCommandContextSerializer(marshaller),
         poll = PollSerializer(marshaller);
 }
