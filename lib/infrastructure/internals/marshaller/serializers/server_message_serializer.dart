@@ -23,7 +23,7 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
       'edited_timestamp': json['edited_timestamp'],
     };
 
-    final cacheKey = marshaller.cacheKey.serverMessage(messageId: json['id'], channelId: Snowflake(json['channel_id']));
+    final cacheKey = marshaller.cacheKey.message(Snowflake(json['channel_id']), Snowflake(json['id']));
     await marshaller.cache.put(cacheKey, payload);
 
     return payload;
