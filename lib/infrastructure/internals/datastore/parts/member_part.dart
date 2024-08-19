@@ -16,9 +16,9 @@ final class MemberPart implements DataStorePart {
 
   MemberPart(this._kernel);
 
-  Future<Member> getMember({required Snowflake guildId, required Snowflake memberId}) async {
+  Future<Member> getMember({required Snowflake serverId, required Snowflake memberId}) async {
     final cacheKeys = _kernel.marshaller.cacheKey;
-    final memberCacheKey = cacheKeys.member(guildId, memberId);
+    final memberCacheKey = cacheKeys.member(serverId, memberId);
 
     Map<String, dynamic>? cachedRawMember = await _kernel.marshaller.cache.get(memberCacheKey);
 
@@ -26,7 +26,7 @@ final class MemberPart implements DataStorePart {
       return _kernel.marshaller.serializers.member.serialize(cachedRawMember);
     }
 
-    final response = await _kernel.dataStore.client.get('/guilds/$guildId/members/$memberId');
+    final response = await _kernel.dataStore.client.get('/guilds/$serverId/members/$memberId');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }

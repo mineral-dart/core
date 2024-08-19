@@ -16,15 +16,15 @@ final class RolePart implements DataStorePart {
 
   RolePart(this._kernel);
 
-  Future<Role> getRole({required Snowflake guildId, required Snowflake roleId}) async {
-    final cacheKey = _kernel.marshaller.cacheKey.serverRole(guildId, roleId);
+  Future<Role> getRole({required Snowflake serverId, required Snowflake roleId}) async {
+    final cacheKey = _kernel.marshaller.cacheKey.serverRole(serverId, roleId);
     final rawRole = await _kernel.marshaller.cache.get(cacheKey);
 
     if (rawRole != null) {
       return _kernel.marshaller.serializers.role.serialize(rawRole);
     }
 
-    final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles/$roleId');
+    final response = await _kernel.dataStore.client.get('/guilds/$serverId/roles/$roleId');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }

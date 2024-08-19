@@ -58,9 +58,12 @@ final class CacheKey {
   String message(Snowflake channelId, Snowflake messageId) =>
       '${channel(channelId)}/messages/$messageId';
 
-  String embed(Snowflake messageId, { String? uid }) => 'messages/$messageId/embeds/${uid ?? Uuid().v4()}';
+  String embed(Snowflake messageId, {String? uid}) =>
+      'messages/$messageId/embeds/${uid ?? Uuid().v4()}';
 
-  String poll(Snowflake messageId, { String? uid }) => 'messages/$messageId/polls/${uid ?? Uuid().v4()}';
+  String poll(Snowflake messageId, {String? uid}) =>
+      'messages/$messageId/polls/${uid ?? Uuid().v4()}';
 
-  String sticker(Snowflake stickerId) => 'stickers/$stickerId';
+  String sticker(Snowflake serverId, Snowflake stickerId) =>
+      '${server(serverId)}/stickers/$stickerId';
 }

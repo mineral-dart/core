@@ -8,7 +8,7 @@ abstract class ServerChannel implements Channel {
   String get name;
   List<ChannelPermissionOverwrite> get permissions;
   int get position;
-  Snowflake get guildId;
+  Snowflake get serverId;
 
   @override
   T cast<T extends Channel>() => this as T;

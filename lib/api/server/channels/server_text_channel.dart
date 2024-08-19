@@ -35,7 +35,7 @@ final class ServerTextChannel extends ServerChannel {
   String? get description => _properties.description;
 
   @override
-  Snowflake get guildId => _properties.guildId!;
+  Snowflake get serverId => _properties.serverId!;
 
   Snowflake? get categoryId => _properties.categoryId;
 
@@ -71,7 +71,7 @@ final class ServerTextChannel extends ServerChannel {
           Poll? poll,
           List<MessageComponent>? components}) =>
       _methods.send(
-          guildId: _properties.guildId,
+          guildId: _properties.serverId,
           content: content,
           embeds: embeds,
           poll: poll,

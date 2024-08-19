@@ -21,7 +21,7 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
       'name': json['name'],
       'description': json['topic'],
       'nsfw': json['nsfw'],
-      'guild_id': json['guild_id'],
+      'server_id': json['server_id'],
       'permission_overwrites': json['permission_overwrites'],
     };
 
@@ -50,7 +50,7 @@ final class ServerForumChannelFactory implements ChannelFactoryContract<ServerFo
       'type': channel.type.value,
       'name': channel.name,
       'position': channel.position,
-      'guild_id': channel.guildId,
+      'server_id': channel.serverId,
       'permission_overwrites': permissions,
       'parent_id': channel.categoryId,
     };

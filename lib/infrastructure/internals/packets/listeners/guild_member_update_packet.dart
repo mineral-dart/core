@@ -19,7 +19,7 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
 
     final before = marshaller.dataStore.member.getMember(
-      guildId: server.id,
+      serverId: server.id,
       memberId: message.payload['user']['id'],
     );
 

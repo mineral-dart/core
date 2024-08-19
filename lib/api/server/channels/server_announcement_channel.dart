@@ -34,7 +34,7 @@ final class ServerAnnouncementChannel extends ServerChannel {
   bool get isNsfw => _properties.nsfw;
 
   @override
-  Snowflake get guildId => _properties.guildId!;
+  Snowflake get serverId => _properties.serverId!;
 
   Snowflake? get categoryId => _properties.categoryId;
 

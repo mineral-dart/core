@@ -9,12 +9,9 @@ final class StickerManager {
 
   Map<Snowflake, Sticker> get list => _stickers;
 
-  factory StickerManager.fromJson(MarshallerContract marshaller, List<dynamic> payload) {
-    final Map<Snowflake, Sticker> stickers = payload.fold({}, (value, element) {
-      final sticker = marshaller.serializers.sticker.serialize(element) as Sticker;
-      return {...value, sticker.id: sticker};
-    });
-
-    return StickerManager(stickers);
+  factory StickerManager.fromList(List<Sticker> stickers) {
+    return StickerManager(stickers.fold({}, (acc, sticker) {
+      return {...acc, sticker.id: sticker};
+    }));
   }
 }

@@ -34,7 +34,7 @@ final class ServerStageChannel extends ServerChannel {
   String? get description => _properties.description;
 
   @override
-  Snowflake get guildId => _properties.guildId!;
+  Snowflake get serverId => _properties.serverId!;
 
   Snowflake? get categoryId => _properties.categoryId;
 
@@ -65,7 +65,7 @@ final class ServerStageChannel extends ServerChannel {
       _methods.setDefaultThreadRateLimitPerUser(value, reason);
 
   Future<void> send({String? content, List<MessageEmbed>? embeds, Poll? poll}) =>
-      _methods.send(guildId: _properties.guildId, content: content, embeds: embeds, poll: poll);
+      _methods.send(guildId: _properties.serverId, content: content, embeds: embeds, poll: poll);
 
   Future<void> delete({String? reason}) => _methods.delete(reason);
 }

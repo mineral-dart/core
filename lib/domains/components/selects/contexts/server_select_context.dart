@@ -52,7 +52,7 @@ final class ServerSelectContext implements SelectContext {
         channelId: Snowflake(payload['channel_id']),
       ),
       member: await marshaller.dataStore.member.getMember(
-        guildId: Snowflake(payload['guild_id']),
+        serverId: Snowflake(payload['guild_id']),
         memberId: Snowflake(payload['member']['user']['id']),
       ),
     );

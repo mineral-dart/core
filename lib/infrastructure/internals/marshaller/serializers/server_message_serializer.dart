@@ -14,16 +14,18 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
+      'author_id': json['author']['id'],
       'content': json['content'],
       'embeds': json['embeds'],
-     // 'components': json['components'],
+      // 'components': json['components'],
       'channel_id': json['channel_id'],
-      'server_id': json['guild_id'],
+      'server_id': json['server_id'],
       'timestamp': json['timestamp'],
       'edited_timestamp': json['edited_timestamp'],
     };
 
-    final cacheKey = marshaller.cacheKey.message(Snowflake(json['channel_id']), Snowflake(json['id']));
+    final cacheKey =
+        marshaller.cacheKey.message(Snowflake(json['channel_id']), Snowflake(json['id']));
     await marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -31,15 +33,15 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
 
   @override
   Future<ServerMessage> serialize(Map<String, dynamic> json) async {
-    final channel = await marshaller.dataStore.channel
-        .getChannel(Snowflake(json['channel_id']));
+    final channel = await marshaller.dataStore.channel.getChannel(Snowflake(json['channel_id']));
 
     final server = await marshaller.dataStore.server.getServer(json['server_id']);
-    final member = server.members.list[json['author_id']];
+    final member = await marshaller.dataStore.member
+        .getMember(serverId: server.id, memberId: json['author_id']);
 
     final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
 
-    return ServerMessage(messageProperties, author: member!);
+    return ServerMessage(messageProperties, author: member);
   }
 
   @override
@@ -54,7 +56,7 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
       'embeds': embeds,
       'author_id': object.author.id.value,
       'channel_id': object.channel.id.value,
-      'server_id': object.channel.guildId.value,
+      'server_id': object.channel.serverId.value,
       'timestamp': object.createdAt.toIso8601String(),
       'edited_timestamp': object.updatedAt?.toIso8601String(),
     };

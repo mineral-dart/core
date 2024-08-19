@@ -16,7 +16,7 @@ final class ServerStageChannelFactory implements ChannelFactoryContract<ServerSt
       'position': json['position'],
       'name': json['name'],
       'description': json['topic'],
-      'guild_id': json['guild_id'],
+      'server_id': json['server_id'],
       'parent_id': json['parent_id'],
       'permission_overwrites': json['permission_overwrites'],
     };
@@ -42,7 +42,7 @@ final class ServerStageChannelFactory implements ChannelFactoryContract<ServerSt
       'type': channel.type.value,
       'name': channel.name,
       'position': channel.position,
-      'guild_id': channel.guildId,
+      'server_id': channel.serverId,
       'topic': channel.description,
       'permission_overwrites': permissions,
       'parent_id': channel.categoryId,

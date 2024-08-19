@@ -25,7 +25,7 @@ final class ServerCategoryChannel extends ServerChannel {
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
 
   @override
-  Snowflake get guildId => _properties.guildId!;
+  Snowflake get serverId => _properties.serverId!;
 
   ServerCategoryChannel(this._properties): _methods = ChannelMethods(_properties.id);
 
