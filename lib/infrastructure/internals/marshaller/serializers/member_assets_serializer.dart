@@ -13,13 +13,14 @@ final class MemberAssetsSerializer implements SerializerContract<MemberAssets> {
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
+      'server_id': json['server_id'],
       'member_id': json['member_id'],
       'avatar': json['avatar'],
       'avatar_decoration': json['avatar_decoration_data']?['sku_id'],
       'banner': json['banner'],
     };
 
-    final cacheKey = _marshaller.cacheKey.memberAssets(json['guild_id'], json['user']['id']);
+    final cacheKey = _marshaller.cacheKey.memberAssets(json['server_id'], json['user']['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -39,12 +40,14 @@ final class MemberAssetsSerializer implements SerializerContract<MemberAssets> {
           field: json['banner'],
           fn: () => ImageAsset(['banners', json['member_id']], json['banner'])),
       memberId: Snowflake(json['member_id']),
+      serverId: Snowflake(json['server_id']),
     );
   }
 
   @override
   Map<String, dynamic> deserialize(MemberAssets assets) {
     return {
+      'server_id': assets.serverId.value,
       'member_id': assets.memberId.value,
       'avatar': assets.avatar?.hash,
       'avatar_decoration': assets.avatarDecoration?.hash,

@@ -16,20 +16,18 @@ import 'package:mineral/api/server/server_message.dart';
 import 'package:mineral/api/server/server_settings.dart';
 import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/domains/commands/contexts/global_command_context.dart';
-import 'package:mineral/domains/commands/contexts/guild_command_context.dart';
+import 'package:mineral/domains/commands/contexts/server_command_context.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_permission_overwrite_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/channel_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/embed_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/emoji_serializer.dart';
-import 'package:mineral/infrastructure/internals/marshaller/serializers/global_command_context_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/member_assets_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/member_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/poll_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/private_message_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/role_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_assets_serializer.dart';
-import 'package:mineral/infrastructure/internals/marshaller/serializers/server_command_context_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_message_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_settings_serializer.dart';
@@ -74,10 +72,6 @@ final class SerializerBucket {
 
   final SerializerContract<Poll> poll;
 
-  final SerializerContract<GlobalCommandContext> globalCommandContext;
-
-  final SerializerContract<ServerCommandContext> serverCommandContext;
-
   SerializerBucket(MarshallerContract marshaller)
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
@@ -95,7 +89,5 @@ final class SerializerBucket {
         serverMessage = ServerMessageSerializer(marshaller),
         privateMessage = PrivateMessageSerializer(marshaller),
         embed = EmbedSerializer(marshaller),
-        globalCommandContext = GlobalCommandContextSerializer(marshaller),
-        serverCommandContext = ServerCommandContextSerializer(marshaller),
         poll = PollSerializer(marshaller);
 }

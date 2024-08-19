@@ -16,7 +16,7 @@ final class ChannelProperties {
   final ChannelType type;
   final String? name;
   final String? description;
-  final Snowflake? guildId;
+  final Snowflake? serverId;
   final Snowflake? categoryId;
   final int? position;
   final bool nsfw;
@@ -48,7 +48,7 @@ final class ChannelProperties {
     required this.type,
     required this.name,
     required this.description,
-    required this.guildId,
+    required this.serverId,
     required this.categoryId,
     required this.position,
     required this.nsfw,
@@ -100,7 +100,7 @@ final class ChannelProperties {
       type: findInEnum(ChannelType.values, element['type']),
       name: element['name'],
       description: element['description'],
-      guildId: Helper.createOrNull(
+      serverId: Helper.createOrNull(
           field: element['guild_id'], fn: () => Snowflake(element['guild_id'])),
       categoryId: Helper.createOrNull(
           field: element['parent_id'], fn: () => Snowflake(element['parent_id'])),
@@ -156,8 +156,8 @@ final class ChannelProperties {
       type: findInEnum(ChannelType.values, element['type']),
       name: element['name'],
       description: element['description'],
-      guildId: Helper.createOrNull(
-          field: element['guild_id'], fn: () => Snowflake(element['guild_id'])),
+      serverId: Helper.createOrNull(
+          field: element['server_id'], fn: () => Snowflake(element['server_id'])),
       categoryId: Helper.createOrNull(
           field: element['parent_id'], fn: () => Snowflake(element['parent_id'])),
       position: element['position'],

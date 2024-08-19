@@ -31,7 +31,7 @@ final class ServerVoiceChannel extends ServerChannel {
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
 
   @override
-  Snowflake get guildId => _properties.guildId!;
+  Snowflake get serverId => _properties.serverId!;
 
   Snowflake? get categoryId => _properties.categoryId;
 

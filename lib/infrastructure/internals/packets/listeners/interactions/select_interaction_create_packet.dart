@@ -89,8 +89,7 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     final roleIds = Map.from(resolvedData['roles']).keys;
 
     final List<Role> resolvedRoles = await Future.wait(roleIds.map((id) async {
-      final cacheKey =
-          marshaller.cacheKey.serverRole(payload['guild_id'], Snowflake(id));
+      final cacheKey = marshaller.cacheKey.serverRole(payload['guild_id'], Snowflake(id));
       final rawRole = await marshaller.cache.getOrFail(cacheKey);
 
       return marshaller.serializers.role.serialize(rawRole);
@@ -121,7 +120,7 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     final resolvedResource = await switch (ctx) {
       ServerSelectContext() => Future.wait(userIds.map((id) {
           return marshaller.dataStore.member.getMember(
-            guildId: Snowflake(payload['guild_id']),
+            serverId: Snowflake(payload['guild_id']),
             memberId: Snowflake(id),
           );
         })),

@@ -18,7 +18,12 @@ final class GuildStickersUpdatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
-    final StickerManager stickerManager = StickerManager.fromJson(marshaller, message.payload['stickers']);
+
+    final stickers = await List.from(message.payload['stickers']).map((element) async {
+      return marshaller.dataStore.sticker.getSticker(server.id, element['id']);
+    }).wait;
+
+    final StickerManager stickerManager = StickerManager.fromList(stickers);
 
     server.assets.stickers = stickerManager;
 

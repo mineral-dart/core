@@ -121,10 +121,10 @@ final class Client {
     _createCache();
 
     final token = _env.get<String>(AppEnv.token);
-    final httpVersion = _env.get<int>(AppEnv.httpVersion);
-    final shardVersion = _env.get<int>(AppEnv.wssVersion);
-    final intent = _env.get<int>(AppEnv.intent);
-    final hmr = _env.get<bool>(AppEnv.hmr);
+    final httpVersion = int.parse(_env.get(AppEnv.httpVersion));
+    final shardVersion = int.parse(_env.get(AppEnv.wssVersion));
+    final intent = int.parse(_env.get(AppEnv.intent));
+    final hmr = bool.parse(_env.get(AppEnv.hmr));
 
     if (hmr && !_hasDefinedDevPort) {
       throw Exception('HMR is enabled but no dev port defined');

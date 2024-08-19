@@ -25,7 +25,7 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
       'content': message.content,
       'embeds': message.embeds.map(marshaller.serializers.embed.deserialize).toList(),
       'channel_id': message.channel.id,
-      'guild_id': message.channel.guildId,
+      'guild_id': message.channel.serverId,
       'created_at': message.createdAt.toIso8601String(),
       'updated_at': message.updatedAt?.toIso8601String(),
     };

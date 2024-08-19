@@ -44,7 +44,7 @@ final class ServerDialogContext implements DialogContext {
       token: payload['token'],
       version: payload['version'],
       member: await marshaller.dataStore.member.getMember(
-        guildId: Snowflake(payload['guild_id']),
+        serverId: Snowflake(payload['guild_id']),
         memberId: Snowflake(payload['member']['user']['id']),
       ),
     );

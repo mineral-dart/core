@@ -31,14 +31,14 @@ final class UserAssetsSerializer implements SerializerContract<UserAssets> {
     return UserAssets(
       avatar: Helper.createOrNull(
           field: json['avatar'],
-          fn: () => ImageAsset(['avatars', json['member_id']], json['avatar'])),
+          fn: () => ImageAsset(['avatars', json['user_id']], json['avatar'])),
       avatarDecoration: Helper.createOrNull(
           field: json['avatar_decoration'],
           fn: () =>
-              ImageAsset(['avatar-decorations', json['member_id']], json['avatar_decoration'])),
+              ImageAsset(['avatar-decorations', json['user_id']], json['avatar_decoration'])),
       banner: Helper.createOrNull(
           field: json['banner'],
-          fn: () => ImageAsset(['banners', json['member_id']], json['banner'])),
+          fn: () => ImageAsset(['banners', json['user_id']], json['banner'])),
       userId: Snowflake(json['user_id']),
     );
   }

@@ -1,3 +1,4 @@
+import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message_properties.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
@@ -17,8 +18,9 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
       'content': json['content'],
       'embeds': json['embeds'],
       'channel_id': json['channel_id'],
-      'created_at': json['created_at'],
-      'updated_at': json['updated_at'],
+      'created_at': json['timestamp'],
+      'updated_at': json['edited_timestamp'],
+      'user_id': json['author']['id'],
     };
 
     final cacheKey = marshaller.cacheKey.message(Snowflake(json['channel_id']), json['id']);
@@ -29,16 +31,20 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
 
   @override
   Future<PrivateMessage> serialize(Map<String, dynamic> json) async {
+    final List<MessageEmbed> embeds = await Future.wait(List.from(json['embeds']).map((message) async {
+      return marshaller.serializers.embed.serialize(message);
+    }));
+
     final properties = MessageProperties<PrivateChannel>(
       id: Snowflake(json['id']),
       content: json['content'],
-      embeds: json['embeds'],
+      embeds: embeds,
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
       channelId: Snowflake(json['channel_id']),
     );
 
-    final user = await marshaller.serializers.user.serialize(json['user']);
+    final user = await marshaller.dataStore.user.getUser(json['user_id']);
 
     return PrivateMessage(properties, userId: user.id, author: user);
   }
@@ -52,10 +58,11 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
     return {
       'id': object.id,
       'content': object.content,
-      'embeds': embeds,
+      'embeds': embeds.toList(),
       'channel_id': object.channel.id,
       'created_at': object.createdAt.toIso8601String(),
       'updated_at': object.updatedAt?.toIso8601String(),
+      'user_id': object.author.id,
     };
   }
 }

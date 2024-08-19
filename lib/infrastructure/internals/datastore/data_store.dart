@@ -4,6 +4,7 @@ import 'package:mineral/infrastructure/internals/datastore/parts/member_part.dar
 import 'package:mineral/infrastructure/internals/datastore/parts/message_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/role_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/server_part.dart';
+import 'package:mineral/infrastructure/internals/datastore/parts/sticker_part.dart';
 import 'package:mineral/infrastructure/internals/datastore/parts/user_part.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client.dart';
@@ -24,6 +25,8 @@ abstract class DataStoreContract {
   MessagePart get message;
 
   InteractionPart get interaction;
+
+  StickerPart get sticker;
 }
 
 final class DataStore implements DataStoreContract {
@@ -53,6 +56,9 @@ final class DataStore implements DataStoreContract {
   @override
   late final InteractionPart interaction;
 
+  @override
+  late final StickerPart sticker;
+
   DataStore(this.client);
 
   void init() {
@@ -63,5 +69,6 @@ final class DataStore implements DataStoreContract {
     role = RolePart(kernel);
     message = MessagePart(kernel);
     interaction = InteractionPart(kernel);
+    sticker = StickerPart(kernel);
   }
 }

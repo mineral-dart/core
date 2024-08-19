@@ -19,7 +19,7 @@ final class ServerAnnouncementChannelFactory implements ChannelFactoryContract<S
       'name': json['name'],
       'description': json['topic'],
       'nsfw': json['nsfw'],
-      'guild_id': json['guild_id'],
+      'server_id': json['server_id'],
       'category_id': json['parent_id'],
       'permission_overwrites': json['permission_overwrites'],
     };
@@ -49,7 +49,7 @@ final class ServerAnnouncementChannelFactory implements ChannelFactoryContract<S
       'topic': channel.description,
       'nsfw': channel.isNsfw,
       'parent_id': channel.categoryId,
-      'guild_id': channel.guildId,
+      'server_id': channel.serverId,
     };
   }
 }

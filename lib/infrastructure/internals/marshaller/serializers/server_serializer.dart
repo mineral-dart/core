@@ -27,21 +27,28 @@ final class ServerSerializer implements SerializerContract<Server> {
     }).wait;
 
     await List.from(json['channels']).map((element) async {
-      return _marshaller.serializers.channels.normalize(element);
+      return _marshaller.serializers.channels.normalize({
+        ...element,
+        'server_id': json['id'],
+      });
     }).wait;
 
     await _marshaller.serializers.serversAsset.normalize(json);
+    await _marshaller.serializers.serverSettings.normalize(json);
 
     final Map<String, dynamic> serverPayload = {
       'id': json['id'],
       'name': json['name'],
       'description': json['description'],
       'application_id': json['application_id'],
-      'owner': _marshaller.cacheKey.member(json['id'], json['owner_id']),
+      'owner_id': _marshaller.cacheKey.member(json['id'], json['owner_id']),
       'assets': _marshaller.cacheKey.serverAssets(json['id']),
       'settings': _marshaller.cacheKey.serverSettings(json['id']),
+      'roles': List.from(json['roles'])
+          .map((element) => _marshaller.cacheKey.serverRole(json['id'], element['id']))
+          .toList(),
       'members': List.from(json['members'])
-          .map((element) => _marshaller.cacheKey.member(json['id'], element['id']))
+          .map((element) => _marshaller.cacheKey.member(json['id'], element['user']['id']))
           .toList(),
       'channels': List.from(json['channels'])
           .map((element) => _marshaller.cacheKey.channel(element['id']))
@@ -68,10 +75,10 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     final rawChannels = await _marshaller.cache.getMany(payload['channels']);
     final channels = await rawChannels.nonNulls.map((element) async {
-      return _marshaller.serializers.channels.serialize(element);
+      return _marshaller.serializers.channels.serialize(element) as Future<ServerChannel>;
     }).wait;
 
-    final channelManager = ChannelManager.fromList(channels as List<ServerChannel>, payload);
+    final channelManager = ChannelManager.fromList(channels, payload);
     final roleManager = RoleManager.fromList(roles);
 
     final rawOwner = await _marshaller.cache.getOrFail(payload['owner_id']);

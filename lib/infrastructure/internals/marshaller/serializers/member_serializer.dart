@@ -20,7 +20,7 @@ final class MemberSerializer implements SerializerContract<Member> {
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     await _marshaller.serializers.memberAssets.normalize({
       ...json,
-      'member_id': json['id'],
+      'member_id': json['user']['id'],
     });
 
     final payload = {
@@ -32,7 +32,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       'assets': _marshaller.cacheKey.memberAssets(json['server_id'], json['user']['id']),
       'flags': json['flags'],
       'roles': List.from(json['roles'])
-          .map((element) => _marshaller.cacheKey.serverRole(json['server_id_id'], element['id']))
+          .map((element) => _marshaller.cacheKey.serverRole(json['server_id'], element))
           .toList(),
       'premium_since': json['premium_since'],
       'public_flags': json['user']['public_flags'],
@@ -48,7 +48,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       // TODO : presence
     };
 
-    final cacheKey = _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
+    final cacheKey = _marshaller.cacheKey.member(json['server_id'], json['user']['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;

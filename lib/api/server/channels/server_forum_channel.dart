@@ -36,7 +36,7 @@ final class ServerForumChannel extends ServerChannel {
   late final ServerCategoryChannel? category;
 
   @override
-  Snowflake get guildId => _properties.guildId!;
+  Snowflake get serverId => _properties.serverId!;
 
   ServerForumChannel(this._properties,
       {required this.sortOrder, required this.layoutType});

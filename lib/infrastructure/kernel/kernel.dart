@@ -124,7 +124,7 @@ final class Kernel implements KernelContract {
 
   @override
   Future<void> init() async {
-    final useHmr = environment.get<bool>(AppEnv.hmr);
+    final useHmr = bool.parse(environment.get(AppEnv.hmr));
 
     if ((useHmr && Isolate.current.debugName != 'main') || !useHmr) {
       await providerManager.ready();

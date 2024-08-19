@@ -17,7 +17,7 @@ final class ServerCategoryChannelFactory implements ChannelFactoryContract<Serve
       'name': json['name'],
       'description': json['topic'],
       'nsfw': json['nsfw'],
-      'guild_id': json['guild_id'],
+      'server_id': json['server_id'],
       'permission_overwrites': json['permission_overwrites'],
     };
 
@@ -44,7 +44,7 @@ final class ServerCategoryChannelFactory implements ChannelFactoryContract<Serve
       'type': channel.type.value,
       'position': channel.position,
       'permission_overwrites': permissions,
-      'guild_id': channel.guildId,
+      'server_id': channel.serverId,
     };
   }
 }

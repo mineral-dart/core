@@ -15,7 +15,7 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
       'type': json['type'],
       'position': json['position'],
       'name': json['name'],
-      'guild_id': json['guild_id'],
+      'server_id': json['server_id'],
       'parent_id': json['parent_id'],
       'permission_overwrites': json['permission_overwrites'],
     };
@@ -42,7 +42,7 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
       'type': channel.type.value,
       'name': channel.name,
       'position': channel.position,
-      'guild_id': channel.guildId,
+      'server_id': channel.serverId,
       'permission_overwrites': permissions,
       'parent_id': channel.categoryId,
     };

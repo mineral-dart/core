@@ -25,7 +25,7 @@ final class StickerSerializer implements SerializerContract<Sticker> {
       'sort_value': json['sort_value'],
     };
 
-    final cacheKey = _marshaller.cacheKey.sticker(json['id']);
+    final cacheKey = _marshaller.cacheKey.sticker(Snowflake(''), json['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;

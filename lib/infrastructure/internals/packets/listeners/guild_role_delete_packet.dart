@@ -18,7 +18,7 @@ final class GuildRoleDeletePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
     final role = await marshaller.dataStore.role.getRole(
-      guildId: server.id,
+      serverId: server.id,
       roleId: message.payload['role_id'],
     );
 
