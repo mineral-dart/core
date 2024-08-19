@@ -1,17 +1,25 @@
 import 'dart:io';
 
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart' as logging;
-import 'package:mineral/infrastructure/io/ansi.dart';
+import 'package:mansion/mansion.dart';
 
 abstract interface class LoggerContract {
   void trace(Object message);
+
   void fatal(Exception message);
+
   void error(String message);
+
   void warn(String message);
+
   void info(String message);
 }
 
 final class Logger implements LoggerContract {
+  static Color get primaryColor => Color.fromRGB(140, 169, 238);
+  static Color get mutedColor => Color.brightBlack;
+
   final _logger = logging.Logger('Core');
 
   Logger(String level) {
@@ -25,25 +33,39 @@ final class Logger implements LoggerContract {
 
     final bool logLevel = logLevels.keys.contains(level.toUpperCase());
     if (!logLevel) {
-      throw Exception('Invalid LOG_LEVEL environment variable, please include in ${logLevels.keys.map((e) => e.toLowerCase())}');
+      throw Exception(
+          'Invalid LOG_LEVEL environment variable, please include in ${logLevels.keys.map((e) => e.toLowerCase())}');
     }
-    // [08:23:52.148] INFO (pid): message
 
     logging.Logger.root.level = logLevels[level.toUpperCase()];
     logging.Logger.root.onRecord.listen((record) {
-      final time = '[${record.time.hour}:${record.time.minute}:${record.time.second}.${record.time.millisecond}]';
-      final datetime = '[${record.time}]';
+      final time = '[${DateFormat.Hms().format(record.time)}]';
 
-      final message = switch(record.level) {
-        logging.Level.FINEST => '$datetime ${lightBlue.wrap('TRACE')} : ${styleDim.wrap(record.message)}',
-        logging.Level.SHOUT => '$time ${backgroundRed.wrap('FATAL')} : ${lightCyan.wrap(record.message)}',
-        logging.Level.SEVERE => '$datetime ${red.wrap('ERROR')} : ${lightCyan.wrap(record.message)}',
-        logging.Level.WARNING => '$datetime ${yellow.wrap('WARN')} : ${lightCyan.wrap(record.message)}',
-        logging.Level.INFO => '$time ${lightGreen.wrap('INFO')} : ${lightCyan.wrap(record.message)}',
-        _ => 'UNKNOWN: ${record.time}: ${record.message}'
+      List<Sequence> makeMessage(String messageType, Color messageColor, List<Sequence> message) {
+        return [
+          SetStyles(Style.foreground(Color.brightBlack)),
+          Print(time),
+          SetStyles(Style.foreground(messageColor)),
+          Print(' $messageType'),
+          SetStyles.reset,
+          Print(': '),
+          ...message,
+          SetStyles.reset,
+          AsciiControl.lineFeed,
+        ];
+      }
+
+      final message = switch (record.level) {
+        logging.Level.FINEST => makeMessage('trace', Color.white,
+            [SetStyles(Style.foreground(Color.brightBlack)), Print(record.message)]),
+        logging.Level.SHOUT => makeMessage('fatal', Color.brightRed, [Print(record.message)]),
+        logging.Level.SEVERE => makeMessage('error', Color.red, [Print(record.message)]),
+        logging.Level.WARNING => makeMessage('warn', Color.yellow, [Print(record.message)]),
+        logging.Level.INFO => makeMessage('info', Color.fromRGB(140, 169, 238), [Print(record.message)]),
+        _ => makeMessage('unknown', Color.blue, [Print(record.message)]),
       };
 
-      stdout.writeln(message);
+      stdout.writeAnsiAll(message);
     });
   }
 

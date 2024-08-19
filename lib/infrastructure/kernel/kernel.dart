@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:mansion/mansion.dart';
 import 'package:mineral/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/domains/events/event_listener.dart';
 import 'package:mineral/domains/providers/provider_manager.dart';
@@ -13,12 +14,11 @@ import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_listener.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/internals/wss/sharding_config.dart';
-import 'package:mineral/infrastructure/io/ansi.dart';
 import 'package:mineral/infrastructure/io/exceptions/token_exception.dart';
 import 'package:mineral/infrastructure/services/http/header.dart';
 import 'package:mineral/infrastructure/services/http/http_client.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
-import 'package:path/path.dart';
+import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';
 
 abstract interface class KernelContract {
@@ -50,6 +50,8 @@ abstract interface class KernelContract {
 }
 
 final class Kernel implements KernelContract {
+  final _watch = Stopwatch();
+
   final SendPort? _devPort;
 
   final WatcherConfig watcherConfig;
@@ -104,6 +106,7 @@ final class Kernel implements KernelContract {
     required this.watcherConfig,
     required this.commands,
   }) {
+    _watch.start();
     httpClient.config.headers.addAll([
       Header.authorization('Bot ${config.token}'),
     ]);
@@ -113,7 +116,8 @@ final class Kernel implements KernelContract {
     final response = await httpClient.get('/gateway/bot');
     return switch (response.statusCode) {
       int() when httpClient.status.isSuccess(response.statusCode) => response.body,
-      int() when httpClient.status.isError(response.statusCode) => throw TokenException('This token is invalid or revocated !'),
+      int() when httpClient.status.isError(response.statusCode) =>
+        throw TokenException('This token is invalid or revocated !'),
       _ => throw TokenException('This token is invalid or revocated !'),
     };
   }
@@ -127,31 +131,70 @@ final class Kernel implements KernelContract {
     }
 
     if (Isolate.current.debugName == 'main') {
-      final packageFile = File(join(Directory.current.path, 'pubspec.yaml'));
+      final packageFile = File(path.join(Directory.current.path, 'pubspec.yaml'));
 
       final packageFileContent = await packageFile.readAsString();
       final package = loadYaml(packageFileContent);
 
       final coreVersion = package['dependencies']['mineral'];
 
+      _watch.stop();
+
       if (useHmr) {
+        List<Sequence> buildSubtitle(String key, String value) {
+          return [
+            const CursorPosition.moveRight(2),
+            SetStyles(Style.foreground(Logger.primaryColor)),
+            Print('➜  '),
+            SetStyles(Style.foreground(Color.white), Style.bold),
+            Print('$key: '),
+            SetStyles.reset,
+            Print(value),
+          ];
+        }
+
         stdout
-          ..write('\x1b[0;0H')
-          ..write('\x1b[2J')
-          ..writeln(
-              '${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('hmr running…')}')
-          ..writeln('> Github : https://github.com/mineral-dart')
-          ..writeln('> Discord : https://discord.gg/JKj2FwEf3b')
-          ..writeln();
+          ..writeAnsiAll([
+            CursorPosition.reset,
+            Clear.all,
+            AsciiControl.lineFeed,
+            const CursorPosition.moveRight(2),
+            SetStyles(Style.foreground(Logger.primaryColor), Style.bold),
+            Print('Mineral v4.0.0-dev.1'),
+            SetStyles.reset,
+            const CursorPosition.moveRight(2),
+            SetStyles(Style.foreground(Logger.mutedColor)),
+            Print('ready in '),
+            SetStyles(Style.foreground(Color.white)),
+            Print('${_watch.elapsedMilliseconds} ms'),
+            SetStyles.reset,
+            AsciiControl.lineFeed,
+            AsciiControl.lineFeed,
+          ])
+          ..writeAnsiAll([
+            ...buildSubtitle('Github', 'https://github.com/mineral-dart'),
+            AsciiControl.lineFeed,
+            ...buildSubtitle('Docs', 'https://mineral-foundation.org'),
+            SetStyles.reset,
+            AsciiControl.lineFeed,
+            AsciiControl.lineFeed,
+          ]);
       } else {
-        stdout.writeln(
-            '${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('is running for production…')}');
+        stdout.writeAnsiAll([
+          CursorPosition.reset,
+          Clear.all,
+          AsciiControl.lineFeed,
+          SetStyles(Style.foreground(Logger.primaryColor), Style.bold),
+          Print('Mineral v$coreVersion'),
+          SetStyles.reset,
+          AsciiControl.lineFeed,
+        ]);
+        // '${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('is running for production…')}');
       }
     }
 
     if (useHmr) {
-      hmr = HotModuleReloading(
-          _devPort, watcherConfig, this, createShards, shards);
+      hmr = HotModuleReloading(_devPort, watcherConfig, this, createShards, shards);
       await hmr?.spawn();
     } else {
       createShards();
@@ -159,14 +202,11 @@ final class Kernel implements KernelContract {
   }
 
   Future<void> createShards() async {
-    final {'url': String endpoint, 'shards': int shardCount} =
-        await getWebsocketEndpoint();
+    final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
 
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
-      final shard = Shard(
-          shardName: 'shard #$i',
-          url: '$endpoint/?v=${config.version}',
-          kernel: this);
+      final shard =
+          Shard(shardName: 'shard #$i', url: '$endpoint/?v=${config.version}', kernel: this);
       shards.putIfAbsent(i, () => shard);
 
       await shard.init();

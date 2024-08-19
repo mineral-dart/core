@@ -3,13 +3,14 @@ import 'dart:collection';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:mansion/mansion.dart';
 import 'package:mineral/infrastructure/internals/hmr/watcher_builder.dart';
 import 'package:mineral/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/infrastructure/io/ansi.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
-import 'package:path/path.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
+import 'package:path/path.dart' as path;
 import 'package:watcher/watcher.dart';
 
 final class HotModuleReloading {
@@ -50,7 +51,7 @@ final class HotModuleReloading {
   void _createHotModuleLoader() {
     final watcher = WatcherBuilder(Directory.current)
         .setAllowReload(true)
-        .addWatchFolder(Directory(join(Directory.current.path, 'src')));
+        .addWatchFolder(Directory(path.join(Directory.current.path, 'src')));
 
     for (final file in _watcherConfig.watchedFiles) {
       watcher.addWatchFile(file);
@@ -65,7 +66,7 @@ final class HotModuleReloading {
 
   void _createDevelopmentIsolate() {
     final port = ReceivePort();
-    final uri = Uri.parse(join(Directory.current.path, 'src', 'main.dart'));
+    final uri = Uri.parse(path.join(Directory.current.path, 'src', 'main.dart'));
 
     Isolate.spawnUri(Uri.file(uri.path), [], port.sendPort, debugName: 'dev')
         .then((Isolate isolate) async {
@@ -90,8 +91,6 @@ final class HotModuleReloading {
     }
 
     final String location = event.path.replaceFirst(Directory.current.path, '').substring(1);
-    final now = DateTime.now();
-    final time = '${now.hour}:${now.minute}:${now.second}';
 
     if (fileLocation == location) {
       fileRefreshCount++;
@@ -100,23 +99,27 @@ final class HotModuleReloading {
       fileRefreshCount = 1;
     }
 
-    String formatMessage(String action) =>
-        '$time ${lightBlue.wrap('[mineral]')} ${lightGreen.wrap('hmr $action')} ${styleDim.wrap(location)} ${yellow.wrap('(x$fileRefreshCount)')}';
-
-    stdout
-      ..write('\x1b[0;0H')
-      ..write('\x1b[2J');
+    List<Sequence> formatMessage(String action) => [
+      SetStyles(Style.foreground(Logger.primaryColor)),
+      Print('hmr $action '),
+      SetStyles.reset,
+      SetStyles(Style.foreground(Logger.mutedColor)),
+      Print(location),
+      SetStyles.reset,
+      SetStyles(Style.foreground(Color.yellow)),
+      Print(' (x$fileRefreshCount)'),
+      SetStyles.reset,
+      AsciiControl.lineFeed,
+    ];
 
     final message = switch (event.type) {
       ChangeType.ADD => formatMessage('create'),
       ChangeType.MODIFY => formatMessage('update'),
       ChangeType.REMOVE => formatMessage('delete'),
-      _ => '',
+      _ => <Sequence>[],
     };
 
-    stdout
-      ..writeln(message)
-      ..writeln();
+    stdout.writeAnsiAll(message);
 
     _devIsolate?.kill(priority: Isolate.immediate);
     _devIsolate = null;
