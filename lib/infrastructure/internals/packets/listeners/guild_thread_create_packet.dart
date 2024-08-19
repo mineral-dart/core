@@ -1,4 +1,3 @@
-import 'package:mineral/api/server/channels/thread_channel.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
