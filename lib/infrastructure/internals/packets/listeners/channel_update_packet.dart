@@ -1,11 +1,11 @@
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/infrastructure/services/logger/logger.dart';
+import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
-import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class ChannelUpdatePacket implements ListenablePacket {
   @override

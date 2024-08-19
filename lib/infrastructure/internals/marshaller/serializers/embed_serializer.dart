@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/color.dart';
 import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/embed/message_embed_assets.dart';

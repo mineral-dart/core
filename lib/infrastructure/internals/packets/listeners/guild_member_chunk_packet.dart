@@ -1,10 +1,9 @@
 import 'package:mineral/api/common/presence.dart';
-import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/infrastructure/services/logger/logger.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 final class GuildMemberChunkPacket implements ListenablePacket {
   @override

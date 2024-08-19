@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:mineral/api/server/managers/emoji_manager.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/events/event.dart';

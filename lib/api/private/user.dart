@@ -1,7 +1,7 @@
+import 'package:mineral/api/common/premium_tier.dart';
 import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/user_assets.dart';
-import 'package:mineral/api/common/premium_tier.dart';
 
 final class User {
   final Snowflake id;

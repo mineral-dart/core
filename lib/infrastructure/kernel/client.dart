@@ -1,10 +1,10 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:mineral/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/domains/events/event_listener.dart';
 import 'package:mineral/domains/providers/provider.dart';
 import 'package:mineral/domains/providers/provider_manager.dart';
-import 'package:mineral/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/infrastructure/internals/cache/cache_provider_contract.dart';
 import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store.dart';

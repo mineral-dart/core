@@ -1,9 +1,9 @@
 import 'dart:convert';
 
 import 'package:mineral/infrastructure/internals/hmr/hot_module_reloading.dart';
-import 'package:mineral/infrastructure/services/wss/websocket_message.dart';
 import 'package:mineral/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/infrastructure/services/wss/websocket_message.dart';
 
 abstract interface class ShardData {
   void dispatch(WebsocketMessage message);

@@ -1,7 +1,6 @@
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/server_message.dart';
-import 'package:mineral/domains/components/buttons/button_context.dart';
 import 'package:mineral/domains/components/selects/button_context.dart';
 import 'package:mineral/infrastructure/internals/interactions/interaction.dart';
 import 'package:mineral/infrastructure/internals/interactions/types/interaction_contract.dart';
