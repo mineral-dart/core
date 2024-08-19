@@ -91,6 +91,6 @@ final class SerializerBucket {
         serverMessage = ServerMessageSerializer(marshaller),
         privateMessage = PrivateMessageSerializer(marshaller),
         embed = EmbedSerializer(),
-        poll = PollSerializer(),
-        thread = ThreadSerializer(marshaller);
+        thread = ThreadSerializer(marshaller),
+        poll = PollSerializer();
 }
