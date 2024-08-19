@@ -1,12 +1,26 @@
 import 'package:mineral/api/common/premium_tier.dart';
 import 'package:mineral/api/server/server_subscription.dart';
 import 'package:mineral/infrastructure/commons/utils.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class ServerSubscriptionSerializer implements SerializerContract<ServerSubscription> {
+  final MarshallerContract _marshaller;
+
+  ServerSubscriptionSerializer(this._marshaller);
+
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
-    throw UnimplementedError();
+    final payload = {
+      'premium_tier': json['premium_tier'],
+      'premium_subscription_count': json['premium_subscription_count'],
+      'premium_progress_bar_enabled': json['premium_progress_bar_enabled'],
+    };
+
+    final cacheKey = _marshaller.cacheKey.serverSubscription(json['server_id']);
+    await _marshaller.cache.put(cacheKey, payload);
+
+    return payload;
   }
 
   @override

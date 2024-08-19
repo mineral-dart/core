@@ -17,6 +17,11 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
+  String serverSubscription(Snowflake serverId, {bool ref = false}) {
+    final key = '${server(serverId)}/subscriptions';
+    return ref ? 'ref:$key' : key;
+  }
+
   String channel(Snowflake channelId) => 'channels/$channelId';
 
   String channelPermission(Snowflake channelId, {Snowflake? serverId}) =>
