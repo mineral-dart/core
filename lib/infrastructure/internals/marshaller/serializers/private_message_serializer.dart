@@ -21,7 +21,7 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
       'updated_at': json['updated_at'],
     };
 
-    final cacheKey = marshaller.cacheKey.privateMessage(messageId: json['id'], channelId: Snowflake(json['channel_id']));
+    final cacheKey = marshaller.cacheKey.message(Snowflake(json['channel_id']), json['id']);
     await marshaller.cache.put(cacheKey, payload);
 
     return payload;

@@ -1,11 +1,14 @@
 import 'package:mineral/api/common/premium_tier.dart';
-import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/private/user.dart';
-import 'package:mineral/api/private/user_assets.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class UserSerializer implements SerializerContract<User> {
+  final MarshallerContract _marshaller;
+
+  UserSerializer(this._marshaller);
+
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     await _marshaller.serializers.userAssets.normalize({

@@ -8,9 +8,14 @@ import 'package:mineral/api/common/embed/message_embed_provider.dart';
 import 'package:mineral/api/common/embed/message_embed_type.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/commons/utils.dart';
+import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class EmbedSerializer implements SerializerContract<MessageEmbed> {
+  final MarshallerContract _marshaller;
+
+  EmbedSerializer(this._marshaller);
+
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
