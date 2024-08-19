@@ -52,6 +52,7 @@ final class ShardAuthenticationImpl implements ShardAuthentication {
     });
   }
 
+  @override
   void heartbeat() {
     shard.client.send(jsonEncode({
       'op': 1,

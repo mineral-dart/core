@@ -5,6 +5,8 @@ enum ForumLayoutType implements EnhancedEnum<int> {
   listView(1),
   galleryView(2);
 
+  @override
   final int value;
+
   const ForumLayoutType(this.value);
 }

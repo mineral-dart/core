@@ -4,14 +4,9 @@ import 'package:mineral/api/common/polls/poll_layout.dart';
 import 'package:mineral/api/common/polls/poll_question.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/commons/utils.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class PollSerializer implements SerializerContract<Poll> {
-  final MarshallerContract _marshaller;
-
-  PollSerializer(this._marshaller);
-
   @override
   Poll serializeRemote(Map<String, dynamic> json) {
     return Poll(

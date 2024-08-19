@@ -15,9 +15,6 @@ final class GuildAuditLogEntryCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
-
-
-   // dispatch(event: Event.serverPresenceUpdate, params: [member, server, presence]);
+    // TODO: Implement this packet
   }
 }

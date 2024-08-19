@@ -20,10 +20,10 @@ final class MemberManager {
     });
   }
 
-  Member? get(String? id) => _members[id];
+  Member? get(String? id) => _members[id != null ? Snowflake(id) : null];
 
   Member getOrFail(String id, {String? error}) => _members.values
-      .firstWhere((element) => element.id == id, orElse: () => throw error ?? 'Member not found');
+      .firstWhere((element) => element.id.value == id, orElse: () => throw error ?? 'Member not found');
 
 
   late final int maxInGuild;

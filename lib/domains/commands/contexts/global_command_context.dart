@@ -24,9 +24,4 @@ final class GlobalCommandContext implements CommandContext {
     required this.user,
     this.channel,
   });
-
-  @override
-  Future<void> reply() {
-    throw UnimplementedError();
-  }
 }

@@ -74,18 +74,18 @@ final class SerializerBucket {
       : channels = ChannelSerializer(marshaller),
         server = ServerSerializer(marshaller),
         member = MemberSerializer(marshaller),
-        user = UserSerializer(marshaller),
+        user = UserSerializer(),
         role = RoleSerializer(marshaller),
-        serverSubscription = ServerSubscriptionSerializer(marshaller),
+        serverSubscription = ServerSubscriptionSerializer(),
         serverSettings = ServerSettingsSerializer(marshaller),
         serversAsset = ServerAssetsSerializer(marshaller),
         emojis = EmojiSerializer(marshaller),
-        sticker = StickerSerializer(marshaller),
+        sticker = StickerSerializer(),
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
         serverMessage = ServerMessageSerializer(marshaller),
         privateMessage = PrivateMessageSerializer(marshaller),
-        embed = EmbedSerializer(marshaller),
+        embed = EmbedSerializer(),
         globalCommandContext = GlobalCommandContextSerializer(marshaller),
         guildCommandContext = ServerCommandContextSerializer(marshaller),
-        poll = PollSerializer(marshaller);
+        poll = PollSerializer();
 }

@@ -45,6 +45,7 @@ enum Permission implements EnhancedEnum<int> {
   startEmbeddedActivities(1 << 39),
   moderateMembers(1 << 40);
 
+  @override
   final int value;
 
   const Permission(this.value);

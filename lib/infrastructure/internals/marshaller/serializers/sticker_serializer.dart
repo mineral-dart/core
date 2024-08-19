@@ -2,14 +2,9 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/sticker.dart';
 import 'package:mineral/api/common/types/format_type.dart';
 import 'package:mineral/api/common/types/sticker_type.dart';
-import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class StickerSerializer implements SerializerContract<Sticker> {
-  final MarshallerContract _marshaller;
-
-  StickerSerializer(this._marshaller);
-
   @override
   Sticker serializeRemote(Map<String, dynamic> json) => _serialize(json);
 

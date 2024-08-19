@@ -21,18 +21,11 @@ final class Environment implements EnvContract {
   @override
   Map<String, String> get list => _values;
 
-  T getRawOrFail<T>(String key) {
-    final value = _values.entries
+  T getRawOrFail<T extends dynamic>(String key) {
+    return _values.entries
         .firstWhere((element) => element.key == key,
             orElse: () => throw Exception('Environment variable $key not found'))
-        .value;
-
-    return switch (T) {
-      int => int.parse(value),
-      double => double.parse(value),
-      bool => bool.parse(value),
-      _ => value,
-    } as T;
+        .value as T;
   }
 
   @override
@@ -43,12 +36,7 @@ final class Environment implements EnvContract {
       throw Exception('Environment variable ${variable.key} not found');
     }
 
-    return switch (T) {
-      int => int.parse(result!.value),
-      double => double.parse(result!.value),
-      bool => bool.parse(result!.value),
-      _ => result?.value,
-    } as T;
+    return result?.value as T;
   }
 
   @override
