@@ -17,20 +17,17 @@ final class GuildMemberChunkPacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
 
-    final members = message.payload['members'];
-    final presences = message.payload['presences'];
+    final rawMembers = await List.from(message.payload['members']).map((element) async {
+      return marshaller.serializers.member.normalize(element);
+    }).wait;
 
-    for (final element in members) {
+    await rawMembers.nonNulls.map((element) async {
       final member = await marshaller.serializers.member.serialize(element);
-      final memberCacheKey = marshaller.cacheKey.member(server.id, member.id);
+      server.members.list.update(member.id, (value) => member, ifAbsent: () => member);
+    }).wait;
 
-      final rawMember = await marshaller.serializers.member.deserialize(member);
-      await marshaller.cache.put(memberCacheKey, rawMember);
-
-      server.members.list.putIfAbsent(member.id, () => member);
-    }
+    final presences = message.payload['presences'];
 
     for (final rawPresence in presences) {
       final presence = Presence.fromJson(rawPresence);
@@ -38,6 +35,8 @@ final class GuildMemberChunkPacket implements ListenablePacket {
     }
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
+    final serverCacheKey = marshaller.cacheKey.server(server.id);
+
     await marshaller.cache.put(serverCacheKey, rawServer);
   }
 }
