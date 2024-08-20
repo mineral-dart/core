@@ -1,4 +1,6 @@
 import 'package:mineral/domains/events/contracts/server/server_thread_create_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_delete_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_update_event.dart';
 import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
@@ -104,4 +106,10 @@ final class ServerBucket {
 
   void threadCreate(ServerThreadCreateEventHandler handle) =>
       _events.make(Event.serverThreadCreate, handle);
+
+  void threadUpdate(ServerThreadUpdateEventHandler handle) =>
+      _events.make(Event.serverThreadUpdate, handle);
+
+  void threadDelete(ServerThreadDeleteEventHandler handle) =>
+      _events.make(Event.serverThreadDelete, handle);
 }
