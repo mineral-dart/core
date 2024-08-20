@@ -5,14 +5,14 @@ import 'package:mineral/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/infrastructure/internals/wss/shard_message.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
 
-final class GuildThreadCreatePacket implements ListenablePacket {
+final class ThreadCreatePacket implements ListenablePacket {
   @override
-  PacketType get packetType => PacketType.guildThreadCreate;
+  PacketType get packetType => PacketType.threadCreate;
 
   final LoggerContract logger;
   final MarshallerContract marshaller;
 
-  GuildThreadCreatePacket(this.logger, this.marshaller);
+  ThreadCreatePacket(this.logger, this.marshaller);
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
