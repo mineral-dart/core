@@ -124,7 +124,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       'name': server.name,
       'description': server.description,
       'application_id': server.applicationId,
-      'owner': _marshaller.cacheKey.member(server.id, server.owner.id),
+      'owner_id': _marshaller.cacheKey.member(server.id, server.owner.id),
       'assets': _marshaller.cacheKey.serverAssets(server.id),
       'settings': _marshaller.cacheKey.serverSettings(server.id),
       'roles': server.roles.list.keys
