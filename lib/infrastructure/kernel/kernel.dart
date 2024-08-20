@@ -52,6 +52,8 @@ abstract interface class KernelContract {
 final class Kernel implements KernelContract {
   final _watch = Stopwatch();
 
+  final bool _hasDefinedDevPort;
+
   final SendPort? _devPort;
 
   final WatcherConfig watcherConfig;
@@ -93,6 +95,7 @@ final class Kernel implements KernelContract {
   final CommandInteractionManagerContract commands;
 
   Kernel(
+    this._hasDefinedDevPort,
     this._devPort, {
     required this.logger,
     required this.environment,
@@ -124,7 +127,8 @@ final class Kernel implements KernelContract {
 
   @override
   Future<void> init() async {
-    final useHmr = bool.parse(environment.get(AppEnv.hmr));
+    final isDevelopmentMode = environment.get(AppEnv.dartEnv) == 'development';
+    final useHmr = isDevelopmentMode && _hasDefinedDevPort;
 
     if ((useHmr && Isolate.current.debugName != 'main') || !useHmr) {
       await providerManager.ready();
