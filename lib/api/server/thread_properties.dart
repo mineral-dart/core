@@ -1,7 +1,9 @@
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
+import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
+import 'package:mineral/api/server/channels/thread_channel.dart';
 import 'package:mineral/api/server/threads/thread_member.dart';
 import 'package:mineral/api/server/threads/thread_metadata.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
@@ -83,9 +85,9 @@ final class ThreadProperties {
                       marshaller.serializers.channelPermissionOverwrite.serializeRemote(json))
                   .toList(),
             ));
-    final channel = await marshaller.dataStore.channel.getChannel(Snowflake(element['parent_id']));
+    final channel = await marshaller.dataStore.channel.getChannel(Snowflake(element['parent_id'])) as ServerChannel;
 
-    return ThreadProperties(
+    final threadProperties = ThreadProperties(
       id: Snowflake(element['id']),
       name: element['name'],
       description: element['description'],
@@ -120,6 +122,10 @@ final class ThreadProperties {
       type: type,
       channel: channel as ServerTextChannel?,
     );
+
+    channel.threads.add(ThreadChannel(threadProperties, type));
+
+    return threadProperties;
   }
 
   static Future<ThreadProperties> serializeCache(
