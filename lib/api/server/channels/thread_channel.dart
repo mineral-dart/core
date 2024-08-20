@@ -5,12 +5,12 @@ import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/managers/message_manager.dart';
 import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/common/thread_properties.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
+import 'package:mineral/api/server/thread_properties.dart';
 import 'package:mineral/api/server/threads/thread_member.dart';
 import 'package:mineral/api/server/threads/thread_metadata.dart';
 
@@ -31,6 +31,9 @@ class ThreadChannel extends ServerChannel {
 
   @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions ?? [];
+
+  @override
+  List<ThreadChannel> get threads => [];
 
   String? get description => _properties.description;
 

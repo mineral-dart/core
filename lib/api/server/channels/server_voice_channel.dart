@@ -7,6 +7,7 @@ import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/common/video_quality.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
+import 'package:mineral/api/server/channels/thread_channel.dart';
 import 'package:mineral/api/server/server_message.dart';
 
 final class ServerVoiceChannel extends ServerChannel {
@@ -26,6 +27,9 @@ final class ServerVoiceChannel extends ServerChannel {
 
   @override
   int get position => _properties.position!;
+
+  @override
+  List<ThreadChannel> get threads => _properties.threads;
 
   @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
