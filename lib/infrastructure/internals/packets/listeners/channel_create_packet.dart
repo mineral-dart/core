@@ -18,7 +18,8 @@ final class ChannelCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final channel = await marshaller.serializers.channels.serialize(message.payload);
+    final rawChannel = await marshaller.serializers.channels.normalize(message.payload);
+    final channel = await marshaller.serializers.channels.serialize(rawChannel);
 
     return switch (channel) {
       ServerChannel() => registerServerChannel(channel, dispatch),
@@ -30,7 +31,6 @@ final class ChannelCreatePacket implements ListenablePacket {
   Future<void> registerServerChannel(ServerChannel channel, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(channel.serverId);
     final serverCacheKey = marshaller.cacheKey.server(server.id);
-    final channelCacheKey = marshaller.cacheKey.channel(channel.id);
 
     channel.server = server;
     server.channels.list.putIfAbsent(channel.id, () => channel);
@@ -38,18 +38,10 @@ final class ChannelCreatePacket implements ListenablePacket {
     final rawServer = await marshaller.serializers.server.deserialize(server);
     await marshaller.cache.put(serverCacheKey, rawServer);
 
-    final rawChannel = await marshaller.serializers.channels.deserialize(channel);
-    await marshaller.cache.put(channelCacheKey, rawChannel);
-
     dispatch(event: Event.serverChannelCreate, params: [channel]);
   }
 
   Future<void> registerPrivateChannel(PrivateChannel channel, DispatchEvent dispatch) async {
-    final cacheKey = marshaller.cacheKey.channel(channel.id);
-
-    final rawChannel = await marshaller.serializers.channels.deserialize(channel);
-    await marshaller.cache.put(cacheKey, rawChannel);
-
     dispatch(event: Event.privateChannelCreate, params: [channel]);
   }
 }

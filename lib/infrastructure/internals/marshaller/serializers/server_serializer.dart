@@ -127,11 +127,12 @@ final class ServerSerializer implements SerializerContract<Server> {
       'owner': _marshaller.cacheKey.member(server.id, server.owner.id),
       'assets': _marshaller.cacheKey.serverAssets(server.id),
       'settings': _marshaller.cacheKey.serverSettings(server.id),
+      'roles': server.roles.list.keys
+          .map((id) => _marshaller.cacheKey.serverRole(server.id, id))
+          .toList(),
       'members':
           server.members.list.keys.map((id) => _marshaller.cacheKey.member(server.id, id)).toList(),
-      'channels': server.channels.list.keys
-          .map((id) => _marshaller.cacheKey.channel(id))
-          .toList(),
+      'channels': server.channels.list.keys.map((id) => _marshaller.cacheKey.channel(id)).toList(),
     };
   }
 
