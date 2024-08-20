@@ -17,17 +17,19 @@ final class GuildRoleCreatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
-    final role = await marshaller.serializers.role.serialize(message.payload['role']);
+    final rawRole = await marshaller.serializers.role.normalize({
+      ...message.payload['role'],
+      'server_id': server.id,
+    });
+
+    final role = await marshaller.serializers.role.serialize(rawRole);
 
     server.roles.list.putIfAbsent(role.id, () => role);
 
+    final serverCacheKey = marshaller.cacheKey.server(server.id);
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    final rawRole = await marshaller.serializers.role.deserialize(role);
 
-    await marshaller.cache.putMany({
-      marshaller.cacheKey.server(server.id): rawServer,
-      marshaller.cacheKey.serverRole( server.id, role.id): rawRole,
-    });
+    await marshaller.cache.put(serverCacheKey, rawServer);
 
     dispatch(event: Event.serverRoleCreate, params: [role, server]);
   }
