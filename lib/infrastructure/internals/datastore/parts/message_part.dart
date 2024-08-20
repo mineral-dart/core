@@ -38,7 +38,11 @@ final class MessagePart implements DataStorePart {
       throw HttpException(response.body);
     }
 
-    final payload = await _kernel.marshaller.serializers.serverMessage.normalize(response.body);
+    final payload = await _kernel.marshaller.serializers.serverMessage.normalize({
+      ...response.body,
+      'server_id': serverChannel.serverId.value,
+    });
+
     final serverMessage = await _kernel.marshaller.serializers.serverMessage.serialize(payload);
 
     serverMessage.channel = serverChannel;
