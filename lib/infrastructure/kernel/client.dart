@@ -36,7 +36,7 @@ final class Client {
   final WatcherConfig _watcherConfig = WatcherConfig();
 
   Client() {
-    _logger = Logger(_env.get(AppEnv.logLevel));
+    _logger = Logger(_env);
   }
 
   Client setToken(String token) {
@@ -61,11 +61,6 @@ final class Client {
 
   Client setCache(CacheProviderContract Function(EnvContract) cache) {
     _cache = cache(_env);
-    return this;
-  }
-
-  Client setHmr(bool hmr) {
-    _env.list[AppEnv.hmr.key] = hmr.toString();
     return this;
   }
 
@@ -124,11 +119,6 @@ final class Client {
     final httpVersion = int.parse(_env.get(AppEnv.httpVersion));
     final shardVersion = int.parse(_env.get(AppEnv.wssVersion));
     final intent = int.parse(_env.get(AppEnv.intent));
-    final hmr = bool.parse(_env.get(AppEnv.hmr));
-
-    if (hmr && !_hasDefinedDevPort) {
-      throw Exception('HMR is enabled but no dev port defined');
-    }
 
     final http = HttpClient(
         config: HttpClientConfigImpl(
@@ -156,6 +146,7 @@ final class Client {
     final providerManager = ProviderManager();
 
     final kernel = Kernel(
+      _hasDefinedDevPort,
       _devPort,
       watcherConfig: _watcherConfig,
       logger: _logger,

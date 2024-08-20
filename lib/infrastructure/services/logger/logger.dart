@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart' as logging;
 import 'package:mansion/mansion.dart';
+import 'package:mineral/infrastructure/internals/environment/app_env.dart';
+import 'package:mineral/infrastructure/internals/environment/environment.dart';
 
 abstract interface class LoggerContract {
   void trace(Object message);
@@ -20,9 +22,13 @@ final class Logger implements LoggerContract {
   static Color get primaryColor => Color.fromRGB(140, 169, 238);
   static Color get mutedColor => Color.brightBlack;
 
+  final EnvContract _env;
   final _logger = logging.Logger('Core');
 
-  Logger(String level) {
+  Logger(this._env) {
+    final level = _env.get(AppEnv.logLevel);
+    final dartEnv = _env.get(AppEnv.dartEnv);
+
     const logLevels = {
       'TRACE': logging.Level.FINEST,
       'FATAL': logging.Level.SHOUT,
@@ -65,7 +71,17 @@ final class Logger implements LoggerContract {
         _ => makeMessage('unknown', Color.blue, [Print(record.message)]),
       };
 
-      stdout.writeAnsiAll(message);
+      if (dartEnv == 'production') {
+        message.writeWithoutAnsi();
+        return;
+      }
+
+      if (stdout.supportsAnsiEscapes) {
+        stdout.writeAnsiAll(message);
+        return;
+      }
+
+      message.writeWithoutAnsi();
     });
   }
 
@@ -83,4 +99,16 @@ final class Logger implements LoggerContract {
 
   @override
   void warn(String message) => _logger.warning(message);
+}
+
+extension on List<Sequence> {
+  void writeWithoutAnsi() {
+    for (final sequence in this) {
+      switch(sequence) {
+        case Print(:final text): stdout.write(text);
+        case AsciiControl(:final writeAnsiString): writeAnsiString(stdout);
+        default:
+      }
+    }
+  }
 }
