@@ -30,7 +30,8 @@ final class ServerPart implements DataStorePart {
     await getChannels(id);
     await _kernel.dataStore.member.getMembers(id);
 
-    return _kernel.marshaller.serializers.server.serialize(serverResponse.body);
+    final payload = await _kernel.marshaller.serializers.server.normalize(serverResponse.body);
+    return _kernel.marshaller.serializers.server.serialize(payload);
   }
 
   Future<List<T>> getChannels<T extends ServerChannel>(Snowflake id) async {
