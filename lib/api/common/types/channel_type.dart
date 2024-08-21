@@ -13,7 +13,8 @@ enum ChannelType implements EnhancedEnum<int>{
   guildStageVoice(13),
   guildDirectory(14),
   guildForum(15),
-  guildMedia(16);
+  guildMedia(16),
+  unknown(-1);
 
   @override
   final int value;
