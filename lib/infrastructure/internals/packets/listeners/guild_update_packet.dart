@@ -16,14 +16,14 @@ final class GuildUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final before = await marshaller.dataStore.server.getServer(message.payload['id']);
-    final after = await marshaller.serializers.server.serialize(message.payload);
+    final serverCacheKey = marshaller.cacheKey.server(message.payload['id']);
+    final rawServer = await marshaller.cache.get(serverCacheKey);
+    final before =
+        rawServer != null ? await marshaller.serializers.server.serialize(rawServer) : null;
 
-    final cacheKey = marshaller.cacheKey.server(after.id);
-    final rawServer = await marshaller.serializers.server.deserialize(after);
+    final rawAfter = await marshaller.serializers.server.normalize(message.payload);
+    final after = await marshaller.serializers.server.serialize(rawAfter);
 
     dispatch(event: Event.serverUpdate, params: [before, after]);
-
-    marshaller.cache.put(cacheKey, rawServer);
   }
 }
