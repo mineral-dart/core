@@ -16,21 +16,22 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final serverCacheKey = marshaller.cacheKey.server(message.payload['guild_id']);
     final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
 
-    final before = server.roles.list[message.payload['role']['id']];
-    final after = await marshaller.serializers.role.serialize(message.payload['role']);
+    final roleCacheKey = marshaller.cacheKey.serverRole(server.id, message.payload['role']['id']);
+    final rawBefore = await marshaller.cache.get(roleCacheKey);
+    final before = rawBefore != null ? marshaller.serializers.role.serialize(rawBefore) : null;
 
-    server.roles.list.update(after.id, (_) => after);
+    final rawRole = await marshaller.serializers.role.normalize(message.payload['role']);
+    final role = await marshaller.serializers.role.serialize(rawRole);
+
+    server.roles.list.update(role.id, (_) => role);
+    role.server = server;
 
     final rawServer = await marshaller.serializers.server.deserialize(server);
-    final rawRole = await marshaller.serializers.role.deserialize(after);
+    await marshaller.cache.put(serverCacheKey, rawServer);
 
-    dispatch(event: Event.serverRoleUpdate, params: [before, after, server]);
-
-    await marshaller.cache.putMany({
-      marshaller.cacheKey.server(server.id): rawServer,
-      marshaller.cacheKey.serverRole(server.id, after.id): rawRole,
-    });
+    dispatch(event: Event.serverRoleUpdate, params: [before, role, server]);
   }
 }
