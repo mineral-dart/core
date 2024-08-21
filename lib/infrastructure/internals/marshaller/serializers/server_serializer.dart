@@ -65,7 +65,7 @@ final class ServerSerializer implements SerializerContract<Server> {
   Future<Server> serialize(Map<String, dynamic> payload) async {
     final rawMembers = await _marshaller.cache.getMany(payload['members']);
     final members = await rawMembers.nonNulls.map((element) async {
-      return _marshaller.serializers.member.serialize(element);
+      return _marshaller.serializers.member.serialize({...element, 'server_id': payload['id']});
     }).wait;
 
     final rawRoles = await _marshaller.cache.getMany(payload['roles']);

@@ -1,6 +1,5 @@
 import 'package:mineral/api/common/permissions.dart';
 import 'package:mineral/api/common/premium_tier.dart';
-import 'package:mineral/api/common/presence.dart';
 import 'package:mineral/api/server/enums/member_flag.dart';
 import 'package:mineral/api/server/managers/member_role_manager.dart';
 import 'package:mineral/api/server/member.dart';
@@ -46,6 +45,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       'permissions': json['permissions'],
       'accent_color': json['accent_color'],
       // TODO : presence
+      'server_id': json['server_id'],
     };
 
     final cacheKey = _marshaller.cacheKey.member(json['server_id'], json['user']['id']);
@@ -140,6 +140,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       'permissions': listToBitfield(member.permissions.list),
       'accent_color': member.accentColor,
       // TODO : presence
+      'server_id': member.server.id,
     };
   }
 }
