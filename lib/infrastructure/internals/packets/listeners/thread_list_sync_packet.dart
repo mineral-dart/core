@@ -33,7 +33,7 @@ final class ThreadListSyncPacket implements ListenablePacket {
 
       //todo
 
-      final threadCacheKey = marshaller.cacheKey.threadChannel(serverId: json['id'], threadId: thread.id);
+      final threadCacheKey = marshaller.cacheKey.threadChannel(serverId: payload['id'], threadId: thread.id);
       final threadRaw = await marshaller.serializers.thread.deserialize(thread);
 
       await marshaller.cache.put(threadCacheKey, threadRaw);

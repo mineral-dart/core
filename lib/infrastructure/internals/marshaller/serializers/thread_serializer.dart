@@ -1,6 +1,6 @@
-import 'package:mineral/api/common/thread_properties.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/thread_channel.dart';
+import 'package:mineral/api/server/thread_properties.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
