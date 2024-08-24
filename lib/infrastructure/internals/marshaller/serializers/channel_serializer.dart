@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/private_channel_factory.dart';
-import 'package:mineral/infrastructure/internals/marshaller/factories/channels/private_thread_channel_factory.dart';
-import 'package:mineral/infrastructure/internals/marshaller/factories/channels/public_thread_channel_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/server_announcement_channel_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/server_category_channel_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/factories/channels/server_forum_channel_factory.dart';
@@ -26,8 +24,6 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
     ServerForumChannelFactory(),
     ServerStageChannelFactory(),
     PrivateChannelFactory(),
-    PublicThreadChannelFactory(),
-    PrivateThreadChannelFactory(),
   ];
 
   ChannelSerializer(this._marshaller);
