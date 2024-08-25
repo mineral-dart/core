@@ -43,7 +43,7 @@ final class ChannelProperties {
   final dynamic defaultReactions;
   final int? defaultSortOrder;
   final int? defaultForumLayout;
-  final List<ThreadChannel> threads;
+  final Map<Snowflake, ThreadChannel> threads;
 
   ChannelProperties({
     required this.id,
@@ -132,7 +132,7 @@ final class ChannelProperties {
       defaultReactions: element['default_reactions'],
       defaultSortOrder: element['default_sort_order'],
       defaultForumLayout: element['default_forum_layout'],
-      threads: [],
+      threads: {},
     );
   }
 
@@ -189,7 +189,7 @@ final class ChannelProperties {
       defaultReactions: element['default_reactions'],
       defaultSortOrder: element['default_sort_order'],
       defaultForumLayout: element['default_forum_layout'],
-      threads: [],
+      threads: {},
     );
   }
 }

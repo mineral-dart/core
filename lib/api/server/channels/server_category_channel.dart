@@ -26,7 +26,7 @@ final class ServerCategoryChannel extends ServerChannel {
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
 
   @override
-  List<ThreadChannel> get threads => _properties.threads;
+  Map<Snowflake, ThreadChannel> get threads => _properties.threads;
 
   @override
   Snowflake get serverId => _properties.serverId!;
