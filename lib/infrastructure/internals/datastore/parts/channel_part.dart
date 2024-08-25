@@ -7,6 +7,7 @@ import 'package:mineral/api/common/embed/message_embed.dart';
 import 'package:mineral/api/common/message.dart';
 import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
@@ -33,10 +34,17 @@ final class ChannelPart implements DataStorePart {
       return _kernel.marshaller.serializers.channels.serialize(cachedChannel) as Future<T?>;
     }
 
-    final response = await _kernel.dataStore.client.get('/channels/$id');
-    final Channel? channel = await serializeChannelResponse(response);
+    final threadKey = _kernel.marshaller.cacheKey.thread(id);
+    final cachedThread = await _kernel.marshaller.cache.get(threadKey);
 
-    return channel as T?;
+    if (cachedThread != null) {
+      return _kernel.marshaller.serializers.thread.serialize(cachedThread) as Future<T?>;
+    }
+
+    final response = await _kernel.dataStore.client.get('/channels/$id');
+    final T? channel = await serializeChannelResponse<T>(response);
+
+    return channel;
   }
 
   Future<T?> createServerChannel<T extends Channel>(
@@ -121,6 +129,10 @@ final class ChannelPart implements DataStorePart {
   Future<T?> serializeChannelResponse<T extends Channel>(Response response) async {
     return switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => () async {
+        print("hello");
+        final channelType = ChannelType.values.firstWhere((element) => element.value == response.body['type']);
+        print('ChannelType: $channelType');
+
         final payload = await _kernel.marshaller.serializers.channels.normalize(response.body);
         final channel = await _kernel.marshaller.serializers.channels.serialize(payload);
 
