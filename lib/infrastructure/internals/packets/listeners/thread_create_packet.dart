@@ -1,3 +1,5 @@
+import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
@@ -19,15 +21,27 @@ final class ThreadCreatePacket implements ListenablePacket {
     final payload = message.payload;
 
     final server = await marshaller.dataStore.server.getServer(payload['guild_id']);
-    final thread = await marshaller.serializers.thread.serializeCache(payload);
+    final threadRaw = await marshaller.serializers.thread.normalize(payload);
+    final thread = await marshaller.serializers.thread.serialize(threadRaw);
 
-    thread.server = server;
-    thread.owner.member.server = server;
+    server.channels.threads[thread.id] = thread;
 
-    final threadCacheKey = marshaller.cacheKey.threadChannel(serverId: server.id, threadId: thread.id);
-    final threadRaw = await marshaller.serializers.channels.deserialize(thread);
+    final serverRaw = await marshaller.serializers.server.deserialize(server);
+    final serverKey = marshaller.cacheKey.server(server.id);
 
-    await marshaller.cache.put(threadCacheKey, threadRaw);
+    marshaller.cache.put(serverKey, serverRaw);
+
+    final parentChannel = server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
+    parentChannel.threads[thread.id] = thread;
+
+    final parentChannelRaw = await marshaller.serializers.channels.deserialize(parentChannel);
+    final parentChannelKey = marshaller.cacheKey.channel(parentChannel.id);
+
+    marshaller.cache.put(parentChannelKey, parentChannelRaw);
+
+    thread
+      ..server = server
+      ..parentChannel = parentChannel;
 
     dispatch(event: Event.serverThreadCreate, params: [thread, server]);
   }
