@@ -39,7 +39,6 @@ final class MessageCreatePacket implements ListenablePacket {
     return switch (channel) {
       ServerChannel() => sendServerMessage(dispatch, channel, message.payload),
       Channel() => sendPrivateMessage(dispatch, channel, message.payload),
-      _ => logger.error('Unknown channel type: ${channel.runtimeType}'),
     };
   }
 
@@ -47,14 +46,11 @@ final class MessageCreatePacket implements ListenablePacket {
     final server = await marshaller.dataStore.server.getServer(json['guild_id']);
     final thread = server.channels.threads.values.firstWhere((element) => element.id == json['channel_id']);
 
-    final message = await marshaller.serializers.serverMessage.serializeCache({
-      ...json,
-      'channel': thread,
-      'guild_id': server.id,
-    });
+    final payload = await marshaller.serializers.serverMessage.normalize({...json, 'server_id': server.id.value});
+    final message = await marshaller.serializers.serverMessage.serialize(payload);
 
     message.channel = thread;
-    thread.messages.list.putIfAbsent(message.id, () => message as ServerMessage);
+    thread.messages.list.putIfAbsent(message.id, () => message);
 
     dispatch(event: Event.serverMessageCreate, params: [message]);
   }
