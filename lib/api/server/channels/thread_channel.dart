@@ -6,57 +6,79 @@ import 'package:mineral/api/common/managers/message_manager.dart';
 import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
-import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
+import 'package:mineral/api/server/member.dart';
+import 'package:mineral/api/server/server.dart';
 import 'package:mineral/api/server/server_message.dart';
-import 'package:mineral/api/server/thread_properties.dart';
-import 'package:mineral/api/server/threads/thread_member.dart';
 import 'package:mineral/api/server/threads/thread_metadata.dart';
 
 class ThreadChannel extends ServerChannel {
-  final ThreadProperties _properties;
-  final ChannelMethods _methods;
+  late final ChannelMethods _methods;
 
   final MessageManager<ServerMessage> messages = MessageManager();
 
   @override
-  Snowflake get id => _properties.id;
+  final ChannelType type = ChannelType.guildPrivateThread;
 
   @override
-  ChannelType type;
+  final Snowflake id;
 
   @override
-  String get name => _properties.name!;
+  final String name;
 
   @override
-  List<ChannelPermissionOverwrite> get permissions => _properties.permissions ?? [];
+  final Snowflake serverId;
+
+  final String channelId;
+
+  final ThreadMetadata metadata;
+
+  int get memberCount => members.length;
+
+  final String? lastMessageId;
+
+  final int rateLimitPerUser;
+
+  final DateTime? lastPinTimestamp;
+
+  final int messageCount;
+
+  final int flags;
+
+  final String ownerId;
 
   @override
-  List<ThreadChannel> get threads => [];
-
-  String? get description => _properties.description;
-
-  Snowflake get channelId => _properties.channelId!;
-
-  int? get rateLimitPerUser => _properties.rateLimitPerUser;
-
-  int get memberCount => _properties.memberCount ?? 0;
-
-  List<ThreadMember> members = [];
-
-  ThreadMember get owner => _properties.owner!;
-
-  ServerTextChannel get channel => _properties.channel!;
-
-  ThreadMetadata get metadata => _properties.metadata;
+  final int position = 0;
 
   @override
-  Snowflake get serverId => _properties.guildId!;
+  final List<ChannelPermissionOverwrite> permissions;
 
-  late final ServerCategoryChannel? category;
+  @override
+  final Map<Snowflake, ThreadChannel> threads = {};
 
-  ThreadChannel(this._properties, this.type) : _methods = ChannelMethods(_properties.id);
+  @override
+  late final Server server;
+  late final ServerTextChannel parentChannel;
+  late final Map<Snowflake, Member> members;
+  late final Member owner;
+
+  ThreadChannel({
+    required this.id,
+    required this.name,
+    required this.serverId,
+    required this.channelId,
+    required this.metadata,
+    required this.lastMessageId,
+    required this.rateLimitPerUser,
+    required this.lastPinTimestamp,
+    required this.messageCount,
+    required this.flags,
+    required this.ownerId,
+    required this.permissions,
+  }) {
+    _methods = ChannelMethods(id);
+  }
 
   Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);
 
@@ -70,10 +92,7 @@ class ThreadChannel extends ServerChannel {
   Future<void> setDefaultThreadRateLimitPerUser(int value, {String? reason}) => _methods.setDefaultThreadRateLimitPerUser(value, reason);
 
   Future<void> send({String? content, List<MessageEmbed>? embeds, Poll? poll, List<MessageComponent>? components}) =>
-      _methods.send(guildId: _properties.guildId, content: content, embeds: embeds, poll: poll, components: components);
+      _methods.send(guildId: serverId, content: content, embeds: embeds, poll: poll, components: components);
 
   Future<void> delete({String? reason}) => _methods.delete(reason);
-
-  @override
-  int get position => 0;
 }
