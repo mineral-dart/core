@@ -38,7 +38,7 @@ final class ServerStageChannel extends ServerChannel {
   Snowflake get serverId => _properties.serverId!;
 
   @override
-  List<ThreadChannel> get threads => _properties.threads;
+  Map<Snowflake, ThreadChannel> get threads => _properties.threads;
 
   Snowflake? get categoryId => _properties.categoryId;
 

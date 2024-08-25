@@ -29,7 +29,7 @@ final class ServerVoiceChannel extends ServerChannel {
   int get position => _properties.position!;
 
   @override
-  List<ThreadChannel> get threads => _properties.threads;
+  Map<Snowflake, ThreadChannel> get threads => _properties.threads;
 
   @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;

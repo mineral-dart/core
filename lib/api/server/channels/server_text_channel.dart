@@ -41,7 +41,7 @@ final class ServerTextChannel extends ServerChannel {
   Snowflake? get categoryId => _properties.categoryId;
 
   @override
-  List<ThreadChannel> get threads => _properties.threads;
+  Map<Snowflake, ThreadChannel> get threads => _properties.threads;
 
   late final ServerCategoryChannel? category;
 

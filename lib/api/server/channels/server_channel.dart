@@ -10,7 +10,7 @@ abstract class ServerChannel implements Channel {
   List<ChannelPermissionOverwrite> get permissions;
   int get position;
   Snowflake get serverId;
-  List<ThreadChannel> get threads;
+  Map<Snowflake, ThreadChannel> get threads;
 
   @override
   T cast<T extends Channel>() => this as T;
