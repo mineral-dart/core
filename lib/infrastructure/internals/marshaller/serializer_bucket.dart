@@ -90,7 +90,7 @@ final class SerializerBucket {
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
         serverMessage = ServerMessageSerializer(marshaller),
         privateMessage = PrivateMessageSerializer(marshaller),
-        embed = EmbedSerializer(),
+        embed = EmbedSerializer(marshaller),
         thread = ThreadSerializer(marshaller),
-        poll = PollSerializer();
+        poll = PollSerializer(marshaller);
 }
