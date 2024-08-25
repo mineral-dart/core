@@ -19,12 +19,10 @@ final class ThreadDeletePacket implements ListenablePacket {
     final payload = message.payload;
 
     final server = await marshaller.dataStore.server.getServer(payload['guild_id']);
-    final threadCacheKey = marshaller.cacheKey.threadChannel(serverId: payload['guild_id'], threadId: payload['id']);
-    final threadRaw = await marshaller.cache.getOrFail(threadCacheKey);
-    final thread = await marshaller.serializers.thread.serializeCache(threadRaw);
 
-    thread.server = server;
-    thread.owner.member.server = server;
+    final threadCacheKey = marshaller.cacheKey.thread(payload['id']);
+    final threadRaw = await marshaller.cache.getOrFail(threadCacheKey);
+    final thread = await marshaller.serializers.thread.serialize(threadRaw);
 
     await marshaller.cache.remove(threadCacheKey);
 
