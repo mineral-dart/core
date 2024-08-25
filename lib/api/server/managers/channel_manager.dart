@@ -16,9 +16,9 @@ enum _ServerNamedChannel {
 final class ChannelManager {
   final Map<_ServerNamedChannel, Snowflake?> _namedChannels = {};
   final Map<Snowflake, ServerChannel> _channels;
-  final Map<Snowflake, ThreadChannel> threads = {}; // todo
+  final Map<Snowflake, ThreadChannel> threads;
 
-  ChannelManager(this._channels, Map<String, dynamic> json) {
+  ChannelManager(this._channels, this.threads, Map<String, dynamic> json) {
     _namedChannels
       ..putIfAbsent(_ServerNamedChannel.afkChannel, () => json['afk_channel_id'])
       ..putIfAbsent(_ServerNamedChannel.systemChannel, () => json['system_channel_id'])
@@ -55,9 +55,12 @@ final class ChannelManager {
   ServerTextChannel? get widgetChannel =>
       getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.widgetChannel]);
 
-  factory ChannelManager.fromList(List<ServerChannel> channels, payload) {
+  factory ChannelManager.fromList(List<ServerChannel> channels, List<ThreadChannel> threads, payload) {
     return ChannelManager(
         Map<Snowflake, ServerChannel>.from(channels.fold({}, (value, element) {
+          return {...value, element.id: element};
+        })),
+        Map<Snowflake, ThreadChannel>.from(threads.fold({}, (value, element) {
           return {...value, element.id: element};
         })),
         payload);
