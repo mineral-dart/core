@@ -1,3 +1,5 @@
+import 'package:mineral/api/common/snowflake.dart';
+import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/packets/listenable_packet.dart';
@@ -19,21 +21,28 @@ final class ThreadUpdatePacket implements ListenablePacket {
     final payload = message.payload;
 
     final server = await marshaller.dataStore.server.getServer(payload['guild_id']);
-    final threadCacheKey = marshaller.cacheKey.threadChannel(serverId: server.id, threadId: payload['id']);
+    final threadCacheKey = marshaller.cacheKey.thread(payload['id']);
+
     final beforeRaw = await marshaller.cache.getOrFail(threadCacheKey);
-    final before = await marshaller.serializers.thread.serializeCache(beforeRaw);
+    final before = await marshaller.serializers.thread.serialize(beforeRaw);
 
-    before.server = server;
-    before.owner.member.server = server;
+    final afterRaw = await marshaller.serializers.thread.normalize(payload);
+    final after = await marshaller.serializers.thread.serialize(afterRaw);
 
-    final after = await marshaller.serializers.thread.serializeRemote(payload);
+    server.channels.threads[after.id] = after;
 
-    after.server = server;
-    after.owner.member.server = server;
+    final serverRaw = await marshaller.serializers.server.deserialize(server);
+    final serverKey = marshaller.cacheKey.server(server.id);
 
-    final afterRaw = await marshaller.serializers.thread.deserialize(after);
+    marshaller.cache.put(serverKey, serverRaw);
 
-    await marshaller.cache.put(threadCacheKey, afterRaw);
+    after
+      ..server = server
+      ..parentChannel = server.channels.list[Snowflake(after.channelId)] as ServerTextChannel;
+
+    before
+      ..server = server
+      ..parentChannel = server.channels.list[Snowflake(before.channelId)] as ServerTextChannel;
 
     dispatch(event: Event.serverThreadUpdate, params: [before, after, server]);
   }

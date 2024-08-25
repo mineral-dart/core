@@ -22,23 +22,8 @@ final class ThreadListSyncPacket implements ListenablePacket {
     final threadChannels = payload['threads'] as List<Map<String, dynamic>>;
 
     final threads = await threadChannels.map((element) async {
-      final thread = await marshaller.serializers.thread.serializeRemote(element);
-
-      thread.server = server;
-
-      for (final member in thread.members) {
-        member.member.server = server;
-        member.member.roles.server = server;
-      }
-
-      //todo
-
-      final threadCacheKey = marshaller.cacheKey.threadChannel(serverId: payload['id'], threadId: thread.id);
-      final threadRaw = await marshaller.serializers.thread.deserialize(thread);
-
-      await marshaller.cache.put(threadCacheKey, threadRaw);
-
-      return thread;
+      final threadRaw = await marshaller.serializers.thread.normalize(element);
+      return marshaller.serializers.thread.serialize(threadRaw);
     }).wait;
 
     dispatch(event: Event.serverThreadDelete, params: [threads, server]);
