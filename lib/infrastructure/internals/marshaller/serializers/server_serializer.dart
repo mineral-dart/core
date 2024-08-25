@@ -36,6 +36,13 @@ final class ServerSerializer implements SerializerContract<Server> {
     await _marshaller.serializers.serversAsset.normalize(json);
     await _marshaller.serializers.serverSettings.normalize(json);
 
+    await List.from(json['threads']).map((element) async {
+      return _marshaller.serializers.thread.normalize({
+        ...element,
+        'server_id': json['id'],
+      });
+    }).wait;
+
     final Map<String, dynamic> serverPayload = {
       'id': json['id'],
       'name': json['name'],
@@ -52,6 +59,9 @@ final class ServerSerializer implements SerializerContract<Server> {
           .toList(),
       'channels': List.from(json['channels'])
           .map((element) => _marshaller.cacheKey.channel(element['id']))
+          .toList(),
+      'threads': List.from(json['threads'])
+          .map((element) => _marshaller.cacheKey.thread(element['id']))
           .toList(),
     };
 
@@ -78,7 +88,13 @@ final class ServerSerializer implements SerializerContract<Server> {
       return _marshaller.serializers.channels.serialize(element) as Future<ServerChannel>;
     }).wait;
 
-    final channelManager = ChannelManager.fromList(channels, payload);
+    final rawThreads = await _marshaller.cache.getMany(payload['threads']);
+
+    final threads = await rawThreads.nonNulls.map((element) async {
+      return _marshaller.serializers.thread.serialize(element);
+    }).wait;
+
+    final channelManager = ChannelManager.fromList(channels, threads, payload);
     final roleManager = RoleManager.fromList(roles);
 
     final rawOwner = await _marshaller.cache.getOrFail(payload['owner_id']);
@@ -108,6 +124,11 @@ final class ServerSerializer implements SerializerContract<Server> {
       await assignCategoryChannel(server.id, channel);
     }
 
+    for (final thread in server.channels.threads.values) {
+      thread..server = server
+      ..parentChannel = server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
+    }
+
     for (final member in server.members.list.values) {
       member.server = server;
       member.roles.server = server;
@@ -133,6 +154,9 @@ final class ServerSerializer implements SerializerContract<Server> {
       'members':
           server.members.list.keys.map((id) => _marshaller.cacheKey.member(server.id, id)).toList(),
       'channels': server.channels.list.keys.map((id) => _marshaller.cacheKey.channel(id)).toList(),
+      'threads': server.channels.threads.keys
+          .map((id) => _marshaller.cacheKey.thread(id))
+          .toList(),
     };
   }
 
