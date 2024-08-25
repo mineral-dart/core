@@ -122,10 +122,10 @@ final class ChannelPart implements DataStorePart {
 
     final payload = await serializer.normalize({
       ...response.body,
-      'guild_id': guildId,
+      'server_id': guildId,
     });
 
-    return serializer.serialize(payload) as T;
+    return serializer.serialize(payload);
   }
 
   Future<T?> serializeChannelResponse<T extends Channel>(Response response) async {
