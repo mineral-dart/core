@@ -35,6 +35,8 @@ import 'package:mineral/domains/events/contracts/server/server_stickers_update_e
 import 'package:mineral/domains/events/contracts/server/server_thread_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_text_select_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_thread_delete_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_member_add_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_member_remove_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_thread_member_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_thread_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_update_event.dart';
@@ -73,6 +75,9 @@ enum Event implements EnhancedEnum, EventType {
   serverThreadUpdate(ServerThreadUpdateEvent),
   serverThreadDelete(ServerThreadDeleteEvent),
   serverThreadMemberUpdate(ServerThreadMemberUpdateEvent),
+  serverThreadMemberAdd(ServerThreadMemberAddEvent),
+  serverThreadMemberRemove(ServerThreadMemberRemoveEvent),
+
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent),
