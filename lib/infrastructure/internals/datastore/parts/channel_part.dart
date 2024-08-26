@@ -53,7 +53,7 @@ final class ChannelPart implements DataStorePart {
 
     final cachedThread = await _kernel.marshaller.cache.get(key);
     if (cachedThread != null) {
-      return _kernel.marshaller.serializers.thread.serialize(cachedThread) as ThreadChannel;
+      return _kernel.marshaller.serializers.thread.serialize(cachedThread);
     }
 
     final response = await _kernel.dataStore.client.get('/channels/$id');
