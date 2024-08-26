@@ -24,7 +24,7 @@ final class ThreadCreatePacket implements ListenablePacket {
     final threadRaw = await marshaller.serializers.thread.normalize(payload);
     final thread = await marshaller.serializers.thread.serialize(threadRaw);
 
-    server.channels.threads[thread.id] = thread;
+    server.threads.add(thread);
 
     final serverRaw = await marshaller.serializers.server.deserialize(server);
     final serverKey = marshaller.cacheKey.server(server.id);
@@ -32,7 +32,7 @@ final class ThreadCreatePacket implements ListenablePacket {
     marshaller.cache.put(serverKey, serverRaw);
 
     final parentChannel = server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
-    parentChannel.threads[thread.id] = thread;
+    parentChannel.threads.add(thread);
 
     final parentChannelRaw = await marshaller.serializers.channels.deserialize(parentChannel);
     final parentChannelKey = marshaller.cacheKey.channel(parentChannel.id);

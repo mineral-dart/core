@@ -29,7 +29,7 @@ final class ServerCategoryChannelFactory implements ChannelFactoryContract<Serve
 
   @override
   Future<ServerCategoryChannel> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
-    final properties = await ChannelProperties.serializeRemote(marshaller, json);
+    final properties = await ChannelProperties.serializeCache(marshaller, json);
     return ServerCategoryChannel(properties);
   }
 

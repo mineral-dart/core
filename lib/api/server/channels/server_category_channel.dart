@@ -4,7 +4,7 @@ import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/api/server/channels/thread_channel.dart';
+import 'package:mineral/api/server/managers/threads_manager.dart';
 
 final class ServerCategoryChannel extends ServerChannel {
   final ChannelProperties _properties;
@@ -26,7 +26,7 @@ final class ServerCategoryChannel extends ServerChannel {
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
 
   @override
-  Map<Snowflake, ThreadChannel> get threads => _properties.threads;
+  ThreadsManager get threads => _properties.threads;
 
   @override
   Snowflake get serverId => _properties.serverId!;

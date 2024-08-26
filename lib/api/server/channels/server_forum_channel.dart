@@ -4,9 +4,9 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/api/server/channels/thread_channel.dart';
 import 'package:mineral/api/server/enums/forum_layout_types.dart';
 import 'package:mineral/api/server/enums/sort_order_forum.dart';
+import 'package:mineral/api/server/managers/threads_manager.dart';
 
 final class ServerForumChannel extends ServerChannel {
   final ChannelProperties _properties;
@@ -24,7 +24,7 @@ final class ServerForumChannel extends ServerChannel {
   int get position => _properties.position!;
 
   @override
-  Map<Snowflake, ThreadChannel> get threads => _properties.threads;
+  ThreadsManager get threads => _properties.threads;
 
   @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;

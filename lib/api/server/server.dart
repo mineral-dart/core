@@ -2,6 +2,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/managers/channel_manager.dart';
 import 'package:mineral/api/server/managers/member_manager.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/server/managers/threads_manager.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/api/server/server_settings.dart';
@@ -16,6 +17,7 @@ final class Server {
   final ServerSettings settings;
   final RoleManager roles;
   final ChannelManager channels;
+  final ThreadsManager threads;
   final ServerAsset assets;
 
   Server({
@@ -29,5 +31,6 @@ final class Server {
     required this.applicationId,
     required this.assets,
     required this.owner,
+    required this.threads,
   });
 }

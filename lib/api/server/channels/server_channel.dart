@@ -1,7 +1,7 @@
 import 'package:mineral/api/common/channel.dart';
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/server/channels/thread_channel.dart';
+import 'package:mineral/api/server/managers/threads_manager.dart';
 import 'package:mineral/api/server/server.dart';
 
 abstract class ServerChannel implements Channel {
@@ -10,7 +10,7 @@ abstract class ServerChannel implements Channel {
   List<ChannelPermissionOverwrite> get permissions;
   int get position;
   Snowflake get serverId;
-  Map<Snowflake, ThreadChannel> get threads;
+  ThreadsManager get threads;
 
   @override
   T cast<T extends Channel>() => this as T;

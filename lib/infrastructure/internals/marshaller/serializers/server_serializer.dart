@@ -11,6 +11,7 @@ import 'package:mineral/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/api/server/managers/channel_manager.dart';
 import 'package:mineral/api/server/managers/member_manager.dart';
 import 'package:mineral/api/server/managers/role_manager.dart';
+import 'package:mineral/api/server/managers/threads_manager.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
@@ -94,7 +95,8 @@ final class ServerSerializer implements SerializerContract<Server> {
       return _marshaller.serializers.thread.serialize(element);
     }).wait;
 
-    final channelManager = ChannelManager.fromList(channels, threads, payload);
+    final channelManager = ChannelManager.fromList(channels, payload);
+    final threadManager = ThreadsManager.fromList(threads, payload);
     final roleManager = RoleManager.fromList(roles);
 
     final rawOwner = await _marshaller.cache.getOrFail(payload['owner_id']);
@@ -116,6 +118,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       roles: roleManager,
       channels: channelManager,
       assets: serverAssets,
+      threads: threadManager,
       owner: owner,
     );
 
@@ -124,7 +127,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       await assignCategoryChannel(server.id, channel);
     }
 
-    for (final thread in server.channels.threads.values) {
+    for (final thread in server.threads.list.values) {
       thread..server = server
       ..parentChannel = server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
     }
@@ -154,7 +157,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       'members':
           server.members.list.keys.map((id) => _marshaller.cacheKey.member(server.id, id)).toList(),
       'channels': server.channels.list.keys.map((id) => _marshaller.cacheKey.channel(id)).toList(),
-      'threads': server.channels.threads.keys
+      'threads': server.threads.list.keys
           .map((id) => _marshaller.cacheKey.thread(id))
           .toList(),
     };
