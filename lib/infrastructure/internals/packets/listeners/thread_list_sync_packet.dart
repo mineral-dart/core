@@ -26,6 +26,6 @@ final class ThreadListSyncPacket implements ListenablePacket {
       return marshaller.serializers.thread.serialize(threadRaw);
     }).wait;
 
-    dispatch(event: Event.serverThreadDelete, params: [threads, server]);
+    dispatch(event: Event.serverThreadListSync, params: [threads, server]);
   }
 }
