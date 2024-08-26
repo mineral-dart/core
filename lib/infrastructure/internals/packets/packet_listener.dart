@@ -17,9 +17,6 @@ import 'package:mineral/infrastructure/internals/packets/listeners/guild_role_cr
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_role_delete_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_role_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_stickers_update_packet.dart';
-import 'package:mineral/infrastructure/internals/packets/listeners/thread_create_packet.dart';
-import 'package:mineral/infrastructure/internals/packets/listeners/thread_delete_packet.dart';
-import 'package:mineral/infrastructure/internals/packets/listeners/thread_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/guild_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/interactions/button_interaction_create_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/interactions/command_interaction_create_packet.dart';
@@ -29,6 +26,10 @@ import 'package:mineral/infrastructure/internals/packets/listeners/interactions/
 import 'package:mineral/infrastructure/internals/packets/listeners/message_create_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/presence_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/listeners/ready_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/listeners/thread_create_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/listeners/thread_delete_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/listeners/thread_members_update_packet.dart';
+import 'package:mineral/infrastructure/internals/packets/listeners/thread_update_packet.dart';
 import 'package:mineral/infrastructure/internals/packets/packet_dispatcher.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/logger/logger.dart';
@@ -85,8 +86,10 @@ final class PacketListener implements PacketListenerContract {
     subscribe(CommandInteractionCreatePacket.new);
     subscribe(SelectInteractionCreatePacket.new);
     subscribe(DialogInteractionCreatePacket.new);
+
     subscribe(ThreadCreatePacket.new);
     subscribe(ThreadUpdatePacket.new);
     subscribe(ThreadDeletePacket.new);
+    subscribe(ThreadMembersUpdatePacket.new);
   }
 }
