@@ -6,7 +6,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_category_channel.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/api/server/channels/thread_channel.dart';
+import 'package:mineral/api/server/managers/threads_manager.dart';
 import 'package:mineral/api/server/server_message.dart';
 
 final class ServerAnnouncementChannel extends ServerChannel {
@@ -38,7 +38,7 @@ final class ServerAnnouncementChannel extends ServerChannel {
   Snowflake get serverId => _properties.serverId!;
 
   @override
-  Map<Snowflake, ThreadChannel> get threads => _properties.threads;
+  ThreadsManager get threads => _properties.threads;
 
   Snowflake? get categoryId => _properties.categoryId;
 

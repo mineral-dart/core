@@ -44,7 +44,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
   Future<void> sendThread(DispatchEvent dispatch, Map<String, dynamic> json) async {
     final server = await marshaller.dataStore.server.getServer(json['guild_id']);
-    final thread = server.channels.threads.values.firstWhere((element) => element.id == json['channel_id']);
+    final thread = server.threads.getOrFail(json['channel_id']);
 
     final payload = await marshaller.serializers.serverMessage.normalize({...json, 'server_id': server.id.value});
     final message = await marshaller.serializers.serverMessage.serialize(payload);

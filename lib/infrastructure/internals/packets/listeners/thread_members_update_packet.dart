@@ -46,7 +46,7 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
     marshaller.cache.put(serverKey, serverRaw);
 
     final parentChannel = server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
-    parentChannel.threads[thread.id] = thread;
+    parentChannel.threads.add(thread);
 
     final parentChannelRaw = await marshaller.serializers.channels.deserialize(parentChannel);
     final parentChannelKey = marshaller.cacheKey.channel(parentChannel.id);

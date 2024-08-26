@@ -26,7 +26,7 @@ final class ThreadMemberUpdatePacket implements ListenablePacket {
     final member = await marshaller.dataStore.member.getMember(memberId: Snowflake(payload['user_id']), serverId:  server.id);
 
     thread.members[member.id] = member;
-    server.channels.threads[thread.id] = thread;
+    server.threads.add(thread);
 
     final serverRaw = await marshaller.serializers.server.deserialize(server);
     final serverKey = marshaller.cacheKey.server(server.id);
@@ -34,7 +34,7 @@ final class ThreadMemberUpdatePacket implements ListenablePacket {
     marshaller.cache.put(serverKey, serverRaw);
 
     final parentChannel = server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
-    parentChannel.threads[thread.id] = thread;
+    parentChannel.threads.add(thread);
 
     final parentChannelRaw = await marshaller.serializers.channels.deserialize(parentChannel);
     final parentChannelKey = marshaller.cacheKey.channel(parentChannel.id);

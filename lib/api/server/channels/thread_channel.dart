@@ -8,6 +8,7 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
+import 'package:mineral/api/server/managers/threads_manager.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/server.dart';
 import 'package:mineral/api/server/server_message.dart';
@@ -55,7 +56,7 @@ class ThreadChannel extends ServerChannel {
   final List<ChannelPermissionOverwrite> permissions;
 
   @override
-  final Map<Snowflake, ThreadChannel> threads = {};
+  ThreadsManager threads = ThreadsManager({});
 
   @override
   late final Server server;

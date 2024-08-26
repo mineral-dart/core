@@ -29,7 +29,7 @@ final class ThreadUpdatePacket implements ListenablePacket {
     final afterRaw = await marshaller.serializers.thread.normalize(payload);
     final after = await marshaller.serializers.thread.serialize(afterRaw);
 
-    server.channels.threads[after.id] = after;
+    server.threads.add(after);
 
     final serverRaw = await marshaller.serializers.server.deserialize(server);
     final serverKey = marshaller.cacheKey.server(server.id);
