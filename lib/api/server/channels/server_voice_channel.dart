@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/api/common/channel_methods.dart';
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/channel_properties.dart';
@@ -38,6 +39,9 @@ final class ServerVoiceChannel extends ServerChannel {
   Snowflake get serverId => _properties.serverId!;
 
   Snowflake? get categoryId => _properties.categoryId;
+
+  @override
+  late final Server server;
 
   late final ServerCategoryChannel? category;
 

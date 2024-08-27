@@ -2,7 +2,6 @@ import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/channels/server_text_channel.dart';
 import 'package:mineral/api/server/channels/server_voice_channel.dart';
-import 'package:mineral/api/server/channels/thread_channel.dart';
 
 enum _ServerNamedChannel {
   afkChannel,

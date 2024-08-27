@@ -2,7 +2,6 @@ import 'package:mineral/api/common/image_asset.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/server/managers/emoji_manager.dart';
 import 'package:mineral/api/server/managers/sticker_manager.dart';
-import 'package:mineral/api/server/role.dart';
 import 'package:mineral/api/server/server_assets.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';

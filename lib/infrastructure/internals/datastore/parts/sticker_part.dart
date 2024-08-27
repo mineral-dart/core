@@ -3,12 +3,9 @@ import 'dart:io';
 
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/sticker.dart';
-import 'package:mineral/api/server/member.dart';
 import 'package:mineral/infrastructure/internals/datastore/data_store_part.dart';
-import 'package:mineral/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:mineral/infrastructure/services/http/http_client_status.dart';
-import 'package:mineral/infrastructure/services/http/http_request_option.dart';
 
 final class StickerPart implements DataStorePart {
   final KernelContract _kernel;

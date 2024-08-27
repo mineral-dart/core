@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/snowflake.dart';
@@ -41,6 +42,9 @@ final class ServerForumChannel extends ServerChannel {
 
   @override
   Snowflake get serverId => _properties.serverId!;
+
+  @override
+  late final Server server;
 
   ServerForumChannel(this._properties,
       {required this.sortOrder, required this.layoutType});

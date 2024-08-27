@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/api/common/channel_methods.dart';
 import 'package:mineral/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/api/common/channel_properties.dart';
@@ -36,6 +37,9 @@ final class ServerAnnouncementChannel extends ServerChannel {
 
   @override
   Snowflake get serverId => _properties.serverId!;
+
+  @override
+  late final Server server;
 
   @override
   ThreadsManager get threads => _properties.threads;

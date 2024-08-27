@@ -1,7 +1,6 @@
 import 'package:mineral/api/common/image_asset.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/private/user_assets.dart';
-import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/infrastructure/commons/helper.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';

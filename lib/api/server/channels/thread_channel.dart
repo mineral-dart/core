@@ -60,8 +60,11 @@ class ThreadChannel extends ServerChannel {
 
   @override
   late final Server server;
+
   late final ServerTextChannel parentChannel;
+
   late final Map<Snowflake, Member> members;
+
   late final Member owner;
 
   ThreadChannel({
