@@ -1,3 +1,8 @@
+# 4.0.0-dev.2
+## What's Changed
+* feat/enhance serialization by @LeadcodeDev in https://github.com/mineral-dart/core/pull/195
+* Feat/implement thread events by @PandaGuerrier in https://github.com/mineral-dart/core/pull/196
+
 ## 4.0.0-dev.1
 * Fix late initialization error by @PandaGuerrier in https://github.com/mineral-dart/core/pull/101
 * feat: Improve some changes by @LeadcodeDev in https://github.com/mineral-dart/core/pull/102
