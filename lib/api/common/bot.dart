@@ -33,21 +33,22 @@ final class Bot {
   });
 
   factory Bot.fromJson(Map<String, dynamic> json) => Bot._(
-    id: Snowflake(json['user']['id']),
-    discriminator: json['user']['discriminator'],
-    version: json['v'],
-    username: json['user']['username'],
-    hasEnabledMfa: json['user']['mfa_enabled'],
-    globalName: json['user']['global_name'],
-    flags: json['user']['flags'],
-    avatar: json['user']['avatar'],
-    sessionType: json['session_type'],
-    privateChannels: json['private_channels'],
-    presences: json['presences'],
-    guildIds: List<String>.from(json['guilds'].map((element) => element['id'])),
-    application: PartialApplication(
-      id: json['application']['id'],
-      flags: json['application']['flags'],
-    ),
-  );
+        id: Snowflake(json['user']['id']),
+        discriminator: json['user']['discriminator'],
+        version: json['v'],
+        username: json['user']['username'],
+        hasEnabledMfa: json['user']['mfa_enabled'],
+        globalName: json['user']['global_name'],
+        flags: json['user']['flags'],
+        avatar: json['user']['avatar'],
+        sessionType: json['session_type'],
+        privateChannels: json['private_channels'],
+        presences: json['presences'],
+        guildIds:
+            List<String>.from(json['guilds'].map((element) => element['id'])),
+        application: PartialApplication(
+          id: json['application']['id'],
+          flags: json['application']['flags'],
+        ),
+      );
 }

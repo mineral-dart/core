@@ -10,7 +10,8 @@ final class EmojiManager {
   Map<Snowflake, Emoji> get list => _emojis;
 
   factory EmojiManager.fromList(List<Role> roles, List<Emoji> emojis) {
-    return EmojiManager(Map<Snowflake, Emoji>.from(emojis.fold({}, (value, element) {
+    return EmojiManager(
+        Map<Snowflake, Emoji>.from(emojis.fold({}, (value, element) {
       return {...value, element.id: element};
     })));
   }

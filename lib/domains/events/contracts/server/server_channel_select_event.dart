@@ -5,7 +5,8 @@ import 'package:mineral/domains/components/selects/contexts/server_select_contex
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef ServerChannelSelectEventHandler = FutureOr Function(ServerSelectContext ctx, List<ServerChannel> channels);
+typedef ServerChannelSelectEventHandler = FutureOr Function(
+    ServerSelectContext ctx, List<ServerChannel> channels);
 
 abstract class ServerChannelSelectEvent implements ListenableEvent {
   @override

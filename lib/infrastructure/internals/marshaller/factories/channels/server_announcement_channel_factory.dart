@@ -6,12 +6,14 @@ import 'package:mineral/api/server/channels/server_announcement_channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/channel_factory.dart';
 
-final class ServerAnnouncementChannelFactory implements ChannelFactoryContract<ServerAnnouncementChannel> {
+final class ServerAnnouncementChannelFactory
+    implements ChannelFactoryContract<ServerAnnouncementChannel> {
   @override
   ChannelType get type => ChannelType.guildAnnouncement;
 
   @override
-  Future<Map<String, dynamic>> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -31,14 +33,18 @@ final class ServerAnnouncementChannelFactory implements ChannelFactoryContract<S
   }
 
   @override
-  Future<ServerAnnouncementChannel> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<ServerAnnouncementChannel> serialize(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
     final properties = await ChannelProperties.serializeCache(marshaller, json);
     return ServerAnnouncementChannel(properties);
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, ServerAnnouncementChannel channel) async {
-    final permissions = await Future.wait(channel.permissions.map((element) async => marshaller.serializers.channelPermissionOverwrite.deserialize(element)));
+  Future<Map<String, dynamic>> deserialize(
+      MarshallerContract marshaller, ServerAnnouncementChannel channel) async {
+    final permissions = await Future.wait(channel.permissions.map(
+        (element) async => marshaller.serializers.channelPermissionOverwrite
+            .deserialize(element)));
 
     return {
       'id': channel.id.value,

@@ -20,7 +20,8 @@ final class CommandInteractionCreatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final interactionManager = ioc.resolve<CommandInteractionManagerContract>();
-    final type = InteractionType.values.firstWhereOrNull((e) => e.value == message.payload['type']);
+    final type = InteractionType.values
+        .firstWhereOrNull((e) => e.value == message.payload['type']);
 
     if (type == InteractionType.applicationCommand) {
       await interactionManager.dispatcher.dispatch(message.payload);

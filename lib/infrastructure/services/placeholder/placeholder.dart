@@ -50,7 +50,9 @@ class Placeholder implements PlaceholderContract {
     String finalValue = value;
     if (values != null) {
       final currentValues = Map<String, dynamic>.from(values.map((key, value) =>
-          identifier != null ? MapEntry('$identifier.$key', value) : MapEntry(key, value)));
+          identifier != null
+              ? MapEntry('$identifier.$key', value)
+              : MapEntry(key, value)));
 
       finalValue = _replace(value, currentValues);
     }
@@ -67,7 +69,8 @@ class Placeholder implements PlaceholderContract {
       };
 
       return acc
-          .replaceAllMapped(RegExp(r'\{\{\s*([^}]*)\s*\}\}'), (Match m) => '{{${m[1]?.trim()}}}')
+          .replaceAllMapped(RegExp(r'\{\{\s*([^}]*)\s*\}\}'),
+              (Match m) => '{{${m[1]?.trim()}}}')
           .replaceAll('{{${element.key}}}', finalValue);
     });
   }

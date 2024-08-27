@@ -1,7 +1,8 @@
 import 'dart:async';
 
 final class Helper {
-  static T? createOrNull<T>({required dynamic field, required T? Function() fn}) {
+  static T? createOrNull<T>(
+      {required dynamic field, required T? Function() fn}) {
     return field != null ? fn() : null;
   }
 

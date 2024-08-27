@@ -61,7 +61,11 @@ final class WebsocketClientImpl implements WebsocketClient {
 
       if (_onError != null) {
         stream!.handleError((err) {
-          _onError({'error': err, 'code': _channel?.closeCode, 'reason': _channel?.closeReason});
+          _onError({
+            'error': err,
+            'code': _channel?.closeCode,
+            'reason': _channel?.closeReason
+          });
         });
       }
 
@@ -78,7 +82,11 @@ final class WebsocketClientImpl implements WebsocketClient {
       }
     } on io.WebSocketException catch (err) {
       print(err);
-      _onError!({'error': err, 'code': _channel?.closeCode, 'reason': _channel?.closeReason});
+      _onError!({
+        'error': err,
+        'code': _channel?.closeCode,
+        'reason': _channel?.closeReason
+      });
     }
   }
 
@@ -94,8 +102,11 @@ final class WebsocketClientImpl implements WebsocketClient {
   }
 
   Future<void> _handleMessage(callback, dynamic message) async {
-    final interceptedMessage = await _handleMessageInterceptors(WebsocketMessageImpl(
-        channelName: name, originalContent: message as String, content: message));
+    final interceptedMessage = await _handleMessageInterceptors(
+        WebsocketMessageImpl(
+            channelName: name,
+            originalContent: message as String,
+            content: message));
 
     callback(interceptedMessage);
   }
@@ -113,7 +124,8 @@ final class WebsocketClientImpl implements WebsocketClient {
     }
   }
 
-  Future<WebsocketMessage> _handleMessageInterceptors(WebsocketMessage message) async {
+  Future<WebsocketMessage> _handleMessageInterceptors(
+      WebsocketMessage message) async {
     for (final interceptor in interceptor.message) {
       message = await interceptor(message);
     }

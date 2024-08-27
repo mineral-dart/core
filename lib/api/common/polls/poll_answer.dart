@@ -11,12 +11,14 @@ final class PollAnswer {
     return {
       'poll_media': {
         'text': content,
-        ...?Helper.createOrNull(field: emoji, fn: () => {
-          'emoji': {
-            'id': emoji?.id,
-            'name': emoji?.name,
-          },
-        })
+        ...?Helper.createOrNull(
+            field: emoji,
+            fn: () => {
+                  'emoji': {
+                    'id': emoji?.id,
+                    'name': emoji?.name,
+                  },
+                })
       }
     };
   }

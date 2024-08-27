@@ -12,13 +12,12 @@ final class DirectoryWatcherElement implements WatcherElement {
   final void Function(WatchEvent event) editFile;
   final void Function(WatchEvent event) removeFile;
 
-  DirectoryWatcherElement({
-    required this.appRoot,
-    required this.watcherRoot,
-    required this.addFile,
-    required this.editFile,
-    required this.removeFile
-  }) {
+  DirectoryWatcherElement(
+      {required this.appRoot,
+      required this.watcherRoot,
+      required this.addFile,
+      required this.editFile,
+      required this.removeFile}) {
     _watcher = DirectoryWatcher(watcherRoot.path);
   }
 
@@ -28,7 +27,7 @@ final class DirectoryWatcherElement implements WatcherElement {
   }
 
   @override
-  void dispatch (WatchEvent event) {
+  void dispatch(WatchEvent event) {
     return switch (event.type) {
       ChangeType.ADD => addFile(event),
       ChangeType.MODIFY => editFile(event),

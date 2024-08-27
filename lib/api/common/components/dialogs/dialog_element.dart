@@ -6,7 +6,8 @@ abstract interface class DialogElement implements MessageComponent {}
 
 final class DialogElementBuilder {
   static DialogTextInput input(String customId) => DialogTextInput(customId);
-  static DialogParagraphInput paragraph(String customId) => DialogParagraphInput(customId);
+  static DialogParagraphInput paragraph(String customId) =>
+      DialogParagraphInput(customId);
 }
 
 final class DialogTextInput with DialogElementImpl implements DialogElement {
@@ -25,7 +26,9 @@ final class DialogTextInput with DialogElementImpl implements DialogElement {
   }
 }
 
-final class DialogParagraphInput with DialogElementImpl implements DialogElement {
+final class DialogParagraphInput
+    with DialogElementImpl
+    implements DialogElement {
   final String _customId;
 
   DialogParagraphInput(this._customId);

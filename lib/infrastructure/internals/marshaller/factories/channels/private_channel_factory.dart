@@ -4,18 +4,21 @@ import 'package:mineral/api/private/channels/private_channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/channel_factory.dart';
 
-final class PrivateChannelFactory implements ChannelFactoryContract<PrivateChannel> {
+final class PrivateChannelFactory
+    implements ChannelFactoryContract<PrivateChannel> {
   @override
   ChannelType get type => ChannelType.dm;
 
   @override
-  Future<PrivateChannel> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<PrivateChannel> serialize(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
     final properties = await ChannelProperties.serializeCache(marshaller, json);
     return PrivateChannel(properties);
   }
 
   @override
-  Future<Map<String, dynamic>> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -33,7 +36,8 @@ final class PrivateChannelFactory implements ChannelFactoryContract<PrivateChann
   }
 
   @override
-  Map<String, dynamic> deserialize(MarshallerContract marshaller, PrivateChannel channel) {
+  Map<String, dynamic> deserialize(
+      MarshallerContract marshaller, PrivateChannel channel) {
     return {
       'id': channel.id.value,
       'type': channel.type.value,

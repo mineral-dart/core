@@ -40,7 +40,8 @@ final class PrivateSelectContext implements SelectContext {
     interaction = Interaction(token, id);
   }
 
-  static Future<PrivateSelectContext> fromMap(MarshallerContract marshaller, Map<String, dynamic> payload) async {
+  static Future<PrivateSelectContext> fromMap(
+      MarshallerContract marshaller, Map<String, dynamic> payload) async {
     return PrivateSelectContext(
       customId: payload['data']['custom_id'],
       id: Snowflake(payload['id']),

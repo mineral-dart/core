@@ -21,7 +21,9 @@ abstract class InteractionContract {
   /// ```dart
   /// final interaction = await interaction.editReply(content: 'New Hello Mineral');
   Future<InteractionContract> editReply(
-      {String content, List<MessageEmbed> embeds, List<MessageComponent> components});
+      {String content,
+      List<MessageEmbed> embeds,
+      List<MessageComponent> components});
 
   /// Use to delete the reply to the interaction. Need a reply to delete.
   /// Usage:

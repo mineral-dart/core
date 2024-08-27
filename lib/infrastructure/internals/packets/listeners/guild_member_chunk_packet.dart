@@ -16,15 +16,18 @@ final class GuildMemberChunkPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+    final server = await marshaller.dataStore.server
+        .getServer(message.payload['guild_id']);
 
-    final rawMembers = await List.from(message.payload['members']).map((element) async {
+    final rawMembers =
+        await List.from(message.payload['members']).map((element) async {
       return marshaller.serializers.member.normalize(element);
     }).wait;
 
     await rawMembers.nonNulls.map((element) async {
       final member = await marshaller.serializers.member.serialize(element);
-      server.members.list.update(member.id, (value) => member, ifAbsent: () => member);
+      server.members.list
+          .update(member.id, (value) => member, ifAbsent: () => member);
     }).wait;
 
     final presences = message.payload['presences'];

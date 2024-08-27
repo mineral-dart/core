@@ -84,55 +84,59 @@ final class ChannelProperties {
     final permissionOverwrites = await Helper.createOrNullAsync(
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
-          List.from(element['permission_overwrites'])
-              .map((json) async =>
-              marshaller.serializers.channelPermissionOverwrite.serialize(json))
-              .toList(),
-        ));
+              List.from(element['permission_overwrites'])
+                  .map((json) async => marshaller
+                      .serializers.channelPermissionOverwrite
+                      .serialize(json))
+                  .toList(),
+            ));
 
     final recipients = await Helper.createOrNullAsync(
         field: element['recipients'],
         fn: () async => Future.wait(
-          List.from(element['recipients'])
-              .map((json) async => marshaller.serializers.user.serialize(json))
-              .toList(),
-        ));
+              List.from(element['recipients'])
+                  .map((json) async =>
+                      marshaller.serializers.user.serialize(json))
+                  .toList(),
+            ));
 
     return ChannelProperties(
-      id: Snowflake(element['id']),
-      type: findInEnum(ChannelType.values, element['type']),
-      name: element['name'],
-      description: element['description'],
-      serverId: Helper.createOrNull(
-          field: element['server_id'], fn: () => Snowflake(element['server_id'])),
-      categoryId: Helper.createOrNull(
-          field: element['parent_id'], fn: () => Snowflake(element['parent_id'])),
-      position: element['position'],
-      nsfw: element['nsfw'] ?? false,
-      lastMessageId: Helper.createOrNull(
-          field: element['last_message_id'], fn: () => Snowflake(element['last_message_id'])),
-      bitrate: element['bitrate'],
-      userLimit: element['user_limit'],
-      rateLimitPerUser: element['rate_limit_per_user'],
-      recipients: recipients ?? [],
-      icon: element['icon'],
-      ownerId: element['owner_id'],
-      applicationId: element['application_id'],
-      lastPinTimestamp: element['last_pin_timestamp'],
-      rtcRegion: element['rtc_region'],
-      videoQualityMode: element['video_quality_mode'],
-      messageCount: element['message_count'],
-      memberCount: element['member_count'],
-      defaultAutoArchiveDuration: element['default_auto_archive_duration'],
-      permissions: permissionOverwrites,
-      flags: element['flags'],
-      totalMessageSent: element['total_message_sent'],
-      available: element['available'],
-      appliedTags: element['applied_tags'] ?? [],
-      defaultReactions: element['default_reactions'],
-      defaultSortOrder: element['default_sort_order'],
-      defaultForumLayout: element['default_forum_layout'],
-      threads: ThreadsManager({})
-    );
+        id: Snowflake(element['id']),
+        type: findInEnum(ChannelType.values, element['type']),
+        name: element['name'],
+        description: element['description'],
+        serverId: Helper.createOrNull(
+            field: element['server_id'],
+            fn: () => Snowflake(element['server_id'])),
+        categoryId: Helper.createOrNull(
+            field: element['parent_id'],
+            fn: () => Snowflake(element['parent_id'])),
+        position: element['position'],
+        nsfw: element['nsfw'] ?? false,
+        lastMessageId: Helper.createOrNull(
+            field: element['last_message_id'],
+            fn: () => Snowflake(element['last_message_id'])),
+        bitrate: element['bitrate'],
+        userLimit: element['user_limit'],
+        rateLimitPerUser: element['rate_limit_per_user'],
+        recipients: recipients ?? [],
+        icon: element['icon'],
+        ownerId: element['owner_id'],
+        applicationId: element['application_id'],
+        lastPinTimestamp: element['last_pin_timestamp'],
+        rtcRegion: element['rtc_region'],
+        videoQualityMode: element['video_quality_mode'],
+        messageCount: element['message_count'],
+        memberCount: element['member_count'],
+        defaultAutoArchiveDuration: element['default_auto_archive_duration'],
+        permissions: permissionOverwrites,
+        flags: element['flags'],
+        totalMessageSent: element['total_message_sent'],
+        available: element['available'],
+        appliedTags: element['applied_tags'] ?? [],
+        defaultReactions: element['default_reactions'],
+        defaultSortOrder: element['default_sort_order'],
+        defaultForumLayout: element['default_forum_layout'],
+        threads: ThreadsManager({}));
   }
 }

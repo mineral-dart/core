@@ -40,7 +40,8 @@ final class ServerSelectContext implements SelectContext {
     interaction = Interaction(token, id);
   }
 
-  static Future<ServerSelectContext> fromMap(MarshallerContract marshaller, Map<String, dynamic> payload) async{
+  static Future<ServerSelectContext> fromMap(
+      MarshallerContract marshaller, Map<String, dynamic> payload) async {
     return ServerSelectContext(
       customId: payload['data']['custom_id'],
       id: Snowflake(payload['id']),

@@ -6,7 +6,8 @@ import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class PrivateMessageSerializer implements SerializerContract<PrivateMessage> {
+final class PrivateMessageSerializer
+    implements SerializerContract<PrivateMessage> {
   final MarshallerContract marshaller;
 
   PrivateMessageSerializer(this.marshaller);
@@ -23,7 +24,8 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
       'user_id': json['author']['id'],
     };
 
-    final cacheKey = marshaller.cacheKey.message(Snowflake(json['channel_id']), json['id']);
+    final cacheKey =
+        marshaller.cacheKey.message(Snowflake(json['channel_id']), json['id']);
     await marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -31,7 +33,8 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
 
   @override
   Future<PrivateMessage> serialize(Map<String, dynamic> json) async {
-    final List<MessageEmbed> embeds = await Future.wait(List.from(json['embeds']).map((message) async {
+    final List<MessageEmbed> embeds =
+        await Future.wait(List.from(json['embeds']).map((message) async {
       return marshaller.serializers.embed.serialize(message);
     }));
 
@@ -40,7 +43,9 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
       content: json['content'],
       embeds: embeds,
       createdAt: DateTime.parse(json['created_at']),
-      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
       channelId: Snowflake(json['channel_id']),
     );
 

@@ -18,32 +18,38 @@ final class MessagePart implements DataStorePart {
 
   Future<ServerMessage> getServerMessage(
       {required Snowflake messageId, required Snowflake channelId}) async {
-    final messageCacheKey = _kernel.marshaller.cacheKey.message(channelId, channelId);
+    final messageCacheKey =
+        _kernel.marshaller.cacheKey.message(channelId, channelId);
     final channelCacheKey = _kernel.marshaller.cacheKey.channel(channelId);
 
     final rawMessage = await _kernel.marshaller.cache.get(messageCacheKey);
-    final rawChannel = await _kernel.marshaller.cache.getOrFail(channelCacheKey);
-    final serverChannel =
-        await _kernel.marshaller.serializers.channels.serialize(rawChannel) as ServerChannel;
+    final rawChannel =
+        await _kernel.marshaller.cache.getOrFail(channelCacheKey);
+    final serverChannel = await _kernel.marshaller.serializers.channels
+        .serialize(rawChannel) as ServerChannel;
 
     if (rawMessage != null) {
-      final message = await _kernel.marshaller.serializers.serverMessage.serialize(rawMessage)
+      final message = await _kernel.marshaller.serializers.serverMessage
+          .serialize(rawMessage)
         ..channel = serverChannel;
 
       return message;
     }
 
-    final response = await _kernel.dataStore.client.get('/channels/$channelId/messages/$messageId');
+    final response = await _kernel.dataStore.client
+        .get('/channels/$channelId/messages/$messageId');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
-    final payload = await _kernel.marshaller.serializers.serverMessage.normalize({
+    final payload =
+        await _kernel.marshaller.serializers.serverMessage.normalize({
       ...response.body,
       'server_id': serverChannel.serverId.value,
     });
 
-    final serverMessage = await _kernel.marshaller.serializers.serverMessage.serialize(payload);
+    final serverMessage =
+        await _kernel.marshaller.serializers.serverMessage.serialize(payload);
 
     serverMessage.channel = serverChannel;
     return serverMessage;
@@ -51,24 +57,31 @@ final class MessagePart implements DataStorePart {
 
   Future<PrivateMessage> getPrivateMessage(
       {required Snowflake messageId, required Snowflake channelId}) async {
-    final messageCacheKey = _kernel.marshaller.cacheKey.message(channelId, channelId);
+    final messageCacheKey =
+        _kernel.marshaller.cacheKey.message(channelId, channelId);
     final channelCacheKey = _kernel.marshaller.cacheKey.channel(channelId);
 
     final rawMessage = await _kernel.marshaller.cache.get(messageCacheKey);
-    final rawChannel = await _kernel.marshaller.cache.getOrFail(channelCacheKey);
-    final channel = await _kernel.marshaller.serializers.channels.serialize(rawChannel) as PrivateChannel;
+    final rawChannel =
+        await _kernel.marshaller.cache.getOrFail(channelCacheKey);
+    final channel = await _kernel.marshaller.serializers.channels
+        .serialize(rawChannel) as PrivateChannel;
 
     if (rawMessage != null) {
-      final message = await _kernel.marshaller.serializers.privateMessage.serialize(rawMessage)
+      final message = await _kernel.marshaller.serializers.privateMessage
+          .serialize(rawMessage)
         ..channel = channel;
 
       return message;
     }
 
-    final response = await _kernel.dataStore.client.get('/channels/$channelId/messages/$messageId');
+    final response = await _kernel.dataStore.client
+        .get('/channels/$channelId/messages/$messageId');
 
-    final payload = await _kernel.marshaller.serializers.serverMessage.normalize(response.body);
-    final privateMessage = await _kernel.marshaller.serializers.privateMessage.serialize(payload);
+    final payload = await _kernel.marshaller.serializers.serverMessage
+        .normalize(response.body);
+    final privateMessage =
+        await _kernel.marshaller.serializers.privateMessage.serialize(payload);
 
     privateMessage.channel = channel;
     return privateMessage;

@@ -1,6 +1,6 @@
 import 'package:mineral/api/common/types/enhanced_enum.dart';
 
-enum ChannelType implements EnhancedEnum<int>{
+enum ChannelType implements EnhancedEnum<int> {
   guildText(0),
   dm(1),
   guildVoice(2),
@@ -35,8 +35,5 @@ enum ChannelType implements EnhancedEnum<int>{
     guildMedia
   ];
 
-  static List<ChannelType> privateTypes = [
-    dm,
-    groupDm
-  ];
+  static List<ChannelType> privateTypes = [dm, groupDm];
 }

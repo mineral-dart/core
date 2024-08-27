@@ -24,7 +24,8 @@ final class Activity {
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
         name: json['name'],
-        type: ActivityType.values.firstWhere((element) => element.value == json['type'],
+        type: ActivityType.values.firstWhere(
+            (element) => element.value == json['type'],
             orElse: () => ActivityType.unknown),
         url: json['url'],
         createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at']),
@@ -33,6 +34,8 @@ final class Activity {
         emoji: Helper.createOrNull(
             field: json['emoji'],
             fn: () => ActivityEmoji(
-                name: json['name'], id: json['id'], animated: json['animated'] ?? false)));
+                name: json['name'],
+                id: json['id'],
+                animated: json['animated'] ?? false)));
   }
 }

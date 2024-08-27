@@ -38,9 +38,11 @@ final class ServerTextChannel extends ServerChannel {
 
   late final ServerCategoryChannel? category;
 
-  ServerTextChannel(this._properties) : _methods = ChannelMethods(_properties.id);
+  ServerTextChannel(this._properties)
+      : _methods = ChannelMethods(_properties.id);
 
-  Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);
+  Future<void> setName(String name, {String? reason}) =>
+      _methods.setName(name, reason);
 
   Future<void> setDescription(String description, {String? reason}) =>
       _methods.setDescription(description, reason);
@@ -51,13 +53,16 @@ final class ServerTextChannel extends ServerChannel {
   Future<void> setPosition(int position, {String? reason}) =>
       _methods.setPosition(position, reason);
 
-  Future<void> setNsfw(bool nsfw, {String? reason}) => _methods.setNsfw(nsfw, reason);
+  Future<void> setNsfw(bool nsfw, {String? reason}) =>
+      _methods.setNsfw(nsfw, reason);
 
   Future<void> setRateLimitPerUser(int rateLimitPerUser, {String? reason}) =>
       _methods.setRateLimitPerUser(rateLimitPerUser, reason);
 
-  Future<void> setDefaultAutoArchiveDuration(int defaultAutoArchiveDuration, {String? reason}) =>
-      _methods.setDefaultAutoArchiveDuration(defaultAutoArchiveDuration, reason);
+  Future<void> setDefaultAutoArchiveDuration(int defaultAutoArchiveDuration,
+          {String? reason}) =>
+      _methods.setDefaultAutoArchiveDuration(
+          defaultAutoArchiveDuration, reason);
 
   Future<void> setDefaultThreadRateLimitPerUser(int value, {String? reason}) =>
       _methods.setDefaultThreadRateLimitPerUser(value, reason);

@@ -20,7 +20,8 @@ final class MemberAssetsSerializer implements SerializerContract<MemberAssets> {
       'banner': json['banner'],
     };
 
-    final cacheKey = _marshaller.cacheKey.memberAssets(json['server_id'], json['user']['id']);
+    final cacheKey = _marshaller.cacheKey
+        .memberAssets(json['server_id'], json['user']['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -34,8 +35,8 @@ final class MemberAssetsSerializer implements SerializerContract<MemberAssets> {
           fn: () => ImageAsset(['avatars', json['member_id']], json['avatar'])),
       avatarDecoration: Helper.createOrNull(
           field: json['avatar_decoration'],
-          fn: () =>
-              ImageAsset(['avatar-decorations', json['member_id']], json['avatar_decoration'])),
+          fn: () => ImageAsset(['avatar-decorations', json['member_id']],
+              json['avatar_decoration'])),
       banner: Helper.createOrNull(
           field: json['banner'],
           fn: () => ImageAsset(['banners', json['member_id']], json['banner'])),

@@ -2,7 +2,7 @@ enum Lang {
   id('id', 'Indonesian'),
   da('da', 'Danish'),
   de('de', 'German'),
-  enGB('en-GB',	'UK	English'),
+  enGB('en-GB', 'UK	English'),
   enUS('en-US', 'US	English'),
   esES('es-ES', 'Spanish'),
   fr('fr', 'French'),
@@ -13,7 +13,7 @@ enum Lang {
   nl('nl', 'Dutch'),
   no('no', 'Norwegian'),
   pl('pl', 'Polish'),
-  pt('pt-BR',	'Portuguese'),
+  pt('pt-BR', 'Portuguese'),
   ro('ro', 'Romanian'),
   fi('fi', 'Finnish'),
   svSE('sv-SE', 'Swedish'),
@@ -28,7 +28,7 @@ enum Lang {
   th('th', 'Thai'),
   zh('zh-CN', 'Chinese'),
   ja('ja', 'Japanese'),
-  zhTW('zh-TW',	'Chinese'),
+  zhTW('zh-TW', 'Chinese'),
   ko('ko', 'Korean');
 
   final String uid;

@@ -7,8 +7,12 @@ final class MessageEmbedAuthor {
   final String? proxyIconUrl;
 
   MessageEmbedAuthor(
-      {required this.name, required this.url, required this.iconUrl, required this.proxyIconUrl}) {
-    expectOrThrow(name.length <= 256, message: 'Author name must be 256 or fewer in length');
+      {required this.name,
+      required this.url,
+      required this.iconUrl,
+      required this.proxyIconUrl}) {
+    expectOrThrow(name.length <= 256,
+        message: 'Author name must be 256 or fewer in length');
   }
 
   Object toJson() {

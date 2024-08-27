@@ -108,7 +108,8 @@ final class CommandDeclarationBuilder implements CommandBuilder {
 
     for (final subCommand in subCommands) {
       if (subCommand.handle case null) {
-        throw MissingMethodException('Command "$commandName.${subCommand.name}" has no handler');
+        throw MissingMethodException(
+            'Command "$commandName.${subCommand.name}" has no handler');
       }
 
       handlers.add(('$name.${subCommand.name}', subCommand.handle!));

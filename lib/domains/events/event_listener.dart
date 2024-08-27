@@ -31,7 +31,9 @@ final class EventListener implements EventListenerContract {
   @override
   StreamSubscription listen<T extends Function>(
       {required Event event, required T handle, required String? customId}) {
-    return _events.stream.where((element) => element.event == event).where((element) {
+    return _events.stream
+        .where((element) => element.event == event)
+        .where((element) {
       return switch (element.constraint) {
         final bool Function(String?) constraint => constraint(customId),
         _ => true

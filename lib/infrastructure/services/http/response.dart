@@ -50,7 +50,9 @@ final class ResponseImpl<T> implements Response<T> {
   factory ResponseImpl.fromHttpResponse(http.Response response) {
     return ResponseImpl._(
         statusCode: response.statusCode,
-        headers: response.headers.entries.map((entry) => Header(entry.key, entry.value)).toSet(),
+        headers: response.headers.entries
+            .map((entry) => Header(entry.key, entry.value))
+            .toSet(),
         bodyString: response.body,
         body: response.body.isNotEmpty ? jsonDecode(response.body) : {},
         uri: response.request!.url,

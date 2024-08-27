@@ -35,7 +35,8 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
-  String memberAssets(Snowflake serverId, Snowflake memberId, {bool ref = false}) {
+  String memberAssets(Snowflake serverId, Snowflake memberId,
+      {bool ref = false}) {
     final key = '${member(serverId, memberId)}/assets';
     return ref ? 'ref:$key' : key;
   }
@@ -50,7 +51,8 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
-  String serverEmoji(Snowflake serverId, Snowflake emojiId, {bool ref = false}) {
+  String serverEmoji(Snowflake serverId, Snowflake emojiId,
+      {bool ref = false}) {
     final key = '${server(serverId)}/emojis/$emojiId';
     return ref ? 'ref:$key' : key;
   }
@@ -67,6 +69,5 @@ final class CacheKey {
   String sticker(Snowflake serverId, Snowflake stickerId) =>
       '${server(serverId)}/stickers/$stickerId';
 
-  String thread(Snowflake threadId) =>
-      'threads/$threadId';
+  String thread(Snowflake threadId) => 'threads/$threadId';
 }

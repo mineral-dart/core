@@ -4,7 +4,8 @@ import 'package:mineral/domains/components/buttons/contexts/server_button_contex
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef ServerButtonClickEventHandler = FutureOr<void> Function(ServerButtonContext);
+typedef ServerButtonClickEventHandler = FutureOr<void> Function(
+    ServerButtonContext);
 
 abstract class ServerButtonClickEvent implements ListenableEvent {
   @override

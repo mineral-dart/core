@@ -5,7 +5,8 @@ import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef ServerStickersUpdateEventHandler = FutureOr<void> Function(StickerManager, Server);
+typedef ServerStickersUpdateEventHandler = FutureOr<void> Function(
+    StickerManager, Server);
 
 abstract class ServerStickersUpdateEvent implements ListenableEvent {
   @override

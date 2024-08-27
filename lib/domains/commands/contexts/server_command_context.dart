@@ -48,8 +48,10 @@ final class ServerCommandContext implements CommandContext {
         serverId: Snowflake(payload['guild_id']),
         memberId: Snowflake(payload['member']['user']['id']),
       ),
-      server: await marshaller.dataStore.server.getServer(Snowflake(payload['guild_id'])),
-      channel: await marshaller.dataStore.channel.getChannel(Snowflake(payload['channel_id'])),
+      server: await marshaller.dataStore.server
+          .getServer(Snowflake(payload['guild_id'])),
+      channel: await marshaller.dataStore.channel
+          .getChannel(Snowflake(payload['channel_id'])),
     );
   }
 }

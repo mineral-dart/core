@@ -13,31 +13,30 @@ final class WatcherBuilder {
 
   WatcherBuilder(this._appRoot);
 
-  WatcherBuilder setAllowReload (bool value) {
+  WatcherBuilder setAllowReload(bool value) {
     _allowReload = value;
     return this;
   }
 
-  WatcherBuilder addWatchFolder (Directory value) {
+  WatcherBuilder addWatchFolder(Directory value) {
     _folderWatchers.add(value);
     return this;
   }
 
-  WatcherBuilder addWatchFile (File value) {
+  WatcherBuilder addWatchFile(File value) {
     _fileWatchers.add(value);
     return this;
   }
 
-  WatcherBuilder onReload (Function(watcher.WatchEvent) callback) {
+  WatcherBuilder onReload(Function(watcher.WatchEvent) callback) {
     _onReload = callback;
     return this;
   }
 
-  Watcher build () => Watcher(
+  Watcher build() => Watcher(
       allowReload: _allowReload,
       appRoot: _appRoot,
       folders: _folderWatchers,
       files: _fileWatchers,
-      onReload: _onReload
-  );
+      onReload: _onReload);
 }

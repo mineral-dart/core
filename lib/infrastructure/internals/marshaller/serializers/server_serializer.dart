@@ -24,7 +24,8 @@ final class ServerSerializer implements SerializerContract<Server> {
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     await List.from(json['members']).map((element) async {
-      return _marshaller.serializers.member.normalize({...element, 'server_id': json['id']});
+      return _marshaller.serializers.member
+          .normalize({...element, 'server_id': json['id']});
     }).wait;
 
     await List.from(json['channels']).map((element) async {
@@ -53,10 +54,12 @@ final class ServerSerializer implements SerializerContract<Server> {
       'assets': _marshaller.cacheKey.serverAssets(json['id']),
       'settings': _marshaller.cacheKey.serverSettings(json['id']),
       'roles': List.from(json['roles'])
-          .map((element) => _marshaller.cacheKey.serverRole(json['id'], element['id']))
+          .map((element) =>
+              _marshaller.cacheKey.serverRole(json['id'], element['id']))
           .toList(),
       'members': List.from(json['members'])
-          .map((element) => _marshaller.cacheKey.member(json['id'], element['user']['id']))
+          .map((element) =>
+              _marshaller.cacheKey.member(json['id'], element['user']['id']))
           .toList(),
       'channels': List.from(json['channels'])
           .map((element) => _marshaller.cacheKey.channel(element['id']))
@@ -76,7 +79,8 @@ final class ServerSerializer implements SerializerContract<Server> {
   Future<Server> serialize(Map<String, dynamic> payload) async {
     final rawMembers = await _marshaller.cache.getMany(payload['members']);
     final members = await rawMembers.nonNulls.map((element) async {
-      return _marshaller.serializers.member.serialize({...element, 'server_id': payload['id']});
+      return _marshaller.serializers.member
+          .serialize({...element, 'server_id': payload['id']});
     }).wait;
 
     final rawRoles = await _marshaller.cache.getMany(payload['roles']);
@@ -86,7 +90,8 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     final rawChannels = await _marshaller.cache.getMany(payload['channels']);
     final channels = await rawChannels.nonNulls.map((element) async {
-      return _marshaller.serializers.channels.serialize(element) as Future<ServerChannel>;
+      return _marshaller.serializers.channels.serialize(element)
+          as Future<ServerChannel>;
     }).wait;
 
     final rawThreads = await _marshaller.cache.getMany(payload['threads']);
@@ -103,10 +108,12 @@ final class ServerSerializer implements SerializerContract<Server> {
     final owner = await _marshaller.serializers.member.serialize(rawOwner);
 
     final rawAssets = await _marshaller.cache.getOrFail(payload['assets']);
-    final serverAssets = await _marshaller.serializers.serversAsset.serialize(rawAssets);
+    final serverAssets =
+        await _marshaller.serializers.serversAsset.serialize(rawAssets);
 
     final rawSettings = await _marshaller.cache.getOrFail(payload['settings']);
-    final serverSettings = await _marshaller.serializers.serverSettings.serialize(rawSettings);
+    final serverSettings =
+        await _marshaller.serializers.serverSettings.serialize(rawSettings);
 
     final server = Server(
       id: payload['id'],
@@ -128,8 +135,10 @@ final class ServerSerializer implements SerializerContract<Server> {
     }
 
     for (final thread in server.threads.list.values) {
-      thread..server = server
-      ..parentChannel = server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
+      thread
+        ..server = server
+        ..parentChannel = server.channels.list[Snowflake(thread.channelId)]
+            as ServerTextChannel;
     }
 
     for (final member in server.members.list.values) {
@@ -154,16 +163,20 @@ final class ServerSerializer implements SerializerContract<Server> {
       'roles': server.roles.list.keys
           .map((id) => _marshaller.cacheKey.serverRole(server.id, id))
           .toList(),
-      'members':
-          server.members.list.keys.map((id) => _marshaller.cacheKey.member(server.id, id)).toList(),
-      'channels': server.channels.list.keys.map((id) => _marshaller.cacheKey.channel(id)).toList(),
+      'members': server.members.list.keys
+          .map((id) => _marshaller.cacheKey.member(server.id, id))
+          .toList(),
+      'channels': server.channels.list.keys
+          .map((id) => _marshaller.cacheKey.channel(id))
+          .toList(),
       'threads': server.threads.list.keys
           .map((id) => _marshaller.cacheKey.thread(id))
           .toList(),
     };
   }
 
-  Future<void> assignCategoryChannel(Snowflake serverId, ServerChannel channel) async {
+  Future<void> assignCategoryChannel(
+      Snowflake serverId, ServerChannel channel) async {
     final categoryId = switch (channel) {
       ServerTextChannel(:final categoryId) => categoryId,
       ServerVoiceChannel(:final categoryId) => categoryId,
@@ -179,8 +192,9 @@ final class ServerSerializer implements SerializerContract<Server> {
 
     final channelCacheKey = _marshaller.cacheKey.channel(categoryId);
     final rawChannel = await _marshaller.cache.get(channelCacheKey);
-    final category =
-        rawChannel != null ? await _marshaller.serializers.channels.serialize(rawChannel) : null;
+    final category = rawChannel != null
+        ? await _marshaller.serializers.channels.serialize(rawChannel)
+        : null;
 
     if (category is ServerCategoryChannel?) {
       switch (channel) {

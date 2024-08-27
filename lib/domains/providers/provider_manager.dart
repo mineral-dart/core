@@ -21,7 +21,6 @@ final class ProviderManager implements ProviderManagerContract {
     }
   }
 
-
   @override
   Future<void> dispose() async {
     for (final provider in _providers) {

@@ -4,7 +4,8 @@ import 'package:mineral/domains/components/dialog/contexts/private_dialog_contex
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef PrivateDialogSubmitEventHandler = FutureOr<void> Function(PrivateDialogContext);
+typedef PrivateDialogSubmitEventHandler = FutureOr<void> Function(
+    PrivateDialogContext);
 
 abstract class PrivateDialogSubmitEvent implements ListenableEvent {
   @override

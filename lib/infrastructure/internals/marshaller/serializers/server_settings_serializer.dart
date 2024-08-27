@@ -9,7 +9,8 @@ import 'package:mineral/infrastructure/commons/utils.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class ServerSettingsSerializer implements SerializerContract<ServerSettings> {
+final class ServerSettingsSerializer
+    implements SerializerContract<ServerSettings> {
   final MarshallerContract _marshaller;
 
   ServerSettingsSerializer(this._marshaller);
@@ -43,7 +44,8 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
 
   @override
   Future<ServerSettings> serialize(Map<String, dynamic> json) async {
-    final subscription = await _marshaller.serializers.serverSubscription.serialize({
+    final subscription =
+        await _marshaller.serializers.serverSubscription.serialize({
       'premium_tier': json['premium_tier'],
       'premium_subscription_count': json['premium_subscription_count'],
       'premium_progress_bar_enabled': json['premium_progress_bar_enabled'],
@@ -53,14 +55,17 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
         bitfieldPermission: json['permissions'],
         afkTimeout: json['afk_timeout'],
         hasWidgetEnabled: json['widget_enabled'] ?? false,
-        explicitContentFilter:
-            findInEnum(ExplicitContentFilter.values, json['explicit_content_filter']),
-        verificationLevel: findInEnum(VerificationLevel.values, json['verification_level']),
-        defaultMessageNotifications:
-            findInEnum(DefaultMessageNotification.values, json['default_message_notifications']),
+        explicitContentFilter: findInEnum(
+            ExplicitContentFilter.values, json['explicit_content_filter']),
+        verificationLevel:
+            findInEnum(VerificationLevel.values, json['verification_level']),
+        defaultMessageNotifications: findInEnum(
+            DefaultMessageNotification.values,
+            json['default_message_notifications']),
         features: List<String>.from(json['features']),
         mfaLevel: findInEnum(MfaLevel.values, json['mfa_level']),
-        systemChannelFlags: bitfieldToList(SystemChannelFlag.values, json['system_channel_flags']),
+        systemChannelFlags: bitfieldToList(
+            SystemChannelFlag.values, json['system_channel_flags']),
         vanityUrlCode: json['vanity_url_code'],
         subscription: subscription,
         preferredLocale: json['preferred_locale'],
@@ -76,14 +81,16 @@ final class ServerSettingsSerializer implements SerializerContract<ServerSetting
       'widget_enabled': settings.hasWidgetEnabled,
       'explicit_content_filter': settings.explicitContentFilter.value,
       'verification_level': settings.verificationLevel.value,
-      'default_message_notifications': settings.defaultMessageNotifications.value,
+      'default_message_notifications':
+          settings.defaultMessageNotifications.value,
       'features': settings.features,
       'mfa_level': settings.mfaLevel.value,
       'system_channel_flags': settings.systemChannelFlags,
       'vanity_url_code': settings.vanityUrlCode,
       'premium_tier': settings.subscription.tier.value,
       'premium_subscription_count': settings.subscription.subscriptionCount,
-      'premium_progress_bar_enabled': settings.subscription.hasEnabledProgressBar,
+      'premium_progress_bar_enabled':
+          settings.subscription.hasEnabledProgressBar,
       'preferred_locale': settings.preferredLocale,
       'max_video_channel_users': settings.maxVideoChannelUsers,
       'nsfw_level': settings.nsfwLevel.value,

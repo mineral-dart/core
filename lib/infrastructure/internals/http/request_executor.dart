@@ -24,13 +24,14 @@ final class RequestExecutor implements RequestExecutorContract {
   Future<T> send<T>(HttpEndpoint endpoint, {List<dynamic>? values}) async {
     final response = await client.send(endpoint.method, endpoint.url);
 
-    return switch(response.statusCode) {
-      _ when [404, 401, 500].contains(response.statusCode) => throwError(response),
+    return switch (response.statusCode) {
+      _ when [404, 401, 500].contains(response.statusCode) =>
+        throwError(response),
       _ => response.body
     } as T;
   }
 
-  void throwError (Response response, { String? message }) {
+  void throwError(Response response, {String? message}) {
     final data = {
       'method': response.method,
       'statusCode': response.statusCode,

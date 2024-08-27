@@ -26,22 +26,18 @@ enum ResponseCode {
   }
 
   static List<ResponseCode> get errorsCodes => [
-    badRequest,
-    unauthorized,
-    forbidden,
-    notFound,
-    methodNotAllowed,
-    internalServerError,
-    badGateway,
-    serviceUnavailable,
-    gatewayTimeout,
-    unknown
-  ];
+        badRequest,
+        unauthorized,
+        forbidden,
+        notFound,
+        methodNotAllowed,
+        internalServerError,
+        badGateway,
+        serviceUnavailable,
+        gatewayTimeout,
+        unknown
+      ];
 
-  static List<ResponseCode> get successCodes => [
-    success,
-    created,
-    accepted,
-    noContent
-  ];
+  static List<ResponseCode> get successCodes =>
+      [success, created, accepted, noContent];
 }

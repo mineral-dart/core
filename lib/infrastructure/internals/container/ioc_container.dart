@@ -16,7 +16,7 @@ final class IocContainer {
   T resolve<T>() {
     final service = _services[T];
 
-    return switch(service) {
+    return switch (service) {
       null => throw Exception('Service not found'),
       _ => service,
     };

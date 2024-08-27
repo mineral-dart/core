@@ -4,12 +4,14 @@ import 'package:mineral/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/channel_factory.dart';
 
-final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVoiceChannel> {
+final class ServerVoiceChannelFactory
+    implements ChannelFactoryContract<ServerVoiceChannel> {
   @override
   ChannelType get type => ChannelType.guildVoice;
 
   @override
-  Future<Map<String, dynamic>> normalize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<Map<String, dynamic>> normalize(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -27,15 +29,18 @@ final class ServerVoiceChannelFactory implements ChannelFactoryContract<ServerVo
   }
 
   @override
-  Future<ServerVoiceChannel> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<ServerVoiceChannel> serialize(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
     final properties = await ChannelProperties.serializeCache(marshaller, json);
     return ServerVoiceChannel(properties);
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(MarshallerContract marshaller, ServerVoiceChannel channel) async {
-    final permissions = await Future.wait(channel.permissions.map((element) async =>
-        marshaller.serializers.channelPermissionOverwrite.deserialize(element)));
+  Future<Map<String, dynamic>> deserialize(
+      MarshallerContract marshaller, ServerVoiceChannel channel) async {
+    final permissions = await Future.wait(channel.permissions.map(
+        (element) async => marshaller.serializers.channelPermissionOverwrite
+            .deserialize(element)));
 
     return {
       'id': channel.id.value,

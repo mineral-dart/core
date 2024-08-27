@@ -22,5 +22,7 @@ final class WebsocketMessageImpl<T> implements WebsocketMessage<T> {
   T content;
 
   WebsocketMessageImpl(
-      {required this.channelName, required this.originalContent, required this.content});
+      {required this.channelName,
+      required this.originalContent,
+      required this.content});
 }

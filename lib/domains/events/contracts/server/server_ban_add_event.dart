@@ -6,7 +6,8 @@ import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef ServerBanAddEventHandler = FutureOr<void> Function(Member?, User, Server);
+typedef ServerBanAddEventHandler = FutureOr<void> Function(
+    Member?, User, Server);
 
 abstract class ServerBanAddEvent implements ListenableEvent {
   @override

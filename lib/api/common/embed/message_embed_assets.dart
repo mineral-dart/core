@@ -35,15 +35,20 @@ final class MessageEmbedAssets {
   factory MessageEmbedAssets.fromJson(Map<String, dynamic> json) {
     return MessageEmbedAssets(
       image: Helper.createOrNull(
-          field: json['image'], fn: () => MessageEmbedImage.fromJson(json['image'])),
+          field: json['image'],
+          fn: () => MessageEmbedImage.fromJson(json['image'])),
       thumbnail: Helper.createOrNull(
-          field: json['thumbnail'], fn: () => MessageEmbedImage.fromJson(json['thumbnail'])),
+          field: json['thumbnail'],
+          fn: () => MessageEmbedImage.fromJson(json['thumbnail'])),
       video: Helper.createOrNull(
-          field: json['video'], fn: () => MessageEmbedImage.fromJson(json['video'])),
+          field: json['video'],
+          fn: () => MessageEmbedImage.fromJson(json['video'])),
       footer: Helper.createOrNull(
-          field: json['footer'], fn: () => MessageEmbedFooter.fromJson(json['footer'])),
+          field: json['footer'],
+          fn: () => MessageEmbedFooter.fromJson(json['footer'])),
       author: Helper.createOrNull(
-          field: json['author'], fn: () => MessageEmbedAuthor.fromJson(json['author'])),
+          field: json['author'],
+          fn: () => MessageEmbedAuthor.fromJson(json['author'])),
       color: json['color'],
     );
   }

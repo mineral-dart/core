@@ -16,9 +16,11 @@ final class GuildMemberAddPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+    final server = await marshaller.dataStore.server
+        .getServer(message.payload['guild_id']);
 
-    final rawMember = await marshaller.serializers.member.normalize(message.payload);
+    final rawMember =
+        await marshaller.serializers.member.normalize(message.payload);
     final member = await marshaller.serializers.member.serialize(rawMember);
 
     server.members.list.putIfAbsent(member.id, () => member);

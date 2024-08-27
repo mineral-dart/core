@@ -7,7 +7,8 @@ import 'package:mineral/infrastructure/kernel/kernel.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract interface class PacketDispatcherContract {
-  void listen(PacketType packet, Function(ShardMessage, DispatchEvent) listener);
+  void listen(
+      PacketType packet, Function(ShardMessage, DispatchEvent) listener);
 
   void dispatch(dynamic payload);
 
@@ -21,10 +22,14 @@ final class PacketDispatcher implements PacketDispatcherContract {
   PacketDispatcher(this._kernel);
 
   @override
-  void listen(PacketType packet, Function(ShardMessage, DispatchEvent) listener) {
-    _packets.stream.where((event) => event.type == packet.name).listen((ShardMessage message) {
+  void listen(
+      PacketType packet, Function(ShardMessage, DispatchEvent) listener) {
+    _packets.stream
+        .where((event) => event.type == packet.name)
+        .listen((ShardMessage message) {
       _kernel.logger.trace(jsonEncode(message.serialize()));
-      Function.apply(listener, [message, _kernel.eventListener.dispatcher.dispatch]);
+      Function.apply(
+          listener, [message, _kernel.eventListener.dispatcher.dispatch]);
     });
   }
 

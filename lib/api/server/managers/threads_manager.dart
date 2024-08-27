@@ -28,9 +28,9 @@ final class ThreadsManager {
 
   factory ThreadsManager.fromList(List<ThreadChannel> threads, payload) {
     return ThreadsManager(
-        Map<Snowflake, ThreadChannel>.from(threads.fold({}, (value, element) {
-          return {...value, element.id: element};
-        })),
+      Map<Snowflake, ThreadChannel>.from(threads.fold({}, (value, element) {
+        return {...value, element.id: element};
+      })),
     );
   }
 }

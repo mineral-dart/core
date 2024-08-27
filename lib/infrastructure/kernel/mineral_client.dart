@@ -52,8 +52,7 @@ final class MineralClient implements MineralClientContract {
         _kernel.eventListener.listen(
             event: instance.event,
             handle: (instance as dynamic).handle as Function,
-            customId: instance.customId
-        );
+            customId: instance.customId);
     }
   }
 

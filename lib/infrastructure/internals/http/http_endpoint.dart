@@ -7,7 +7,8 @@ class HttpEndpoint {
   factory HttpEndpoint.getServerChannelList({required String guildId}) =>
       HttpEndpoint('GET', '/guilds/$guildId/channels');
 
-  factory HttpEndpoint.getServerChannel({required String guildId, required String channelId}) =>
+  factory HttpEndpoint.getServerChannel(
+          {required String guildId, required String channelId}) =>
       HttpEndpoint('GET', '/guilds/$guildId/channels/$channelId');
 
   @override

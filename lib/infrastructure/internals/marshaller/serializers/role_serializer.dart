@@ -25,7 +25,8 @@ final class RoleSerializer implements SerializerContract<Role> {
       'flags': json['flags'],
     };
 
-    final cacheKey = marshaller.cacheKey.serverRole(json['server_id'], json['id']);
+    final cacheKey =
+        marshaller.cacheKey.serverRole(json['server_id'], json['id']);
     await marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -41,7 +42,7 @@ final class RoleSerializer implements SerializerContract<Role> {
       color: Color.of(payload['color'] ?? 0),
       hoist: payload['hoist'] ?? false,
       position: payload['position'] ?? 0,
-      permissions: switch(payload['permissions']) {
+      permissions: switch (payload['permissions']) {
         int() => Permissions.fromInt(payload['permissions']),
         String() => Permissions.fromInt(int.parse(payload['permissions'])),
         _ => Permissions.fromInt(0),

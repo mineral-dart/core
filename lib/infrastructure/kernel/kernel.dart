@@ -118,7 +118,8 @@ final class Kernel implements KernelContract {
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {
     final response = await httpClient.get('/gateway/bot');
     return switch (response.statusCode) {
-      int() when httpClient.status.isSuccess(response.statusCode) => response.body,
+      int() when httpClient.status.isSuccess(response.statusCode) =>
+        response.body,
       int() when httpClient.status.isError(response.statusCode) =>
         throw TokenException('This token is invalid or revocated !'),
       _ => throw TokenException('This token is invalid or revocated !'),
@@ -135,7 +136,8 @@ final class Kernel implements KernelContract {
     }
 
     if (Isolate.current.debugName == 'main') {
-      final packageFile = File(path.join(Directory.current.path, 'pubspec.yaml'));
+      final packageFile =
+          File(path.join(Directory.current.path, 'pubspec.yaml'));
 
       final packageFileContent = await packageFile.readAsString();
       final package = loadYaml(packageFileContent);
@@ -198,7 +200,8 @@ final class Kernel implements KernelContract {
     }
 
     if (useHmr) {
-      hmr = HotModuleReloading(_devPort, watcherConfig, this, createShards, shards);
+      hmr = HotModuleReloading(
+          _devPort, watcherConfig, this, createShards, shards);
       await hmr?.spawn();
     } else {
       createShards();
@@ -206,11 +209,14 @@ final class Kernel implements KernelContract {
   }
 
   Future<void> createShards() async {
-    final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
+    final {'url': String endpoint, 'shards': int shardCount} =
+        await getWebsocketEndpoint();
 
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
-      final shard =
-          Shard(shardName: 'shard #$i', url: '$endpoint/?v=${config.version}', kernel: this);
+      final shard = Shard(
+          shardName: 'shard #$i',
+          url: '$endpoint/?v=${config.version}',
+          kernel: this);
       shards.putIfAbsent(i, () => shard);
 
       await shard.init();

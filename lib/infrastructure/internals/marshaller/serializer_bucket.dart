@@ -62,7 +62,8 @@ final class SerializerBucket {
 
   final SerializerContract<Sticker> sticker;
 
-  final SerializerContract<ChannelPermissionOverwrite> channelPermissionOverwrite;
+  final SerializerContract<ChannelPermissionOverwrite>
+      channelPermissionOverwrite;
 
   final SerializerContract<ServerMessage> serverMessage;
 
@@ -87,7 +88,8 @@ final class SerializerBucket {
         serversAsset = ServerAssetsSerializer(marshaller),
         emojis = EmojiSerializer(marshaller),
         sticker = StickerSerializer(marshaller),
-        channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(marshaller),
+        channelPermissionOverwrite =
+            ChannelPermissionOverwriteSerializer(marshaller),
         serverMessage = ServerMessageSerializer(marshaller),
         privateMessage = PrivateMessageSerializer(marshaller),
         embed = EmbedSerializer(marshaller),

@@ -42,7 +42,8 @@ final class UserSerializer implements SerializerContract<User> {
   @override
   Future<User> serialize(Map<String, dynamic> json) async {
     final rawAssets = await _marshaller.cache.getOrFail(json['assets']);
-    final assets = await _marshaller.serializers.userAssets.serialize(rawAssets);
+    final assets =
+        await _marshaller.serializers.userAssets.serialize(rawAssets);
 
     return User(
       id: json['id'],
@@ -56,12 +57,14 @@ final class UserSerializer implements SerializerContract<User> {
       verified: json['verified'],
       email: json['email'],
       flags: json['flags'],
-      premiumType: PremiumTier.values
-          .firstWhere((e) => e == json['premium_type'], orElse: () => PremiumTier.none),
+      premiumType: PremiumTier.values.firstWhere(
+          (e) => e == json['premium_type'],
+          orElse: () => PremiumTier.none),
       publicFlags: json['public_flags'],
       assets: assets,
       createdAt: Helper.createOrNull(
-          field: json['created_at'], fn: () => DateTime.parse(json['created_at'])),
+          field: json['created_at'],
+          fn: () => DateTime.parse(json['created_at'])),
       // TODO: Implement presence deserialization
       presence: null,
     );

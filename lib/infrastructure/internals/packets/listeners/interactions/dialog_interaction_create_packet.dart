@@ -21,11 +21,12 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final type = InteractionType.values.firstWhereOrNull((e) => e.value == message.payload['type']);
+    final type = InteractionType.values
+        .firstWhereOrNull((e) => e.value == message.payload['type']);
 
     if (type == InteractionType.modal) {
-      final interactionContext = InteractionContextType.values
-          .firstWhereOrNull((element) => element.value == message.payload['context']);
+      final interactionContext = InteractionContextType.values.firstWhereOrNull(
+          (element) => element.value == message.payload['context']);
 
       final Map<Symbol, dynamic> parameters =
           List.from(message.payload['data']['components']).map((row) {
@@ -48,7 +49,8 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
       };
 
       if ([event, ctx].contains(null)) {
-        logger.warn('Interaction context ${message.payload['context']} not found');
+        logger.warn(
+            'Interaction context ${message.payload['context']} not found');
         return;
       }
 

@@ -39,18 +39,25 @@ final class MessageEmbedBuilder {
     return this;
   }
 
-  MessageEmbedBuilder setFooter({required String text, String? iconUrl, String? proxyIconUrl}) {
-    footer = MessageEmbedFooter(text: text, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
+  MessageEmbedBuilder setFooter(
+      {required String text, String? iconUrl, String? proxyIconUrl}) {
+    footer = MessageEmbedFooter(
+        text: text, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
     return this;
   }
 
   MessageEmbedBuilder setAuthor(
-      {required String name, String? url, String? iconUrl, String? proxyIconUrl}) {
-    author = MessageEmbedAuthor(name: name, url: url, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
+      {required String name,
+      String? url,
+      String? iconUrl,
+      String? proxyIconUrl}) {
+    author = MessageEmbedAuthor(
+        name: name, url: url, iconUrl: iconUrl, proxyIconUrl: proxyIconUrl);
     return this;
   }
 
-  MessageEmbedBuilder addField({required String name, required String value, bool inline = false}) {
+  MessageEmbedBuilder addField(
+      {required String name, required String value, bool inline = false}) {
     fields.add(MessageEmbedField(name: name, value: value));
     return this;
   }
@@ -60,19 +67,24 @@ final class MessageEmbedBuilder {
     return this;
   }
 
-  MessageEmbedBuilder setImage({required String url, String? proxyUrl, int? height, int? width}) {
-    image = MessageEmbedImage(url: url, proxyUrl: proxyUrl, height: height, width: width);
+  MessageEmbedBuilder setImage(
+      {required String url, String? proxyUrl, int? height, int? width}) {
+    image = MessageEmbedImage(
+        url: url, proxyUrl: proxyUrl, height: height, width: width);
     return this;
   }
 
   MessageEmbedBuilder setThumbnail(
       {required String url, String? proxyUrl, int? height, int? width}) {
-    image = MessageEmbedImage(url: url, proxyUrl: proxyUrl, height: height, width: width);
+    image = MessageEmbedImage(
+        url: url, proxyUrl: proxyUrl, height: height, width: width);
     return this;
   }
 
-  MessageEmbedBuilder setVideo({required String url, String? proxyUrl, int? height, int? width}) {
-    image = MessageEmbedImage(url: url, proxyUrl: proxyUrl, height: height, width: width);
+  MessageEmbedBuilder setVideo(
+      {required String url, String? proxyUrl, int? height, int? width}) {
+    image = MessageEmbedImage(
+        url: url, proxyUrl: proxyUrl, height: height, width: width);
     return this;
   }
 

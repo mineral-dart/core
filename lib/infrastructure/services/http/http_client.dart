@@ -53,7 +53,8 @@ final class HttpClient implements HttpClientContract {
   }
 
   @override
-  Future<Response<T>> get<T>(String endpoint, {HttpRequestOption? option}) async {
+  Future<Response<T>> get<T>(String endpoint,
+      {HttpRequestOption? option}) async {
     return _request('GET', endpoint, option, null);
   }
 
@@ -81,8 +82,8 @@ final class HttpClient implements HttpClientContract {
     return _request(method, endpoint, option, body);
   }
 
-  Future<Response<T>> _request<T>(
-      String method, String endpoint, HttpRequestOption? option, Object? body) async {
+  Future<Response<T>> _request<T>(String method, String endpoint,
+      HttpRequestOption? option, Object? body) async {
     String url = '${config.baseUrl}$endpoint';
 
     if (option case HttpRequestOption(queryParameters: final params)) {
@@ -105,7 +106,8 @@ final class HttpClient implements HttpClientContract {
       ..headers.addAll(_serializeHeaders(request.headers))
       ..body = request.body != null ? jsonEncode(request.body) : '';
 
-    final http.StreamedResponse streamedResponse = await _client.send(httpRequest);
+    final http.StreamedResponse streamedResponse =
+        await _client.send(httpRequest);
     final http.Response res = await http.Response.fromStream(streamedResponse);
 
     Response response = ResponseImpl.fromHttpResponse(res);
@@ -118,7 +120,9 @@ final class HttpClient implements HttpClientContract {
   }
 
   Map<String, String> _serializeHeaders(Set<Header> headers) {
-    return headers
-        .fold({}, (previousValue, element) => {...previousValue, element.key: element.value});
+    return headers.fold(
+        {},
+        (previousValue, element) =>
+            {...previousValue, element.key: element.value});
   }
 }

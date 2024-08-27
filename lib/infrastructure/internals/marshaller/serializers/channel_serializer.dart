@@ -13,7 +13,8 @@ import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/channel_factory.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class ChannelSerializer<T extends Channel?> implements SerializerContract<T> {
+final class ChannelSerializer<T extends Channel?>
+    implements SerializerContract<T> {
   final MarshallerContract _marshaller;
 
   final List<ChannelFactoryContract> _factories = [
@@ -30,7 +31,8 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
-    final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
+    final channelFactory = _factories
+        .firstWhereOrNull((element) => element.type.value == json['type']);
     if (channelFactory == null) {
       _marshaller.logger.warn('Channel type not found ${json['type']}');
       return {};
@@ -41,7 +43,8 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
 
   @override
   Future<T> serialize(Map<String, dynamic> json) {
-    final channelFactory = _factories.firstWhereOrNull((element) => element.type.value == json['type']);
+    final channelFactory = _factories
+        .firstWhereOrNull((element) => element.type.value == json['type']);
 
     if (channelFactory == null) {
       _marshaller.logger.warn('Channel type not found ${json['type']}');
@@ -53,7 +56,8 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
 
   @override
   Future<Map<String, dynamic>> deserialize(Channel? channel) async {
-    final channelFactory = _factories.firstWhereOrNull((element) => element.type == channel?.type);
+    final channelFactory =
+        _factories.firstWhereOrNull((element) => element.type == channel?.type);
     if (channelFactory != null) {
       return channelFactory.deserialize(_marshaller, channel!);
     }

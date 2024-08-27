@@ -47,7 +47,8 @@ final class Logger implements LoggerContract {
     logging.Logger.root.onRecord.listen((record) {
       final time = '[${DateFormat.Hms().format(record.time)}]';
 
-      List<Sequence> makeMessage(String messageType, Color messageColor, List<Sequence> message) {
+      List<Sequence> makeMessage(
+          String messageType, Color messageColor, List<Sequence> message) {
         return [
           SetStyles(Style.foreground(Color.brightBlack)),
           Print(time),
@@ -62,12 +63,18 @@ final class Logger implements LoggerContract {
       }
 
       final message = switch (record.level) {
-        logging.Level.FINEST => makeMessage('trace', Color.white,
-            [SetStyles(Style.foreground(Color.brightBlack)), Print(record.message)]),
-        logging.Level.SHOUT => makeMessage('fatal', Color.brightRed, [Print(record.message)]),
-        logging.Level.SEVERE => makeMessage('error', Color.red, [Print(record.message)]),
-        logging.Level.WARNING => makeMessage('warn', Color.yellow, [Print(record.message)]),
-        logging.Level.INFO => makeMessage('info', Color.fromRGB(140, 169, 238), [Print(record.message)]),
+        logging.Level.FINEST => makeMessage('trace', Color.white, [
+            SetStyles(Style.foreground(Color.brightBlack)),
+            Print(record.message)
+          ]),
+        logging.Level.SHOUT =>
+          makeMessage('fatal', Color.brightRed, [Print(record.message)]),
+        logging.Level.SEVERE =>
+          makeMessage('error', Color.red, [Print(record.message)]),
+        logging.Level.WARNING =>
+          makeMessage('warn', Color.yellow, [Print(record.message)]),
+        logging.Level.INFO => makeMessage(
+            'info', Color.fromRGB(140, 169, 238), [Print(record.message)]),
         _ => makeMessage('unknown', Color.blue, [Print(record.message)]),
       };
 
@@ -104,9 +111,11 @@ final class Logger implements LoggerContract {
 extension on List<Sequence> {
   void writeWithoutAnsi() {
     for (final sequence in this) {
-      switch(sequence) {
-        case Print(:final text): stdout.write(text);
-        case AsciiControl(:final writeAnsiString): writeAnsiString(stdout);
+      switch (sequence) {
+        case Print(:final text):
+          stdout.write(text);
+        case AsciiControl(:final writeAnsiString):
+          writeAnsiString(stdout);
         default:
       }
     }

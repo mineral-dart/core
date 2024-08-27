@@ -21,7 +21,6 @@ final class User {
   final DateTime? createdAt;
   Presence? presence;
 
-
   User({
     required this.id,
     required this.username,

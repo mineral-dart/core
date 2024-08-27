@@ -19,7 +19,8 @@ final class ShardDataImpl implements ShardData {
 
   @override
   void dispatch(WebsocketMessage message) {
-    if (message.content case ShardMessage(:final type, :final payload) when type == 'READY') {
+    if (message.content case ShardMessage(:final type, :final payload)
+        when type == 'READY') {
       _shard.authentication.setupRequirements(payload);
     }
 

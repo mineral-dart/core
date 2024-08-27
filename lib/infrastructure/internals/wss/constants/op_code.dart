@@ -14,5 +14,5 @@ enum OpCode {
   guildSync(12);
 
   final int value;
-  const OpCode (this.value);
+  const OpCode(this.value);
 }

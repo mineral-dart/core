@@ -11,7 +11,6 @@ enum MessageFlagType {
   suppressNotifications(1 << 12),
   voiceMessage(1 << 13);
 
-
   final int value;
   const MessageFlagType(this.value);
 }

@@ -17,11 +17,13 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server.getServer(message.payload['guild_id']);
+    final server = await marshaller.dataStore.server
+        .getServer(message.payload['guild_id']);
     final serverCacheKey = marshaller.cacheKey.server(server.id);
 
     final rawEmojis = await List.from(message.payload['emojis'])
-        .map((element) async => marshaller.serializers.emojis.normalize(element))
+        .map(
+            (element) async => marshaller.serializers.emojis.normalize(element))
         .wait;
 
     final emojis = await rawEmojis.map((element) async {

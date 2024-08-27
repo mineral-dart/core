@@ -29,9 +29,11 @@ final class ServerCategoryChannel extends ServerChannel {
   @override
   late final Server server;
 
-  ServerCategoryChannel(this._properties): _methods = ChannelMethods(_properties.id);
+  ServerCategoryChannel(this._properties)
+      : _methods = ChannelMethods(_properties.id);
 
-  Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);
+  Future<void> setName(String name, {String? reason}) =>
+      _methods.setName(name, reason);
 
   Future<void> setPosition(int position, {String? reason}) =>
       _methods.setPosition(position, reason);

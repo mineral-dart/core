@@ -13,5 +13,6 @@ final class HttpRequestOptionImpl implements HttpRequestOption {
   @override
   final Map<String, String> queryParameters;
 
-  HttpRequestOptionImpl({required this.headers, this.queryParameters = const {}});
+  HttpRequestOptionImpl(
+      {required this.headers, this.queryParameters = const {}});
 }

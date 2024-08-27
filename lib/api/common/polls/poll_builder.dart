@@ -11,12 +11,12 @@ final class PollBuilder {
   bool _isAllowMultiple = false;
   PollLayout _layout = PollLayout.initial;
 
-  PollBuilder setQuestion({ required String question, PartialEmoji? emoji }) {
+  PollBuilder setQuestion({required String question, PartialEmoji? emoji}) {
     _question = PollQuestion(content: question, emoji: emoji);
     return this;
   }
 
-  PollBuilder addAnswer({ required String answer, PartialEmoji? emoji }) {
+  PollBuilder addAnswer({required String answer, PartialEmoji? emoji}) {
     _answers.add(PollAnswer(content: answer, emoji: emoji));
     return this;
   }

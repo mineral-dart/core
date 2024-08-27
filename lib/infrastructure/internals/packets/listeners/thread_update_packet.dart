@@ -20,7 +20,8 @@ final class ThreadUpdatePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload;
 
-    final server = await marshaller.dataStore.server.getServer(payload['guild_id']);
+    final server =
+        await marshaller.dataStore.server.getServer(payload['guild_id']);
     final threadCacheKey = marshaller.cacheKey.thread(payload['id']);
 
     final beforeRaw = await marshaller.cache.getOrFail(threadCacheKey);
@@ -38,11 +39,13 @@ final class ThreadUpdatePacket implements ListenablePacket {
 
     after
       ..server = server
-      ..parentChannel = server.channels.list[Snowflake(after.channelId)] as ServerTextChannel;
+      ..parentChannel =
+          server.channels.list[Snowflake(after.channelId)] as ServerTextChannel;
 
     before
       ..server = server
-      ..parentChannel = server.channels.list[Snowflake(before.channelId)] as ServerTextChannel;
+      ..parentChannel = server.channels.list[Snowflake(before.channelId)]
+          as ServerTextChannel;
 
     dispatch(event: Event.serverThreadUpdate, params: [before, after, server]);
   }

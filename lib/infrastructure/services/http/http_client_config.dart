@@ -13,5 +13,6 @@ final class HttpClientConfigImpl implements HttpClientConfig {
   @override
   final Set<Header> headers;
 
-  HttpClientConfigImpl({required this.baseUrl, Set<Header>? headers}) : headers = headers ?? {};
+  HttpClientConfigImpl({required this.baseUrl, Set<Header>? headers})
+      : headers = headers ?? {};
 }

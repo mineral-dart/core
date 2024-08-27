@@ -30,7 +30,8 @@ final class PrivateMessage implements Message<PrivateChannel> {
 
   final User author;
 
-  PrivateMessage(this._properties, {
+  PrivateMessage(
+    this._properties, {
     required this.userId,
     required this.author,
   });

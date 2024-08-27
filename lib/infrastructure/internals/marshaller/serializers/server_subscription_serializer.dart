@@ -4,7 +4,8 @@ import 'package:mineral/infrastructure/commons/utils.dart';
 import 'package:mineral/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class ServerSubscriptionSerializer implements SerializerContract<ServerSubscription> {
+final class ServerSubscriptionSerializer
+    implements SerializerContract<ServerSubscription> {
   final MarshallerContract _marshaller;
 
   ServerSubscriptionSerializer(this._marshaller);

@@ -17,15 +17,18 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
     final cacheKey = _marshaller.cacheKey.serverAssets(json['id']);
 
     await List.from(json['roles']).map((element) async {
-      return _marshaller.serializers.role.normalize({...element, 'server_id': json['id']});
+      return _marshaller.serializers.role
+          .normalize({...element, 'server_id': json['id']});
     }).wait;
 
     await List.from(json['emojis']).map((element) async {
-      return _marshaller.serializers.emojis.normalize({...element, 'server_id': json['id']});
+      return _marshaller.serializers.emojis
+          .normalize({...element, 'server_id': json['id']});
     }).wait;
 
     await List.from(json['stickers']).map((element) async {
-      return _marshaller.serializers.sticker.normalize({...element, 'server_id': json['id']});
+      return _marshaller.serializers.sticker
+          .normalize({...element, 'server_id': json['id']});
     }).wait;
 
     final payload = {
@@ -35,13 +38,16 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
       'discovery_splash': json['discovery_splash'],
       'banner': json['banner'],
       'stickers': List.from(json['stickers'])
-          .map((element) => _marshaller.cacheKey.sticker(json['id'], element['id']))
+          .map((element) =>
+              _marshaller.cacheKey.sticker(json['id'], element['id']))
           .toList(),
       'roles': List.from(json['roles'])
-          .map((element) => _marshaller.cacheKey.serverRole(json['id'], element['id']))
+          .map((element) =>
+              _marshaller.cacheKey.serverRole(json['id'], element['id']))
           .toList(),
       'emojis': List.from(json['emojis'])
-          .map((element) => _marshaller.cacheKey.serverEmoji(json['id'], element['id']))
+          .map((element) =>
+              _marshaller.cacheKey.serverEmoji(json['id'], element['id']))
           .toList(),
       'server_id': json['id'],
     };
@@ -72,24 +78,31 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
       emojis: EmojiManager.fromList(roles, emojis),
       stickers: StickerManager.fromList(stickers),
       icon: Helper.createOrNull(
-          field: json['icon'], fn: () => ImageAsset(['icons', json['server_id']], json['icon'])),
+          field: json['icon'],
+          fn: () => ImageAsset(['icons', json['server_id']], json['icon'])),
       splash: Helper.createOrNull(
-          field: json['splash'], fn: () => ImageAsset(['splashes', json['server_id']], json['splash'])),
+          field: json['splash'],
+          fn: () =>
+              ImageAsset(['splashes', json['server_id']], json['splash'])),
       banner: Helper.createOrNull(
-          field: json['banner'], fn: () => ImageAsset(['banners', json['server_id']], json['banner'])),
+          field: json['banner'],
+          fn: () => ImageAsset(['banners', json['server_id']], json['banner'])),
       discoverySplash: Helper.createOrNull(
           field: json['discovery_splash'],
-          fn: () => ImageAsset(['discovery-splashes', json['id']], json['discovery_splash'])),
+          fn: () => ImageAsset(
+              ['discovery-splashes', json['id']], json['discovery_splash'])),
       serverId: Snowflake(json['server_id']),
     );
   }
 
   @override
   Future<Map<String, dynamic>> deserialize(ServerAsset object) async {
-    final emojis = await Future.wait(object.emojis.list.values
-        .map((element) async => _marshaller.serializers.emojis.deserialize(element)));
-    final stickers = await Future.wait(object.stickers.list.values
-        .map((element) async => _marshaller.serializers.sticker.deserialize(element)));
+    final emojis = await Future.wait(object.emojis.list.values.map(
+        (element) async =>
+            _marshaller.serializers.emojis.deserialize(element)));
+    final stickers = await Future.wait(object.stickers.list.values.map(
+        (element) async =>
+            _marshaller.serializers.sticker.deserialize(element)));
 
     return {
       'emojis': emojis.map((element) => element['id']).toList(),

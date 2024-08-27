@@ -28,10 +28,12 @@ final class MemberSerializer implements SerializerContract<Member> {
       'nickname': json['nick'],
       'global_name': json['user']['global_name'],
       'discriminator': json['user']['discriminator'],
-      'assets': _marshaller.cacheKey.memberAssets(json['server_id'], json['user']['id']),
+      'assets': _marshaller.cacheKey
+          .memberAssets(json['server_id'], json['user']['id']),
       'flags': json['flags'],
       'roles': List.from(json['roles'])
-          .map((element) => _marshaller.cacheKey.serverRole(json['server_id'], element))
+          .map((element) =>
+              _marshaller.cacheKey.serverRole(json['server_id'], element))
           .toList(),
       'premium_since': json['premium_since'],
       'public_flags': json['user']['public_flags'],
@@ -48,7 +50,8 @@ final class MemberSerializer implements SerializerContract<Member> {
       'server_id': json['server_id'],
     };
 
-    final cacheKey = _marshaller.cacheKey.member(json['server_id'], json['user']['id']);
+    final cacheKey =
+        _marshaller.cacheKey.member(json['server_id'], json['user']['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -57,7 +60,8 @@ final class MemberSerializer implements SerializerContract<Member> {
   @override
   Future<Member> serialize(Map<String, dynamic> json) async {
     final rawAssets = await _marshaller.cache.getOrFail(json['assets']);
-    final assets = await _marshaller.serializers.memberAssets.serialize(rawAssets);
+    final assets =
+        await _marshaller.serializers.memberAssets.serialize(rawAssets);
 
     final rawRoles = await _marshaller.cache.getMany(json['roles']);
     final roles = await rawRoles.nonNulls.map((element) async {
@@ -71,9 +75,11 @@ final class MemberSerializer implements SerializerContract<Member> {
       globalName: json['global_name'],
       discriminator: json['discriminator'],
       assets: assets,
-      flags: MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
+      flags:
+          MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
       premiumSince: Helper.createOrNull(
-          field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
+          field: json['premium_since'],
+          fn: () => DateTime.parse(json['premium_since'])),
       publicFlags: json['public_flags'],
       roles: MemberRoleManager.fromList(roles),
       isBot: json['is_bot'] ?? false,
@@ -84,10 +90,12 @@ final class MemberSerializer implements SerializerContract<Member> {
               fn: () => DateTime.parse(json['communication_disabled_until']))),
       mfaEnabled: json['mfa_enabled'] ?? false,
       locale: json['locale'],
-      premiumType: PremiumTier.values
-          .firstWhere((e) => e == json['premium_type'], orElse: () => PremiumTier.none),
+      premiumType: PremiumTier.values.firstWhere(
+          (e) => e == json['premium_type'],
+          orElse: () => PremiumTier.none),
       joinedAt: Helper.createOrNull(
-          field: json['joined_at'], fn: () => DateTime.parse(json['joined_at'])),
+          field: json['joined_at'],
+          fn: () => DateTime.parse(json['joined_at'])),
       permissions: switch (json['permissions']) {
         int() => Permissions.fromInt(json['permissions']),
         String() => Permissions.fromInt(int.parse(json['permissions'])),
@@ -106,10 +114,14 @@ final class MemberSerializer implements SerializerContract<Member> {
 
   @override
   Future<Map<String, dynamic>> deserialize(Member member) async {
-    final rawAsset = await _marshaller.serializers.memberAssets.deserialize(member.assets);
+    final rawAsset =
+        await _marshaller.serializers.memberAssets.deserialize(member.assets);
     final rawRoles = await member.roles.list.entries.map((role) async {
-      final cacheKey = _marshaller.cacheKey.serverRole(member.server.id, role.key);
-      return {cacheKey: await _marshaller.serializers.role.deserialize(role.value)};
+      final cacheKey =
+          _marshaller.cacheKey.serverRole(member.server.id, role.key);
+      return {
+        cacheKey: await _marshaller.serializers.role.deserialize(role.value)
+      };
     }).wait;
 
     await _marshaller.cache.putMany({

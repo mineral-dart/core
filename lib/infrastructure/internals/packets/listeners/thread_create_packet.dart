@@ -20,7 +20,8 @@ final class ThreadCreatePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload;
 
-    final server = await marshaller.dataStore.server.getServer(payload['guild_id']);
+    final server =
+        await marshaller.dataStore.server.getServer(payload['guild_id']);
     final threadRaw = await marshaller.serializers.thread.normalize(payload);
     final thread = await marshaller.serializers.thread.serialize(threadRaw);
 
@@ -31,10 +32,12 @@ final class ThreadCreatePacket implements ListenablePacket {
 
     marshaller.cache.put(serverKey, serverRaw);
 
-    final parentChannel = server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
+    final parentChannel =
+        server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
     parentChannel.threads.add(thread);
 
-    final parentChannelRaw = await marshaller.serializers.channels.deserialize(parentChannel);
+    final parentChannelRaw =
+        await marshaller.serializers.channels.deserialize(parentChannel);
     final parentChannelKey = marshaller.cacheKey.channel(parentChannel.id);
 
     marshaller.cache.put(parentChannelKey, parentChannelRaw);

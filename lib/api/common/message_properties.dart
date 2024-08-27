@@ -35,7 +35,8 @@ final class MessageProperties<T extends Channel> {
       embeds: embeds,
       createdAt: DateTime.parse(json['timestamp']),
       updatedAt: Helper.createOrNull(
-          field: json['edited_timestamp'], fn: () => DateTime.parse(json['edited_timestamp'])),
+          field: json['edited_timestamp'],
+          fn: () => DateTime.parse(json['edited_timestamp'])),
     );
   }
 }

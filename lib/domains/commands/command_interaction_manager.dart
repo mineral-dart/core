@@ -46,7 +46,7 @@ final class CommandInteractionManager
       throw Exception('Command $command already exists');
     }
 
-    final name = switch(command) {
+    final name = switch (command) {
       final CommandDeclarationBuilder command => command.name,
       final CommandDefinitionBuilder definition => definition.command.name,
       final _ => throw Exception('Unknown command type')
@@ -57,7 +57,8 @@ final class CommandInteractionManager
     }
 
     final handlers = switch (command) {
-      final CommandDeclarationBuilder command => command.reduceHandlers(command.name!),
+      final CommandDeclarationBuilder command =>
+        command.reduceHandlers(command.name!),
       final CommandDefinitionBuilder definition =>
         definition.command.reduceHandlers(definition.command.name!),
       final _ => throw Exception('Unknown command type')

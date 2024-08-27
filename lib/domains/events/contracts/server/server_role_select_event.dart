@@ -5,7 +5,8 @@ import 'package:mineral/domains/components/selects/contexts/server_select_contex
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef ServerRoleSelectEventHandler = FutureOr Function(ServerSelectContext, List<Role>);
+typedef ServerRoleSelectEventHandler = FutureOr Function(
+    ServerSelectContext, List<Role>);
 
 abstract class ServerRoleSelectEvent implements ListenableEvent {
   @override

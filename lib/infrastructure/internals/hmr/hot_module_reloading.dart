@@ -28,8 +28,8 @@ final class HotModuleReloading {
   final Map<int, Shard> _shards;
   final Function() _createShards;
 
-  HotModuleReloading(
-      this._devPort, this._watcherConfig, this._kernel, this._createShards, this._shards);
+  HotModuleReloading(this._devPort, this._watcherConfig, this._kernel,
+      this._createShards, this._shards);
 
   Future<void> spawn() async {
     if (Isolate.current.debugName == 'dev') {
@@ -39,7 +39,8 @@ final class HotModuleReloading {
       _devPort!.send(port.sendPort);
       await _kernel.marshaller.cache.init();
       await for (final Map<String, dynamic> message in stream) {
-        _kernel.packetListener.dispatcher.dispatch(ShardMessageImpl.of(message));
+        _kernel.packetListener.dispatcher
+            .dispatch(ShardMessageImpl.of(message));
       }
     } else {
       _createHotModuleLoader();
@@ -66,7 +67,8 @@ final class HotModuleReloading {
 
   void _createDevelopmentIsolate() {
     final port = ReceivePort();
-    final uri = Uri.parse(path.join(Directory.current.path, 'src', 'main.dart'));
+    final uri =
+        Uri.parse(path.join(Directory.current.path, 'src', 'main.dart'));
 
     Isolate.spawnUri(Uri.file(uri.path), [], port.sendPort, debugName: 'dev')
         .then((Isolate isolate) async {
@@ -74,7 +76,8 @@ final class HotModuleReloading {
       devSendPort = await port.first;
 
       _shards.forEach((key, value) {
-        final Queue<Map<String, dynamic>> queue = Queue.from(value.onceEventQueue);
+        final Queue<Map<String, dynamic>> queue =
+            Queue.from(value.onceEventQueue);
         while (queue.isNotEmpty) {
           final response = queue.removeFirst();
           devSendPort?.send(response);
@@ -90,7 +93,8 @@ final class HotModuleReloading {
       }
     }
 
-    final String location = event.path.replaceFirst(Directory.current.path, '').substring(1);
+    final String location =
+        event.path.replaceFirst(Directory.current.path, '').substring(1);
 
     if (fileLocation == location) {
       fileRefreshCount++;
@@ -100,17 +104,17 @@ final class HotModuleReloading {
     }
 
     List<Sequence> formatMessage(String action) => [
-      SetStyles(Style.foreground(Logger.primaryColor)),
-      Print('hmr $action '),
-      SetStyles.reset,
-      SetStyles(Style.foreground(Logger.mutedColor)),
-      Print(location),
-      SetStyles.reset,
-      SetStyles(Style.foreground(Color.yellow)),
-      Print(' (x$fileRefreshCount)'),
-      SetStyles.reset,
-      AsciiControl.lineFeed,
-    ];
+          SetStyles(Style.foreground(Logger.primaryColor)),
+          Print('hmr $action '),
+          SetStyles.reset,
+          SetStyles(Style.foreground(Logger.mutedColor)),
+          Print(location),
+          SetStyles.reset,
+          SetStyles(Style.foreground(Color.yellow)),
+          Print(' (x$fileRefreshCount)'),
+          SetStyles.reset,
+          AsciiControl.lineFeed,
+        ];
 
     final message = switch (event.type) {
       ChangeType.ADD => formatMessage('create'),

@@ -20,10 +20,13 @@ final class ButtonBuilder {
 
   static LinkButtonBuilder link() => LinkButtonBuilder();
 
-  static PremiumButtonBuilder premium(String skuId) => PremiumButtonBuilder(skuId);
+  static PremiumButtonBuilder premium(String skuId) =>
+      PremiumButtonBuilder(skuId);
 }
 
-final class BasicButtonBuilder with ButtonImpl<BasicButtonBuilder> implements ButtonBuilderContract {
+final class BasicButtonBuilder
+    with ButtonImpl<BasicButtonBuilder>
+    implements ButtonBuilderContract {
   final ButtonType _type;
   final String _customId;
 
@@ -56,7 +59,9 @@ final class PremiumButtonBuilder implements ButtonBuilderContract {
   }
 }
 
-final class LinkButtonBuilder with ButtonImpl<LinkButtonBuilder> implements ButtonBuilderContract {
+final class LinkButtonBuilder
+    with ButtonImpl<LinkButtonBuilder>
+    implements ButtonBuilderContract {
   final ButtonType _type = ButtonType.link;
   String? _url;
 

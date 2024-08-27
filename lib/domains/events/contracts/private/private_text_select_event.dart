@@ -4,7 +4,8 @@ import 'package:mineral/domains/components/selects/contexts/private_select_conte
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef PrivateTextSelectEventHandler = FutureOr Function(PrivateSelectContext, List<String>);
+typedef PrivateTextSelectEventHandler = FutureOr Function(
+    PrivateSelectContext, List<String>);
 
 abstract class PrivateTextSelectEvent implements ListenableEvent {
   @override

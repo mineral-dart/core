@@ -34,10 +34,14 @@ final class Interaction implements InteractionContract {
         'content': content,
         'embeds': await Helper.createOrNullAsync(
             field: embeds,
-            fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+            fn: () async =>
+                embeds.map(_marshaller.serializers.embed.deserialize).toList()),
         'components': Helper.createOrNull(
-            field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
-        'flags': ephemeral ? MessageFlagType.ephemeral.value : MessageFlagType.none.value,
+            field: components.isNotEmpty,
+            fn: () => components.map((e) => e.toJson()).toList()),
+        'flags': ephemeral
+            ? MessageFlagType.ephemeral.value
+            : MessageFlagType.none.value,
       }
     });
 
@@ -53,9 +57,11 @@ final class Interaction implements InteractionContract {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
-          fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+          fn: () async =>
+              embeds.map(_marshaller.serializers.embed.deserialize).toList()),
       'components': Helper.createOrNull(
-          field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
+          field: components.isNotEmpty,
+          fn: () => components.map((e) => e.toJson()).toList()),
     });
     return this;
   }
@@ -80,10 +86,14 @@ final class Interaction implements InteractionContract {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
-          fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+          fn: () async =>
+              embeds.map(_marshaller.serializers.embed.deserialize).toList()),
       'components': Helper.createOrNull(
-          field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
-      'flags': ephemeral ? MessageFlagType.ephemeral.value : MessageFlagType.none.value,
+          field: components.isNotEmpty,
+          fn: () => components.map((e) => e.toJson()).toList()),
+      'flags': ephemeral
+          ? MessageFlagType.ephemeral.value
+          : MessageFlagType.none.value,
     });
     return this;
   }
@@ -98,9 +108,11 @@ final class Interaction implements InteractionContract {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
-          fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+          fn: () async =>
+              embeds.map(_marshaller.serializers.embed.deserialize).toList()),
       'components': Helper.createOrNull(
-          field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
+          field: components.isNotEmpty,
+          fn: () => components.map((e) => e.toJson()).toList()),
     });
     return this;
   }
@@ -126,9 +138,11 @@ final class Interaction implements InteractionContract {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
-          fn: () async => embeds.map(_marshaller.serializers.embed.deserialize).toList()),
+          fn: () async =>
+              embeds.map(_marshaller.serializers.embed.deserialize).toList()),
       'components': Helper.createOrNull(
-          field: components.isNotEmpty, fn: () => components.map((e) => e.toJson()).toList()),
+          field: components.isNotEmpty,
+          fn: () => components.map((e) => e.toJson()).toList()),
     });
     return this;
   }

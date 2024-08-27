@@ -4,7 +4,8 @@ import 'package:mineral/domains/components/selects/contexts/server_select_contex
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef ServerTextSelectEventHandler = FutureOr Function(ServerSelectContext, List<String>);
+typedef ServerTextSelectEventHandler = FutureOr Function(
+    ServerSelectContext, List<String>);
 
 abstract class ServerTextSelectEvent implements ListenableEvent {
   @override

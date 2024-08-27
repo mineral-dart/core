@@ -16,7 +16,8 @@ final class RolePart implements DataStorePart {
 
   RolePart(this._kernel);
 
-  Future<Role> getRole({required Snowflake serverId, required Snowflake roleId}) async {
+  Future<Role> getRole(
+      {required Snowflake serverId, required Snowflake roleId}) async {
     final cacheKey = _kernel.marshaller.cacheKey.serverRole(serverId, roleId);
     final rawRole = await _kernel.marshaller.cache.get(cacheKey);
 
@@ -24,12 +25,14 @@ final class RolePart implements DataStorePart {
       return _kernel.marshaller.serializers.role.serialize(rawRole);
     }
 
-    final response = await _kernel.dataStore.client.get('/guilds/$serverId/roles/$roleId');
+    final response =
+        await _kernel.dataStore.client.get('/guilds/$serverId/roles/$roleId');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
-    final payload = await _kernel.marshaller.serializers.role.normalize(response.body);
+    final payload =
+        await _kernel.marshaller.serializers.role.normalize(response.body);
     return _kernel.marshaller.serializers.role.serialize(payload);
   }
 
@@ -38,8 +41,10 @@ final class RolePart implements DataStorePart {
       required Snowflake serverId,
       required Snowflake roleId,
       required String? reason}) async {
-    await _kernel.dataStore.client.put('/guilds/$serverId/members/$memberId/roles/$roleId',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    await _kernel.dataStore.client.put(
+        '/guilds/$serverId/members/$memberId/roles/$roleId',
+        option: HttpRequestOptionImpl(
+            headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
   Future<void> removeRole(
@@ -47,8 +52,10 @@ final class RolePart implements DataStorePart {
       required Snowflake serverId,
       required Snowflake roleId,
       required String? reason}) async {
-    await _kernel.dataStore.client.delete('/guilds/$serverId/members/$memberId/roles/$roleId',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    await _kernel.dataStore.client.delete(
+        '/guilds/$serverId/members/$memberId/roles/$roleId',
+        option: HttpRequestOptionImpl(
+            headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
   Future<void> syncRoles(
@@ -58,7 +65,8 @@ final class RolePart implements DataStorePart {
       required String? reason}) async {
     await _kernel.dataStore.client.patch('/guilds/$serverId/members/$memberId',
         body: {'roles': roleIds},
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(
+            headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
   Future<Role?> updateRole(
@@ -66,21 +74,27 @@ final class RolePart implements DataStorePart {
       required Snowflake serverId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
-    final response = await _kernel.dataStore.client.patch('/guilds/$serverId/roles/$id',
+    final response = await _kernel.dataStore.client.patch(
+        '/guilds/$serverId/roles/$id',
         body: payload,
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(
+            headers: {DiscordHeader.auditLogReason(reason)}));
 
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
-    final body = await _kernel.marshaller.serializers.role.normalize(response.body);
+    final body =
+        await _kernel.marshaller.serializers.role.normalize(response.body);
     return _kernel.marshaller.serializers.role.serialize(body);
   }
 
   Future<void> deleteRole(
-      {required Snowflake id, required Snowflake guildId, required String? reason}) async {
+      {required Snowflake id,
+      required Snowflake guildId,
+      required String? reason}) async {
     await _kernel.dataStore.client.delete('/guilds/$guildId/roles/$id',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(
+            headers: {DiscordHeader.auditLogReason(reason)}));
   }
 }

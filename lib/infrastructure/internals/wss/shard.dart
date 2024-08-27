@@ -84,12 +84,14 @@ final class Shard implements ShardContract {
         return message;
       })
       ..add((message) async {
-        message.content = ShardMessageImpl.of(jsonDecode(message.originalContent));
+        message.content =
+            ShardMessageImpl.of(jsonDecode(message.originalContent));
         return message;
       });
 
     client.listen((message) {
-      if (message.content case ShardMessage(opCode: final code, payload: final payload)) {
+      if (message.content
+          case ShardMessage(opCode: final code, payload: final payload)) {
         switch (code) {
           case OpCode.hello:
             authentication.identify(payload);
@@ -100,7 +102,8 @@ final class Shard implements ShardContract {
           case OpCode.invalidSession:
             authentication.resume();
           case OpCode.dispatch:
-            if ([PacketType.ready.name, PacketType.guildCreate.name].contains((message.content as ShardMessage).type)) {
+            if ([PacketType.ready.name, PacketType.guildCreate.name]
+                .contains((message.content as ShardMessage).type)) {
               onceEventQueue.add(jsonDecode(message.originalContent));
             }
 

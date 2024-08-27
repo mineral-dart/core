@@ -29,8 +29,11 @@ final class ShardNetworkErrorImpl implements ShardNetworkError {
         .where((element) => element.code == payload)
         .firstOrNull;
 
-    if (error case ShardDisconnectError(canBeReconnected: final canBeReconnected)) {
-      return canBeReconnected ? shard.authentication.resume() : shard.authentication.reconnect();
+    if (error
+        case ShardDisconnectError(canBeReconnected: final canBeReconnected)) {
+      return canBeReconnected
+          ? shard.authentication.resume()
+          : shard.authentication.reconnect();
     }
   }
 }

@@ -28,7 +28,8 @@ final class ServerMessage extends Message<ServerChannel> {
 
   final Member author;
 
-  ServerMessage(this._properties, {
+  ServerMessage(
+    this._properties, {
     required this.author,
   });
 }

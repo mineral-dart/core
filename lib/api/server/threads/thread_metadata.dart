@@ -17,14 +17,17 @@ final class ThreadMetadata {
     this.archiveTimestamp,
   });
 
-  factory ThreadMetadata.serialize(Map<String, dynamic> json, ChannelType type) {
+  factory ThreadMetadata.serialize(
+      Map<String, dynamic> json, ChannelType type) {
     return ThreadMetadata(
       archived: json['archived'],
       autoArchiveDuration: json['auto_archive_duration'],
       locked: json['locked'],
       isPublic: type == ChannelType.guildPublicThread,
       invitable: json['invitable'],
-      archiveTimestamp: json['archive_timestamp'] != null ? DateTime.parse(json['archive_timestamp']) : null,
+      archiveTimestamp: json['archive_timestamp'] != null
+          ? DateTime.parse(json['archive_timestamp'])
+          : null,
     );
   }
 }

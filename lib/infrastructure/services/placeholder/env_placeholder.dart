@@ -35,7 +35,7 @@ final class EnvPlaceholder implements PlaceholderContract {
         };
 
         return acc
-          .replaceAll('{${element.key}}', finalValue)
-          .replaceAll('{{ ${element.key} }}', finalValue);
+            .replaceAll('{${element.key}}', finalValue)
+            .replaceAll('{{ ${element.key} }}', finalValue);
       });
 }

@@ -41,28 +41,40 @@ final class Member {
   final MemberFlagsManager flags;
   Presence? presence;
 
-  bool canByPassVerification() => flags.list.contains(MemberFlag.bypassedVerification);
+  bool canByPassVerification() =>
+      flags.list.contains(MemberFlag.bypassedVerification);
 
-  bool hasCompletedOnboarding() => flags.list.contains(MemberFlag.completedOnboarding);
+  bool hasCompletedOnboarding() =>
+      flags.list.contains(MemberFlag.completedOnboarding);
 
-  bool hasStartedOnboarding() => flags.list.contains(MemberFlag.startedOnboarding);
+  bool hasStartedOnboarding() =>
+      flags.list.contains(MemberFlag.startedOnboarding);
 
   bool hasRejoined() => flags.list.contains(MemberFlag.didRejoin);
 
-  Future<void> setUsername(String value, String? reason) => _memberMethods.updateMember(
-      serverId: server.id, memberId: id, payload: {'username': value}, reason: reason);
+  Future<void> setUsername(String value, String? reason) =>
+      _memberMethods.updateMember(
+          serverId: server.id,
+          memberId: id,
+          payload: {'username': value},
+          reason: reason);
 
-  Future<void> setNickname(String value, String? reason) => _memberMethods.updateMember(
-      serverId: server.id, memberId: id, payload: {'nick': value}, reason: reason);
+  Future<void> setNickname(String value, String? reason) =>
+      _memberMethods.updateMember(
+          serverId: server.id,
+          memberId: id,
+          payload: {'nick': value},
+          reason: reason);
 
-  Future<void> ban({Duration? deleteSince, String? reason}) =>
-      _memberMethods.banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
+  Future<void> ban({Duration? deleteSince, String? reason}) => _memberMethods
+      .banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
 
-  Future<void> kick({String? reason}) =>
-      _memberMethods.kickMember(serverId: server.id, memberId: id, reason: reason);
+  Future<void> kick({String? reason}) => _memberMethods.kickMember(
+      serverId: server.id, memberId: id, reason: reason);
 
   Future<void> exclude({Duration? duration, String? reason}) {
-    final timeout = duration != null ? DateTime.now().add(duration) : DateTime.now();
+    final timeout =
+        duration != null ? DateTime.now().add(duration) : DateTime.now();
 
     return _memberMethods.updateMember(
         serverId: server.id,
@@ -78,21 +90,31 @@ final class Member {
       payload: {'communication_disabled_until': null});
 
   Future<void> enableMfa({String? reason}) => _memberMethods.updateMember(
-      serverId: server.id, memberId: id, payload: {'mfa_enable': true}, reason: reason);
+      serverId: server.id,
+      memberId: id,
+      payload: {'mfa_enable': true},
+      reason: reason);
 
   Future<void> disableMfa({String? reason}) => _memberMethods.updateMember(
-      serverId: server.id, memberId: id, payload: {'mfa_enable': false}, reason: reason);
+      serverId: server.id,
+      memberId: id,
+      payload: {'mfa_enable': false},
+      reason: reason);
 
   Future<void> toggleMfa({String? reason}) =>
       mfaEnabled ? disableMfa(reason: reason) : enableMfa(reason: reason);
 
   Future<void> edit(MemberBuilder builder, {String? reason}) =>
-      _memberMethods.updateMember(serverId: server.id, memberId: id, reason: reason, payload: {
-        'nick': nickname,
-        'mute': builder.isMuted,
-        'deaf': builder.isDeafened,
-        'exclude': builder.isExcluded,
-      });
+      _memberMethods.updateMember(
+          serverId: server.id,
+          memberId: id,
+          reason: reason,
+          payload: {
+            'nick': nickname,
+            'mute': builder.isMuted,
+            'deaf': builder.isDeafened,
+            'exclude': builder.isExcluded,
+          });
 
   Member({
     required this.id,

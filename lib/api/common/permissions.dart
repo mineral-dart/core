@@ -11,7 +11,9 @@ final class Permissions {
   bool has(Permission permission) => _permissions.contains(permission);
 
   factory Permissions.fromInt(int raw) {
-    final permissions = Permission.values.where((permission) => raw & permission.value == permission.value).toList();
+    final permissions = Permission.values
+        .where((permission) => raw & permission.value == permission.value)
+        .toList();
     return Permissions(raw, permissions);
   }
 }

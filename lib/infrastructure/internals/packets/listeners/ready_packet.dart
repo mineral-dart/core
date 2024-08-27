@@ -28,7 +28,7 @@ final class ReadyPacket implements ListenablePacket {
 
     logger.trace(jsonEncode(message.payload));
 
-    if(!isAlreadyUsed) {
+    if (!isAlreadyUsed) {
       await interactionManager.registerGlobal(bot);
       isAlreadyUsed = true;
     }

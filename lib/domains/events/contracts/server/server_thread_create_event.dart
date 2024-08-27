@@ -5,7 +5,8 @@ import 'package:mineral/api/server/server.dart';
 import 'package:mineral/domains/events/event.dart';
 import 'package:mineral/domains/events/types/listenable_event.dart';
 
-typedef ServerThreadCreateEventHandler = FutureOr<void> Function(ThreadChannel, Server);
+typedef ServerThreadCreateEventHandler = FutureOr<void> Function(
+    ThreadChannel, Server);
 
 abstract class ServerThreadCreateEvent implements ListenableEvent {
   @override

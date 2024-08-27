@@ -43,7 +43,8 @@ final class ServerAnnouncementChannel extends ServerChannel {
   ServerAnnouncementChannel(this._properties)
       : _methods = ChannelMethods(_properties.id);
 
-  Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);
+  Future<void> setName(String name, {String? reason}) =>
+      _methods.setName(name, reason);
 
   Future<void> setDescription(String description, {String? reason}) =>
       _methods.setDescription(description, reason);
@@ -54,7 +55,8 @@ final class ServerAnnouncementChannel extends ServerChannel {
   Future<void> setPosition(int position, {String? reason}) =>
       _methods.setPosition(position, reason);
 
-  Future<void> setNsfw(bool nsfw, {String? reason}) => _methods.setNsfw(nsfw, reason);
+  Future<void> setNsfw(bool nsfw, {String? reason}) =>
+      _methods.setNsfw(nsfw, reason);
 
   Future<void> delete({String? reason}) => _methods.delete(reason);
 }

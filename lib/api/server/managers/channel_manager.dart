@@ -18,13 +18,16 @@ final class ChannelManager {
 
   ChannelManager(this._channels, Map<String, dynamic> json) {
     _namedChannels
-      ..putIfAbsent(_ServerNamedChannel.afkChannel, () => json['afk_channel_id'])
-      ..putIfAbsent(_ServerNamedChannel.systemChannel, () => json['system_channel_id'])
-      ..putIfAbsent(_ServerNamedChannel.rulesChannel, () => json['rules_channel_id'])
       ..putIfAbsent(
-          _ServerNamedChannel.publicUpdatesChannel, () => json['public_updates_channel_id'])
+          _ServerNamedChannel.afkChannel, () => json['afk_channel_id'])
       ..putIfAbsent(
-          _ServerNamedChannel.safetyAlertsChannel, () => json['safety_alerts_channel_id']);
+          _ServerNamedChannel.systemChannel, () => json['system_channel_id'])
+      ..putIfAbsent(
+          _ServerNamedChannel.rulesChannel, () => json['rules_channel_id'])
+      ..putIfAbsent(_ServerNamedChannel.publicUpdatesChannel,
+          () => json['public_updates_channel_id'])
+      ..putIfAbsent(_ServerNamedChannel.safetyAlertsChannel,
+          () => json['safety_alerts_channel_id']);
   }
 
   Map<Snowflake, ServerChannel> get list => _channels;
@@ -35,23 +38,23 @@ final class ChannelManager {
       _channels.values.firstWhere((element) => element.id.value == id,
           orElse: () => throw Exception('Channel not found')) as T;
 
-  ServerVoiceChannel? get afkChannel =>
-      getOrNull<ServerVoiceChannel>(_namedChannels[_ServerNamedChannel.afkChannel]);
+  ServerVoiceChannel? get afkChannel => getOrNull<ServerVoiceChannel>(
+      _namedChannels[_ServerNamedChannel.afkChannel]);
 
-  ServerTextChannel? get systemChannel =>
-      getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.systemChannel]);
+  ServerTextChannel? get systemChannel => getOrNull<ServerTextChannel>(
+      _namedChannels[_ServerNamedChannel.systemChannel]);
 
-  ServerTextChannel? get rulesChannel =>
-      getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.rulesChannel]);
+  ServerTextChannel? get rulesChannel => getOrNull<ServerTextChannel>(
+      _namedChannels[_ServerNamedChannel.rulesChannel]);
 
-  ServerTextChannel? get publicUpdatesChannel =>
-      getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.publicUpdatesChannel]);
+  ServerTextChannel? get publicUpdatesChannel => getOrNull<ServerTextChannel>(
+      _namedChannels[_ServerNamedChannel.publicUpdatesChannel]);
 
-  ServerTextChannel? get safetyAlertsChannel =>
-      getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.safetyAlertsChannel]);
+  ServerTextChannel? get safetyAlertsChannel => getOrNull<ServerTextChannel>(
+      _namedChannels[_ServerNamedChannel.safetyAlertsChannel]);
 
-  ServerTextChannel? get widgetChannel =>
-      getOrNull<ServerTextChannel>(_namedChannels[_ServerNamedChannel.widgetChannel]);
+  ServerTextChannel? get widgetChannel => getOrNull<ServerTextChannel>(
+      _namedChannels[_ServerNamedChannel.widgetChannel]);
 
   factory ChannelManager.fromList(List<ServerChannel> channels, payload) {
     return ChannelManager(

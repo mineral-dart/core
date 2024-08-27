@@ -36,9 +36,11 @@ final class ServerVoiceChannel extends ServerChannel {
 
   late final ServerCategoryChannel? category;
 
-  ServerVoiceChannel(this._properties) : _methods = ChannelMethods(_properties.id);
+  ServerVoiceChannel(this._properties)
+      : _methods = ChannelMethods(_properties.id);
 
-  Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);
+  Future<void> setName(String name, {String? reason}) =>
+      _methods.setName(name, reason);
 
   Future<void> setCategory(String categoryId, {String? reason}) =>
       _methods.setCategory(categoryId, reason);
@@ -46,16 +48,20 @@ final class ServerVoiceChannel extends ServerChannel {
   Future<void> setPosition(int position, {String? reason}) =>
       _methods.setPosition(position, reason);
 
-  Future<void> setNsfw(bool nsfw, {String? reason}) => _methods.setNsfw(nsfw, reason);
+  Future<void> setNsfw(bool nsfw, {String? reason}) =>
+      _methods.setNsfw(nsfw, reason);
 
   Future<void> setRateLimitPerUser(int rateLimitPerUser, {String? reason}) =>
       _methods.setRateLimitPerUser(rateLimitPerUser, reason);
 
-  Future<void> setBitrate(int bitrate, {String? reason}) => _methods.setBitrate(bitrate, reason);
+  Future<void> setBitrate(int bitrate, {String? reason}) =>
+      _methods.setBitrate(bitrate, reason);
 
-  Future<void> setUserLimit(int userLimit, {String? reason}) => _methods.setUserLimit(userLimit, reason);
+  Future<void> setUserLimit(int userLimit, {String? reason}) =>
+      _methods.setUserLimit(userLimit, reason);
 
-  Future<void> setRtcRegion(String rtcRegion, {String? reason}) => _methods.setRtcRegion(rtcRegion, reason);
+  Future<void> setRtcRegion(String rtcRegion, {String? reason}) =>
+      _methods.setRtcRegion(rtcRegion, reason);
 
   Future<void> setVideoQuality(VideoQuality quality, {String? reason}) =>
       _methods.setVideoQuality(quality, reason);

@@ -26,7 +26,8 @@ final class UserPart implements DataStorePart {
       throw HttpException(response.body);
     }
 
-    final payload = await _kernel.marshaller.serializers.user.normalize(response.body);
+    final payload =
+        await _kernel.marshaller.serializers.user.normalize(response.body);
     return _kernel.marshaller.serializers.user.serialize(payload);
   }
 }

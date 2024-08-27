@@ -19,7 +19,8 @@ final class PollSerializer implements SerializerContract<Poll> {
     final payload = {
       'message_id': json['message_id'],
       'question_text': json['question']['text'],
-      'answers': List.from(json['answers']).map((element) => element['text']).toList(),
+      'answers':
+          List.from(json['answers']).map((element) => element['text']).toList(),
       'expiry': json['expiry'],
       'allow_multiselect': json['allow_multiselect'],
       'layout_type': json['layout_type'],
@@ -40,11 +41,13 @@ final class PollSerializer implements SerializerContract<Poll> {
             .map((element) => PollAnswer(
                 content: element['text'],
                 emoji: Helper.createOrNull(
-                    field: element['emoji'], fn: () => PartialEmoji.fromUnicode(element['emoji']))))
+                    field: element['emoji'],
+                    fn: () => PartialEmoji.fromUnicode(element['emoji']))))
             .toList(),
         expireAt: Helper.createOrNull(
             field: json['expiry'],
-            fn: () => DateTime.parse(json['expiry']).difference(DateTime.now())),
+            fn: () =>
+                DateTime.parse(json['expiry']).difference(DateTime.now())),
         isAllowMultiple: json['allow_multiselect'],
         layout: findInEnum(PollLayout.values, json['layout_type']));
   }

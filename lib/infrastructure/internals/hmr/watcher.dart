@@ -11,26 +11,25 @@ final class Watcher {
   final bool allowReload;
   void Function(WatchEvent event) onReload;
 
-  Watcher({ required this.allowReload, required this.appRoot, required List<Directory> folders, required List<File> files, required this.onReload }) {
+  Watcher(
+      {required this.allowReload,
+      required this.appRoot,
+      required List<Directory> folders,
+      required List<File> files,
+      required this.onReload}) {
     watchers.addAll(List.from([
-      ...folders.map((folder) =>
-          DirectoryWatcherElement(
-              appRoot: appRoot,
-              watcherRoot: folder,
-              addFile: onReload,
-              editFile: onReload,
-              removeFile: onReload
-          )
-        ),
-      ...files.map((file) =>
-          FileWatcherElement(
-              appRoot: appRoot,
-              watchedFile: file,
-              addFile: onReload,
-              editFile: onReload,
-              removeFile: onReload
-          )
-        )
+      ...folders.map((folder) => DirectoryWatcherElement(
+          appRoot: appRoot,
+          watcherRoot: folder,
+          addFile: onReload,
+          editFile: onReload,
+          removeFile: onReload)),
+      ...files.map((file) => FileWatcherElement(
+          appRoot: appRoot,
+          watchedFile: file,
+          addFile: onReload,
+          editFile: onReload,
+          removeFile: onReload))
     ]));
   }
 

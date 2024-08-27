@@ -4,7 +4,9 @@ import 'package:test/test.dart';
 abstract interface class AbstractClass {}
 
 final class FooWithoutAbstract {}
+
 final class Foo implements AbstractClass {}
+
 final class Bar implements AbstractClass {}
 
 void main() {

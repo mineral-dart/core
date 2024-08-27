@@ -62,7 +62,8 @@ final class ChannelMethods {
     );
   }
 
-  Future<void> setDefaultAutoArchiveDuration(int defaultAutoArchiveDuration, String? reason) async {
+  Future<void> setDefaultAutoArchiveDuration(
+      int defaultAutoArchiveDuration, String? reason) async {
     await dataStoreChannel.updateChannel(
       id: id,
       reason: reason,
@@ -70,7 +71,8 @@ final class ChannelMethods {
     );
   }
 
-  Future<void> setDefaultThreadRateLimitPerUser(int value, String? reason) async {
+  Future<void> setDefaultThreadRateLimitPerUser(
+      int value, String? reason) async {
     await dataStoreChannel.updateChannel(
       id: id,
       reason: reason,
@@ -110,8 +112,14 @@ final class ChannelMethods {
     );
   }
 
-  Future<void> send({ Snowflake? guildId, String? content, List<MessageEmbed>? embeds, Poll? poll, List<MessageComponent>? components}) async {
-    await dataStoreChannel.createMessage(guildId, id, content, embeds, poll, components);
+  Future<void> send(
+      {Snowflake? guildId,
+      String? content,
+      List<MessageEmbed>? embeds,
+      Poll? poll,
+      List<MessageComponent>? components}) async {
+    await dataStoreChannel.createMessage(
+        guildId, id, content, embeds, poll, components);
   }
 
   Future<void> delete(String? reason) async {

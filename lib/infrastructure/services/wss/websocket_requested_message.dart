@@ -16,5 +16,6 @@ final class WebsocketRequestedMessageImpl implements WebsocketRequestedMessage {
   @override
   final String content;
 
-  WebsocketRequestedMessageImpl({required this.channelName, required this.content});
+  WebsocketRequestedMessageImpl(
+      {required this.channelName, required this.content});
 }

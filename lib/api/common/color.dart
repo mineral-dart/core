@@ -214,10 +214,10 @@ final class Color {
   final String _color;
   Color(this._color);
 
-  int toInt () => int.parse(_color.replaceAll('#', ''), radix: 16);
+  int toInt() => int.parse(_color.replaceAll('#', ''), radix: 16);
 
   @override
-  String toString () => _color;
+  String toString() => _color;
 
   factory Color.of(int color) {
     final hex = color.toRadixString(16);

@@ -3,10 +3,12 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:mineral/api/common/types/enhanced_enum.dart';
 
-FutureOr<T?> createOrNull<T>({required dynamic field, required FutureOr<T?> Function() fn}) async =>
+FutureOr<T?> createOrNull<T>(
+        {required dynamic field, required FutureOr<T?> Function() fn}) async =>
     field != null ? await fn() : null;
 
-List<T> bitfieldToList<T extends EnhancedEnum<int>>(List<T> values, int bitfield) {
+List<T> bitfieldToList<T extends EnhancedEnum<int>>(
+    List<T> values, int bitfield) {
   final List<T> flags = [];
 
   for (final element in values) {
@@ -18,7 +20,8 @@ List<T> bitfieldToList<T extends EnhancedEnum<int>>(List<T> values, int bitfield
 }
 
 int listToBitfield<T extends EnhancedEnum<int>>(List<T> values) {
-  return values.fold(0, (previousValue, element) => previousValue += element.value);
+  return values.fold(
+      0, (previousValue, element) => previousValue += element.value);
 }
 
 T findInEnum<T extends EnhancedEnum<R>, R>(List<T> values, R value) {

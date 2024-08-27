@@ -30,7 +30,8 @@ final class ServerPart implements DataStorePart {
     await getChannels(id);
     await _kernel.dataStore.member.getMembers(id);
 
-    final payload = await _kernel.marshaller.serializers.server.normalize(serverResponse.body);
+    final payload = await _kernel.marshaller.serializers.server
+        .normalize(serverResponse.body);
     return _kernel.marshaller.serializers.server.serialize(payload);
   }
 
@@ -41,35 +42,42 @@ final class ServerPart implements DataStorePart {
     }
 
     return Future.wait(List.from(response.body).map((element) async {
-      final channel = await _kernel.marshaller.serializers.channels.normalize(element);
-      return _kernel.marshaller.serializers.channels.serialize(channel) as Future<T>;
+      final channel =
+          await _kernel.marshaller.serializers.channels.normalize(element);
+      return _kernel.marshaller.serializers.channels.serialize(channel)
+          as Future<T>;
     }).toList());
   }
 
   Future<Role> getRole(Snowflake serverId, Snowflake roleId) async {
-    final roleCacheKey = _kernel.marshaller.cacheKey.serverRole(serverId, roleId);
+    final roleCacheKey =
+        _kernel.marshaller.cacheKey.serverRole(serverId, roleId);
     final cachedRawRole = await _kernel.marshaller.cache.get(roleCacheKey);
     if (cachedRawRole != null) {
       return _kernel.marshaller.serializers.role.serialize(cachedRawRole);
     }
 
-    final response = await _kernel.dataStore.client.get('/guilds/$serverId/roles/$roleId');
+    final response =
+        await _kernel.dataStore.client.get('/guilds/$serverId/roles/$roleId');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
-    final rolePayload = await _kernel.marshaller.serializers.role.normalize(response.body);
+    final rolePayload =
+        await _kernel.marshaller.serializers.role.normalize(response.body);
     return _kernel.marshaller.serializers.role.serialize(rolePayload);
   }
 
   Future<List<Role>> getRoles(Snowflake guildId, {bool force = false}) async {
-    final response = await _kernel.dataStore.client.get('/guilds/$guildId/roles');
+    final response =
+        await _kernel.dataStore.client.get('/guilds/$guildId/roles');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
     return Future.wait(List.from(response.body).map((element) async {
-      final payload = await _kernel.marshaller.serializers.role.normalize(element);
+      final payload =
+          await _kernel.marshaller.serializers.role.normalize(element);
       return _kernel.marshaller.serializers.role.serialize(payload);
     }).toList());
   }

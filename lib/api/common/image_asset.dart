@@ -23,7 +23,7 @@ final class ImageAsset {
 
   String get url => '$_baseUrl/${_fragments.join('/')}/$hash.png';
 
-  String makeUrl({ ImageExtension extension = ImageExtension.png, int? size }) {
+  String makeUrl({ImageExtension extension = ImageExtension.png, int? size}) {
     if (size case int() when size < 16 || size > 4096) {
       throw ArgumentError('Size must be between 16 and 4096');
     }

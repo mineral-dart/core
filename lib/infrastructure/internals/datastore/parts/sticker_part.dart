@@ -15,20 +15,24 @@ final class StickerPart implements DataStorePart {
   StickerPart(this._kernel);
 
   Future<Sticker> getSticker(Snowflake serverId, Snowflake stickerId) async {
-    final stickerCacheKey = _kernel.marshaller.cacheKey.sticker(serverId, stickerId);
+    final stickerCacheKey =
+        _kernel.marshaller.cacheKey.sticker(serverId, stickerId);
 
-    final Map<String, dynamic>? cachedRawSticker = await _kernel.marshaller.cache.get(stickerCacheKey);
+    final Map<String, dynamic>? cachedRawSticker =
+        await _kernel.marshaller.cache.get(stickerCacheKey);
 
     if (cachedRawSticker != null) {
       return _kernel.marshaller.serializers.sticker.serialize(cachedRawSticker);
     }
 
-    final response = await _kernel.dataStore.client.get('/guilds/$serverId/stickers/$stickerId}');
+    final response = await _kernel.dataStore.client
+        .get('/guilds/$serverId/stickers/$stickerId}');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
-    final payload = await _kernel.marshaller.serializers.sticker.normalize(response.body);
+    final payload =
+        await _kernel.marshaller.serializers.sticker.normalize(response.body);
     return _kernel.marshaller.serializers.sticker.serialize(payload);
   }
 }

@@ -36,7 +36,8 @@ final class ServerDialogContext implements DialogContext {
     interaction = Interaction(token, id);
   }
 
-  static Future<ServerDialogContext> fromMap(MarshallerContract marshaller, Map<String, dynamic> payload) async{
+  static Future<ServerDialogContext> fromMap(
+      MarshallerContract marshaller, Map<String, dynamic> payload) async {
     return ServerDialogContext(
       customId: payload['data']['custom_id'],
       id: Snowflake(payload['id']),

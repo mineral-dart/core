@@ -5,16 +5,21 @@ import 'package:mineral/api/common/partial_emoji.dart';
 import 'package:mineral/api/common/snowflake.dart';
 import 'package:mineral/api/common/types/channel_type.dart';
 
-abstract interface class SelectMenuBuilderContract implements MessageComponent {}
+abstract interface class SelectMenuBuilderContract
+    implements MessageComponent {}
 
 final class SelectMenuBuilder {
-  static SelectMenuTextBuilder<String> text(String customId) => SelectMenuTextBuilder(customId);
+  static SelectMenuTextBuilder<String> text(String customId) =>
+      SelectMenuTextBuilder(customId);
 
-  static SelectMenuChannelBuilder channel(String customId) => SelectMenuChannelBuilder(customId);
+  static SelectMenuChannelBuilder channel(String customId) =>
+      SelectMenuChannelBuilder(customId);
 
-  static SelectMenuUserBuilder user(String customId) => SelectMenuUserBuilder(customId);
+  static SelectMenuUserBuilder user(String customId) =>
+      SelectMenuUserBuilder(customId);
 
-  static SelectMenuRoleBuilder role(String customId) => SelectMenuRoleBuilder(customId);
+  static SelectMenuRoleBuilder role(String customId) =>
+      SelectMenuRoleBuilder(customId);
 
   static SelectMenuMentionableBuilder mentionable(String customId) =>
       SelectMenuMentionableBuilder(customId);
@@ -81,9 +86,13 @@ final class SelectMenuChannelBuilder
       ...super.toJson(),
       'type': ComponentType.channelSelectMenu.value,
       'custom_id': _customId,
-      'channel_types': _channelTypes.isNotEmpty ? _channelTypes.map((e) => e.value).toList() : null,
+      'channel_types': _channelTypes.isNotEmpty
+          ? _channelTypes.map((e) => e.value).toList()
+          : null,
       'default_values': _defaultChannels.isNotEmpty
-          ? _defaultChannels.map((e) => {'id': e.value, 'type': 'channel'}).toList()
+          ? _defaultChannels
+              .map((e) => {'id': e.value, 'type': 'channel'})
+              .toList()
           : null,
     };
   }

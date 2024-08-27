@@ -8,6 +8,8 @@ class PartialEmoji {
 
   const PartialEmoji(this.id, this.name, this.animated);
 
-  factory PartialEmoji.fromUnicode(String value) => PartialEmoji(null, value, false);
-  factory PartialEmoji.fromEmoji(Emoji emoji) => PartialEmoji(emoji.id, emoji.name, emoji.animated);
+  factory PartialEmoji.fromUnicode(String value) =>
+      PartialEmoji(null, value, false);
+  factory PartialEmoji.fromEmoji(Emoji emoji) =>
+      PartialEmoji(emoji.id, emoji.name, emoji.animated);
 }
