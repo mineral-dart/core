@@ -6,8 +6,8 @@ import 'package:mineral/api/common/polls/poll.dart';
 import 'package:mineral/api/common/sticker.dart';
 import 'package:mineral/api/private/private_message.dart';
 import 'package:mineral/api/private/user.dart';
-import 'package:mineral/api/server/channels/thread_channel.dart';
 import 'package:mineral/api/private/user_assets.dart';
+import 'package:mineral/api/server/channels/thread_channel.dart';
 import 'package:mineral/api/server/member.dart';
 import 'package:mineral/api/server/member_assets.dart';
 import 'package:mineral/api/server/role.dart';
@@ -32,8 +32,8 @@ import 'package:mineral/infrastructure/internals/marshaller/serializers/server_s
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_settings_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/server_subscription_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/sticker_serializer.dart';
-import 'package:mineral/infrastructure/internals/marshaller/serializers/user_assets_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/thread_serializer.dart';
+import 'package:mineral/infrastructure/internals/marshaller/serializers/user_assets_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/serializers/user_serializer.dart';
 import 'package:mineral/infrastructure/internals/marshaller/types/serializer.dart';
 

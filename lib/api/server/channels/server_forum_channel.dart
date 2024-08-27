@@ -1,12 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/api/common/channel_permission_overwrite.dart';
-import 'package:mineral/api/common/channel_properties.dart';
-import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/common/types/channel_type.dart';
-import 'package:mineral/api/server/channels/server_category_channel.dart';
-import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/api/server/enums/forum_layout_types.dart';
-import 'package:mineral/api/server/enums/sort_order_forum.dart';
 import 'package:mineral/api/server/managers/threads_manager.dart';
 
 final class ServerForumChannel extends ServerChannel {

@@ -1,10 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/api/common/channel_methods.dart';
-import 'package:mineral/api/common/channel_permission_overwrite.dart';
-import 'package:mineral/api/common/channel_properties.dart';
-import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/common/types/channel_type.dart';
-import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/managers/threads_manager.dart';
 
 final class ServerCategoryChannel extends ServerChannel {

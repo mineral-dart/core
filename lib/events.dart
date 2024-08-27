@@ -1,7 +1,6 @@
 library events;
 
 export 'package:mineral/domains/events/contracts/common/ready_event.dart';
-
 export 'package:mineral/domains/events/contracts/private/private_button_click_event.dart';
 export 'package:mineral/domains/events/contracts/private/private_channel_create_event.dart';
 export 'package:mineral/domains/events/contracts/private/private_channel_delete_event.dart';
@@ -11,7 +10,6 @@ export 'package:mineral/domains/events/contracts/private/private_dialog_submit_e
 export 'package:mineral/domains/events/contracts/private/private_message_create_event.dart';
 export 'package:mineral/domains/events/contracts/private/private_text_select_event.dart';
 export 'package:mineral/domains/events/contracts/private/private_user_select_event.dart';
-
 export 'package:mineral/domains/events/contracts/server/server_ban_add_event.dart';
 export 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
 export 'package:mineral/domains/events/contracts/server/server_button_click_event.dart';

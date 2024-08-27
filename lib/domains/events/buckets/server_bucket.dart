@@ -1,10 +1,3 @@
-import 'package:mineral/domains/events/contracts/server/server_thread_create_event.dart';
-import 'package:mineral/domains/events/contracts/server/server_thread_delete_event.dart';
-import 'package:mineral/domains/events/contracts/server/server_thread_member_add_event.dart';
-import 'package:mineral/domains/events/contracts/server/server_thread_member_remove_event.dart';
-import 'package:mineral/domains/events/contracts/server/server_thread_member_update_event.dart';
-import 'package:mineral/domains/events/contracts/server/server_thread_update_event.dart';
-import 'package:mineral/domains/events/event_bucket.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_ban_remove_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_button_click_event.dart';
@@ -29,8 +22,15 @@ import 'package:mineral/domains/events/contracts/server/server_roles_remove_even
 import 'package:mineral/domains/events/contracts/server/server_roles_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_stickers_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_text_select_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_create_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_delete_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_member_add_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_member_remove_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_member_update_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_update_event.dart';
 import 'package:mineral/domains/events/event.dart';
+import 'package:mineral/domains/events/event_bucket.dart';
 
 final class ServerBucket {
   final EventBucket _events;

@@ -32,8 +32,8 @@ import 'package:mineral/domains/events/contracts/server/server_roles_create_even
 import 'package:mineral/domains/events/contracts/server/server_roles_remove_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_roles_update_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_stickers_update_event.dart';
-import 'package:mineral/domains/events/contracts/server/server_thread_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_text_select_event.dart';
+import 'package:mineral/domains/events/contracts/server/server_thread_create_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_thread_delete_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_thread_list_sync_event.dart';
 import 'package:mineral/domains/events/contracts/server/server_thread_member_add_event.dart';

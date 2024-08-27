@@ -1,15 +1,6 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/api/common/channel_methods.dart';
-import 'package:mineral/api/common/channel_permission_overwrite.dart';
-import 'package:mineral/api/common/channel_properties.dart';
 import 'package:mineral/api/common/managers/message_manager.dart';
-import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/common/types/channel_type.dart';
-import 'package:mineral/api/common/video_quality.dart';
-import 'package:mineral/api/server/channels/server_category_channel.dart';
-import 'package:mineral/api/server/channels/server_channel.dart';
 import 'package:mineral/api/server/managers/threads_manager.dart';
-import 'package:mineral/api/server/server_message.dart';
 
 final class ServerVoiceChannel extends ServerChannel {
   final ChannelProperties _properties;
