@@ -5,8 +5,11 @@ import 'package:mineral/domains/events/types/listenable_event.dart';
 import 'package:mineral/infrastructure/commons/listenable.dart';
 import 'package:mineral/infrastructure/internals/environment/environment.dart';
 import 'package:mineral/infrastructure/kernel/kernel.dart';
+import 'package:mineral/infrastructure/services/logger/logger.dart';
 
 abstract interface class MineralClientContract {
+  LoggerContract get logger;
+
   EnvContract get environment;
 
   EventBucket get events;
@@ -31,6 +34,9 @@ final class MineralClient implements MineralClientContract {
 
   @override
   EnvContract get environment => _kernel.environment;
+
+  @override
+  LoggerContract get logger => _kernel.logger;
 
   MineralClient(KernelContract kernel)
       : events = EventBucket(kernel),
