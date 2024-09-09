@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:mineral/src/api/common/color.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
@@ -37,7 +38,7 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
   }
 
   @override
-  Future<MessageEmbed> serialize(Map<String, dynamic> json) async {
+  MessageEmbed serialize(Map<String, dynamic> json) {
     return MessageEmbed(
       title: json['title'],
       description: json['description'],
@@ -56,7 +57,7 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
           fn: () => MessageEmbedProvider.fromJson(json['provider'])),
       fields: Helper.createOrNull(
           field: json['fields'],
-          fn: () => json['fields'].map(MessageEmbedField.fromJson).toList()),
+          fn: () => List.from(json['fields']).map((element) => MessageEmbedField.fromJson(element)).toList()),
       color: Helper.createOrNull(
           field: json['color'], fn: () => Color.of(json['color'])),
     );
@@ -64,15 +65,17 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
 
   @override
   Map<String, dynamic> deserialize(MessageEmbed embed) {
+    final assets = embed.assets?.toJson();
+
     return {
       'title': embed.title,
       'description': embed.description,
       'type': embed.type,
       'url': embed.url,
       'timestamp': embed.timestamp?.toIso8601String(),
-      'assets': embed.assets?.toJson(),
       'fields': embed.fields?.map((field) => field.toJson()).toList(),
-      'color': embed.color?.toInt()
+      'color': embed.color?.toInt(),
+      ...assets!,
     };
   }
 }

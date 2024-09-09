@@ -1,7 +1,4 @@
-import 'package:mineral/src/api/common/embed/message_embed_author.dart';
-import 'package:mineral/src/api/common/embed/message_embed_color.dart';
-import 'package:mineral/src/api/common/embed/message_embed_footer.dart';
-import 'package:mineral/src/api/common/embed/message_embed_image.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/src/infrastructure/commons/helper.dart';
 
 final class MessageEmbedAssets {
@@ -10,7 +7,6 @@ final class MessageEmbedAssets {
   final MessageEmbedImage? video;
   final MessageEmbedFooter? footer;
   final MessageEmbedAuthor? author;
-  final MessageEmbedColor color;
 
   const MessageEmbedAssets({
     required this.image,
@@ -18,17 +14,15 @@ final class MessageEmbedAssets {
     required this.video,
     required this.footer,
     required this.author,
-    required this.color,
   });
 
-  Object toJson() {
+  Map<String, dynamic> toJson() {
     return {
       'image': image?.toJson(),
       'thumbnail': thumbnail?.toJson(),
       'video': video?.toJson(),
       'footer': footer?.toJson(),
       'author': author?.toJson(),
-      'color': color,
     };
   }
 
@@ -49,7 +43,6 @@ final class MessageEmbedAssets {
       author: Helper.createOrNull(
           field: json['author'],
           fn: () => MessageEmbedAuthor.fromJson(json['author'])),
-      color: json['color'],
     );
   }
 }

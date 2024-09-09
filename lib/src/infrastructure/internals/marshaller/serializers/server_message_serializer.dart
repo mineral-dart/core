@@ -50,14 +50,14 @@ final class ServerMessageSerializer
 
   @override
   Future<Map<String, dynamic>> deserialize(ServerMessage object) async {
-    final embeds = await Future.wait(object.embeds.map((message) async {
+    final embeds = object.embeds.map((message) {
       return marshaller.serializers.embed.deserialize(message);
-    }));
+    });
 
     return {
       'id': object.id,
       'content': object.content,
-      'embeds': embeds,
+      'embeds': embeds.toList(),
       'author_id': object.author.id.value,
       'channel_id': object.channel.id.value,
       'server_id': object.channel.serverId.value,
