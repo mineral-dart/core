@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:mineral/src/api/common/color.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
@@ -57,7 +56,9 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
           fn: () => MessageEmbedProvider.fromJson(json['provider'])),
       fields: Helper.createOrNull(
           field: json['fields'],
-          fn: () => List.from(json['fields']).map((element) => MessageEmbedField.fromJson(element)).toList()),
+          fn: () => List.from(json['fields'])
+              .map((element) => MessageEmbedField.fromJson(element))
+              .toList()),
       color: Helper.createOrNull(
           field: json['color'], fn: () => Color.of(json['color'])),
     );

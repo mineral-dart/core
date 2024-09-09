@@ -6,8 +6,10 @@ import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
+import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client_status.dart';
+import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
 final class ServerPart implements DataStorePart {
   final KernelContract _kernel;
@@ -33,6 +35,18 @@ final class ServerPart implements DataStorePart {
     final payload = await _kernel.marshaller.serializers.server
         .normalize(serverResponse.body);
     return _kernel.marshaller.serializers.server.serialize(payload);
+  }
+
+  Future<Server> updateServer(
+      Snowflake id, Map<String, dynamic> payload, String? reason) async {
+    final response = await _kernel.dataStore.client.patch('/guilds/$id',
+        body: payload,
+        option: HttpRequestOptionImpl(
+            headers: {DiscordHeader.auditLogReason(reason)}));
+
+    final rawServer =
+        await _kernel.marshaller.serializers.server.normalize(response.body);
+    return _kernel.marshaller.serializers.server.serialize(rawServer);
   }
 
   Future<List<T>> getChannels<T extends ServerChannel>(Snowflake id) async {
