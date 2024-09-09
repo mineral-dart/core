@@ -1,3 +1,11 @@
+# 4.0.0-dev.3
+- Move core into src folder
+- Add `api` import namespace
+- Add `container` import namespace
+- Add `events` import namespace
+- Add `services` import namespace
+- Add `utils` import namespace
+
 # 4.0.0-dev.2
 ## What's Changed
 * feat/enhance serialization by @LeadcodeDev in https://github.com/mineral-dart/core/pull/195
