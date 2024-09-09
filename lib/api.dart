@@ -38,7 +38,6 @@ export 'package:mineral/src/api/common/embed/message_embed.dart';
 export 'package:mineral/src/api/common/embed/message_embed_assets.dart';
 export 'package:mineral/src/api/common/embed/message_embed_author.dart';
 export 'package:mineral/src/api/common/embed/message_embed_builder.dart';
-export 'package:mineral/src/api/common/embed/message_embed_color.dart';
 export 'package:mineral/src/api/common/embed/message_embed_field.dart';
 export 'package:mineral/src/api/common/embed/message_embed_footer.dart';
 export 'package:mineral/src/api/common/embed/message_embed_image.dart';

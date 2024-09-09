@@ -1,7 +1,7 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
 import 'package:mineral/src/api/common/embed/message_embed_assets.dart';
 import 'package:mineral/src/api/common/embed/message_embed_author.dart';
-import 'package:mineral/src/api/common/embed/message_embed_color.dart';
 import 'package:mineral/src/api/common/embed/message_embed_field.dart';
 import 'package:mineral/src/api/common/embed/message_embed_footer.dart';
 import 'package:mineral/src/api/common/embed/message_embed_image.dart';
@@ -11,7 +11,7 @@ final class MessageEmbedBuilder {
   String? description;
   String? url;
   DateTime? timestamp;
-  MessageEmbedColor? color;
+  Color? color;
   MessageEmbedFooter? footer;
   MessageEmbedAuthor? author;
   MessageEmbedImage? image;
@@ -34,7 +34,7 @@ final class MessageEmbedBuilder {
     return this;
   }
 
-  MessageEmbedBuilder setColor(MessageEmbedColor color) {
+  MessageEmbedBuilder setColor(Color color) {
     this.color = color;
     return this;
   }
@@ -94,13 +94,13 @@ final class MessageEmbedBuilder {
         description: description,
         url: url,
         timestamp: timestamp,
+        color: color ?? Color('#000000'),
         assets: MessageEmbedAssets(
             image: image,
             thumbnail: image,
             video: image,
             footer: footer,
-            author: author,
-            color: color ?? MessageEmbedColor.of('#000000')),
+            author: author),
         fields: fields);
   }
 }

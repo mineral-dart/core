@@ -1,15 +1,7 @@
-import 'package:mineral/api/common/embed/message_embed.dart';
-import 'package:mineral/api/common/message.dart';
-import 'package:mineral/api/common/message_properties.dart';
-import 'package:mineral/api/common/snowflake.dart';
-import 'package:mineral/api/common/types/channel_type.dart';
-import 'package:mineral/api/server/channels/server_channel.dart';
-import 'package:mineral/api/server/channels/server_text_channel.dart';
-import 'package:mineral/api/server/member.dart';
-import 'package:mineral/api/server/server.dart';
-import 'package:mineral/infrastructure/internals/container/ioc_container.dart';
-import 'package:mineral/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/infrastructure/internals/datastore/parts/server_message_part.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/parts/server_message_part.dart';
 
 final class ServerMessage extends Message<ServerChannel> {
   ServerMessagePart get _dataStoreServerMessage =>
@@ -46,6 +38,7 @@ final class ServerMessage extends Message<ServerChannel> {
     _dataStoreServerMessage.update(
         id: id,
         channelId: channelId,
+        serverId: channel.serverId,
         content: content,
         embeds: embeds,
         components: components);
@@ -58,7 +51,7 @@ final class ServerMessage extends Message<ServerChannel> {
     _dataStoreServerMessage.reply(
         id: id,
         channelId: channelId,
-        serverId: channel.guildId,
+        serverId: channel.serverId,
         content: content,
         embeds: embeds,
         components: components);

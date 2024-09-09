@@ -73,6 +73,7 @@ final class MessageCreatePacket implements ListenablePacket {
     final message =
         await marshaller.serializers.serverMessage.serialize(payload);
 
+    channel.server = server;
     message.channel = channel;
 
     switch (channel) {
@@ -83,15 +84,6 @@ final class MessageCreatePacket implements ListenablePacket {
       case ServerAnnouncementChannel():
         channel.messages.list.putIfAbsent(message.id, () => message);
     }
-
-    final rawServer = await marshaller.serializers.server.deserialize(server);
-    final rawMessage =
-        await marshaller.serializers.serverMessage.deserialize(message);
-
-    await marshaller.cache.putMany({
-      marshaller.cacheKey.server(server.id): rawServer,
-      marshaller.cacheKey.message(channel.id, message.id): rawMessage,
-    });
 
     dispatch(event: Event.serverMessageCreate, params: [message]);
   }
@@ -105,16 +97,6 @@ final class MessageCreatePacket implements ListenablePacket {
     if (channel is PrivateChannel) {
       message.channel = channel;
       channel.messages.list.putIfAbsent(message.id, () => message);
-
-      final rawChannel =
-          await marshaller.serializers.channels.deserialize(channel);
-      final rawMessage =
-          await marshaller.serializers.privateMessage.deserialize(message);
-
-      await marshaller.cache.putMany({
-        marshaller.cacheKey.channel(channel.id): rawChannel,
-        marshaller.cacheKey.message(channel.id, message.id): rawMessage,
-      });
 
       dispatch(event: Event.privateMessageCreate, params: [message]);
     }
