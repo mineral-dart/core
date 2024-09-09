@@ -64,6 +64,11 @@ final class Client {
     return this;
   }
 
+  Client setLogger(LoggerContract Function(EnvContract) logger) {
+    _logger = logger(_env);
+    return this;
+  }
+
   Client setHmrDevPort(SendPort? devPort) {
     _devPort = devPort;
     _hasDefinedDevPort = true;
