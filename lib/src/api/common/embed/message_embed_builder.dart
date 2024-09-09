@@ -1,10 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/embed/message_embed.dart';
-import 'package:mineral/src/api/common/embed/message_embed_assets.dart';
-import 'package:mineral/src/api/common/embed/message_embed_author.dart';
-import 'package:mineral/src/api/common/embed/message_embed_field.dart';
-import 'package:mineral/src/api/common/embed/message_embed_footer.dart';
-import 'package:mineral/src/api/common/embed/message_embed_image.dart';
 
 final class MessageEmbedBuilder {
   String? title;
