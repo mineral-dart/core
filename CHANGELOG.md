@@ -1,3 +1,8 @@
+# 4.0.0-dev.4
+- Add server methods
+- Add server events
+- Fix missing `server_id` property (see [pull request](https://github.com/mineral-dart/core/pull/201))
+
 # 4.0.0-dev.3
 - Move core into src folder
 - Add `api` import namespace
