@@ -28,8 +28,10 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
         ? marshaller.serializers.role.serialize(rawBefore)
         : null;
 
-    final rawRole =
-        await marshaller.serializers.role.normalize(message.payload['role']);
+    final rawRole = await marshaller.serializers.role.normalize({
+      'server_id': server.id,
+      ...message.payload['role'],
+    });
     final role = await marshaller.serializers.role.serialize(rawRole);
 
     server.roles.list.update(role.id, (_) => role);
