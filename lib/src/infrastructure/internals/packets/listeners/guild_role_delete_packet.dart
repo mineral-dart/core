@@ -19,7 +19,7 @@ final class GuildRoleDeletePacket implements ListenablePacket {
     final server = await marshaller.dataStore.server
         .getServer(message.payload['guild_id']);
 
-    final roleId = message.payload['role']['id'];
+    final roleId = message.payload['role_id'];
 
     final roleCacheKey = marshaller.cacheKey.serverRole(server.id, roleId);
     final rawRole = await marshaller.cache.get(roleCacheKey);
