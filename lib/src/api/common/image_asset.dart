@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:mineral/src/api/common/types/enhanced_enum.dart';
 
 enum ImageExtension implements EnhancedEnum<String> {
@@ -14,7 +16,7 @@ enum ImageExtension implements EnhancedEnum<String> {
 }
 
 final class ImageAsset {
-  String get _baseUrl => 'https://cdn.discordapp.com';
+  static String get _baseUrl => 'https://cdn.discordapp.com';
 
   final List<String> _fragments;
   final String hash;
@@ -34,5 +36,16 @@ final class ImageAsset {
     }
 
     return '$url/${fragments.join('/')}';
+  }
+
+  factory ImageAsset.makeAsset(File file, { String? name }) {
+    if (!file.existsSync()) {
+      throw ArgumentError('File does not exist');
+    }
+
+    final hash = file.hashCode.toRadixString(16);
+    final fragments = ['attachments', 'files', hash];
+
+    return ImageAsset(fragments, hash);
   }
 }
