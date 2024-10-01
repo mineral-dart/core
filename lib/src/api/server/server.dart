@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/enums/default_message_notification.dart';
 import 'package:mineral/src/api/server/enums/explicit_content_filter.dart';
@@ -87,6 +90,26 @@ final class Server {
   Future<void> enablePremiumProgressBar(bool value, {String? reason}) async {
     await _serverPart.updateServer(
         id, {'premium_progress_bar_enabled': value}, reason);
+  }
+
+  Future<void> setIcon(File icon, {String? reason}) async {
+    final iconAsset = ImageAsset.makeAsset(icon);
+    await _serverPart.updateServer(id, {'icon': iconAsset.makeUrl()}, reason);
+  }
+
+  Future<void> setBanner(File banner, {String? reason}) async {
+    final bannerAsset = ImageAsset.makeAsset(banner);
+    await _serverPart.updateServer(id, {'banner': bannerAsset.makeUrl()}, reason);
+  }
+
+  Future<void> setSplash(File splash, {String? reason}) async {
+    final splashAsset = ImageAsset.makeAsset(splash);
+    await _serverPart.updateServer(id, {'splash': splashAsset.makeUrl()}, reason);
+  }
+
+  Future<void> setDiscoverySplash(File discoverySplash, {String? reason}) async {
+    final discoverySplashAsset = ImageAsset.makeAsset(discoverySplash);
+    await _serverPart.updateServer(id, {'discovery_splash': discoverySplashAsset.makeUrl()}, reason);
   }
 
   Future<void> setSafetyAlertsChannel(String? channelId,
