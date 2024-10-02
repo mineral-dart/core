@@ -8,6 +8,7 @@ import 'package:mineral/src/api/server/managers/role_manager.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/server_assets.dart';
+import 'package:mineral/src/api/server/server_settings.dart';
 import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/server_part.dart';
@@ -88,7 +89,6 @@ final class Server {
     await _serverPart.updateServer(
         id, {'premium_progress_bar_enabled': value}, reason);
   }
-
 
   Future<void> setSafetyAlertsChannel(String? channelId,
       {String? reason}) async {
