@@ -36,3 +36,4 @@ export 'package:mineral/src/domains/events/contracts/server/server_roles_update_
 export 'package:mineral/src/domains/events/contracts/server/server_stickers_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_text_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_update_event.dart';
+export 'package:mineral/src/domains/events/event.dart';
