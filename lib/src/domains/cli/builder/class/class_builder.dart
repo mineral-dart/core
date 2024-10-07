@@ -5,6 +5,7 @@ import 'package:mineral/src/domains/cli/builder/class/parameter_struct.dart';
 final class ClassBuilder {
   final List<String> imports = [];
   final List<ParameterStruct> implements = [];
+  final List<ParameterStruct> mixins = [];
   final List<MethodStruct> methods = [];
 
   String? className;
@@ -48,6 +49,16 @@ final class ClassBuilder {
     return this;
   }
 
+  ClassBuilder addMixin(ParameterStruct struct) {
+    mixins.add(struct);
+
+    if (struct.import case final String value when !imports.contains(value)) {
+      imports.add(value);
+    }
+
+    return this;
+  }
+
   String build() {
     final buffer = StringBuffer();
 
@@ -61,10 +72,16 @@ final class ClassBuilder {
       buffer.write(' extends $name');
     }
 
+    if (mixins.isNotEmpty) {
+      buffer
+        ..write(' with ')
+        ..write(mixins.map((element) => element.name).join(', '));
+    }
+
     if (implements.isNotEmpty) {
       buffer
         ..write(' implements ')
-        ..write(implements.fold('', (acc, implement) => '$acc${implement.name}, '));
+        ..write(implements.map((element) => element.name).join(', '));
     }
 
     buffer.write(' {');

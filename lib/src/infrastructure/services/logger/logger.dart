@@ -5,6 +5,7 @@ import 'package:logging/logging.dart' as logging;
 import 'package:mansion/mansion.dart';
 import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/src/infrastructure/internals/environment/environment.dart';
+import 'package:mineral/src/infrastructure/services/logger/log_level.dart';
 
 abstract interface class LoggerContract {
   void trace(Object message);
@@ -20,6 +21,7 @@ abstract interface class LoggerContract {
 
 final class Logger implements LoggerContract {
   static Color get primaryColor => Color.fromRGB(140, 169, 238);
+
   static Color get mutedColor => Color.brightBlack;
 
   final EnvContract _env;
@@ -29,26 +31,18 @@ final class Logger implements LoggerContract {
     final level = _env.get(AppEnv.logLevel);
     final dartEnv = _env.get(AppEnv.dartEnv);
 
-    const logLevels = {
-      'TRACE': logging.Level.FINEST,
-      'FATAL': logging.Level.SHOUT,
-      'ERROR': logging.Level.SEVERE,
-      'WARN': logging.Level.WARNING,
-      'INFO': logging.Level.INFO,
-    };
-
-    final bool logLevel = logLevels.keys.contains(level.toUpperCase());
+    final bool logLevel = LogLevel.values.map((level) => level.name).contains(level.toUpperCase());
     if (!logLevel) {
       throw Exception(
-          'Invalid LOG_LEVEL environment variable, please include in ${logLevels.keys.map((e) => e.toLowerCase())}');
+          'Invalid LOG_LEVEL environment variable, please include in ${LogLevel.values.map((level) => level.name.toLowerCase())}');
     }
 
-    logging.Logger.root.level = logLevels[level.toUpperCase()];
+    logging.Logger.root.level =
+        LogLevel.values.firstWhere((element) => element.name == level.toUpperCase()).value;
     logging.Logger.root.onRecord.listen((record) {
       final time = '[${DateFormat.Hms().format(record.time)}]';
 
-      List<Sequence> makeMessage(
-          String messageType, Color messageColor, List<Sequence> message) {
+      List<Sequence> makeMessage(String messageType, Color messageColor, List<Sequence> message) {
         return [
           SetStyles(Style.foreground(Color.brightBlack)),
           Print(time),
@@ -63,18 +57,13 @@ final class Logger implements LoggerContract {
       }
 
       final message = switch (record.level) {
-        logging.Level.FINEST => makeMessage('trace', Color.white, [
-            SetStyles(Style.foreground(Color.brightBlack)),
-            Print(record.message)
-          ]),
-        logging.Level.SHOUT =>
-          makeMessage('fatal', Color.brightRed, [Print(record.message)]),
-        logging.Level.SEVERE =>
-          makeMessage('error', Color.red, [Print(record.message)]),
-        logging.Level.WARNING =>
-          makeMessage('warn', Color.yellow, [Print(record.message)]),
-        logging.Level.INFO => makeMessage(
-            'info', Color.fromRGB(140, 169, 238), [Print(record.message)]),
+        logging.Level.FINEST => makeMessage('trace', Color.white,
+            [SetStyles(Style.foreground(Color.brightBlack)), Print(record.message)]),
+        logging.Level.SHOUT => makeMessage('fatal', Color.brightRed, [Print(record.message)]),
+        logging.Level.SEVERE => makeMessage('error', Color.red, [Print(record.message)]),
+        logging.Level.WARNING => makeMessage('warn', Color.yellow, [Print(record.message)]),
+        logging.Level.INFO =>
+          makeMessage('info', Color.fromRGB(140, 169, 238), [Print(record.message)]),
         _ => makeMessage('unknown', Color.blue, [Print(record.message)]),
       };
 

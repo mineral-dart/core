@@ -11,9 +11,9 @@ final class MethodStruct {
   MethodStruct({
     required this.name,
     required this.returnType,
-    required this.parameters,
     required this.body,
-    required this.isOverride,
-    required this.isAsync,
+    this.parameters = const [],
+    this.isOverride = false,
+    this.isAsync = false,
   });
 }
