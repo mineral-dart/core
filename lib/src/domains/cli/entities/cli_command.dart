@@ -7,14 +7,14 @@ import 'package:yaml/yaml.dart';
 abstract interface class CliCommandContract {
   String get name;
   String get description;
-  FutureOr handle(List<String> arguments);
+  FutureOr handle(List<MineralCommand> commands, List<String> arguments);
 }
 
 final class MineralCommand {
   final String name;
   final String description;
   final File? entrypoint;
-  final FutureOr Function(List<String>)? handle;
+  final FutureOr Function(List<MineralCommand> commands, List<String>)? handle;
 
   MineralCommand({
     required this.name,

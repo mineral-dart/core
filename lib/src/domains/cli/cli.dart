@@ -52,8 +52,10 @@ final class Cli {
   }
 
   Future<void> _runCommand(List<String> arguments, MineralCommand command) async {
-    if (command.handle case final Function(List<String> arguments) handle) {
-      await handle(arguments);
+    print(command.description);
+    if (command.handle
+        case final Function(List<MineralCommand> commands, List<String> arguments) handle) {
+      await handle(commands, arguments.skip(1).toList());
       return;
     }
 
@@ -67,20 +69,18 @@ final class Cli {
     }
   }
 
-  Future<void> _findCommandAndRun(List<String> arguments, String commandName) async {
-    final targetCommand = commands.firstWhereOrNull((command) => command.name == commandName);
+  Future<void> _findCommandAndRun(List<String> arguments) async {
+    final targetCommand = commands.firstWhere((command) => command.name == arguments.firstOrNull,
+        orElse: () => commands.firstWhere((command) => command.name == 'help'));
 
-    if (targetCommand case final MineralCommand command) {
-      await _runCommand(arguments, command);
-      return;
-    }
+    return _runCommand(arguments, targetCommand);
   }
 
   void registerCommand(CliCommandContract command) {
     commands.add(MineralCommand(
         name: command.name,
         description: command.description,
-        handle: (List<String> arguments) => command.handle(arguments)));
+        handle: (commands, List<String> arguments) => command.handle(commands, arguments)));
   }
 
   Future<void> handle(List<String> args) async {
@@ -89,17 +89,10 @@ final class Cli {
       false => CliContextType.global,
     };
 
-    if (args.isEmpty) {
-      stdout.writeln('No command provided');
-      return;
-    }
-
-    final [commandName, ...commandArgs] = args;
-
     if (context == CliContextType.project) {
       await _loadRemoteCommands();
     }
 
-    await _findCommandAndRun(commandArgs, commandName);
+    await _findCommandAndRun(args);
   }
 }
