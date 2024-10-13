@@ -22,7 +22,8 @@ final class GuildUpdatePacket implements ListenablePacket {
         ? await marshaller.serializers.server.serialize(rawServer)
         : null;
 
-    final rawAfter = await marshaller.serializers.server.normalize(message.payload);
+    final rawAfter =
+        await marshaller.serializers.server.normalize(message.payload);
     final after = await marshaller.serializers.server.serialize(rawAfter);
 
     dispatch(event: Event.serverUpdate, params: [before, after]);

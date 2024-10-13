@@ -38,7 +38,7 @@ final class ImageAsset {
     return '$url/${fragments.join('/')}';
   }
 
-  factory ImageAsset.makeAsset(File file, { String? name }) {
+  factory ImageAsset.makeAsset(File file, {String? name}) {
     if (!file.existsSync()) {
       throw ArgumentError('File does not exist');
     }

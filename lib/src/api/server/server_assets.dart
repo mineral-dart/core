@@ -29,24 +29,28 @@ final class ServerAsset {
     required this.discoverySplash,
   });
 
-
   Future<void> setIcon(File icon, {String? reason}) async {
     final iconAsset = ImageAsset.makeAsset(icon);
-    await _serverPart.updateServer(serverId, {'icon': iconAsset.makeUrl()}, reason);
+    await _serverPart.updateServer(
+        serverId, {'icon': iconAsset.makeUrl()}, reason);
   }
 
   Future<void> setBanner(File banner, {String? reason}) async {
     final bannerAsset = ImageAsset.makeAsset(banner);
-    await _serverPart.updateServer(serverId, {'banner': bannerAsset.makeUrl()}, reason);
+    await _serverPart.updateServer(
+        serverId, {'banner': bannerAsset.makeUrl()}, reason);
   }
 
   Future<void> setSplash(File splash, {String? reason}) async {
     final splashAsset = ImageAsset.makeAsset(splash);
-    await _serverPart.updateServer(serverId, {'splash': splashAsset.makeUrl()}, reason);
+    await _serverPart.updateServer(
+        serverId, {'splash': splashAsset.makeUrl()}, reason);
   }
 
-  Future<void> setDiscoverySplash(File discoverySplash, {String? reason}) async {
+  Future<void> setDiscoverySplash(File discoverySplash,
+      {String? reason}) async {
     final discoverySplashAsset = ImageAsset.makeAsset(discoverySplash);
-    await _serverPart.updateServer(serverId, {'discovery_splash': discoverySplashAsset.makeUrl()}, reason);
+    await _serverPart.updateServer(
+        serverId, {'discovery_splash': discoverySplashAsset.makeUrl()}, reason);
   }
 }

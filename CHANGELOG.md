@@ -1,3 +1,8 @@
+# 4.0.0-dev.5
+
+- Add event parameters
+- Prepare integration with `mineral_cli`
+
 # 4.0.0-dev.4
 - Add server methods
 - Add server events

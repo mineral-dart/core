@@ -50,7 +50,10 @@ extension JsonFile on File {
 }
 
 extension YamlWriter<K, V> on Map<K, V> {
-  void writeAsYaml({required StringBuffer buffer, required List<MapEntry> payload, int spacing = 2}) {
+  void writeAsYaml(
+      {required StringBuffer buffer,
+      required List<MapEntry> payload,
+      int spacing = 2}) {
     for (final entry in payload) {
       final spaces = ' ' * spacing;
 
