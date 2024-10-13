@@ -48,3 +48,22 @@ extension JsonFile on File {
     return constructor != null ? constructor(map) : map;
   }
 }
+
+extension YamlWriter<K, V> on Map<K, V> {
+  void writeAsYaml({required StringBuffer buffer, required List<MapEntry> payload, int spacing = 2}) {
+    for (final entry in payload) {
+      final spaces = ' ' * spacing;
+
+      if (entry.value is String) {
+        buffer.writeln('$spaces${entry.key}: ${entry.value}');
+      } else if (entry.value is Map) {
+        buffer.writeln('$spaces${entry.key}:');
+
+        writeAsYaml(
+            buffer: buffer,
+            payload: (entry.value as dynamic).entries.toList(),
+            spacing: spacing + 2);
+      }
+    }
+  }
+}

@@ -10,6 +10,7 @@ export 'package:mineral/src/infrastructure/services/http/http_interceptor.dart';
 export 'package:mineral/src/infrastructure/services/http/request.dart';
 export 'package:mineral/src/infrastructure/services/http/response.dart';
 export 'package:mineral/src/infrastructure/services/http/type/response_code.dart';
+export 'package:mineral/src/infrastructure/services/logger/log_level.dart';
 export 'package:mineral/src/infrastructure/services/logger/logger.dart';
 export 'package:mineral/src/infrastructure/services/placeholder/env_placeholder.dart';
 export 'package:mineral/src/infrastructure/services/placeholder/placeholder.dart';
