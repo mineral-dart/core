@@ -33,9 +33,7 @@ final class Bot {
   });
 
   @override
-  String toString() {
-    return '<@$id>';
-  }
+  String toString() => '<@$id>';
 
   factory Bot.fromJson(Map<String, dynamic> json) => Bot._(
         id: Snowflake(json['user']['id']),
