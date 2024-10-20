@@ -32,6 +32,9 @@ final class Bot {
     required this.application,
   });
 
+  @override
+  String toString() => '<@$id>';
+
   factory Bot.fromJson(Map<String, dynamic> json) => Bot._(
         id: Snowflake(json['user']['id']),
         discriminator: json['user']['discriminator'],

@@ -20,10 +20,13 @@ final class ServerCommandContext implements CommandContext {
   @override
   final int version;
 
+  @override
+  late final InteractionContract interaction;
+
   final Member member;
   final Channel? channel;
   final Server server;
-  late final InteractionContract interaction;
+
 
   ServerCommandContext({
     required this.id,
@@ -33,9 +36,7 @@ final class ServerCommandContext implements CommandContext {
     required this.member,
     required this.server,
     this.channel,
-  }) {
-    interaction = Interaction(token, id);
-  }
+  }): interaction = Interaction(token, id);
 
   static Future<ServerCommandContext> fromMap(
       MarshallerContract marshaller, Map<String, dynamic> payload) async {
