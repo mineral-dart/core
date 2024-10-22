@@ -1,5 +1,6 @@
 import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
+import 'package:mineral/src/api/common/message_reaction.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/infrastructure/commons/helper.dart';
 import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
@@ -10,6 +11,7 @@ final class MessageProperties<T extends Channel> {
   final String content;
   final Snowflake channelId;
   final List<MessageEmbed> embeds;
+  final List<MessageReaction> reactions;
   final DateTime createdAt;
   final DateTime? updatedAt;
 
@@ -18,6 +20,7 @@ final class MessageProperties<T extends Channel> {
     required this.content,
     required this.channelId,
     required this.embeds,
+    required this.reactions,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -33,6 +36,7 @@ final class MessageProperties<T extends Channel> {
       content: json['content'],
       channelId: json['channel_id'],
       embeds: embeds,
+      reactions: [],
       createdAt: DateTime.parse(json['timestamp']),
       updatedAt: Helper.createOrNull(
           field: json['edited_timestamp'],
