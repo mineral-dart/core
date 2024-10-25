@@ -17,7 +17,7 @@ final class ServerVoiceChannelFactory
       'type': json['type'],
       'position': json['position'],
       'name': json['name'],
-      'server_id': json['server_id'],
+      'server_id': json['guild_id'],
       'parent_id': json['parent_id'],
       'permission_overwrites': json['permission_overwrites'],
     };
