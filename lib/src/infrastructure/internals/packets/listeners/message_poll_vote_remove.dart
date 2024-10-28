@@ -8,14 +8,14 @@ import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 
-final class MessagePollVoteAdd implements ListenablePacket {
+final class MessagePollVoteRemove implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.messagePollVoteAdd;
 
   final LoggerContract logger;
   final MarshallerContract marshaller;
 
-  const MessagePollVoteAdd(this.logger, this.marshaller);
+  const MessagePollVoteRemove(this.logger, this.marshaller);
 
   @override
   Future<void> listen(ShardMessage shardMessage, DispatchEvent dispatch) async {
@@ -29,6 +29,6 @@ final class MessagePollVoteAdd implements ListenablePacket {
       memberId: shardMessage.payload['user_id'],
     );
 
-    dispatch(event: Event.serverPollVoteAdd, params: [message, member, String]);
+    dispatch(event: Event.serverPollVoteRemove, params: [message, member, String]);
   }
 }
