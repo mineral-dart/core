@@ -26,6 +26,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_member_remove
 import 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_role_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';
@@ -98,6 +99,7 @@ enum Event implements EnhancedEnum, EventType {
       ['ThreadChannel thread', 'Server server', 'Member member']),
   serverThreadListSync(ServerThreadListSyncEvent,
       ['List<ThreadChannel> threads', 'Server server']),
+  serverPollVoteAdd(ServerPollVoteAddEvent, ['Message message', 'Member member', 'String answer']),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent, ['PrivateMessage message']),

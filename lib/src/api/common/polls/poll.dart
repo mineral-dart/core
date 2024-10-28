@@ -10,6 +10,7 @@ final class Poll {
   final bool isAllowMultiple;
   final Snowflake? messageId;
   final PollLayout layout;
+  final bool isFinalized;
 
   Poll({
     required this.question,
@@ -18,5 +19,8 @@ final class Poll {
     required this.isAllowMultiple,
     this.messageId,
     this.layout = PollLayout.initial,
+    this.isFinalized = false,
   });
+
+
 }

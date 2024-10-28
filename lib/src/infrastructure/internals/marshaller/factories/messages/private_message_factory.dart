@@ -14,9 +14,12 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
         MessageProperties.fromJson(channel as PrivateChannel, json);
 
     final user = await marshaller.serializers.user.serialize(json['author']);
+    final poll = json['poll'] != null
+        ? await marshaller.serializers.poll.serialize(json['poll'])
+        : null;
 
     return PrivateMessage(messageProperties,
-        userId: json['author']['id'], author: user);
+        userId: json['author']['id'], author: user, poll: poll);
   }
 
   @override

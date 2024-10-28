@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
 import 'package:mineral/src/api/common/message.dart';
 import 'package:mineral/src/api/common/message_properties.dart';
@@ -30,9 +31,12 @@ final class PrivateMessage implements Message<PrivateChannel> {
 
   final User author;
 
+  final Poll? poll;
+
   PrivateMessage(
     this._properties, {
     required this.userId,
     required this.author,
+    required this.poll,
   });
 }

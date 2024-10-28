@@ -28,6 +28,7 @@ export 'package:mineral/src/domains/events/contracts/server/server_member_remove
 export 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
+export 'package:mineral/src/domains/events/contracts/server/server_poll_vote_add_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_role_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';
@@ -35,5 +36,4 @@ export 'package:mineral/src/domains/events/contracts/server/server_roles_remove_
 export 'package:mineral/src/domains/events/contracts/server/server_roles_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_stickers_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_text_select_event.dart';
-export 'package:mineral/src/domains/events/contracts/server/server_update_event.dart';
 export 'package:mineral/src/domains/events/event.dart';

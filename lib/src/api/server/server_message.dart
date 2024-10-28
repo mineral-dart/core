@@ -28,9 +28,12 @@ final class ServerMessage extends Message<ServerChannel> {
 
   final Member author;
 
+  final Poll? poll;
+
   ServerMessage(
     this._properties, {
     required this.author,
+    required this.poll,
   });
 
   Future<void> edit(String? content, List<MessageEmbed>? embeds,

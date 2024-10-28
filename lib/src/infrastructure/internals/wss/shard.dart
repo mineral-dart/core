@@ -107,6 +107,9 @@ final class Shard implements ShardContract {
               onceEventQueue.add(jsonDecode(message.originalContent));
             }
 
+            print(json.encode((message.content as ShardMessage).payload));
+
+
             dispatchEvent.dispatch(message);
           case OpCode.heartbeat:
             authentication.heartbeat();
