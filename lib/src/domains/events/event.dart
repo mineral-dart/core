@@ -55,61 +55,74 @@ enum Event implements EnhancedEnum, EventType {
   serverDelete(ServerDeleteEvent, ['Server? server']),
   serverMessageCreate(ServerMessageCreateEvent, ['ServerMessage message']),
   serverChannelCreate(ServerChannelCreateEvent, ['ServerChannel channel']),
-  serverChannelUpdate(ServerChannelUpdateEvent, ['ServerChannel before', 'ServerChannel after']),
+  serverChannelUpdate(ServerChannelUpdateEvent,
+      ['ServerChannel before', 'ServerChannel after']),
   serverChannelDelete(ServerChannelDeleteEvent, ['ServerChannel? channel']),
-  serverChannelPinsUpdate(ServerChannelPinsUpdateEvent, ['ServerChannel channel']),
-  privateChannelPinsUpdate(PrivateChannelPinsUpdateEvent, ['PrivateChannel channel']),
+  serverChannelPinsUpdate(
+      ServerChannelPinsUpdateEvent, ['ServerChannel channel']),
+  privateChannelPinsUpdate(
+      PrivateChannelPinsUpdateEvent, ['PrivateChannel channel']),
   serverMemberAdd(ServerMemberAddEvent, ['Member member', 'Server server']),
   serverMemberRemove(ServerMemberRemoveEvent, ['Member member']),
   serverBanAdd(ServerBanAddEvent, ['ServerBan ban']),
   serverBanRemove(ServerBanRemoveEvent, ['ServerBan ban']),
-  serverMemberUpdate(
-      ServerMemberUpdateEvent, ['ServerMember? before', 'Member after', 'Server server']),
-  serverPresenceUpdate(
-      ServerPresenceUpdateEvent, ['Member member', 'Server server', 'Presence presence']),
-  serverEmojisUpdate(ServerEmojisUpdateEvent, ['EmojiManager emojisManager', 'Server server']),
-  serverStickersUpdate(
-      ServerStickersUpdateEvent, ['StickerManager stickerManager', 'Server server']),
+  serverMemberUpdate(ServerMemberUpdateEvent,
+      ['ServerMember? before', 'Member after', 'Server server']),
+  serverPresenceUpdate(ServerPresenceUpdateEvent,
+      ['Member member', 'Server server', 'Presence presence']),
+  serverEmojisUpdate(
+      ServerEmojisUpdateEvent, ['EmojiManager emojisManager', 'Server server']),
+  serverStickersUpdate(ServerStickersUpdateEvent,
+      ['StickerManager stickerManager', 'Server server']),
   serverRoleCreate(ServerRolesCreateEvent, ['Role role', 'Server server']),
-  serverRoleUpdate(ServerRolesUpdateEvent, ['Role before', 'Role after', 'Server server']),
+  serverRoleUpdate(
+      ServerRolesUpdateEvent, ['Role before', 'Role after', 'Server server']),
   serverRoleDelete(ServerRolesDeleteEvent, ['Role? role', 'Server server']),
   serverButtonClick(ServerButtonClickEvent, ['ServerButtonContext ctx']),
   serverDialogSubmit(ServerDialogSubmitEvent, ['ServerDialogContext ctx']),
-  serverChannelSelect(
-      ServerChannelSelectEvent, ['ServerSelectContext ctx', 'List<ServerChannel> channels']),
-  serverRoleSelect(ServerRoleSelectEvent, ['ServerSelectContext ctx', 'List<Role> roles']),
-  serverMemberSelect(ServerMemberSelectEvent, ['ServerSelectContext ctx', 'List<Member> members']),
-  serverTextSelect(ServerTextSelectEvent, ['ServerSelectContext ctx', 'List<String> values']),
-  serverThreadCreate(ServerThreadCreateEvent, ['ThreadChannel channel', 'Server server']),
-  serverThreadUpdate(
-      ServerThreadUpdateEvent, ['ThreadChannel before', 'ThreadChannel after', 'Server server']),
-  serverThreadDelete(ServerThreadDeleteEvent, ['ThreadChannel thread', 'Server server']),
-  serverThreadMemberUpdate(
-      ServerThreadMemberUpdateEvent, ['ThreadChannel thread', 'Server server', 'Member member']),
-  serverThreadMemberAdd(
-      ServerThreadMemberAddEvent, ['ThreadChannel thread', 'Server server', 'Member member']),
-  serverThreadMemberRemove(
-      ServerThreadMemberRemoveEvent, ['ThreadChannel thread', 'Server server', 'Member member']),
-  serverThreadListSync(ServerThreadListSyncEvent, ['List<ThreadChannel> threads', 'Server server']),
-  serverPollVoteAdd(
-      ServerPollVoteAddEvent, ['ServerMessage message', 'Member member', 'String answer']),
-  serverPollVoteRemove(
-      ServerPollVoteRemoveEvent, ['ServerMessage message', 'Member member', 'String answer']),
+  serverChannelSelect(ServerChannelSelectEvent,
+      ['ServerSelectContext ctx', 'List<ServerChannel> channels']),
+  serverRoleSelect(
+      ServerRoleSelectEvent, ['ServerSelectContext ctx', 'List<Role> roles']),
+  serverMemberSelect(ServerMemberSelectEvent,
+      ['ServerSelectContext ctx', 'List<Member> members']),
+  serverTextSelect(ServerTextSelectEvent,
+      ['ServerSelectContext ctx', 'List<String> values']),
+  serverThreadCreate(
+      ServerThreadCreateEvent, ['ThreadChannel channel', 'Server server']),
+  serverThreadUpdate(ServerThreadUpdateEvent,
+      ['ThreadChannel before', 'ThreadChannel after', 'Server server']),
+  serverThreadDelete(
+      ServerThreadDeleteEvent, ['ThreadChannel thread', 'Server server']),
+  serverThreadMemberUpdate(ServerThreadMemberUpdateEvent,
+      ['ThreadChannel thread', 'Server server', 'Member member']),
+  serverThreadMemberAdd(ServerThreadMemberAddEvent,
+      ['ThreadChannel thread', 'Server server', 'Member member']),
+  serverThreadMemberRemove(ServerThreadMemberRemoveEvent,
+      ['ThreadChannel thread', 'Server server', 'Member member']),
+  serverThreadListSync(ServerThreadListSyncEvent,
+      ['List<ThreadChannel> threads', 'Server server']),
+  serverPollVoteAdd(ServerPollVoteAddEvent,
+      ['ServerMessage message', 'Member member', 'String answer']),
+  serverPollVoteRemove(ServerPollVoteRemoveEvent,
+      ['ServerMessage message', 'Member member', 'String answer']),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent, ['PrivateMessage message']),
   privateChannelCreate(PrivateChannelCreateEvent, ['PrivateChannel channel']),
-  privateChannelUpdate(
-      PrivateChannelUpdateEvent, ['PrivateChannel before', 'PrivateChannel after']),
+  privateChannelUpdate(PrivateChannelUpdateEvent,
+      ['PrivateChannel before', 'PrivateChannel after']),
   privateChannelDelete(PrivateChannelDeleteEvent, ['PrivateChannel? channel']),
   privateButtonClick(PrivateButtonClickEvent, ['PrivateButtonContext ctx']),
   privateDialogSubmit(PrivateDialogSubmitEvent, ['PrivateDialogContext ctx']),
-  privateUserSelect(PrivateUserSelectEvent, ['PrivateSelectContext ctx', 'List<User> users']),
-  privateTextSelect(PrivateTextSelectEvent, ['PrivateSelectContext ctx', 'List<String> values']),
-  privatePollVoteAdd(
-      PrivatePollVoteAddEvent, ['PrivateMessage message', 'User user', 'String answer']),
-  privatePollVoteRemove(
-      PrivatePollVoteRemoveEvent, ['PrivateMessage message', 'User user', 'String answer']);
+  privateUserSelect(
+      PrivateUserSelectEvent, ['PrivateSelectContext ctx', 'List<User> users']),
+  privateTextSelect(PrivateTextSelectEvent,
+      ['PrivateSelectContext ctx', 'List<String> values']),
+  privatePollVoteAdd(PrivatePollVoteAddEvent,
+      ['PrivateMessage message', 'User user', 'String answer']),
+  privatePollVoteRemove(PrivatePollVoteRemoveEvent,
+      ['PrivateMessage message', 'User user', 'String answer']);
 
   @override
   final Type value;

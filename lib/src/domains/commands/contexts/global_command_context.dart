@@ -19,13 +19,11 @@ final class GlobalCommandContext implements CommandContext {
   @override
   final int version;
 
-
   @override
   late final InteractionContract interaction;
 
   final User user;
   final Channel? channel;
-
 
   GlobalCommandContext({
     required this.id,
@@ -34,7 +32,7 @@ final class GlobalCommandContext implements CommandContext {
     required this.version,
     required this.user,
     this.channel,
-  }): interaction = Interaction(token, id);
+  }) : interaction = Interaction(token, id);
 
   static Future<GlobalCommandContext> fromMap(
       MarshallerContract marshaller, Map<String, dynamic> payload) async {

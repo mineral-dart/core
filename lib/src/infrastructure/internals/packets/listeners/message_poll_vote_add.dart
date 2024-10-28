@@ -16,13 +16,14 @@ final class MessagePollVoteAdd implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    return switch(message.payload['guild_id']) {
+    return switch (message.payload['guild_id']) {
       String() => _sendServerPoll(dispatch, message.payload),
       _ => _sendPrivatePoll(dispatch, message.payload),
     };
   }
 
-  Future<void> _sendServerPoll(DispatchEvent dispatch, Map<String, dynamic> payload) async {
+  Future<void> _sendServerPoll(
+      DispatchEvent dispatch, Map<String, dynamic> payload) async {
     final message = await marshaller.dataStore.message.getServerMessage(
       channelId: payload['channel_id'],
       messageId: payload['user_id'],
@@ -36,7 +37,8 @@ final class MessagePollVoteAdd implements ListenablePacket {
     dispatch(event: Event.serverPollVoteAdd, params: [message, member, String]);
   }
 
-  Future<void> _sendPrivatePoll(DispatchEvent dispatch, Map<String, dynamic> payload) async {
+  Future<void> _sendPrivatePoll(
+      DispatchEvent dispatch, Map<String, dynamic> payload) async {
     final message = await marshaller.dataStore.message.getPrivateMessage(
       channelId: payload['channel_id'],
       messageId: payload['user_id'],

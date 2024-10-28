@@ -27,7 +27,8 @@ final class PrivateBucket {
   void buttonClick(PrivateButtonClickEventHandler handle) =>
       _events.make(Event.privateButtonClick, handle);
 
-  void dialogSubmit(PrivateDialogSubmitEventHandler handle, {String? customId}) =>
+  void dialogSubmit(PrivateDialogSubmitEventHandler handle,
+          {String? customId}) =>
       _events.make(Event.privateDialogSubmit, handle, customId: customId);
 
   void selectUser(PrivateUserSelectEventHandler handle, {String? customId}) =>

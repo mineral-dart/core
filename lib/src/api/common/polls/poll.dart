@@ -21,6 +21,4 @@ final class Poll {
     this.layout = PollLayout.initial,
     this.isFinalized = false,
   });
-
-
 }

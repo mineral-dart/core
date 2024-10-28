@@ -5,7 +5,8 @@ import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class ServerMessageSerializer implements SerializerContract<ServerMessage> {
+final class ServerMessageSerializer
+    implements SerializerContract<ServerMessage> {
   final MarshallerContract marshaller;
 
   ServerMessageSerializer(this.marshaller);
@@ -22,11 +23,13 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
       'server_id': json['server_id'],
       'timestamp': json['timestamp'],
       'edited_timestamp': json['edited_timestamp'],
-      'poll': json['poll'] != null ? marshaller.serializers.poll.normalize(json['poll']) : null,
+      'poll': json['poll'] != null
+          ? marshaller.serializers.poll.normalize(json['poll'])
+          : null,
     };
 
-    final cacheKey =
-        marshaller.cacheKey.message(Snowflake(json['channel_id']), Snowflake(json['id']));
+    final cacheKey = marshaller.cacheKey
+        .message(Snowflake(json['channel_id']), Snowflake(json['id']));
     await marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -34,13 +37,16 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
 
   @override
   Future<ServerMessage> serialize(Map<String, dynamic> json) async {
-    final channel = await marshaller.dataStore.channel.getChannel(Snowflake(json['channel_id']));
+    final channel = await marshaller.dataStore.channel
+        .getChannel(Snowflake(json['channel_id']));
 
-    final server = await marshaller.dataStore.server.getServer(json['server_id']);
+    final server =
+        await marshaller.dataStore.server.getServer(json['server_id']);
     final member = await marshaller.dataStore.member
         .getMember(serverId: server.id, memberId: json['author_id']);
 
-    final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
+    final messageProperties =
+        MessageProperties.fromJson(channel as ServerChannel, json);
 
     final poll = json['poll'] != null
         ? await marshaller.serializers.poll.serialize(json['poll'])

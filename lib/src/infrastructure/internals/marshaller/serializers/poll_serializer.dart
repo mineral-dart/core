@@ -37,18 +37,21 @@ final class PollSerializer implements SerializerContract<Poll> {
   @override
   Poll serialize(Map<String, dynamic> json) {
     return Poll(
-        messageId: json['message_id'] != null ? Snowflake(json['message_id']) : null,
+        messageId:
+            json['message_id'] != null ? Snowflake(json['message_id']) : null,
         question: PollQuestion(content: json['question_text']),
         answers: List.from(json['answers'])
             .map((element) => PollAnswer(
                 id: element['id'] != null ? Snowflake(element['id']) : null,
                 content: element['text'],
                 emoji: Helper.createOrNull(
-                    field: element['emoji'], fn: () => PartialEmoji.fromUnicode(element['emoji']))))
+                    field: element['emoji'],
+                    fn: () => PartialEmoji.fromUnicode(element['emoji']))))
             .toList(),
         expireAt: Helper.createOrNull(
             field: json['expiry'],
-            fn: () => DateTime.parse(json['expiry']).difference(DateTime.now())),
+            fn: () =>
+                DateTime.parse(json['expiry']).difference(DateTime.now())),
         isAllowMultiple: json['allow_multiselect'],
         layout: findInEnum(PollLayout.values, json['layout_type']));
   }

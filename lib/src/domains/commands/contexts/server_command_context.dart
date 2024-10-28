@@ -27,7 +27,6 @@ final class ServerCommandContext implements CommandContext {
   final Channel? channel;
   final Server server;
 
-
   ServerCommandContext({
     required this.id,
     required this.applicationId,
@@ -36,7 +35,7 @@ final class ServerCommandContext implements CommandContext {
     required this.member,
     required this.server,
     this.channel,
-  }): interaction = Interaction(token, id);
+  }) : interaction = Interaction(token, id);
 
   static Future<ServerCommandContext> fromMap(
       MarshallerContract marshaller, Map<String, dynamic> payload) async {

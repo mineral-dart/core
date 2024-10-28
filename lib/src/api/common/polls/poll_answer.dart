@@ -7,7 +7,8 @@ final class PollAnswer {
   String content;
   PartialEmoji? emoji;
 
-  PollAnswer({required this.content, Snowflake? id, this.emoji}) : id = id ?? Snowflake('');
+  PollAnswer({required this.content, Snowflake? id, this.emoji})
+      : id = id ?? Snowflake('');
 
   Map<String, dynamic> toJson() {
     return {

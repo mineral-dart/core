@@ -6,7 +6,8 @@ import 'package:mineral/src/api/private/private_message.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class PrivateMessageSerializer implements SerializerContract<PrivateMessage> {
+final class PrivateMessageSerializer
+    implements SerializerContract<PrivateMessage> {
   final MarshallerContract marshaller;
 
   PrivateMessageSerializer(this.marshaller);
@@ -23,7 +24,8 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
       'user_id': json['author']['id'],
     };
 
-    final cacheKey = marshaller.cacheKey.message(Snowflake(json['channel_id']), json['id']);
+    final cacheKey =
+        marshaller.cacheKey.message(Snowflake(json['channel_id']), json['id']);
     await marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -41,16 +43,20 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
       content: json['content'],
       embeds: embeds,
       createdAt: DateTime.parse(json['created_at']),
-      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
       channelId: Snowflake(json['channel_id']),
     );
 
     final user = await marshaller.dataStore.user.getUser(json['user_id']);
 
-    final poll =
-        json['poll'] != null ? await marshaller.serializers.poll.serialize(json['poll']) : null;
+    final poll = json['poll'] != null
+        ? await marshaller.serializers.poll.serialize(json['poll'])
+        : null;
 
-    return PrivateMessage(properties, userId: user.id, author: user, poll: poll);
+    return PrivateMessage(properties,
+        userId: user.id, author: user, poll: poll);
   }
 
   @override

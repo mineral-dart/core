@@ -4,7 +4,8 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef ServerPollVoteAddEventHandler = FutureOr<void> Function(ServerMessage, Member, int);
+typedef ServerPollVoteAddEventHandler = FutureOr<void> Function(
+    ServerMessage, Member, int);
 
 abstract class ServerPollVoteAddEvent implements ListenableEvent {
   @override
