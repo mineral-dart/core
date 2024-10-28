@@ -3,6 +3,8 @@ import 'package:mineral/src/domains/events/contracts/private/private_channel_cre
 import 'package:mineral/src/domains/events/contracts/private/private_channel_pins_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_dialog_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
 import 'package:mineral/src/domains/events/event.dart';
@@ -25,8 +27,7 @@ final class PrivateBucket {
   void buttonClick(PrivateButtonClickEventHandler handle) =>
       _events.make(Event.privateButtonClick, handle);
 
-  void dialogSubmit(PrivateDialogSubmitEventHandler handle,
-          {String? customId}) =>
+  void dialogSubmit(PrivateDialogSubmitEventHandler handle, {String? customId}) =>
       _events.make(Event.privateDialogSubmit, handle, customId: customId);
 
   void selectUser(PrivateUserSelectEventHandler handle, {String? customId}) =>
@@ -34,4 +35,10 @@ final class PrivateBucket {
 
   void selectText(PrivateTextSelectEventHandler handle, {String? customId}) =>
       _events.make(Event.privateTextSelect, handle, customId: customId);
+
+  void pollAdd(PrivatePollVoteAddEventHandler handle) =>
+      _events.make(Event.privatePollVoteAdd, handle);
+
+  void pollRemove(PrivatePollVoteRemoveEventHandler handle) =>
+      _events.make(Event.privatePollVoteRemove, handle);
 }
