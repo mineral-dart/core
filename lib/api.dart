@@ -123,6 +123,7 @@ export 'package:mineral/src/domains/components/dialog/dialog_context.dart';
 export 'package:mineral/src/domains/components/selects/button_context.dart';
 export 'package:mineral/src/domains/components/selects/contexts/private_select_context.dart';
 export 'package:mineral/src/domains/components/selects/contexts/server_select_context.dart';
+export 'package:mineral/src/domains/global_states/global_state.dart';
 export 'package:mineral/src/domains/providers/provider.dart';
 export 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 export 'package:mineral/src/infrastructure/kernel/client.dart';

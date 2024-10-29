@@ -1,11 +1,12 @@
-import 'package:mineral/src/api/common/commands/command_contract.dart';
 import 'package:mineral/src/domains/commands/command_declaration_bucket.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
 import 'package:mineral/src/infrastructure/commons/listenable.dart';
 import 'package:mineral/src/infrastructure/internals/environment/environment.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
 import 'package:mineral/src/infrastructure/services/logger/logger.dart';
+
+import '../../../api.dart';
+import '../../domains/events/types/listenable_event.dart';
 
 abstract interface class MineralClientContract {
   LoggerContract get logger;
@@ -16,9 +17,7 @@ abstract interface class MineralClientContract {
 
   CommandBucket get commands;
 
-  void register(Listenable Function() event);
-
-  void registerCommand(CommandContract Function() command);
+  void register<T>(Listenable Function() event);
 
   Future<void> init();
 }
@@ -44,22 +43,20 @@ final class MineralClient implements MineralClientContract {
         _kernel = kernel;
 
   @override
-  void register(Listenable Function() event) {
-    final instance = event();
+  void register<T>(Listenable Function() constructor) {
+    final instance = constructor();
 
-    switch (instance) {
-      case ListenableEvent():
-        _kernel.eventListener.listen(
-            event: instance.event,
-            handle: (instance as dynamic).handle as Function,
-            customId: instance.customId);
-    }
-  }
-
-  @override
-  void registerCommand(CommandContract Function() command) {
-    final instance = command();
-    _kernel.commands.addCommand(instance.build());
+    return switch(instance) {
+      final CommandContract command => _kernel.commands.addCommand(command.build()),
+      final GlobalState state => _kernel.globalState.register<T>(state as T),
+      final Provider provider => _kernel.providerManager.register(provider),
+      final ListenableEvent event => _kernel.eventListener.listen(
+        event: event.event,
+        handle: (instance as dynamic).handle as Function,
+        customId: event.customId
+      ),
+      _ => throw UnimplementedError(),
+    };
   }
 
   @override
