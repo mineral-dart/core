@@ -4,6 +4,7 @@ import 'dart:isolate';
 import 'package:mansion/mansion.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
+import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
@@ -45,6 +46,8 @@ abstract interface class KernelContract {
   HotModuleReloading? get hmr;
 
   CommandInteractionManagerContract get commands;
+
+  GlobalStateManagerContract get globalState;
 
   Future<void> init();
 }
@@ -94,6 +97,9 @@ final class Kernel implements KernelContract {
   @override
   final CommandInteractionManagerContract commands;
 
+  @override
+  final GlobalStateManagerContract globalState;
+
   Kernel(
     this._hasDefinedDevPort,
     this._devPort, {
@@ -104,6 +110,7 @@ final class Kernel implements KernelContract {
     required this.packetListener,
     required this.eventListener,
     required this.providerManager,
+    required this.globalState,
     required this.marshaller,
     required this.dataStore,
     required this.watcherConfig,

@@ -3,6 +3,7 @@ import 'dart:isolate';
 
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
+import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
 import 'package:mineral/src/infrastructure/internals/cache/cache_provider_contract.dart';
@@ -90,8 +91,7 @@ final class Client {
     return this;
   }
 
-  Client registerProvider<T extends ProviderContract>(
-      T Function(MineralClientContract) provider) {
+  Client registerProvider<T extends ProviderContract>(T Function(MineralClientContract) provider) {
     _providers.add(provider);
     return this;
   }
@@ -126,15 +126,12 @@ final class Client {
     final intent = int.parse(_env.get(AppEnv.intent));
 
     final http = HttpClient(
-        config: HttpClientConfigImpl(
-            baseUrl: 'https://discord.com/api/v$httpVersion',
-            headers: {
-          Header.userAgent('Mineral'),
-          Header.contentType('application/json'),
-        }));
+        config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
+      Header.userAgent('Mineral'),
+      Header.contentType('application/json'),
+    }));
 
-    final shardConfig =
-        ShardingConfig(token: token, intent: intent, version: shardVersion);
+    final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
     final marshaller = Marshaller(_logger, _cache!);
     final datastore = DataStore(http);
@@ -143,12 +140,13 @@ final class Client {
     ioc
       ..bind(MarshallerContract, () => marshaller)
       ..bind(DataStoreContract, () => datastore)
-      ..bind(
-          CommandInteractionManagerContract, () => commandInteractionManager);
+      ..bind(CommandInteractionManagerContract, () => commandInteractionManager);
 
     final packetListener = PacketListener();
     final eventListener = EventListener();
     final providerManager = ProviderManager();
+    final globalStateManager = GlobalStateManager();
+    ioc.bind(GlobalStateGetter, () => globalStateManager);
 
     final kernel = Kernel(
       _hasDefinedDevPort,
@@ -161,10 +159,12 @@ final class Client {
       packetListener: packetListener,
       providerManager: providerManager,
       eventListener: eventListener,
+      globalState: globalStateManager,
       marshaller: marshaller,
       dataStore: datastore,
       commands: commandInteractionManager,
     );
+
 
     datastore.kernel = kernel;
     packetListener.kernel = kernel;
