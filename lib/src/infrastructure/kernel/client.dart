@@ -146,7 +146,7 @@ final class Client {
     final eventListener = EventListener();
     final providerManager = ProviderManager();
     final globalStateManager = GlobalStateManager();
-    ioc.bind(GlobalStateGetter, () => globalStateManager);
+    ioc.bind(GlobalStateService, () => globalStateManager);
 
     final kernel = Kernel(
       _hasDefinedDevPort,
