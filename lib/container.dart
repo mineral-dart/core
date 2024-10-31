@@ -7,6 +7,7 @@ import 'package:mineral/src/infrastructure/internals/environment/environment.dar
 import 'package:mineral/src/infrastructure/services/logger/logger.dart'
     as logger_service;
 
+export 'package:mineral/src/domains/global_states/global_state_manager.dart' show GlobalStateService;
 export 'package:mineral/src/infrastructure/internals/container/ioc_container.dart'
     show ioc;
 
@@ -20,5 +21,5 @@ mixin InjectEnvironment {
 }
 
 mixin InjectState {
-  GlobalStateGetter get state => ioc.resolve<GlobalStateGetter>();
+  GlobalStateService get state => ioc.resolve<GlobalStateService>();
 }

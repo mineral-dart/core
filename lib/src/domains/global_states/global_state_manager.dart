@@ -4,11 +4,11 @@ abstract interface class GlobalStateManagerContract {
   void register<T>(T state);
 }
 
-abstract interface class GlobalStateGetter {
+abstract interface class GlobalStateService {
   T read<T extends GlobalState>();
 }
 
-final class GlobalStateManager implements GlobalStateManagerContract, GlobalStateGetter {
+final class GlobalStateManager implements GlobalStateManagerContract, GlobalStateService {
   final Map<Type, dynamic> _providers = {};
 
   @override
