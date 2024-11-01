@@ -10,6 +10,11 @@ final class MemberVoice {
 
   MemberVoice(this._member);
 
+  /// Move the member to a different voice channel.
+  ///
+  /// ```dart
+  /// await member.voice.move(channelId, reason: 'Testing');
+  /// ```
   Future<void> move(Snowflake channelId, {String? reason}) async {
     await _memberMethods.updateMember(
       serverId: _member.server.id,
@@ -19,6 +24,11 @@ final class MemberVoice {
     );
   }
 
+  /// Disconnect the member from the voice channel.
+  ///
+  /// ```dart
+  /// await member.voice.disconnect(reason: 'Testing');
+  /// ```
   Future<void> disconnect({String? reason}) async {
     await _memberMethods.updateMember(
       serverId: _member.server.id,
@@ -28,6 +38,11 @@ final class MemberVoice {
     );
   }
 
+  /// Mute the member.
+  ///
+  /// ```dart
+  /// await member.voice.mute(reason: 'Testing');
+  /// ```
   Future<void> mute({String? reason}) async {
     await _memberMethods.updateMember(
       serverId: _member.server.id,
@@ -37,6 +52,11 @@ final class MemberVoice {
     );
   }
 
+  /// Unmute the member.
+  ///
+  /// ```dart
+  /// await member.voice.unMute(reason: 'Testing');
+  /// ```
   Future<void> unMute({String? reason}) async {
     await _memberMethods.updateMember(
       serverId: _member.server.id,
@@ -46,6 +66,11 @@ final class MemberVoice {
     );
   }
 
+  /// Deafen the member.
+  ///
+  /// ```dart
+  /// await member.voice.deafen(reason: 'Testing');
+  /// ```
   Future<void> deafen({String? reason}) async {
     await _memberMethods.updateMember(
       serverId: _member.server.id,
@@ -55,6 +80,11 @@ final class MemberVoice {
     );
   }
 
+  /// UnDeafen the member.
+  ///
+  /// ```dart
+  /// await member.voice.unDeafen(reason: 'Testing');
+  /// ```
   Future<void> unDeafen({String? reason}) async {
     await _memberMethods.updateMember(
       serverId: _member.server.id,
@@ -63,4 +93,6 @@ final class MemberVoice {
       reason: reason,
     );
   }
+
+
 }

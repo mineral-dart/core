@@ -51,20 +51,51 @@ final class ServerAnnouncementChannel extends ServerChannel {
   ServerAnnouncementChannel(this._properties)
       : _methods = ChannelMethods(_properties.id);
 
+
+  /// Sets the name of the channel.
+  ///
+  /// ```dart
+  /// await channel.setName('new-name');
+  /// ```
   Future<void> setName(String name, {String? reason}) =>
       _methods.setName(name, reason);
 
+  /// Sets the description of the channel.
+  ///
+  /// ```dart
+  /// await channel.setDescription('new-description');
+  /// ```
   Future<void> setDescription(String description, {String? reason}) =>
       _methods.setDescription(description, reason);
 
+  /// Sets the category of the channel.
+  ///
+  /// ```dart
+  /// await channel.setCategory('new-category-id');
+  /// ```
   Future<void> setCategory(String categoryId, {String? reason}) =>
       _methods.setCategory(categoryId, reason);
 
+  /// Sets the position of the channel.
+  ///
+  /// ```dart
+  /// await channel.setPosition(1);
+  /// ```
   Future<void> setPosition(int position, {String? reason}) =>
       _methods.setPosition(position, reason);
 
+  /// Sets the nsfw of the channel.
+  ///
+  /// ```dart
+  /// await channel.setNsfw(true);
+  /// ```
   Future<void> setNsfw(bool nsfw, {String? reason}) =>
       _methods.setNsfw(nsfw, reason);
 
+  /// Deletes the channel.
+  ///
+  /// ```dart
+  /// await channel.delete();
+  /// ```
   Future<void> delete({String? reason}) => _methods.delete(reason);
 }

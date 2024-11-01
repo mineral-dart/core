@@ -29,28 +29,43 @@ final class ServerAsset {
     required this.discoverySplash,
   });
 
+  /// Set the server's icon.
+  ///
+  /// ```dart
+  /// await server.assets.setIcon(File('icon.png'), reason: 'Testing');
+  /// ```
   Future<void> setIcon(File icon, {String? reason}) async {
     final iconAsset = ImageAsset.makeAsset(icon);
-    await _serverPart.updateServer(
-        serverId, {'icon': iconAsset.makeUrl()}, reason);
+    await _serverPart.updateServer(serverId, {'icon': iconAsset.makeUrl()}, reason);
   }
 
+  /// Set the server's banner.
+  ///
+  /// ```dart
+  /// await server.assets.setBanner(File('banner.png'), reason: 'Testing');
+  /// ```
   Future<void> setBanner(File banner, {String? reason}) async {
     final bannerAsset = ImageAsset.makeAsset(banner);
-    await _serverPart.updateServer(
-        serverId, {'banner': bannerAsset.makeUrl()}, reason);
+    await _serverPart.updateServer(serverId, {'banner': bannerAsset.makeUrl()}, reason);
   }
 
+  /// Set the server's splash.
+  ///
+  /// ```dart
+  /// await server.assets.setSplash(File('splash.png'), reason: 'Testing');
+  /// ```
   Future<void> setSplash(File splash, {String? reason}) async {
     final splashAsset = ImageAsset.makeAsset(splash);
-    await _serverPart.updateServer(
-        serverId, {'splash': splashAsset.makeUrl()}, reason);
+    await _serverPart.updateServer(serverId, {'splash': splashAsset.makeUrl()}, reason);
   }
 
-  Future<void> setDiscoverySplash(File discoverySplash,
-      {String? reason}) async {
+  /// Set the server's discovery splash.
+  ///
+  /// ```dart
+  /// await server.assets.setDiscoverySplash(File('discovery_splash.png'), reason: 'Testing');
+  /// ```
+  Future<void> setDiscoverySplash(File discoverySplash, {String? reason}) async {
     final discoverySplashAsset = ImageAsset.makeAsset(discoverySplash);
-    await _serverPart.updateServer(
-        serverId, {'discovery_splash': discoverySplashAsset.makeUrl()}, reason);
+    await _serverPart.updateServer(serverId, {'discovery_splash': discoverySplashAsset.makeUrl()}, reason);
   }
 }

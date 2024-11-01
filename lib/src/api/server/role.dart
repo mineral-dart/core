@@ -36,6 +36,13 @@ final class Role {
     required this.unicodeEmoji,
   });
 
+  // todo: setPermissions, setPositions methods
+
+  /// Set the role's name.
+  ///
+  /// ```dart
+  ///  await role.setName('New Role Name', reason: 'Testing');
+  ///  ```
   Future<void> setName(String name, String? reason) async {
     await dataStoreRole.updateRole(
       id: id,
@@ -45,6 +52,11 @@ final class Role {
     );
   }
 
+  /// Set the role's color.
+  ///
+  /// ```dart
+  /// await role.setColor(Color.fromRGB(255, 0, 0), reason: 'Testing');
+  /// ```
   Future<void> setColor(Color color, String? reason) async {
     await dataStoreRole.updateRole(
       id: id,
@@ -54,6 +66,11 @@ final class Role {
     );
   }
 
+  /// Set the role's hoist status.
+  ///
+  /// ```dart
+  ///  await role.setHoist(true, reason: 'Testing');
+  /// ```
   Future<void> setHoist(bool hoist, String? reason) async {
     await dataStoreRole.updateRole(
       id: id,
@@ -63,6 +80,11 @@ final class Role {
     );
   }
 
+  /// Set the role's emoji.
+  ///
+  /// ```dart
+  /// await role.setUnicodeEmoji('👑', reason: 'Testing');
+  /// ```
   Future<void> setUnicodeEmoji(String emoji, String? reason) async {
     await dataStoreRole.updateRole(
       id: id,
@@ -72,6 +94,11 @@ final class Role {
     );
   }
 
+  /// Enable or disable the role's mentionable status.
+  ///
+  /// ```dart
+  /// await role.setMentionable(true, reason: 'Testing');
+  /// ```
   Future<void> setMentionable(bool value, String? reason) async {
     await dataStoreRole.updateRole(
       id: id,
@@ -81,6 +108,11 @@ final class Role {
     );
   }
 
+  /// Delete this role.
+  ///
+  /// ```dart
+  /// await role.delete('Testing');
+  /// ```
   Future<void> delete(String? reason) async {
     await dataStoreRole.deleteRole(id: id, guildId: server.id, reason: reason);
   }

@@ -41,17 +41,46 @@ final class Member {
   final MemberFlagsManager flags;
   Presence? presence;
 
+  /// Check if the member can bypass verification.
+  ///
+  /// ```dart
+  /// if (member.canByPassVerification()) {
+  ///  print('Member can bypass verification');
+  /// }
   bool canByPassVerification() =>
       flags.list.contains(MemberFlag.bypassedVerification);
 
+  /// Check if the member has completed onboarding.
+  ///
+  /// ```dart
+  /// if (member.hasCompletedOnboarding()) {
+  ///   print('Member has completed onboarding');
+  /// }
   bool hasCompletedOnboarding() =>
       flags.list.contains(MemberFlag.completedOnboarding);
 
+  /// Check if the member has started onboarding.
+  ///
+  /// ```dart
+  /// if (member.hasStartedOnboarding()) {
+  ///    print('Member has started onboarding');
+  /// }
   bool hasStartedOnboarding() =>
       flags.list.contains(MemberFlag.startedOnboarding);
 
+  /// Check if the member has already rejoined the server.
+  ///
+  /// ```dart
+  /// if (member.hasRejoined()) {
+  ///    print('Member has rejoined the server');
+  /// }
   bool hasRejoined() => flags.list.contains(MemberFlag.didRejoin);
 
+  /// Change the member's username.
+  ///
+  /// ```dart
+  /// await member.setUsername('new-username', 'Testing');
+  /// ```
   Future<void> setUsername(String value, String? reason) =>
       _memberMethods.updateMember(
           serverId: server.id,
@@ -59,6 +88,11 @@ final class Member {
           payload: {'username': value},
           reason: reason);
 
+  /// Change the member's nickname.
+  ///
+  /// ```dart
+  /// await member.setNickname('new-nickname', 'Testing');
+  /// ```
   Future<void> setNickname(String value, String? reason) =>
       _memberMethods.updateMember(
           serverId: server.id,
@@ -66,12 +100,27 @@ final class Member {
           payload: {'nick': value},
           reason: reason);
 
+  /// Ban the member.
+  ///
+  /// ```dart
+  /// await member.ban(deleteSince: Duration(days: 7), reason: 'Testing');
+  /// ```
   Future<void> ban({Duration? deleteSince, String? reason}) => _memberMethods
       .banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
 
+  /// Kick the member.
+  ///
+  /// ```dart
+  /// await member.kick(reason: 'Testing');
+  /// ```
   Future<void> kick({String? reason}) => _memberMethods.kickMember(
       serverId: server.id, memberId: id, reason: reason);
 
+  /// Exclude the member.
+  ///
+  /// ```dart
+  /// await member.exclude(duration: Duration(days: 7), reason: 'Testing');
+  /// ```
   Future<void> exclude({Duration? duration, String? reason}) {
     final timeout =
         duration != null ? DateTime.now().add(duration) : DateTime.now();
@@ -83,27 +132,56 @@ final class Member {
         payload: {'communication_disabled_until': timeout.toIso8601String()});
   }
 
+  /// Unexclude the member.
+  ///
+  /// ```dart
+  /// await member.unExclude(reason: 'Testing');
+  /// ```
   Future<void> unExclude({String? reason}) => _memberMethods.updateMember(
       serverId: server.id,
       memberId: id,
       reason: reason,
       payload: {'communication_disabled_until': null});
 
+  /// Enable the member's MFA. This member will be required to verify their account for accessing the server.
+  ///
+  /// ```dart
+  /// await member.enableMfa(reason: 'Testing');
+  /// ```
   Future<void> enableMfa({String? reason}) => _memberMethods.updateMember(
       serverId: server.id,
       memberId: id,
       payload: {'mfa_enable': true},
       reason: reason);
 
+  /// Disable the member's MFA.
+  ///
+  /// ```dart
+  /// await member.disableMfa(reason: 'Testing');
+  /// ```
   Future<void> disableMfa({String? reason}) => _memberMethods.updateMember(
       serverId: server.id,
       memberId: id,
       payload: {'mfa_enable': false},
       reason: reason);
 
+  /// Toggle the member's MFA.
+  ///
+  /// ```dart
+  /// await member.toggleMfa(reason: 'Testing');
+  /// ```
   Future<void> toggleMfa({String? reason}) =>
       mfaEnabled ? disableMfa(reason: reason) : enableMfa(reason: reason);
 
+  /// Edit the member.
+  ///
+  /// ```dart
+  /// await member.edit(MemberBuilder({
+  ///   nickname: 'new-nickname',
+  ///   isMuted: true,
+  ///   ...
+  /// }), reason: 'Testing');
+  /// ```
   Future<void> edit(MemberBuilder builder, {String? reason}) =>
       _memberMethods.updateMember(
           serverId: server.id,
