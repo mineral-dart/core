@@ -47,6 +47,7 @@ final class Member {
   /// if (member.canByPassVerification()) {
   ///  print('Member can bypass verification');
   /// }
+  ///```
   bool canByPassVerification() =>
       flags.list.contains(MemberFlag.bypassedVerification);
 
@@ -56,6 +57,7 @@ final class Member {
   /// if (member.hasCompletedOnboarding()) {
   ///   print('Member has completed onboarding');
   /// }
+  ///```
   bool hasCompletedOnboarding() =>
       flags.list.contains(MemberFlag.completedOnboarding);
 
@@ -65,6 +67,7 @@ final class Member {
   /// if (member.hasStartedOnboarding()) {
   ///    print('Member has started onboarding');
   /// }
+  ///```
   bool hasStartedOnboarding() =>
       flags.list.contains(MemberFlag.startedOnboarding);
 
@@ -74,6 +77,7 @@ final class Member {
   /// if (member.hasRejoined()) {
   ///    print('Member has rejoined the server');
   /// }
+  ///```
   bool hasRejoined() => flags.list.contains(MemberFlag.didRejoin);
 
   /// Change the member's username.
