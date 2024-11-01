@@ -38,11 +38,26 @@ final class ServerCategoryChannel extends ServerChannel {
   ServerCategoryChannel(this._properties)
       : _methods = ChannelMethods(_properties.id);
 
+  /// Sets the name of the channel.
+  ///
+  /// ```dart
+  /// await channel.setName('new-name');
+  /// ```
   Future<void> setName(String name, {String? reason}) =>
       _methods.setName(name, reason);
 
+  /// Sets the position of the channel.
+  ///
+  /// ```dart
+  /// await channel.setPosition(1);
+  /// ```
   Future<void> setPosition(int position, {String? reason}) =>
       _methods.setPosition(position, reason);
 
+  /// Deletes the channel.
+  ///
+  /// ```dart
+  /// await channel.delete();
+  /// ```
   Future<void> delete({String? reason}) => _methods.delete(reason);
 }
