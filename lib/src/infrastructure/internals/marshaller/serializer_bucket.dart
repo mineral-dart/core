@@ -88,8 +88,7 @@ final class SerializerBucket {
         serversAsset = ServerAssetsSerializer(),
         emojis = EmojiSerializer(),
         sticker = StickerSerializer(),
-        channelPermissionOverwrite =
-            ChannelPermissionOverwriteSerializer(),
+        channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(),
         serverMessage = ServerMessageSerializer(),
         privateMessage = PrivateMessageSerializer(),
         embed = EmbedSerializer(),

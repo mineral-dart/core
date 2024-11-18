@@ -1,4 +1,3 @@
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_delete_packet.dart';
@@ -32,7 +31,6 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_me
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_dispatcher.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 
 abstract interface class PacketListenerContract {
   PacketDispatcherContract get dispatcher;
@@ -46,8 +44,7 @@ final class PacketListener implements PacketListenerContract {
 
   late final KernelContract kernel;
 
-  void subscribe(
-      ListenablePacket Function() factory) {
+  void subscribe(ListenablePacket Function() factory) {
     final packet = factory();
     dispatcher.listen(packet.packetType, packet.listen);
   }

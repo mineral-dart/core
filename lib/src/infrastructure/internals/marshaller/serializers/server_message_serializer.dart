@@ -7,7 +7,8 @@ import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class ServerMessageSerializer implements SerializerContract<ServerMessage> {
+final class ServerMessageSerializer
+    implements SerializerContract<ServerMessage> {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
@@ -26,8 +27,8 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
       'edited_timestamp': json['edited_timestamp'],
     };
 
-    final cacheKey =
-        _marshaller.cacheKey.message(Snowflake(json['channel_id']), Snowflake(json['id']));
+    final cacheKey = _marshaller.cacheKey
+        .message(Snowflake(json['channel_id']), Snowflake(json['id']));
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -35,13 +36,15 @@ final class ServerMessageSerializer implements SerializerContract<ServerMessage>
 
   @override
   Future<ServerMessage> serialize(Map<String, dynamic> json) async {
-    final channel = await _dataStore.channel.getChannel(Snowflake(json['channel_id']));
+    final channel =
+        await _dataStore.channel.getChannel(Snowflake(json['channel_id']));
 
     final server = await _dataStore.server.getServer(json['server_id']);
-    final member =
-        await _dataStore.member.getMember(serverId: server.id, memberId: json['author_id']);
+    final member = await _dataStore.member
+        .getMember(serverId: server.id, memberId: json['author_id']);
 
-    final messageProperties = MessageProperties.fromJson(channel as ServerChannel, json);
+    final messageProperties =
+        MessageProperties.fromJson(channel as ServerChannel, json);
 
     return ServerMessage(messageProperties, author: member);
   }

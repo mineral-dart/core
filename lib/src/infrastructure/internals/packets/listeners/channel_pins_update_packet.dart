@@ -21,17 +21,21 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final rawChannel = await _marshaller.serializers.channels.normalize(message.payload);
-    final channel = await _marshaller.serializers.channels.serialize(rawChannel);
+    final rawChannel =
+        await _marshaller.serializers.channels.normalize(message.payload);
+    final channel =
+        await _marshaller.serializers.channels.serialize(rawChannel);
 
     return switch (channel) {
       ServerChannel() => registerServerChannelPins(channel, dispatch),
       PrivateChannel() => registerPrivateChannelPins(channel, dispatch),
-      _ => _logger.warn("Unknown channel type: $channel contact Mineral's core team.")
+      _ => _logger
+          .warn("Unknown channel type: $channel contact Mineral's core team.")
     };
   }
 
-  Future<void> registerServerChannelPins(ServerChannel channel, DispatchEvent dispatch) async {
+  Future<void> registerServerChannelPins(
+      ServerChannel channel, DispatchEvent dispatch) async {
     final server = await _dataStore.server.getServer(channel.serverId);
 
     server.channels.list.update(channel.id, (_) => channel);
@@ -44,7 +48,8 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
     dispatch(event: Event.serverChannelPinsUpdate, params: [server, channel]);
   }
 
-  Future<void> registerPrivateChannelPins(PrivateChannel channel, DispatchEvent dispatch) async {
+  Future<void> registerPrivateChannelPins(
+      PrivateChannel channel, DispatchEvent dispatch) async {
     dispatch(event: Event.privateChannelPinsUpdate, params: [channel]);
   }
 }

@@ -8,7 +8,8 @@ import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class PrivateMessageSerializer implements SerializerContract<PrivateMessage> {
+final class PrivateMessageSerializer
+    implements SerializerContract<PrivateMessage> {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
@@ -25,7 +26,8 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
       'user_id': json['author']['id'],
     };
 
-    final cacheKey = _marshaller.cacheKey.message(Snowflake(json['channel_id']), json['id']);
+    final cacheKey =
+        _marshaller.cacheKey.message(Snowflake(json['channel_id']), json['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -43,7 +45,9 @@ final class PrivateMessageSerializer implements SerializerContract<PrivateMessag
       content: json['content'],
       embeds: embeds,
       createdAt: DateTime.parse(json['created_at']),
-      updatedAt: json['updated_at'] != null ? DateTime.parse(json['updated_at']) : null,
+      updatedAt: json['updated_at'] != null
+          ? DateTime.parse(json['updated_at'])
+          : null,
       channelId: Snowflake(json['channel_id']),
     );
 

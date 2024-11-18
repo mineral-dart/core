@@ -7,7 +7,6 @@ import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart'
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 
 final class ThreadUpdatePacket implements ListenablePacket {
   @override
@@ -21,8 +20,7 @@ final class ThreadUpdatePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload;
 
-    final server =
-        await _dataStore.server.getServer(payload['guild_id']);
+    final server = await _dataStore.server.getServer(payload['guild_id']);
     final threadCacheKey = _marshaller.cacheKey.thread(payload['id']);
 
     final beforeRaw = await _marshaller.cache.getOrFail(threadCacheKey);

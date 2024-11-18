@@ -20,7 +20,8 @@ final class ChannelDeletePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final rawChannel =
         await _marshaller.serializers.channels.normalize(message.payload);
-    final channel = await _marshaller.serializers.channels.serialize(rawChannel);
+    final channel =
+        await _marshaller.serializers.channels.serialize(rawChannel);
 
     switch (channel) {
       case ServerChannel():
@@ -30,8 +31,7 @@ final class ChannelDeletePacket implements ListenablePacket {
 
   Future<void> registerServerChannel(
       ServerChannel channel, DispatchEvent dispatch) async {
-    final server =
-        await _dataStore.server.getServer(channel.serverId);
+    final server = await _dataStore.server.getServer(channel.serverId);
     final serverCacheKey = _marshaller.cacheKey.server(server.id);
     final channelCacheKey = _marshaller.cacheKey.channel(channel.id);
 

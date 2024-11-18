@@ -93,6 +93,4 @@ final class MemberVoice {
       reason: reason,
     );
   }
-
-
 }

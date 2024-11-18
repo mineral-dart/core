@@ -46,15 +46,15 @@ final class MineralClient implements MineralClientContract {
   void register<T>(Listenable Function() constructor) {
     final instance = constructor();
 
-    return switch(instance) {
-      final CommandContract command => _kernel.commands.addCommand(command.build()),
+    return switch (instance) {
+      final CommandContract command =>
+        _kernel.commands.addCommand(command.build()),
       final GlobalState state => _kernel.globalState.register<T>(state as T),
       final Provider provider => _kernel.providerManager.register(provider),
       final ListenableEvent event => _kernel.eventListener.listen(
-        event: event.event,
-        handle: (instance as dynamic).handle as Function,
-        customId: event.customId
-      ),
+          event: event.event,
+          handle: (instance as dynamic).handle as Function,
+          customId: event.customId),
       _ => throw UnimplementedError(),
     };
   }

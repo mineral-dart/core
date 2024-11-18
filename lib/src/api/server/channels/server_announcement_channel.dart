@@ -51,7 +51,6 @@ final class ServerAnnouncementChannel extends ServerChannel {
   ServerAnnouncementChannel(this._properties)
       : _methods = ChannelMethods(_properties.id);
 
-
   /// Sets the name of the channel.
   ///
   /// ```dart
