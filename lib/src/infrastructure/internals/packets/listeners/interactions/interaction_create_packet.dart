@@ -8,11 +8,6 @@ final class InteractionCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.interactionCreate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  InteractionCreatePacket(this.logger, this.marshaller);
-
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     // TODO: Implement global interaction handling

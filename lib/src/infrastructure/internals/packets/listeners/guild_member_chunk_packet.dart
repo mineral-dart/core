@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/presence.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -9,23 +10,20 @@ final class GuildMemberChunkPacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.guildMemberChunk;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  const GuildMemberChunkPacket(this.logger, this.marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server
+    final server = await _marshaller.dataStore.server
         .getServer(message.payload['guild_id']);
 
     final rawMembers =
         await List.from(message.payload['members']).map((element) async {
-      return marshaller.serializers.member.normalize(element);
+      return _marshaller.serializers.member.normalize(element);
     }).wait;
 
     await rawMembers.nonNulls.map((element) async {
-      final member = await marshaller.serializers.member.serialize(element);
+      final member = await _marshaller.serializers.member.serialize(element);
       server.members.list
           .update(member.id, (value) => member, ifAbsent: () => member);
     }).wait;
@@ -37,9 +35,9 @@ final class GuildMemberChunkPacket implements ListenablePacket {
       server.members.list[rawPresence['user']['id']]!.presence = presence;
     }
 
-    final rawServer = await marshaller.serializers.server.deserialize(server);
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
+    final rawServer = await _marshaller.serializers.server.deserialize(server);
+    final serverCacheKey = _marshaller.cacheKey.server(server.id);
 
-    await marshaller.cache.put(serverCacheKey, rawServer);
+    await _marshaller.cache.put(serverCacheKey, rawServer);
   }
 }

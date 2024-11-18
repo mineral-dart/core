@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/server/managers/emoji_manager.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
@@ -10,24 +11,21 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.guildEmojisUpdate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  const GuildEmojisUpdatePacket(this.logger, this.marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server
+    final server = await _marshaller.dataStore.server
         .getServer(message.payload['guild_id']);
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
+    final serverCacheKey = _marshaller.cacheKey.server(server.id);
 
     final rawEmojis = await List.from(message.payload['emojis'])
         .map(
-            (element) async => marshaller.serializers.emojis.normalize(element))
+            (element) async => _marshaller.serializers.emojis.normalize(element))
         .wait;
 
     final emojis = await rawEmojis.map((element) async {
-      return marshaller.serializers.emojis.serialize(element);
+      return _marshaller.serializers.emojis.serialize(element);
     }).wait;
 
     final EmojiManager emojiManager =
@@ -35,8 +33,8 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
 
     server.assets.emojis = emojiManager;
 
-    final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(serverCacheKey, rawServer);
+    final rawServer = await _marshaller.serializers.server.deserialize(server);
+    await _marshaller.cache.put(serverCacheKey, rawServer);
 
     dispatch(event: Event.serverEmojisUpdate, params: [emojiManager, server]);
   }

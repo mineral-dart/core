@@ -12,17 +12,15 @@ final class GuildCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.guildCreate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  const GuildCreatePacket(this.logger, this.marshaller);
+  LoggerContract get _logger => ioc.resolve<LoggerContract>();
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final rawServer =
-        await marshaller.serializers.server.normalize(message.payload);
+        await _marshaller.serializers.server.normalize(message.payload);
 
-    final server = await marshaller.serializers.server.serialize(rawServer);
+    final server = await _marshaller.serializers.server.serialize(rawServer);
 
     final bot = ioc.resolve<Bot>();
 

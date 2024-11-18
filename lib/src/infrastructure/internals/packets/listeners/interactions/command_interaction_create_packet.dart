@@ -12,11 +12,6 @@ final class CommandInteractionCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.interactionCreate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  CommandInteractionCreatePacket(this.logger, this.marshaller);
-
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final interactionManager = ioc.resolve<CommandInteractionManagerContract>();

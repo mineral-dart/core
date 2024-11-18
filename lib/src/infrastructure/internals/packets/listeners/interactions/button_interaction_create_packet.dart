@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/components/buttons/button_type.dart';
 import 'package:mineral/src/api/common/components/component_type.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
@@ -16,10 +17,8 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.interactionCreate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  ButtonInteractionCreatePacket(this.logger, this.marshaller);
+  LoggerContract get _logger => ioc.resolve<LoggerContract>();
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
@@ -38,7 +37,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
           .firstWhereOrNull((e) => e.value == metadata['type']);
 
       if (type == null) {
-        logger.warn('Component type ${metadata['type']} not found');
+        _logger.warn('Component type ${metadata['type']} not found');
         return;
       }
 
@@ -51,7 +50,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _handleServerButton(
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final message = await marshaller.dataStore.message.getServerMessage(
+    final message = await _marshaller.dataStore.message.getServerMessage(
         messageId: Snowflake(payload['message']['id']),
         channelId: Snowflake(payload['channel_id']));
 
@@ -60,7 +59,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
         ButtonType.values.firstWhereOrNull((e) => e.value == metadata['type']);
 
     if (type == null) {
-      logger.warn('Button type ${metadata['type']} not found');
+      _logger.warn('Button type ${metadata['type']} not found');
       return;
     }
 
@@ -82,7 +81,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _handlePrivateButton(
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final message = await marshaller.dataStore.message.getPrivateMessage(
+    final message = await _marshaller.dataStore.message.getPrivateMessage(
         messageId: Snowflake(payload['message']['id']),
         channelId: Snowflake(payload['channel_id']));
 
@@ -91,7 +90,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
         ButtonType.values.firstWhereOrNull((e) => e.value == metadata['type']);
 
     if (type == null) {
-      logger.warn('Button type ${metadata['type']} not found');
+      _logger.warn('Button type ${metadata['type']} not found');
       return;
     }
 

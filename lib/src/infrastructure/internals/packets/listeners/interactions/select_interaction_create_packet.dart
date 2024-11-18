@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/components/component_type.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
@@ -19,27 +20,25 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.interactionCreate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
+  LoggerContract get _logger => ioc.resolve<LoggerContract>();
 
-  SelectInteractionCreatePacket(this.logger, this.marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final type = InteractionType.values
-        .firstWhereOrNull((e) => e.value == message.payload['type']);
+    final type = InteractionType.values.firstWhereOrNull((e) => e.value == message.payload['type']);
 
-    final componentType = ComponentType.values.firstWhereOrNull(
-        (e) => e.value == message.payload['data']['component_type']);
+    final componentType = ComponentType.values
+        .firstWhereOrNull((e) => e.value == message.payload['data']['component_type']);
 
     if (type == InteractionType.messageComponent &&
         ComponentType.selectMenus.contains(componentType)) {
-      final selectMenuType = ComponentType.values.firstWhereOrNull(
-          (e) => e.value == message.payload['data']['component_type']);
+      final selectMenuType = ComponentType.values
+          .firstWhereOrNull((e) => e.value == message.payload['data']['component_type']);
 
       final ctx = await switch (message.payload['guild_id']) {
-        String() => ServerSelectContext.fromMap(marshaller, message.payload),
-        _ => PrivateSelectContext.fromMap(marshaller, message.payload),
+        String() => ServerSelectContext.fromMap(_marshaller, message.payload),
+        _ => PrivateSelectContext.fromMap(_marshaller, message.payload),
       };
 
       switch (selectMenuType) {
@@ -52,23 +51,22 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
         case ComponentType.textSelectMenu:
           _dispatchTextSelectMenu(ctx, message.payload, dispatch);
         default:
-          logger.warn('Select menu type $selectMenuType not found');
+          _logger.warn('Select menu type $selectMenuType not found');
       }
     }
   }
 
-  Future<void> _dispatchChannelSelectMenu(SelectContext ctx,
-      Map<String, dynamic> payload, DispatchEvent dispatch) async {
+  Future<void> _dispatchChannelSelectMenu(
+      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final resolvedData = payload['data']['resolved'];
     final channelIds = Map.from(resolvedData['channels']).keys;
 
     Future<List<T>> resolveChannels<T extends Channel>() {
       return Future.wait(channelIds.map((id) async {
-        final cacheKey = marshaller.cacheKey.channel(Snowflake(id));
-        final rawChannel = await marshaller.cache.getOrFail(cacheKey);
+        final cacheKey = _marshaller.cacheKey.channel(Snowflake(id));
+        final rawChannel = await _marshaller.cache.getOrFail(cacheKey);
 
-        return marshaller.serializers.channels.serialize(rawChannel)
-            as Future<T>;
+        return _marshaller.serializers.channels.serialize(rawChannel) as Future<T>;
       }));
     }
 
@@ -81,21 +79,20 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
           event: Event.serverChannelSelect,
           params: [ctx, await resolveChannels<Channel>()],
           constraint: (String? customId) => customId == ctx.customId),
-      _ => logger.warn('Select context $ctx not found'),
+      _ => _logger.warn('Select context $ctx not found'),
     };
   }
 
-  Future<void> _dispatchRoleSelectMenu(SelectContext ctx,
-      Map<String, dynamic> payload, DispatchEvent dispatch) async {
+  Future<void> _dispatchRoleSelectMenu(
+      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final resolvedData = payload['data']['resolved'];
     final roleIds = Map.from(resolvedData['roles']).keys;
 
     final List<Role> resolvedRoles = await Future.wait(roleIds.map((id) async {
-      final cacheKey =
-          marshaller.cacheKey.serverRole(payload['guild_id'], Snowflake(id));
-      final rawRole = await marshaller.cache.getOrFail(cacheKey);
+      final cacheKey = _marshaller.cacheKey.serverRole(payload['guild_id'], Snowflake(id));
+      final rawRole = await _marshaller.cache.getOrFail(cacheKey);
 
-      return marshaller.serializers.role.serialize(rawRole);
+      return _marshaller.serializers.role.serialize(rawRole);
     }));
 
     dispatch(
@@ -104,8 +101,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
         constraint: (String? customId) => customId == ctx.customId);
   }
 
-  Future<void> _dispatchUserSelectMenu(SelectContext ctx,
-      Map<String, dynamic> payload, DispatchEvent dispatch) async {
+  Future<void> _dispatchUserSelectMenu(
+      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final resolvedData = payload['data']['resolved'];
     final userIds = Map.from(resolvedData['users']).keys;
 
@@ -116,19 +113,19 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     };
 
     if (event == null) {
-      logger.warn('Select context $ctx not found');
+      _logger.warn('Select context $ctx not found');
       return;
     }
 
     final resolvedResource = await switch (ctx) {
       ServerSelectContext() => Future.wait(userIds.map((id) {
-          return marshaller.dataStore.member.getMember(
+          return _marshaller.dataStore.member.getMember(
             serverId: Snowflake(payload['guild_id']),
             memberId: Snowflake(id),
           );
         })),
       PrivateSelectContext() =>
-        Future.wait(userIds.map((id) => marshaller.dataStore.user.getUser(id))),
+        Future.wait(userIds.map((id) => _marshaller.dataStore.user.getUser(id))),
       _ => Future.value([]),
     };
 
@@ -138,8 +135,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
         constraint: (String? customId) => customId == ctx.customId);
   }
 
-  Future<void> _dispatchTextSelectMenu(SelectContext ctx,
-      Map<String, dynamic> payload, DispatchEvent dispatch) async {
+  Future<void> _dispatchTextSelectMenu(
+      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final List<String> resolvedText = List.from(payload['data']['values']);
 
     return switch (ctx) {
@@ -151,7 +148,7 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
           event: Event.privateTextSelect,
           params: [ctx, resolvedText],
           constraint: (String? customId) => customId == ctx.customId),
-      _ => logger.warn('Select context $ctx not found'),
+      _ => _logger.warn('Select context $ctx not found'),
     };
   }
 }

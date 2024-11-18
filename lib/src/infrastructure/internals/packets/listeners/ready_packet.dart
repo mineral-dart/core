@@ -14,11 +14,9 @@ final class ReadyPacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.ready;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
   bool isAlreadyUsed = false;
 
-  ReadyPacket(this.logger, this.marshaller);
+  LoggerContract get _logger => ioc.resolve<LoggerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
@@ -26,7 +24,7 @@ final class ReadyPacket implements ListenablePacket {
     ioc.bind(Bot, () => bot);
     final interactionManager = ioc.resolve<CommandInteractionManagerContract>();
 
-    logger.trace(jsonEncode(message.payload));
+    _logger.trace(jsonEncode(message.payload));
 
     if (!isAlreadyUsed) {
       await interactionManager.registerGlobal(bot);

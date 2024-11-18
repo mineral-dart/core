@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/server_text_channel.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
@@ -12,24 +13,21 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.threadMembersUpdate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  ThreadMembersUpdatePacket(this.logger, this.marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload;
 
     final server =
-        await marshaller.dataStore.server.getServer(payload['guild_id']);
-    final thread = await marshaller.dataStore.channel
+        await _marshaller.dataStore.server.getServer(payload['guild_id']);
+    final thread = await _marshaller.dataStore.channel
         .getThread(Snowflake(payload['id'])) as ThreadChannel;
     final membersAdded = payload['added_members'] ?? [];
     final membersRemovedIds = payload['removed_member_ids'] ?? [];
 
     for (final memberThread in membersAdded) {
-      final member = await marshaller.dataStore.member.getMember(
+      final member = await _marshaller.dataStore.member.getMember(
           serverId: payload['guild_id'],
           memberId: Snowflake(memberThread['user_id']));
       thread.members.putIfAbsent(member.id, () => member);
@@ -39,7 +37,7 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
     }
 
     for (final memberId in membersRemovedIds) {
-      final member = await marshaller.dataStore.member.getMember(
+      final member = await _marshaller.dataStore.member.getMember(
           serverId: payload['guild_id'], memberId: Snowflake(memberId));
       thread.members.remove(Snowflake(memberId));
 
@@ -48,19 +46,19 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
           params: [thread, server, member]);
     }
 
-    final serverRaw = await marshaller.serializers.server.deserialize(server);
-    final serverKey = marshaller.cacheKey.server(server.id);
+    final serverRaw = await _marshaller.serializers.server.deserialize(server);
+    final serverKey = _marshaller.cacheKey.server(server.id);
 
-    marshaller.cache.put(serverKey, serverRaw);
+    _marshaller.cache.put(serverKey, serverRaw);
 
     final parentChannel =
         server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
     parentChannel.threads.add(thread);
 
     final parentChannelRaw =
-        await marshaller.serializers.channels.deserialize(parentChannel);
-    final parentChannelKey = marshaller.cacheKey.channel(parentChannel.id);
+        await _marshaller.serializers.channels.deserialize(parentChannel);
+    final parentChannelKey = _marshaller.cacheKey.channel(parentChannel.id);
 
-    marshaller.cache.put(parentChannelKey, parentChannelRaw);
+    _marshaller.cache.put(parentChannelKey, parentChannelRaw);
   }
 }
