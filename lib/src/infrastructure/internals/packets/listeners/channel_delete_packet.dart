@@ -11,8 +11,7 @@ import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 final class ChannelDeletePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.channelDelete;
-
-  LoggerContract get _logger => ioc.resolve<LoggerContract>();
+  
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
