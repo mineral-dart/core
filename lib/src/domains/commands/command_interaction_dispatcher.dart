@@ -1,12 +1,14 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/commands/command_option_type.dart';
 import 'package:mineral/src/api/common/commands/command_type.dart';
 import 'package:mineral/src/api/common/types/interaction_type.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/commands/contexts/global_command_context.dart';
 import 'package:mineral/src/domains/commands/contexts/server_command_context.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_dispatcher_contract.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 
@@ -15,10 +17,13 @@ final class CommandInteractionDispatcher
   @override
   InteractionType get type => InteractionType.applicationCommand;
 
-  final CommandInteractionManagerContract _interactionManager;
-  final MarshallerContract _marshaller;
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
-  CommandInteractionDispatcher(this._interactionManager, this._marshaller);
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+
+  final CommandInteractionManagerContract _interactionManager;
+
+  CommandInteractionDispatcher(this._interactionManager);
 
   @override
   Future<void> dispatch(Map<String, dynamic> data) async {
@@ -60,8 +65,8 @@ final class CommandInteractionDispatcher
         .firstWhere((command) => command.$1 == data['data']['name']);
 
     final commandContext = await switch (data['data']['guild_id']) {
-      String() => ServerCommandContext.fromMap(_marshaller, data),
-      _ => GlobalCommandContext.fromMap(_marshaller, data),
+      String() => ServerCommandContext.fromMap(_marshaller, _dataStore, data),
+      _ => GlobalCommandContext.fromMap(_marshaller, _dataStore, data),
     };
 
     final Map<Symbol, dynamic> options = {};
@@ -78,7 +83,7 @@ final class CommandInteractionDispatcher
 
         options[Symbol(option['name'])] = switch (type) {
           CommandOptionType.user => switch (commandContext) {
-              ServerCommandContext() => await _marshaller.dataStore.member
+              ServerCommandContext() => await _dataStore.member
                   .getMember(
                       serverId: commandContext.server.id,
                       memberId: option['value']),

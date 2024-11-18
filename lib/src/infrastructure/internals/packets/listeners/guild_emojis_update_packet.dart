@@ -1,6 +1,7 @@
 import 'package:mineral/container.dart';
 import 'package:mineral/src/api/server/managers/emoji_manager.dart';
 import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -13,9 +14,11 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
 
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await _marshaller.dataStore.server
+    final server = await _dataStore.server
         .getServer(message.payload['guild_id']);
     final serverCacheKey = _marshaller.cacheKey.server(server.id);
 

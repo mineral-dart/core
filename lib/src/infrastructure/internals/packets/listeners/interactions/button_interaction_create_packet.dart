@@ -7,6 +7,7 @@ import 'package:mineral/src/api/common/types/interaction_type.dart';
 import 'package:mineral/src/domains/components/buttons/contexts/private_button_context.dart';
 import 'package:mineral/src/domains/components/buttons/contexts/server_button_context.dart';
 import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -19,6 +20,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
@@ -50,7 +52,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _handleServerButton(
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final message = await _marshaller.dataStore.message.getServerMessage(
+    final message = await _dataStore.message.getServerMessage(
         messageId: Snowflake(payload['message']['id']),
         channelId: Snowflake(payload['channel_id']));
 
@@ -81,7 +83,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _handlePrivateButton(
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final message = await _marshaller.dataStore.message.getPrivateMessage(
+    final message = await _dataStore.message.getPrivateMessage(
         messageId: Snowflake(payload['message']['id']),
         channelId: Snowflake(payload['channel_id']));
 

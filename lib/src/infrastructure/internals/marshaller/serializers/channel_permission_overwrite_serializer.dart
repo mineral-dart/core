@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/infrastructure/commons/utils.dart';
@@ -6,9 +7,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer
 
 final class ChannelPermissionOverwriteSerializer
     implements SerializerContract<ChannelPermissionOverwrite> {
-  final MarshallerContract marshaller;
-
-  ChannelPermissionOverwriteSerializer(this.marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
@@ -19,10 +18,10 @@ final class ChannelPermissionOverwriteSerializer
       'deny': json['deny'],
     };
 
-    final cacheKey = marshaller.cacheKey.channelPermission(
+    final cacheKey = _marshaller.cacheKey.channelPermission(
         Snowflake(payload['id']),
         serverId: json['server_id']);
-    await marshaller.cache.put(cacheKey, payload);
+    await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
   }

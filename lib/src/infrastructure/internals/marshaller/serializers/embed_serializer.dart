@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/color.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
 import 'package:mineral/src/api/common/embed/message_embed_assets.dart';
@@ -12,9 +13,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart'
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class EmbedSerializer implements SerializerContract<MessageEmbed> {
-  final MarshallerContract _marshaller;
-
-  EmbedSerializer(this._marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {

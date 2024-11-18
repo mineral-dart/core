@@ -2,6 +2,7 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/domains/components/selects/button_context.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/interaction.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_contract.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
@@ -41,18 +42,18 @@ final class ServerSelectContext implements SelectContext {
   }
 
   static Future<ServerSelectContext> fromMap(
-      MarshallerContract marshaller, Map<String, dynamic> payload) async {
+      DataStoreContract datastore, Map<String, dynamic> payload) async {
     return ServerSelectContext(
       customId: payload['data']['custom_id'],
       id: Snowflake(payload['id']),
       applicationId: Snowflake(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
-      message: await marshaller.dataStore.message.getServerMessage(
+      message: await datastore.message.getServerMessage(
         messageId: Snowflake(payload['message']['id']),
         channelId: Snowflake(payload['channel_id']),
       ),
-      member: await marshaller.dataStore.member.getMember(
+      member: await datastore.member.getMember(
         serverId: Snowflake(payload['guild_id']),
         memberId: Snowflake(payload['member']['user']['id']),
       ),

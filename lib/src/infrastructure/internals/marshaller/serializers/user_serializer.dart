@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/premium_tier.dart';
 import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/infrastructure/commons/helper.dart';
@@ -5,9 +6,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart'
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class UserSerializer implements SerializerContract<User> {
-  final MarshallerContract _marshaller;
-
-  UserSerializer(this._marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {

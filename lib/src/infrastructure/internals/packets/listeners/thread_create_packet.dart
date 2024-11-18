@@ -2,6 +2,7 @@ import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/server_text_channel.dart';
 import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -14,12 +15,14 @@ final class ThreadCreatePacket implements ListenablePacket {
 
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload;
 
     final server =
-        await _marshaller.dataStore.server.getServer(payload['guild_id']);
+        await _dataStore.server.getServer(payload['guild_id']);
     final threadRaw = await _marshaller.serializers.thread.normalize(payload);
     final thread = await _marshaller.serializers.thread.serialize(threadRaw);
 

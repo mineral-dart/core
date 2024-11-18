@@ -6,8 +6,6 @@ import 'package:mineral/src/infrastructure/internals/marshaller/serializer_bucke
 import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 
 abstract interface class MarshallerContract {
-  DataStoreContract get dataStore;
-
   LoggerContract get logger;
 
   SerializerBucket get serializers;
@@ -18,9 +16,6 @@ abstract interface class MarshallerContract {
 }
 
 final class Marshaller implements MarshallerContract {
-  @override
-  DataStoreContract get dataStore => ioc.resolve<DataStoreContract>();
-
   @override
   final LoggerContract logger;
 

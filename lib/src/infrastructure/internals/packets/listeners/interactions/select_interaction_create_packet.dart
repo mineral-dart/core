@@ -10,6 +10,7 @@ import 'package:mineral/src/domains/components/selects/button_context.dart';
 import 'package:mineral/src/domains/components/selects/contexts/private_select_context.dart';
 import 'package:mineral/src/domains/components/selects/contexts/server_select_context.dart';
 import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -24,6 +25,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final type = InteractionType.values.firstWhereOrNull((e) => e.value == message.payload['type']);
@@ -37,8 +40,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
           .firstWhereOrNull((e) => e.value == message.payload['data']['component_type']);
 
       final ctx = await switch (message.payload['guild_id']) {
-        String() => ServerSelectContext.fromMap(_marshaller, message.payload),
-        _ => PrivateSelectContext.fromMap(_marshaller, message.payload),
+        String() => ServerSelectContext.fromMap(_dataStore, message.payload),
+        _ => PrivateSelectContext.fromMap(_marshaller, _dataStore, message.payload),
       };
 
       switch (selectMenuType) {
@@ -119,13 +122,13 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
     final resolvedResource = await switch (ctx) {
       ServerSelectContext() => Future.wait(userIds.map((id) {
-          return _marshaller.dataStore.member.getMember(
+          return _dataStore.member.getMember(
             serverId: Snowflake(payload['guild_id']),
             memberId: Snowflake(id),
           );
         })),
       PrivateSelectContext() =>
-        Future.wait(userIds.map((id) => _marshaller.dataStore.user.getUser(id))),
+        Future.wait(userIds.map((id) => _dataStore.user.getUser(id))),
       _ => Future.value([]),
     };
 

@@ -135,7 +135,7 @@ final class Client {
 
     final marshaller = Marshaller(_logger, _cache!);
     final datastore = DataStore(http);
-    final commandInteractionManager = CommandInteractionManager(marshaller);
+    final commandInteractionManager = CommandInteractionManager();
 
     ioc
       ..bind(MarshallerContract, () => marshaller)

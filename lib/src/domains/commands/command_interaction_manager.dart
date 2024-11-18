@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/bot.dart';
 import 'package:mineral/src/api/common/commands/builder/command_declaration_builder.dart';
 import 'package:mineral/src/api/common/commands/builder/command_definition_builder.dart';
@@ -7,6 +8,7 @@ import 'package:mineral/src/api/common/commands/command_context_type.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/domains/commands/command_builder.dart';
 import 'package:mineral/src/domains/commands/command_interaction_dispatcher.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_dispatcher_contract.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
@@ -34,10 +36,10 @@ final class CommandInteractionManager
   @override
   late InteractionDispatcherContract dispatcher;
 
-  final MarshallerContract _marshaller;
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
-  CommandInteractionManager(this._marshaller) {
-    dispatcher = CommandInteractionDispatcher(this, _marshaller);
+  CommandInteractionManager() {
+    dispatcher = CommandInteractionDispatcher(this);
   }
 
   @override
@@ -74,7 +76,7 @@ final class CommandInteractionManager
         _getContext(CommandContextType.global);
     final payload = _serializeCommand(globalCommands);
 
-    await _marshaller.dataStore.client
+    await _dataStore.client
         .put('/applications/${bot.id}/commands', body: payload);
   }
 
@@ -84,7 +86,7 @@ final class CommandInteractionManager
         _getContext(CommandContextType.server);
     final payload = _serializeCommand(guildCommands);
 
-    await _marshaller.dataStore.client.put(
+    await _dataStore.client.put(
         '/applications/${bot.id}/guilds/${server.id}/commands',
         body: payload);
   }

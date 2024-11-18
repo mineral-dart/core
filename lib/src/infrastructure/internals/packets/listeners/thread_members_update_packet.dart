@@ -3,6 +3,7 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/server_text_channel.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
 import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -15,19 +16,21 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
 
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload;
 
     final server =
-        await _marshaller.dataStore.server.getServer(payload['guild_id']);
-    final thread = await _marshaller.dataStore.channel
+        await _dataStore.server.getServer(payload['guild_id']);
+    final thread = await _dataStore.channel
         .getThread(Snowflake(payload['id'])) as ThreadChannel;
     final membersAdded = payload['added_members'] ?? [];
     final membersRemovedIds = payload['removed_member_ids'] ?? [];
 
     for (final memberThread in membersAdded) {
-      final member = await _marshaller.dataStore.member.getMember(
+      final member = await _dataStore.member.getMember(
           serverId: payload['guild_id'],
           memberId: Snowflake(memberThread['user_id']));
       thread.members.putIfAbsent(member.id, () => member);
@@ -37,7 +40,7 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
     }
 
     for (final memberId in membersRemovedIds) {
-      final member = await _marshaller.dataStore.member.getMember(
+      final member = await _dataStore.member.getMember(
           serverId: payload['guild_id'], memberId: Snowflake(memberId));
       thread.members.remove(Snowflake(memberId));
 
