@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/premium_tier.dart';
 import 'package:mineral/src/api/server/server_subscription.dart';
 import 'package:mineral/src/infrastructure/commons/utils.dart';
@@ -6,9 +7,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer
 
 final class ServerSubscriptionSerializer
     implements SerializerContract<ServerSubscription> {
-  final MarshallerContract _marshaller;
-
-  ServerSubscriptionSerializer(this._marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {

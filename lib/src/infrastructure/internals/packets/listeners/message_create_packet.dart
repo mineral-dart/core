@@ -8,6 +8,7 @@ import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/channels/server_text_channel.dart';
 import 'package:mineral/src/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -20,6 +21,8 @@ final class MessageCreatePacket implements ListenablePacket {
 
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     if (![MessageType.initial.value, MessageType.reply.value]
@@ -27,7 +30,7 @@ final class MessageCreatePacket implements ListenablePacket {
       return;
     }
 
-    final channel = await _marshaller.dataStore.channel
+    final channel = await _dataStore.channel
         .getChannel(message.payload['channel_id']);
 
     if ([
@@ -47,7 +50,7 @@ final class MessageCreatePacket implements ListenablePacket {
   Future<void> sendThread(
       DispatchEvent dispatch, Map<String, dynamic> json) async {
     final server =
-        await _marshaller.dataStore.server.getServer(json['guild_id']);
+        await _dataStore.server.getServer(json['guild_id']);
     final thread = server.threads.getOrFail(json['channel_id']);
 
     final payload = await _marshaller.serializers.serverMessage
@@ -64,7 +67,7 @@ final class MessageCreatePacket implements ListenablePacket {
   Future<void> sendServerMessage(DispatchEvent dispatch, ServerChannel channel,
       Map<String, dynamic> json) async {
     final server =
-        await _marshaller.dataStore.server.getServer(channel.serverId);
+        await _dataStore.server.getServer(channel.serverId);
 
     final payload = await _marshaller.serializers.serverMessage
         .normalize({...json, 'server_id': server.id.value});

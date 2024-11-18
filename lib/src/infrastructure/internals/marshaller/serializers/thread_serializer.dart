@@ -1,15 +1,16 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/threads/thread_metadata.dart';
 import 'package:mineral/src/infrastructure/commons/helper.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class ThreadSerializer implements SerializerContract<ThreadChannel> {
-  final MarshallerContract _marshaller;
-
-  ThreadSerializer(this._marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
@@ -87,7 +88,7 @@ final class ThreadSerializer implements SerializerContract<ThreadChannel> {
       permissions: permissionOverwrites ?? [],
     );
 
-    final owner = await _marshaller.dataStore.member.getMember(
+    final owner = await _dataStore.member.getMember(
         serverId: thread.serverId, memberId: Snowflake(thread.ownerId));
     final rawMembers =
         await _marshaller.cache.getMany(json['members_ids'] as List<String>);

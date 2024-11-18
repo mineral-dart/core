@@ -4,6 +4,7 @@ import 'package:mineral/src/api/common/types/interaction_type.dart';
 import 'package:mineral/src/domains/components/dialog/contexts/private_dialog_context.dart';
 import 'package:mineral/src/domains/components/dialog/contexts/server_dialog_context.dart';
 import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_context_type.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -17,6 +18,8 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
 
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
@@ -41,7 +44,7 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
 
       final ctx = await switch (interactionContext) {
         InteractionContextType.server =>
-          ServerDialogContext.fromMap(_marshaller, message.payload['data']),
+          ServerDialogContext.fromMap(_dataStore, message.payload['data']),
         InteractionContextType.privateChannel =>
           PrivateDialogContext.fromMap(_marshaller, message.payload['data']),
         _ => null

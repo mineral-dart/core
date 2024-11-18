@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/color.dart';
 import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
@@ -7,9 +8,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart'
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class RoleSerializer implements SerializerContract<Role> {
-  final MarshallerContract marshaller;
-
-  RoleSerializer(this.marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
@@ -26,8 +25,8 @@ final class RoleSerializer implements SerializerContract<Role> {
     };
 
     final cacheKey =
-        marshaller.cacheKey.serverRole(json['server_id'], json['id']);
-    await marshaller.cache.put(cacheKey, payload);
+        _marshaller.cacheKey.serverRole(json['server_id'], json['id']);
+    await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
   }

@@ -76,23 +76,23 @@ final class SerializerBucket {
   final SerializerContract<ThreadChannel> thread;
 
   SerializerBucket(MarshallerContract marshaller)
-      : channels = ChannelSerializer(marshaller),
-        server = ServerSerializer(marshaller),
-        member = MemberSerializer(marshaller),
-        memberAssets = MemberAssetsSerializer(marshaller),
-        user = UserSerializer(marshaller),
-        userAssets = UserAssetsSerializer(marshaller),
-        role = RoleSerializer(marshaller),
-        serverSubscription = ServerSubscriptionSerializer(marshaller),
-        serverSettings = ServerSettingsSerializer(marshaller),
-        serversAsset = ServerAssetsSerializer(marshaller),
-        emojis = EmojiSerializer(marshaller),
-        sticker = StickerSerializer(marshaller),
+      : channels = ChannelSerializer(),
+        server = ServerSerializer(),
+        member = MemberSerializer(),
+        memberAssets = MemberAssetsSerializer(),
+        user = UserSerializer(),
+        userAssets = UserAssetsSerializer(),
+        role = RoleSerializer(),
+        serverSubscription = ServerSubscriptionSerializer(),
+        serverSettings = ServerSettingsSerializer(),
+        serversAsset = ServerAssetsSerializer(),
+        emojis = EmojiSerializer(),
+        sticker = StickerSerializer(),
         channelPermissionOverwrite =
-            ChannelPermissionOverwriteSerializer(marshaller),
-        serverMessage = ServerMessageSerializer(marshaller),
-        privateMessage = PrivateMessageSerializer(marshaller),
-        embed = EmbedSerializer(marshaller),
-        thread = ThreadSerializer(marshaller),
-        poll = PollSerializer(marshaller);
+            ChannelPermissionOverwriteSerializer(),
+        serverMessage = ServerMessageSerializer(),
+        privateMessage = PrivateMessageSerializer(),
+        embed = EmbedSerializer(),
+        thread = ThreadSerializer(),
+        poll = PollSerializer();
 }

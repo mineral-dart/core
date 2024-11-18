@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/partial_emoji.dart';
 import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/polls/poll_answer.dart';
@@ -10,9 +11,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart'
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class PollSerializer implements SerializerContract<Poll> {
-  final MarshallerContract _marshaller;
-
-  PollSerializer(this._marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {

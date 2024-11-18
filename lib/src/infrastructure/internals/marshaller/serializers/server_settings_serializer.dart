@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/server/enums/default_message_notification.dart';
 import 'package:mineral/src/api/server/enums/explicit_content_filter.dart';
 import 'package:mineral/src/api/server/enums/mfa_level.dart';
@@ -11,9 +12,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer
 
 final class ServerSettingsSerializer
     implements SerializerContract<ServerSettings> {
-  final MarshallerContract _marshaller;
-
-  ServerSettingsSerializer(this._marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {

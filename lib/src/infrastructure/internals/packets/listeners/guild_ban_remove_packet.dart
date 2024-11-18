@@ -1,5 +1,6 @@
 import 'package:mineral/container.dart';
 import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -10,12 +11,12 @@ final class GuildBanRemovePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.guildBanRemove;
 
-  LoggerContract get _logger => ioc.resolve<LoggerContract>();
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await _marshaller.dataStore.server
+    final server = await _dataStore.server
         .getServer(message.payload['guild_id']);
     final user =
         await _marshaller.serializers.user.serialize(message.payload['user']);

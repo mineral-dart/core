@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/factories/channels/private_channel_factory.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/factories/channels/server_announcement_channel_factory.dart';
@@ -15,7 +16,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer
 
 final class ChannelSerializer<T extends Channel?>
     implements SerializerContract<T> {
-  final MarshallerContract _marshaller;
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   final List<ChannelFactoryContract> _factories = [
     ServerTextChannelFactory(),
@@ -26,8 +27,6 @@ final class ChannelSerializer<T extends Channel?>
     ServerStageChannelFactory(),
     PrivateChannelFactory(),
   ];
-
-  ChannelSerializer(this._marshaller);
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
