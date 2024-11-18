@@ -4,12 +4,13 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mansion/mansion.dart';
+import 'package:mineral/container.dart';
+import 'package:mineral/services.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_builder.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 import 'package:path/path.dart' as path;
 import 'package:watcher/watcher.dart';
 
@@ -28,6 +29,8 @@ final class HotModuleReloading {
   final Map<int, Shard> _shards;
   final Function() _createShards;
 
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+
   HotModuleReloading(this._devPort, this._watcherConfig, this._kernel,
       this._createShards, this._shards);
 
@@ -37,7 +40,7 @@ final class HotModuleReloading {
       final Stream stream = port.asBroadcastStream();
 
       _devPort!.send(port.sendPort);
-      await _kernel.marshaller.cache.init();
+      await _marshaller.cache.init();
       await for (final Map<String, dynamic> message in stream) {
         _kernel.packetListener.dispatcher
             .dispatch(ShardMessageImpl.of(message));

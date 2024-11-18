@@ -111,6 +111,8 @@ export 'package:mineral/src/api/server/server_assets.dart';
 export 'package:mineral/src/api/server/server_message.dart';
 export 'package:mineral/src/api/server/server_settings.dart';
 export 'package:mineral/src/api/server/server_subscription.dart';
+export 'package:mineral/src/domains/client/client.dart';
+export 'package:mineral/src/domains/client/client_builder.dart';
 export 'package:mineral/src/domains/commands/command_context.dart';
 export 'package:mineral/src/domains/commands/contexts/global_command_context.dart';
 export 'package:mineral/src/domains/commands/contexts/server_command_context.dart';
@@ -126,5 +128,3 @@ export 'package:mineral/src/domains/components/selects/contexts/server_select_co
 export 'package:mineral/src/domains/global_states/global_state.dart';
 export 'package:mineral/src/domains/providers/provider.dart';
 export 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
-export 'package:mineral/src/infrastructure/kernel/client.dart';
-export 'package:mineral/src/infrastructure/kernel/mineral_client.dart';

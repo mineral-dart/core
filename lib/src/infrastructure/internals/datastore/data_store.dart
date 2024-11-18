@@ -65,17 +65,14 @@ final class DataStore implements DataStoreContract {
   @override
   late final ServerMessagePart serverMessage;
 
-  DataStore(this.client);
-
-  void init() {
-    channel = ChannelPart(kernel);
-    server = ServerPart(kernel);
-    member = MemberPart(kernel);
-    user = UserPart(kernel);
-    role = RolePart(kernel);
-    message = MessagePart(kernel);
-    interaction = InteractionPart(kernel);
-    sticker = StickerPart(kernel);
-    serverMessage = ServerMessagePart(kernel);
-  }
+  DataStore(this.client)
+      : channel = ChannelPart(),
+        server = ServerPart(),
+        member = MemberPart(),
+        user = UserPart(),
+        role = RolePart(),
+        message = MessagePart(),
+        interaction = InteractionPart(),
+        sticker = StickerPart(),
+        serverMessage = ServerMessagePart();
 }

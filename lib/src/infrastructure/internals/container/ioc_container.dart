@@ -2,14 +2,14 @@ final class IocContainer {
   final Map<Type, dynamic> _services = {};
   final Map<Type, dynamic> _defaults = {};
 
-  void bind<T>(Type key, T Function() fn) {
+  void bind<T>(T Function() fn) {
     final service = fn();
-    _services[key] = service;
-    _defaults[key] = service;
+    _services[T] = service;
+    _defaults[T] = service;
   }
 
   T make<T>(T Function() clazz) {
-    _services[T] = clazz;
+    _services[T] = clazz();
     return _services[T];
   }
 

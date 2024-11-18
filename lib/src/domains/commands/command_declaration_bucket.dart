@@ -1,24 +1,24 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/commands/builder/command_declaration_builder.dart';
 import 'package:mineral/src/api/common/commands/builder/command_definition_builder.dart';
 import 'package:mineral/src/domains/commands/command_context.dart';
-import 'package:mineral/src/infrastructure/kernel/kernel.dart';
+import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 
 final class CommandBucket {
-  final KernelContract _kernel;
-
-  CommandBucket(this._kernel);
+  CommandInteractionManagerContract get _commands =>
+      ioc.resolve<CommandInteractionManagerContract>();
 
   void declare(Function(CommandDeclarationBuilder) fn) {
     final builder = CommandDeclarationBuilder();
     fn(builder);
 
-    _kernel.commands.addCommand(builder);
+    _commands.addCommand(builder);
   }
 
   void define<T extends CommandContext>(Function(CommandDefinitionBuilder) fn) {
     final builder = CommandDefinitionBuilder();
     fn(builder);
 
-    _kernel.commands.addCommand(builder.command);
+    _commands.addCommand(builder.command);
   }
 }

@@ -1,70 +1,69 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:mineral/container.dart';
+import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
-import 'package:mineral/src/infrastructure/kernel/kernel.dart';
-import 'package:mineral/src/infrastructure/services/http/http_client_status.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
 final class MemberPart implements DataStorePart {
-  final KernelContract _kernel;
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
-  HttpClientStatus get status => _kernel.dataStore.client.status;
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
-  MemberPart(this._kernel);
+  HttpClientStatus get status => _dataStore.client.status;
 
   Future<Member> getMember(
       {required Snowflake serverId, required Snowflake memberId}) async {
-    final cacheKeys = _kernel.marshaller.cacheKey;
+    final cacheKeys = _marshaller.cacheKey;
     final memberCacheKey = cacheKeys.member(serverId, memberId);
 
     Map<String, dynamic>? cachedRawMember =
-        await _kernel.marshaller.cache.get(memberCacheKey);
+        await _marshaller.cache.get(memberCacheKey);
 
     if (cachedRawMember != null) {
-      return _kernel.marshaller.serializers.member.serialize(cachedRawMember);
+      return _marshaller.serializers.member.serialize(cachedRawMember);
     }
 
-    final response = await _kernel.dataStore.client
-        .get('/guilds/$serverId/members/$memberId');
+    final response =
+        await _dataStore.client.get('/guilds/$serverId/members/$memberId');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
-    await _kernel.marshaller.serializers.member.normalize(response.body);
+    await _marshaller.serializers.member.normalize(response.body);
 
-    cachedRawMember = await _kernel.marshaller.cache.getOrFail(memberCacheKey);
+    cachedRawMember = await _marshaller.cache.getOrFail(memberCacheKey);
 
-    return _kernel.marshaller.serializers.member.serialize(cachedRawMember);
+    return _marshaller.serializers.member.serialize(cachedRawMember);
   }
 
   Future<List<Member>> getMembers(Snowflake guildId,
       {bool force = false}) async {
-    final serverCacheKey = _kernel.marshaller.cacheKey.server(guildId);
-    final rawServer = await _kernel.marshaller.cache.getOrFail(serverCacheKey);
+    final serverCacheKey = _marshaller.cacheKey.server(guildId);
+    final rawServer = await _marshaller.cache.getOrFail(serverCacheKey);
 
     final rawMemberIds = List<String>.from(rawServer['members']);
-    final rawCachedMembers =
-        await _kernel.marshaller.cache.getMany(rawMemberIds);
+    final rawCachedMembers = await _marshaller.cache.getMany(rawMemberIds);
     if (rawMemberIds.length == rawCachedMembers.length) {
       return Future.wait(rawCachedMembers.nonNulls
           .map((element) async =>
-              _kernel.marshaller.serializers.member.serialize(element))
+              _marshaller.serializers.member.serialize(element))
           .toList());
     }
 
-    final response =
-        await _kernel.dataStore.client.get('/guilds/$guildId/members');
+    final response = await _dataStore.client.get('/guilds/$guildId/members');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
     return List.from(response.body).map((id) async {
-      final payload = await _kernel.marshaller.serializers.member.normalize(id);
-      return _kernel.marshaller.serializers.member.serialize(payload);
+      final payload = await _marshaller.serializers.member.normalize(id);
+      return _marshaller.serializers.member.serialize(payload);
     }).wait;
   }
 
@@ -73,7 +72,7 @@ final class MemberPart implements DataStorePart {
       required Snowflake memberId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
-    final response = await _kernel.dataStore.client.patch(
+    final response = await _dataStore.client.patch(
         '/guilds/$serverId/members/$memberId',
         body: payload,
         option: HttpRequestOptionImpl(
@@ -84,8 +83,8 @@ final class MemberPart implements DataStorePart {
     }
 
     final rawMember =
-        await _kernel.marshaller.serializers.member.normalize(response.body);
-    return _kernel.marshaller.serializers.member.serialize(rawMember);
+        await _marshaller.serializers.member.normalize(response.body);
+    return _marshaller.serializers.member.serialize(rawMember);
   }
 
   Future<void> banMember(
@@ -93,7 +92,7 @@ final class MemberPart implements DataStorePart {
       required Duration? deleteSince,
       required Snowflake memberId,
       String? reason}) async {
-    final response = await _kernel.dataStore.client.put(
+    final response = await _dataStore.client.put(
         '/guilds/$serverId/bans/$memberId',
         body: {'delete_message_seconds': deleteSince?.inSeconds},
         option: HttpRequestOptionImpl(
@@ -108,7 +107,7 @@ final class MemberPart implements DataStorePart {
       {required Snowflake serverId,
       required Snowflake memberId,
       String? reason}) async {
-    final response = await _kernel.dataStore.client.delete(
+    final response = await _dataStore.client.delete(
         '/guilds/$serverId/members/$memberId',
         option: HttpRequestOptionImpl(
             headers: {DiscordHeader.auditLogReason(reason)}));
