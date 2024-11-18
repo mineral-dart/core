@@ -26,8 +26,9 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
     return {
       'id': message.id,
       'content': message.content,
-      'embeds':
-          message.embeds.map(_marshaller.serializers.embed.deserialize).toList(),
+      'embeds': message.embeds
+          .map(_marshaller.serializers.embed.deserialize)
+          .toList(),
       'channel_id': message.channel.id,
       'created_at': message.createdAt.toIso8601String(),
       'updated_at': message.updatedAt?.toIso8601String(),

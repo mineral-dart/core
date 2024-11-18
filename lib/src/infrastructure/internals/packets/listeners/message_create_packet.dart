@@ -13,7 +13,6 @@ import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart'
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 
 final class MessageCreatePacket implements ListenablePacket {
   @override
@@ -30,8 +29,8 @@ final class MessageCreatePacket implements ListenablePacket {
       return;
     }
 
-    final channel = await _dataStore.channel
-        .getChannel(message.payload['channel_id']);
+    final channel =
+        await _dataStore.channel.getChannel(message.payload['channel_id']);
 
     if ([
       ChannelType.guildPrivateThread.value,
@@ -49,8 +48,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
   Future<void> sendThread(
       DispatchEvent dispatch, Map<String, dynamic> json) async {
-    final server =
-        await _dataStore.server.getServer(json['guild_id']);
+    final server = await _dataStore.server.getServer(json['guild_id']);
     final thread = server.threads.getOrFail(json['channel_id']);
 
     final payload = await _marshaller.serializers.serverMessage
@@ -66,8 +64,7 @@ final class MessageCreatePacket implements ListenablePacket {
 
   Future<void> sendServerMessage(DispatchEvent dispatch, ServerChannel channel,
       Map<String, dynamic> json) async {
-    final server =
-        await _dataStore.server.getServer(channel.serverId);
+    final server = await _dataStore.server.getServer(channel.serverId);
 
     final payload = await _marshaller.serializers.serverMessage
         .normalize({...json, 'server_id': server.id.value});
@@ -91,7 +88,8 @@ final class MessageCreatePacket implements ListenablePacket {
 
   Future<void> sendPrivateMessage(DispatchEvent dispatch, Channel channel,
       Map<String, dynamic> json) async {
-    final payload = await _marshaller.serializers.privateMessage.normalize(json);
+    final payload =
+        await _marshaller.serializers.privateMessage.normalize(json);
     final message =
         await _marshaller.serializers.privateMessage.serialize(payload);
 

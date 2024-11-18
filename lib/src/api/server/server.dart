@@ -56,8 +56,10 @@ final class Server {
   /// ```dart
   /// await server.setDefaultMessageNotifications(DefaultMessageNotification.allMessages, reason: 'Testing');
   /// ```
-  Future<void> setDefaultMessageNotifications(DefaultMessageNotification value, {String? reason}) async {
-    await _serverPart.updateServer(id, {'default_message_notifications': value.value}, reason);
+  Future<void> setDefaultMessageNotifications(DefaultMessageNotification value,
+      {String? reason}) async {
+    await _serverPart.updateServer(
+        id, {'default_message_notifications': value.value}, reason);
   }
 
   /// Set the explicit content filter for the server.
@@ -65,8 +67,10 @@ final class Server {
   /// ```dart
   /// await server.setExplicitContentFilter(ExplicitContentFilter.disabled, reason: 'Testing');
   /// ```
-  Future<void> setExplicitContentFilter(ExplicitContentFilter value, {String? reason}) async {
-    await _serverPart.updateServer(id, {'explicit_content_filter': value.value}, reason);
+  Future<void> setExplicitContentFilter(ExplicitContentFilter value,
+      {String? reason}) async {
+    await _serverPart.updateServer(
+        id, {'explicit_content_filter': value.value}, reason);
   }
 
   /// Set the server's afk timeout.
@@ -93,7 +97,8 @@ final class Server {
   /// await server.setSystemChannel('1091121140090535956', reason: 'Testing');
   /// ```
   Future<void> setSystemChannel(String? channelId, {String? reason}) async {
-    await _serverPart.updateServer(id, {'system_channel_id': channelId}, reason);
+    await _serverPart.updateServer(
+        id, {'system_channel_id': channelId}, reason);
   }
 
   /// Set the server's rules channel.
@@ -110,8 +115,10 @@ final class Server {
   /// ```dart
   /// await server.setPublicUpdatesChannel('1091121140090535956', reason: 'Testing');
   /// ```
-  Future<void> setPublicUpdatesChannel(String? channelId, {String? reason}) async {
-    await _serverPart.updateServer(id, {'public_updates_channel_id': channelId}, reason);
+  Future<void> setPublicUpdatesChannel(String? channelId,
+      {String? reason}) async {
+    await _serverPart.updateServer(
+        id, {'public_updates_channel_id': channelId}, reason);
   }
 
   /// Set the server's enabled premium features.
@@ -120,7 +127,8 @@ final class Server {
   /// await server.enablePremiumProgressBar(true, reason: 'Testing');
   /// ```
   Future<void> enablePremiumProgressBar(bool value, {String? reason}) async {
-    await _serverPart.updateServer(id, {'premium_progress_bar_enabled': value}, reason);
+    await _serverPart.updateServer(
+        id, {'premium_progress_bar_enabled': value}, reason);
   }
 
   /// Set the server's safety alerts channel.
@@ -128,8 +136,10 @@ final class Server {
   /// ```dart
   /// await server.setSafetyAlertsChannel('1091121140090535956', reason: 'Testing');
   /// ```
-  Future<void> setSafetyAlertsChannel(String? channelId, {String? reason}) async {
-    await _serverPart.updateServer(id, {'safety_alerts_channel_id': channelId}, reason);
+  Future<void> setSafetyAlertsChannel(String? channelId,
+      {String? reason}) async {
+    await _serverPart.updateServer(
+        id, {'safety_alerts_channel_id': channelId}, reason);
   }
 
   /// Set the server's preferred locale.

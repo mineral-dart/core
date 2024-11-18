@@ -8,7 +8,6 @@ import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart'
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 
 final class ThreadMemberUpdatePacket implements ListenablePacket {
   @override
@@ -22,10 +21,9 @@ final class ThreadMemberUpdatePacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload;
 
-    final server =
-        await _dataStore.server.getServer(payload['guild_id']);
-    final thread = await _dataStore.channel
-        .getThread(Snowflake(payload['id'])) as ThreadChannel;
+    final server = await _dataStore.server.getServer(payload['guild_id']);
+    final thread = await _dataStore.channel.getThread(Snowflake(payload['id']))
+        as ThreadChannel;
     final member = await _dataStore.member.getMember(
         memberId: Snowflake(payload['user_id']), serverId: server.id);
 

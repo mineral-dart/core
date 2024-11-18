@@ -5,7 +5,6 @@ import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart'
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 
 final class ThreadListSyncPacket implements ListenablePacket {
   @override
@@ -19,8 +18,7 @@ final class ThreadListSyncPacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload;
 
-    final server =
-        await _dataStore.server.getServer(payload['guild_id']);
+    final server = await _dataStore.server.getServer(payload['guild_id']);
     final threadChannels = payload['threads'] as List<Map<String, dynamic>>;
 
     final threads = await threadChannels.map((element) async {
