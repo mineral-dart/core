@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -9,21 +10,19 @@ final class GuildDeletePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.guildDelete;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  const GuildDeletePacket(this.logger, this.marshaller);
+  LoggerContract get _logger => ioc.resolve<LoggerContract>();
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final cacheKey = marshaller.cacheKey.server(message.payload['id']);
-    final rawServer = await marshaller.cache.get(cacheKey);
+    final cacheKey = _marshaller.cacheKey.server(message.payload['id']);
+    final rawServer = await _marshaller.cache.get(cacheKey);
     final server = rawServer != null
-        ? await marshaller.serializers.server.serialize(rawServer)
+        ? await _marshaller.serializers.server.serialize(rawServer)
         : null;
 
     dispatch(event: Event.serverDelete, params: [server]);
 
-    marshaller.cache.remove(cacheKey);
+    _marshaller.cache.remove(cacheKey);
   }
 }

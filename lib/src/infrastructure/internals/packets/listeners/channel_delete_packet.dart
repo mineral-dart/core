@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
@@ -10,16 +11,14 @@ final class ChannelDeletePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.channelDelete;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  const ChannelDeletePacket(this.logger, this.marshaller);
+  LoggerContract get _logger => ioc.resolve<LoggerContract>();
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final rawChannel =
-        await marshaller.serializers.channels.normalize(message.payload);
-    final channel = await marshaller.serializers.channels.serialize(rawChannel);
+        await _marshaller.serializers.channels.normalize(message.payload);
+    final channel = await _marshaller.serializers.channels.serialize(rawChannel);
 
     switch (channel) {
       case ServerChannel():
@@ -30,17 +29,17 @@ final class ChannelDeletePacket implements ListenablePacket {
   Future<void> registerServerChannel(
       ServerChannel channel, DispatchEvent dispatch) async {
     final server =
-        await marshaller.dataStore.server.getServer(channel.serverId);
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
-    final channelCacheKey = marshaller.cacheKey.channel(channel.id);
+        await _marshaller.dataStore.server.getServer(channel.serverId);
+    final serverCacheKey = _marshaller.cacheKey.server(server.id);
+    final channelCacheKey = _marshaller.cacheKey.channel(channel.id);
 
     channel.server = server;
     server.channels.list.remove(channel.id);
 
-    final rawServer = await marshaller.serializers.server.deserialize(server);
+    final rawServer = await _marshaller.serializers.server.deserialize(server);
 
-    await marshaller.cache.put(serverCacheKey, rawServer);
-    await marshaller.cache.remove(channelCacheKey);
+    await _marshaller.cache.put(serverCacheKey, rawServer);
+    await _marshaller.cache.remove(channelCacheKey);
 
     dispatch(event: Event.serverChannelDelete, params: [channel]);
   }

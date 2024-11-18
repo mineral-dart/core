@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/types/interaction_type.dart';
 import 'package:mineral/src/domains/components/dialog/contexts/private_dialog_context.dart';
 import 'package:mineral/src/domains/components/dialog/contexts/server_dialog_context.dart';
@@ -14,10 +15,8 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.interactionCreate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  DialogInteractionCreatePacket(this.logger, this.marshaller);
+  LoggerContract get _logger => ioc.resolve<LoggerContract>();
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
@@ -42,14 +41,14 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
 
       final ctx = await switch (interactionContext) {
         InteractionContextType.server =>
-          ServerDialogContext.fromMap(marshaller, message.payload['data']),
+          ServerDialogContext.fromMap(_marshaller, message.payload['data']),
         InteractionContextType.privateChannel =>
-          PrivateDialogContext.fromMap(marshaller, message.payload['data']),
+          PrivateDialogContext.fromMap(_marshaller, message.payload['data']),
         _ => null
       };
 
       if ([event, ctx].contains(null)) {
-        logger.warn(
+        _logger.warn(
             'Interaction context ${message.payload['context']} not found');
         return;
       }

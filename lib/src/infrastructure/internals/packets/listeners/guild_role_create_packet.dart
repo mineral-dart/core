@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -9,28 +10,25 @@ final class GuildRoleCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.guildRoleCreate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
-
-  const GuildRoleCreatePacket(this.logger, this.marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await marshaller.dataStore.server
+    final server = await _marshaller.dataStore.server
         .getServer(message.payload['guild_id']);
-    final rawRole = await marshaller.serializers.role.normalize({
+    final rawRole = await _marshaller.serializers.role.normalize({
       ...message.payload['role'],
       'server_id': server.id,
     });
 
-    final role = await marshaller.serializers.role.serialize(rawRole);
+    final role = await _marshaller.serializers.role.serialize(rawRole);
 
     server.roles.list.putIfAbsent(role.id, () => role);
 
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
-    final rawServer = await marshaller.serializers.server.deserialize(server);
+    final serverCacheKey = _marshaller.cacheKey.server(server.id);
+    final rawServer = await _marshaller.serializers.server.deserialize(server);
 
-    await marshaller.cache.put(serverCacheKey, rawServer);
+    await _marshaller.cache.put(serverCacheKey, rawServer);
 
     dispatch(event: Event.serverRoleCreate, params: [role, server]);
   }

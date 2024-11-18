@@ -47,8 +47,8 @@ final class PacketListener implements PacketListenerContract {
   late final KernelContract kernel;
 
   void subscribe(
-      ListenablePacket Function(LoggerContract, MarshallerContract) factory) {
-    final packet = factory(kernel.logger, kernel.marshaller);
+      ListenablePacket Function() factory) {
+    final packet = factory();
     dispatcher.listen(packet.packetType, packet.listen);
   }
 

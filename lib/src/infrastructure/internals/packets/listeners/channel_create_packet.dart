@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/private/channels/private_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/domains/events/event.dart';
@@ -11,42 +12,36 @@ final class ChannelCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.channelCreate;
 
-  final LoggerContract logger;
-  final MarshallerContract marshaller;
+  LoggerContract get _logger => ioc.resolve<LoggerContract>();
 
-  const ChannelCreatePacket(this.logger, this.marshaller);
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final rawChannel =
-        await marshaller.serializers.channels.normalize(message.payload);
-    final channel = await marshaller.serializers.channels.serialize(rawChannel);
+    final rawChannel = await _marshaller.serializers.channels.normalize(message.payload);
+    final channel = await _marshaller.serializers.channels.serialize(rawChannel);
 
     return switch (channel) {
       ServerChannel() => registerServerChannel(channel, dispatch),
       PrivateChannel() => registerPrivateChannel(channel, dispatch),
-      _ => logger
-          .warn("Unknown channel type: $channel contact Mineral's core team.")
+      _ => _logger.warn("Unknown channel type: $channel contact Mineral's core team.")
     };
   }
 
-  Future<void> registerServerChannel(
-      ServerChannel channel, DispatchEvent dispatch) async {
-    final server =
-        await marshaller.dataStore.server.getServer(channel.serverId);
-    final serverCacheKey = marshaller.cacheKey.server(server.id);
+  Future<void> registerServerChannel(ServerChannel channel, DispatchEvent dispatch) async {
+    final server = await _marshaller.dataStore.server.getServer(channel.serverId);
+    final serverCacheKey = _marshaller.cacheKey.server(server.id);
 
     channel.server = server;
     server.channels.list.putIfAbsent(channel.id, () => channel);
 
-    final rawServer = await marshaller.serializers.server.deserialize(server);
-    await marshaller.cache.put(serverCacheKey, rawServer);
+    final rawServer = await _marshaller.serializers.server.deserialize(server);
+    await _marshaller.cache.put(serverCacheKey, rawServer);
 
     dispatch(event: Event.serverChannelCreate, params: [channel]);
   }
 
-  Future<void> registerPrivateChannel(
-      PrivateChannel channel, DispatchEvent dispatch) async {
+  Future<void> registerPrivateChannel(PrivateChannel channel, DispatchEvent dispatch) async {
     dispatch(event: Event.privateChannelCreate, params: [channel]);
   }
 }
