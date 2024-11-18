@@ -24,13 +24,15 @@ final class Environment implements EnvContract {
   T getRawOrFail<T extends dynamic>(String key) {
     return _values.entries
         .firstWhere((element) => element.key == key,
-            orElse: () => throw Exception('Environment variable $key not found'))
+            orElse: () =>
+                throw Exception('Environment variable $key not found'))
         .value as T;
   }
 
   @override
   T get<T>(EnvSchema variable) {
-    final result = _values.entries.firstWhereOrNull((element) => element.key == variable.key);
+    final result = _values.entries
+        .firstWhereOrNull((element) => element.key == variable.key);
 
     if (variable.required && result == null) {
       throw Exception('Environment variable ${variable.key} not found');
@@ -51,7 +53,8 @@ final class Environment implements EnvContract {
     final elements = dir.listSync();
 
     final environments = elements
-        .where((element) => element is File && element.uri.pathSegments.last.contains('.env'))
+        .where((element) =>
+            element is File && element.uri.pathSegments.last.contains('.env'))
         .toList();
 
     final orderedFiles = orderEnvFiles(environments);
@@ -59,7 +62,8 @@ final class Environment implements EnvContract {
       final environment = orderedFiles.first;
 
       final lines = File.fromUri(environment.uri).readAsLinesSync();
-      for (final line in lines.nonNulls.where((element) => element.isNotEmpty)) {
+      for (final line
+          in lines.nonNulls.where((element) => element.isNotEmpty)) {
         final [key, value] = switch (line.contains('=')) {
           true => line.split('='),
           false => line.split(':'),

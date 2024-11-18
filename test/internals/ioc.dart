@@ -16,22 +16,22 @@ void main() {
     tearDown(ioc.dispose);
 
     test('can bind service with concrete type', () {
-      ioc.bind(Foo, Foo.new);
+      ioc.bind(Foo.new);
+      expect(ioc.resolve<Foo>(), isA<Foo>());
+    });
+
+    test('can bind service with concrete type in generic', () {
+      ioc.bind<Foo>(Foo.new);
       expect(ioc.resolve<Foo>(), isA<Foo>());
     });
 
     test('can bind service with abstract type', () {
-      ioc.bind(AbstractClass, Foo.new);
+      ioc.bind<AbstractClass>(Foo.new);
       expect(ioc.resolve<AbstractClass>(), isA<Foo>());
     });
 
-    test("can't resolve service by abstract class when haven't", () {
-      ioc.bind(AbstractClass, FooWithoutAbstract.new);
-      expect(() => ioc.resolve<FooWithoutAbstract>(), throwsException);
-    });
-
     test('can override service', () {
-      ioc.bind(AbstractClass, Foo.new);
+      ioc.bind<AbstractClass>(Foo.new);
       expect(ioc.resolve<AbstractClass>(), isA<Foo>());
 
       ioc.override(AbstractClass, Bar.new);
@@ -44,7 +44,7 @@ void main() {
 
     test('can override service then restore it', () {
       ioc
-        ..bind(AbstractClass, Foo.new)
+        ..bind<AbstractClass>(Foo.new)
         ..override(AbstractClass, Bar.new)
         ..restore(AbstractClass);
 

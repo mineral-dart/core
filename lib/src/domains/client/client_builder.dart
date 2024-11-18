@@ -1,98 +1,89 @@
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:mineral/api.dart';
+import 'package:mineral/container.dart';
+import 'package:mineral/services.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
-import 'package:mineral/src/domains/providers/provider.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
-import 'package:mineral/src/infrastructure/internals/cache/cache_provider_contract.dart';
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
-import 'package:mineral/src/infrastructure/internals/environment/env_schema.dart';
-import 'package:mineral/src/infrastructure/internals/environment/environment.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
 import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/src/infrastructure/kernel/kernel.dart';
-import 'package:mineral/src/infrastructure/kernel/mineral_client.dart';
-import 'package:mineral/src/infrastructure/services/http/header.dart';
-import 'package:mineral/src/infrastructure/services/http/http_client.dart';
-import 'package:mineral/src/infrastructure/services/http/http_client_config.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 
-final class Client {
+final class ClientBuilder {
   late final LoggerContract _logger;
   final EnvContract _env = Environment();
 
   CacheProviderContract? _cache;
   final List<EnvSchema> _schemas = [];
-  final List<ProviderContract Function(MineralClientContract)> _providers = [];
+  final List<ProviderContract Function(Client)> _providers = [];
 
   SendPort? _devPort;
   bool _hasDefinedDevPort = false;
 
   final WatcherConfig _watcherConfig = WatcherConfig();
 
-  Client() {
+  ClientBuilder() {
     _logger = Logger(_env);
   }
 
-  Client setToken(String token) {
+  ClientBuilder setToken(String token) {
     _env.list[AppEnv.token.key] = token;
     return this;
   }
 
-  Client setIntent(int intent) {
+  ClientBuilder setIntent(int intent) {
     _env.list[AppEnv.intent.key] = intent.toString();
     return this;
   }
 
-  Client setHttpVersion(int version) {
+  ClientBuilder setHttpVersion(int version) {
     _env.list[AppEnv.httpVersion.key] = version.toString();
     return this;
   }
 
-  Client setWssVersion(int version) {
+  ClientBuilder setWssVersion(int version) {
     _env.list[AppEnv.wssVersion.key] = version.toString();
     return this;
   }
 
-  Client setCache(CacheProviderContract Function(EnvContract) cache) {
+  ClientBuilder setCache(CacheProviderContract Function(EnvContract) cache) {
     _cache = cache(_env);
     return this;
   }
 
-  Client setLogger(LoggerContract Function(EnvContract) logger) {
+  ClientBuilder setLogger(LoggerContract Function(EnvContract) logger) {
     _logger = logger(_env);
     return this;
   }
 
-  Client setHmrDevPort(SendPort? devPort) {
+  ClientBuilder setHmrDevPort(SendPort? devPort) {
     _devPort = devPort;
     _hasDefinedDevPort = true;
     return this;
   }
 
-  Client validateEnvironment(List<EnvSchema> schema) {
+  ClientBuilder validateEnvironment(List<EnvSchema> schema) {
     _schemas.addAll(schema);
     return this;
   }
 
-  Client addWatchedFile(File file) {
+  ClientBuilder addWatchedFile(File file) {
     _watcherConfig.watchedFiles.add(file);
     return this;
   }
 
-  Client addWatchedDirectory(Directory folder) {
+  ClientBuilder addWatchedDirectory(Directory folder) {
     _watcherConfig.watchedFolders.add(folder);
     return this;
   }
 
-  Client registerProvider<T extends ProviderContract>(
-      T Function(MineralClientContract) provider) {
+  ClientBuilder registerProvider<T extends ProviderContract>(
+      T Function(Client) provider) {
     _providers.add(provider);
     return this;
   }
@@ -113,10 +104,10 @@ final class Client {
       ..init();
   }
 
-  MineralClientContract build() {
+  Client build() {
     ioc
-      ..bind(LoggerContract, () => _logger)
-      ..bind(EnvContract, () => _env);
+      ..bind<LoggerContract>(() => _logger)
+      ..bind<EnvContract>(() => _env);
 
     _validateEnvironment();
     _createCache();
@@ -137,21 +128,10 @@ final class Client {
     final shardConfig =
         ShardingConfig(token: token, intent: intent, version: shardVersion);
 
-    final marshaller = Marshaller(_logger, _cache!);
-    final datastore = DataStore(http);
-    final commandInteractionManager = CommandInteractionManager();
-
-    ioc
-      ..bind(MarshallerContract, () => marshaller)
-      ..bind(DataStoreContract, () => datastore)
-      ..bind(
-          CommandInteractionManagerContract, () => commandInteractionManager);
-
     final packetListener = PacketListener();
     final eventListener = EventListener();
     final providerManager = ProviderManager();
-    final globalStateManager = GlobalStateManager();
-    ioc.bind(GlobalStateService, () => globalStateManager);
+    final globalStateManager = ioc.make(GlobalStateManager.new);
 
     final kernel = Kernel(
       _hasDefinedDevPort,
@@ -165,18 +145,18 @@ final class Client {
       providerManager: providerManager,
       eventListener: eventListener,
       globalState: globalStateManager,
-      marshaller: marshaller,
-      dataStore: datastore,
-      commands: commandInteractionManager,
     );
 
-    datastore.kernel = kernel;
-    packetListener.kernel = kernel;
+    ioc
+      ..bind<MarshallerContract>(() => Marshaller(_logger, _cache!))
+      ..bind<DataStoreContract>(() => DataStore(http))
+      ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new);
 
-    datastore.init();
-    packetListener.init();
+    packetListener
+      ..kernel = kernel
+      ..init();
 
-    final client = MineralClient(kernel);
+    final client = Client(kernel);
 
     for (final provider in _providers) {
       providerManager.register(provider(client));

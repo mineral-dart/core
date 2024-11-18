@@ -2,16 +2,13 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mansion/mansion.dart';
-import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/src/infrastructure/internals/environment/environment.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
@@ -39,13 +36,7 @@ abstract interface class KernelContract {
 
   ProviderManagerContract get providerManager;
 
-  MarshallerContract get marshaller;
-
-  DataStoreContract get dataStore;
-
   HotModuleReloading? get hmr;
-
-  CommandInteractionManagerContract get commands;
 
   GlobalStateManagerContract get globalState;
 
@@ -86,16 +77,7 @@ final class Kernel implements KernelContract {
   final ProviderManagerContract providerManager;
 
   @override
-  final MarshallerContract marshaller;
-
-  @override
-  final DataStoreContract dataStore;
-
-  @override
   HotModuleReloading? hmr;
-
-  @override
-  final CommandInteractionManagerContract commands;
 
   @override
   final GlobalStateManagerContract globalState;
@@ -111,10 +93,7 @@ final class Kernel implements KernelContract {
     required this.eventListener,
     required this.providerManager,
     required this.globalState,
-    required this.marshaller,
-    required this.dataStore,
     required this.watcherConfig,
-    required this.commands,
   }) {
     _watch.start();
     httpClient.config.headers.addAll([
