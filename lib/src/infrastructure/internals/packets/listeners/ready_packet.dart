@@ -7,7 +7,7 @@ import 'package:mineral/src/infrastructure/internals/container/ioc_container.dar
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
+import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 
 final class ReadyPacket implements ListenablePacket {
   @override

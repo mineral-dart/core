@@ -3,21 +3,10 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart' as logging;
 import 'package:mansion/mansion.dart';
+import 'package:mineral/services.dart';
+import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/src/infrastructure/internals/environment/environment.dart';
-import 'package:mineral/src/infrastructure/services/logger/log_level.dart';
-
-abstract interface class LoggerContract {
-  void trace(Object message);
-
-  void fatal(Exception message);
-
-  void error(String message);
-
-  void warn(String message);
-
-  void info(String message);
-}
 
 final class Logger implements LoggerContract {
   static Color get primaryColor => Color.fromRGB(140, 169, 238);
