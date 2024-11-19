@@ -5,7 +5,7 @@ import 'package:mineral/src/infrastructure/internals/container/ioc_container.dar
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
+import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 
 abstract interface class ShardAuthentication {
   void setupRequirements(Map<String, dynamic> payload);

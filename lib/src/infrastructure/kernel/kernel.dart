@@ -15,6 +15,7 @@ import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/token_exception.dart';
 import 'package:mineral/src/infrastructure/services/http/header.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client.dart';
+import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 import 'package:mineral/src/infrastructure/services/logger/logger.dart';
 import 'package:path/path.dart' as path;
 import 'package:yaml/yaml.dart';

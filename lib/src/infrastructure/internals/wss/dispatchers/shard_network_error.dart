@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/wss/constants/shard_disconnect_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
-import 'package:mineral/src/infrastructure/services/logger/logger.dart';
+import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 
 abstract interface class ShardNetworkError {
   void dispatch(dynamic payload);
