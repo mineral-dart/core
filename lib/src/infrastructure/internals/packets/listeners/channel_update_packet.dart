@@ -24,7 +24,10 @@ final class ChannelUpdatePacket implements ListenablePacket {
         : null;
 
     final rawChannel =
-        await marshaller.serializers.channels.normalize(message.payload);
+        await marshaller.serializers.channels.normalize({
+          'server_id': message.payload['guild_id'],
+          ...message.payload
+        });
     final channel = await marshaller.serializers.channels.serialize(rawChannel);
 
     return switch (channel) {
