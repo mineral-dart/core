@@ -10,6 +10,7 @@ import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authe
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_data.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_network_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/src/infrastructure/internals/wss/starting_strategy.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_client.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 
@@ -35,10 +36,14 @@ final class Shard implements ShardContract {
 
   late final ShardNetworkError networkError;
 
-  Shard({required this.shardName, required this.url, required this.kernel}) {
+  Shard(
+      {required this.shardName,
+      required this.url,
+      required this.kernel,
+      required DispatchStrategy dispatchStrategy}) {
     authentication = ShardAuthentication(this);
     networkError = ShardNetworkError(this);
-    dispatchEvent = ShardData(this);
+    dispatchEvent = ShardData(this, dispatchStrategy);
   }
 
   @override

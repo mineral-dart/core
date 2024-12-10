@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
@@ -21,11 +20,11 @@ final class ShardAuthentication implements ShardAuthenticationContract {
     createHeartbeatTimer(payload['heartbeat_interval']);
 
     final message = ShardMessageBuilder()
-        .setOpCode(OpCode.identify)
-        .append('token', shard.kernel.config.token)
-        .append('intents', shard.kernel.config.intent)
-        .append('compress', shard.kernel.config.compress)
-        .append('properties', {'\$os': 'macos', '\$device': 'mineral'});
+      ..setOpCode(OpCode.identify)
+      ..append('token', shard.kernel.config.token)
+      ..append('intents', shard.kernel.config.intent)
+      ..append('compress', shard.kernel.config.compress)
+      ..append('properties', {'\$os': 'macos', '\$device': 'mineral'});
 
     shard.client.send(message.build());
   }
@@ -38,10 +37,9 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
   @override
   void heartbeat() {
-    shard.client.send(jsonEncode({
-      'op': 1,
-      'd': null,
-    }));
+    final message = ShardMessageBuilder()..setOpCode(OpCode.heartbeat);
+
+    shard.client.send(message.build());
   }
 
   @override
@@ -50,9 +48,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   }
 
   @override
-  Future<void> connect() async {
-    await shard.client.connect();
-  }
+  Future<void> connect() => shard.client.connect();
 
   @override
   void reconnect() {
@@ -64,10 +60,10 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   @override
   void resume() {
     final message = ShardMessageBuilder()
-        .setOpCode(OpCode.resume)
-        .append('token', shard.kernel.config.token)
-        .append('session_id', sessionId)
-        .append('seq', sequence);
+      ..setOpCode(OpCode.resume)
+      ..append('token', shard.kernel.config.token)
+      ..append('session_id', sessionId)
+      ..append('seq', sequence);
 
     shard.client.send(message.build());
   }
