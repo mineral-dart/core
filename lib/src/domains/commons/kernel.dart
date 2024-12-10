@@ -10,7 +10,7 @@ import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
-import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
+import 'package:mineral/src/infrastructure/internals/wss/starting_strategy.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/token_exception.dart';
 import 'package:mineral/src/infrastructure/services/http/header.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client.dart';
@@ -36,6 +36,8 @@ abstract interface class KernelContract {
   ProviderManagerContract get providerManager;
 
   HotModuleReloading? get hmr;
+
+  DispatchStrategy get dispatchStrategy;
 
   GlobalStateManagerContract get globalState;
 
@@ -79,6 +81,9 @@ final class Kernel implements KernelContract {
   HotModuleReloading? hmr;
 
   @override
+  late final DispatchStrategy dispatchStrategy;
+
+  @override
   final GlobalStateManagerContract globalState;
 
   Kernel(
@@ -103,8 +108,7 @@ final class Kernel implements KernelContract {
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {
     final response = await httpClient.get('/gateway/bot');
     return switch (response.statusCode) {
-      int() when httpClient.status.isSuccess(response.statusCode) =>
-        response.body,
+      int() when httpClient.status.isSuccess(response.statusCode) => response.body,
       int() when httpClient.status.isError(response.statusCode) =>
         throw TokenException('This token is invalid or revocated !'),
       _ => throw TokenException('This token is invalid or revocated !'),
@@ -121,8 +125,7 @@ final class Kernel implements KernelContract {
     }
 
     if (Isolate.current.debugName == 'main') {
-      final packageFile =
-          File(path.join(Directory.current.path, 'pubspec.yaml'));
+      final packageFile = File(path.join(Directory.current.path, 'pubspec.yaml'));
 
       final packageFileContent = await packageFile.readAsString();
       final package = loadYaml(packageFileContent);
@@ -185,23 +188,27 @@ final class Kernel implements KernelContract {
     }
 
     if (useHmr) {
-      hmr = HotModuleReloading(
-          _devPort, watcherConfig, this, createShards, shards);
-      await hmr?.spawn();
+      final hmr = HotModuleReloading(_devPort, watcherConfig, this, createShards, shards);
+      dispatchStrategy = DispatchHmrStrategy(hmr);
+      this.hmr = hmr;
+
+      await hmr.spawn();
     } else {
+      dispatchStrategy = DispatchDefaultStrategy(this);
       createShards();
     }
   }
 
   Future<void> createShards() async {
-    final {'url': String endpoint, 'shards': int shardCount} =
-        await getWebsocketEndpoint();
+    final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
 
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
       final shard = Shard(
           shardName: 'shard #$i',
           url: '$endpoint/?v=${config.version}',
-          kernel: this);
+          kernel: this,
+          dispatchStrategy: dispatchStrategy);
+
       shards.putIfAbsent(i, () => shard);
 
       await shard.init();

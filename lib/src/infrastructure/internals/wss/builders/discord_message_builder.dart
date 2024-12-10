@@ -8,16 +8,11 @@ final class ShardMessageBuilder<OpCodeEnum extends OpCode> {
 
   ShardMessageBuilder();
 
-  ShardMessageBuilder setOpCode(OpCodeEnum code) {
-    _code = code;
-    return this;
-  }
+  void setOpCode(OpCodeEnum code) => _code = code;
 
-  ShardMessageBuilder append(String key, dynamic payload) {
+  void append(String key, dynamic payload) {
     _payload ??= {};
     _payload![key] = payload;
-
-    return this;
   }
 
   String build() {
