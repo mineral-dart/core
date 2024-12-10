@@ -2,35 +2,19 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:mineral/container.dart';
-import 'package:mineral/src/domains/contracts/logger/logger_contract.dart';
+import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
-import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 
-abstract interface class ShardAuthentication {
-  void setupRequirements(Map<String, dynamic> payload);
-
-  void identify(Map<String, dynamic> payload);
-
-  Future<void> connect();
-
-  void reconnect();
-
-  void heartbeat();
-
-  void ack();
-
-  void resume();
-}
-
-final class ShardAuthenticationImpl implements ShardAuthentication {
+final class ShardAuthentication implements ShardAuthenticationContract {
   final Shard shard;
 
   int? sequence;
   String? sessionId;
   String? resumeUrl;
 
-  ShardAuthenticationImpl(this.shard);
+  ShardAuthentication(this.shard);
 
   @override
   void identify(Map<String, dynamic> payload) {

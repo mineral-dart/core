@@ -2,30 +2,16 @@ import 'dart:collection';
 import 'dart:convert';
 
 import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/commons/kernel.dart';
-import 'package:mineral/src/domains/contracts/logger/logger_contract.dart';
+import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_data.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_network_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_client.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
-
-abstract interface class ShardContract {
-  Queue<Map<String, dynamic>> get onceEventQueue;
-
-  String get shardName;
-
-  KernelContract get kernel;
-
-  WebsocketClient get client;
-
-  ShardAuthentication get authentication;
-
-  Future<void> init();
-}
 
 final class Shard implements ShardContract {
   @override
@@ -50,9 +36,9 @@ final class Shard implements ShardContract {
   late final ShardNetworkError networkError;
 
   Shard({required this.shardName, required this.url, required this.kernel}) {
-    authentication = ShardAuthenticationImpl(this);
-    networkError = ShardNetworkErrorImpl(this);
-    dispatchEvent = ShardDataImpl(this);
+    authentication = ShardAuthentication(this);
+    networkError = ShardNetworkError(this);
+    dispatchEvent = ShardData(this);
   }
 
   @override
@@ -84,14 +70,12 @@ final class Shard implements ShardContract {
         return message;
       })
       ..add((message) async {
-        message.content =
-            ShardMessageImpl.of(jsonDecode(message.originalContent));
+        message.content = ShardMessage.of(jsonDecode(message.originalContent));
         return message;
       });
 
     client.listen((message) {
-      if (message.content
-          case ShardMessage(opCode: final code, payload: final payload)) {
+      if (message.content case ShardMessage(opCode: final code, payload: final payload)) {
         switch (code) {
           case OpCode.hello:
             authentication.identify(payload);

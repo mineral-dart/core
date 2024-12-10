@@ -1,18 +1,7 @@
-import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
+import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
 
-abstract interface class ShardMessage<T> {
-  String? get type;
-
-  OpCode get opCode;
-
-  int? get sequence;
-
-  T get payload;
-
-  Object serialize();
-}
-
-final class ShardMessageImpl<T> implements ShardMessage<T> {
+final class ShardMessage<T> implements ShardMessageContract<T, OpCode> {
   @override
   final String? type;
 
@@ -25,16 +14,12 @@ final class ShardMessageImpl<T> implements ShardMessage<T> {
   @override
   final T payload;
 
-  ShardMessageImpl(
-      {required this.type,
-      required this.opCode,
-      required this.sequence,
-      required this.payload});
+  ShardMessage(
+      {required this.type, required this.opCode, required this.sequence, required this.payload});
 
-  factory ShardMessageImpl.of(Map<String, dynamic> message) => ShardMessageImpl(
+  factory ShardMessage.of(Map<String, dynamic> message) => ShardMessage(
       type: message['t'],
-      opCode:
-          OpCode.values.firstWhere((element) => element.value == message['op']),
+      opCode: OpCode.values.firstWhere((element) => element.value == message['op']),
       sequence: message['s'],
       payload: message['d']);
 
