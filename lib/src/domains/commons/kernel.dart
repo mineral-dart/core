@@ -110,8 +110,8 @@ final class Kernel implements KernelContract {
     return switch (response.statusCode) {
       int() when httpClient.status.isSuccess(response.statusCode) => response.body,
       int() when httpClient.status.isError(response.statusCode) =>
-        throw TokenException('This token is invalid or revocated !'),
-      _ => throw TokenException('This token is invalid or revocated !'),
+        throw TokenException('This token is invalid or expired'),
+      _ => throw (response.bodyString),
     };
   }
 
