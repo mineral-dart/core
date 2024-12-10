@@ -2,10 +2,10 @@ import 'package:mineral/api.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/domains/commands/command_declaration_bucket.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/commons/utils/listenable.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
-import 'package:mineral/src/domains/commons/kernel.dart';
+import 'package:mineral/container.dart';
 
 import '../events/types/listenable_event.dart';
 

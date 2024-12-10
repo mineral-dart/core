@@ -1,17 +1,17 @@
 import 'dart:collection';
 import 'dart:convert';
 
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/services.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_data.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_network_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/domains/commons/kernel.dart';
-import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_client.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
+import 'package:mineral/container.dart';
 
 abstract interface class ShardContract {
   Queue<Map<String, dynamic>> get onceEventQueue;

@@ -5,7 +5,7 @@ import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/channel_part.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';

@@ -1,4 +1,4 @@
-import 'package:mineral/container.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/common/partial_emoji.dart';
 import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/polls/poll_answer.dart';

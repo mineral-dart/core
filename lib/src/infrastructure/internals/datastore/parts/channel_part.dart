@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:mineral/container.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/components/message_component.dart';

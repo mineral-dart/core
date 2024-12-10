@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/server_part.dart';
 

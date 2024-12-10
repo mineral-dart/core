@@ -1,5 +1,5 @@
 import 'package:collection/collection.dart';
-import 'package:mineral/container.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/common/types/interaction_type.dart';
 import 'package:mineral/src/domains/components/dialog/contexts/private_dialog_context.dart';
 import 'package:mineral/src/domains/components/dialog/contexts/server_dialog_context.dart';

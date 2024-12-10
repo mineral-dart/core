@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/services.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';

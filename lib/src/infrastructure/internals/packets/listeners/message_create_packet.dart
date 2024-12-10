@@ -1,4 +1,4 @@
-import 'package:mineral/container.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/message_type.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';

@@ -1,12 +1,10 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/src/api/common/types/interaction_type.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 
 final class CommandInteractionCreatePacket implements ListenablePacket {
   @override

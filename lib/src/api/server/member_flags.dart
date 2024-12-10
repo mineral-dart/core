@@ -1,7 +1,7 @@
 import 'package:mineral/src/api/server/enums/member_flag.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/server.dart';
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/member_part.dart';
 
