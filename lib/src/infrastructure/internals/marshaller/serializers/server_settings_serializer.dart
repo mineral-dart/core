@@ -6,7 +6,7 @@ import 'package:mineral/src/api/server/enums/nsfw_level.dart';
 import 'package:mineral/src/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/src/api/server/enums/verification_level.dart';
 import 'package:mineral/src/api/server/server_settings.dart';
-import 'package:mineral/src/infrastructure/commons/utils.dart';
+import 'package:mineral/src/domains/commons/utils/utils.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 

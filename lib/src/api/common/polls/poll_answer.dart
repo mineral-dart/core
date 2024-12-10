@@ -1,5 +1,5 @@
 import 'package:mineral/src/api/common/partial_emoji.dart';
-import 'package:mineral/src/infrastructure/commons/helper.dart';
+import 'package:mineral/src/domains/commons/utils/helper.dart';
 
 final class PollAnswer {
   String content;

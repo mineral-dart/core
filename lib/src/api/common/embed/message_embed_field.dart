@@ -1,4 +1,4 @@
-import 'package:mineral/src/infrastructure/commons/utils.dart';
+import 'package:mineral/src/domains/commons/utils/utils.dart';
 
 final class MessageEmbedField {
   final String name;

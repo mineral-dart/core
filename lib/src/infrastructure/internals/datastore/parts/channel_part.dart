@@ -13,7 +13,7 @@ import 'package:mineral/src/api/private/channels/private_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/channels/server_text_channel.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
-import 'package:mineral/src/infrastructure/commons/helper.dart';
+import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';

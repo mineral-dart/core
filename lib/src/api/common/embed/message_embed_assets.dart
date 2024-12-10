@@ -1,5 +1,5 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/infrastructure/commons/helper.dart';
+import 'package:mineral/src/domains/commons/utils/helper.dart';
 
 final class MessageEmbedAssets {
   final MessageEmbedImage? image;

@@ -6,8 +6,8 @@ import 'package:mineral/src/api/server/managers/member_role_manager.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/member_flags.dart';
 import 'package:mineral/src/api/server/member_timeout.dart';
-import 'package:mineral/src/infrastructure/commons/helper.dart';
-import 'package:mineral/src/infrastructure/commons/utils.dart';
+import 'package:mineral/src/domains/commons/utils/helper.dart';
+import 'package:mineral/src/domains/commons/utils/utils.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
