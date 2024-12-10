@@ -12,6 +12,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   int? sequence;
   String? sessionId;
   String? resumeUrl;
+  int attempts = 0;
 
   ShardAuthentication(this.shard);
 
@@ -37,14 +38,21 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
   @override
   void heartbeat() {
-    final message = ShardMessageBuilder()..setOpCode(OpCode.heartbeat);
+    if (attempts >= 3) {
+      ioc.resolve<LoggerContract>().error('Heartbeat failed 3 times');
+      return reconnect();
+    }
 
+    final message = ShardMessageBuilder()..setOpCode(OpCode.heartbeat);
     shard.client.send(message.build());
+
+    attempts++;
   }
 
   @override
   void ack() {
     ioc.resolve<LoggerContract>().trace('Received heartbeat ack');
+    attempts = 0;
   }
 
   @override
@@ -52,8 +60,10 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
   @override
   void reconnect() {
+    attempts = 0;
     shard.client.disconnect();
     shard.init();
+
     connect();
   }
 
