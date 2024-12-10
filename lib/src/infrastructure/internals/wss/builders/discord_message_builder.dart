@@ -1,14 +1,14 @@
 import 'dart:convert';
 
-import 'package:mineral/src/infrastructure/internals/wss/constants/op_code.dart';
+import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
 
-final class ShardMessageBuilder {
-  OpCode? _code;
+final class ShardMessageBuilder<OpCodeEnum extends OpCode> {
+  OpCodeEnum? _code;
   Map<String, dynamic>? _payload;
 
   ShardMessageBuilder();
 
-  ShardMessageBuilder setOpCode(OpCode code) {
+  ShardMessageBuilder setOpCode(OpCodeEnum code) {
     _code = code;
     return this;
   }

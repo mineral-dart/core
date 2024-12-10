@@ -1,18 +1,15 @@
 import 'dart:io';
 
 import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/contracts/logger/logger_contract.dart';
-import 'package:mineral/src/infrastructure/internals/wss/constants/shard_disconnect_error.dart';
+import 'package:mineral/src/domains/contracts/wss/constants/shard_disconnect_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 
-abstract interface class ShardNetworkError {
-  void dispatch(dynamic payload);
-}
-
-final class ShardNetworkErrorImpl implements ShardNetworkError {
+final class ShardNetworkError implements ShardNetworkErrorContract {
   final Shard shard;
 
-  ShardNetworkErrorImpl(this.shard);
+  ShardNetworkError(this.shard);
 
   @override
   void dispatch(dynamic payload) {

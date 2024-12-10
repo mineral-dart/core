@@ -35,6 +35,7 @@ final class HotModuleReloading implements HmrContract {
   HotModuleReloading(this._devPort, this._watcherConfig, this._kernel,
       this._createShards, this._shards);
 
+  @override
   Future<void> spawn() async {
     if (Isolate.current.debugName == 'dev') {
       final ReceivePort port = ReceivePort();
@@ -44,7 +45,7 @@ final class HotModuleReloading implements HmrContract {
       await _marshaller.cache.init();
       await for (final Map<String, dynamic> message in stream) {
         _kernel.packetListener.dispatcher
-            .dispatch(ShardMessageImpl.of(message));
+            .dispatch(ShardMessage.of(message));
       }
     } else {
       _createHotModuleLoader();
