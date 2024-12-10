@@ -3,7 +3,7 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/threads/thread_metadata.dart';
-import 'package:mineral/src/infrastructure/commons/helper.dart';
+import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';

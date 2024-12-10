@@ -10,7 +10,7 @@ import 'package:mineral/src/infrastructure/internals/hmr/watcher_builder.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/kernel/kernel.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:path/path.dart' as path;
 import 'package:watcher/watcher.dart';
 

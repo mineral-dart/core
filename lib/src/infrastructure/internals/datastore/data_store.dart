@@ -7,7 +7,7 @@ import 'package:mineral/src/infrastructure/internals/datastore/parts/server_mess
 import 'package:mineral/src/infrastructure/internals/datastore/parts/server_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/sticker_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/user_part.dart';
-import 'package:mineral/src/infrastructure/kernel/kernel.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client.dart';
 
 abstract class DataStoreContract {

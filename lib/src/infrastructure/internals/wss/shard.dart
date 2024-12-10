@@ -8,7 +8,7 @@ import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authe
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_data.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_network_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/kernel/kernel.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_client.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';

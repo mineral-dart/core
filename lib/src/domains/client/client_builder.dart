@@ -12,7 +12,7 @@ import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
 import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
-import 'package:mineral/src/infrastructure/kernel/kernel.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
 
 final class ClientBuilder {
   late final LoggerContract _logger;

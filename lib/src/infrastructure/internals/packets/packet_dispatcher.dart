@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/kernel/kernel.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract interface class PacketDispatcherContract {
