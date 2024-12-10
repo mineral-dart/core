@@ -1,22 +1,22 @@
 import 'dart:io';
 
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/private/channels/private_channel.dart';
 import 'package:mineral/src/api/private/private_message.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/server_message.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
-final class MessagePart implements DataStorePart {
+final class MessagePart implements MessagePartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   HttpClientStatus get status => _dataStore.client.status;
 
+  @override
   Future<ServerMessage> getServerMessage(
       {required Snowflake messageId, required Snowflake channelId}) async {
     final messageCacheKey = _marshaller.cacheKey.message(channelId, channelId);
@@ -53,6 +53,7 @@ final class MessagePart implements DataStorePart {
     return serverMessage;
   }
 
+  @override
   Future<PrivateMessage> getPrivateMessage(
       {required Snowflake messageId, required Snowflake channelId}) async {
     final messageCacheKey = _marshaller.cacheKey.message(channelId, channelId);

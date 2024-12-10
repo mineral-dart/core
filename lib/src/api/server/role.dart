@@ -1,13 +1,13 @@
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/color.dart';
 import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/server.dart';
-import 'package:mineral/container.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/role_part.dart';
 
 final class Role {
-  RolePart get dataStoreRole => ioc.resolve<DataStoreContract>().role;
+  RolePartContract get dataStoreRole => ioc.resolve<DataStoreContract>().role;
+
   late final Server server;
 
   final Snowflake id;

@@ -1,4 +1,6 @@
-enum PacketType {
+import 'package:mineral/contracts.dart';
+
+enum PacketType implements PacketTypeContract {
   ready('READY'),
 
   interactionCreate('INTERACTION_CREATE'),
@@ -41,6 +43,7 @@ enum PacketType {
 
   channelPinsUpdate('CHANNEL_PINS_UPDATE');
 
+  @override
   final String name;
 
   const PacketType(this.name);

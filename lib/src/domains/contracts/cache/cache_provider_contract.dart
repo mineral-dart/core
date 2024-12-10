@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mineral/src/domains/services/logger/logger_contract.dart';
+import 'package:mineral/src/domains/contracts/logger/logger_contract.dart';
 
 abstract interface class CacheProviderContract {
   String get name;

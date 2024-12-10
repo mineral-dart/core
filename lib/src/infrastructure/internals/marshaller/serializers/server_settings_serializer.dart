@@ -1,4 +1,3 @@
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/server/enums/default_message_notification.dart';
 import 'package:mineral/src/api/server/enums/explicit_content_filter.dart';
 import 'package:mineral/src/api/server/enums/mfa_level.dart';
@@ -7,7 +6,8 @@ import 'package:mineral/src/api/server/enums/system_channel_flag.dart';
 import 'package:mineral/src/api/server/enums/verification_level.dart';
 import 'package:mineral/src/api/server/server_settings.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class ServerSettingsSerializer

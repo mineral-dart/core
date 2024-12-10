@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/bot.dart';
 import 'package:mineral/src/api/common/commands/builder/command_declaration_builder.dart';
 import 'package:mineral/src/api/common/commands/builder/command_definition_builder.dart';
@@ -8,9 +8,7 @@ import 'package:mineral/src/api/common/commands/command_context_type.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/domains/commands/command_builder.dart';
 import 'package:mineral/src/domains/commands/command_interaction_dispatcher.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_dispatcher_contract.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
 
 abstract class CommandInteractionManagerContract {

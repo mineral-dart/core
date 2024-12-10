@@ -1,24 +1,24 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/api/server/server.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
-final class ServerPart implements DataStorePart {
+final class ServerPart implements ServerPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   HttpClientStatus get status => _dataStore.client.status;
 
+  @override
   Future<Server> getServer(Snowflake id) async {
     final cacheKey = _marshaller.cacheKey;
     final serverCacheKey = cacheKey.server(id);
@@ -38,6 +38,7 @@ final class ServerPart implements DataStorePart {
     return _marshaller.serializers.server.serialize(payload);
   }
 
+  @override
   Future<Server> updateServer(
       Snowflake id, Map<String, dynamic> payload, String? reason) async {
     final response = await _dataStore.client.patch('/guilds/$id',
@@ -50,6 +51,7 @@ final class ServerPart implements DataStorePart {
     return _marshaller.serializers.server.serialize(rawServer);
   }
 
+  @override
   Future<List<T>> getChannels<T extends ServerChannel>(Snowflake id) async {
     final response = await _dataStore.client.get('/guilds/$id/channels');
     if (status.isError(response.statusCode)) {
@@ -62,6 +64,7 @@ final class ServerPart implements DataStorePart {
     }).toList());
   }
 
+  @override
   Future<Role> getRole(Snowflake serverId, Snowflake roleId) async {
     final roleCacheKey = _marshaller.cacheKey.serverRole(serverId, roleId);
     final cachedRawRole = await _marshaller.cache.get(roleCacheKey);
@@ -80,6 +83,7 @@ final class ServerPart implements DataStorePart {
     return _marshaller.serializers.role.serialize(rolePayload);
   }
 
+  @override
   Future<List<Role>> getRoles(Snowflake guildId, {bool force = false}) async {
     final response = await _dataStore.client.get('/guilds/$guildId/roles');
     if (status.isError(response.statusCode)) {

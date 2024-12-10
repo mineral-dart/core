@@ -1,14 +1,13 @@
 import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/components/message_component.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
 import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/video_quality.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/channel_part.dart';
 
 final class ChannelMethods {
-  ChannelPart get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
+  ChannelPartContract get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
 
   final Snowflake id;
 

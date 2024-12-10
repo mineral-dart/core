@@ -16,7 +16,7 @@ import 'package:mineral/src/api/server/server_assets.dart';
 import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/api/server/server_settings.dart';
 import 'package:mineral/src/api/server/server_subscription.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/channel_permission_overwrite_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/channel_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/embed_serializer.dart';

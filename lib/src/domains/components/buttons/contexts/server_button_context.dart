@@ -2,8 +2,8 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/domains/components/buttons/button_context.dart';
+import 'package:mineral/src/domains/contracts/interactions/interaction_contract.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/interaction.dart';
-import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_contract.dart';
 
 final class ServerButtonContext implements ButtonContext {
   @override

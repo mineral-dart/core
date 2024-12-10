@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/components/message_component.dart';
@@ -14,19 +14,19 @@ import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/channels/server_text_channel.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
-final class ChannelPart implements DataStorePart {
+final class ChannelPart implements ChannelPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   HttpClientStatus get status => _dataStore.client.status;
 
+  @override
   Future<T?> getChannel<T extends Channel>(Snowflake id) async {
     final String key = _marshaller.cacheKey.channel(id);
 
@@ -50,6 +50,7 @@ final class ChannelPart implements DataStorePart {
     return channel;
   }
 
+  @override
   Future<ThreadChannel?> getThread(Snowflake id) async {
     final String key = _marshaller.cacheKey.thread(id);
 
@@ -72,6 +73,7 @@ final class ChannelPart implements DataStorePart {
     return thread;
   }
 
+  @override
   Future<T?> createServerChannel<T extends Channel>(
       {required Snowflake id,
       required Map<String, dynamic> payload,
@@ -86,6 +88,7 @@ final class ChannelPart implements DataStorePart {
     return channel as T?;
   }
 
+  @override
   Future<PrivateChannel?> createPrivateChannel(
       {required Snowflake id, required Snowflake recipientId}) async {
     final response = await _dataStore.client
@@ -96,6 +99,7 @@ final class ChannelPart implements DataStorePart {
     return channel as PrivateChannel?;
   }
 
+  @override
   Future<T?> updateChannel<T extends Channel>(
       {required Snowflake id,
       required Map<String, dynamic> payload,
@@ -110,6 +114,7 @@ final class ChannelPart implements DataStorePart {
     return channel as T?;
   }
 
+  @override
   Future<void> deleteChannel(Snowflake id, String? reason) async {
     final response = await _dataStore.client.delete('/channels/$id',
         option: HttpRequestOptionImpl(
@@ -124,6 +129,7 @@ final class ChannelPart implements DataStorePart {
     };
   }
 
+  @override
   Future<T> createMessage<T extends Message>(
       Snowflake? guildId,
       Snowflake channelId,
@@ -159,6 +165,7 @@ final class ChannelPart implements DataStorePart {
     return serializer.serialize(payload);
   }
 
+  @override
   Future<T?> serializeChannelResponse<T extends Channel>(
       Response response) async {
     return switch (response.statusCode) {

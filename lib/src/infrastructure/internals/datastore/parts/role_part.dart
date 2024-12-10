@@ -1,22 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/role.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
-final class RolePart implements DataStorePart {
+final class RolePart implements RolePartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   HttpClientStatus get status => _dataStore.client.status;
 
+  @override
   Future<Role> getRole(
       {required Snowflake serverId, required Snowflake roleId}) async {
     final cacheKey = _marshaller.cacheKey.serverRole(serverId, roleId);
@@ -36,6 +36,7 @@ final class RolePart implements DataStorePart {
     return _marshaller.serializers.role.serialize(payload);
   }
 
+  @override
   Future<void> addRole(
       {required Snowflake memberId,
       required Snowflake serverId,
@@ -47,6 +48,7 @@ final class RolePart implements DataStorePart {
             headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
+  @override
   Future<void> removeRole(
       {required Snowflake memberId,
       required Snowflake serverId,
@@ -58,6 +60,7 @@ final class RolePart implements DataStorePart {
             headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
+  @override
   Future<void> syncRoles(
       {required Snowflake memberId,
       required Snowflake serverId,
@@ -69,6 +72,7 @@ final class RolePart implements DataStorePart {
             headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
+  @override
   Future<Role?> updateRole(
       {required Snowflake id,
       required Snowflake serverId,
@@ -88,6 +92,7 @@ final class RolePart implements DataStorePart {
     return _marshaller.serializers.role.serialize(body);
   }
 
+  @override
   Future<void> deleteRole(
       {required Snowflake id,
       required Snowflake guildId,

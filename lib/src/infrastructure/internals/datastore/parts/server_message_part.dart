@@ -1,4 +1,4 @@
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/components/message_component.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
@@ -6,16 +6,16 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
-final class ServerMessagePart implements DataStorePart {
+final class ServerMessagePart implements ServerMessagePartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   HttpClientStatus get status => _dataStore.client.status;
 
+  @override
   Future<ServerMessage> update({
     required Snowflake id,
     required Snowflake channelId,
@@ -51,6 +51,7 @@ final class ServerMessagePart implements DataStorePart {
     return message;
   }
 
+  @override
   Future<ServerMessage> reply(
       {required Snowflake id,
       required Snowflake channelId,
@@ -90,21 +91,25 @@ final class ServerMessagePart implements DataStorePart {
     return message;
   }
 
+  @override
   Future<void> pin(
       {required Snowflake id, required Snowflake channelId}) async {
     await _dataStore.client.put('/channels/$channelId/pins/$id');
   }
 
+  @override
   Future<void> unpin(
       {required Snowflake id, required Snowflake channelId}) async {
     await _dataStore.client.delete('/channels/$channelId/pins/$id');
   }
 
+  @override
   Future<void> crosspost(
       {required Snowflake id, required Snowflake channelId}) async {
     await _dataStore.client.post('/channels/$channelId/messages/$id/crosspost');
   }
 
+  @override
   Future<void> delete(
       {required Snowflake id, required Snowflake channelId}) async {
     await _dataStore.client.delete('/channels/$channelId/messages/$id');

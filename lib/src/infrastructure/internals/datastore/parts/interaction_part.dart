@@ -1,36 +1,38 @@
 import 'dart:async';
 
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/components/dialogs/dialog_builder.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/message_flag_type.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
-import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_callback_type.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
-final class InteractionPart implements DataStorePart {
+final class InteractionPart implements InteractionPartContract {
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   HttpClientStatus get status => _dataStore.client.status;
 
+  @override
   Future<void> replyInteraction(
       Snowflake id, String token, Map<String, dynamic> raw) async {
     await _dataStore.client
         .post('/interactions/$id/$token/callback', body: raw);
   }
 
+  @override
   Future<void> editInteraction(
       Snowflake botId, String token, Map<String, dynamic> raw) async {
     await _dataStore.client
         .patch('/webhooks/$botId/$token/messages/@original', body: raw);
   }
 
+  @override
   Future<void> deleteInteraction(Snowflake botId, String token) async {
     await _dataStore.client
         .delete('/webhooks/$botId/$token/messages/@original');
   }
 
+  @override
   Future<void> noReplyInteraction(Snowflake id, String token) async {
     await replyInteraction(id, token, {
       'type': InteractionCallbackType.deferredUpdateMessage.value,
@@ -40,23 +42,27 @@ final class InteractionPart implements DataStorePart {
     });
   }
 
+  @override
   Future<void> followUpInteraction(
       Snowflake botId, String token, Map<String, dynamic> raw) async {
     await _dataStore.client.post('/webhooks/$botId/$token', body: raw);
   }
 
+  @override
   Future<void> editFollowUpInteraction(Snowflake botId, String token,
       Snowflake messageId, Map<String, dynamic> raw) async {
     await _dataStore.client
         .patch('/webhooks/$botId/$token/messages/$messageId', body: raw);
   }
 
+  @override
   Future<void> deleteFollowUpInteraction(
       Snowflake botId, String token, Snowflake messageId) async {
     await _dataStore.client
         .delete('/webhooks/$botId/$token/messages/$messageId');
   }
 
+  @override
   Future<void> waitInteraction(Snowflake id, String token) async {
     await replyInteraction(id, token, {
       'type': InteractionCallbackType.deferredUpdateMessage.value,
@@ -66,18 +72,21 @@ final class InteractionPart implements DataStorePart {
     });
   }
 
+  @override
   Future<void> editWaitInteraction(Snowflake botId, String token,
       Snowflake messageId, Map<String, dynamic> raw) async {
     await _dataStore.client
         .patch('/webhooks/$botId/$token/messages/$messageId', body: raw);
   }
 
+  @override
   Future<void> deleteWaitInteraction(
       Snowflake botId, String token, Snowflake messageId) async {
     await _dataStore.client
         .delete('/webhooks/$botId/$token/messages/$messageId');
   }
 
+  @override
   Future<void> sendDialog(
       Snowflake id, String token, DialogBuilder dialog) async {
     await _dataStore.client.post('/interactions/$id/$token/callback', body: {

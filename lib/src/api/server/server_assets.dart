@@ -1,15 +1,14 @@
 import 'dart:io';
 
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/image_asset.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/managers/emoji_manager.dart';
 import 'package:mineral/src/api/server/managers/sticker_manager.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/server_part.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
 final class ServerAsset {
-  ServerPart get _serverPart => ioc.resolve<DataStoreContract>().server;
+  ServerPartContract get _serverPart => ioc.resolve<DataStoreContract>().server;
 
   final Snowflake serverId;
   final ImageAsset? icon;

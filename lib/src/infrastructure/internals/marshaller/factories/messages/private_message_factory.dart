@@ -1,9 +1,9 @@
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/message_properties.dart';
 import 'package:mineral/src/api/private/channels/private_channel.dart';
 import 'package:mineral/src/api/private/private_message.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/message_factory.dart';
 
 final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {

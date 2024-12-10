@@ -1,4 +1,3 @@
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/common/partial_emoji.dart';
 import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/polls/poll_answer.dart';
@@ -7,7 +6,8 @@ import 'package:mineral/src/api/common/polls/poll_question.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class PollSerializer implements SerializerContract<Poll> {

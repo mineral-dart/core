@@ -4,17 +4,18 @@ import 'dart:io';
 import 'dart:isolate';
 
 import 'package:mansion/mansion.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_builder.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:path/path.dart' as path;
 import 'package:watcher/watcher.dart';
 
-final class HotModuleReloading {
+final class HotModuleReloading implements HmrContract {
   final WatcherConfig _watcherConfig;
   final SendPort? _devPort;
 

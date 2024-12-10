@@ -1,10 +1,4 @@
-abstract interface class PlaceholderContract {
-  Map<String, dynamic> get values;
-
-  String? get identifier;
-
-  String apply(String value);
-}
+import 'package:mineral/contracts.dart';
 
 class Placeholder implements PlaceholderContract {
   final Map<String, dynamic> _values = {};
