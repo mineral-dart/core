@@ -2,7 +2,7 @@ import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 
 final class MessageProperties<T extends Channel> {

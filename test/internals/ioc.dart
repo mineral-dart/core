@@ -1,4 +1,4 @@
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
+import 'package:mineral/container.dart';
 import 'package:test/test.dart';
 
 abstract interface class AbstractClass {}

@@ -1,3 +1,4 @@
+import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/bot.dart';
 import 'package:mineral/src/api/common/components/dialogs/dialog_builder.dart';
 import 'package:mineral/src/api/common/components/message_component.dart';
@@ -5,11 +6,10 @@ import 'package:mineral/src/api/common/embed/message_embed.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/message_flag_type.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
-import 'package:mineral/src/infrastructure/internals/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_callback_type.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_contract.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/container.dart';
 
 final class Interaction implements InteractionContract {
   final String _token;

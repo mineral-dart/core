@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mineral/container.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/components/dialogs/dialog_builder.dart';
 import 'package:mineral/src/api/common/snowflake.dart';

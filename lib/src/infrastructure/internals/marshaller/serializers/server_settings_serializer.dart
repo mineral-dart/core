@@ -1,4 +1,4 @@
-import 'package:mineral/container.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/server/enums/default_message_notification.dart';
 import 'package:mineral/src/api/server/enums/explicit_content_filter.dart';
 import 'package:mineral/src/api/server/enums/mfa_level.dart';

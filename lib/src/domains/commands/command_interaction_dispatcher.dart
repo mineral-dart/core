@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
-import 'package:mineral/container.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/common/commands/command_option_type.dart';
 import 'package:mineral/src/api/common/commands/command_type.dart';
 import 'package:mineral/src/api/common/types/interaction_type.dart';
