@@ -1,4 +1,3 @@
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/api/common/premium_tier.dart';
 import 'package:mineral/src/api/server/enums/member_flag.dart';
@@ -8,7 +7,8 @@ import 'package:mineral/src/api/server/member_flags.dart';
 import 'package:mineral/src/api/server/member_timeout.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class MemberSerializer implements SerializerContract<Member> {

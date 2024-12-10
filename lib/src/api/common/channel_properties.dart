@@ -1,3 +1,5 @@
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
@@ -5,13 +7,9 @@ import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
-import 'package:mineral/container.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/channel_part.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 
 final class ChannelProperties {
-  ChannelPart get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
+  ChannelPartContract get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
 
   final Snowflake id;
   final ChannelType type;

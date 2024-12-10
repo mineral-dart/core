@@ -2,8 +2,8 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/private/private_message.dart';
 import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/domains/components/buttons/button_context.dart';
+import 'package:mineral/src/domains/contracts/interactions/interaction_contract.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/interaction.dart';
-import 'package:mineral/src/infrastructure/internals/interactions/types/interaction_contract.dart';
 
 final class PrivateButtonContext implements ButtonContext {
   @override

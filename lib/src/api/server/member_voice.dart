@@ -1,11 +1,11 @@
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
-import 'package:mineral/container.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/member_part.dart';
 
 final class MemberVoice {
-  MemberPart get _memberMethods => ioc.resolve<DataStoreContract>().member;
+  MemberPartContract get _memberMethods => ioc.resolve<DataStoreContract>().member;
+
   final Member _member;
 
   MemberVoice(this._member);

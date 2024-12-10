@@ -1,22 +1,22 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store_part.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
-final class MemberPart implements DataStorePart {
+final class MemberPart implements MemberPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   HttpClientStatus get status => _dataStore.client.status;
 
+  @override
   Future<Member> getMember(
       {required Snowflake serverId, required Snowflake memberId}) async {
     final cacheKeys = _marshaller.cacheKey;
@@ -42,6 +42,7 @@ final class MemberPart implements DataStorePart {
     return _marshaller.serializers.member.serialize(cachedRawMember);
   }
 
+  @override
   Future<List<Member>> getMembers(Snowflake guildId,
       {bool force = false}) async {
     final serverCacheKey = _marshaller.cacheKey.server(guildId);
@@ -67,6 +68,7 @@ final class MemberPart implements DataStorePart {
     }).wait;
   }
 
+  @override
   Future<Member> updateMember(
       {required Snowflake serverId,
       required Snowflake memberId,
@@ -87,6 +89,7 @@ final class MemberPart implements DataStorePart {
     return _marshaller.serializers.member.serialize(rawMember);
   }
 
+  @override
   Future<void> banMember(
       {required Snowflake serverId,
       required Duration? deleteSince,
@@ -103,6 +106,7 @@ final class MemberPart implements DataStorePart {
     }
   }
 
+  @override
   Future<void> kickMember(
       {required Snowflake serverId,
       required Snowflake memberId,

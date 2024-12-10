@@ -1,4 +1,4 @@
-import 'package:mineral/src/infrastructure/internals/environment/env_schema.dart';
+import 'package:mineral/src/domains/contracts/environment/env_schema.dart';
 
 enum AppEnv implements EnvSchema {
   dartEnv('DART_ENV', required: true),

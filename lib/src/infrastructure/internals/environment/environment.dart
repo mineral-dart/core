@@ -1,15 +1,8 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:mineral/src/infrastructure/internals/environment/env_schema.dart';
-
-abstract interface class EnvContract {
-  Map<String, String> get list;
-
-  T get<T>(EnvSchema variable);
-
-  void validate(List<EnvSchema> values);
-}
+import 'package:mineral/src/domains/contracts/environment/env.dart';
+import 'package:mineral/src/domains/contracts/environment/env_schema.dart';
 
 final class Environment implements EnvContract {
   final Map<String, String> _values = {};

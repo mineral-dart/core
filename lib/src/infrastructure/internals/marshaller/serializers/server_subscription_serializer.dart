@@ -1,8 +1,8 @@
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/api/common/premium_tier.dart';
 import 'package:mineral/src/api/server/server_subscription.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class ServerSubscriptionSerializer

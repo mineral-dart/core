@@ -1,3 +1,6 @@
+import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
+import 'package:mineral/src/domains/contracts/packets/packet_dispatcher.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_delete_packet.dart';
@@ -30,13 +33,6 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_de
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_members_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_dispatcher.dart';
-import 'package:mineral/src/domains/commons/kernel.dart';
-
-abstract interface class PacketListenerContract {
-  PacketDispatcherContract get dispatcher;
-
-  void dispose();
-}
 
 final class PacketListener implements PacketListenerContract {
   @override

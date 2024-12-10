@@ -1,5 +1,5 @@
 import 'package:mineral/container.dart';
-import 'package:mineral/services.dart';
+import 'package:mineral/contracts.dart';
 import 'package:recase/recase.dart';
 
 final class EnvPlaceholder implements PlaceholderContract {

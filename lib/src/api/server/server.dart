@@ -1,11 +1,10 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/container.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/server_part.dart';
+import 'package:mineral/contracts.dart';
+import 'package:mineral/src/api/server/managers/threads_manager.dart';
 
 final class Server {
-  ServerPart get _serverPart => ioc.resolve<DataStoreContract>().server;
+  ServerPartContract get _serverPart => ioc.resolve<DataStoreContract>().server;
 
   final Snowflake id;
   final String? applicationId;

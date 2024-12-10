@@ -1,3 +1,5 @@
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/api/common/premium_tier.dart';
 import 'package:mineral/src/api/common/presence.dart';
@@ -10,12 +12,9 @@ import 'package:mineral/src/api/server/member_flags.dart';
 import 'package:mineral/src/api/server/member_timeout.dart';
 import 'package:mineral/src/api/server/member_voice.dart';
 import 'package:mineral/src/api/server/server.dart';
-import 'package:mineral/container.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/member_part.dart';
 
 final class Member {
-  MemberPart get _memberMethods => ioc.resolve<DataStoreContract>().member;
+  MemberPartContract get _memberMethods => ioc.resolve<DataStoreContract>().member;
 
   late final MemberVoice voice;
 

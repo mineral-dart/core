@@ -1,10 +1,9 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/server_message_part.dart';
+import 'package:mineral/contracts.dart';
 
 final class ServerMessage extends Message<ServerChannel> {
-  ServerMessagePart get _dataStoreServerMessage =>
+  ServerMessagePartContract get _dataStoreServerMessage =>
       ioc.resolve<DataStoreContract>().serverMessage;
   final MessageProperties<ServerChannel> _properties;
 
@@ -38,8 +37,8 @@ final class ServerMessage extends Message<ServerChannel> {
   /// ```dart
   /// await message.edit('New content', embeds: [embed], components: [component]);
   /// ```
-  Future<void> edit(String? content, List<MessageEmbed>? embeds,
-      List<MessageComponent>? components) async {
+  Future<void> edit(
+      String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components) async {
     _dataStoreServerMessage.update(
         id: id,
         channelId: channelId,
@@ -55,9 +54,7 @@ final class ServerMessage extends Message<ServerChannel> {
   /// await message.reply(content: 'Replying to the message');
   /// ```
   Future<void> reply(
-      {String? content,
-      List<MessageEmbed>? embeds,
-      List<MessageComponent>? components}) async {
+      {String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components}) async {
     _dataStoreServerMessage.reply(
         id: id,
         channelId: channelId,
@@ -107,5 +104,5 @@ final class ServerMessage extends Message<ServerChannel> {
     await _dataStoreServerMessage.delete(id: id, channelId: channelId);
   }
 
-  // todo: addReaction, removeReaction, removeAllReactions, getReactions, clearReactions
+// todo: addReaction, removeReaction, removeAllReactions, getReactions, clearReactions
 }
