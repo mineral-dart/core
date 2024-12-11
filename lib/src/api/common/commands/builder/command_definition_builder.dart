@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/commands/builder/command_declaration_builder.dart';
 import 'package:mineral/src/api/common/commands/builder/sub_command_builder.dart';
 import 'package:mineral/src/api/common/commands/builder/translation.dart';
@@ -210,15 +211,13 @@ final class CommandDefinitionBuilder implements CommandBuilder {
     }
   }
 
-  CommandDefinitionBuilder context<T>(String key, Function(T) fn) {
+  void context<T>(String key, Function(T) fn) {
     final command =
         _commandMapper.entries.firstWhere((element) => element.key == key);
     fn(command.value());
-
-    return this;
   }
 
-  CommandDefinitionBuilder setHandler(String key, Function fn) {
+  void setHandler(String key, Function fn) {
     final command =
         _commandMapper.entries.firstWhere((element) => element.key == key);
 
@@ -228,24 +227,26 @@ final class CommandDefinitionBuilder implements CommandBuilder {
       case final CommandDeclarationBuilder command:
         command.setHandle(fn);
     }
-
-    return this;
   }
 
-  CommandDefinitionBuilder using(File file) {
+  void using(File file, {PlaceholderContract? placeholder}) {
     final String stringContent = file.readAsStringSync();
-    final content = switch (file.path) {
-      final String path when path.contains('.json') =>
-        jsonDecode(stringContent),
+    final content = switch (placeholder) {
+      PlaceholderContract(:final apply) => apply(stringContent),
+      _ => stringContent
+    };
+
+    final payload = switch (file.path) {
+      final String path when path.contains('.json') => json.decode(content),
       final String path when path.contains('.yaml') =>
-        (loadYaml(stringContent) as YamlMap).toMap(),
+        (loadYaml(content) as YamlMap).toMap(),
+      final String path when path.contains('.yml') =>
+        (loadYaml(content) as YamlMap).toMap(),
       _ => throw Exception('File type not supported')
     };
 
-    _declareCommand(content);
-    _declareGroups(content);
-    _declareSubCommands(content);
-
-    return this;
+    _declareCommand(payload);
+    _declareGroups(payload);
+    _declareSubCommands(payload);
   }
 }
