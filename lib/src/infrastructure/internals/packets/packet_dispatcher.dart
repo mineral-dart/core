@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/contracts/packets/packet_dispatcher.dart';
@@ -16,7 +14,6 @@ final class PacketDispatcher implements PacketDispatcherContract {
   @override
   void listen(PacketTypeContract packet, Function(ShardMessage, DispatchEvent) listener) {
     _packets.stream.where((event) => event.type == packet.name).listen((ShardMessage message) {
-      _kernel.logger.trace(jsonEncode(message.serialize()));
       Function.apply(listener, [message, _kernel.eventListener.dispatcher.dispatch]);
     });
   }
