@@ -1,3 +1,5 @@
+library contracts;
+
 export 'package:mineral/src/domains/contracts/cache/cache_provider_contract.dart';
 export 'package:mineral/src/domains/contracts/datastore/datastore.dart';
 export 'package:mineral/src/domains/contracts/datastore/parts.dart';
@@ -14,6 +16,7 @@ export 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 export 'package:mineral/src/domains/contracts/packets/packet_listener.dart';
 export 'package:mineral/src/domains/contracts/packets/packet_type.dart';
 export 'package:mineral/src/domains/contracts/placeholder/placeholder.dart';
+export 'package:mineral/src/domains/contracts/scaffolding/scaffold.dart';
 export 'package:mineral/src/domains/contracts/wss/shard.dart';
 export 'package:mineral/src/domains/contracts/wss/shard_authentication.dart';
 export 'package:mineral/src/domains/contracts/wss/sharding_config.dart';

@@ -6,6 +6,7 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/commons/kernel.dart';
+import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
@@ -13,6 +14,7 @@ import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
+import 'package:mineral/src/infrastructure/internals/scaffolding/scaffold.dart';
 import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
 
 final class ClientBuilder {
@@ -23,6 +25,7 @@ final class ClientBuilder {
   final List<EnvSchema> _schemas = [];
   final List<ProviderContract Function(Client)> _providers = [];
 
+  ScaffoldContract _scaffold = DefaultScaffold();
   SendPort? _devPort;
   bool _hasDefinedDevPort = false;
 
@@ -30,6 +33,11 @@ final class ClientBuilder {
 
   ClientBuilder() {
     _logger = Logger(_env);
+  }
+
+  ClientBuilder overrideScaffold(Constructable<ScaffoldContract> scaffold) {
+    _scaffold = scaffold();
+    return this;
   }
 
   ClientBuilder setToken(String token) {
@@ -106,7 +114,10 @@ final class ClientBuilder {
   }
 
   Client build() {
+    _watcherConfig.watchedFiles.add(_scaffold.entrypoint);
+
     ioc
+      ..bind<ScaffoldContract>(() => _scaffold)
       ..bind<LoggerContract>(() => _logger)
       ..bind<EnvContract>(() => _env);
 
