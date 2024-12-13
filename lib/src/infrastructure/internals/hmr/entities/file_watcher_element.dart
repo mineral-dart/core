@@ -22,9 +22,7 @@ final class FileWatcherElement implements WatcherElement {
   }
 
   @override
-  void watch() {
-    _watcher.events.listen(dispatch);
-  }
+  void watch() => _watcher.events.listen(dispatch);
 
   @override
   void dispatch(WatchEvent event) {

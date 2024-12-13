@@ -12,10 +12,11 @@ import 'package:mineral/src/infrastructure/internals/hmr/watcher_builder.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:path/path.dart' as path;
 import 'package:watcher/watcher.dart';
 
 final class HotModuleReloading implements HmrContract {
+  ScaffoldContract get _app => ioc.resolve<ScaffoldContract>();
+
   final WatcherConfig _watcherConfig;
   final SendPort? _devPort;
 
@@ -32,8 +33,8 @@ final class HotModuleReloading implements HmrContract {
 
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
-  HotModuleReloading(this._devPort, this._watcherConfig, this._kernel,
-      this._createShards, this._shards);
+  HotModuleReloading(
+      this._devPort, this._watcherConfig, this._kernel, this._createShards, this._shards);
 
   @override
   Future<void> spawn() async {
@@ -44,8 +45,7 @@ final class HotModuleReloading implements HmrContract {
       _devPort!.send(port.sendPort);
       await _marshaller.cache.init();
       await for (final Map<String, dynamic> message in stream) {
-        _kernel.packetListener.dispatcher
-            .dispatch(ShardMessage.of(message));
+        _kernel.packetListener.dispatcher.dispatch(ShardMessage.of(message));
       }
     } else {
       _createHotModuleLoader();
@@ -55,9 +55,8 @@ final class HotModuleReloading implements HmrContract {
   }
 
   void _createHotModuleLoader() {
-    final watcher = WatcherBuilder(Directory.current)
-        .setAllowReload(true)
-        .addWatchFolder(Directory(path.join(Directory.current.path, 'src')));
+    final watcher =
+        WatcherBuilder(Directory.current).setAllowReload(true).addWatchFolder(_app.libDir);
 
     for (final file in _watcherConfig.watchedFiles) {
       watcher.addWatchFile(file);
@@ -72,17 +71,14 @@ final class HotModuleReloading implements HmrContract {
 
   void _createDevelopmentIsolate() {
     final port = ReceivePort();
-    final uri =
-        Uri.parse(path.join(Directory.current.path, 'src', 'main.dart'));
 
-    Isolate.spawnUri(Uri.file(uri.path), [], port.sendPort, debugName: 'dev')
+    Isolate.spawnUri(_app.entrypoint.uri, [], port.sendPort, debugName: 'dev')
         .then((Isolate isolate) async {
       _devIsolate = isolate;
       devSendPort = await port.first;
 
       _shards.forEach((key, value) {
-        final Queue<Map<String, dynamic>> queue =
-            Queue.from(value.onceEventQueue);
+        final Queue<Map<String, dynamic>> queue = Queue.from(value.onceEventQueue);
         while (queue.isNotEmpty) {
           final response = queue.removeFirst();
           devSendPort?.send(response);
@@ -98,8 +94,7 @@ final class HotModuleReloading implements HmrContract {
       }
     }
 
-    final String location =
-        event.path.replaceFirst(Directory.current.path, '').substring(1);
+    final String location = event.path.replaceFirst(_app.rootDir.path, '').substring(1);
 
     if (fileLocation == location) {
       fileRefreshCount++;
