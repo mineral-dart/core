@@ -13,26 +13,59 @@ final class CommandBuilder {
   final List<CommandGroupBuilder> _groups = [];
   Function? _handle;
 
+  /// Set the name of the command. Must be unique.
+  ///
+  /// ```dart
+  /// final command = CommandBuilder()
+  ///  .setName('ping')
+  ///  ```
   CommandBuilder setName(String name) {
     _name = name;
     return this;
   }
 
+  /// Set the context of the command. Default is [CommandContextType.server].
+  ///
+  /// ```dart
+  /// final command = CommandBuilder()
+  /// .setContext(CommandContextType.user)
+  /// ```
   CommandBuilder setContext(CommandContextType context) {
     this.context = context;
     return this;
   }
 
+  /// Set the description of the command. This is optional.
+  ///
+  /// ```dart
+  /// final command = CommandBuilder()
+  /// .setDescription('Ping command')
+  /// ```
   CommandBuilder setDescription(String description) {
     _description = description;
     return this;
   }
 
+  /// Add an option to the command. This is a [CommandOption].
+  ///
+  /// ```dart
+  /// final command = CommandBuilder()
+  /// .addOption(CommandOptionBuilder()
+  ///  .setName('name')
+  ///  .setDescription('Name of the user')
+  ///  ```
   CommandBuilder addOption<T extends CommandOption>(T option) {
     _options.add(option);
     return this;
   }
 
+  /// Set the handler function for the command. This function will be called when the command is executed.
+  ///
+  /// ```dart
+  /// final command = CommandBuilder()
+  /// .handle((CommandContext ctx) async {
+  ///     await ctx.reply('Pong!');
+  /// })
   CommandBuilder handle(Function fn) {
     final firstArg = fn.toString().split('(')[1].split(')')[0].split(' ')[0];
 
@@ -45,6 +78,14 @@ final class CommandBuilder {
     return this;
   }
 
+  /// Add a subcommand to the command. This can be a [SubCommandBuilder] or a [CommandGroupBuilder].
+  ///
+  /// ```dart
+  /// final command = CommandBuilder()
+  /// .addSubCommand((SubCommandBuilder builder) => builder
+  ///     .setName('ping')
+  ///     .setDescription('Ping command')
+  /// ```
   CommandBuilder addSubCommand(
       SubCommandBuilder Function(SubCommandBuilder) command) {
     final builder = SubCommandBuilder();
@@ -53,6 +94,18 @@ final class CommandBuilder {
     return this;
   }
 
+  /// Create a group of subcommands. This can be a [CommandGroupBuilder].
+  ///
+  /// ```dart
+  /// final command = CommandBuilder()
+  /// .createGroup((CommandGroupBuilder builder) => builder
+  ///    .setName('moderation')
+  ///    .addSubCommand((SubCommandBuilder builder) => builder
+  ///           .setName('kick')
+  ///           .setDescription('Kick a user')
+  ///           )
+  ///         )
+  ///  ```
   CommandBuilder createGroup(
       CommandGroupBuilder Function(CommandGroupBuilder) group) {
     final builder = CommandGroupBuilder();
