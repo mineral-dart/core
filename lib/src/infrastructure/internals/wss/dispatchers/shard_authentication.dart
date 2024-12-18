@@ -37,10 +37,10 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   }
 
   @override
-  void heartbeat() {
+  Future<void> heartbeat() async {
     if (attempts >= 3) {
       ioc.resolve<LoggerContract>().error('Heartbeat failed 3 times');
-      return reconnect();
+      return resetConnection();
     }
 
     final message = ShardMessageBuilder()..setOpCode(OpCode.heartbeat);
@@ -59,12 +59,20 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   Future<void> connect() => shard.client.connect();
 
   @override
-  void reconnect() {
+  Future<void> reconnect() async {
     attempts = 0;
     shard.client.disconnect();
     shard.init();
 
-    connect();
+    await connect();
+  }
+
+  Future<void> resetConnection() async {
+    ioc.resolve<LoggerContract>().trace('Connection reset');
+
+    attempts = 0;
+    shard.client.disconnect();
+    await shard.init();
   }
 
   @override

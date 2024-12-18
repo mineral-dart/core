@@ -33,7 +33,7 @@ abstract interface class HttpClientContract {
       {HttpRequestOption? option, Map<String, dynamic> body});
 }
 
-final class HttpClient implements HttpClientContract {
+class HttpClient implements HttpClientContract {
   final http.Client _client = http.Client();
 
   @override
