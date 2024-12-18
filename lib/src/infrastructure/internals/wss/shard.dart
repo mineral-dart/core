@@ -108,6 +108,6 @@ final class Shard implements ShardContract {
       }
     });
 
-    authentication.connect();
+    await authentication.connect();
   }
 }

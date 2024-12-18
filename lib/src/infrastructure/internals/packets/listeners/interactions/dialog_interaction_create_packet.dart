@@ -14,23 +14,23 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
   PacketType get packetType => PacketType.interactionCreate;
 
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
+
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final type = InteractionType.values
-        .firstWhereOrNull((e) => e.value == message.payload['type']);
+    final type = InteractionType.values.firstWhereOrNull((e) => e.value == message.payload['type']);
 
     if (type == InteractionType.modal) {
-      final interactionContext = InteractionContextType.values.firstWhereOrNull(
-          (element) => element.value == message.payload['context']);
+      final interactionContext = InteractionContextType.values
+          .firstWhereOrNull((element) => element.value == message.payload['context']);
 
-      final Map<Symbol, dynamic> parameters =
+      final Map<String, dynamic> parameters =
           List.from(message.payload['data']['components']).map((row) {
         final component = row['components'][0];
-        return {Symbol(component['custom_id']): component['value']};
+        return {component['custom_id']: component['value']};
       }).fold({}, (prev, curr) => {...prev, ...curr});
 
       final event = switch (interactionContext) {
@@ -40,23 +40,22 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
       };
 
       final ctx = await switch (interactionContext) {
-        InteractionContextType.server =>
-          ServerDialogContext.fromMap(_dataStore, message.payload['data']),
+        InteractionContextType.server => ServerDialogContext.fromMap(_dataStore, message.payload),
         InteractionContextType.privateChannel =>
-          PrivateDialogContext.fromMap(_marshaller, message.payload['data']),
+          PrivateDialogContext.fromMap(_marshaller, message.payload),
         _ => null
       };
 
       if ([event, ctx].contains(null)) {
-        _logger.warn(
-            'Interaction context ${message.payload['context']} not found');
+        _logger.warn('Interaction context ${message.payload['context']} not found');
         return;
       }
 
       dispatch(
           event: event!,
           params: [ctx, parameters],
-          constraint: (String? customId) => customId == ctx!.customId);
+          constraint: (String? customId) =>
+              switch (customId) { final String value => value == ctx!.customId, _ => true });
     }
   }
 }

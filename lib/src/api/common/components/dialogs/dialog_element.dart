@@ -48,8 +48,8 @@ mixin DialogElementImpl<T extends DialogElement> {
   String? _label;
   String? _placeholder;
   bool? _required;
-  String? _minLength;
-  String? _maxLength;
+  int? _minLength;
+  int? _maxLength;
   String? _defaultValue;
 
   T setLabel(String label) {
@@ -62,7 +62,7 @@ mixin DialogElementImpl<T extends DialogElement> {
     return this as T;
   }
 
-  T setConstraint({String? minLength, String? maxLength, bool? required}) {
+  T setConstraint({int? minLength, int? maxLength, bool? required}) {
     _minLength = minLength ?? _minLength;
     _maxLength = maxLength ?? _maxLength;
     _required = required ?? _required;

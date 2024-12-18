@@ -7,12 +7,12 @@ import 'package:mineral/src/domains/events/types/listenable_event.dart';
 typedef ServerDialogSubmitEventHandler<T> = FutureOr Function(
     ServerDialogContext ctx, T data);
 
-abstract class ServerDialogSubmitEvent implements ListenableEvent {
+abstract class ServerDialogSubmitEvent<T> implements ListenableEvent {
   @override
   Event get event => Event.serverDialogSubmit;
 
   @override
   String? customId;
 
-  FutureOr<void> handle(ServerDialogContext ctx);
+  FutureOr<void> handle(ServerDialogContext ctx, T data);
 }
