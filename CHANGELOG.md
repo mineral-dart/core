@@ -1,5 +1,14 @@
-# 4.0.0-dev.5
+# 4.0.0-dev.6
+- Enhance architecture
+- Move interfaces to dedicated domain
+- Rename mixins
+- Change `Dialog` methods builder
+- Implement global states
+- Migrate services passing in constructors to `ioc` resolver
+- Add a reconnection treatment when the heartbeat is missed 3 times
+- Implement multiple running strategies
 
+# 4.0.0-dev.5
 - Add event parameters
 - Prepare integration with `mineral_cli`
 

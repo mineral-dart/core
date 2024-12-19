@@ -5,12 +5,12 @@ import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
+import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_data.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_network_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/internals/wss/starting_strategy.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_client.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 
@@ -40,10 +40,10 @@ final class Shard implements ShardContract {
       {required this.shardName,
       required this.url,
       required this.kernel,
-      required DispatchStrategy dispatchStrategy}) {
+      required RunningStrategy strategy}) {
     authentication = ShardAuthentication(this);
     networkError = ShardNetworkError(this);
-    dispatchEvent = ShardData(this, dispatchStrategy);
+    dispatchEvent = ShardData(this, strategy);
   }
 
   @override

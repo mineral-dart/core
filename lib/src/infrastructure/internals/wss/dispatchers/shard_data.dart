@@ -1,14 +1,13 @@
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.dart';
+import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/internals/wss/starting_strategy.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 
 final class ShardData implements ShardDataContract {
-  final DispatchStrategy _dispatchStrategy;
-  final HotModuleReloading? hmr;
+  final RunningStrategy _dispatchStrategy;
+  final HmrContract? hmr;
   final Shard _shard;
 
   ShardData(Shard shard, this._dispatchStrategy)

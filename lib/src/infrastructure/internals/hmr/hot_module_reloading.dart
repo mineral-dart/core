@@ -37,6 +37,11 @@ final class HotModuleReloading implements HmrContract {
       this._createShards, this._shards);
 
   @override
+  void send(Map payload) {
+    devSendPort?.send(payload);
+  }
+
+  @override
   Future<void> spawn() async {
     if (Isolate.current.debugName == 'dev') {
       final ReceivePort port = ReceivePort();

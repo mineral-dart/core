@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:path/path.dart';
 
 final class DefaultScaffold implements ScaffoldContract {
@@ -21,4 +22,7 @@ final class DefaultScaffold implements ScaffoldContract {
 
   @override
   Directory? get configDir => Directory(join(rootDir.path, 'config'));
+
+  @override
+  IocContainer get container => ioc;
 }
