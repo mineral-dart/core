@@ -9,7 +9,8 @@ import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
 
 final class ChannelProperties {
-  ChannelPartContract get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
+  ChannelPartContract get dataStoreChannel =>
+      ioc.resolve<DataStoreContract>().channel;
 
   final Snowflake id;
   final ChannelType type;

@@ -14,7 +14,8 @@ import 'package:mineral/src/api/server/member_voice.dart';
 import 'package:mineral/src/api/server/server.dart';
 
 final class Member {
-  MemberPartContract get _memberMethods => ioc.resolve<DataStoreContract>().member;
+  MemberPartContract get _memberMethods =>
+      ioc.resolve<DataStoreContract>().member;
 
   late final MemberVoice voice;
 

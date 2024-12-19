@@ -85,16 +85,18 @@ final class CommandInteractionManager
         _getContext(CommandContextType.server);
     final payload = _serializeCommand(guildCommands);
 
-      final response = await _dataStore.client.put(
-          '/applications/${bot.id}/guilds/${server.id}/commands',
-          body: payload);
+    final response = await _dataStore.client.put(
+        '/applications/${bot.id}/guilds/${server.id}/commands',
+        body: payload);
 
-      if (response.statusCode == 400) {
-        final error = Map<String, dynamic>.from(response.body['errors']).values.firstOrNull?['_errors'];
-        final message = error[0]['message'];
+    if (response.statusCode == 400) {
+      final error = Map<String, dynamic>.from(response.body['errors'])
+          .values
+          .firstOrNull?['_errors'];
+      final message = error[0]['message'];
 
-        throw ClientException(message);
-      }
+      throw ClientException(message);
+    }
   }
 
   List<CommandBuilder> _getContext(CommandContextType contextType) {

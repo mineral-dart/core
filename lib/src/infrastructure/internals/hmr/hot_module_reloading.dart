@@ -33,8 +33,8 @@ final class HotModuleReloading implements HmrContract {
 
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
-  HotModuleReloading(
-      this._devPort, this._watcherConfig, this._kernel, this._createShards, this._shards);
+  HotModuleReloading(this._devPort, this._watcherConfig, this._kernel,
+      this._createShards, this._shards);
 
   @override
   Future<void> spawn() async {
@@ -55,8 +55,9 @@ final class HotModuleReloading implements HmrContract {
   }
 
   void _createHotModuleLoader() {
-    final watcher =
-        WatcherBuilder(Directory.current).setAllowReload(true).addWatchFolder(_app.libDir);
+    final watcher = WatcherBuilder(Directory.current)
+        .setAllowReload(true)
+        .addWatchFolder(_app.libDir);
 
     for (final file in _watcherConfig.watchedFiles) {
       watcher.addWatchFile(file);
@@ -78,7 +79,8 @@ final class HotModuleReloading implements HmrContract {
       devSendPort = await port.first;
 
       _shards.forEach((key, value) {
-        final Queue<Map<String, dynamic>> queue = Queue.from(value.onceEventQueue);
+        final Queue<Map<String, dynamic>> queue =
+            Queue.from(value.onceEventQueue);
         while (queue.isNotEmpty) {
           final response = queue.removeFirst();
           devSendPort?.send(response);
@@ -94,7 +96,8 @@ final class HotModuleReloading implements HmrContract {
       }
     }
 
-    final String location = event.path.replaceFirst(_app.rootDir.path, '').substring(1);
+    final String location =
+        event.path.replaceFirst(_app.rootDir.path, '').substring(1);
 
     if (fileLocation == location) {
       fileRefreshCount++;

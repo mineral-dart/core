@@ -15,11 +15,15 @@ final class ShardMessage<T> implements ShardMessageContract<T, OpCode> {
   final T payload;
 
   ShardMessage(
-      {required this.type, required this.opCode, required this.sequence, required this.payload});
+      {required this.type,
+      required this.opCode,
+      required this.sequence,
+      required this.payload});
 
   factory ShardMessage.of(Map<String, dynamic> message) => ShardMessage(
       type: message['t'],
-      opCode: OpCode.values.firstWhere((element) => element.value == message['op']),
+      opCode:
+          OpCode.values.firstWhere((element) => element.value == message['op']),
       sequence: message['s'],
       payload: message['d']);
 

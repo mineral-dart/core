@@ -18,18 +18,21 @@ final class StickerPart implements StickerPartContract {
   Future<Sticker> getSticker(Snowflake serverId, Snowflake stickerId) async {
     final stickerCacheKey = _marshaller.cacheKey.sticker(serverId, stickerId);
 
-    final Map<String, dynamic>? cachedRawSticker = await _marshaller.cache.get(stickerCacheKey);
+    final Map<String, dynamic>? cachedRawSticker =
+        await _marshaller.cache.get(stickerCacheKey);
 
     if (cachedRawSticker != null) {
       return _marshaller.serializers.sticker.serialize(cachedRawSticker);
     }
 
-    final response = await _dataStore.client.get('/guilds/$serverId/stickers/$stickerId}');
+    final response =
+        await _dataStore.client.get('/guilds/$serverId/stickers/$stickerId}');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
-    final payload = await _marshaller.serializers.sticker.normalize(response.body);
+    final payload =
+        await _marshaller.serializers.sticker.normalize(response.body);
     return _marshaller.serializers.sticker.serialize(payload);
   }
 }

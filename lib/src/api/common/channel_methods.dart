@@ -7,7 +7,8 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/video_quality.dart';
 
 final class ChannelMethods {
-  ChannelPartContract get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
+  ChannelPartContract get dataStoreChannel =>
+      ioc.resolve<DataStoreContract>().channel;
 
   final Snowflake id;
 

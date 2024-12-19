@@ -1,9 +1,9 @@
 import 'dart:async';
 
+import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_dispatcher.dart';
 import 'package:mineral/src/domains/events/internal_event_params.dart';
-import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:rxdart/rxdart.dart';
 
 abstract interface class EventListenerContract {

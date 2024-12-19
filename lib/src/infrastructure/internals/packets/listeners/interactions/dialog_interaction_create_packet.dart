@@ -21,11 +21,12 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final type = InteractionType.values.firstWhereOrNull((e) => e.value == message.payload['type']);
+    final type = InteractionType.values
+        .firstWhereOrNull((e) => e.value == message.payload['type']);
 
     if (type == InteractionType.modal) {
-      final interactionContext = InteractionContextType.values
-          .firstWhereOrNull((element) => element.value == message.payload['context']);
+      final interactionContext = InteractionContextType.values.firstWhereOrNull(
+          (element) => element.value == message.payload['context']);
 
       final Map<String, dynamic> parameters =
           List.from(message.payload['data']['components']).map((row) {
@@ -40,22 +41,26 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
       };
 
       final ctx = await switch (interactionContext) {
-        InteractionContextType.server => ServerDialogContext.fromMap(_dataStore, message.payload),
+        InteractionContextType.server =>
+          ServerDialogContext.fromMap(_dataStore, message.payload),
         InteractionContextType.privateChannel =>
           PrivateDialogContext.fromMap(_marshaller, message.payload),
         _ => null
       };
 
       if ([event, ctx].contains(null)) {
-        _logger.warn('Interaction context ${message.payload['context']} not found');
+        _logger.warn(
+            'Interaction context ${message.payload['context']} not found');
         return;
       }
 
       dispatch(
           event: event!,
           params: [ctx, parameters],
-          constraint: (String? customId) =>
-              switch (customId) { final String value => value == ctx!.customId, _ => true });
+          constraint: (String? customId) => switch (customId) {
+                final String value => value == ctx!.customId,
+                _ => true
+              });
     }
   }
 }

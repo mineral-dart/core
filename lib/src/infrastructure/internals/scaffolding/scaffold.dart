@@ -5,10 +5,10 @@ import 'package:path/path.dart';
 
 final class DefaultScaffold implements ScaffoldContract {
   @override
-  File get entrypoint => switch(binDir) {
-    Directory(:final path) => File(join(path, 'main.dart')),
-    _ => throw PathException('Missing "bin" folder in your project.')
-  };
+  File get entrypoint => switch (binDir) {
+        Directory(:final path) => File(join(path, 'main.dart')),
+        _ => throw PathException('Missing "bin" folder in your project.')
+      };
 
   @override
   Directory get rootDir => Directory.current;

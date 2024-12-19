@@ -32,7 +32,6 @@ abstract interface class ShardMessageContract<T, OpCodeEnum extends OpCode> {
   Object serialize();
 }
 
-
 abstract interface class ShardDataContract {
   void dispatch(WebsocketMessage message);
 }

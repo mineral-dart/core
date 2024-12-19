@@ -80,7 +80,8 @@ final class Shard implements ShardContract {
       });
 
     client.listen((message) {
-      if (message.content case ShardMessage(opCode: final code, payload: final payload)) {
+      if (message.content
+          case ShardMessage(opCode: final code, payload: final payload)) {
         switch (code) {
           case OpCode.hello:
             authentication.identify(payload);

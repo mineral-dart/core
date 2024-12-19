@@ -37,8 +37,8 @@ final class ServerMessage extends Message<ServerChannel> {
   /// ```dart
   /// await message.edit('New content', embeds: [embed], components: [component]);
   /// ```
-  Future<void> edit(
-      String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components) async {
+  Future<void> edit(String? content, List<MessageEmbed>? embeds,
+      List<MessageComponent>? components) async {
     _dataStoreServerMessage.update(
         id: id,
         channelId: channelId,
@@ -54,7 +54,9 @@ final class ServerMessage extends Message<ServerChannel> {
   /// await message.reply(content: 'Replying to the message');
   /// ```
   Future<void> reply(
-      {String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components}) async {
+      {String? content,
+      List<MessageEmbed>? embeds,
+      List<MessageComponent>? components}) async {
     _dataStoreServerMessage.reply(
         id: id,
         channelId: channelId,

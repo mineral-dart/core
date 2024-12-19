@@ -10,7 +10,8 @@ final class MemberFlagsManager {
   late final Server server;
   late final Member member;
 
-  MemberPartContract get _memberMethods => ioc.resolve<DataStoreContract>().member;
+  MemberPartContract get _memberMethods =>
+      ioc.resolve<DataStoreContract>().member;
 
   List<MemberFlag> get list => _flags;
 
