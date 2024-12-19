@@ -14,19 +14,19 @@ export 'package:mineral/src/domains/services/container/ioc_container.dart'
     show ioc;
 export 'package:mineral/src/domains/services/container/ioc_container.dart';
 
-mixin InjectLogger {
+mixin Logger {
   logger_service.LoggerContract get logger =>
       ioc.resolve<logger_service.LoggerContract>();
 }
 
-mixin InjectEnvironment {
+mixin Env {
   env_service.EnvContract get env => ioc.resolve<env_service.EnvContract>();
 }
 
-mixin InjectState {
+mixin State {
   GlobalStateService get state => ioc.resolve<GlobalStateService>();
 }
 
-mixin InjectHelper {
+mixin Application {
   ScaffoldContract get app => ioc.resolve<ScaffoldContract>();
 }
