@@ -15,24 +15,66 @@ final class DialogBuilder implements MessageComponent {
     return this;
   }
 
-  DialogBuilder text(String customId, Function(DialogTextInput) fn) {
+  void text(
+      {required String customId,
+      required String title,
+      String? placeholder,
+      String? defaultValue,
+      DialogFieldConstraint? constraint}) {
     final element = DialogElementBuilder.input(customId);
-    fn(element);
+
+    if (placeholder != null) {
+      element.setPlaceholder(placeholder);
+    }
+
+    if (defaultValue != null) {
+      element.setDefaultValue(defaultValue);
+    }
+
+    if (constraint != null) {
+      element.setConstraint(
+        maxLength: constraint.maxLength,
+        minLength: constraint.minLength,
+        required: constraint.required,
+      );
+    }
+
+    element.setLabel(title);
 
     final row = RowBuilder()..addComponent(element);
 
     _elements.add(row);
-    return this;
   }
 
-  DialogBuilder paragraph(String customId, Function(DialogParagraphInput) fn) {
+  void paragraph(
+      {required String customId,
+      required String title,
+      String? placeholder,
+      String? defaultValue,
+      DialogFieldConstraint? constraint}) {
     final element = DialogElementBuilder.paragraph(customId);
-    fn(element);
+
+    if (placeholder != null) {
+      element.setPlaceholder(placeholder);
+    }
+
+    if (defaultValue != null) {
+      element.setDefaultValue(defaultValue);
+    }
+
+    if (constraint != null) {
+      element.setConstraint(
+        maxLength: constraint.maxLength,
+        minLength: constraint.minLength,
+        required: constraint.required,
+      );
+    }
+
+    element.setLabel(title);
 
     final row = RowBuilder()..addComponent(element);
 
     _elements.add(row);
-    return this;
   }
 
   @override

@@ -86,3 +86,11 @@ mixin DialogElementImpl<T extends DialogElement> {
     };
   }
 }
+
+final class DialogFieldConstraint {
+  final int? minLength;
+  final int? maxLength;
+  final bool? required;
+
+  DialogFieldConstraint({this.minLength, this.maxLength, this.required});
+}
