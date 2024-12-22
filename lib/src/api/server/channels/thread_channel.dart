@@ -7,7 +7,6 @@ import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
-import 'package:mineral/src/api/server/channels/server_text_channel.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/server.dart';
@@ -61,7 +60,7 @@ class ThreadChannel extends ServerChannel {
   @override
   late final Server server;
 
-  late final ServerTextChannel parentChannel;
+  late final ServerChannel parentChannel;
 
   late final Map<Snowflake, Member> members;
 

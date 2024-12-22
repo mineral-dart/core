@@ -136,8 +136,7 @@ final class ServerSerializer implements SerializerContract<Server> {
     for (final thread in server.threads.list.values) {
       thread
         ..server = server
-        ..parentChannel = server.channels.list[Snowflake(thread.channelId)]
-            as ServerTextChannel;
+        ..parentChannel = server.channels.list[Snowflake(thread.channelId)]!;
     }
 
     for (final member in server.members.list.values) {
