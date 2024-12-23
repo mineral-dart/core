@@ -11,6 +11,7 @@ export 'package:mineral/src/domains/contracts/interactions/interaction_callback_
 export 'package:mineral/src/domains/contracts/interactions/interaction_context_type.dart';
 export 'package:mineral/src/domains/contracts/interactions/interaction_contract.dart';
 export 'package:mineral/src/domains/contracts/interactions/interaction_dispatcher_contract.dart';
+export 'package:mineral/src/domains/contracts/logger/log_level.dart';
 export 'package:mineral/src/domains/contracts/logger/logger_contract.dart';
 export 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 export 'package:mineral/src/domains/contracts/packets/packet_listener.dart';

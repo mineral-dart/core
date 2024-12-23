@@ -1,3 +1,7 @@
+# 4.0.0-dev.7
+- Add missing `LogLevel` enum in exports
+- Fix parent channel as ServerChannel
+
 # 4.0.0-dev.6
 - Enhance architecture
 - Move interfaces to dedicated domain
