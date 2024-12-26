@@ -82,7 +82,7 @@ final class CommandInteractionDispatcher
         options[Symbol(option['name'])] = switch (type) {
           CommandOptionType.user => switch (commandContext) {
               ServerCommandContext() => await _dataStore.member
-                  .getMember(serverId: commandContext.server.id, memberId: option['value'])
+                  .get(commandContext.server.id.value, option['value'], false)
                 ..server = commandContext.server,
               _ => _marshaller.serializers.user.serialize(option['value']),
             },

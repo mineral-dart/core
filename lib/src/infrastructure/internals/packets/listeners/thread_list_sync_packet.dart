@@ -17,7 +17,7 @@ final class ThreadListSyncPacket implements ListenablePacket {
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload;
 
-    final server = await _dataStore.server.getServer(payload['guild_id']);
+    final server = await _dataStore.server.get(payload['guild_id'], false);
     final threadChannels = payload['threads'] as List<Map<String, dynamic>>;
 
     final threads = await threadChannels.map((element) async {

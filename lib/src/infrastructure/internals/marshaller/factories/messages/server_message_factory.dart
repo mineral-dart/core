@@ -13,7 +13,7 @@ final class ServerMessageFactory implements MessageFactory<ServerMessage> {
   @override
   Future<ServerMessage> serialize(Map<String, dynamic> json) async {
     final channel = json['channel'] as Channel;
-    final server = await _dataStore.server.getServer(json['guild_id']);
+    final server = await _dataStore.server.get(json['guild_id'], false);
     final member = server.members.list[json['author']['id']];
 
     final messageProperties =

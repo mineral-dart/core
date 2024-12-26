@@ -18,23 +18,20 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
     final serverCacheKey =
         _marshaller.cacheKey.server(message.payload['guild_id']);
     final server =
-        await _dataStore.server.getServer(message.payload['guild_id']);
+        await _dataStore.server.get(message.payload['guild_id'], false);
 
     final roleCacheKey = _marshaller.cacheKey
-        .serverRole(server.id, message.payload['role']['id']);
+        .serverRole(server.id.value, message.payload['role']['id']);
     final rawBefore = await _marshaller.cache.get(roleCacheKey);
     final before = rawBefore != null
         ? _marshaller.serializers.role.serialize(rawBefore)
         : null;
 
     final rawRole = await _marshaller.serializers.role.normalize({
-      'server_id': server.id,
+      'guild_id': server.id,
       ...message.payload['role'],
     });
     final role = await _marshaller.serializers.role.serialize(rawRole);
-
-    server.roles.list.update(role.id, (_) => role);
-    role.server = server;
 
     final rawServer = await _marshaller.serializers.server.deserialize(server);
     await _marshaller.cache.put(serverCacheKey, rawServer);

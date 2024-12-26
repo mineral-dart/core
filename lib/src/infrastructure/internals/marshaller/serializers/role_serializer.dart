@@ -22,10 +22,11 @@ final class RoleSerializer implements SerializerContract<Role> {
       'managed': json['managed'],
       'mentionable': json['mentionable'],
       'flags': json['flags'],
+      'server_id': json['guild_id'],
     };
 
     final cacheKey =
-        _marshaller.cacheKey.serverRole(json['server_id'], json['id']);
+        _marshaller.cacheKey.serverRole(json['guild_id'], json['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -51,6 +52,7 @@ final class RoleSerializer implements SerializerContract<Role> {
       flags: payload['flags'],
       icon: payload['icon'],
       unicodeEmoji: payload['unicode_emoji'],
+      serverId: Snowflake(payload['server_id']),
     );
   }
 

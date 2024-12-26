@@ -16,7 +16,7 @@ final class UserPart implements UserPartContract {
 
   @override
   Future<User> getUser(Snowflake userId) async {
-    final cacheKey = _marshaller.cacheKey.user(userId);
+    final cacheKey = _marshaller.cacheKey.user(userId.value);
     final cachedRawUser = await _marshaller.cache.get(cacheKey);
     if (cachedRawUser != null) {
       return _marshaller.serializers.user.serialize(cachedRawUser);

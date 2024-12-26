@@ -1,6 +1,5 @@
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/message_properties.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
@@ -27,7 +26,7 @@ final class ServerMessageSerializer
     };
 
     final cacheKey = _marshaller.cacheKey
-        .message(Snowflake(json['channel_id']), Snowflake(json['id']));
+        .message(json['channel_id'], json['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -36,11 +35,11 @@ final class ServerMessageSerializer
   @override
   Future<ServerMessage> serialize(Map<String, dynamic> json) async {
     final channel =
-        await _dataStore.channel.getChannel(Snowflake(json['channel_id']));
+        await _dataStore.channel.get(json['channel_id'], false);
 
-    final server = await _dataStore.server.getServer(json['server_id']);
+    final server = await _dataStore.server.get(json['server_id'], false);
     final member = await _dataStore.member
-        .getMember(serverId: server.id, memberId: json['author_id']);
+        .get(server.id.value, json['author_id'], false);
 
     final messageProperties =
         MessageProperties.fromJson(channel as ServerChannel, json);

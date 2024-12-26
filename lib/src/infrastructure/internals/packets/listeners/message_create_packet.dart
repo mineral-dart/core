@@ -23,18 +23,18 @@ final class MessageCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    if (![MessageType.initial.value, MessageType.reply.value]
-        .contains(message.payload['type'])) {
+    if (![MessageType.initial.value, MessageType.reply.value].contains(message.payload['type'])) {
       return;
     }
 
-    final channel =
-        await _dataStore.channel.getChannel(message.payload['channel_id']);
+    final channel = await _dataStore.channel.get(message.payload['channel_id'], false);
 
-    if ([
+    final serverThreadTypes = [
       ChannelType.guildPrivateThread.value,
       ChannelType.guildPublicThread.value
-    ].contains(channel!.type.value)) {
+    ];
+
+    if (serverThreadTypes.contains(channel?.type.value)) {
       await sendThread(dispatch, message.payload);
       return;
     }
@@ -42,35 +42,23 @@ final class MessageCreatePacket implements ListenablePacket {
     return switch (channel) {
       ServerChannel() => sendServerMessage(dispatch, channel, message.payload),
       Channel() => sendPrivateMessage(dispatch, channel, message.payload),
+     _ => throw Exception('Unknown channel}'),
     };
   }
 
-  Future<void> sendThread(
-      DispatchEvent dispatch, Map<String, dynamic> json) async {
-    final server = await _dataStore.server.getServer(json['guild_id']);
-    final thread = server.threads.getOrFail(json['channel_id']);
-
-    final payload = await _marshaller.serializers.serverMessage
-        .normalize({...json, 'server_id': server.id.value});
-    final message =
-        await _marshaller.serializers.serverMessage.serialize(payload);
-
-    message.channel = thread;
-    thread.messages.list.putIfAbsent(message.id, () => message);
-
-    dispatch(event: Event.serverMessageCreate, params: [message]);
+  Future<void> sendThread(DispatchEvent dispatch, Map<String, dynamic> json) async {
+    throw UnimplementedError();
+    // dispatch(event: Event.serverMessageCreate, params: [message]);
   }
 
-  Future<void> sendServerMessage(DispatchEvent dispatch, ServerChannel channel,
-      Map<String, dynamic> json) async {
-    final server = await _dataStore.server.getServer(channel.serverId);
+  Future<void> sendServerMessage(
+      DispatchEvent dispatch, ServerChannel channel, Map<String, dynamic> json) async {
+    final server = await _dataStore.server.get(channel.serverId.value, false);
 
     final payload = await _marshaller.serializers.serverMessage
         .normalize({...json, 'server_id': server.id.value});
-    final message =
-        await _marshaller.serializers.serverMessage.serialize(payload);
+    final message = await _marshaller.serializers.serverMessage.serialize(payload);
 
-    channel.server = server;
     message.channel = channel;
 
     switch (channel) {
@@ -85,12 +73,10 @@ final class MessageCreatePacket implements ListenablePacket {
     dispatch(event: Event.serverMessageCreate, params: [message]);
   }
 
-  Future<void> sendPrivateMessage(DispatchEvent dispatch, Channel channel,
-      Map<String, dynamic> json) async {
-    final payload =
-        await _marshaller.serializers.privateMessage.normalize(json);
-    final message =
-        await _marshaller.serializers.privateMessage.serialize(payload);
+  Future<void> sendPrivateMessage(
+      DispatchEvent dispatch, Channel channel, Map<String, dynamic> json) async {
+    final payload = await _marshaller.serializers.privateMessage.normalize(json);
+    final message = await _marshaller.serializers.privateMessage.serialize(payload);
 
     if (channel is PrivateChannel) {
       message.channel = channel;

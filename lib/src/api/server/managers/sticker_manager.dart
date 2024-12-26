@@ -1,16 +1,25 @@
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/sticker.dart';
 
 final class StickerManager {
-  final Map<Snowflake, Sticker> _stickers;
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
-  StickerManager(this._stickers);
+  final Snowflake _serverId;
 
-  Map<Snowflake, Sticker> get list => _stickers;
+  StickerManager(this._serverId);
 
-  factory StickerManager.fromList(List<Sticker> stickers) {
-    return StickerManager(stickers.fold({}, (acc, sticker) {
-      return {...acc, sticker.id: sticker};
-    }));
-  }
+  /// Fetch the server's stickers.
+  /// ```dart
+  /// final channels = await server.assets.stickers.fetch();
+  /// ```
+  Future<Map<Snowflake, Sticker>> fetch({bool force = false}) =>
+      _datastore.sticker.fetch(_serverId.value, force);
+
+  /// Get a channel by its id.
+  /// ```dart
+  /// final channel = await server.assets.stickers.get('1091121140090535956');
+  /// ```
+  Future<Sticker?> get(String id, {bool force = false}) => _datastore.sticker.get(_serverId.value, id, force);
 }

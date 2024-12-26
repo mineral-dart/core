@@ -26,7 +26,7 @@ final class PrivateMessageSerializer
     };
 
     final cacheKey =
-        _marshaller.cacheKey.message(Snowflake(json['channel_id']), json['id']);
+        _marshaller.cacheKey.message(json['channel_id'], json['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;

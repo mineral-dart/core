@@ -5,7 +5,6 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/api/server/server.dart';
 
 final class ServerCategoryChannel extends ServerChannel {
   final ChannelProperties _properties;
@@ -31,9 +30,6 @@ final class ServerCategoryChannel extends ServerChannel {
 
   @override
   Snowflake get serverId => _properties.serverId!;
-
-  @override
-  late final Server server;
 
   ServerCategoryChannel(this._properties)
       : _methods = ChannelMethods(_properties.id);

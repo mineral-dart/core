@@ -1,6 +1,7 @@
 import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/contracts/datastore/datastore.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/channel_part.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/parts/empji_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/interaction_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/member_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/message_part.dart';
@@ -44,6 +45,9 @@ final class DataStore implements DataStoreContract {
   @override
   late final ServerMessagePart serverMessage;
 
+  @override
+  late final EmojiPart emoji;
+
   DataStore(this.client)
       : channel = ChannelPart(),
         server = ServerPart(),
@@ -53,5 +57,6 @@ final class DataStore implements DataStoreContract {
         message = MessagePart(),
         interaction = InteractionPart(),
         sticker = StickerPart(),
-        serverMessage = ServerMessagePart();
+        serverMessage = ServerMessagePart(),
+        emoji = EmojiPart();
 }

@@ -8,6 +8,7 @@ enum ResponseCode {
   forbidden(403, 'The request is forbidden'),
   notFound(404, 'The request is not found'),
   methodNotAllowed(405, 'The request method is not allowed'),
+  rateLimit(429, 'The request is rate limited'),
   internalServerError(500, 'An internal server error occurred'),
   notImplemented(501, 'The request is not implemented'),
   badGateway(502, 'The request is invalid'),
@@ -40,4 +41,6 @@ enum ResponseCode {
 
   static List<ResponseCode> get successCodes =>
       [success, created, accepted, noContent];
+
+  static List<ResponseCode> get rateLimitCodes => [rateLimit];
 }

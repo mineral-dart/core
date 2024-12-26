@@ -12,7 +12,7 @@ final class MemberAssetsSerializer implements SerializerContract<MemberAssets> {
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
-      'server_id': json['server_id'],
+      'server_id': json['guild_id'],
       'member_id': json['member_id'],
       'avatar': json['avatar'],
       'avatar_decoration': json['avatar_decoration_data']?['sku_id'],
@@ -20,7 +20,7 @@ final class MemberAssetsSerializer implements SerializerContract<MemberAssets> {
     };
 
     final cacheKey = _marshaller.cacheKey
-        .memberAssets(json['server_id'], json['user']['id']);
+        .memberAssets(json['guild_id'], json['user']['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;

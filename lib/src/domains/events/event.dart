@@ -67,7 +67,7 @@ enum Event implements EnhancedEnum, EventType {
   serverPresenceUpdate(ServerPresenceUpdateEvent,
       ['Member member', 'Server server', 'Presence presence']),
   serverEmojisUpdate(
-      ServerEmojisUpdateEvent, ['EmojiManager emojisManager', 'Server server']),
+      ServerEmojisUpdateEvent, ['Map<Snowflake, Emoji> emojis', 'Server server']),
   serverStickersUpdate(ServerStickersUpdateEvent,
       ['StickerManager stickerManager', 'Server server']),
   serverRoleCreate(ServerRolesCreateEvent, ['Role role', 'Server server']),

@@ -1,6 +1,5 @@
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/server/channels/server_text_channel.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
@@ -18,47 +17,32 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    throw UnimplementedError();
     final payload = message.payload;
 
-    final server = await _dataStore.server.getServer(payload['guild_id']);
-    final thread = await _dataStore.channel.getThread(Snowflake(payload['id']))
-        as ThreadChannel;
+    final server = await _dataStore.server.get(payload['guild_id'], false);
+    final thread = await _dataStore.channel.getThread(Snowflake(payload['id'])) as ThreadChannel;
     final membersAdded = payload['added_members'] ?? [];
     final membersRemovedIds = payload['removed_member_ids'] ?? [];
 
     for (final memberThread in membersAdded) {
-      final member = await _dataStore.member.getMember(
-          serverId: payload['guild_id'],
-          memberId: Snowflake(memberThread['user_id']));
-      thread.members.putIfAbsent(member.id, () => member);
+      final member =
+          await _dataStore.member.get(payload['guild_id'], memberThread['user_id'], false);
+      // thread.members.putIfAbsent(member.id, () => member);
 
-      dispatch(
-          event: Event.serverThreadMemberAdd, params: [thread, server, member]);
+      dispatch(event: Event.serverThreadMemberAdd, params: [thread, server, member]);
     }
 
     for (final memberId in membersRemovedIds) {
-      final member = await _dataStore.member.getMember(
-          serverId: payload['guild_id'], memberId: Snowflake(memberId));
-      thread.members.remove(Snowflake(memberId));
+      final member = await _dataStore.member.get(payload['guild_id'], memberId, false);
+      // thread.members.remove(Snowflake(memberId));
 
-      dispatch(
-          event: Event.serverThreadMemberRemove,
-          params: [thread, server, member]);
+      dispatch(event: Event.serverThreadMemberRemove, params: [thread, server, member]);
     }
 
     final serverRaw = await _marshaller.serializers.server.deserialize(server);
-    final serverKey = _marshaller.cacheKey.server(server.id);
+    final serverKey = _marshaller.cacheKey.server(server.id.value);
 
     _marshaller.cache.put(serverKey, serverRaw);
-
-    final parentChannel =
-        server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
-    parentChannel.threads.add(thread);
-
-    final parentChannelRaw =
-        await _marshaller.serializers.channels.deserialize(parentChannel);
-    final parentChannelKey = _marshaller.cacheKey.channel(parentChannel.id);
-
-    _marshaller.cache.put(parentChannelKey, parentChannelRaw);
   }
 }

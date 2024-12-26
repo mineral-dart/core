@@ -8,18 +8,17 @@ import 'package:mineral/src/api/server/managers/sticker_manager.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
 final class ServerAsset {
-  ServerPartContract get _serverPart => ioc.resolve<DataStoreContract>().server;
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
   final Snowflake serverId;
   final ImageAsset? icon;
   final ImageAsset? splash;
   final ImageAsset? banner;
   final ImageAsset? discoverySplash;
-  EmojiManager emojis;
-  StickerManager stickers;
+  final EmojiManager emojis;
+  final StickerManager stickers;
 
-  ServerAsset({
-    required this.serverId,
+  ServerAsset(this.serverId, {
     required this.emojis,
     required this.stickers,
     required this.icon,
@@ -35,7 +34,7 @@ final class ServerAsset {
   /// ```
   Future<void> setIcon(File icon, {String? reason}) async {
     final iconAsset = ImageAsset.makeAsset(icon);
-    await _serverPart.updateServer(
+    await _datastore.server.updateServer(
         serverId, {'icon': iconAsset.makeUrl()}, reason);
   }
 
@@ -46,7 +45,7 @@ final class ServerAsset {
   /// ```
   Future<void> setBanner(File banner, {String? reason}) async {
     final bannerAsset = ImageAsset.makeAsset(banner);
-    await _serverPart.updateServer(
+    await _datastore.server.updateServer(
         serverId, {'banner': bannerAsset.makeUrl()}, reason);
   }
 
@@ -57,7 +56,7 @@ final class ServerAsset {
   /// ```
   Future<void> setSplash(File splash, {String? reason}) async {
     final splashAsset = ImageAsset.makeAsset(splash);
-    await _serverPart.updateServer(
+    await _datastore.server.updateServer(
         serverId, {'splash': splashAsset.makeUrl()}, reason);
   }
 
@@ -69,7 +68,7 @@ final class ServerAsset {
   Future<void> setDiscoverySplash(File discoverySplash,
       {String? reason}) async {
     final discoverySplashAsset = ImageAsset.makeAsset(discoverySplash);
-    await _serverPart.updateServer(
+    await _datastore.server.updateServer(
         serverId, {'discovery_splash': discoverySplashAsset.makeUrl()}, reason);
   }
 }
