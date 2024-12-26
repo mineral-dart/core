@@ -19,6 +19,7 @@ final class MemberPart implements MemberPartContract {
   @override
   Future<Member> getMember(
       {required Snowflake serverId, required Snowflake memberId}) async {
+
     final cacheKeys = _marshaller.cacheKey;
     final memberCacheKey = cacheKeys.member(serverId, memberId);
 
