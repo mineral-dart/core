@@ -81,15 +81,16 @@ final class CommandInteractionDispatcher
 
         options[Symbol(option['name'])] = switch (type) {
           CommandOptionType.user => switch (commandContext) {
-              ServerCommandContext() => await _dataStore.member.getMember(
-                  serverId: commandContext.server.id,
-                  memberId: option['value']),
+              ServerCommandContext() => await _dataStore.member
+                  .getMember(serverId: commandContext.server.id, memberId: option['value'])
+                ..server = commandContext.server,
               _ => _marshaller.serializers.user.serialize(option['value']),
             },
           CommandOptionType.channel =>
             await _marshaller.serializers.channels.serialize(option['value']),
-          CommandOptionType.role =>
-            await _marshaller.serializers.role.serialize(option['value']),
+          CommandOptionType.role => await _dataStore.role.getRole(
+              serverId: data['guild_id'],
+              roleId: option['value']),
           // TODO attachement
           _ => option['value'],
         };
