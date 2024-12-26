@@ -1,3 +1,7 @@
+# 4.0.0-dev.8
+- Fix `Member` option in commands
+- Fix `Role` option in commands
+
 # 4.0.0-dev.7
 - Add missing `LogLevel` enum in exports
 - Fix parent channel as ServerChannel
