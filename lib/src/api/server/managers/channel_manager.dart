@@ -1,66 +1,150 @@
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/server/channels/server_channel.dart';
-import 'package:mineral/src/api/server/channels/server_text_channel.dart';
-import 'package:mineral/src/api/server/channels/server_voice_channel.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 
-enum _ServerNamedChannel {
-  afkChannel,
-  systemChannel,
-  rulesChannel,
-  publicUpdatesChannel,
-  safetyAlertsChannel,
-  widgetChannel,
-}
+final class ChannelManager<C extends Channel> {
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
-final class ChannelManager {
-  final Map<_ServerNamedChannel, Snowflake?> _namedChannels = {};
-  final Map<Snowflake, ServerChannel> _channels;
+  final Snowflake _serverId;
+  final Snowflake? afkChannelId;
+  final Snowflake? systemChannelId;
+  final Snowflake? rulesChannelId;
+  final Snowflake? publicUpdatesChannelId;
+  final Snowflake? safetyAlertsChannelId;
 
-  ChannelManager(this._channels, Map<String, dynamic> json) {
-    _namedChannels
-      ..putIfAbsent(
-          _ServerNamedChannel.afkChannel, () => json['afk_channel_id'])
-      ..putIfAbsent(
-          _ServerNamedChannel.systemChannel, () => json['system_channel_id'])
-      ..putIfAbsent(
-          _ServerNamedChannel.rulesChannel, () => json['rules_channel_id'])
-      ..putIfAbsent(_ServerNamedChannel.publicUpdatesChannel,
-          () => json['public_updates_channel_id'])
-      ..putIfAbsent(_ServerNamedChannel.safetyAlertsChannel,
-          () => json['safety_alerts_channel_id']);
+  ChannelManager(
+    this._serverId, {
+    required this.afkChannelId,
+    required this.systemChannelId,
+    required this.rulesChannelId,
+    required this.publicUpdatesChannelId,
+    required this.safetyAlertsChannelId,
+  });
+
+  /// Fetch the server's channels.
+  /// ```dart
+  /// final channels = await server.channels.fetch();
+  /// ```
+  Future<Map<Snowflake, C>> fetch({bool force = false}) =>
+      _datastore.channel.fetch<C>(_serverId.value, force);
+
+  /// Get a channel by its id.
+  /// ```dart
+  /// final channel = await server.channels.get('1091121140090535956');
+  /// ```
+  Future<T?> get<T extends C>(String id, {bool force = false}) => _datastore.channel.get<T>(id, force);
+
+  /// Resolve the server's afk channel.
+  /// ```dart
+  /// final afkChannel = await server.channels.resolveAfkChannel();
+  /// ```
+  Future<ServerVoiceChannel?> resolveAfkChannel({bool force = false}) async {
+    return switch (afkChannelId) {
+      Snowflake(:final value) => _datastore.channel.get<ServerVoiceChannel>(value, force),
+      _ => null,
+    };
   }
 
-  Map<Snowflake, ServerChannel> get list => _channels;
+  /// Resolve the server's system channel.
+  /// ```dart
+  /// final systemChannel = await server.channels.resolveSystemChannel();
+  /// ```
+  Future<ServerTextChannel?> resolveSystemChannel({bool force = false}) async {
+    return switch (systemChannelId) {
+      Snowflake(:final value) => _datastore.channel.get<ServerTextChannel>(value, force),
+      _ => null,
+    };
+  }
 
-  T? getOrNull<T extends ServerChannel>(Snowflake? id) => _channels[id] as T?;
+  /// Resolve the server's rules channel.
+  /// ```dart
+  /// final rulesChannel = await server.channels.resolveRulesChannel();
+  /// ```
+  Future<ServerTextChannel?> resolveRulesChannel({bool force = false}) async {
+    return switch (rulesChannelId) {
+      Snowflake(:final value) => _datastore.channel.get<ServerTextChannel>(value, force),
+      _ => null,
+    };
+  }
 
-  T getOrFail<T extends ServerChannel>(String id) =>
-      _channels.values.firstWhere((element) => element.id.value == id,
-          orElse: () => throw Exception('Channel not found')) as T;
+  /// Resolve the server's public updates channel.
+  /// ```dart
+  /// final publicUpdatesChannel = await server.channels.resolvePublicUpdatesChannel();
+  /// ```
+  Future<ServerTextChannel?> resolvePublicUpdatesChannel({bool force = false}) async {
+    return switch (publicUpdatesChannelId) {
+      Snowflake(:final value) => _datastore.channel.get<ServerTextChannel>(value, force),
+      _ => null,
+    };
+  }
 
-  ServerVoiceChannel? get afkChannel => getOrNull<ServerVoiceChannel>(
-      _namedChannels[_ServerNamedChannel.afkChannel]);
+  /// Resolve the server's safety alerts channel.
+  /// ```dart
+  /// final safetyAlertsChannel = await server.channels.resolveSafetyAlertsChannel();
+  /// ```
+  Future<ServerTextChannel?> resolveSafetyAlertsChannel({bool force = false}) async {
+    return switch (safetyAlertsChannelId) {
+      Snowflake(:final value) => _datastore.channel.get<ServerTextChannel>(value, force),
+      _ => null,
+    };
+  }
 
-  ServerTextChannel? get systemChannel => getOrNull<ServerTextChannel>(
-      _namedChannels[_ServerNamedChannel.systemChannel]);
+  /// Set the server's afk channel.
+  ///
+  /// ```dart
+  /// await server.setAfkChannel('1091121140090535956', reason: 'Testing');
+  /// ```
+  Future<void> setAfkChannel(String? channelId, {String? reason}) async {
+    await _datastore.server.updateServer(_serverId, {'afk_channel_id': channelId}, reason);
+  }
 
-  ServerTextChannel? get rulesChannel => getOrNull<ServerTextChannel>(
-      _namedChannels[_ServerNamedChannel.rulesChannel]);
+  /// Set the server's system channel.
+  ///
+  /// ```dart
+  /// await server.setSystemChannel('1091121140090535956', reason: 'Testing');
+  /// ```
+  Future<void> setSystemChannel(String? channelId, {String? reason}) async {
+    await _datastore.server.updateServer(_serverId, {'system_channel_id': channelId}, reason);
+  }
 
-  ServerTextChannel? get publicUpdatesChannel => getOrNull<ServerTextChannel>(
-      _namedChannels[_ServerNamedChannel.publicUpdatesChannel]);
+  /// Set the server's rules channel.
+  ///
+  /// ```dart
+  /// await server.setRulesChannel('1091121140090535956', reason: 'Testing');
+  /// ```
+  Future<void> setRulesChannel(String? channelId, {String? reason}) async {
+    await _datastore.server.updateServer(_serverId, {'rules_channel_id': channelId}, reason);
+  }
 
-  ServerTextChannel? get safetyAlertsChannel => getOrNull<ServerTextChannel>(
-      _namedChannels[_ServerNamedChannel.safetyAlertsChannel]);
+  /// Set the server's public updates channel.
+  ///
+  /// ```dart
+  /// await server.setPublicUpdatesChannel('1091121140090535956', reason: 'Testing');
+  /// ```
+  Future<void> setPublicUpdatesChannel(String? channelId, {String? reason}) async {
+    await _datastore.server
+        .updateServer(_serverId, {'public_updates_channel_id': channelId}, reason);
+  }
 
-  ServerTextChannel? get widgetChannel => getOrNull<ServerTextChannel>(
-      _namedChannels[_ServerNamedChannel.widgetChannel]);
-
-  factory ChannelManager.fromList(List<ServerChannel> channels, payload) {
+  factory ChannelManager.empty(String serverId) {
     return ChannelManager(
-        Map<Snowflake, ServerChannel>.from(channels.fold({}, (value, element) {
-          return {...value, element.id: element};
-        })),
-        payload);
+      Snowflake(serverId),
+      afkChannelId: null,
+      systemChannelId: null,
+      rulesChannelId: null,
+      publicUpdatesChannelId: null,
+      safetyAlertsChannelId: null,
+    );
+  }
+
+  factory ChannelManager.fromMap(String serverId, Map<String, dynamic> payload) {
+    return ChannelManager(
+      Snowflake(serverId),
+      afkChannelId: Snowflake.nullable(payload['afk_channel_id']),
+      systemChannelId: Snowflake.nullable(payload['system_channel_id']),
+      rulesChannelId: Snowflake.nullable(payload['rules_channel_id']),
+      publicUpdatesChannelId: Snowflake.nullable(payload['public_updates_channel_id']),
+      safetyAlertsChannelId: Snowflake.nullable(payload['safety_alerts_channel_id']),
+    );
   }
 }

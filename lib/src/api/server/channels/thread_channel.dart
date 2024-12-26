@@ -8,8 +8,6 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/api/server/member.dart';
-import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/api/server/threads/thread_metadata.dart';
 
@@ -34,7 +32,7 @@ class ThreadChannel extends ServerChannel {
 
   final ThreadMetadata metadata;
 
-  int get memberCount => members.length;
+  // int get memberCount => members.length;
 
   final String? lastMessageId;
 
@@ -55,16 +53,13 @@ class ThreadChannel extends ServerChannel {
   final List<ChannelPermissionOverwrite> permissions;
 
   @override
-  ThreadsManager threads = ThreadsManager({});
+  final ThreadsManager threads;
 
-  @override
-  late final Server server;
+  // late final ServerChannel parentChannel;
 
-  late final ServerChannel parentChannel;
+  // late final Map<Snowflake, Member> members;
 
-  late final Map<Snowflake, Member> members;
-
-  late final Member owner;
+  // late final Member owner;
 
   ThreadChannel({
     required this.id,
@@ -79,6 +74,7 @@ class ThreadChannel extends ServerChannel {
     required this.flags,
     required this.ownerId,
     required this.permissions,
+    required this.threads,
   }) {
     _methods = ChannelMethods(id);
   }

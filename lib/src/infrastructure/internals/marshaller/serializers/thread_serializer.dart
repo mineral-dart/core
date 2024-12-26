@@ -1,7 +1,7 @@
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
-import 'package:mineral/src/api/server/member.dart';
+import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/src/api/server/threads/thread_metadata.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
@@ -9,14 +9,14 @@ import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer
 
 final class ThreadSerializer implements SerializerContract<ThreadChannel> {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
-    final membersIds =
-        List.from(json['members'] ?? [json['owner_id'] as String])
-            .map((id) => _marshaller.cacheKey.thread(id))
-            .toList();
+    final membersIds = List.from(json['members'] ?? [json['owner_id'] as String])
+        .map((id) => _marshaller.cacheKey.thread(id))
+        .toList();
 
     final payload = {
       'id': json['id'],
@@ -26,8 +26,7 @@ final class ThreadSerializer implements SerializerContract<ThreadChannel> {
       'channel_id': json['parent_id'],
       'metadata': {
         'archived': json['thread_metadata']['archived'],
-        'auto_archive_duration': json['thread_metadata']
-            ['auto_archive_duration'],
+        'auto_archive_duration': json['thread_metadata']['auto_archive_duration'],
         'locked': json['thread_metadata']['locked'],
         'archive_timestamp': json['thread_metadata']['archive_timestamp'],
         'invitable': json['thread_metadata']['invitable'],
@@ -55,13 +54,12 @@ final class ThreadSerializer implements SerializerContract<ThreadChannel> {
         field: json['permission_overwrites'],
         fn: () async => Future.wait(
               List.from(json['permission_overwrites'])
-                  .map((json) async => _marshaller
-                      .serializers.channelPermissionOverwrite
-                      .serialize(json))
+                  .map((json) async =>
+                      _marshaller.serializers.channelPermissionOverwrite.serialize(json))
                   .toList(),
             ));
 
-    final thread = ThreadChannel(
+    return ThreadChannel(
       id: json['id'],
       name: json['name'],
       serverId: Snowflake(json['server_id']),
@@ -79,34 +77,13 @@ final class ThreadSerializer implements SerializerContract<ThreadChannel> {
       lastMessageId: json['last_message_id'],
       rateLimitPerUser: json['rate_limit_per_user'],
       lastPinTimestamp: Helper.createOrNull(
-          field: json['last_pin_timestamp'],
-          fn: () => DateTime.parse(json['last_pin_timestamp'])),
+          field: json['last_pin_timestamp'], fn: () => DateTime.parse(json['last_pin_timestamp'])),
       messageCount: json['message_count'],
       flags: json['flags'],
       ownerId: json['owner_id'],
       permissions: permissionOverwrites ?? [],
+      threads: ThreadsManager(Snowflake(json['server_id'])),
     );
-
-    final owner = await _dataStore.member.getMember(
-        serverId: thread.serverId, memberId: Snowflake(thread.ownerId));
-    final rawMembers =
-        await _marshaller.cache.getMany(json['members_ids'] as List<String>);
-
-    final membersList = await rawMembers.nonNulls.map((element) async {
-      return _marshaller.serializers.member.serialize(element);
-    }).wait;
-
-    final members = membersList.fold(<Snowflake, Member>{},
-        (Map<Snowflake, Member> cc, Member member) {
-      cc[member.id] = member;
-      return cc;
-    });
-
-    thread
-      ..owner = owner
-      ..members = members;
-
-    return thread;
   }
 
   @override
@@ -122,20 +99,15 @@ final class ThreadSerializer implements SerializerContract<ThreadChannel> {
         'archived': channel.metadata.archived,
         'auto_archive_duration': channel.metadata.autoArchiveDuration,
         'locked': channel.metadata.locked,
-        'archive_timestamp':
-            channel.metadata.archiveTimestamp?.toIso8601String(),
+        'archive_timestamp': channel.metadata.archiveTimestamp?.toIso8601String(),
         'invitable': channel.metadata.invitable,
         'is_public': channel.metadata.isPublic,
       },
-      'member_count': channel.memberCount,
       'last_message_id': channel.lastMessageId,
       'rate_limit_per_user': channel.rateLimitPerUser,
       'last_pin_timestamp': channel.lastPinTimestamp?.toIso8601String(),
       'message_count': channel.messageCount,
       'flags': channel.flags,
-      'members_ids': channel.members.keys
-          .map((id) => _marshaller.cacheKey.member(channel.serverId, id))
-          .toList(),
     };
   }
 }

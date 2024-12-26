@@ -43,7 +43,7 @@ final class GlobalCommandContext implements CommandContext {
       user: await datastore.user
           .getUser(Snowflake(payload['member']['user']['id'])),
       channel:
-          await datastore.channel.getChannel(Snowflake(payload['channel_id'])),
+          await datastore.channel.get(payload['channel_id'], false),
     );
   }
 }

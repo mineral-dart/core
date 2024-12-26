@@ -4,13 +4,13 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
 
 final class Server {
-  ServerPartContract get _serverPart => ioc.resolve<DataStoreContract>().server;
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
   final Snowflake id;
   final String? applicationId;
   final String name;
   final String? description;
-  final Member owner;
+  final Snowflake ownerId;
   final MemberManager members;
   final ServerSettings settings;
   final RoleManager roles;
@@ -21,6 +21,7 @@ final class Server {
   Server({
     required this.id,
     required this.name,
+    required this.ownerId,
     required this.members,
     required this.settings,
     required this.roles,
@@ -28,7 +29,6 @@ final class Server {
     required this.description,
     required this.applicationId,
     required this.assets,
-    required this.owner,
     required this.threads,
   });
 
@@ -38,7 +38,7 @@ final class Server {
   /// await server.setName('New Server Name', reason: 'Testing');
   /// ```
   Future<void> setName(String name, {String? reason}) async {
-    await _serverPart.updateServer(id, {'name': name}, reason);
+    await _datastore.server.updateServer(id, {'name': name}, reason);
   }
 
   /// Set the server's description.
@@ -47,7 +47,7 @@ final class Server {
   /// await server.setDescription('New Server Description', reason: 'Testing');
   /// ```
   Future<void> setDescription(String description, {String? reason}) async {
-    await _serverPart.updateServer(id, {'description': description}, reason);
+    await _datastore.server.updateServer(id, {'description': description}, reason);
   }
 
   /// Set the default message notifications for the server.
@@ -57,8 +57,8 @@ final class Server {
   /// ```
   Future<void> setDefaultMessageNotifications(DefaultMessageNotification value,
       {String? reason}) async {
-    await _serverPart.updateServer(
-        id, {'default_message_notifications': value.value}, reason);
+    await _datastore.server
+        .updateServer(id, {'default_message_notifications': value.value}, reason);
   }
 
   /// Set the explicit content filter for the server.
@@ -66,10 +66,8 @@ final class Server {
   /// ```dart
   /// await server.setExplicitContentFilter(ExplicitContentFilter.disabled, reason: 'Testing');
   /// ```
-  Future<void> setExplicitContentFilter(ExplicitContentFilter value,
-      {String? reason}) async {
-    await _serverPart.updateServer(
-        id, {'explicit_content_filter': value.value}, reason);
+  Future<void> setExplicitContentFilter(ExplicitContentFilter value, {String? reason}) async {
+    await _datastore.server.updateServer(id, {'explicit_content_filter': value.value}, reason);
   }
 
   /// Set the server's afk timeout.
@@ -78,46 +76,7 @@ final class Server {
   ///  await server.setAfkTimeout(300, reason: 'Testing');
   ///  ```
   Future<void> setAfkTimeout(int value, {String? reason}) async {
-    await _serverPart.updateServer(id, {'afk_timeout': value}, reason);
-  }
-
-  /// Set the server's afk channel.
-  ///
-  /// ```dart
-  /// await server.setAfkChannel('1091121140090535956', reason: 'Testing');
-  /// ```
-  Future<void> setAfkChannel(String? channelId, {String? reason}) async {
-    await _serverPart.updateServer(id, {'afk_channel_id': channelId}, reason);
-  }
-
-  /// Set the server's system channel.
-  ///
-  /// ```dart
-  /// await server.setSystemChannel('1091121140090535956', reason: 'Testing');
-  /// ```
-  Future<void> setSystemChannel(String? channelId, {String? reason}) async {
-    await _serverPart.updateServer(
-        id, {'system_channel_id': channelId}, reason);
-  }
-
-  /// Set the server's rules channel.
-  ///
-  /// ```dart
-  /// await server.setRulesChannel('1091121140090535956', reason: 'Testing');
-  /// ```
-  Future<void> setRulesChannel(String? channelId, {String? reason}) async {
-    await _serverPart.updateServer(id, {'rules_channel_id': channelId}, reason);
-  }
-
-  /// Set the server's public updates channel.
-  ///
-  /// ```dart
-  /// await server.setPublicUpdatesChannel('1091121140090535956', reason: 'Testing');
-  /// ```
-  Future<void> setPublicUpdatesChannel(String? channelId,
-      {String? reason}) async {
-    await _serverPart.updateServer(
-        id, {'public_updates_channel_id': channelId}, reason);
+    await _datastore.server.updateServer(id, {'afk_timeout': value}, reason);
   }
 
   /// Set the server's enabled premium features.
@@ -126,8 +85,7 @@ final class Server {
   /// await server.enablePremiumProgressBar(true, reason: 'Testing');
   /// ```
   Future<void> enablePremiumProgressBar(bool value, {String? reason}) async {
-    await _serverPart.updateServer(
-        id, {'premium_progress_bar_enabled': value}, reason);
+    await _datastore.server.updateServer(id, {'premium_progress_bar_enabled': value}, reason);
   }
 
   /// Set the server's safety alerts channel.
@@ -135,10 +93,8 @@ final class Server {
   /// ```dart
   /// await server.setSafetyAlertsChannel('1091121140090535956', reason: 'Testing');
   /// ```
-  Future<void> setSafetyAlertsChannel(String? channelId,
-      {String? reason}) async {
-    await _serverPart.updateServer(
-        id, {'safety_alerts_channel_id': channelId}, reason);
+  Future<void> setSafetyAlertsChannel(String? channelId, {String? reason}) async {
+    await _datastore.server.updateServer(id, {'safety_alerts_channel_id': channelId}, reason);
   }
 
   /// Set the server's preferred locale.
@@ -147,7 +103,7 @@ final class Server {
   /// await server.setPreferredLocale('en-US', reason: 'Testing');
   /// ```
   Future<void> setPreferredLocale(String value, {String? reason}) async {
-    await _serverPart.updateServer(id, {'preferred_locale': value}, reason);
+    await _datastore.server.updateServer(id, {'preferred_locale': value}, reason);
   }
 
   /// Set the server's vanity url code.
@@ -156,6 +112,13 @@ final class Server {
   /// await server.setVanityUrlCode('new-vanity-url', reason: 'Testing');
   /// ```
   Future<void> setVanityUrlCode(String value, {String? reason}) async {
-    await _serverPart.updateServer(id, {'vanity_url_code': value}, reason);
+    await _datastore.server.updateServer(id, {'vanity_url_code': value}, reason);
   }
+
+  /// Resolve the server owner's name.
+  /// ```dart
+  /// final owner = await server.resolveOwner();
+  /// ```
+  Future<Member> resolveOwner({bool force = false}) =>
+      _datastore.member.get(id.value, ownerId.value, force);
 }

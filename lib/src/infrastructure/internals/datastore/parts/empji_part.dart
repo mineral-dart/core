@@ -1,13 +1,12 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:mineral/api.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/common/sticker.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
-final class StickerPart implements StickerPartContract {
+final class EmojiPart implements EmojiPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
@@ -15,13 +14,13 @@ final class StickerPart implements StickerPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Map<Snowflake, Sticker>> fetch(String serverId, bool force) async {
-    final completer = Completer<Map<Snowflake, Sticker>>();
-    final response = await _dataStore.client.get('/guilds/$serverId/stickers');
+  Future<Map<Snowflake, Emoji>> fetch(String serverId, bool force) async {
+    final completer = Completer<Map<Snowflake, Emoji>>();
+    final response = await _dataStore.client.get('/guilds/$serverId/channels');
 
     final rawEmojis = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => await Future.wait(List.from(response.body)
-          .map((element) async => _marshaller.serializers.sticker.normalize(element))),
+          .map((element) async => _marshaller.serializers.emojis.normalize(element))),
       int() when status.isRateLimit(response.statusCode) =>
         throw HttpException(response.bodyString),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
@@ -29,9 +28,8 @@ final class StickerPart implements StickerPartContract {
     };
 
     final emojis = await Future.wait(rawEmojis.map((element) async {
-      final emoji = await _marshaller.serializers.sticker.serialize(element);
-      await _marshaller.cache
-          .put(_marshaller.cacheKey.serverEmoji(serverId, emoji.id!.value), element);
+      final emoji = await _marshaller.serializers.emojis.serialize(element);
+      await _marshaller.cache.put(_marshaller.cacheKey.serverEmoji(serverId, emoji.id!.value), element);
 
       return emoji;
     }));
@@ -41,29 +39,29 @@ final class StickerPart implements StickerPartContract {
   }
 
   @override
-  Future<Sticker?> get(String serverId, String stickerId, bool force) async {
-    final completer = Completer<Sticker>();
-    final String key = _marshaller.cacheKey.sticker(serverId, stickerId);
+  Future<Emoji?> get(String serverId, String emojiId, bool force) async {
+    final completer = Completer<Emoji>();
+    final String key = _marshaller.cacheKey.serverEmoji(serverId, emojiId);
 
-    final cachedSticker = await _marshaller.cache.get(key);
-    if (!force && cachedSticker != null) {
-      final sticker = await _marshaller.serializers.sticker.serialize(cachedSticker);
-      completer.complete(sticker);
+    final cachedEmoji = await _marshaller.cache.get(key);
+    if (!force && cachedEmoji != null) {
+      final channel = await _marshaller.serializers.emojis.serialize(cachedEmoji);
+      completer.complete(channel);
 
       return completer.future;
     }
 
-    final response = await _dataStore.client.get('/guilds/$serverId/stickers/$stickerId');
-    final sticker = switch (response.statusCode) {
+    final response = await _dataStore.client.get('/guilds/$serverId/emojis/$emojiId');
+    final emoji = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.sticker.normalize(response.body),
+        await _marshaller.serializers.emojis.normalize(response.body),
       int() when status.isRateLimit(response.statusCode) =>
         throw HttpException(response.bodyString),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    completer.complete(await _marshaller.serializers.sticker.serialize(sticker));
+    completer.complete(await _marshaller.serializers.emojis.serialize(emoji));
 
     return completer.future;
   }

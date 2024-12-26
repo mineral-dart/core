@@ -15,67 +15,25 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final cacheKey = _marshaller.cacheKey.serverAssets(json['id']);
 
-    await List.from(json['roles']).map((element) async {
-      return _marshaller.serializers.role
-          .normalize({...element, 'server_id': json['id']});
-    }).wait;
-
-    await List.from(json['emojis']).map((element) async {
-      return _marshaller.serializers.emojis
-          .normalize({...element, 'server_id': json['id']});
-    }).wait;
-
-    await List.from(json['stickers']).map((element) async {
-      return _marshaller.serializers.sticker
-          .normalize({...element, 'server_id': json['id']});
-    }).wait;
-
     final payload = {
       'icon': json['icon'],
       'icon_hash': json['icon_hash'],
       'splash': json['splash'],
       'discovery_splash': json['discovery_splash'],
       'banner': json['banner'],
-      'stickers': List.from(json['stickers'])
-          .map((element) =>
-              _marshaller.cacheKey.sticker(json['id'], element['id']))
-          .toList(),
-      'roles': List.from(json['roles'])
-          .map((element) =>
-              _marshaller.cacheKey.serverRole(json['id'], element['id']))
-          .toList(),
-      'emojis': List.from(json['emojis'])
-          .map((element) =>
-              _marshaller.cacheKey.serverEmoji(json['id'], element['id']))
-          .toList(),
       'server_id': json['id'],
     };
 
-    _marshaller.cache.put(cacheKey, payload);
+    await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
   }
 
   @override
   Future<ServerAsset> serialize(Map<String, dynamic> json) async {
-    final rawRoles = await _marshaller.cache.getMany(json['roles']);
-    final roles = await rawRoles.nonNulls.map((element) async {
-      return _marshaller.serializers.role.serialize(element);
-    }).wait;
-
-    final rawEmojis = await _marshaller.cache.getMany(json['emojis']);
-    final emojis = await rawEmojis.nonNulls.map((id) async {
-      return _marshaller.serializers.emojis.serialize(id);
-    }).wait;
-
-    final rawStickers = await _marshaller.cache.getMany(json['stickers']);
-    final stickers = await rawStickers.nonNulls.map((id) async {
-      return _marshaller.serializers.sticker.serialize(id);
-    }).wait;
-
-    return ServerAsset(
-      emojis: EmojiManager.fromList(roles, emojis),
-      stickers: StickerManager.fromList(stickers),
+    return ServerAsset(Snowflake(json['server_id']),
+      emojis: EmojiManager(json['server_id']),
+      stickers: StickerManager(json['server_id']),
       icon: Helper.createOrNull(
           field: json['icon'],
           fn: () => ImageAsset(['icons', json['server_id']], json['icon'])),
@@ -90,22 +48,12 @@ final class ServerAssetsSerializer implements SerializerContract<ServerAsset> {
           field: json['discovery_splash'],
           fn: () => ImageAsset(
               ['discovery-splashes', json['id']], json['discovery_splash'])),
-      serverId: Snowflake(json['server_id']),
     );
   }
 
   @override
   Future<Map<String, dynamic>> deserialize(ServerAsset object) async {
-    final emojis = await Future.wait(object.emojis.list.values.map(
-        (element) async =>
-            _marshaller.serializers.emojis.deserialize(element)));
-    final stickers = await Future.wait(object.stickers.list.values.map(
-        (element) async =>
-            _marshaller.serializers.sticker.deserialize(element)));
-
     return {
-      'emojis': emojis.map((element) => element['id']).toList(),
-      'stickers': stickers.map((element) => element['id']).toList(),
       'icon': object.icon?.hash,
       'splash': object.splash?.hash,
       'banner': object.banner?.hash,

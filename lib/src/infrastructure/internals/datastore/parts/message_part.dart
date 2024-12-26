@@ -19,8 +19,8 @@ final class MessagePart implements MessagePartContract {
   @override
   Future<ServerMessage> getServerMessage(
       {required Snowflake messageId, required Snowflake channelId}) async {
-    final messageCacheKey = _marshaller.cacheKey.message(channelId, channelId);
-    final channelCacheKey = _marshaller.cacheKey.channel(channelId);
+    final messageCacheKey = _marshaller.cacheKey.message(channelId.value, channelId.value);
+    final channelCacheKey = _marshaller.cacheKey.channel(channelId.value);
 
     final rawMessage = await _marshaller.cache.get(messageCacheKey);
     final rawChannel = await _marshaller.cache.getOrFail(channelCacheKey);
@@ -56,8 +56,8 @@ final class MessagePart implements MessagePartContract {
   @override
   Future<PrivateMessage> getPrivateMessage(
       {required Snowflake messageId, required Snowflake channelId}) async {
-    final messageCacheKey = _marshaller.cacheKey.message(channelId, channelId);
-    final channelCacheKey = _marshaller.cacheKey.channel(channelId);
+    final messageCacheKey = _marshaller.cacheKey.message(channelId.value, channelId.value);
+    final channelCacheKey = _marshaller.cacheKey.channel(channelId.value);
 
     final rawMessage = await _marshaller.cache.get(messageCacheKey);
     final rawChannel = await _marshaller.cache.getOrFail(channelCacheKey);

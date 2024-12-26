@@ -1,6 +1,5 @@
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/server/channels/server_text_channel.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
@@ -18,31 +17,22 @@ final class ThreadMemberUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    throw UnimplementedError();
+
     final payload = message.payload;
 
-    final server = await _dataStore.server.getServer(payload['guild_id']);
+    final server = await _dataStore.server.get(payload['guild_id'], false);
     final thread = await _dataStore.channel.getThread(Snowflake(payload['id']))
         as ThreadChannel;
-    final member = await _dataStore.member.getMember(
-        memberId: Snowflake(payload['user_id']), serverId: server.id);
+    final member = await _dataStore.member.get(
+        payload['user_id'], server.id.value, false);
 
-    thread.members[member.id] = member;
-    server.threads.add(thread);
+    // thread.members[member.id] = member;
 
     final serverRaw = await _marshaller.serializers.server.deserialize(server);
-    final serverKey = _marshaller.cacheKey.server(server.id);
+    final serverKey = _marshaller.cacheKey.server(server.id.value);
 
     _marshaller.cache.put(serverKey, serverRaw);
-
-    final parentChannel =
-        server.channels.list[Snowflake(thread.channelId)] as ServerTextChannel;
-    parentChannel.threads.add(thread);
-
-    final parentChannelRaw =
-        await _marshaller.serializers.channels.deserialize(parentChannel);
-    final parentChannelKey = _marshaller.cacheKey.channel(parentChannel.id);
-
-    _marshaller.cache.put(parentChannelKey, parentChannelRaw);
 
     dispatch(
         event: Event.serverThreadMemberUpdate,

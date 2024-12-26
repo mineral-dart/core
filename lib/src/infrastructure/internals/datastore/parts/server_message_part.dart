@@ -34,19 +34,15 @@ final class ServerMessagePart implements ServerMessagePartContract {
       'components': components?.map((c) => c.toJson()).toList()
     });
 
-    final server = await _dataStore.server.getServer(serverId);
     final channel =
-        await _dataStore.channel.getChannel<ServerChannel>(channelId);
+        await _dataStore.channel.get<ServerChannel>(channelId.value, false);
 
     final Map<String, dynamic> serverMessage =
         await _marshaller.serializers.serverMessage.normalize(response.body);
     final message =
         await _marshaller.serializers.serverMessage.serialize(serverMessage);
 
-    if (channel != null) {
-      channel.server = server;
-      message.channel = channel;
-    }
+    // message.channel = channel;
 
     return message;
   }
@@ -70,9 +66,8 @@ final class ServerMessagePart implements ServerMessagePartContract {
       'message_reference': {'message_id': id, 'channel_id': channelId}
     });
 
-    final server = await _dataStore.server.getServer(serverId);
     final channel =
-        await _dataStore.channel.getChannel<ServerChannel>(channelId);
+        await _dataStore.channel.get<ServerChannel>(channelId.value, false);
 
     final Map<String, dynamic> rawMessage =
         await _marshaller.serializers.serverMessage.normalize({
@@ -83,10 +78,7 @@ final class ServerMessagePart implements ServerMessagePartContract {
     final ServerMessage message =
         await _marshaller.serializers.serverMessage.serialize(rawMessage);
 
-    if (channel != null) {
-      channel.server = server;
-      message.channel = channel;
-    }
+    // message.channel = channel;
 
     return message;
   }

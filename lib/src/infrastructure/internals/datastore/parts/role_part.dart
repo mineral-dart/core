@@ -19,7 +19,7 @@ final class RolePart implements RolePartContract {
   @override
   Future<Role> getRole(
       {required Snowflake serverId, required Snowflake roleId}) async {
-    final cacheKey = _marshaller.cacheKey.serverRole(serverId, roleId);
+    final cacheKey = _marshaller.cacheKey.serverRole(serverId.value, roleId.value);
     final rawRole = await _marshaller.cache.get(cacheKey);
 
     if (rawRole != null) {

@@ -23,7 +23,7 @@ final class ServerForumChannelFactory
       'name': json['name'],
       'description': json['topic'],
       'nsfw': json['nsfw'],
-      'server_id': json['server_id'],
+      'server_id': json['guild_id'],
       'permission_overwrites': json['permission_overwrites'],
     };
 

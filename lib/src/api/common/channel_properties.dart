@@ -104,17 +104,11 @@ final class ChannelProperties {
         type: findInEnum(ChannelType.values, element['type']),
         name: element['name'],
         description: element['description'],
-        serverId: Helper.createOrNull(
-            field: element['server_id'],
-            fn: () => Snowflake(element['server_id'])),
-        categoryId: Helper.createOrNull(
-            field: element['parent_id'],
-            fn: () => Snowflake(element['parent_id'])),
+        serverId: Snowflake.nullable(element['server_id']),
+        categoryId: Snowflake.nullable(element['parent_id']),
         position: element['position'],
         nsfw: element['nsfw'] ?? false,
-        lastMessageId: Helper.createOrNull(
-            field: element['last_message_id'],
-            fn: () => Snowflake(element['last_message_id'])),
+        lastMessageId: Snowflake.nullable(element['last_message_id']),
         bitrate: element['bitrate'],
         userLimit: element['user_limit'],
         rateLimitPerUser: element['rate_limit_per_user'],
@@ -136,6 +130,6 @@ final class ChannelProperties {
         defaultReactions: element['default_reactions'],
         defaultSortOrder: element['default_sort_order'],
         defaultForumLayout: element['default_forum_layout'],
-        threads: ThreadsManager({}));
+        threads: ThreadsManager(Snowflake(element['server_id'])));
   }
 }

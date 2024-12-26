@@ -28,11 +28,11 @@ final class MemberSerializer implements SerializerContract<Member> {
       'global_name': json['user']['global_name'],
       'discriminator': json['user']['discriminator'],
       'assets': _marshaller.cacheKey
-          .memberAssets(json['server_id'], json['user']['id']),
+          .memberAssets(json['guild_id'], json['user']['id']),
       'flags': json['flags'],
       'roles': List.from(json['roles'])
           .map((element) =>
-              _marshaller.cacheKey.serverRole(json['server_id'], element))
+              _marshaller.cacheKey.serverRole(json['guild_id'], element))
           .toList(),
       'premium_since': json['premium_since'],
       'public_flags': json['user']['public_flags'],
@@ -50,7 +50,7 @@ final class MemberSerializer implements SerializerContract<Member> {
     };
 
     final cacheKey =
-        _marshaller.cacheKey.member(json['server_id'], json['user']['id']);
+        _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -117,14 +117,14 @@ final class MemberSerializer implements SerializerContract<Member> {
         await _marshaller.serializers.memberAssets.deserialize(member.assets);
     final rawRoles = await member.roles.list.entries.map((role) async {
       final cacheKey =
-          _marshaller.cacheKey.serverRole(member.server.id, role.key);
+          _marshaller.cacheKey.serverRole(member.server.id.value, role.key.value);
       return {
         cacheKey: await _marshaller.serializers.role.deserialize(role.value)
       };
     }).wait;
 
     await _marshaller.cache.putMany({
-      _marshaller.cacheKey.memberAssets(member.server.id, member.id): rawAsset,
+      _marshaller.cacheKey.memberAssets(member.server.id.value, member.id.value): rawAsset,
       ...rawRoles.fold({}, (prev, element) => {...prev, ...element}),
     });
 
@@ -134,10 +134,10 @@ final class MemberSerializer implements SerializerContract<Member> {
       'nickname': member.nickname,
       'global_name': member.globalName,
       'discriminator': member.discriminator,
-      'assets': _marshaller.cacheKey.memberAssets(member.server.id, member.id),
+      'assets': _marshaller.cacheKey.memberAssets(member.server.id.value, member.id.value),
       'flags': listToBitfield(member.flags.list),
       'roles': member.roles.list.keys
-          .map((id) => _marshaller.cacheKey.serverRole(member.server.id, id))
+          .map((id) => _marshaller.cacheKey.serverRole(member.server.id.value, id.value))
           .toList(),
       'premium_since': member.premiumSince?.toIso8601String(),
       'public_flags': member.publicFlags,

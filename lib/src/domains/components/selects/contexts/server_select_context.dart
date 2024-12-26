@@ -51,9 +51,10 @@ final class ServerSelectContext implements SelectContext {
         messageId: Snowflake(payload['message']['id']),
         channelId: Snowflake(payload['channel_id']),
       ),
-      member: await datastore.member.getMember(
-        serverId: Snowflake(payload['guild_id']),
-        memberId: Snowflake(payload['member']['user']['id']),
+      member: await datastore.member.get(
+        payload['guild_id'],
+        payload['member']['user']['id'],
+        false
       ),
     );
   }

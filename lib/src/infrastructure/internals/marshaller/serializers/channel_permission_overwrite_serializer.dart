@@ -19,7 +19,7 @@ final class ChannelPermissionOverwriteSerializer
     };
 
     final cacheKey = _marshaller.cacheKey.channelPermission(
-        Snowflake(payload['id']),
+        payload['id'],
         serverId: json['server_id']);
     await _marshaller.cache.put(cacheKey, payload);
 

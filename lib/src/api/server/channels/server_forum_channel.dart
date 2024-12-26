@@ -7,7 +7,6 @@ import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/enums/forum_layout_types.dart';
 import 'package:mineral/src/api/server/enums/sort_order_forum.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/api/server/server.dart';
 
 final class ServerForumChannel extends ServerChannel {
   final ChannelProperties _properties;
@@ -42,9 +41,6 @@ final class ServerForumChannel extends ServerChannel {
 
   @override
   Snowflake get serverId => _properties.serverId!;
-
-  @override
-  late final Server server;
 
   ServerForumChannel(this._properties,
       {required this.sortOrder, required this.layoutType});

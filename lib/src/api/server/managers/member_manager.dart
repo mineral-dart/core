@@ -2,9 +2,9 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
 
 final class MemberManager {
-  final Map<Snowflake, Member> _members;
+  final Map<Snowflake, Member> _members = {};
 
-  MemberManager(this._members);
+  MemberManager();
 
   Map<Snowflake, Member> get list => _members;
 
@@ -36,6 +36,6 @@ final class MemberManager {
       return {...value, element.id: element};
     }));
 
-    return MemberManager(members);
+    return MemberManager();
   }
 }

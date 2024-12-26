@@ -17,44 +17,46 @@ final class MemberPart implements MemberPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Member> getMember(
-      {required Snowflake serverId, required Snowflake memberId}) async {
+  Future<Member> get(String serverId, String memberId, bool force) async {
+    final completer = Completer<Member>();
+    final String key = _marshaller.cacheKey.member(serverId, memberId);
 
-    final cacheKeys = _marshaller.cacheKey;
-    final memberCacheKey = cacheKeys.member(serverId, memberId);
+    final cachedChannel = await _marshaller.cache.get(key);
+    if (!force && cachedChannel != null) {
+      final member = await _marshaller.serializers.member.serialize(cachedChannel);
+      completer.complete(member);
 
-    Map<String, dynamic>? cachedRawMember =
-        await _marshaller.cache.get(memberCacheKey);
-
-    if (cachedRawMember != null) {
-      return _marshaller.serializers.member.serialize(cachedRawMember);
+      return completer.future;
     }
 
-    final response =
-        await _dataStore.client.get('/guilds/$serverId/members/$memberId');
-    if (status.isError(response.statusCode)) {
-      throw HttpException(response.body);
-    }
+    final response = await _dataStore.client.get('/guilds/$serverId/members/$memberId');
+    final member = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.member.normalize({
+          ...response.body,
+          'server_id': response.body['guild_id'],
+        }),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
 
-    await _marshaller.serializers.member.normalize(response.body);
+    completer.complete(await _marshaller.serializers.member.serialize(member));
 
-    cachedRawMember = await _marshaller.cache.getOrFail(memberCacheKey);
-
-    return _marshaller.serializers.member.serialize(cachedRawMember);
+    return completer.future;
   }
 
   @override
-  Future<List<Member>> getMembers(Snowflake guildId,
-      {bool force = false}) async {
-    final serverCacheKey = _marshaller.cacheKey.server(guildId);
+  Future<List<Member>> getMembers(Snowflake guildId, {bool force = false}) async {
+    final serverCacheKey = _marshaller.cacheKey.server(guildId.value);
     final rawServer = await _marshaller.cache.getOrFail(serverCacheKey);
 
     final rawMemberIds = List<String>.from(rawServer['members']);
     final rawCachedMembers = await _marshaller.cache.getMany(rawMemberIds);
     if (rawMemberIds.length == rawCachedMembers.length) {
       return Future.wait(rawCachedMembers.nonNulls
-          .map((element) async =>
-              _marshaller.serializers.member.serialize(element))
+          .map((element) async => _marshaller.serializers.member.serialize(element))
           .toList());
     }
 
@@ -75,18 +77,15 @@ final class MemberPart implements MemberPartContract {
       required Snowflake memberId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
-    final response = await _dataStore.client.patch(
-        '/guilds/$serverId/members/$memberId',
+    final response = await _dataStore.client.patch('/guilds/$serverId/members/$memberId',
         body: payload,
-        option: HttpRequestOptionImpl(
-            headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
-    final rawMember =
-        await _marshaller.serializers.member.normalize(response.body);
+    final rawMember = await _marshaller.serializers.member.normalize(response.body);
     return _marshaller.serializers.member.serialize(rawMember);
   }
 
@@ -96,11 +95,9 @@ final class MemberPart implements MemberPartContract {
       required Duration? deleteSince,
       required Snowflake memberId,
       String? reason}) async {
-    final response = await _dataStore.client.put(
-        '/guilds/$serverId/bans/$memberId',
+    final response = await _dataStore.client.put('/guilds/$serverId/bans/$memberId',
         body: {'delete_message_seconds': deleteSince?.inSeconds},
-        option: HttpRequestOptionImpl(
-            headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
     if (status.isSuccess(response.statusCode)) {
       return;
@@ -109,13 +106,9 @@ final class MemberPart implements MemberPartContract {
 
   @override
   Future<void> kickMember(
-      {required Snowflake serverId,
-      required Snowflake memberId,
-      String? reason}) async {
-    final response = await _dataStore.client.delete(
-        '/guilds/$serverId/members/$memberId',
-        option: HttpRequestOptionImpl(
-            headers: {DiscordHeader.auditLogReason(reason)}));
+      {required Snowflake serverId, required Snowflake memberId, String? reason}) async {
+    final response = await _dataStore.client.delete('/guilds/$serverId/members/$memberId',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
     if (status.isSuccess(response.statusCode)) {
       return;

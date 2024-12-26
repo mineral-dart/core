@@ -5,7 +5,9 @@ import 'package:mineral/src/api/server/channels/thread_channel.dart';
 abstract interface class DataStorePart {}
 
 abstract interface class ChannelPartContract implements DataStorePart {
-  Future<T?> getChannel<T extends Channel>(Snowflake id);
+  Future<Map<Snowflake, T>> fetch<T extends Channel>(String serverId, bool force);
+
+  Future<T?> get<T extends Channel>(String id, bool force);
 
   Future<ThreadChannel?> getThread(Snowflake id);
 
@@ -67,8 +69,7 @@ abstract interface class InteractionPartContract implements DataStorePart {
 }
 
 abstract interface class MemberPartContract implements DataStorePart {
-  Future<Member> getMember(
-      {required Snowflake serverId, required Snowflake memberId});
+  Future<Member> get(String serverId, String memberId, bool force);
 
   Future<List<Member>> getMembers(Snowflake guildId, {bool force = false});
 
@@ -160,7 +161,7 @@ abstract interface class ServerMessagePartContract implements DataStorePart {
 }
 
 abstract interface class ServerPartContract implements DataStorePart {
-  Future<Server> getServer(Snowflake id);
+  Future<Server> get(String id, bool force);
 
   Future<Server> updateServer(
       Snowflake id, Map<String, dynamic> payload, String? reason);
@@ -173,9 +174,15 @@ abstract interface class ServerPartContract implements DataStorePart {
 }
 
 abstract interface class StickerPartContract implements DataStorePart {
-  Future<Sticker> getSticker(Snowflake serverId, Snowflake stickerId);
+  Future<Map<Snowflake, Sticker>> fetch(String serverId, bool force);
+  Future<Sticker?> get(String serverId, String id, bool force);
 }
 
 abstract interface class UserPartContract implements DataStorePart {
   Future<User> getUser(Snowflake userId);
+}
+
+abstract interface class EmojiPartContract implements DataStorePart {
+  Future<Map<Snowflake, Emoji>> fetch(String serverId, bool force);
+  Future<Emoji?> get(String serverId, String id, bool force);
 }

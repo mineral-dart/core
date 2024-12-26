@@ -19,35 +19,42 @@ final class ServerPart implements ServerPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Server> getServer(Snowflake id) async {
-    final cacheKey = _marshaller.cacheKey;
-    final serverCacheKey = cacheKey.server(id);
-    final rawServer = await _marshaller.cache.get(serverCacheKey);
+  Future<Server> get(String id, bool force) async {
+    final completer = Completer<Server>();
+    final String key = _marshaller.cacheKey.server(id);
 
-    if (rawServer != null) {
-      return _marshaller.serializers.server.serialize(rawServer);
+    final cachedServer = await _marshaller.cache.get(key);
+    if (!force && cachedServer != null) {
+      final server = await _marshaller.serializers.server.serialize(cachedServer);
+      completer.complete(server);
+
+      return completer.future;
     }
 
-    final serverResponse = await _dataStore.client.get('/guilds/$id');
+    final response = await _dataStore.client.get('/guilds/$id');
 
-    await getChannels(id);
-    await _dataStore.member.getMembers(id);
+    final rawServer = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.server.normalize(response.body),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
 
-    final payload =
-        await _marshaller.serializers.server.normalize(serverResponse.body);
-    return _marshaller.serializers.server.serialize(payload);
+    final server = await _marshaller.serializers.server.serialize(rawServer);
+    completer.complete(server);
+
+    return completer.future;
   }
 
   @override
-  Future<Server> updateServer(
-      Snowflake id, Map<String, dynamic> payload, String? reason) async {
+  Future<Server> updateServer(Snowflake id, Map<String, dynamic> payload, String? reason) async {
     final response = await _dataStore.client.patch('/guilds/$id',
         body: payload,
-        option: HttpRequestOptionImpl(
-            headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    final rawServer =
-        await _marshaller.serializers.server.normalize(response.body);
+    final rawServer = await _marshaller.serializers.server.normalize(response.body);
     return _marshaller.serializers.server.serialize(rawServer);
   }
 
@@ -66,20 +73,18 @@ final class ServerPart implements ServerPartContract {
 
   @override
   Future<Role> getRole(Snowflake serverId, Snowflake roleId) async {
-    final roleCacheKey = _marshaller.cacheKey.serverRole(serverId, roleId);
+    final roleCacheKey = _marshaller.cacheKey.serverRole(serverId.value, roleId.value);
     final cachedRawRole = await _marshaller.cache.get(roleCacheKey);
     if (cachedRawRole != null) {
       return _marshaller.serializers.role.serialize(cachedRawRole);
     }
 
-    final response =
-        await _dataStore.client.get('/guilds/$serverId/roles/$roleId');
+    final response = await _dataStore.client.get('/guilds/$serverId/roles/$roleId');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
 
-    final rolePayload =
-        await _marshaller.serializers.role.normalize(response.body);
+    final rolePayload = await _marshaller.serializers.role.normalize(response.body);
     return _marshaller.serializers.role.serialize(rolePayload);
   }
 

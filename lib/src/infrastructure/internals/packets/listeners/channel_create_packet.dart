@@ -34,11 +34,8 @@ final class ChannelCreatePacket implements ListenablePacket {
 
   Future<void> registerServerChannel(
       ServerChannel channel, DispatchEvent dispatch) async {
-    final server = await _dataStore.server.getServer(channel.serverId);
-    final serverCacheKey = _marshaller.cacheKey.server(server.id);
-
-    channel.server = server;
-    server.channels.list.putIfAbsent(channel.id, () => channel);
+    final server = await _dataStore.server.get(channel.serverId.value, false);
+    final serverCacheKey = _marshaller.cacheKey.server(server.id.value);
 
     final rawServer = await _marshaller.serializers.server.deserialize(server);
     await _marshaller.cache.put(serverCacheKey, rawServer);

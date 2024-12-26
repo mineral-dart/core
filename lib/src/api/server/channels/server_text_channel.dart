@@ -10,7 +10,6 @@ import 'package:mineral/src/api/common/types/channel_type.dart';
 import 'package:mineral/src/api/server/channels/server_category_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/api/server/server_message.dart';
 
 final class ServerTextChannel extends ServerChannel {
@@ -43,9 +42,6 @@ final class ServerTextChannel extends ServerChannel {
 
   @override
   ThreadsManager get threads => _properties.threads;
-
-  @override
-  late final Server server;
 
   late final ServerCategoryChannel? category;
 

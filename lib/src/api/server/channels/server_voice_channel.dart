@@ -8,7 +8,6 @@ import 'package:mineral/src/api/common/video_quality.dart';
 import 'package:mineral/src/api/server/channels/server_category_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/api/server/server_message.dart';
 
 final class ServerVoiceChannel extends ServerChannel {
@@ -39,9 +38,6 @@ final class ServerVoiceChannel extends ServerChannel {
   Snowflake get serverId => _properties.serverId!;
 
   Snowflake? get categoryId => _properties.categoryId;
-
-  @override
-  late final Server server;
 
   late final ServerCategoryChannel? category;
 
