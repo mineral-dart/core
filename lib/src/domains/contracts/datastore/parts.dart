@@ -172,4 +172,14 @@ abstract interface class EmojiPartContract implements DataStorePart {
   Future<Map<Snowflake, Emoji>> fetch(String serverId, bool force);
 
   Future<Emoji?> get(String serverId, String id, bool force);
+
+  Future<Emoji> create(String serverId, String name, Image image, List<String> roles, {String? reason});
+
+  Future<Emoji?> update(
+      {required String id,
+        required String serverId,
+        required Map<String, dynamic> payload,
+        required String? reason});
+
+  Future<void> delete(String serverId, String emojiId, {String? reason});
 }
