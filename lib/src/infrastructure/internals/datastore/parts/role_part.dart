@@ -17,8 +17,63 @@ final class RolePart implements RolePartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Role> getRole(
-      {required Snowflake serverId, required Snowflake roleId}) async {
+  Future<Map<Snowflake, Role>> fetch(String serverId, bool force) async {
+    final completer = Completer<Map<Snowflake, Role>>();
+    final response = await _dataStore.client.get('/guilds/$serverId/roles');
+
+    final rawRoles = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) => await Future.wait(
+          List.from(response.body).map((element) async =>
+              await _marshaller.serializers.role.normalize({...element, 'guild_id': serverId})),
+        ),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
+    };
+
+    final roles = await Future.wait(rawRoles.map((element) async {
+      final role = await _marshaller.serializers.role.serialize(element);
+      await _marshaller.cache
+          .put(_marshaller.cacheKey.serverRole(serverId, role.id.value), element);
+
+      return role;
+    }));
+
+    completer.complete(roles.asMap().map((_, value) => MapEntry(value.id, value)));
+    return completer.future;
+  }
+
+  @override
+  Future<Role?> get(String serverId, String id, bool force) async {
+    final completer = Completer<Role>();
+    final String key = _marshaller.cacheKey.serverRole(serverId, id);
+
+    final cachedRole = await _marshaller.cache.get(key);
+    if (!force && cachedRole != null) {
+      final role = await _marshaller.serializers.role.serialize(cachedRole);
+      completer.complete(role);
+
+      return completer.future;
+    }
+
+    final response = await _dataStore.client.get('/guilds/$serverId/roles/$id');
+    final channel = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.channels.normalize(response.body),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
+
+    completer.complete(await _marshaller.serializers.role.serialize(channel));
+
+    return completer.future;
+  }
+
+  @override
+  Future<Role> getRole({required Snowflake serverId, required Snowflake roleId}) async {
     final cacheKey = _marshaller.cacheKey.serverRole(serverId.value, roleId.value);
     final rawRole = await _marshaller.cache.get(cacheKey);
 
@@ -26,8 +81,7 @@ final class RolePart implements RolePartContract {
       return _marshaller.serializers.role.serialize(rawRole);
     }
 
-    final response =
-        await _dataStore.client.get('/guilds/$serverId/roles/$roleId');
+    final response = await _dataStore.client.get('/guilds/$serverId/roles/$roleId');
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
     }
@@ -42,10 +96,8 @@ final class RolePart implements RolePartContract {
       required Snowflake serverId,
       required Snowflake roleId,
       required String? reason}) async {
-    await _dataStore.client.put(
-        '/guilds/$serverId/members/$memberId/roles/$roleId',
-        option: HttpRequestOptionImpl(
-            headers: {DiscordHeader.auditLogReason(reason)}));
+    await _dataStore.client.put('/guilds/$serverId/members/$memberId/roles/$roleId',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
   @override
@@ -54,10 +106,8 @@ final class RolePart implements RolePartContract {
       required Snowflake serverId,
       required Snowflake roleId,
       required String? reason}) async {
-    await _dataStore.client.delete(
-        '/guilds/$serverId/members/$memberId/roles/$roleId',
-        option: HttpRequestOptionImpl(
-            headers: {DiscordHeader.auditLogReason(reason)}));
+    await _dataStore.client.delete('/guilds/$serverId/members/$memberId/roles/$roleId',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
   @override
@@ -68,8 +118,7 @@ final class RolePart implements RolePartContract {
       required String? reason}) async {
     await _dataStore.client.patch('/guilds/$serverId/members/$memberId',
         body: {'roles': roleIds},
-        option: HttpRequestOptionImpl(
-            headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
   }
 
   @override
@@ -78,11 +127,9 @@ final class RolePart implements RolePartContract {
       required Snowflake serverId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
-    final response = await _dataStore.client.patch(
-        '/guilds/$serverId/roles/$id',
+    final response = await _dataStore.client.patch('/guilds/$serverId/roles/$id',
         body: payload,
-        option: HttpRequestOptionImpl(
-            headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
     if (status.isError(response.statusCode)) {
       throw HttpException(response.body);
@@ -94,11 +141,8 @@ final class RolePart implements RolePartContract {
 
   @override
   Future<void> deleteRole(
-      {required Snowflake id,
-      required Snowflake guildId,
-      required String? reason}) async {
+      {required Snowflake id, required Snowflake guildId, required String? reason}) async {
     await _dataStore.client.delete('/guilds/$guildId/roles/$id',
-        option: HttpRequestOptionImpl(
-            headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
   }
 }

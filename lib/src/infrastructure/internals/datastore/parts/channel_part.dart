@@ -66,10 +66,7 @@ final class ChannelPart implements ChannelPartContract {
     final response = await _dataStore.client.get('/channels/$id');
     final channel = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.channels.normalize({
-          ...response.body,
-          'server_id': response.body['guild_id'],
-        }),
+        await _marshaller.serializers.channels.normalize(response.body),
       int() when status.isRateLimit(response.statusCode) =>
         throw HttpException(response.bodyString),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
