@@ -100,8 +100,8 @@ abstract interface class MessagePartContract implements DataStorePart {
 }
 
 abstract interface class RolePartContract implements DataStorePart {
-  Future<Role> getRole(
-      {required Snowflake serverId, required Snowflake roleId});
+  Future<Map<Snowflake, Role>> fetch(String serverId, bool force);
+  Future<Role?> get(String serverId, String id, bool force);
 
   Future<void> addRole(
       {required Snowflake memberId,

@@ -88,9 +88,7 @@ final class CommandInteractionDispatcher
             },
           CommandOptionType.channel =>
             await _marshaller.serializers.channels.serialize(option['value']),
-          CommandOptionType.role => await _dataStore.role.getRole(
-              serverId: data['guild_id'],
-              roleId: option['value']),
+          CommandOptionType.role => await _dataStore.role.get(data['guild_id'], option['value'], false),
           // TODO attachement
           _ => option['value'],
         };
