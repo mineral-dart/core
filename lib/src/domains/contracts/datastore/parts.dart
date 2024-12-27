@@ -88,7 +88,7 @@ abstract interface class RolePartContract implements DataStorePart {
 
   Future<Role?> get(String serverId, String id, bool force);
 
-  Future<Role> create(String serverId, String name, List<Permission> permissions, int color,
+  Future<Role> create(String serverId, String name, List<Permission> permissions, Color color,
       bool hoist, bool mentionable, String? reason);
 
   Future<void> addRole(
