@@ -12,58 +12,44 @@ abstract interface class ChannelPartContract implements DataStorePart {
   Future<ThreadChannel?> getThread(Snowflake id);
 
   Future<T?> createServerChannel<T extends Channel>(
-      {required Snowflake id,
-      required Map<String, dynamic> payload,
-      required String? reason});
+      {required Snowflake id, required Map<String, dynamic> payload, required String? reason});
 
   Future<PrivateChannel?> createPrivateChannel(
       {required Snowflake id, required Snowflake recipientId});
 
   Future<T?> updateChannel<T extends Channel>(
-      {required Snowflake id,
-      required Map<String, dynamic> payload,
-      required String? reason});
+      {required Snowflake id, required Map<String, dynamic> payload, required String? reason});
 
   Future<void> deleteChannel(Snowflake id, String? reason);
 
-  Future<T> createMessage<T extends Message>(
-      Snowflake? guildId,
-      Snowflake channelId,
-      String? content,
-      List<MessageEmbed>? embeds,
-      Poll? poll,
-      List<MessageComponent>? components);
+  Future<T> createMessage<T extends Message>(Snowflake? guildId, Snowflake channelId,
+      String? content, List<MessageEmbed>? embeds, Poll? poll, List<MessageComponent>? components);
 
   Future<T?> serializeChannelResponse<T extends Channel>(Response response);
 }
 
 abstract interface class InteractionPartContract implements DataStorePart {
-  Future<void> replyInteraction(
-      Snowflake id, String token, Map<String, dynamic> raw);
+  Future<void> replyInteraction(Snowflake id, String token, Map<String, dynamic> raw);
 
-  Future<void> editInteraction(
-      Snowflake botId, String token, Map<String, dynamic> raw);
+  Future<void> editInteraction(Snowflake botId, String token, Map<String, dynamic> raw);
 
   Future<void> deleteInteraction(Snowflake botId, String token);
 
   Future<void> noReplyInteraction(Snowflake id, String token);
 
-  Future<void> followUpInteraction(
-      Snowflake botId, String token, Map<String, dynamic> raw);
+  Future<void> followUpInteraction(Snowflake botId, String token, Map<String, dynamic> raw);
 
-  Future<void> editFollowUpInteraction(Snowflake botId, String token,
-      Snowflake messageId, Map<String, dynamic> raw);
+  Future<void> editFollowUpInteraction(
+      Snowflake botId, String token, Snowflake messageId, Map<String, dynamic> raw);
 
-  Future<void> deleteFollowUpInteraction(
-      Snowflake botId, String token, Snowflake messageId);
+  Future<void> deleteFollowUpInteraction(Snowflake botId, String token, Snowflake messageId);
 
   Future<void> waitInteraction(Snowflake id, String token);
 
-  Future<void> editWaitInteraction(Snowflake botId, String token,
-      Snowflake messageId, Map<String, dynamic> raw);
+  Future<void> editWaitInteraction(
+      Snowflake botId, String token, Snowflake messageId, Map<String, dynamic> raw);
 
-  Future<void> deleteWaitInteraction(
-      Snowflake botId, String token, Snowflake messageId);
+  Future<void> deleteWaitInteraction(Snowflake botId, String token, Snowflake messageId);
 
   Future<void> sendDialog(Snowflake id, String token, DialogBuilder dialog);
 }
@@ -86,9 +72,7 @@ abstract interface class MemberPartContract implements DataStorePart {
       String? reason});
 
   Future<void> kickMember(
-      {required Snowflake serverId,
-      required Snowflake memberId,
-      String? reason});
+      {required Snowflake serverId, required Snowflake memberId, String? reason});
 }
 
 abstract interface class MessagePartContract implements DataStorePart {
@@ -101,7 +85,11 @@ abstract interface class MessagePartContract implements DataStorePart {
 
 abstract interface class RolePartContract implements DataStorePart {
   Future<Map<Snowflake, Role>> fetch(String serverId, bool force);
+
   Future<Role?> get(String serverId, String id, bool force);
+
+  Future<Role> create(String serverId, String name, List<Permission> permissions, int color,
+      bool hoist, bool mentionable, String? reason);
 
   Future<void> addRole(
       {required Snowflake memberId,
@@ -128,9 +116,7 @@ abstract interface class RolePartContract implements DataStorePart {
       required String? reason});
 
   Future<void> deleteRole(
-      {required Snowflake id,
-      required Snowflake guildId,
-      required String? reason});
+      {required Snowflake id, required Snowflake guildId, required String? reason});
 }
 
 abstract interface class ServerMessagePartContract implements DataStorePart {
@@ -163,8 +149,7 @@ abstract interface class ServerMessagePartContract implements DataStorePart {
 abstract interface class ServerPartContract implements DataStorePart {
   Future<Server> get(String id, bool force);
 
-  Future<Server> updateServer(
-      Snowflake id, Map<String, dynamic> payload, String? reason);
+  Future<Server> updateServer(Snowflake id, Map<String, dynamic> payload, String? reason);
 
   Future<List<T>> getChannels<T extends ServerChannel>(Snowflake id);
 
@@ -175,6 +160,7 @@ abstract interface class ServerPartContract implements DataStorePart {
 
 abstract interface class StickerPartContract implements DataStorePart {
   Future<Map<Snowflake, Sticker>> fetch(String serverId, bool force);
+
   Future<Sticker?> get(String serverId, String id, bool force);
 }
 
@@ -184,5 +170,6 @@ abstract interface class UserPartContract implements DataStorePart {
 
 abstract interface class EmojiPartContract implements DataStorePart {
   Future<Map<Snowflake, Emoji>> fetch(String serverId, bool force);
+
   Future<Emoji?> get(String serverId, String id, bool force);
 }

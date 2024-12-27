@@ -80,6 +80,13 @@ final class ServerSerializer implements SerializerContract<Server> {
       'owner_id': server.ownerId,
       'assets': _marshaller.cacheKey.serverAssets(server.id.value),
       'settings': _marshaller.cacheKey.serverSettings(server.id.value),
+      'channel_settings': {
+        'afk_channel_id': server.channels.afkChannelId?.value,
+        'system_channel_id': server.channels.systemChannelId?.value,
+        'rules_channel_id': server.channels.rulesChannelId?.value,
+        'public_updates_channel_id': server.channels.publicUpdatesChannelId?.value,
+        'safety_alerts_channel_id': server.channels.safetyAlertsChannelId?.value,
+      },
     };
   }
 }

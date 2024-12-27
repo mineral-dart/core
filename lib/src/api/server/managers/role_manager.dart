@@ -20,5 +20,19 @@ final class RoleManager {
   /// ```dart
   /// final channel = await server.channels.get('1091121140090535956');
   /// ```
-  Future<Role?> get(String id, {bool force = false}) => _datastore.role.get(_serverId.value, id, force);
+  Future<Role?> get(String id, {bool force = false}) =>
+      _datastore.role.get(_serverId.value, id, force);
+
+  /// Create a new role.
+  /// ```dart
+  /// final role = await server.roles.create('New Role');
+  /// ```
+  Future<Role> create(
+          {required String name,
+          required List<Permission> permissions,
+          required int color,
+          bool hoist = false,
+          bool mentionable = false,
+          String? reason}) =>
+      _datastore.role.create(_serverId.value, name, permissions, color, hoist, mentionable, reason);
 }

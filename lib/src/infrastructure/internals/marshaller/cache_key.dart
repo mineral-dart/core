@@ -23,8 +23,7 @@ final class CacheKey {
   String channelPermission(String channelId, {String? serverId}) =>
       '${channel(channelId)}/permissions';
 
-  String serverRole(String serverId, String roleId, {bool ref = false}) =>
-      '${server(serverId)}/role/$roleId';
+  String serverRole(String serverId, String roleId) => '${server(serverId)}/roles/$roleId';
 
   String member(String serverId, String memberId, {bool ref = false}) {
     final key = '${server(serverId)}/members/$memberId';
