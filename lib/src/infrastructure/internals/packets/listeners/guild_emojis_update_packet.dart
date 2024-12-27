@@ -19,7 +19,10 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
     final serverCacheKey = _marshaller.cacheKey.server(server.id.value);
 
     final emojis = await List.from(message.payload['emojis']).map((element) async {
-      final raw = await _marshaller.serializers.emojis.normalize(element);
+      final raw = await _marshaller.serializers.emojis.normalize({
+        ...element,
+        'guild_id': server.id.value,
+      });
       return _marshaller.serializers.emojis.serialize(raw);
     }).wait;
 

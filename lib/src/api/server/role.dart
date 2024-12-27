@@ -108,18 +108,46 @@ final class Role {
     );
   }
 
+  /// Update the role.
+  /// ```dart
+  /// await role.update(
+  ///   name: 'New Role Name',
+  ///   color: Color.blue_400,
+  ///   reason: 'Testing');
+  /// ```
+  Future<void> update(
+      {String? name,
+      Color? color,
+      bool? hoist,
+      String? emoji,
+      bool? mentionable,
+      String? reason}) async {
+    await _datastore.role.updateRole(
+      id: id,
+      serverId: serverId,
+      reason: reason,
+      payload: {
+        if (name != null) 'name': name,
+        if (color != null) 'color': color.toInt(),
+        if (hoist != null) 'hoist': hoist,
+        if (emoji != null) 'unicode_emoji': emoji,
+        if (mentionable != null) 'mentionable': mentionable,
+      },
+    );
+  }
+
   /// Delete this role.
   ///
   /// ```dart
-  /// await role.delete('Testing');
+  /// await role.delete(reason: 'Testing');
   /// ```
-  Future<void> delete(String? reason) async {
-    await _datastore.role.deleteRole(id: id, guildId: serverId, reason: reason);
-  }
+  Future<void> delete({String? reason}) =>
+      _datastore.role.deleteRole(id: id, guildId: serverId, reason: reason);
 
   /// Get the server this role belongs to.
   /// ```dart
   /// final server = await role.resolveServer();
   /// ```
-  Future<Server> resolveServer({bool force = false }) => _datastore.server.get(serverId.value, force);
+  Future<Server> resolveServer({bool force = false}) =>
+      _datastore.server.get(serverId.value, force);
 }

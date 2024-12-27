@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:convert' as convert;
 
 import 'package:mineral/src/api/common/types/enhanced_enum.dart';
 
@@ -13,6 +14,24 @@ enum ImageExtension implements EnhancedEnum<String> {
   final String value;
 
   const ImageExtension(this.value);
+}
+
+final class Image {
+  final String base64;
+
+  Image._(this.base64);
+
+  factory Image.file(File file) {
+    if (!file.existsSync()) {
+      throw ArgumentError('File does not exist');
+    }
+
+    final String extension = file.path.split('.').last;
+    final bytes = file.readAsBytesSync();
+    final encoded = convert.base64.encode(bytes);
+
+    return Image._('data:image/$extension;base64,$encoded');
+  }
 }
 
 final class ImageAsset {

@@ -1,7 +1,7 @@
 import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/contracts/datastore/datastore.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/channel_part.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/empji_part.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/parts/emoji_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/interaction_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/member_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/message_part.dart';

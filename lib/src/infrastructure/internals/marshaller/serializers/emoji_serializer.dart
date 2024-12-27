@@ -20,7 +20,8 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
           ? List.from(json['roles'])
               .map((element) => _marshaller.cacheKey.serverEmoji(json['guild_id'], element['id']))
               .toList()
-          : <String>[]
+          : <String>[],
+      'server_id': json['guild_id'],
     };
 
     final cacheKey = _marshaller.cacheKey.serverEmoji(json['guild_id'], json['id']);
@@ -36,7 +37,7 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       return _marshaller.serializers.role.serialize(element);
     }).wait;
 
-    return Emoji(
+    return Emoji(json['server_id'],
       id: json['id'],
       name: json['name'],
       roles: roles.fold({}, (value, element) => {...value, element.id: element}),
@@ -55,6 +56,7 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       'managed': emoji.managed,
       'animated': emoji.animated,
       'available': emoji.available,
+      'server_id': emoji.serverId.value,
     };
   }
 }
