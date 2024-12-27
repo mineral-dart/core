@@ -30,7 +30,7 @@ final class RoleManager {
   Future<Role> create(
           {required String name,
           required List<Permission> permissions,
-          required int color,
+          required Color color,
           bool hoist = false,
           bool mentionable = false,
           String? reason}) =>
