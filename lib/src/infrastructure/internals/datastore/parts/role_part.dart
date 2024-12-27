@@ -1,10 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
@@ -58,36 +57,50 @@ final class RolePart implements RolePartContract {
     }
 
     final response = await _dataStore.client.get('/guilds/$serverId/roles/$id');
-    final channel = switch (response.statusCode) {
+    final role = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.channels.normalize(response.body),
+        await _marshaller.serializers.role.normalize(response.body),
       int() when status.isRateLimit(response.statusCode) =>
         throw HttpException(response.bodyString),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    completer.complete(await _marshaller.serializers.role.serialize(channel));
+    completer.complete(await _marshaller.serializers.role.serialize(role));
 
     return completer.future;
   }
 
   @override
-  Future<Role> getRole({required Snowflake serverId, required Snowflake roleId}) async {
-    final cacheKey = _marshaller.cacheKey.serverRole(serverId.value, roleId.value);
-    final rawRole = await _marshaller.cache.get(cacheKey);
+  Future<Role> create(String serverId, String name, List<Permission> permissions, int color,
+      bool hoist, bool mentionable, String? reason) async {
+    final completer = Completer<Role>();
 
-    if (rawRole != null) {
-      return _marshaller.serializers.role.serialize(rawRole);
-    }
+    final response = await _dataStore.client.post('/guilds/$serverId/roles',
+        body: {
+          'name': name,
+          // 'permissions': permissions.map((e) => e.value).toList(),
+          'permissions': 0,
+          'color': color,
+          'hoist': hoist,
+          'mentionable': mentionable,
+        },
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    final response = await _dataStore.client.get('/guilds/$serverId/roles/$roleId');
-    if (status.isError(response.statusCode)) {
-      throw HttpException(response.body);
-    }
+    final role = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.role.normalize({
+          ...response.body,
+          'guild_id': serverId,
+        }),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
 
-    final payload = await _marshaller.serializers.role.normalize(response.body);
-    return _marshaller.serializers.role.serialize(payload);
+    completer.complete(await _marshaller.serializers.role.serialize(role));
+    return completer.future;
   }
 
   @override

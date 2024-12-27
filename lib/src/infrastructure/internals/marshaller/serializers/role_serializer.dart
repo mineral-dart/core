@@ -25,36 +25,31 @@ final class RoleSerializer implements SerializerContract<Role> {
       'server_id': json['guild_id'],
     };
 
-    final cacheKey =
-        _marshaller.cacheKey.serverRole(json['guild_id'], json['id']);
+    final cacheKey = _marshaller.cacheKey.serverRole(json['guild_id'], json['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
   }
 
   @override
-  Future<Role> serialize(Map<String, dynamic> json) async => _serialize(json);
-
-  Role _serialize(Map<String, dynamic> payload) {
-    return Role(
-      id: Snowflake(payload['id']),
-      name: payload['name'],
-      color: Color.of(payload['color'] ?? 0),
-      hoist: payload['hoist'] ?? false,
-      position: payload['position'] ?? 0,
-      permissions: switch (payload['permissions']) {
-        int() => Permissions.fromInt(payload['permissions']),
-        String() => Permissions.fromInt(int.parse(payload['permissions'])),
-        _ => Permissions.fromInt(0),
-      },
-      managed: payload['managed'],
-      mentionable: payload['mentionable'],
-      flags: payload['flags'],
-      icon: payload['icon'],
-      unicodeEmoji: payload['unicode_emoji'],
-      serverId: Snowflake(payload['server_id']),
-    );
-  }
+  Future<Role> serialize(Map<String, dynamic> json) async => Role(
+    id: Snowflake(json['id']),
+    name: json['name'],
+    color: Color.of(json['color'] ?? 0),
+    hoist: json['hoist'] ?? false,
+    position: json['position'] ?? 0,
+    permissions: switch (json['permissions']) {
+      int() => Permissions.fromInt(json['permissions']),
+      String() => Permissions.fromInt(int.parse(json['permissions'])),
+      _ => Permissions.fromInt(0),
+    },
+    managed: json['managed'],
+    mentionable: json['mentionable'],
+    flags: json['flags'],
+    icon: json['icon'],
+    unicodeEmoji: json['unicode_emoji'],
+    serverId: Snowflake(json['server_id']),
+  );
 
   @override
   Map<String, dynamic> deserialize(Role object) {
