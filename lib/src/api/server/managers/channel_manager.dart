@@ -32,7 +32,15 @@ final class ChannelManager<C extends Channel> {
   /// ```dart
   /// final channel = await server.channels.get('1091121140090535956');
   /// ```
-  Future<T?> get<T extends C>(String id, {bool force = false}) => _datastore.channel.get<T>(id, force);
+  Future<T?> get<T extends C>(String id, {bool force = false}) =>
+      _datastore.channel.get<T>(id, force);
+
+  /// Create a channel.
+  /// ```dart
+  /// final channel = await server.channels.create<TextChannel>(builder, reason: 'Testing');
+  /// ```
+  Future<T> create<T extends C>(ChannelBuilderContract builder, {String? reason}) =>
+      _datastore.channel.create<T>(_serverId.value, builder, reason: reason);
 
   /// Resolve the server's afk channel.
   /// ```dart

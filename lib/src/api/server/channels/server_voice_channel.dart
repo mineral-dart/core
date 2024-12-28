@@ -12,7 +12,7 @@ import 'package:mineral/src/api/server/server_message.dart';
 
 final class ServerVoiceChannel extends ServerChannel {
   final ChannelProperties _properties;
-  final ChannelMethods _methods;
+  late final ChannelMethods _methods;
 
   final MessageManager<ServerMessage> messages = MessageManager();
 
@@ -41,8 +41,9 @@ final class ServerVoiceChannel extends ServerChannel {
 
   late final ServerCategoryChannel? category;
 
-  ServerVoiceChannel(this._properties)
-      : _methods = ChannelMethods(_properties.id);
+  ServerVoiceChannel(this._properties) {
+    _methods = ChannelMethods(_properties.serverId!, _properties.id);
+  }
 
   /// Sets the name of the channel.
   ///
@@ -81,8 +82,8 @@ final class ServerVoiceChannel extends ServerChannel {
   /// ```dart
   /// await channel.setRateLimitPerUser(10);
   /// ```
-  Future<void> setRateLimitPerUser(int rateLimitPerUser, {String? reason}) =>
-      _methods.setRateLimitPerUser(rateLimitPerUser, reason);
+  Future<void> setRateLimitPerUser(Duration value, {String? reason}) =>
+      _methods.setRateLimitPerUser(value, reason);
 
   /// Sets the bitrate of the voice channel.
   ///

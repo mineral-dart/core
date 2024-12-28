@@ -3,6 +3,7 @@ library api;
 export 'package:mineral/src/api/common/activity.dart';
 export 'package:mineral/src/api/common/activity_emoji.dart';
 export 'package:mineral/src/api/common/bot.dart';
+export 'package:mineral/src/api/common/builder/channel_builder.dart';
 export 'package:mineral/src/api/common/channel.dart';
 export 'package:mineral/src/api/common/channel_methods.dart';
 export 'package:mineral/src/api/common/channel_permission_overwrite.dart';

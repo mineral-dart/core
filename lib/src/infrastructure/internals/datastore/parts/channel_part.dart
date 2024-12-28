@@ -1,17 +1,9 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/api/common/channel.dart';
-import 'package:mineral/src/api/common/components/message_component.dart';
-import 'package:mineral/src/api/common/embed/message_embed.dart';
-import 'package:mineral/src/api/common/message.dart';
-import 'package:mineral/src/api/common/polls/poll.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/private/channels/private_channel.dart';
-import 'package:mineral/src/api/server/channels/server_channel.dart';
-import 'package:mineral/src/api/server/channels/thread_channel.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
@@ -79,33 +71,28 @@ final class ChannelPart implements ChannelPartContract {
   }
 
   @override
-  Future<ThreadChannel?> getThread(Snowflake id) async {
-    final String key = _marshaller.cacheKey.thread(id.value);
+  Future<T> create<T extends Channel>(String? serverId, ChannelBuilderContract builder,
+      {String? reason}) async {
+    final completer = Completer<T>();
 
-    final cachedThread = await _marshaller.cache.get(key);
-    if (cachedThread != null) {
-      return _marshaller.serializers.thread.serialize(cachedThread);
-    }
-
-    final response = await _dataStore.client.get('/channels/$id');
-    final rawThread = await _marshaller.serializers.thread.normalize(response.body);
-    final thread = await _marshaller.serializers.thread.serialize(rawThread);
-
-    return thread;
-  }
-
-  @override
-  Future<T?> createServerChannel<T extends Channel>(
-      {required Snowflake id,
-      required Map<String, dynamic> payload,
-      required String? reason}) async {
-    final response = await _dataStore.client.post('/guilds/$id/channels',
-        body: payload,
+    final response = await _dataStore.client.post('/guilds/$serverId/channels',
+        body: builder.build(),
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    final Channel channel = await serializeChannelResponse(response);
+    final channel = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.channels.normalize({
+          ...response.body,
+          'guild_id': serverId,
+        }),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
 
-    return channel as T?;
+    completer.complete(await _marshaller.serializers.channels.serialize(channel) as T);
+    return completer.future;
   }
 
   @override
@@ -120,17 +107,28 @@ final class ChannelPart implements ChannelPartContract {
   }
 
   @override
-  Future<T?> updateChannel<T extends Channel>(
-      {required Snowflake id,
-      required Map<String, dynamic> payload,
-      required String? reason}) async {
+  Future<T?> update<T extends Channel>(Snowflake id, ChannelBuilderContract builder,
+      {String? serverId, String? reason}) async {
+    final completer = Completer<T>();
+
     final response = await _dataStore.client.patch('/channels/$id',
-        body: payload,
+        body: builder.build(),
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    final Channel channel = await serializeChannelResponse(response);
+    final channel = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.channels.normalize({
+          ...response.body,
+          'guild_id': serverId,
+        }),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
 
-    return channel as T?;
+    completer.complete(await _marshaller.serializers.channels.serialize(channel) as T);
+    return completer.future;
   }
 
   @override
