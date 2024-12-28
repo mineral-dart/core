@@ -180,6 +180,22 @@ final class ChannelBuilder
   /// ```
   static VoiceChannelBuilder voice() => ChannelBuilder(ChannelType.guildVoice);
 
+  /// Build forum channel.
+  /// ```dart
+  /// final builder = ChannelBuilder.forum()
+  ///   ..setName('forum')
+  ///   ..setTopic('Forum channel')
+  ///   ..setDefaultAutoArchiveDuration(Duration(minutes: 60));
+  ///  ```
+  static ForumChannelBuilder forum() => ChannelBuilder(ChannelType.guildForum);
+
+  /// Build category channel.
+  /// ```dart
+  /// final builder = ChannelBuilder.category()
+  ///   ..setName('category');
+  ///  ```
+  static CategoryChannelBuilder category() => ChannelBuilder(ChannelType.guildCategory);
+
   @override
   Map<String, dynamic> build() {
     return {
