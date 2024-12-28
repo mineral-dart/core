@@ -1,10 +1,7 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/channel.dart';
-import 'package:mineral/src/api/common/channel_permission_overwrite.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/api/server/server.dart';
 
 abstract class ServerChannel implements Channel {
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
@@ -20,6 +17,17 @@ abstract class ServerChannel implements Channel {
   ThreadsManager get threads;
 
   Future<Server> resolveServer({bool force = true}) => _dataStore.server.get(serverId.value, force);
+
+  /// Updates the channel.
+  /// ```dart
+  /// final builder = ChannelBuilder.text()
+  ///  ..setName('new-name')
+  ///  ..setPosition(1);
+  ///
+  /// await channel.update(builder);
+  /// ```
+  Future<void> update(ChannelBuilderContract builder, {String? reason}) =>
+      _dataStore.channel.update(id, builder, serverId: serverId.value, reason: reason);
 
   @override
   T cast<T extends Channel>() => this as T;

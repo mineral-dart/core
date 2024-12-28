@@ -1,6 +1,5 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/api/server/channels/thread_channel.dart';
 
 abstract interface class DataStorePart {}
 
@@ -9,16 +8,14 @@ abstract interface class ChannelPartContract implements DataStorePart {
 
   Future<T?> get<T extends Channel>(String id, bool force);
 
-  Future<ThreadChannel?> getThread(Snowflake id);
-
-  Future<T?> createServerChannel<T extends Channel>(
-      {required Snowflake id, required Map<String, dynamic> payload, required String? reason});
+  Future<T> create<T extends Channel>(String? serverId, ChannelBuilderContract builder,
+      {String? reason});
 
   Future<PrivateChannel?> createPrivateChannel(
       {required Snowflake id, required Snowflake recipientId});
 
-  Future<T?> updateChannel<T extends Channel>(
-      {required Snowflake id, required Map<String, dynamic> payload, required String? reason});
+  Future<T?> update<T extends Channel>(Snowflake id, ChannelBuilderContract builder,
+      {String? serverId, String? reason});
 
   Future<void> deleteChannel(Snowflake id, String? reason);
 
@@ -173,13 +170,14 @@ abstract interface class EmojiPartContract implements DataStorePart {
 
   Future<Emoji?> get(String serverId, String id, bool force);
 
-  Future<Emoji> create(String serverId, String name, Image image, List<String> roles, {String? reason});
+  Future<Emoji> create(String serverId, String name, Image image, List<String> roles,
+      {String? reason});
 
   Future<Emoji?> update(
       {required String id,
-        required String serverId,
-        required Map<String, dynamic> payload,
-        required String? reason});
+      required String serverId,
+      required Map<String, dynamic> payload,
+      required String? reason});
 
   Future<void> delete(String serverId, String emojiId, {String? reason});
 }

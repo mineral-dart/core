@@ -11,7 +11,7 @@ import 'package:mineral/src/api/server/server_message.dart';
 
 final class ServerAnnouncementChannel extends ServerChannel {
   final ChannelProperties _properties;
-  final ChannelMethods _methods;
+  late final ChannelMethods _methods;
 
   final MessageManager<ServerMessage> messages = MessageManager();
 
@@ -44,8 +44,9 @@ final class ServerAnnouncementChannel extends ServerChannel {
 
   late final ServerCategoryChannel? category;
 
-  ServerAnnouncementChannel(this._properties)
-      : _methods = ChannelMethods(_properties.id);
+  ServerAnnouncementChannel(this._properties) {
+    _methods = ChannelMethods(_properties.serverId!, _properties.id);
+  }
 
   /// Sets the name of the channel.
   ///

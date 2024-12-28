@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/components/message_component.dart';
@@ -7,108 +8,130 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/video_quality.dart';
 
 final class ChannelMethods {
-  ChannelPartContract get dataStoreChannel =>
-      ioc.resolve<DataStoreContract>().channel;
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
+  final Snowflake? _serverId;
 
   final Snowflake id;
 
-  ChannelMethods(this.id);
+  ChannelMethods(this._serverId, this.id);
 
   Future<void> setName(String name, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+    final builder = ChannelBuilder(null)..setName(name);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'name': name},
     );
   }
 
-  Future<void> setDescription(String description, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setDescription(String value, String? reason) async {
+    final builder = ChannelBuilder(null)..setTopic(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'topic': description},
     );
   }
 
-  Future<void> setCategory(String categoryId, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setCategory(String value, String? reason) async {
+    final builder = ChannelBuilder(null)..setParentId(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'parent_id': categoryId},
     );
   }
 
-  Future<void> setPosition(int position, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setPosition(int value, String? reason) async {
+    final builder = ChannelBuilder(null)..setPosition(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'position': position},
     );
   }
 
-  Future<void> setNsfw(bool nsfw, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setNsfw(bool value, String? reason) async {
+    final builder = ChannelBuilder(null)..setNsfw(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'nsfw': nsfw},
     );
   }
 
-  Future<void> setRateLimitPerUser(int rateLimitPerUser, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setRateLimitPerUser(Duration value, String? reason) async {
+    final builder = ChannelBuilder(null)..setRateLimitPerUser(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'rate_limit_per_user': rateLimitPerUser},
     );
   }
 
-  Future<void> setDefaultAutoArchiveDuration(
-      int defaultAutoArchiveDuration, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setDefaultAutoArchiveDuration(Duration value, String? reason) async {
+    final builder = ChannelBuilder(null)..setDefaultAutoArchiveDuration(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'default_auto_archive_duration': defaultAutoArchiveDuration},
     );
   }
 
-  Future<void> setDefaultThreadRateLimitPerUser(
-      int value, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setDefaultThreadRateLimitPerUser(Duration value, String? reason) async {
+    final builder = ChannelBuilder(null)..setDefaultThreadRateLimitPerUser(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'default_thread_rate_limit_per_user': value},
     );
   }
 
-  Future<void> setBitrate(int bitrate, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setBitrate(int value, String? reason) async {
+    final builder = ChannelBuilder(null)..setBitrate(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'bitrate': bitrate},
     );
   }
 
-  Future<void> setUserLimit(int userLimit, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setUserLimit(int value, String? reason) async {
+    final builder = ChannelBuilder(null)..setUserLimit(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'user_limit': userLimit},
     );
   }
 
-  Future<void> setRtcRegion(String rtcRegion, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setRtcRegion(String value, String? reason) async {
+    final builder = ChannelBuilder(null)..setRtcRegion(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'rtc_region': rtcRegion},
     );
   }
 
-  Future<void> setVideoQuality(VideoQuality quality, String? reason) async {
-    await dataStoreChannel.updateChannel(
-      id: id,
+  Future<void> setVideoQuality(VideoQuality value, String? reason) async {
+    final builder = ChannelBuilder(null)..setVideoQualityMode(value);
+    await _datastore.channel.update(
+      id,
+      builder,
+      serverId: _serverId?.value,
       reason: reason,
-      payload: {'video_quality_mode': quality},
     );
   }
 
@@ -118,11 +141,10 @@ final class ChannelMethods {
       List<MessageEmbed>? embeds,
       Poll? poll,
       List<MessageComponent>? components}) async {
-    await dataStoreChannel.createMessage(
-        guildId, id, content, embeds, poll, components);
+    await _datastore.channel.createMessage(guildId, id, content, embeds, poll, components);
   }
 
   Future<void> delete(String? reason) async {
-    await dataStoreChannel.deleteChannel(id, reason);
+    await _datastore.channel.deleteChannel(id, reason);
   }
 }
