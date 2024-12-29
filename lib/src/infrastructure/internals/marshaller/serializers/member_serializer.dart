@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/api/common/premium_tier.dart';
 import 'package:mineral/src/api/server/enums/member_flag.dart';
@@ -46,11 +47,10 @@ final class MemberSerializer implements SerializerContract<Member> {
       'permissions': json['permissions'],
       'accent_color': json['accent_color'],
       // TODO : presence
-      'server_id': json['server_id'],
+      'server_id': json['guild_id'],
     };
 
-    final cacheKey =
-        _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
+    final cacheKey = _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
@@ -69,6 +69,7 @@ final class MemberSerializer implements SerializerContract<Member> {
 
     final member = Member(
       id: json['id'],
+      serverId: Snowflake(json['server_id']),
       username: json['nick'] ?? json['username'],
       nickname: json['nick'] ?? json['display_name'],
       globalName: json['global_name'],
@@ -117,14 +118,14 @@ final class MemberSerializer implements SerializerContract<Member> {
         await _marshaller.serializers.memberAssets.deserialize(member.assets);
     final rawRoles = await member.roles.list.entries.map((role) async {
       final cacheKey =
-          _marshaller.cacheKey.serverRole(member.server.id.value, role.key.value);
+          _marshaller.cacheKey.serverRole(member.serverId.value, role.key.value);
       return {
         cacheKey: await _marshaller.serializers.role.deserialize(role.value)
       };
     }).wait;
 
     await _marshaller.cache.putMany({
-      _marshaller.cacheKey.memberAssets(member.server.id.value, member.id.value): rawAsset,
+      _marshaller.cacheKey.memberAssets(member.serverId.value, member.id.value): rawAsset,
       ...rawRoles.fold({}, (prev, element) => {...prev, ...element}),
     });
 
@@ -134,10 +135,10 @@ final class MemberSerializer implements SerializerContract<Member> {
       'nickname': member.nickname,
       'global_name': member.globalName,
       'discriminator': member.discriminator,
-      'assets': _marshaller.cacheKey.memberAssets(member.server.id.value, member.id.value),
+      'assets': _marshaller.cacheKey.memberAssets(member.serverId.value, member.id.value),
       'flags': listToBitfield(member.flags.list),
       'roles': member.roles.list.keys
-          .map((id) => _marshaller.cacheKey.serverRole(member.server.id.value, id.value))
+          .map((id) => _marshaller.cacheKey.serverRole(member.serverId.value, id.value))
           .toList(),
       'premium_since': member.premiumSince?.toIso8601String(),
       'public_flags': member.publicFlags,
@@ -151,7 +152,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       'permissions': listToBitfield(member.permissions.list),
       'accent_color': member.accentColor,
       // TODO : presence
-      'server_id': member.server.id,
+      'server_id': member.serverId,
     };
   }
 }

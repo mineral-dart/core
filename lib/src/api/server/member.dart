@@ -4,6 +4,7 @@ import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/api/common/premium_tier.dart';
 import 'package:mineral/src/api/common/presence.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
+import 'package:mineral/src/api/common/user_client.dart';
 import 'package:mineral/src/api/server/builders/member_builder.dart';
 import 'package:mineral/src/api/server/enums/member_flag.dart';
 import 'package:mineral/src/api/server/managers/member_role_manager.dart';
@@ -13,9 +14,8 @@ import 'package:mineral/src/api/server/member_timeout.dart';
 import 'package:mineral/src/api/server/member_voice.dart';
 import 'package:mineral/src/api/server/server.dart';
 
-final class Member {
-  MemberPartContract get _memberMethods =>
-      ioc.resolve<DataStoreContract>().member;
+final class Member implements UserClient {
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
   late final MemberVoice voice;
 
@@ -27,7 +27,6 @@ final class Member {
   final MemberAssets assets;
   final DateTime? premiumSince;
   final int? publicFlags;
-  late final Server server;
   final MemberRoleManager roles;
   final bool isBot;
   final bool isPending;
@@ -39,7 +38,14 @@ final class Member {
   final Permissions permissions;
   final int? accentColor;
   final MemberFlagsManager flags;
+  final Snowflake serverId;
   Presence? presence;
+
+  /// Get related [Server]
+  /// ```dart
+  /// final server = await member.resolveServer();
+  /// ```
+  Future<Server> resolveServer() => _datastore.server.get(serverId.value, true);
 
   /// Check if the member can bypass verification.
   ///
@@ -48,8 +54,7 @@ final class Member {
   ///  print('Member can bypass verification');
   /// }
   ///```
-  bool canByPassVerification() =>
-      flags.list.contains(MemberFlag.bypassedVerification);
+  bool canByPassVerification() => flags.list.contains(MemberFlag.bypassedVerification);
 
   /// Check if the member has completed onboarding.
   ///
@@ -58,8 +63,7 @@ final class Member {
   ///   print('Member has completed onboarding');
   /// }
   ///```
-  bool hasCompletedOnboarding() =>
-      flags.list.contains(MemberFlag.completedOnboarding);
+  bool hasCompletedOnboarding() => flags.list.contains(MemberFlag.completedOnboarding);
 
   /// Check if the member has started onboarding.
   ///
@@ -68,8 +72,7 @@ final class Member {
   ///    print('Member has started onboarding');
   /// }
   ///```
-  bool hasStartedOnboarding() =>
-      flags.list.contains(MemberFlag.startedOnboarding);
+  bool hasStartedOnboarding() => flags.list.contains(MemberFlag.startedOnboarding);
 
   /// Check if the member has already rejoined the server.
   ///
@@ -85,40 +88,32 @@ final class Member {
   /// ```dart
   /// await member.setUsername('new-username', 'Testing');
   /// ```
-  Future<void> setUsername(String value, String? reason) =>
-      _memberMethods.updateMember(
-          serverId: server.id,
-          memberId: id,
-          payload: {'username': value},
-          reason: reason);
+  Future<void> setUsername(String value, String? reason) => _datastore.member
+      .updateMember(serverId: serverId, memberId: id, payload: {'username': value}, reason: reason);
 
   /// Change the member's nickname.
   ///
   /// ```dart
   /// await member.setNickname('new-nickname', 'Testing');
   /// ```
-  Future<void> setNickname(String value, String? reason) =>
-      _memberMethods.updateMember(
-          serverId: server.id,
-          memberId: id,
-          payload: {'nick': value},
-          reason: reason);
+  Future<void> setNickname(String value, String? reason) => _datastore.member
+      .updateMember(serverId: serverId, memberId: id, payload: {'nick': value}, reason: reason);
 
   /// Ban the member.
   ///
   /// ```dart
   /// await member.ban(deleteSince: Duration(days: 7), reason: 'Testing');
   /// ```
-  Future<void> ban({Duration? deleteSince, String? reason}) => _memberMethods
-      .banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
+  Future<void> ban({Duration? deleteSince, String? reason}) =>
+      _datastore.member.banMember(serverId: serverId, memberId: id, deleteSince: deleteSince);
 
   /// Kick the member.
   ///
   /// ```dart
   /// await member.kick(reason: 'Testing');
   /// ```
-  Future<void> kick({String? reason}) => _memberMethods.kickMember(
-      serverId: server.id, memberId: id, reason: reason);
+  Future<void> kick({String? reason}) =>
+      _datastore.member.kickMember(serverId: serverId, memberId: id, reason: reason);
 
   /// Exclude the member.
   ///
@@ -126,11 +121,10 @@ final class Member {
   /// await member.exclude(duration: Duration(days: 7), reason: 'Testing');
   /// ```
   Future<void> exclude({Duration? duration, String? reason}) {
-    final timeout =
-        duration != null ? DateTime.now().add(duration) : DateTime.now();
+    final timeout = duration != null ? DateTime.now().add(duration) : DateTime.now();
 
-    return _memberMethods.updateMember(
-        serverId: server.id,
+    return _datastore.member.updateMember(
+        serverId: serverId,
         memberId: id,
         reason: reason,
         payload: {'communication_disabled_until': timeout.toIso8601String()});
@@ -141,8 +135,8 @@ final class Member {
   /// ```dart
   /// await member.unExclude(reason: 'Testing');
   /// ```
-  Future<void> unExclude({String? reason}) => _memberMethods.updateMember(
-      serverId: server.id,
+  Future<void> unExclude({String? reason}) => _datastore.member.updateMember(
+      serverId: serverId,
       memberId: id,
       reason: reason,
       payload: {'communication_disabled_until': null});
@@ -152,22 +146,16 @@ final class Member {
   /// ```dart
   /// await member.enableMfa(reason: 'Testing');
   /// ```
-  Future<void> enableMfa({String? reason}) => _memberMethods.updateMember(
-      serverId: server.id,
-      memberId: id,
-      payload: {'mfa_enable': true},
-      reason: reason);
+  Future<void> enableMfa({String? reason}) => _datastore.member.updateMember(
+      serverId: serverId, memberId: id, payload: {'mfa_enable': true}, reason: reason);
 
   /// Disable the member's MFA.
   ///
   /// ```dart
   /// await member.disableMfa(reason: 'Testing');
   /// ```
-  Future<void> disableMfa({String? reason}) => _memberMethods.updateMember(
-      serverId: server.id,
-      memberId: id,
-      payload: {'mfa_enable': false},
-      reason: reason);
+  Future<void> disableMfa({String? reason}) => _datastore.member.updateMember(
+      serverId: serverId, memberId: id, payload: {'mfa_enable': false}, reason: reason);
 
   /// Toggle the member's MFA.
   ///
@@ -187,16 +175,12 @@ final class Member {
   /// }), reason: 'Testing');
   /// ```
   Future<void> edit(MemberBuilder builder, {String? reason}) =>
-      _memberMethods.updateMember(
-          serverId: server.id,
-          memberId: id,
-          reason: reason,
-          payload: {
-            'nick': nickname,
-            'mute': builder.isMuted,
-            'deaf': builder.isDeafened,
-            'exclude': builder.isExcluded,
-          });
+      _datastore.member.updateMember(serverId: serverId, memberId: id, reason: reason, payload: {
+        'nick': nickname,
+        'mute': builder.isMuted,
+        'deaf': builder.isDeafened,
+        'exclude': builder.isExcluded,
+      });
 
   Member({
     required this.id,
@@ -219,6 +203,7 @@ final class Member {
     required this.permissions,
     required this.accentColor,
     required this.presence,
+    required this.serverId,
   }) {
     voice = MemberVoice(this);
   }

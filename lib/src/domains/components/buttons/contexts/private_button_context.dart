@@ -1,11 +1,11 @@
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/private/private_message.dart';
-import 'package:mineral/src/api/private/user.dart';
-import 'package:mineral/src/domains/components/buttons/button_context.dart';
-import 'package:mineral/src/domains/contracts/interactions/interaction_contract.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/interaction.dart';
 
 final class PrivateButtonContext implements ButtonContext {
+  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+
   @override
   final Snowflake id;
 
@@ -21,9 +21,11 @@ final class PrivateButtonContext implements ButtonContext {
   @override
   final String customId;
 
-  final User user;
+  final Snowflake channelId;
 
-  final PrivateMessage message;
+  final Snowflake messageId;
+
+  final Snowflake? authorId;
 
   late final InteractionContract interaction;
 
@@ -33,9 +35,30 @@ final class PrivateButtonContext implements ButtonContext {
     required this.token,
     required this.version,
     required this.customId,
-    required this.message,
-    required this.user,
+    required this.authorId,
+    required this.channelId,
+    required this.messageId,
   }) {
     interaction = Interaction(token, id);
+  }
+
+  Future<User> resolveAuthor({bool force = false}) async {
+    final author = await _dataStore.user.get(authorId!.value, force);
+    return author!;
+  }
+
+  Future<ServerChannel> resolveChannel({bool force = false}) async {
+    final channel = await _dataStore.channel.get<ServerChannel>(channelId.value, force);
+    return channel!;
+  }
+
+  /// Resolves the message that the button was clicked on
+  /// ```dart
+  /// final message = await ctx.resolveMessage();
+  /// ```
+  Future<ServerMessage> resolveMessage({bool force = false}) async {
+    final message = await _dataStore.message
+        .get<ServerMessage>(channelId.value, messageId.value, force);
+    return message!;
   }
 }

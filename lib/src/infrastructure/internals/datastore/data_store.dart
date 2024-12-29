@@ -6,7 +6,6 @@ import 'package:mineral/src/infrastructure/internals/datastore/parts/interaction
 import 'package:mineral/src/infrastructure/internals/datastore/parts/member_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/message_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/role_part.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/parts/server_message_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/server_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/sticker_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/user_part.dart';
@@ -43,9 +42,6 @@ final class DataStore implements DataStoreContract {
   late final StickerPart sticker;
 
   @override
-  late final ServerMessagePart serverMessage;
-
-  @override
   late final EmojiPart emoji;
 
   DataStore(this.client)
@@ -57,6 +53,5 @@ final class DataStore implements DataStoreContract {
         message = MessagePart(),
         interaction = InteractionPart(),
         sticker = StickerPart(),
-        serverMessage = ServerMessagePart(),
         emoji = EmojiPart();
 }

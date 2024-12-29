@@ -3,10 +3,7 @@ import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/message_type.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 import 'package:mineral/src/api/private/channels/private_channel.dart';
-import 'package:mineral/src/api/server/channels/server_announcement_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
-import 'package:mineral/src/api/server/channels/server_text_channel.dart';
-import 'package:mineral/src/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -42,7 +39,7 @@ final class MessageCreatePacket implements ListenablePacket {
     return switch (channel) {
       ServerChannel() => sendServerMessage(dispatch, channel, message.payload),
       Channel() => sendPrivateMessage(dispatch, channel, message.payload),
-     _ => throw Exception('Unknown channel}'),
+      _ => throw Exception('Unknown channel}'),
     };
   }
 
@@ -55,33 +52,18 @@ final class MessageCreatePacket implements ListenablePacket {
       DispatchEvent dispatch, ServerChannel channel, Map<String, dynamic> json) async {
     final server = await _dataStore.server.get(channel.serverId.value, false);
 
-    final payload = await _marshaller.serializers.serverMessage
-        .normalize({...json, 'server_id': server.id.value});
-    final message = await _marshaller.serializers.serverMessage.serialize(payload);
-
-    message.channel = channel;
-
-    switch (channel) {
-      case ServerTextChannel():
-        channel.messages.list.putIfAbsent(message.id, () => message);
-      case ServerVoiceChannel():
-        channel.messages.list.putIfAbsent(message.id, () => message);
-      case ServerAnnouncementChannel():
-        channel.messages.list.putIfAbsent(message.id, () => message);
-    }
+    final payload = await _marshaller.serializers.message.normalize(json);
+    final message = await _marshaller.serializers.message.serialize(payload);
 
     dispatch(event: Event.serverMessageCreate, params: [message]);
   }
 
   Future<void> sendPrivateMessage(
       DispatchEvent dispatch, Channel channel, Map<String, dynamic> json) async {
-    final payload = await _marshaller.serializers.privateMessage.normalize(json);
-    final message = await _marshaller.serializers.privateMessage.serialize(payload);
+    final payload = await _marshaller.serializers.message.normalize(json);
+    final message = await _marshaller.serializers.message.serialize(payload);
 
     if (channel is PrivateChannel) {
-      message.channel = channel;
-      channel.messages.list.putIfAbsent(message.id, () => message);
-
       dispatch(event: Event.privateMessageCreate, params: [message]);
     }
   }

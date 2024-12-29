@@ -17,58 +17,58 @@ final class MemberPart implements MemberPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Member> get(String serverId, String memberId, bool force) async {
-    final completer = Completer<Member>();
-    final String key = _marshaller.cacheKey.member(serverId, memberId);
+  Future<Map<Snowflake, Member>> fetch(String serverId, bool force) async {
+    final completer = Completer<Map<Snowflake, Member>>();
+    final response = await _dataStore.client.get('/guilds/$serverId/members');
 
-    final cachedChannel = await _marshaller.cache.get(key);
-    if (!force && cachedChannel != null) {
-      final member = await _marshaller.serializers.member.serialize(cachedChannel);
+    final rawMembers = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) => await Future.wait(
+          List.from(response.body).map((element) async =>
+              await _marshaller.serializers.member.normalize({...element, 'guild_id': serverId})),
+        ),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
+    };
+
+    final members = await Future.wait(rawMembers.map((element) async {
+      final member = await _marshaller.serializers.member.serialize(element);
+      final cacheKey = _marshaller.cacheKey.member(serverId, member.id.value);
+
+      await _marshaller.cache.put(cacheKey, element);
+      return member;
+    }));
+
+    completer.complete(members.asMap().map((_, value) => MapEntry(value.id, value)));
+    return completer.future;
+  }
+
+  @override
+  Future<Member?> get(String serverId, String id, bool force) async {
+    final completer = Completer<Member>();
+    final String key = _marshaller.cacheKey.member(serverId, id);
+
+    final cachedMember = await _marshaller.cache.get(key);
+    if (!force && cachedMember != null) {
+      final member = await _marshaller.serializers.member.serialize(cachedMember);
       completer.complete(member);
 
       return completer.future;
     }
 
-    final response = await _dataStore.client.get('/guilds/$serverId/members/$memberId');
-    final member = switch (response.statusCode) {
+    final response = await _dataStore.client.get('/guilds/$serverId/members/$id');
+    final role = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.member.normalize({
-          ...response.body,
-          'server_id': response.body['guild_id'],
-        }),
+        await _marshaller.serializers.member.normalize(response.body),
       int() when status.isRateLimit(response.statusCode) =>
         throw HttpException(response.bodyString),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    completer.complete(await _marshaller.serializers.member.serialize(member));
-
+    completer.complete(await _marshaller.serializers.member.serialize(role));
     return completer.future;
-  }
-
-  @override
-  Future<List<Member>> getMembers(Snowflake guildId, {bool force = false}) async {
-    final serverCacheKey = _marshaller.cacheKey.server(guildId.value);
-    final rawServer = await _marshaller.cache.getOrFail(serverCacheKey);
-
-    final rawMemberIds = List<String>.from(rawServer['members']);
-    final rawCachedMembers = await _marshaller.cache.getMany(rawMemberIds);
-    if (rawMemberIds.length == rawCachedMembers.length) {
-      return Future.wait(rawCachedMembers.nonNulls
-          .map((element) async => _marshaller.serializers.member.serialize(element))
-          .toList());
-    }
-
-    final response = await _dataStore.client.get('/guilds/$guildId/members');
-    if (status.isError(response.statusCode)) {
-      throw HttpException(response.body);
-    }
-
-    return List.from(response.body).map((id) async {
-      final payload = await _marshaller.serializers.member.normalize(id);
-      return _marshaller.serializers.member.serialize(payload);
-    }).wait;
   }
 
   @override

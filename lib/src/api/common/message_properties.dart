@@ -9,6 +9,8 @@ final class MessageProperties<T extends Channel> {
   final Snowflake id;
   final String content;
   final Snowflake channelId;
+  final Snowflake? authorId;
+  final Snowflake? serverId;
   final List<MessageEmbed> embeds;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -17,12 +19,14 @@ final class MessageProperties<T extends Channel> {
     required this.id,
     required this.content,
     required this.channelId,
+    required this.authorId,
+    required this.serverId,
     required this.embeds,
     required this.createdAt,
     required this.updatedAt,
   });
 
-  factory MessageProperties.fromJson(T channel, Map<String, dynamic> json) {
+  factory MessageProperties.fromJson(Map<String, dynamic> json) {
     final embedSerializer = ioc.resolve<MarshallerContract>().serializers.embed;
     final embeds = List.from(json['embeds'])
         .map((element) => embedSerializer.serialize(element) as MessageEmbed)
@@ -32,6 +36,8 @@ final class MessageProperties<T extends Channel> {
       id: Snowflake(json['id']),
       content: json['content'],
       channelId: json['channel_id'],
+      authorId: json['author_id'],
+      serverId: json['server_id'],
       embeds: embeds,
       createdAt: DateTime.parse(json['timestamp']),
       updatedAt: Helper.createOrNull(

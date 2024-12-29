@@ -2,9 +2,9 @@ import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';
 import 'package:mineral/src/api/common/emoji.dart';
+import 'package:mineral/src/api/common/message.dart';
 import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/sticker.dart';
-import 'package:mineral/src/api/private/private_message.dart';
 import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/api/private/user_assets.dart';
 import 'package:mineral/src/api/server/channels/thread_channel.dart';
@@ -13,7 +13,6 @@ import 'package:mineral/src/api/server/member_assets.dart';
 import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/api/server/server_assets.dart';
-import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/api/server/server_settings.dart';
 import 'package:mineral/src/api/server/server_subscription.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
@@ -23,11 +22,10 @@ import 'package:mineral/src/infrastructure/internals/marshaller/serializers/embe
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/emoji_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/member_assets_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/member_serializer.dart';
+import 'package:mineral/src/infrastructure/internals/marshaller/serializers/message_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/poll_serializer.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/serializers/private_message_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/role_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/server_assets_serializer.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/serializers/server_message_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/server_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/server_settings_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/server_subscription_serializer.dart';
@@ -65,9 +63,7 @@ final class SerializerBucket {
   final SerializerContract<ChannelPermissionOverwrite>
       channelPermissionOverwrite;
 
-  final SerializerContract<ServerMessage> serverMessage;
-
-  final SerializerContract<PrivateMessage> privateMessage;
+  final SerializerContract<Message> message;
 
   final SerializerContract<MessageEmbed> embed;
 
@@ -89,8 +85,7 @@ final class SerializerBucket {
         emojis = EmojiSerializer(),
         sticker = StickerSerializer(),
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(),
-        serverMessage = ServerMessageSerializer(),
-        privateMessage = PrivateMessageSerializer(),
+        message = MessageSerializer(),
         embed = EmbedSerializer(),
         thread = ThreadSerializer(),
         poll = PollSerializer();

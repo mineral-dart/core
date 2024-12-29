@@ -15,19 +15,29 @@ final class UserPart implements UserPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<User> getUser(Snowflake userId) async {
-    final cacheKey = _marshaller.cacheKey.user(userId.value);
-    final cachedRawUser = await _marshaller.cache.get(cacheKey);
-    if (cachedRawUser != null) {
-      return _marshaller.serializers.user.serialize(cachedRawUser);
+  Future<User?> get(String id, bool force) async {
+    final completer = Completer<User>();
+    final String key = _marshaller.cacheKey.user(id);
+
+    final cachedUser = await _marshaller.cache.get(key);
+    if (!force && cachedUser != null) {
+      final user = await _marshaller.serializers.user.serialize(cachedUser);
+      completer.complete(user);
+
+      return completer.future;
     }
 
-    final response = await _dataStore.client.get('/users/$userId');
-    if (status.isError(response.statusCode)) {
-      throw HttpException(response.body);
-    }
+    final response = await _dataStore.client.get('/users/$id');
+    final rawUser = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+      await _marshaller.serializers.user.normalize(response.body),
+      int() when status.isRateLimit(response.statusCode) =>
+      throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
 
-    final payload = await _marshaller.serializers.user.normalize(response.body);
-    return _marshaller.serializers.user.serialize(payload);
+    completer.complete(await _marshaller.serializers.user.serialize(rawUser));
+    return completer.future;
   }
 }

@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/private/private_message.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
