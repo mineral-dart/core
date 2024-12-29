@@ -1,14 +1,6 @@
-import 'package:mineral/src/api/common/channel_methods.dart';
-import 'package:mineral/src/api/common/channel_permission_overwrite.dart';
-import 'package:mineral/src/api/common/components/message_component.dart';
-import 'package:mineral/src/api/common/embed/message_embed.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/managers/message_manager.dart';
-import 'package:mineral/src/api/common/polls/poll.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/common/types/channel_type.dart';
-import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/api/server/threads/thread_metadata.dart';
 
 class ThreadChannel extends ServerChannel {

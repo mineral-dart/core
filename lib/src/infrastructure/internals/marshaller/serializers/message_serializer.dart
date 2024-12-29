@@ -1,12 +1,10 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/message_properties.dart';
-import 'package:mineral/src/api/server/channels/server_channel.dart';
-import 'package:mineral/src/api/server/server_message.dart';
+import 'package:mineral/src/api/common/user_client.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class ServerMessageSerializer
-    implements SerializerContract<ServerMessage> {
+final class MessageSerializer<T extends Message> implements SerializerContract<T> {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
@@ -18,37 +16,25 @@ final class ServerMessageSerializer
       'author_id': json['author']['id'],
       'content': json['content'],
       'embeds': json['embeds'],
-      // 'components': json['components'],
       'channel_id': json['channel_id'],
-      'server_id': json['server_id'],
       'timestamp': json['timestamp'],
       'edited_timestamp': json['edited_timestamp'],
     };
 
-    final cacheKey = _marshaller.cacheKey
-        .message(json['channel_id'], json['id']);
+    final cacheKey = _marshaller.cacheKey.message(json['channel_id'], json['id']);
     await _marshaller.cache.put(cacheKey, payload);
 
     return payload;
   }
 
   @override
-  Future<ServerMessage> serialize(Map<String, dynamic> json) async {
-    final channel =
-        await _dataStore.channel.get(json['channel_id'], false);
-
-    final server = await _dataStore.server.get(json['server_id'], false);
-    final member = await _dataStore.member
-        .get(server.id.value, json['author_id'], false);
-
-    final messageProperties =
-        MessageProperties.fromJson(channel as ServerChannel, json);
-
-    return ServerMessage(messageProperties, author: member);
+  Future<T> serialize(Map<String, dynamic> json) async {
+    final messageProperties = MessageProperties.fromJson(json);
+    return Message(messageProperties) as T;
   }
 
   @override
-  Future<Map<String, dynamic>> deserialize(ServerMessage object) async {
+  Future<Map<String, dynamic>> deserialize(T object) async {
     final embeds = object.embeds.map((message) {
       return _marshaller.serializers.embed.deserialize(message);
     });
@@ -57,9 +43,8 @@ final class ServerMessageSerializer
       'id': object.id,
       'content': object.content,
       'embeds': embeds.toList(),
-      'author_id': object.author.id.value,
-      'channel_id': object.channel.id.value,
-      'server_id': object.channel.serverId.value,
+      'author_id': object.authorId?.value,
+      'channel_id': object.channelId.value,
       'timestamp': object.createdAt.toIso8601String(),
       'edited_timestamp': object.updatedAt?.toIso8601String(),
     };

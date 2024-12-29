@@ -1,8 +1,5 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/private/private_message.dart';
-import 'package:mineral/src/api/private/user.dart';
-import 'package:mineral/src/domains/components/selects/button_context.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/interaction.dart';
 
 final class PrivateSelectContext implements SelectContext {
@@ -47,10 +44,11 @@ final class PrivateSelectContext implements SelectContext {
       applicationId: Snowflake(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
-      message: await datastore.message.getPrivateMessage(
-        messageId: Snowflake(payload['message']['id']),
-        channelId: Snowflake(payload['channel_id']),
-      ),
+      message: (await datastore.message.get<PrivateMessage>(
+        payload['channel_id'],
+        payload['message']['id'],
+        false,
+      ))!,
       user: await marshaller.serializers.user.serialize(payload['user']),
     );
   }

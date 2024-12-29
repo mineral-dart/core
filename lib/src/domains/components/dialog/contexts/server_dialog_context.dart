@@ -43,11 +43,11 @@ final class ServerDialogContext implements DialogContext {
       applicationId: Snowflake(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
-      member: await datastore.member.get(
+      member: (await datastore.member.get(
         payload['guild_id'],
         payload['member']['user']['id'],
         false,
-      ),
+      ))!,
     );
   }
 }

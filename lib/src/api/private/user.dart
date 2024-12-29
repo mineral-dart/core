@@ -1,9 +1,10 @@
 import 'package:mineral/src/api/common/premium_tier.dart';
 import 'package:mineral/src/api/common/presence.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
+import 'package:mineral/src/api/common/user_client.dart';
 import 'package:mineral/src/api/private/user_assets.dart';
 
-final class User {
+final class User implements UserClient {
   final Snowflake id;
   final String username;
   final String discriminator;

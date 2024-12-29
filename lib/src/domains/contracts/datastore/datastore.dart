@@ -20,7 +20,5 @@ abstract class DataStoreContract {
 
   StickerPartContract get sticker;
 
-  ServerMessagePartContract get serverMessage;
-
   EmojiPartContract get emoji;
 }

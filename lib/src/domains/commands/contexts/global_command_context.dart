@@ -40,10 +40,8 @@ final class GlobalCommandContext implements CommandContext {
       applicationId: Snowflake(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
-      user: await datastore.user
-          .getUser(Snowflake(payload['member']['user']['id'])),
-      channel:
-          await datastore.channel.get(payload['channel_id'], false),
+      user: (await datastore.user.get(payload['member']['user']['id'], false))!,
+      channel: await datastore.channel.get(payload['channel_id'], false),
     );
   }
 }

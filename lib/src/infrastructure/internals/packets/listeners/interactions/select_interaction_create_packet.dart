@@ -121,7 +121,7 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
       ServerSelectContext() => Future.wait(userIds.map((id) {
           return _dataStore.member.get(payload['guild_id'], id, false);
         })),
-      PrivateSelectContext() => Future.wait(userIds.map((id) => _dataStore.user.getUser(id))),
+      PrivateSelectContext() => Future.wait(userIds.map((id) => _dataStore.user.get(id, false))),
       _ => Future.value([]),
     };
 

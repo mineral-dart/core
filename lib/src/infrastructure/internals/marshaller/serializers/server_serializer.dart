@@ -46,6 +46,7 @@ final class ServerSerializer implements SerializerContract<Server> {
     final channelManager = ChannelManager.fromMap(payload['id'], payload['channel_settings']);
     final threadManager = ThreadsManager(payload['id']);
     final roleManager = RoleManager(payload['id']);
+    final memberManager = MemberManager(payload['id']);
 
     final rawAssets = await _marshaller.cache.getOrFail(payload['assets']);
     final serverAssets =
@@ -60,7 +61,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       name: payload['name'],
       description: payload['description'],
       applicationId: payload['application_id'],
-      members: MemberManager(),
+      members: memberManager,
       settings: serverSettings,
       roles: roleManager,
       channels: channelManager,

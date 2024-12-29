@@ -119,6 +119,8 @@ final class Server {
   /// ```dart
   /// final owner = await server.resolveOwner();
   /// ```
-  Future<Member> resolveOwner({bool force = false}) =>
-      _datastore.member.get(id.value, ownerId.value, force);
+  Future<Member> resolveOwner({bool force = false}) async {
+    final member = await _datastore.member.get(id.value, ownerId.value, force);
+    return member!;
+  }
 }

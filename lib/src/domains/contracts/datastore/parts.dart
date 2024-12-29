@@ -52,9 +52,9 @@ abstract interface class InteractionPartContract implements DataStorePart {
 }
 
 abstract interface class MemberPartContract implements DataStorePart {
-  Future<Member> get(String serverId, String memberId, bool force);
+  Future<Map<Snowflake, Member>> fetch(String serverId, bool force);
 
-  Future<List<Member>> getMembers(Snowflake guildId, {bool force = false});
+  Future<Member?> get(String serverId, String id, bool force);
 
   Future<Member> updateMember(
       {required Snowflake serverId,
@@ -73,11 +73,30 @@ abstract interface class MemberPartContract implements DataStorePart {
 }
 
 abstract interface class MessagePartContract implements DataStorePart {
-  Future<ServerMessage> getServerMessage(
-      {required Snowflake messageId, required Snowflake channelId});
+  Future<T?> get<T extends BaseMessage>(String channelId, String id, bool force);
 
-  Future<PrivateMessage> getPrivateMessage(
-      {required Snowflake messageId, required Snowflake channelId});
+  Future<T> update<T extends Message>({
+    required Snowflake id,
+    required Snowflake channelId,
+    String? content,
+    List<MessageEmbed>? embeds,
+    List<MessageComponent>? components,
+  });
+
+  Future<void> pin(Snowflake channelId, Snowflake id);
+
+  Future<void> unpin(Snowflake channelId, Snowflake id);
+
+  Future<void> crosspost(Snowflake channelId, Snowflake id);
+
+  Future<void> delete(Snowflake channelId, Snowflake id);
+
+  Future<R> reply<T extends Channel, R extends Message>(
+      {required Snowflake id,
+        required Snowflake channelId,
+        String? content,
+        List<MessageEmbed>? embeds,
+        List<MessageComponent>? components});
 }
 
 abstract interface class RolePartContract implements DataStorePart {
@@ -162,7 +181,7 @@ abstract interface class StickerPartContract implements DataStorePart {
 }
 
 abstract interface class UserPartContract implements DataStorePart {
-  Future<User> getUser(Snowflake userId);
+  Future<User?> get(String id, bool force);
 }
 
 abstract interface class EmojiPartContract implements DataStorePart {

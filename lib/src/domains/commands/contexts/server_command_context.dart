@@ -43,11 +43,11 @@ final class ServerCommandContext implements CommandContext {
       applicationId: Snowflake(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
-      member: await datastore.member.get(
+      member: (await datastore.member.get(
         payload['guild_id'],
         payload['member']['user']['id'],
         false,
-      ),
+      ))!,
       server: await datastore.server.get(payload['guild_id'], true),
       channel: await datastore.channel.get(payload['channel_id'], false),
     );

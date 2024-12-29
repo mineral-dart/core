@@ -49,9 +49,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _handleServerButton(
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final message = await _dataStore.message.getServerMessage(
-        messageId: Snowflake(payload['message']['id']),
-        channelId: Snowflake(payload['channel_id']));
+    final message = await _dataStore.message.get(payload['channel_id'], payload['message']['id'], false);
 
     final metadata = payload['message']['interaction_metadata'];
     final type =
@@ -68,8 +66,8 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       version: payload['version'],
       token: payload['token'],
       customId: payload['data']['custom_id'],
-      message: message,
-      member: message.author,
+      channelId: Snowflake(payload['channel_id']),
+      messageId: Snowflake(payload['message']['id']),
     );
 
     dispatch(
@@ -80,10 +78,6 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _handlePrivateButton(
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final message = await _dataStore.message.getPrivateMessage(
-        messageId: Snowflake(payload['message']['id']),
-        channelId: Snowflake(payload['channel_id']));
-
     final metadata = payload['message']['interaction_metadata'];
     final type =
         ButtonType.values.firstWhereOrNull((e) => e.value == metadata['type']);
@@ -99,8 +93,10 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       version: payload['version'],
       token: payload['token'],
       customId: payload['data']['custom_id'],
-      message: message,
-      user: message.author,
+      // Todo : Voir si on peut récupérer la personne qui a cliqué sur le bouton
+      authorId: Snowflake(payload['member']['user']['id']),
+      channelId: Snowflake(payload['channel_id']),
+      messageId: Snowflake(payload['message']['id']),
     );
 
     dispatch(

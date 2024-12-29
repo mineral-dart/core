@@ -151,6 +151,7 @@ final class ChannelPart implements ChannelPartContract {
       List<MessageEmbed>? embeds,
       Poll? poll,
       List<MessageComponent>? components) async {
+    final completer = Completer<T>();
     final response = await _dataStore.client.post('/channels/$channelId/messages', body: {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
@@ -161,19 +162,18 @@ final class ChannelPart implements ChannelPartContract {
       'components': components?.map((e) => e.toJson()).toList(),
     });
 
-    final channel = await _dataStore.channel.get(channelId.value, false);
-    final serializer = switch (channel) {
-      ServerChannel() => _marshaller.serializers.serverMessage,
-      PrivateChannel() => _marshaller.serializers.privateMessage,
-      _ => throw Exception('Unknown channel type: $channel'),
-    } as SerializerContract<T>;
+    final message = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.message.normalize(response.body),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
 
-    final payload = await serializer.normalize({
-      ...response.body,
-      'server_id': guildId,
-    });
+    completer.complete(await _marshaller.serializers.message.serialize(message) as T);
 
-    return serializer.serialize(payload);
+    return completer.future;
   }
 
   @override

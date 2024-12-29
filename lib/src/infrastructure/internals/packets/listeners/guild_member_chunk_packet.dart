@@ -15,30 +15,31 @@ final class GuildMemberChunkPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server =
-        await _dataStore.server.get(message.payload['guild_id'], false);
-
-    final rawMembers =
-        await List.from(message.payload['members']).map((element) async {
-      return _marshaller.serializers.member.normalize(element);
-    }).wait;
-
-    await rawMembers.nonNulls.map((element) async {
-      final member = await _marshaller.serializers.member.serialize(element);
-      server.members.list
-          .update(member.id, (value) => member, ifAbsent: () => member);
-    }).wait;
-
-    final presences = message.payload['presences'];
-
-    for (final rawPresence in presences) {
-      final presence = Presence.fromJson(rawPresence);
-      server.members.list[rawPresence['user']['id']]!.presence = presence;
-    }
-
-    final rawServer = await _marshaller.serializers.server.deserialize(server);
-    final serverCacheKey = _marshaller.cacheKey.server(server.id.value);
-
-    await _marshaller.cache.put(serverCacheKey, rawServer);
+    throw UnimplementedError();
+    // final server =
+    //     await _dataStore.server.get(message.payload['guild_id'], false);
+    //
+    // final rawMembers =
+    //     await List.from(message.payload['members']).map((element) async {
+    //   return _marshaller.serializers.member.normalize(element);
+    // }).wait;
+    //
+    // await rawMembers.nonNulls.map((element) async {
+    //   final member = await _marshaller.serializers.member.serialize(element);
+    //   server.members.list
+    //       .update(member.id, (value) => member, ifAbsent: () => member);
+    // }).wait;
+    //
+    // final presences = message.payload['presences'];
+    //
+    // for (final rawPresence in presences) {
+    //   final presence = Presence.fromJson(rawPresence);
+    //   server.members.list[rawPresence['user']['id']]!.presence = presence;
+    // }
+    //
+    // final rawServer = await _marshaller.serializers.server.deserialize(server);
+    // final serverCacheKey = _marshaller.cacheKey.server(server.id.value);
+    //
+    // await _marshaller.cache.put(serverCacheKey, rawServer);
   }
 }

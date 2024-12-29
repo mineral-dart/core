@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/channel_methods.dart';
 import 'package:mineral/src/api/common/channel_permission_overwrite.dart';
 import 'package:mineral/src/api/common/channel_properties.dart';

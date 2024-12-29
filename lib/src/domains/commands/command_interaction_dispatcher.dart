@@ -10,8 +10,7 @@ import 'package:mineral/src/domains/commands/contexts/global_command_context.dar
 import 'package:mineral/src/domains/commands/contexts/server_command_context.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
-final class CommandInteractionDispatcher
-    implements InteractionDispatcherContract {
+final class CommandInteractionDispatcher implements InteractionDispatcherContract {
   @override
   InteractionType get type => InteractionType.applicationCommand;
 
@@ -28,14 +27,12 @@ final class CommandInteractionDispatcher
     await _handleCommand(data);
   }
 
-  Future<void> _handleGroups(
-      Map<String, dynamic> data, Map<String, dynamic> group) async {
+  Future<void> _handleGroups(Map<String, dynamic> data, Map<String, dynamic> group) async {
     data['data']['options'] = group['options'];
     return _handleSubCommand(data, group);
   }
 
-  Future<void> _handleSubCommand(
-      Map<String, dynamic> data, Map<String, dynamic> option) async {
+  Future<void> _handleSubCommand(Map<String, dynamic> data, Map<String, dynamic> option) async {
     data['data']['name'] = "${data['data']['name']}.${option['name']}";
     data['data']['options'] = option['options'];
 
@@ -45,8 +42,7 @@ final class CommandInteractionDispatcher
   Future<void> _handleCommand(Map<String, dynamic> data) async {
     if (data['data']['options'] != null) {
       for (final option in data['data']['options']) {
-        final type = CommandType.values
-            .firstWhereOrNull((e) => e.value == option['type']);
+        final type = CommandType.values.firstWhereOrNull((e) => e.value == option['type']);
 
         if (type == null) {
           continue;
@@ -71,8 +67,7 @@ final class CommandInteractionDispatcher
 
     if (data['data']['options'] != null) {
       for (final option in data['data']['options']) {
-        final type = CommandOptionType.values
-            .firstWhereOrNull((e) => e.value == option['type']);
+        final type = CommandOptionType.values.firstWhereOrNull((e) => e.value == option['type']);
 
         if (type == null) {
           _marshaller.logger.warn("Unknown option type: ${option['type']}");
@@ -81,14 +76,14 @@ final class CommandInteractionDispatcher
 
         options[Symbol(option['name'])] = switch (type) {
           CommandOptionType.user => switch (commandContext) {
-              ServerCommandContext() => await _dataStore.member
-                  .get(commandContext.server.id.value, option['value'], false)
-                ..server = commandContext.server,
+              ServerCommandContext() =>
+                await _dataStore.member.get(commandContext.server.id.value, option['value'], false),
               _ => _marshaller.serializers.user.serialize(option['value']),
             },
           CommandOptionType.channel =>
             await _marshaller.serializers.channels.serialize(option['value']),
-          CommandOptionType.role => await _dataStore.role.get(data['guild_id'], option['value'], false),
+          CommandOptionType.role =>
+            await _dataStore.role.get(data['guild_id'], option['value'], false),
           // TODO attachement
           _ => option['value'],
         };

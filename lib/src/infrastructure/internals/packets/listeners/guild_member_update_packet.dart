@@ -15,23 +15,24 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server =
-        await _dataStore.server.get(message.payload['guild_id'], false);
-
-    final before = _dataStore.member.get(server.id.value, message.payload['user']['id'], false);
-
-    final rawMember =
-        await _marshaller.serializers.member.normalize(message.payload);
-    final member = await _marshaller.serializers.member.serialize(rawMember);
-
-    member.server = server;
-    server.members.list.update(member.id, (_) => member);
-
-    final serverCacheKey = _marshaller.cacheKey.server(server.id.value);
-    final rawServer = await _marshaller.serializers.server.deserialize(server);
-
-    await _marshaller.cache.put(serverCacheKey, rawServer);
-
-    dispatch(event: Event.serverMemberUpdate, params: [before, member]);
+    throw UnimplementedError();
+    // final server =
+    //     await _dataStore.server.get(message.payload['guild_id'], false);
+    //
+    // final before = _dataStore.member.get(server.id.value, message.payload['user']['id'], false);
+    //
+    // final rawMember =
+    //     await _marshaller.serializers.member.normalize(message.payload);
+    // final member = await _marshaller.serializers.member.serialize(rawMember);
+    //
+    // member.server = server;
+    // server.members.list.update(member.id, (_) => member);
+    //
+    // final serverCacheKey = _marshaller.cacheKey.server(server.id.value);
+    // final rawServer = await _marshaller.serializers.server.deserialize(server);
+    //
+    // await _marshaller.cache.put(serverCacheKey, rawServer);
+    //
+    // dispatch(event: Event.serverMemberUpdate, params: [before, member]);
   }
 }
