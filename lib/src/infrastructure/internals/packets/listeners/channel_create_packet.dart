@@ -10,7 +10,9 @@ import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 final class ChannelCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.channelCreate;
+
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
+
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override

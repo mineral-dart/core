@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
@@ -14,11 +15,14 @@ final class GuildBanRemovePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server =
-        await _dataStore.server.get(message.payload['guild_id'], false);
-    final user =
-        await _marshaller.serializers.user.serialize(message.payload['user']);
+    final server = await _dataStore.server.get(message.payload['guild_id'], false);
+    final user = await _dataStore.user.get(message.payload['user']['id'], false);
 
-    dispatch(event: Event.serverBanRemove, params: [user, server]);
+    if (user case User(:final id)) {
+      final memberCacheKey = _marshaller.cacheKey.member(server.id.value, id.value);
+      await _marshaller.cache?.remove(memberCacheKey);
+
+      dispatch(event: Event.serverBanRemove, params: [server, user]);
+    }
   }
 }
