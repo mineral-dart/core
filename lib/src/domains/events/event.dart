@@ -71,10 +71,10 @@ enum Event implements EnhancedEnum, EventType {
       ServerEmojisUpdateEvent, ['Map<Snowflake, Emoji> emojis', 'Server server']),
   serverStickersUpdate(ServerStickersUpdateEvent,
       ['StickerManager stickerManager', 'Server server']),
-  serverRoleCreate(ServerRolesCreateEvent, ['Role role', 'Server server']),
+  serverRoleCreate(ServerRolesCreateEvent, ['Server server', 'Role role']),
   serverRoleUpdate(
-      ServerRolesUpdateEvent, ['Role before', 'Role after', 'Server server']),
-  serverRoleDelete(ServerRolesDeleteEvent, ['Role? role', 'Server server']),
+      ServerRolesUpdateEvent, ['Server server', 'Role before', 'Role after']),
+  serverRoleDelete(ServerRolesDeleteEvent, ['Server server', 'Role? role']),
   serverButtonClick(ServerButtonClickEvent, ['ServerButtonContext ctx']),
   serverDialogSubmit(ServerDialogSubmitEvent, ['ServerDialogContext ctx']),
   serverChannelSelect(ServerChannelSelectEvent,
