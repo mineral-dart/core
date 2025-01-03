@@ -6,6 +6,7 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_c
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_delete_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_pins_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_update_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/guild_audit_log_entry_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/guild_ban_add_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/guild_ban_remove_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/guild_create_packet.dart';
@@ -74,6 +75,7 @@ final class PacketListener implements PacketListenerContract {
     subscribe(GuildBanRemovePacket.new);
     subscribe(GuildEmojisUpdatePacket.new);
     subscribe(GuildStickersUpdatePacket.new);
+    subscribe(GuildAuditLogEntryCreatePacket.new);
 
     subscribe(ButtonInteractionCreatePacket.new);
     subscribe(InteractionCreatePacket.new);

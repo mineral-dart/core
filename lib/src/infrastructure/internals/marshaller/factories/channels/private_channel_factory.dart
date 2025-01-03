@@ -12,7 +12,6 @@ final class PrivateChannelFactory
   @override
   Future<PrivateChannel> serialize(
       MarshallerContract marshaller, Map<String, dynamic> json) async {
-    print('Serializing private channel $json');
     final properties = await ChannelProperties.serializeCache(marshaller, json);
     return PrivateChannel(properties);
   }

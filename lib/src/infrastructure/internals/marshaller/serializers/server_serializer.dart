@@ -152,7 +152,7 @@ final class ServerSerializer implements SerializerContract<Server> {
         'default_message_notifications': server.settings.defaultMessageNotifications.value,
         'features': server.settings.features,
         'mfa_level': server.settings.mfaLevel.value,
-        'system_channel_flags': server.settings.systemChannelFlags,
+        'system_channel_flags': listToBitfield(server.settings.systemChannelFlags),
         'vanity_url_code': server.settings.vanityUrlCode,
         'premium_tier': server.settings.subscription.tier.value,
         'premium_subscription_count': server.settings.subscription.subscriptionCount,
