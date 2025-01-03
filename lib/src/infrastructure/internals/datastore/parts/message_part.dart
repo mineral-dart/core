@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/domains/commons/utils/helper.dart';
+import 'package:mineral/src/domains/commons/utils/extensions.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
 final class MessagePart implements MessagePartContract {
@@ -52,9 +52,7 @@ final class MessagePart implements MessagePartContract {
     final completer = Completer<T>();
     final response = await _dataStore.client.patch('/channels/$channelId/messages/$id', body: {
       'content': content,
-      'embeds': await Helper.createOrNullAsync(
-          field: embeds,
-          fn: () async => embeds?.map(_marshaller.serializers.embed.deserialize).toList()),
+      'embeds': AsyncList.nullable(embeds?.map(_marshaller.serializers.embed.deserialize).toList()),
       'components': components?.map((c) => c.toJson()).toList()
     });
 
@@ -104,9 +102,7 @@ final class MessagePart implements MessagePartContract {
 
     final response = await _dataStore.client.post('/channels/$channelId/messages', body: {
       'content': content,
-      'embeds': Helper.createOrNull(
-          field: embeds,
-          fn: () => embeds?.map(_marshaller.serializers.embed.deserialize))?.toList(),
+      'embeds': AsyncList.nullable(embeds?.map(_marshaller.serializers.embed.deserialize)),
       'components': components?.map((c) => c.toJson()).toList(),
       'message_reference': {'message_id': id, 'channel_id': channelId}
     });

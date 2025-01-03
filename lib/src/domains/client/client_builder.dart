@@ -51,12 +51,12 @@ final class ClientBuilder {
   }
 
   ClientBuilder setHttpVersion(int version) {
-    _env.list[AppEnv.httpVersion.key] = version.toString();
+    _env.list[AppEnv.discordRestHttpVersion.key] = version.toString();
     return this;
   }
 
   ClientBuilder setWssVersion(int version) {
-    _env.list[AppEnv.wssVersion.key] = version.toString();
+    _env.list[AppEnv.discordWssVersion.key] = version.toString();
     return this;
   }
 
@@ -125,8 +125,8 @@ final class ClientBuilder {
     _createCache();
 
     final token = _env.get<String>(AppEnv.token);
-    final httpVersion = int.parse(_env.get(AppEnv.httpVersion));
-    final shardVersion = int.parse(_env.get(AppEnv.wssVersion));
+    final httpVersion = int.parse(_env.get(AppEnv.discordRestHttpVersion));
+    final shardVersion = int.parse(_env.get(AppEnv.discordWssVersion));
     final intent = int.parse(_env.get(AppEnv.intent));
 
     final http = HttpClient(
