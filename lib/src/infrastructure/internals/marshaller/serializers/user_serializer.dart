@@ -45,14 +45,14 @@ final class UserSerializer implements SerializerContract<User> {
     final assets = UserAssets(
       avatar: Helper.createOrNull(
           field: userAssets['avatar'],
-          fn: () => ImageAsset(['avatars', userAssets['user_id']], userAssets['avatar'])),
+          fn: () => ImageAsset(['avatars', json['id']], userAssets['avatar'])),
       avatarDecoration: Helper.createOrNull(
           field: userAssets['avatar_decoration'],
-          fn: () => ImageAsset(['avatar-decorations', userAssets['user_id']],
+          fn: () => ImageAsset(['avatar-decorations', json['id']],
               userAssets['avatar_decoration'])),
       banner: Helper.createOrNull(
           field: userAssets['banner'],
-          fn: () => ImageAsset(['banners', userAssets['user_id']], json['banner'])),
+          fn: () => ImageAsset(['banners', json['id']], json['banner'])),
     );
 
     return User(
