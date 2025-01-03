@@ -1,12 +1,12 @@
 import 'dart:async';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/src/api/server/managers/sticker_manager.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef ServerStickersUpdateEventHandler = FutureOr<void> Function(
-    StickerManager, Server);
+typedef ServerStickersUpdateEventHandler = FutureOr<void> Function(Server, Map<Snowflake, Sticker>);
 
 abstract class ServerStickersUpdateEvent implements ListenableEvent {
   @override
@@ -15,5 +15,5 @@ abstract class ServerStickersUpdateEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(StickerManager stickerManager, Server server);
+  FutureOr<void> handle(Server server, Map<Snowflake, Sticker> stickers);
 }

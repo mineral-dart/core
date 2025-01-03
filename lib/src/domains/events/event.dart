@@ -70,7 +70,7 @@ enum Event implements EnhancedEnum, EventType {
   serverEmojisUpdate(
       ServerEmojisUpdateEvent, ['Map<Snowflake, Emoji> emojis', 'Server server']),
   serverStickersUpdate(ServerStickersUpdateEvent,
-      ['StickerManager stickerManager', 'Server server']),
+      ['Server server', 'Map<Snowflake, Sticker> stickers']),
   serverRoleCreate(ServerRolesCreateEvent, ['Server server', 'Role role']),
   serverRoleUpdate(
       ServerRolesUpdateEvent, ['Server server', 'Role before', 'Role after']),
