@@ -22,6 +22,8 @@ final class Client {
 
   LoggerContract get logger => _kernel.logger;
 
+  DataStoreContract get rest => ioc.resolve<DataStoreContract>();
+
   CommandInteractionManagerContract get _commands =>
       ioc.resolve<CommandInteractionManagerContract>();
 
