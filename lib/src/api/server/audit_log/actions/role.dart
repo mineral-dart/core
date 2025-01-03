@@ -1,9 +1,14 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 
 final class RoleCreateAuditLog extends AuditLog {
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
+
+  final Snowflake roleId;
   final List<Change> changes;
 
   String get roleName => changes.firstWhere((element) => element.key == 'name').after;
@@ -18,18 +23,30 @@ final class RoleCreateAuditLog extends AuditLog {
   bool get isMentionable => changes.firstWhere((element) => element.key == 'mentionable').after;
 
   RoleCreateAuditLog(
-      {required Snowflake serverId, required Snowflake userId, required this.changes})
+      {required Snowflake serverId,
+      required Snowflake userId,
+      required this.roleId,
+      required this.changes})
       : super(AuditLogType.roleCreate, serverId, userId);
+
+  Future<Role> resolveRole({bool force = false}) async {
+    final role = await _datastore.role.get(serverId.value, roleId.value, force);
+    return role!;
+  }
 
   factory RoleCreateAuditLog.fromJson(Map<String, dynamic> json) {
     return RoleCreateAuditLog(
         serverId: json['guild_id'],
         userId: json['user_id'],
-        changes: List<Map<String, dynamic>>.from(json['changes']).map(Change.fromJson).toList());
+        changes: List<Map<String, dynamic>>.from(json['changes']).map(Change.fromJson).toList(),
+        roleId: json['target_id']);
   }
 }
 
 final class RoleUpdateAuditLog extends AuditLog {
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
+
+  final Snowflake roleId;
   final List<Change> changes;
 
   Change get roleName => changes.firstWhere((element) => element.key == 'name');
@@ -50,43 +67,58 @@ final class RoleUpdateAuditLog extends AuditLog {
 
   Change<bool, bool>? get isHoist => _resolveParameterOrNull<bool, String>('hoist', bool.parse);
 
-  Change<bool, bool>? get isMentionable => _resolveParameterOrNull<bool, String>('mentionable', bool.parse);
+  Change<bool, bool>? get isMentionable =>
+      _resolveParameterOrNull<bool, String>('mentionable', bool.parse);
 
   Change<T, T>? _resolveParameterOrNull<T, S>(String key, T Function(S) transformer) {
     final parameter = changes.firstWhereOrNull((element) => element.key == key);
     return switch (parameter) {
       final Change change => Change(
-        change.key,
-        transformer(change.before),
-        transformer(change.after),
-      ),
+          change.key,
+          transformer(change.before),
+          transformer(change.after),
+        ),
       _ => null,
     };
   }
 
   RoleUpdateAuditLog(
-      {required Snowflake serverId, required Snowflake userId, required this.changes})
+      {required Snowflake serverId,
+      required Snowflake userId,
+      required this.roleId,
+      required this.changes})
       : super(AuditLogType.roleCreate, serverId, userId);
+
+  Future<Role> resolveRole({bool force = false}) async {
+    final role = await _datastore.role.get(serverId.value, roleId.value, force);
+    return role!;
+  }
 
   factory RoleUpdateAuditLog.fromJson(Map<String, dynamic> json) {
     return RoleUpdateAuditLog(
         serverId: json['guild_id'],
         userId: json['user_id'],
+        roleId: json['target_id'],
         changes: List<Map<String, dynamic>>.from(json['changes']).map(Change.fromJson).toList());
   }
 }
 
 final class RoleDeleteAuditLog extends AuditLog {
+  final Snowflake roleId;
   final String roleName;
 
   RoleDeleteAuditLog(
-      {required Snowflake serverId, required Snowflake userId, required this.roleName})
+      {required Snowflake serverId,
+      required Snowflake userId,
+      required this.roleId,
+      required this.roleName})
       : super(AuditLogType.emojiDelete, serverId, userId);
 
   factory RoleDeleteAuditLog.fromJson(Map<String, dynamic> json) {
     return RoleDeleteAuditLog(
         serverId: json['guild_id'],
         roleName: json['changes'][0]['old_value'],
-        userId: json['user_id']);
+        userId: json['user_id'],
+        roleId: json['target_id']);
   }
 }
