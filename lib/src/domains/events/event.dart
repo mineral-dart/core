@@ -86,9 +86,9 @@ enum Event implements EnhancedEnum, EventType {
   serverTextSelect(ServerTextSelectEvent,
       ['ServerSelectContext ctx', 'List<String> values']),
   serverThreadCreate(
-      ServerThreadCreateEvent, ['ThreadChannel channel', 'Server server']),
+      ServerThreadCreateEvent, ['Server server', 'ThreadChannel channel']),
   serverThreadUpdate(ServerThreadUpdateEvent,
-      ['ThreadChannel before', 'ThreadChannel after', 'Server server']),
+      ['Server server', 'ThreadChannel before', 'ThreadChannel after']),
   serverThreadDelete(
       ServerThreadDeleteEvent, ['ThreadChannel thread', 'Server server']),
   serverThreadMemberUpdate(ServerThreadMemberUpdateEvent,

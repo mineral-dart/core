@@ -1,4 +1,7 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
+import 'package:mineral/src/api/server/channels/thread_channel.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -14,32 +17,31 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    throw UnimplementedError();
-    // final payload = message.payload;
+    final server = await _dataStore.server.get(message.payload['guild_id'], false);
+    final thread = await _dataStore.channel.get<ThreadChannel>(message.payload['id'], false);
 
-    // final server = await _dataStore.server.get(payload['guild_id'], false);
-    // final thread = await _dataStore.channel.getThread(Snowflake(payload['id'])) as ThreadChannel;
-    // final membersAdded = payload['added_members'] ?? [];
-    // final membersRemovedIds = payload['removed_member_ids'] ?? [];
-    //
-    // for (final memberThread in membersAdded) {
-    //   final member =
-    //       await _dataStore.member.get(payload['guild_id'], memberThread['user_id'], false);
-    //   // thread.members.putIfAbsent(member.id, () => member);
-    //
-    //   dispatch(event: Event.serverThreadMemberAdd, params: [thread, server, member]);
-    // }
-    //
-    // for (final memberId in membersRemovedIds) {
-    //   final member = await _dataStore.member.get(payload['guild_id'], memberId, false);
-    //   // thread.members.remove(Snowflake(memberId));
-    //
-    //   dispatch(event: Event.serverThreadMemberRemove, params: [thread, server, member]);
-    // }
-    //
-    // final serverRaw = await _marshaller.serializers.server.deserialize(server);
-    // final serverKey = _marshaller.cacheKey.server(server.id.value);
-    //
-    // _marshaller.cache?.put(serverKey, serverRaw);
+    await List.from(message.payload['added_members']).map((element) async {
+      Member? member;
+      if (element['member'] != null) {
+        member = await _dataStore.member.get(message.payload['guild_id'], element['user_id'], false);
+      } else {
+        final rawMember = await _marshaller.serializers.member.normalize(element);
+        member = await _marshaller.serializers.member.serialize(rawMember);
+      }
+
+      dispatch(event: Event.serverThreadMemberAdd, params: [server, thread, member]);
+    }).wait;
+
+    await List.from(message.payload['removed_member_ids']).map((element) async {
+      Member? member;
+      if (element['member'] != null) {
+        member = await _dataStore.member.get(message.payload['guild_id'], element['user_id'], false);
+      } else {
+        final rawMember = await _marshaller.serializers.member.normalize(element);
+        member = await _marshaller.serializers.member.serialize(rawMember);
+      }
+
+      dispatch(event: Event.serverThreadMemberRemove, params: [server, thread, member]);
+    }).wait;
   }
 }
