@@ -18,8 +18,8 @@ final class ThreadCreatePacket implements ListenablePacket {
     final payload = message.payload;
 
     final server = await _dataStore.server.get(payload['guild_id'], false);
-    final threadRaw = await _marshaller.serializers.thread.normalize(payload);
-    final thread = await _marshaller.serializers.thread.serialize(threadRaw);
+    final threadRaw = await _marshaller.serializers.channels.normalize(payload);
+    final thread = await _marshaller.serializers.channels.serialize(threadRaw);
 
     dispatch(event: Event.serverThreadCreate, params: [server, thread]);
   }

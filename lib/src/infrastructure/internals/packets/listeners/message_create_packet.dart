@@ -31,21 +31,11 @@ final class MessageCreatePacket implements ListenablePacket {
       ChannelType.guildPublicThread.value
     ];
 
-    if (serverThreadTypes.contains(channel?.type.value)) {
-      await sendThread(dispatch, message.payload);
-      return;
-    }
-
     return switch (channel) {
       ServerChannel() => sendServerMessage(dispatch, channel, message.payload),
       Channel() => sendPrivateMessage(dispatch, channel, message.payload),
       _ => throw Exception('Unknown channel'),
     };
-  }
-
-  Future<void> sendThread(DispatchEvent dispatch, Map<String, dynamic> json) async {
-    throw UnimplementedError();
-    // dispatch(event: Event.serverMessageCreate, params: [message]);
   }
 
   Future<void> sendServerMessage(
