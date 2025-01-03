@@ -40,6 +40,6 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
     // final serverRaw = await _marshaller.serializers.server.deserialize(server);
     // final serverKey = _marshaller.cacheKey.server(server.id.value);
     //
-    // _marshaller.cache.put(serverKey, serverRaw);
+    // _marshaller.cache?.put(serverKey, serverRaw);
   }
 }

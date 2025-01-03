@@ -25,22 +25,22 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
     };
 
     final cacheKey = _marshaller.cacheKey.serverEmoji(json['guild_id'], json['id']);
-    await _marshaller.cache.put(cacheKey, payload);
+    await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
   }
 
   @override
   Future<Emoji> serialize(Map<String, dynamic> json) async {
-    final rawRoles = await _marshaller.cache.getMany(json['roles']);
-    final roles = await rawRoles.nonNulls.map((element) async {
+    final rawRoles = await _marshaller.cache?.getMany(json['roles']);
+    final roles = await rawRoles?.nonNulls.map((element) async {
       return _marshaller.serializers.role.serialize(element);
     }).wait;
 
     return Emoji(json['server_id'],
       id: json['id'],
       name: json['name'],
-      roles: roles.fold({}, (value, element) => {...value, element.id: element}),
+      roles: roles?.fold({}, (value, element) => {...?value, element.id: element}) ?? {},
       managed: json['managed'],
       animated: json['animated'],
       available: json['available'],

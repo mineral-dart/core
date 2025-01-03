@@ -8,7 +8,7 @@ abstract interface class MarshallerContract {
 
   SerializerBucket get serializers;
 
-  CacheProviderContract get cache;
+  CacheProviderContract? get cache;
 
   CacheKey get cacheKey;
 }

@@ -1,3 +1,4 @@
+import 'package:mineral/container.dart';
 import 'package:mineral/src/domains/contracts/cache/cache_provider_contract.dart';
 import 'package:mineral/src/domains/contracts/logger/logger_contract.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
@@ -6,18 +7,18 @@ import 'package:mineral/src/infrastructure/internals/marshaller/serializer_bucke
 
 final class Marshaller implements MarshallerContract {
   @override
-  final LoggerContract logger;
+  LoggerContract get logger => ioc.resolve<LoggerContract>();
+
+  @override
+  CacheProviderContract? get cache => ioc.resolveOrNull<CacheProviderContract>();
 
   @override
   late final SerializerBucket serializers;
 
   @override
-  final CacheProviderContract cache;
-
-  @override
   final CacheKey cacheKey = CacheKey();
 
-  Marshaller(this.logger, this.cache) {
+  Marshaller() {
     serializers = SerializerBucket(this);
   }
 }

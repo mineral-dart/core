@@ -23,7 +23,7 @@ final class ServerPart implements ServerPartContract {
     final completer = Completer<Server>();
     final String key = _marshaller.cacheKey.server(id);
 
-    final cachedServer = await _marshaller.cache.get(key);
+    final cachedServer = await _marshaller.cache?.get(key);
     if (!force && cachedServer != null) {
       final server = await _marshaller.serializers.server.serialize(cachedServer);
       completer.complete(server);
@@ -74,7 +74,7 @@ final class ServerPart implements ServerPartContract {
   @override
   Future<Role> getRole(Snowflake serverId, Snowflake roleId) async {
     final roleCacheKey = _marshaller.cacheKey.serverRole(serverId.value, roleId.value);
-    final cachedRawRole = await _marshaller.cache.get(roleCacheKey);
+    final cachedRawRole = await _marshaller.cache?.get(roleCacheKey);
     if (cachedRawRole != null) {
       return _marshaller.serializers.role.serialize(cachedRawRole);
     }

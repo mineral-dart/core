@@ -32,10 +32,7 @@ final class ChannelPart implements ChannelPartContract {
     };
 
     final channels = await Future.wait(rawChannels.map((element) async {
-      final channel = await _marshaller.serializers.channels.serialize(element);
-      await _marshaller.cache.put(_marshaller.cacheKey.channel(channel.id.value), element);
-
-      return channel;
+      return _marshaller.serializers.channels.serialize(element);
     }));
 
     completer.complete(channels.asMap().map((_, value) => MapEntry(value.id, value as T)));
@@ -47,7 +44,7 @@ final class ChannelPart implements ChannelPartContract {
     final Completer<T> completer = Completer<T>();
     final String key = _marshaller.cacheKey.channel(id);
 
-    final cachedChannel = await _marshaller.cache.get(key);
+    final cachedChannel = await _marshaller.cache?.get(key);
     if (!force && cachedChannel != null) {
       final channel = await _marshaller.serializers.channels.serialize(cachedChannel) as T;
       completer.complete(channel);
@@ -133,14 +130,8 @@ final class ChannelPart implements ChannelPartContract {
 
   @override
   Future<void> deleteChannel(Snowflake id, String? reason) async {
-    final response = await _dataStore.client.delete('/channels/$id',
+    await _dataStore.client.delete('/channels/$id',
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
-
-    return switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => _marshaller.cache.remove(id.value),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode}'),
-    };
   }
 
   @override
@@ -200,7 +191,7 @@ final class ChannelPart implements ChannelPartContract {
 
     final rawServer = await _marshaller.serializers.server.deserialize(server);
 
-    await _marshaller.cache.putMany({
+    await _marshaller.cache?.putMany({
       _marshaller.cacheKey.server(server.id.value): rawServer,
     });
   }

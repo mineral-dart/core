@@ -30,7 +30,7 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
     };
 
     final cacheKey = _marshaller.cacheKey.embed(json['id']);
-    await _marshaller.cache.put(cacheKey, payload);
+    await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
   }

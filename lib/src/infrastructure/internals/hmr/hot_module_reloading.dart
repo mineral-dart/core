@@ -48,7 +48,7 @@ final class HotModuleReloading implements HmrContract {
       final Stream stream = port.asBroadcastStream();
 
       _devPort!.send(port.sendPort);
-      await _marshaller.cache.init();
+      await _marshaller.cache?.init();
       await for (final Map<String, dynamic> message in stream) {
         _kernel.packetListener.dispatcher.dispatch(ShardMessage.of(message));
       }

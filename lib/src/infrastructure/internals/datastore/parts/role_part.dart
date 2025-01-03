@@ -33,11 +33,7 @@ final class RolePart implements RolePartContract {
     };
 
     final roles = await Future.wait(rawRoles.map((element) async {
-      final role = await _marshaller.serializers.role.serialize(element);
-      await _marshaller.cache
-          .put(_marshaller.cacheKey.serverRole(serverId, role.id.value), element);
-
-      return role;
+      return _marshaller.serializers.role.serialize(element);
     }));
 
     completer.complete(roles.asMap().map((_, value) => MapEntry(value.id, value)));
@@ -49,7 +45,7 @@ final class RolePart implements RolePartContract {
     final completer = Completer<Role>();
     final String key = _marshaller.cacheKey.serverRole(serverId, id);
 
-    final cachedRole = await _marshaller.cache.get(key);
+    final cachedRole = await _marshaller.cache?.get(key);
     if (!force && cachedRole != null) {
       final role = await _marshaller.serializers.role.serialize(cachedRole);
       completer.complete(role);

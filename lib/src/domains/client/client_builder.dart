@@ -23,7 +23,7 @@ final class ClientBuilder {
 
   CacheProviderContract? _cache;
   final List<EnvSchema> _schemas = [];
-  final List<ProviderContract Function(Client)> _providers = [];
+  final List<ConstructableWithArgs<ProviderContract, Client>> _providers = [];
 
   ScaffoldContract _scaffold = DefaultScaffold();
   SendPort? _devPort;
@@ -50,22 +50,23 @@ final class ClientBuilder {
     return this;
   }
 
-  ClientBuilder setHttpVersion(int version) {
+  ClientBuilder setDiscordRestHttpVersion(int version) {
     _env.list[AppEnv.discordRestHttpVersion.key] = version.toString();
     return this;
   }
 
-  ClientBuilder setWssVersion(int version) {
+  ClientBuilder setDiscordWssVersion(int version) {
     _env.list[AppEnv.discordWssVersion.key] = version.toString();
     return this;
   }
 
-  ClientBuilder setCache(CacheProviderContract Function(EnvContract) cache) {
+  ClientBuilder setCache(ConstructableWithArgs<CacheProviderContract, EnvContract> cache) {
     _cache = cache(_env);
+    ioc.bind<CacheProviderContract>(() => _cache!);
     return this;
   }
 
-  ClientBuilder setLogger(LoggerContract Function(EnvContract) logger) {
+  ClientBuilder setLogger(ConstructableWithArgs<LoggerContract, EnvContract> logger) {
     _logger = logger(_env);
     return this;
   }
@@ -104,13 +105,11 @@ final class ClientBuilder {
   }
 
   void _createCache() {
-    if (_cache == null) {
-      throw Exception('Cache provider not set');
+    if (_cache case final CacheProviderContract cache) {
+      cache
+        ..logger = _logger
+        ..init();
     }
-
-    _cache!
-      ..logger = _logger
-      ..init();
   }
 
   Client build() {
@@ -160,7 +159,7 @@ final class ClientBuilder {
     );
 
     ioc
-      ..bind<MarshallerContract>(() => Marshaller(_logger, _cache!))
+      ..bind<MarshallerContract>(Marshaller.new)
       ..bind<DataStoreContract>(() => DataStore(http))
       ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new);
 

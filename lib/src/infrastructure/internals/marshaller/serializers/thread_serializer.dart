@@ -43,7 +43,7 @@ final class ThreadSerializer implements SerializerContract<ThreadChannel> {
     };
 
     final cacheKey = _marshaller.cacheKey.thread(json['id']);
-    await _marshaller.cache.put(cacheKey, payload);
+    await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
   }

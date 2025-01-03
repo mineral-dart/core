@@ -21,7 +21,7 @@ final class ChannelPermissionOverwriteSerializer
     final cacheKey = _marshaller.cacheKey.channelPermission(
         payload['id'],
         serverId: json['server_id']);
-    await _marshaller.cache.put(cacheKey, payload);
+    await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
   }

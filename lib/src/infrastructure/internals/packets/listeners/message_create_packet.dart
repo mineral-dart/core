@@ -39,7 +39,7 @@ final class MessageCreatePacket implements ListenablePacket {
     return switch (channel) {
       ServerChannel() => sendServerMessage(dispatch, channel, message.payload),
       Channel() => sendPrivateMessage(dispatch, channel, message.payload),
-      _ => throw Exception('Unknown channel}'),
+      _ => throw Exception('Unknown channel'),
     };
   }
 
@@ -50,8 +50,6 @@ final class MessageCreatePacket implements ListenablePacket {
 
   Future<void> sendServerMessage(
       DispatchEvent dispatch, ServerChannel channel, Map<String, dynamic> json) async {
-    final server = await _dataStore.server.get(channel.serverId.value, false);
-
     final payload = await _marshaller.serializers.message.normalize(json);
     final message = await _marshaller.serializers.message.serialize(payload);
 

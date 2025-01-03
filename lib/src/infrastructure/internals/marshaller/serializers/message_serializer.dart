@@ -22,7 +22,7 @@ final class MessageSerializer<T extends Message> implements SerializerContract<T
     };
 
     final cacheKey = _marshaller.cacheKey.message(json['channel_id'], json['id']);
-    await _marshaller.cache.put(cacheKey, payload);
+    await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
   }
