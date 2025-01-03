@@ -19,10 +19,7 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final rawChannel =
-        await _marshaller.serializers.channels.normalize(message.payload);
-    final channel =
-        await _marshaller.serializers.channels.serialize(rawChannel);
+    final channel = await _dataStore.channel.get(message.payload['channel_id'], false);
 
     return switch (channel) {
       ServerChannel() => registerServerChannelPins(channel, dispatch),
@@ -35,11 +32,6 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
   Future<void> registerServerChannelPins(
       ServerChannel channel, DispatchEvent dispatch) async {
     final server = await _dataStore.server.get(channel.serverId.value, false);
-
-    final rawServer = await _marshaller.serializers.server.deserialize(server);
-    final cacheKey = _marshaller.cacheKey.server(server.id.value);
-
-    await _marshaller.cache?.put(cacheKey, rawServer);
 
     dispatch(event: Event.serverChannelPinsUpdate, params: [server, channel]);
   }
