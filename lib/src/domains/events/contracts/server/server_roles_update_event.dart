@@ -5,8 +5,8 @@ import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef ServerRolesUpdateEventHandler = FutureOr<void> Function(
-    Role, Role, Server);
+typedef ServerRolesUpdateEventHandler = FutureOr<void> Function(Server,
+    Role, Role);
 
 abstract class ServerRolesUpdateEvent implements ListenableEvent {
   @override
@@ -15,5 +15,5 @@ abstract class ServerRolesUpdateEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(Role before, Role after, Server server);
+  FutureOr<void> handle(Server server, Role before, Role after);
 }
