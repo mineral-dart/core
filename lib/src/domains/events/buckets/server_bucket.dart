@@ -11,6 +11,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_delete_event.
 import 'package:mineral/src/domains/events/contracts/server/server_dialog_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_member_chunk_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
@@ -69,6 +70,9 @@ final class ServerBucket {
 
   void memberUpdate(ServerMemberUpdateEventHandler handle) =>
       _events.make(Event.serverMemberUpdate, handle);
+
+  void memberChunk(ServerMemberChunkEventHandler handle) =>
+      _events.make(Event.serverMemberChunk, handle);
 
   void roleCreate(ServerRolesCreateEventHandler handle) =>
       _events.make(Event.serverRoleCreate, handle);
