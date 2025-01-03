@@ -30,7 +30,7 @@ final class PrivateChannelFactory
     };
 
     final cacheKey = marshaller.cacheKey.channel(json['id']);
-    await marshaller.cache.put(cacheKey, payload);
+    await marshaller.cache?.put(cacheKey, payload);
 
     return payload;
   }

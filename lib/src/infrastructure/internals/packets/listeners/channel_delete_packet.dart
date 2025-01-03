@@ -35,8 +35,8 @@ final class ChannelDeletePacket implements ListenablePacket {
 
     final rawServer = await _marshaller.serializers.server.deserialize(server);
 
-    await _marshaller.cache.put(serverCacheKey, rawServer);
-    await _marshaller.cache.remove(channelCacheKey);
+    await _marshaller.cache?.put(serverCacheKey, rawServer);
+    await _marshaller.cache?.remove(channelCacheKey);
 
     dispatch(event: Event.serverChannelDelete, params: [channel]);
   }

@@ -30,11 +30,7 @@ final class EmojiPart implements EmojiPartContract {
     };
 
     final emojis = await Future.wait(rawEmojis.map((element) async {
-      final emoji = await _marshaller.serializers.emojis.serialize(element);
-      await _marshaller.cache
-          .put(_marshaller.cacheKey.serverEmoji(serverId, emoji.id!.value), element);
-
-      return emoji;
+      return _marshaller.serializers.emojis.serialize(element);
     }));
 
     completer.complete(emojis.asMap().map((_, value) => MapEntry(value.id!, value)));
@@ -46,7 +42,7 @@ final class EmojiPart implements EmojiPartContract {
     final completer = Completer<Emoji>();
     final String key = _marshaller.cacheKey.serverEmoji(serverId, emojiId);
 
-    final cachedEmoji = await _marshaller.cache.get(key);
+    final cachedEmoji = await _marshaller.cache?.get(key);
     if (!force && cachedEmoji != null) {
       final channel = await _marshaller.serializers.emojis.serialize(cachedEmoji);
       completer.complete(channel);

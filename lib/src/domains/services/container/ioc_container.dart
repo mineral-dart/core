@@ -1,3 +1,5 @@
+import 'package:mineral/src/domains/commons/utils/helper.dart';
+
 final class IocContainer {
   final Map<Type, dynamic> _services = {};
   final Map<Type, dynamic> _defaults = {};
@@ -22,7 +24,9 @@ final class IocContainer {
     };
   }
 
-  void override<T>(T key, T Function() clazz) {
+  T? resolveOrNull<T>() => _services[T];
+
+  void override<T>(T key, Constructable<T> clazz) {
     if (!_services.containsKey(key)) {
       throw Exception('Service not exists, you can\t override it');
     }

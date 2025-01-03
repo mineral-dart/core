@@ -26,7 +26,7 @@ final class PollSerializer implements SerializerContract<Poll> {
     };
 
     final cacheKey = _marshaller.cacheKey.poll(json['message_id']);
-    await _marshaller.cache.put(cacheKey, payload);
+    await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
   }

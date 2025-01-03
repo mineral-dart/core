@@ -19,7 +19,7 @@ final class MessagePart implements MessagePartContract {
     final completer = Completer<T>();
 
     final cacheKey = _marshaller.cacheKey.message(channelId, id);
-    final cachedMessage = await _marshaller.cache.get(cacheKey);
+    final cachedMessage = await _marshaller.cache?.get(cacheKey);
     if (!force && cachedMessage != null) {
       final message = await _marshaller.serializers.message.serialize(cachedMessage);
       completer.complete(message as T);

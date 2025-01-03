@@ -4,7 +4,7 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:path/path.dart';
 
-final class DefaultScaffold implements ScaffoldContract {
+class DefaultScaffold implements ScaffoldContract {
   @override
   File get entrypoint => switch (binDir) {
         Directory(:final path) => File(join(path, 'main.dart')),
@@ -22,6 +22,9 @@ final class DefaultScaffold implements ScaffoldContract {
 
   @override
   Directory? get configDir => Directory(join(rootDir.path, 'config'));
+
+  @override
+  Directory? get assetsDir => Directory(join(rootDir.path, 'assets'));
 
   @override
   IocContainer get container => ioc;

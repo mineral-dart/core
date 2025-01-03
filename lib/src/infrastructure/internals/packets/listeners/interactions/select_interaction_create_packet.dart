@@ -56,44 +56,42 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     }
   }
 
-  Future<void> _dispatchChannelSelectMenu(
-      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
+  Future<void> _dispatchChannelSelectMenu(SelectContext ctx, Map<String, dynamic> payload,
+      DispatchEvent dispatch) async {
+    final serverChannels = await _dataStore.channel.fetch(payload['guild_id'], false);
+
     final resolvedData = payload['data']['resolved'];
-    final channelIds = Map.from(resolvedData['channels']).keys;
+    final channelIds = Map
+        .from(resolvedData['channels'])
+        .keys;
 
-    Future<List<T>> resolveChannels<T extends Channel>() {
-      return Future.wait(channelIds.map((id) async {
-        final cacheKey = _marshaller.cacheKey.channel(id);
-        final rawChannel = await _marshaller.cache.getOrFail(cacheKey);
-
-        return _marshaller.serializers.channels.serialize(rawChannel) as Future<T>;
-      }));
-    }
+    final channels = channelIds.map((id) => serverChannels[id]).whereType<ServerChannel>();
 
     return switch (ctx) {
-      ServerSelectContext() => dispatch(
-          event: Event.serverChannelSelect,
-          params: [ctx, await resolveChannels<ServerChannel>()],
-          constraint: (String? customId) => customId == ctx.customId),
-      PrivateSelectContext() => dispatch(
-          event: Event.serverChannelSelect,
-          params: [ctx, await resolveChannels<Channel>()],
-          constraint: (String? customId) => customId == ctx.customId),
+      ServerSelectContext() =>
+          dispatch(
+              event: Event.serverChannelSelect,
+              params: [ctx, channels.whereType<ServerChannel>()],
+              constraint: (String? customId) => customId == ctx.customId),
+      PrivateSelectContext() =>
+          dispatch(
+              event: Event.serverChannelSelect,
+              params: [ctx, channels.whereType<Channel>()],
+              constraint: (String? customId) => customId == ctx.customId),
       _ => _logger.warn('Select context $ctx not found'),
     };
   }
 
-  Future<void> _dispatchRoleSelectMenu(
-      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
+  Future<void> _dispatchRoleSelectMenu(SelectContext ctx, Map<String, dynamic> payload,
+      DispatchEvent dispatch) async {
+    final serverRoles = await _dataStore.role.fetch(payload['guild_id'], false);
+
     final resolvedData = payload['data']['resolved'];
-    final roleIds = Map.from(resolvedData['roles']).keys;
+    final roleIds = Map
+        .from(resolvedData['roles'])
+        .keys;
 
-    final List<Role> resolvedRoles = await Future.wait(roleIds.map((id) async {
-      final cacheKey = _marshaller.cacheKey.serverRole(payload['guild_id'], id);
-      final rawRole = await _marshaller.cache.getOrFail(cacheKey);
-
-      return _marshaller.serializers.role.serialize(rawRole);
-    }));
+    final resolvedRoles = roleIds.map((id) => serverRoles[id]);
 
     dispatch(
         event: Event.serverRoleSelect,
@@ -101,10 +99,12 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
         constraint: (String? customId) => customId == ctx.customId);
   }
 
-  Future<void> _dispatchUserSelectMenu(
-      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
+  Future<void> _dispatchUserSelectMenu(SelectContext ctx, Map<String, dynamic> payload,
+      DispatchEvent dispatch) async {
     final resolvedData = payload['data']['resolved'];
-    final userIds = Map.from(resolvedData['users']).keys;
+    final userIds = Map
+        .from(resolvedData['users'])
+        .keys;
 
     final event = switch (ctx) {
       ServerSelectContext() => Event.serverMemberSelect,
@@ -118,9 +118,10 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     }
 
     final resolvedResource = await switch (ctx) {
-      ServerSelectContext() => Future.wait(userIds.map((id) {
-          return _dataStore.member.get(payload['guild_id'], id, false);
-        })),
+      ServerSelectContext() =>
+          Future.wait(userIds.map((id) {
+            return _dataStore.member.get(payload['guild_id'], id, false);
+          })),
       PrivateSelectContext() => Future.wait(userIds.map((id) => _dataStore.user.get(id, false))),
       _ => Future.value([]),
     };
@@ -131,19 +132,21 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
         constraint: (String? customId) => customId == ctx.customId);
   }
 
-  Future<void> _dispatchTextSelectMenu(
-      SelectContext ctx, Map<String, dynamic> payload, DispatchEvent dispatch) async {
+  Future<void> _dispatchTextSelectMenu(SelectContext ctx, Map<String, dynamic> payload,
+      DispatchEvent dispatch) async {
     final List<String> resolvedText = List.from(payload['data']['values']);
 
     return switch (ctx) {
-      ServerSelectContext() => dispatch(
-          event: Event.serverTextSelect,
-          params: [ctx, resolvedText],
-          constraint: (String? customId) => customId == ctx.customId),
-      PrivateSelectContext() => dispatch(
-          event: Event.privateTextSelect,
-          params: [ctx, resolvedText],
-          constraint: (String? customId) => customId == ctx.customId),
+      ServerSelectContext() =>
+          dispatch(
+              event: Event.serverTextSelect,
+              params: [ctx, resolvedText],
+              constraint: (String? customId) => customId == ctx.customId),
+      PrivateSelectContext() =>
+          dispatch(
+              event: Event.privateTextSelect,
+              params: [ctx, resolvedText],
+              constraint: (String? customId) => customId == ctx.customId),
       _ => _logger.warn('Select context $ctx not found'),
     };
   }

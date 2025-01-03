@@ -33,11 +33,7 @@ final class MemberPart implements MemberPartContract {
     };
 
     final members = await Future.wait(rawMembers.map((element) async {
-      final member = await _marshaller.serializers.member.serialize(element);
-      final cacheKey = _marshaller.cacheKey.member(serverId, member.id.value);
-
-      await _marshaller.cache.put(cacheKey, element);
-      return member;
+      return _marshaller.serializers.member.serialize(element);
     }));
 
     completer.complete(members.asMap().map((_, value) => MapEntry(value.id, value)));
@@ -49,7 +45,7 @@ final class MemberPart implements MemberPartContract {
     final completer = Completer<Member>();
     final String key = _marshaller.cacheKey.member(serverId, id);
 
-    final cachedMember = await _marshaller.cache.get(key);
+    final cachedMember = await _marshaller.cache?.get(key);
     if (!force && cachedMember != null) {
       final member = await _marshaller.serializers.member.serialize(cachedMember);
       completer.complete(member);
@@ -60,7 +56,7 @@ final class MemberPart implements MemberPartContract {
     final response = await _dataStore.client.get('/guilds/$serverId/members/$id');
     final role = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.member.normalize(response.body),
+        await _marshaller.serializers.member.normalize({...response.body, 'guild_id': serverId}),
       int() when status.isRateLimit(response.statusCode) =>
         throw HttpException(response.bodyString),
       int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),

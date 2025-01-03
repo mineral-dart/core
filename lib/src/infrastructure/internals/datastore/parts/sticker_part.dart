@@ -29,11 +29,7 @@ final class StickerPart implements StickerPartContract {
     };
 
     final emojis = await Future.wait(rawEmojis.map((element) async {
-      final emoji = await _marshaller.serializers.sticker.serialize(element);
-      await _marshaller.cache
-          .put(_marshaller.cacheKey.serverEmoji(serverId, emoji.id!.value), element);
-
-      return emoji;
+      return  _marshaller.serializers.sticker.serialize(element);
     }));
 
     completer.complete(emojis.asMap().map((_, value) => MapEntry(value.id!, value)));
@@ -45,7 +41,7 @@ final class StickerPart implements StickerPartContract {
     final completer = Completer<Sticker>();
     final String key = _marshaller.cacheKey.sticker(serverId, stickerId);
 
-    final cachedSticker = await _marshaller.cache.get(key);
+    final cachedSticker = await _marshaller.cache?.get(key);
     if (!force && cachedSticker != null) {
       final sticker = await _marshaller.serializers.sticker.serialize(cachedSticker);
       completer.complete(sticker);

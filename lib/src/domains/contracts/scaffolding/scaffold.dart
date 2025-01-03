@@ -8,5 +8,6 @@ abstract interface class ScaffoldContract {
   Directory get libDir;
   Directory? get binDir;
   Directory? get configDir;
+  Directory? get assetsDir;
   IocContainer get container;
 }

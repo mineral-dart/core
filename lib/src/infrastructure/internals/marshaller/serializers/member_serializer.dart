@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/api/common/premium_tier.dart';
 import 'package:mineral/src/api/server/enums/member_flag.dart';
@@ -15,26 +16,25 @@ import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer
 final class MemberSerializer implements SerializerContract<Member> {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
+
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
-    await _marshaller.serializers.memberAssets.normalize({
-      ...json,
-      'member_id': json['user']['id'],
-    });
-
     final payload = {
       'id': json['user']['id'],
       'username': json['user']['username'],
       'nickname': json['nick'],
       'global_name': json['user']['global_name'],
       'discriminator': json['user']['discriminator'],
-      'assets': _marshaller.cacheKey
-          .memberAssets(json['guild_id'], json['user']['id']),
+      'assets': {
+        'server_id': json['guild_id'],
+        'member_id': json['member_id'],
+        'avatar': json['avatar'],
+        'avatar_decoration': json['avatar_decoration_data']?['sku_id'],
+        'banner': json['banner'],
+      },
       'flags': json['flags'],
-      'roles': List.from(json['roles'])
-          .map((element) =>
-              _marshaller.cacheKey.serverRole(json['guild_id'], element))
-          .toList(),
+      'roles': List.from(json['roles']),
       'premium_since': json['premium_since'],
       'public_flags': json['user']['public_flags'],
       'is_bot': json['user']['bot'] ?? false,
@@ -51,35 +51,42 @@ final class MemberSerializer implements SerializerContract<Member> {
     };
 
     final cacheKey = _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
-    await _marshaller.cache.put(cacheKey, payload);
+    await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
   }
 
   @override
   Future<Member> serialize(Map<String, dynamic> json) async {
-    final rawAssets = await _marshaller.cache.getOrFail(json['assets']);
-    final assets =
-        await _marshaller.serializers.memberAssets.serialize(rawAssets);
+    final serverRoles = await _datastore.role.fetch(json['server_id'], false);
+    final roles =
+        List<Snowflake>.from(json['roles']).map((id) => serverRoles[id]).nonNulls.toList();
 
-    final rawRoles = await _marshaller.cache.getMany(json['roles']);
-    final roles = await rawRoles.nonNulls.map((element) async {
-      return _marshaller.serializers.role.serialize(element);
-    }).wait;
+    final assets = Map<String, dynamic>.from(json['assets']);
+    final memberAsset = MemberAssets(
+      avatar: Helper.createOrNull(
+          field: assets['avatar'],
+          fn: () => ImageAsset(['avatars', assets['member_id']], assets['avatar'])),
+      avatarDecoration: Helper.createOrNull(
+          field: assets['avatar_decoration'],
+          fn: () =>
+              ImageAsset(['avatar-decorations', assets['member_id']], assets['avatar_decoration'])),
+      banner: Helper.createOrNull(
+          field: assets['banner'],
+          fn: () => ImageAsset(['banners', assets['member_id']], assets['banner'])),
+    );
 
-    final member = Member(
+    return Member(
       id: json['id'],
       serverId: Snowflake(json['server_id']),
       username: json['nick'] ?? json['username'],
       nickname: json['nick'] ?? json['display_name'],
       globalName: json['global_name'],
       discriminator: json['discriminator'],
-      assets: assets,
-      flags:
-          MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
+      assets: memberAsset,
+      flags: MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
       premiumSince: Helper.createOrNull(
-          field: json['premium_since'],
-          fn: () => DateTime.parse(json['premium_since'])),
+          field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
       publicFlags: json['public_flags'],
       roles: MemberRoleManager.fromList(roles),
       isBot: json['is_bot'] ?? false,
@@ -90,12 +97,10 @@ final class MemberSerializer implements SerializerContract<Member> {
               fn: () => DateTime.parse(json['communication_disabled_until']))),
       mfaEnabled: json['mfa_enabled'] ?? false,
       locale: json['locale'],
-      premiumType: PremiumTier.values.firstWhere(
-          (e) => e == json['premium_type'],
-          orElse: () => PremiumTier.none),
+      premiumType: PremiumTier.values
+          .firstWhere((e) => e == json['premium_type'], orElse: () => PremiumTier.none),
       joinedAt: Helper.createOrNull(
-          field: json['joined_at'],
-          fn: () => DateTime.parse(json['joined_at'])),
+          field: json['joined_at'], fn: () => DateTime.parse(json['joined_at'])),
       permissions: switch (json['permissions']) {
         int() => Permissions.fromInt(json['permissions']),
         String() => Permissions.fromInt(int.parse(json['permissions'])),
@@ -105,37 +110,21 @@ final class MemberSerializer implements SerializerContract<Member> {
       // TODO : presence
       presence: null,
     );
-
-    member.roles.member = member;
-    member.flags.member = member;
-
-    return member;
   }
 
   @override
   Future<Map<String, dynamic>> deserialize(Member member) async {
-    final rawAsset =
-        await _marshaller.serializers.memberAssets.deserialize(member.assets);
-    final rawRoles = await member.roles.list.entries.map((role) async {
-      final cacheKey =
-          _marshaller.cacheKey.serverRole(member.serverId.value, role.key.value);
-      return {
-        cacheKey: await _marshaller.serializers.role.deserialize(role.value)
-      };
-    }).wait;
-
-    await _marshaller.cache.putMany({
-      _marshaller.cacheKey.memberAssets(member.serverId.value, member.id.value): rawAsset,
-      ...rawRoles.fold({}, (prev, element) => {...prev, ...element}),
-    });
-
     return {
       'id': member.id,
       'username': member.username,
       'nickname': member.nickname,
       'global_name': member.globalName,
       'discriminator': member.discriminator,
-      'assets': _marshaller.cacheKey.memberAssets(member.serverId.value, member.id.value),
+      'assets': {
+        'avatar': member.assets.avatar?.hash,
+        'avatar_decoration': member.assets.avatarDecoration?.hash,
+        'banner': member.assets.banner?.hash,
+      },
       'flags': listToBitfield(member.flags.list),
       'roles': member.roles.list.keys
           .map((id) => _marshaller.cacheKey.serverRole(member.serverId.value, id.value))

@@ -22,7 +22,7 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
 
     final roleCacheKey = _marshaller.cacheKey
         .serverRole(server.id.value, message.payload['role']['id']);
-    final rawBefore = await _marshaller.cache.get(roleCacheKey);
+    final rawBefore = await _marshaller.cache?.get(roleCacheKey);
     final before = rawBefore != null
         ? _marshaller.serializers.role.serialize(rawBefore)
         : null;
@@ -34,7 +34,7 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
     final role = await _marshaller.serializers.role.serialize(rawRole);
 
     final rawServer = await _marshaller.serializers.server.deserialize(server);
-    await _marshaller.cache.put(serverCacheKey, rawServer);
+    await _marshaller.cache?.put(serverCacheKey, rawServer);
 
     dispatch(event: Event.serverRoleUpdate, params: [before, role, server]);
   }

@@ -29,8 +29,8 @@ final class GuildMemberRemovePacket implements ListenablePacket {
     //
     // final rawServer = await _marshaller.serializers.server.deserialize(server);
     //
-    // await _marshaller.cache.put(serverCacheKey, rawServer);
-    // await _marshaller.cache.remove(memberCacheKey);
+    // await _marshaller.cache?.put(serverCacheKey, rawServer);
+    // await _marshaller.cache?.remove(memberCacheKey);
     //
     // dispatch(event: Event.serverMemberRemove, params: [user, server]);
   }
