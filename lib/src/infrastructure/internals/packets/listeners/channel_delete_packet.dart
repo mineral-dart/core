@@ -20,22 +20,7 @@ final class ChannelDeletePacket implements ListenablePacket {
     final channel =
         await _marshaller.serializers.channels.serialize(rawChannel);
 
-    switch (channel) {
-      case ServerChannel():
-        await registerServerChannel(channel, dispatch);
-    }
-  }
-
-  Future<void> registerServerChannel(
-      ServerChannel channel, DispatchEvent dispatch) async {
-    final server = await _dataStore.server.get(channel.serverId.value, false);
-    final serverCacheKey = _marshaller.cacheKey.server(server.id.value);
     final channelCacheKey = _marshaller.cacheKey.channel(channel.id.value);
-
-
-    final rawServer = await _marshaller.serializers.server.deserialize(server);
-
-    await _marshaller.cache?.put(serverCacheKey, rawServer);
     await _marshaller.cache?.remove(channelCacheKey);
 
     dispatch(event: Event.serverChannelDelete, params: [channel]);

@@ -9,8 +9,7 @@ import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
 
 final class ChannelProperties {
-  ChannelPartContract get dataStoreChannel =>
-      ioc.resolve<DataStoreContract>().channel;
+  ChannelPartContract get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
 
   final Snowflake id;
   final ChannelType type;
@@ -84,19 +83,18 @@ final class ChannelProperties {
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
               List.from(element['permission_overwrites'])
-                  .map((json) async => marshaller
-                      .serializers.channelPermissionOverwrite
-                      .serialize(json))
+                  .map((json) async =>
+                      marshaller.serializers.channelPermissionOverwrite.serialize(json))
                   .toList(),
             ));
 
     final recipients = await Helper.createOrNullAsync(
         field: element['recipients'],
         fn: () async => Future.wait(
-              List.from(element['recipients'])
-                  .map((json) async =>
-                      marshaller.serializers.user.serialize(json))
-                  .toList(),
+              List.from(element['recipients']).map((json) async {
+                final raw = await marshaller.serializers.user.normalize(json);
+                return marshaller.serializers.user.serialize(raw);
+              }).toList(),
             ));
 
     return ChannelProperties(
@@ -130,6 +128,6 @@ final class ChannelProperties {
         defaultReactions: element['default_reactions'],
         defaultSortOrder: element['default_sort_order'],
         defaultForumLayout: element['default_forum_layout'],
-        threads: ThreadsManager(Snowflake(element['server_id'])));
+        threads: ThreadsManager(Snowflake.nullable(element['server_id'])));
   }
 }
