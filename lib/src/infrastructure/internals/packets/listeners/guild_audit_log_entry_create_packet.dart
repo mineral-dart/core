@@ -14,8 +14,6 @@ final class GuildAuditLogEntryCreatePacket implements ListenablePacket {
     print('GuildAuditLogEntryCreatePacket ${message.payload} $auditLog');
     if (auditLog case final RoleUpdateAuditLog audit) {
       print('Color changes from ${audit.roleColor?.before} to ${audit.roleColor?.after}');
-      final role = await audit.resolveRole();
-      print('Role ${role.name} updated');
     }
     // TODO: Implement this packet
   }
