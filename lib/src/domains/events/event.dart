@@ -22,6 +22,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_delete_event.
 import 'package:mineral/src/domains/events/contracts/server/server_dialog_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_member_chunk_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
@@ -60,8 +61,8 @@ enum Event implements EnhancedEnum, EventType {
       PrivateChannelPinsUpdateEvent, ['PrivateChannel channel']),
   serverMemberAdd(ServerMemberAddEvent, ['Server server', 'Member member']),
   serverMemberRemove(ServerMemberRemoveEvent, ['Member member']),
-  serverBanAdd(ServerBanAddEvent, ['Server server', 'Member member']),
-  serverBanRemove(ServerBanRemoveEvent, ['Server server', 'Member member']),
+  serverBanAdd(ServerBanAddEvent, ['Server server', 'User user']),
+  serverBanRemove(ServerBanRemoveEvent, ['Server server', 'User user']),
   serverMemberUpdate(ServerMemberUpdateEvent,
       ['ServerMember? before', 'Member after', 'Server server']),
   serverPresenceUpdate(ServerPresenceUpdateEvent,
@@ -98,6 +99,7 @@ enum Event implements EnhancedEnum, EventType {
       ['ThreadChannel thread', 'Server server', 'Member member']),
   serverThreadListSync(ServerThreadListSyncEvent,
       ['List<ThreadChannel> threads', 'Server server']),
+  serverMemberChunk(ServerMemberChunkEvent, ['Server server', 'Map<Snowflake, Member> members']),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent, ['PrivateMessage message']),
@@ -110,8 +112,7 @@ enum Event implements EnhancedEnum, EventType {
   privateUserSelect(
       PrivateUserSelectEvent, ['PrivateSelectContext ctx', 'List<User> users']),
   privateTextSelect(PrivateTextSelectEvent,
-      ['PrivateSelectContext ctx', 'List<String> values']),
-  ;
+      ['PrivateSelectContext ctx', 'List<String> values']);
 
   @override
   final Type value;
