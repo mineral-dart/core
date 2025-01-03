@@ -22,7 +22,7 @@ final class ThreadDeletePacket implements ListenablePacket {
     final threadCacheKey = _marshaller.cacheKey.thread(payload['id']);
     final threadRaw = await _marshaller.cache?.getOrFail(threadCacheKey);
     final thread = threadRaw != null
-      ? await _marshaller.serializers.thread.serialize(threadRaw)
+      ? await _marshaller.serializers.channels.serialize(threadRaw)
       : null;
 
     await _marshaller.cache?.remove(threadCacheKey);

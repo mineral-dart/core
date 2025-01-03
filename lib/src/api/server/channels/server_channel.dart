@@ -8,13 +8,7 @@ abstract class ServerChannel implements Channel {
 
   String get name;
 
-  List<ChannelPermissionOverwrite> get permissions;
-
-  int get position;
-
   Snowflake get serverId;
-
-  ThreadsManager get threads;
 
   Future<Server> resolveServer({bool force = true}) => _dataStore.server.get(serverId.value, force);
 

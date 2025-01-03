@@ -14,5 +14,7 @@ final class UnknownChannel extends Channel {
   @override
   final ChannelType type = ChannelType.unknown;
 
-  UnknownChannel(this.id);
+  final String name;
+
+  UnknownChannel({required this.id, required this.name});
 }

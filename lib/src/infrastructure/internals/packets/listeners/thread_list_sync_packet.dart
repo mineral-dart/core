@@ -21,8 +21,8 @@ final class ThreadListSyncPacket implements ListenablePacket {
     final threadChannels = payload['threads'] as List<Map<String, dynamic>>;
 
     final threads = await threadChannels.map((element) async {
-      final threadRaw = await _marshaller.serializers.thread.normalize(element);
-      return _marshaller.serializers.thread.serialize(threadRaw);
+      final threadRaw = await _marshaller.serializers.channels.normalize(element);
+      return _marshaller.serializers.channels.serialize(threadRaw);
     }).wait;
 
     dispatch(event: Event.serverThreadListSync, params: [threads, server]);

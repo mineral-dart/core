@@ -22,11 +22,11 @@ final class ThreadUpdatePacket implements ListenablePacket {
 
     final beforeRaw = await _marshaller.cache?.getOrFail(threadCacheKey);
     final before = beforeRaw != null
-      ? await _marshaller.serializers.thread.serialize(beforeRaw)
+      ? await _marshaller.serializers.channels.serialize(beforeRaw)
       : null;
 
-    final afterRaw = await _marshaller.serializers.thread.normalize(payload);
-    final after = await _marshaller.serializers.thread.serialize(afterRaw);
+    final afterRaw = await _marshaller.serializers.channels.normalize(payload);
+    final after = await _marshaller.serializers.channels.serialize(afterRaw);
 
     dispatch(event: Event.serverThreadUpdate, params: [before, after, server]);
   }
