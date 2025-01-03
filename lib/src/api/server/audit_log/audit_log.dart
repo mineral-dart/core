@@ -2,19 +2,8 @@ import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/server/audit_log/actions/emoji.dart';
+import 'package:mineral/src/api/server/audit_log/actions/role.dart';
 import 'package:mineral/src/api/server/audit_log/audit_log_action.dart';
-
-abstract class AuditLogActionContract {
-  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
-
-  AuditLogType type;
-  Snowflake serverId;
-  Snowflake? userId;
-
-  AuditLogActionContract(this.type, this.serverId, this.userId);
-
-  Future<Server> resolveServer() => _datastore.server.get(serverId.value, true);
-}
 
 abstract class AuditLog {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
@@ -38,6 +27,9 @@ abstract class AuditLog {
       AuditLogType.emojiCreate => EmojiCreateAuditLog.fromJson(json),
       AuditLogType.emojiUpdate => EmojiUpdateAuditLog.fromJson(json),
       AuditLogType.emojiDelete => EmojiDeleteAuditLog.fromJson(json),
+      AuditLogType.roleCreate => RoleCreateAuditLog.fromJson(json),
+      AuditLogType.roleUpdate => RoleUpdateAuditLog.fromJson(json),
+      AuditLogType.roleDelete => RoleDeleteAuditLog.fromJson(json),
       _ => UnknownAuditLogAction.fromJson(json),
     };
 
@@ -46,6 +38,18 @@ abstract class AuditLog {
     }
 
     return auditLog;
+  }
+}
+
+final class Change<B, A> {
+  final String key;
+  final B before;
+  final A after;
+
+  Change(this.key, this.before, this.after);
+
+  factory Change.fromJson(Map<String, dynamic> json) {
+    return Change(json['key'], json['old_value'], json['new_value']);
   }
 }
 
