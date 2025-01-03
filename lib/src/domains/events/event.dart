@@ -58,10 +58,10 @@ enum Event implements EnhancedEnum, EventType {
       ServerChannelPinsUpdateEvent, ['ServerChannel channel']),
   privateChannelPinsUpdate(
       PrivateChannelPinsUpdateEvent, ['PrivateChannel channel']),
-  serverMemberAdd(ServerMemberAddEvent, ['Member member', 'Server server']),
+  serverMemberAdd(ServerMemberAddEvent, ['Server server', 'Member member']),
   serverMemberRemove(ServerMemberRemoveEvent, ['Member member']),
-  serverBanAdd(ServerBanAddEvent, ['ServerBan ban']),
-  serverBanRemove(ServerBanRemoveEvent, ['ServerBan ban']),
+  serverBanAdd(ServerBanAddEvent, ['Server server', 'Member member']),
+  serverBanRemove(ServerBanRemoveEvent, ['Server server', 'Member member']),
   serverMemberUpdate(ServerMemberUpdateEvent,
       ['ServerMember? before', 'Member after', 'Server server']),
   serverPresenceUpdate(ServerPresenceUpdateEvent,

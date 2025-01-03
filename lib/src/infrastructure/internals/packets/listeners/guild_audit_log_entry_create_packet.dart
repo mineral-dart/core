@@ -11,10 +11,6 @@ final class GuildAuditLogEntryCreatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final auditLog = AuditLog.fromJson(message.payload);
-    print('GuildAuditLogEntryCreatePacket ${message.payload} $auditLog');
-    if (auditLog case final RoleUpdateAuditLog audit) {
-      print('Color changes from ${audit.roleColor?.before} to ${audit.roleColor?.after}');
-    }
     // TODO: Implement this packet
   }
 }
