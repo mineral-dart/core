@@ -1,5 +1,9 @@
 import 'package:mineral/src/api/common/types/enhanced_enum.dart';
 import 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
+import 'package:mineral/src/domains/events/contracts/common/voice_join_event.dart';
+import 'package:mineral/src/domains/events/contracts/common/voice_leave_event.dart';
+import 'package:mineral/src/domains/events/contracts/common/voice_move_event.dart';
+import 'package:mineral/src/domains/events/contracts/common/voice_state_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_button_click_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_channel_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_channel_delete_event.dart';
@@ -112,7 +116,12 @@ enum Event implements EnhancedEnum, EventType {
   privateUserSelect(
       PrivateUserSelectEvent, ['PrivateSelectContext ctx', 'List<User> users']),
   privateTextSelect(PrivateTextSelectEvent,
-      ['PrivateSelectContext ctx', 'List<String> values']);
+      ['PrivateSelectContext ctx', 'List<String> values']),
+
+  voiceStateUpdate(VoiceStateUpdateEvent, ['VoiceState before', 'VoiceState after']),
+  voiceJoin(VoiceJoinEvent, ['VoiceState state']),
+  voiceLeave(VoiceLeaveEvent, ['VoiceState state']),
+  voiceMove(VoiceMoveEvent, ['VoiceState? before', 'VoiceState after']);
 
   @override
   final Type value;

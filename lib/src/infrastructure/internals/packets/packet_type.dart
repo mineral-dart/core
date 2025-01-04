@@ -41,7 +41,10 @@ enum PacketType implements PacketTypeContract {
   guildEmojisUpdate('GUILD_EMOJIS_UPDATE'),
   guildStickersUpdate('GUILD_STICKERS_UPDATE'),
 
-  channelPinsUpdate('CHANNEL_PINS_UPDATE');
+  channelPinsUpdate('CHANNEL_PINS_UPDATE'),
+
+  voiceStateUpdate('VOICE_STATE_UPDATE'),
+  voiceChannelStatusUpdate('VOICE_CHANNEL_STATUS_UPDATE');
 
   @override
   final String name;

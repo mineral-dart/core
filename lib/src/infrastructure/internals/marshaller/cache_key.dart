@@ -41,6 +41,8 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
+  String voiceState(String serverId, String userId) => '${member(serverId, userId)}/voice_states';
+
   String userAssets(String userId, {bool ref = false}) {
     final key = '${user(userId)}/assets';
     return ref ? 'ref:$key' : key;

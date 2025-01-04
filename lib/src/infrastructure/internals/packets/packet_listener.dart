@@ -33,6 +33,9 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_cr
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_delete_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_members_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_update_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_join_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_leave_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_state_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_dispatcher.dart';
 
 final class PacketListener implements PacketListenerContract {
@@ -87,5 +90,9 @@ final class PacketListener implements PacketListenerContract {
     subscribe(ThreadUpdatePacket.new);
     subscribe(ThreadDeletePacket.new);
     subscribe(ThreadMembersUpdatePacket.new);
+
+    subscribe(VoiceJoinPacket.new);
+    subscribe(VoiceStateUpdatePacket.new);
+    subscribe(VoiceLeavePacket.new);
   }
 }
