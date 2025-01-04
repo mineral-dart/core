@@ -25,7 +25,7 @@ enum PacketType implements PacketTypeContract {
   guildMemberAdd('GUILD_MEMBER_ADD'),
   guildMemberRemove('GUILD_MEMBER_REMOVE'),
   guildMemberUpdate('GUILD_MEMBER_UPDATE'),
-  guildMemberChunk('GUILD_MEMBER_CHUNK'),
+  guildMemberChunk('GUILD_MEMBERS_CHUNK'),
 
   guildBanAdd('GUILD_BAN_ADD'),
   guildBanRemove('GUILD_BAN_REMOVE'),

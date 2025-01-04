@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/permissions.dart';
@@ -15,6 +16,8 @@ import 'package:mineral/src/api/server/server.dart';
 
 final class Member implements UserClient {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
+
+  WebsocketOrchestratorContract get _wss => ioc.resolve<WebsocketOrchestratorContract>();
 
   final Snowflake id;
   final String username;
@@ -60,6 +63,13 @@ final class Member implements UserClient {
     final voiceState = await _datastore.member.getVoiceState(serverId.value, id.value, force);
     return MemberVoiceManager(serverId, id, voiceState);
   }
+
+  /// Get the [Presence] of the member.
+  /// ```dart
+  /// final presence = await member.resolvePresence();
+  /// ```
+  Future<Presence> resolvePresence({bool force = false}) =>
+      _wss.getMemberPresence('583050048766476353', '240561194958716928');
 
   /// Check if the member can bypass verification.
   ///
