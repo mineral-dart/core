@@ -6,10 +6,10 @@ import 'package:mineral/src/api/common/message.dart';
 import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/sticker.dart';
 import 'package:mineral/src/api/private/user.dart';
-import 'package:mineral/src/api/server/channels/thread_channel.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/api/server/server.dart';
+import 'package:mineral/src/api/server/voice_state.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/channel_permission_overwrite_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/channel_serializer.dart';
@@ -22,6 +22,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/serializers/role
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/server_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/sticker_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/user_serializer.dart';
+import 'package:mineral/src/infrastructure/internals/marshaller/serializers/voice_state_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class SerializerBucket {
@@ -48,6 +49,8 @@ final class SerializerBucket {
 
   final SerializerContract<Poll> poll;
 
+  final SerializerContract<VoiceState> voice;
+
   SerializerBucket(MarshallerContract marshaller)
       : channels = ChannelSerializer(),
         server = ServerSerializer(),
@@ -59,5 +62,6 @@ final class SerializerBucket {
         channelPermissionOverwrite = ChannelPermissionOverwriteSerializer(),
         message = MessageSerializer(),
         embed = EmbedSerializer(),
-        poll = PollSerializer();
+        poll = PollSerializer(),
+        voice = VoiceStateSerializer();
 }
