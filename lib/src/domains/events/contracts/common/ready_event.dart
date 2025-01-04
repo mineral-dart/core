@@ -1,6 +1,6 @@
 import 'dart:async';
 
-import 'package:mineral/src/api/common/bot.dart';
+import 'package:mineral/src/api/common/bot/bot.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 

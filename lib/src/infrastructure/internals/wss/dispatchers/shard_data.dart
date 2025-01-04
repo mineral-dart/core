@@ -12,7 +12,7 @@ final class ShardData implements ShardDataContract {
 
   ShardData(Shard shard, this._dispatchStrategy)
       : _shard = shard,
-        hmr = shard.kernel.hmr;
+        hmr = shard.hmr;
 
   @override
   void dispatch(WebsocketMessage message) {

@@ -1,5 +1,5 @@
 import 'package:mineral/container.dart';
-import 'package:mineral/src/api/common/bot.dart';
+import 'package:mineral/src/api/common/bot/bot.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 import 'package:mineral/src/domains/events/event.dart';

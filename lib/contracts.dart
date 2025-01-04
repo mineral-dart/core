@@ -21,3 +21,4 @@ export 'package:mineral/src/domains/contracts/scaffolding/scaffold.dart';
 export 'package:mineral/src/domains/contracts/wss/shard.dart';
 export 'package:mineral/src/domains/contracts/wss/shard_authentication.dart';
 export 'package:mineral/src/domains/contracts/wss/sharding_config.dart';
+export 'package:mineral/src/domains/contracts/wss/websocket_orchestrator.dart';

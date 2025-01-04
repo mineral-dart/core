@@ -22,9 +22,9 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.identify)
-      ..append('token', shard.kernel.config.token)
-      ..append('intents', shard.kernel.config.intent)
-      ..append('compress', shard.kernel.config.compress)
+      ..append('token', shard.wss.config.token)
+      ..append('intents', shard.wss.config.intent)
+      ..append('compress', shard.wss.config.compress)
       ..append('properties', {'\$os': 'macos', '\$device': 'mineral'});
 
     shard.client.send(message.build());
@@ -79,7 +79,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   void resume() {
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.resume)
-      ..append('token', shard.kernel.config.token)
+      ..append('token', shard.wss.config.token)
       ..append('session_id', sessionId)
       ..append('seq', sequence);
 

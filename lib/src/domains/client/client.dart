@@ -24,6 +24,8 @@ final class Client {
 
   DataStoreContract get rest => ioc.resolve<DataStoreContract>();
 
+  WebsocketOrchestratorContract get wss => _kernel.wss;
+
   CommandInteractionManagerContract get _commands =>
       ioc.resolve<CommandInteractionManagerContract>();
 
