@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/services.dart';
+import 'package:mineral/src/api/server/voice_state.dart';
 
 abstract interface class DataStorePart {}
 
@@ -70,6 +71,8 @@ abstract interface class MemberPartContract implements DataStorePart {
 
   Future<void> kickMember(
       {required Snowflake serverId, required Snowflake memberId, String? reason});
+
+  Future<VoiceState?> getVoiceState(String serverId, String userId, bool force);
 }
 
 abstract interface class MessagePartContract implements DataStorePart {

@@ -1,15 +1,8 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/permissions.dart';
-import 'package:mineral/src/api/common/premium_tier.dart';
-import 'package:mineral/src/api/server/enums/member_flag.dart';
-import 'package:mineral/src/api/server/managers/member_role_manager.dart';
-import 'package:mineral/src/api/server/member.dart';
-import 'package:mineral/src/api/server/member_flags.dart';
-import 'package:mineral/src/api/server/member_timeout.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
-import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
@@ -46,7 +39,6 @@ final class MemberSerializer implements SerializerContract<Member> {
       'joined_at': json['joined_at'],
       'permissions': json['permissions'],
       'accent_color': json['accent_color'],
-      // TODO : presence
       'server_id': json['guild_id'],
     };
 
@@ -107,8 +99,6 @@ final class MemberSerializer implements SerializerContract<Member> {
         _ => Permissions.fromInt(0),
       },
       accentColor: json['accent_color'],
-      // TODO : presence
-      presence: null,
     );
   }
 
@@ -140,7 +130,6 @@ final class MemberSerializer implements SerializerContract<Member> {
       'joined_at': member.joinedAt?.toIso8601String(),
       'permissions': listToBitfield(member.permissions.list),
       'accent_color': member.accentColor,
-      // TODO : presence
       'server_id': member.serverId,
     };
   }

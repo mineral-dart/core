@@ -5,6 +5,7 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
+import 'package:mineral/src/api/server/voice_state.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
@@ -116,5 +117,37 @@ final class MemberPart implements MemberPartContract {
     if (status.isSuccess(response.statusCode)) {
       return;
     }
+  }
+
+  @override
+  Future<VoiceState?> getVoiceState(String serverId, String userId, bool force) async {
+    final completer = Completer<VoiceState?>();
+    final String key = _marshaller.cacheKey.voiceState(serverId, userId);
+
+    final cachedMember = await _marshaller.cache?.get(key);
+    if (!force && cachedMember != null) {
+      final voiceState = await _marshaller.serializers.voice.serialize(cachedMember);
+      completer.complete(voiceState);
+
+      return completer.future;
+    }
+
+    final response = await _dataStore.client.get('/guilds/$serverId/voice-states/$userId');
+    final voiceState = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.voice.normalize({...response.body, 'guild_id': serverId}),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => null,
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
+
+    if (voiceState == null) {
+      completer.complete(null);
+      return completer.future;
+    }
+
+    completer.complete(await _marshaller.serializers.voice.serialize(voiceState));
+    return completer.future;
   }
 }

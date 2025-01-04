@@ -2,7 +2,6 @@ import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/api/common/premium_tier.dart';
-import 'package:mineral/src/api/common/presence.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/user_client.dart';
 import 'package:mineral/src/api/server/builders/member_builder.dart';
@@ -12,15 +11,10 @@ import 'package:mineral/src/api/server/managers/member_voice_manager.dart';
 import 'package:mineral/src/api/server/member_assets.dart';
 import 'package:mineral/src/api/server/member_flags.dart';
 import 'package:mineral/src/api/server/member_timeout.dart';
-import 'package:mineral/src/api/server/member_voice.dart';
 import 'package:mineral/src/api/server/server.dart';
 
 final class Member implements UserClient {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
-
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
-
-  late final MemberVoice voice;
 
   final Snowflake id;
   final String username;
@@ -42,19 +36,28 @@ final class Member implements UserClient {
   final int? accentColor;
   final MemberFlagsManager flags;
   final Snowflake serverId;
-  Presence? presence;
 
   /// Get related [Server]
   /// ```dart
   /// final server = await member.resolveServer();
   /// ```
+  /// You can `force` the update by setting the `force` parameter to `true` to override [CacheProviderContract] by the Discord APi Response.
+  /// ```dart
+  /// final server = await member.resolveServer(force: true);
+  /// ```
   Future<Server> resolveServer() => _datastore.server.get(serverId.value, true);
 
-  Future<MemberVoiceManager> resolveVoiceContext() async {
-    final cacheKey = _marshaller.cacheKey.voiceState(serverId.value, id.value);
-    final raw = await _marshaller.cache?.get(cacheKey);
-    final voiceState = raw != null ? await _marshaller.serializers.voice.serialize(raw) : null;
-
+  /// Get the [VoiceState] of the member inside [MemberVoiceManager].
+  /// ```dart
+  /// final voice = await member.resolveVoiceContext();
+  /// ```
+  ///
+  /// You can `force` the update by setting the `force` parameter to `true` to override [CacheProviderContract] by the Discord APi Response.
+  /// ```dart
+  /// final voice = await member.resolveVoiceContext(force: true);
+  /// ```
+  Future<MemberVoiceManager> resolveVoiceContext({bool force = false}) async {
+    final voiceState = await _datastore.member.getVoiceState(serverId.value, id.value, force);
     return MemberVoiceManager(serverId, id, voiceState);
   }
 
@@ -157,16 +160,16 @@ final class Member implements UserClient {
   /// ```dart
   /// await member.enableMfa(reason: 'Testing');
   /// ```
-  Future<void> enableMfa({String? reason}) => _datastore.member.update(
-      serverId: serverId, memberId: id, payload: {'mfa_enable': true}, reason: reason);
+  Future<void> enableMfa({String? reason}) => _datastore.member
+      .update(serverId: serverId, memberId: id, payload: {'mfa_enable': true}, reason: reason);
 
   /// Disable the member's MFA.
   ///
   /// ```dart
   /// await member.disableMfa(reason: 'Testing');
   /// ```
-  Future<void> disableMfa({String? reason}) => _datastore.member.update(
-      serverId: serverId, memberId: id, payload: {'mfa_enable': false}, reason: reason);
+  Future<void> disableMfa({String? reason}) => _datastore.member
+      .update(serverId: serverId, memberId: id, payload: {'mfa_enable': false}, reason: reason);
 
   /// Toggle the member's MFA.
   ///
@@ -213,9 +216,6 @@ final class Member implements UserClient {
     required this.joinedAt,
     required this.permissions,
     required this.accentColor,
-    required this.presence,
     required this.serverId,
-  }) {
-    voice = MemberVoice(this);
-  }
+  });
 }
