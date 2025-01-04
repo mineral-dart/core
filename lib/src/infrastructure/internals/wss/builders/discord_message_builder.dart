@@ -15,6 +15,13 @@ final class ShardMessageBuilder<OpCodeEnum extends OpCode> {
     _payload![key] = payload;
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'op': _code!.value,
+      'd': _payload,
+    };
+  }
+
   String build() {
     return jsonEncode({
       'op': _code!.value,

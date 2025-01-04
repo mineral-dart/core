@@ -1,3 +1,5 @@
+import 'dart:async';
+import 'dart:convert';
 import 'dart:isolate';
 
 import 'package:mineral/api.dart';
@@ -8,10 +10,16 @@ import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
 import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
+import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/token_exception.dart';
 
 final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
+  @override
+  final List<({String uid, List<String> targetKeys, Completer completer})> requestQueue = [];
+
   HttpClientContract get _httpClient => ioc.resolve<HttpClientContract>();
+
+  EnvContract get _env => ioc.resolve<EnvContract>();
 
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
 
@@ -24,14 +32,40 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   WebsocketOrchestrator(this.config);
 
   @override
-  void send(String message) {
+  void send(WebsocketIsolateMessageTransfert message) {
     if (Isolate.current.debugName == 'dev') {
       final sendPort = ioc.resolve<SendPort?>();
-      sendPort?.send(message);
+
+      if (message case WebsocketIsolateMessageTransfert(:final type)
+          when type == MessageTransfertType.request) {
+        _logger.trace('Sending message to all shards ${message.toJson()}');
+        requestQueue.add(
+            (uid: message.uid!, targetKeys: message.targetKeys, completer: message.completer!));
+      }
+
+      sendPort?.send(message.toJson());
     } else {
-      _logger.trace('Sending message to all shards $message');
-      shards.forEach((_, shard) => shard.client.send(message));
+      _logger.trace('Sending message to all shards ${message.toJson()}');
+
+      return switch (message.type) {
+        MessageTransfertType.send => _sendToShards(message),
+        MessageTransfertType.request => _requestMessage(message),
+        _ => _logger.warn('Unknown message transfert type ${message.type}'),
+      };
     }
+  }
+
+  void _sendToShards(WebsocketIsolateMessageTransfert message) {
+    shards.forEach((_, shard) => shard.client.send(json.encode(message.payload)));
+  }
+
+  void _requestMessage(WebsocketIsolateMessageTransfert message) {
+    if (Isolate.current.debugName == 'main' && _env.get(AppEnv.dartEnv) == 'production') {
+      requestQueue
+          .add((uid: message.uid!, targetKeys: message.targetKeys, completer: message.completer!));
+    }
+
+    _sendToShards(message);
   }
 
   @override
@@ -44,7 +78,29 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       ..append('status', status != null ? status.toString() : StatusType.online.toString())
       ..append('afk', afk ?? false);
 
-    send(message.build());
+    send(WebsocketIsolateMessageTransfert.send(message.toJson()));
+  }
+
+  @override
+  Future<Presence> getMemberPresence(String serverId, String id) {
+    final completer = Completer<Presence>();
+    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final message = ShardMessageBuilder()
+      ..setOpCode(OpCode.requestGuildMember)
+      ..append('guild_id', serverId)
+      ..append('user_ids', id)
+      ..append('presences', true)
+      ..append('nonce', timestamp.toString());
+
+    final messageTransfert = WebsocketIsolateMessageTransfert.request(
+        payload: message.toJson(),
+        uid: timestamp.toString(),
+        completer: completer,
+        targetKeys: ['presences']);
+
+    send(messageTransfert);
+
+    return completer.future;
   }
 
   @override

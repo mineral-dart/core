@@ -11,6 +11,7 @@ import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_builder.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
 import 'package:watcher/watcher.dart';
 
 final class HotModuleReloading implements HmrContract {
@@ -93,7 +94,7 @@ final class HotModuleReloading implements HmrContract {
       });
 
       broadcast.listen((message) {
-        _wss.send(message);
+        _wss.send(WebsocketIsolateMessageTransfert.fromJson(message));
       });
     });
   }
