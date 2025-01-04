@@ -6,6 +6,8 @@ import 'package:mineral/src/api/server/voice_state.dart';
 final class MemberVoiceManager {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
+  LoggerContract get _logger => ioc.resolve<LoggerContract>();
+
   final Snowflake _serverId;
   final Snowflake _memberId;
   final VoiceState? _voiceState;
@@ -41,14 +43,31 @@ final class MemberVoiceManager {
   /// final voice = await member.resolveVoiceContext();
   /// await voice.move('1163041637497307176', reason: 'Testing');
   /// ```
-  Future<void> move(String channelId, {String? reason}) => _datastore.member.update(
-      serverId: _serverId, memberId: _memberId, reason: reason, payload: {'channel_id': channelId});
+  Future<void> move(String channelId, {String? reason}) async {
+    if (!isOnVoiceChannel) {
+      _logger.warn('Member is not on a voice channel.');
+      return;
+    }
+
+    await _datastore.member.update(
+        serverId: _serverId,
+        memberId: _memberId,
+        reason: reason,
+        payload: {'channel_id': channelId});
+  }
 
   /// Disconnect the [Member] from the voice channel.
   /// ```dart
   /// final voice = await member.resolveVoiceContext();
   /// await voice.disconnect(reason: 'Testing');
   /// ```
-  Future<void> disconnect({String? reason}) => _datastore.member.update(
-      serverId: _serverId, memberId: _memberId, reason: reason, payload: {'channel_id': null});
+  Future<void> disconnect({String? reason}) async {
+    if (!isOnVoiceChannel) {
+      _logger.warn('Member is not on a voice channel.');
+      return;
+    }
+
+    await _datastore.member.update(
+        serverId: _serverId, memberId: _memberId, reason: reason, payload: {'channel_id': null});
+  }
 }
