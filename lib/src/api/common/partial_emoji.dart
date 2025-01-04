@@ -10,6 +10,13 @@ class PartialEmoji {
 
   factory PartialEmoji.fromUnicode(String value) =>
       PartialEmoji(null, value, false);
+
   factory PartialEmoji.fromEmoji(Emoji emoji) =>
       PartialEmoji(emoji.id, emoji.name, emoji.animated);
+
+  Map<String, dynamic> toJson() => {
+    'id': id?.value,
+    'name': name,
+    'animated': animated,
+  };
 }

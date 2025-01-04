@@ -10,15 +10,11 @@ import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.da
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/running_strategies/default_running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/running_strategies/hmr_running_strategy.dart';
-import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
-import 'package:mineral/src/infrastructure/io/exceptions/token_exception.dart';
 import 'package:mineral/src/infrastructure/services/http/header.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client.dart';
 
 abstract interface class KernelContract {
-  Map<int, Shard> get shards;
-
-  ShardingConfigContract get config;
+  WebsocketOrchestratorContract get wss;
 
   LoggerContract get logger;
 
@@ -51,10 +47,7 @@ final class Kernel implements KernelContract {
   final WatcherConfig watcherConfig;
 
   @override
-  final Map<int, Shard> shards = {};
-
-  @override
-  final ShardingConfigContract config;
+  final WebsocketOrchestratorContract wss;
 
   @override
   final LoggerContract logger;
@@ -89,27 +82,17 @@ final class Kernel implements KernelContract {
     required this.logger,
     required this.environment,
     required this.httpClient,
-    required this.config,
     required this.packetListener,
     required this.eventListener,
     required this.providerManager,
     required this.globalState,
     required this.watcherConfig,
+    required this.wss,
   }) {
     _watch.start();
     httpClient.config.headers.addAll([
-      Header.authorization('Bot ${config.token}'),
+      Header.authorization('Bot ${wss.config.token}'),
     ]);
-  }
-
-  Future<Map<String, dynamic>> getWebsocketEndpoint() async {
-    final response = await httpClient.get('/gateway/bot');
-    return switch (response.statusCode) {
-      int() when httpClient.status.isSuccess(response.statusCode) => response.body,
-      int() when httpClient.status.isError(response.statusCode) =>
-        throw TokenException('This token is invalid or expired'),
-      _ => throw (response.bodyString),
-    };
   }
 
   @override
@@ -121,90 +104,13 @@ final class Kernel implements KernelContract {
       await providerManager.ready();
     }
 
-    if (Isolate.current.debugName == 'main') {
-      // final packageFile = File(path.join(Directory.current.path, 'pubspec.yaml'));
-      //
-      // final packageFileContent = await packageFile.readAsString();
-      // final package = loadYaml(packageFileContent);
-      //
-      // final coreVersion = package['dependencies']['mineral'];
-
-      if (useHmr) {
-        // List<Sequence> buildSubtitle(String key, String value) {
-        //   return [
-        //     const CursorPosition.moveRight(2),
-        //     SetStyles(Style.foreground(Logger.primaryColor)),
-        //     Print('➜  '),
-        //     SetStyles(Style.foreground(Color.white), Style.bold),
-        //     Print('$key: '),
-        //     SetStyles.reset,
-        //     Print(value),
-        //   ];
-        // }
-        //
-        // stdout
-        //   ..writeAnsiAll([
-        //     CursorPosition.reset,
-        //     Clear.all,
-        //     AsciiControl.lineFeed,
-        //     const CursorPosition.moveRight(2),
-        //     SetStyles(Style.foreground(Logger.primaryColor), Style.bold),
-        //     Print('Mineral v4.0.0-dev.1'),
-        //     SetStyles.reset,
-        //     const CursorPosition.moveRight(2),
-        //     SetStyles(Style.foreground(Logger.mutedColor)),
-        //     Print('ready in '),
-        //     SetStyles(Style.foreground(Color.white)),
-        //     Print('${_watch.elapsedMilliseconds} ms'),
-        //     SetStyles.reset,
-        //     AsciiControl.lineFeed,
-        //     AsciiControl.lineFeed,
-        //   ])
-        //   ..writeAnsiAll([
-        //     ...buildSubtitle('Github', 'https://github.com/mineral-dart'),
-        //     AsciiControl.lineFeed,
-        //     ...buildSubtitle('Docs', 'https://mineral-foundation.org'),
-        //     SetStyles.reset,
-        //     AsciiControl.lineFeed,
-        //     AsciiControl.lineFeed,
-        //   ]);
-      } else {
-        // stdout.writeAnsiAll([
-        //   CursorPosition.reset,
-        //   Clear.all,
-        //   AsciiControl.lineFeed,
-        //   SetStyles(Style.foreground(Logger.primaryColor), Style.bold),
-        //   Print('Mineral v$coreVersion'),
-        //   SetStyles.reset,
-        //   AsciiControl.lineFeed,
-        // ]);
-        // '${lightBlue.wrap('mineral v$coreVersion')} ${green.wrap('is running for production…')}');
-      }
-    }
-
     if (useHmr) {
-      hmr = HotModuleReloading(_devPort, watcherConfig, this, createShards, shards);
+      hmr = HotModuleReloading(_devPort, watcherConfig, this, () => wss.createShards(hmr, runningStrategy), wss.shards);
       runningStrategy = HmrRunningStrategy(_watch, hmr!);
     } else {
-      runningStrategy = DefaultRunningStrategy(this, createShards);
+      runningStrategy = DefaultRunningStrategy(this, () => wss.createShards(hmr, runningStrategy));
     }
 
     await runningStrategy.init();
-  }
-
-  Future<void> createShards() async {
-    final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
-
-    for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
-      final shard = Shard(
-          shardName: 'shard #$i',
-          url: '$endpoint/?v=${config.version}',
-          kernel: this,
-          strategy: runningStrategy);
-
-      shards.putIfAbsent(i, () => shard);
-
-      await shard.init();
-    }
   }
 }

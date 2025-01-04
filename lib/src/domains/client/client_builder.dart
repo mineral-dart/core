@@ -16,6 +16,7 @@ import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
 import 'package:mineral/src/infrastructure/internals/scaffolding/scaffold.dart';
 import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
+import 'package:mineral/src/infrastructure/internals/wss/websocket_orchestrator.dart';
 
 final class ClientBuilder {
   late final LoggerContract _logger;
@@ -74,6 +75,9 @@ final class ClientBuilder {
   ClientBuilder setHmrDevPort(SendPort? devPort) {
     _devPort = devPort;
     _hasDefinedDevPort = true;
+
+    ioc.bind<SendPort?>(() => _devPort);
+
     return this;
   }
 
@@ -92,8 +96,7 @@ final class ClientBuilder {
     return this;
   }
 
-  ClientBuilder registerProvider<T extends ProviderContract>(
-      T Function(Client) provider) {
+  ClientBuilder registerProvider<T extends ProviderContract>(T Function(Client) provider) {
     _providers.add(provider);
     return this;
   }
@@ -129,20 +132,19 @@ final class ClientBuilder {
     final intent = int.parse(_env.get(AppEnv.intent));
 
     final http = HttpClient(
-        config: HttpClientConfigImpl(
-            baseUrl: 'https://discord.com/api/v$httpVersion',
-            headers: {
-          Header.userAgent('Mineral'),
-          Header.contentType('application/json'),
-        }));
+        config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
+      Header.userAgent('Mineral'),
+      Header.contentType('application/json'),
+    }));
 
-    final shardConfig =
-        ShardingConfig(token: token, intent: intent, version: shardVersion);
+    final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
 
     final packetListener = PacketListener();
     final eventListener = EventListener();
     final providerManager = ProviderManager();
     final globalStateManager = ioc.make(GlobalStateManager.new);
+    final wssOrchestrator =
+        ioc.make<WebsocketOrchestratorContract>(() => WebsocketOrchestrator(shardConfig));
 
     final kernel = Kernel(
       _hasDefinedDevPort,
@@ -151,14 +153,16 @@ final class ClientBuilder {
       logger: _logger,
       environment: _env,
       httpClient: http,
-      config: shardConfig,
       packetListener: packetListener,
       providerManager: providerManager,
       eventListener: eventListener,
       globalState: globalStateManager,
+      wss: wssOrchestrator,
     );
 
     ioc
+      ..bind<HttpClientContract>(() => http)
+      ..bind<KernelContract>(() => kernel)
       ..bind<MarshallerContract>(Marshaller.new)
       ..bind<DataStoreContract>(() => DataStore(http))
       ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new);

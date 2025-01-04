@@ -3,7 +3,6 @@ import 'dart:convert';
 
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
 import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -22,7 +21,10 @@ final class Shard implements ShardContract {
   final String shardName;
 
   @override
-  final KernelContract kernel;
+  final WebsocketOrchestratorContract wss;
+
+  @override
+  final HmrContract? hmr;
 
   @override
   late WebsocketClient client;
@@ -39,7 +41,8 @@ final class Shard implements ShardContract {
   Shard(
       {required this.shardName,
       required this.url,
-      required this.kernel,
+      required this.wss,
+      required this.hmr,
       required RunningStrategy strategy}) {
     authentication = ShardAuthentication(this);
     networkError = ShardNetworkError(this);

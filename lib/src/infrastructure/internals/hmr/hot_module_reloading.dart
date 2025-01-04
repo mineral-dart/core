@@ -10,12 +10,12 @@ import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_builder.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
-import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 import 'package:watcher/watcher.dart';
 
 final class HotModuleReloading implements HmrContract {
   ScaffoldContract get _app => ioc.resolve<ScaffoldContract>();
+  WebsocketOrchestratorContract get _wss => ioc.resolve<WebsocketOrchestratorContract>();
 
   final WatcherConfig _watcherConfig;
   final SendPort? _devPort;
@@ -28,7 +28,7 @@ final class HotModuleReloading implements HmrContract {
   DateTime? duration;
 
   final KernelContract _kernel;
-  final Map<int, Shard> _shards;
+  final Map<int, ShardContract> _shards;
   final Function() _createShards;
 
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
@@ -81,15 +81,19 @@ final class HotModuleReloading implements HmrContract {
     Isolate.spawnUri(_app.entrypoint.uri, [], port.sendPort, debugName: 'dev')
         .then((Isolate isolate) async {
       _devIsolate = isolate;
-      devSendPort = await port.first;
+      final broadcast = port.asBroadcastStream();
+      devSendPort = await broadcast.first;
 
       _shards.forEach((key, value) {
-        final Queue<Map<String, dynamic>> queue =
-            Queue.from(value.onceEventQueue);
+        final Queue<Map<String, dynamic>> queue = Queue.from(value.onceEventQueue);
         while (queue.isNotEmpty) {
           final response = queue.removeFirst();
           devSendPort?.send(response);
         }
+      });
+
+      broadcast.listen((message) {
+        _wss.send(message);
       });
     });
   }

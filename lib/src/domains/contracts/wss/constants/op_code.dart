@@ -2,7 +2,7 @@ enum OpCode {
   dispatch(0),
   heartbeat(1),
   identify(2),
-  statusUpdate(3),
+  presenceUpdate(3),
   voiceStateUpdate(4),
   voiceGuildPing(5),
   resume(6),

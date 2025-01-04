@@ -1,6 +1,6 @@
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/bot.dart';
+import 'package:mineral/src/api/common/bot/bot.dart';
 import 'package:mineral/src/api/common/components/dialogs/dialog_builder.dart';
 import 'package:mineral/src/api/common/components/message_component.dart';
 import 'package:mineral/src/api/common/embed/message_embed.dart';

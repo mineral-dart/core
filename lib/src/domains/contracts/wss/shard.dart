@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:mineral/src/domains/commons/kernel.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_client.dart';
@@ -11,7 +11,9 @@ abstract interface class ShardContract {
 
   String get shardName;
 
-  KernelContract get kernel;
+  WebsocketOrchestratorContract get wss;
+
+  HmrContract? get hmr;
 
   WebsocketClient get client;
 

@@ -1,4 +1,4 @@
-import 'package:mineral/src/api/common/bot.dart';
+import 'package:mineral/src/api/common/bot/bot.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
