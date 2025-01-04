@@ -17,7 +17,7 @@ final class MemberVoice {
   /// await member.voice.move(channelId, reason: 'Testing');
   /// ```
   Future<void> move(Snowflake channelId, {String? reason}) async {
-    await _memberMethods.updateMember(
+    await _memberMethods.update(
       serverId: _member.serverId,
       memberId: _member.id,
       payload: {'channel_id': channelId},
@@ -31,7 +31,7 @@ final class MemberVoice {
   /// await member.voice.disconnect(reason: 'Testing');
   /// ```
   Future<void> disconnect({String? reason}) async {
-    await _memberMethods.updateMember(
+    await _memberMethods.update(
       serverId: _member.serverId,
       memberId: _member.id,
       payload: {'channel_id': null},
@@ -45,7 +45,7 @@ final class MemberVoice {
   /// await member.voice.mute(reason: 'Testing');
   /// ```
   Future<void> mute({String? reason}) async {
-    await _memberMethods.updateMember(
+    await _memberMethods.update(
       serverId: _member.serverId,
       memberId: _member.id,
       payload: {'mute': true},
@@ -59,7 +59,7 @@ final class MemberVoice {
   /// await member.voice.unMute(reason: 'Testing');
   /// ```
   Future<void> unMute({String? reason}) async {
-    await _memberMethods.updateMember(
+    await _memberMethods.update(
       serverId: _member.serverId,
       memberId: _member.id,
       payload: {'mute': false},
@@ -73,7 +73,7 @@ final class MemberVoice {
   /// await member.voice.deafen(reason: 'Testing');
   /// ```
   Future<void> deafen({String? reason}) async {
-    await _memberMethods.updateMember(
+    await _memberMethods.update(
       serverId: _member.serverId,
       memberId: _member.id,
       payload: {'deaf': true},
@@ -87,7 +87,7 @@ final class MemberVoice {
   /// await member.voice.unDeafen(reason: 'Testing');
   /// ```
   Future<void> unDeafen({String? reason}) async {
-    await _memberMethods.updateMember(
+    await _memberMethods.update(
       serverId: _member.serverId,
       memberId: _member.id,
       payload: {'deaf': false},

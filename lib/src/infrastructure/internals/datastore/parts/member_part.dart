@@ -68,21 +68,28 @@ final class MemberPart implements MemberPartContract {
   }
 
   @override
-  Future<Member> updateMember(
+  Future<Member> update(
       {required Snowflake serverId,
       required Snowflake memberId,
       required Map<String, dynamic> payload,
-      required String? reason}) async {
+      String? reason}) async {
+    final completer = Completer<Member>();
+
     final response = await _dataStore.client.patch('/guilds/$serverId/members/$memberId',
         body: payload,
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
 
-    if (status.isError(response.statusCode)) {
-      throw HttpException(response.body);
-    }
+    final member = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.member.normalize({...response.body, 'guild_id': serverId}),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
+      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
 
-    final rawMember = await _marshaller.serializers.member.normalize(response.body);
-    return _marshaller.serializers.member.serialize(rawMember);
+    completer.complete(await _marshaller.serializers.member.serialize(member));
+    return completer.future;
   }
 
   @override

@@ -8,6 +8,7 @@ import 'package:mineral/src/api/common/user_client.dart';
 import 'package:mineral/src/api/server/builders/member_builder.dart';
 import 'package:mineral/src/api/server/enums/member_flag.dart';
 import 'package:mineral/src/api/server/managers/member_role_manager.dart';
+import 'package:mineral/src/api/server/managers/member_voice_manager.dart';
 import 'package:mineral/src/api/server/member_assets.dart';
 import 'package:mineral/src/api/server/member_flags.dart';
 import 'package:mineral/src/api/server/member_timeout.dart';
@@ -16,6 +17,8 @@ import 'package:mineral/src/api/server/server.dart';
 
 final class Member implements UserClient {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
+
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   late final MemberVoice voice;
 
@@ -46,6 +49,14 @@ final class Member implements UserClient {
   /// final server = await member.resolveServer();
   /// ```
   Future<Server> resolveServer() => _datastore.server.get(serverId.value, true);
+
+  Future<MemberVoiceManager> resolveVoiceContext() async {
+    final cacheKey = _marshaller.cacheKey.voiceState(serverId.value, id.value);
+    final raw = await _marshaller.cache?.get(cacheKey);
+    final voiceState = raw != null ? await _marshaller.serializers.voice.serialize(raw) : null;
+
+    return MemberVoiceManager(serverId, id, voiceState);
+  }
 
   /// Check if the member can bypass verification.
   ///
@@ -89,7 +100,7 @@ final class Member implements UserClient {
   /// await member.setUsername('new-username', 'Testing');
   /// ```
   Future<void> setUsername(String value, String? reason) => _datastore.member
-      .updateMember(serverId: serverId, memberId: id, payload: {'username': value}, reason: reason);
+      .update(serverId: serverId, memberId: id, payload: {'username': value}, reason: reason);
 
   /// Change the member's nickname.
   ///
@@ -97,7 +108,7 @@ final class Member implements UserClient {
   /// await member.setNickname('new-nickname', 'Testing');
   /// ```
   Future<void> setNickname(String value, String? reason) => _datastore.member
-      .updateMember(serverId: serverId, memberId: id, payload: {'nick': value}, reason: reason);
+      .update(serverId: serverId, memberId: id, payload: {'nick': value}, reason: reason);
 
   /// Ban the member.
   ///
@@ -123,7 +134,7 @@ final class Member implements UserClient {
   Future<void> exclude({Duration? duration, String? reason}) {
     final timeout = duration != null ? DateTime.now().add(duration) : DateTime.now();
 
-    return _datastore.member.updateMember(
+    return _datastore.member.update(
         serverId: serverId,
         memberId: id,
         reason: reason,
@@ -135,7 +146,7 @@ final class Member implements UserClient {
   /// ```dart
   /// await member.unExclude(reason: 'Testing');
   /// ```
-  Future<void> unExclude({String? reason}) => _datastore.member.updateMember(
+  Future<void> unExclude({String? reason}) => _datastore.member.update(
       serverId: serverId,
       memberId: id,
       reason: reason,
@@ -146,7 +157,7 @@ final class Member implements UserClient {
   /// ```dart
   /// await member.enableMfa(reason: 'Testing');
   /// ```
-  Future<void> enableMfa({String? reason}) => _datastore.member.updateMember(
+  Future<void> enableMfa({String? reason}) => _datastore.member.update(
       serverId: serverId, memberId: id, payload: {'mfa_enable': true}, reason: reason);
 
   /// Disable the member's MFA.
@@ -154,7 +165,7 @@ final class Member implements UserClient {
   /// ```dart
   /// await member.disableMfa(reason: 'Testing');
   /// ```
-  Future<void> disableMfa({String? reason}) => _datastore.member.updateMember(
+  Future<void> disableMfa({String? reason}) => _datastore.member.update(
       serverId: serverId, memberId: id, payload: {'mfa_enable': false}, reason: reason);
 
   /// Toggle the member's MFA.
@@ -175,7 +186,7 @@ final class Member implements UserClient {
   /// }), reason: 'Testing');
   /// ```
   Future<void> edit(MemberBuilder builder, {String? reason}) =>
-      _datastore.member.updateMember(serverId: serverId, memberId: id, reason: reason, payload: {
+      _datastore.member.update(serverId: serverId, memberId: id, reason: reason, payload: {
         'nick': nickname,
         'mute': builder.isMuted,
         'deaf': builder.isDeafened,

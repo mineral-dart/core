@@ -1,9 +1,11 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/api/server/managers/member_voice_manager.dart';
 
 final class VoiceState {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
+  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   final Snowflake serverId;
   final Snowflake? channelId;
@@ -57,5 +59,17 @@ final class VoiceState {
       Snowflake(:final value) => await _datastore.channel.get(value, true),
       _ => null,
     };
+  }
+
+  /// Get related [MemberVoiceManager]
+  /// ```dart
+  /// final voice = await voiceState.resolveVoiceContext();
+  /// ```
+  Future<MemberVoiceManager> resolveVoiceContext() async {
+    final cacheKey = _marshaller.cacheKey.voiceState(serverId.value, userId.value);
+    final raw = await _marshaller.cache?.get(cacheKey);
+    final voiceState = raw != null ? await _marshaller.serializers.voice.serialize(raw) : null;
+
+    return MemberVoiceManager(serverId, userId, voiceState);
   }
 }

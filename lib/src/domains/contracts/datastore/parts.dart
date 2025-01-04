@@ -56,11 +56,11 @@ abstract interface class MemberPartContract implements DataStorePart {
 
   Future<Member?> get(String serverId, String id, bool force);
 
-  Future<Member> updateMember(
+  Future<Member> update(
       {required Snowflake serverId,
       required Snowflake memberId,
       required Map<String, dynamic> payload,
-      required String? reason});
+      String? reason});
 
   Future<void> banMember(
       {required Snowflake serverId,

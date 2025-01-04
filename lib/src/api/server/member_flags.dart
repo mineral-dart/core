@@ -23,7 +23,7 @@ final class MemberFlagsManager {
   /// await member.flags.allowBypassVerification(reason: 'Testing');
   /// ```
   Future<void> allowBypassVerification({String? reason}) =>
-      _memberMethods.updateMember(
+      _memberMethods.update(
           serverId: server.id,
           memberId: member.id,
           payload: {'flags': MemberFlag.bypassedVerification.value},
@@ -37,7 +37,7 @@ final class MemberFlagsManager {
   Future<void> disallowBypassVerification({String? reason}) {
     final currentFlags = _flags.fold(0, (acc, element) => acc + element.value);
 
-    return _memberMethods.updateMember(
+    return _memberMethods.update(
         serverId: server.id,
         memberId: member.id,
         payload: {
@@ -54,7 +54,7 @@ final class MemberFlagsManager {
   Future<void> sync(List<MemberFlag> flags, {String? reason}) {
     final currentFlags = flags.fold(0, (acc, element) => acc + element.value);
 
-    return _memberMethods.updateMember(
+    return _memberMethods.update(
         serverId: server.id,
         memberId: member.id,
         payload: {'flags': currentFlags},
