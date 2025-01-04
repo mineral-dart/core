@@ -5,7 +5,6 @@ import 'package:mineral/src/api/server/managers/member_voice_manager.dart';
 
 final class VoiceState {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   final Snowflake serverId;
   final Snowflake? channelId;
@@ -61,15 +60,17 @@ final class VoiceState {
     };
   }
 
-  /// Get related [MemberVoiceManager]
+  /// Get the [VoiceState] of the member inside [MemberVoiceManager].
   /// ```dart
-  /// final voice = await voiceState.resolveVoiceContext();
+  /// final voice = await member.resolveVoiceContext();
   /// ```
-  Future<MemberVoiceManager> resolveVoiceContext() async {
-    final cacheKey = _marshaller.cacheKey.voiceState(serverId.value, userId.value);
-    final raw = await _marshaller.cache?.get(cacheKey);
-    final voiceState = raw != null ? await _marshaller.serializers.voice.serialize(raw) : null;
-
+  ///
+  /// You can `force` the update by setting the `force` parameter to `true` to override [CacheProviderContract] by the Discord APi Response.
+  /// ```dart
+  /// final voice = await member.resolveVoiceContext(force: true);
+  /// ```
+  Future<MemberVoiceManager> resolveVoiceContext({bool force = false}) async {
+    final voiceState = await _datastore.member.getVoiceState(serverId.value, userId.value, force);
     return MemberVoiceManager(serverId, userId, voiceState);
   }
 }
