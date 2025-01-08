@@ -5,6 +5,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/domains/commons/utils/extensions.dart';
+import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
 final class MessagePart implements MessagePartContract {
@@ -43,8 +44,8 @@ final class MessagePart implements MessagePartContract {
 
   @override
   Future<T> update<T extends Message>({
-    required Snowflake id,
-    required Snowflake channelId,
+    required String id,
+    required String channelId,
     String? content,
     List<MessageEmbed>? embeds,
     List<MessageComponent>? components,
@@ -92,22 +93,20 @@ final class MessagePart implements MessagePartContract {
   }
 
   @override
-  Future<R> reply<T extends Channel, R extends Message>(
-      {required Snowflake id,
-      required Snowflake channelId,
-      String? content,
-      List<MessageEmbed>? embeds,
-      List<MessageComponent>? components}) async {
-    final completer = Completer<R>();
-
+  Future<T> send<T extends Message>(String? guildId, String channelId, String? content,
+      List<MessageEmbed>? embeds, Poll? poll, List<MessageComponent>? components) async {
+    final completer = Completer<T>();
     final response = await _dataStore.client.post('/channels/$channelId/messages', body: {
       'content': content,
-      'embeds': AsyncList.nullable(embeds?.map(_marshaller.serializers.embed.deserialize)),
-      'components': components?.map((c) => c.toJson()).toList(),
-      'message_reference': {'message_id': id, 'channel_id': channelId}
+      'embeds': await Helper.createOrNullAsync(
+          field: embeds,
+          fn: () async => embeds?.map(_marshaller.serializers.embed.deserialize).toList()),
+      'poll': await Helper.createOrNullAsync(
+          field: poll, fn: () async => _marshaller.serializers.poll.deserialize(poll!)),
+      'components': components?.map((e) => e.toJson()).toList(),
     });
 
-    final rawMessage = switch (response.statusCode) {
+    final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         await _marshaller.serializers.message.normalize(response.body),
       int() when status.isRateLimit(response.statusCode) =>
@@ -116,7 +115,31 @@ final class MessagePart implements MessagePartContract {
       _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    completer.complete(await _marshaller.serializers.message.serialize(rawMessage) as R);
+    completer.complete(await _marshaller.serializers.message.serialize(message) as T);
+
+    return completer.future;
+  }
+
+  @override
+  Future<R> reply<T extends Channel, R extends Message>(
+      {required Snowflake id,
+      required Snowflake channelId,
+      String? content,
+      List<MessageEmbed>? embeds,
+      List<MessageComponent>? components}) async {
+    final completer = Completer<R>();
+
+    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(
+        () => _dataStore.client.post('/channels/$channelId/messages', body: {
+              'content': content,
+              'embeds': AsyncList.nullable(embeds?.map(_marshaller.serializers.embed.deserialize)),
+              'components': components?.map((c) => c.toJson()).toList(),
+              'message_reference': {'message_id': id, 'channel_id': channelId}
+            }));
+    final raw = await _marshaller.serializers.message.normalize(result);
+    final message = await _marshaller.serializers.message.serialize(raw) as R;
+
+    completer.complete(message);
     return completer.future;
   }
 }

@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
@@ -19,22 +18,14 @@ final class RolePart implements RolePartContract {
   @override
   Future<Map<Snowflake, Role>> fetch(String serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Role>>();
-    final response = await _dataStore.client.get('/guilds/$serverId/roles');
 
-    final rawRoles = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => await Future.wait(
-          List.from(response.body).map((element) async =>
-              await _marshaller.serializers.role.normalize({...element, 'guild_id': serverId})),
-        ),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
-    };
+    final result = await _dataStore.requestBucket
+        .run<List>(() => _dataStore.client.get('/guilds/$serverId/roles'));
 
-    final roles = await Future.wait(rawRoles.map((element) async {
-      return _marshaller.serializers.role.serialize(element);
-    }));
+    final roles = await result.map((element) async {
+      final raw = await _marshaller.serializers.role.normalize(element);
+      return _marshaller.serializers.role.serialize(raw);
+    }).wait;
 
     completer.complete(roles.asMap().map((_, value) => MapEntry(value.id, value)));
     return completer.future;
@@ -48,23 +39,18 @@ final class RolePart implements RolePartContract {
     final cachedRole = await _marshaller.cache?.get(key);
     if (!force && cachedRole != null) {
       final role = await _marshaller.serializers.role.serialize(cachedRole);
-      completer.complete(role);
 
+      completer.complete(role);
       return completer.future;
     }
 
-    final response = await _dataStore.client.get('/guilds/$serverId/roles/$id');
-    final role = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.role.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.get('/guilds/$serverId/roles/$id'));
 
-    completer.complete(await _marshaller.serializers.role.serialize(role));
+    final raw = await _marshaller.serializers.role.normalize(result);
+    final channel = await _marshaller.serializers.role.serialize(raw);
 
+    completer.complete(channel);
     return completer.future;
   }
 
@@ -73,85 +59,88 @@ final class RolePart implements RolePartContract {
       bool hoist, bool mentionable, String? reason) async {
     final completer = Completer<Role>();
 
-    final response = await _dataStore.client.post('/guilds/$serverId/roles',
-        body: {
-          'name': name,
-          'permissions': listToBitfield(permissions),
-          'color': color.toInt(),
-          'hoist': hoist,
-          'mentionable': mentionable,
-        },
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.post('/guilds/$serverId/roles',
+            body: {
+              'name': name,
+              'permissions': listToBitfield(permissions),
+              'color': color.toInt(),
+              'hoist': hoist,
+              'mentionable': mentionable,
+            },
+            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
 
-    final role = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.role.normalize({
-          ...response.body,
-          'guild_id': serverId,
-        }),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final raw = await _marshaller.serializers.role.normalize(result);
+    final role = await _marshaller.serializers.role.serialize({
+      ...raw,
+      'guild_id': serverId,
+    });
 
-    completer.complete(await _marshaller.serializers.role.serialize(role));
+    completer.complete(role);
     return completer.future;
   }
 
   @override
-  Future<void> addRole(
-      {required Snowflake memberId,
-      required Snowflake serverId,
-      required Snowflake roleId,
+  Future<void> add(
+      {required String memberId,
+      required String serverId,
+      required String roleId,
       required String? reason}) async {
-    await _dataStore.client.put('/guilds/$serverId/members/$memberId/roles/$roleId',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.put(
+        '/guilds/$serverId/members/$memberId/roles/$roleId',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
   }
 
   @override
-  Future<void> removeRole(
-      {required Snowflake memberId,
-      required Snowflake serverId,
-      required Snowflake roleId,
+  Future<void> remove(
+      {required String memberId,
+      required String serverId,
+      required String roleId,
       required String? reason}) async {
-    await _dataStore.client.delete('/guilds/$serverId/members/$memberId/roles/$roleId',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
+        '/guilds/$serverId/members/$memberId/roles/$roleId',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
   }
 
   @override
-  Future<void> syncRoles(
-      {required Snowflake memberId,
-      required Snowflake serverId,
-      required List<Snowflake> roleIds,
+  Future<void> sync(
+      {required String memberId,
+      required String serverId,
+      required List<String> roleIds,
       required String? reason}) async {
-    await _dataStore.client.patch('/guilds/$serverId/members/$memberId',
+    await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.patch(
+        '/guilds/$serverId/members/$memberId',
         body: {'roles': roleIds},
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
   }
 
   @override
-  Future<Role?> updateRole(
-      {required Snowflake id,
-      required Snowflake serverId,
+  Future<Role?> update(
+      {required String id,
+      required String serverId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
-    final response = await _dataStore.client.patch('/guilds/$serverId/roles/$id',
-        body: payload,
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    final completer = Completer<Role?>();
+    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client
+        .patch('/guilds/$serverId/roles/$id',
+            body: payload,
+            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
 
-    if (status.isError(response.statusCode)) {
-      throw HttpException(response.body);
-    }
+    final raw = await _marshaller.serializers.role.normalize(result);
+    final role = await _marshaller.serializers.role.serialize({
+      ...raw,
+      'guild_id': serverId,
+    });
 
-    final body = await _marshaller.serializers.role.normalize(response.body);
-    return _marshaller.serializers.role.serialize(body);
+    completer.complete(role);
+    return completer.future;
   }
 
   @override
-  Future<void> deleteRole(
-      {required Snowflake id, required Snowflake guildId, required String? reason}) async {
-    await _dataStore.client.delete('/guilds/$guildId/roles/$id',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+  Future<void> delete(
+      {required String id, required String guildId, required String? reason}) async {
+    await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
+        '/guilds/$guildId/roles/$id',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
   }
 }

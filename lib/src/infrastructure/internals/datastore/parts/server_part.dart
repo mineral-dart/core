@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
@@ -23,30 +22,23 @@ final class ServerPart implements ServerPartContract {
     final cachedServer = await _marshaller.cache?.get(key);
     if (!force && cachedServer != null) {
       final server = await _marshaller.serializers.server.serialize(cachedServer);
-      completer.complete(server);
 
+      completer.complete(server);
       return completer.future;
     }
 
-    final response = await _dataStore.client.get('/guilds/$id');
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.get('/guilds/$id'));
 
-    final rawServer = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.server.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final raw = await _marshaller.serializers.server.normalize(result);
+    final server = await _marshaller.serializers.server.serialize(raw);
 
-    final server = await _marshaller.serializers.server.serialize(rawServer);
     completer.complete(server);
-
     return completer.future;
   }
 
   @override
-  Future<Server> updateServer(Snowflake id, Map<String, dynamic> payload, String? reason) async {
+  Future<Server> update(String id, Map<String, dynamic> payload, String? reason) async {
     final response = await _dataStore.client.patch('/guilds/$id',
         body: payload,
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
@@ -56,45 +48,8 @@ final class ServerPart implements ServerPartContract {
   }
 
   @override
-  Future<List<T>> getChannels<T extends ServerChannel>(Snowflake id) async {
-    final response = await _dataStore.client.get('/guilds/$id/channels');
-    if (status.isError(response.statusCode)) {
-      throw HttpException(response.body);
-    }
-
-    return Future.wait(List.from(response.body).map((element) async {
-      final channel = await _marshaller.serializers.channels.normalize(element);
-      return _marshaller.serializers.channels.serialize(channel) as Future<T>;
-    }).toList());
-  }
-
-  @override
-  Future<Role> getRole(Snowflake serverId, Snowflake roleId) async {
-    final roleCacheKey = _marshaller.cacheKey.serverRole(serverId.value, roleId.value);
-    final cachedRawRole = await _marshaller.cache?.get(roleCacheKey);
-    if (cachedRawRole != null) {
-      return _marshaller.serializers.role.serialize(cachedRawRole);
-    }
-
-    final response = await _dataStore.client.get('/guilds/$serverId/roles/$roleId');
-    if (status.isError(response.statusCode)) {
-      throw HttpException(response.body);
-    }
-
-    final rolePayload = await _marshaller.serializers.role.normalize(response.body);
-    return _marshaller.serializers.role.serialize(rolePayload);
-  }
-
-  @override
-  Future<List<Role>> getRoles(Snowflake guildId, {bool force = false}) async {
-    final response = await _dataStore.client.get('/guilds/$guildId/roles');
-    if (status.isError(response.statusCode)) {
-      throw HttpException(response.body);
-    }
-
-    return Future.wait(List.from(response.body).map((element) async {
-      final payload = await _marshaller.serializers.role.normalize(element);
-      return _marshaller.serializers.role.serialize(payload);
-    }).toList());
+  Future<void> delete(String id, String? reason) async {
+    await _dataStore.client.delete('/guilds/$id',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
   }
 }

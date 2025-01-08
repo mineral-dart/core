@@ -160,11 +160,13 @@ final class ClientBuilder {
       wss: wssOrchestrator,
     );
 
+    final datastore = DataStore(http);
+
     ioc
       ..bind<HttpClientContract>(() => http)
       ..bind<KernelContract>(() => kernel)
       ..bind<MarshallerContract>(Marshaller.new)
-      ..bind<DataStoreContract>(() => DataStore(http))
+      ..bind<DataStoreContract>(() => datastore)
       ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new);
 
     packetListener

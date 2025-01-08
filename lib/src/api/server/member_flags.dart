@@ -24,8 +24,8 @@ final class MemberFlagsManager {
   /// ```
   Future<void> allowBypassVerification({String? reason}) =>
       _memberMethods.update(
-          serverId: server.id,
-          memberId: member.id,
+          serverId: server.id.value,
+          memberId: member.id.value,
           payload: {'flags': MemberFlag.bypassedVerification.value},
           reason: reason);
 
@@ -38,8 +38,8 @@ final class MemberFlagsManager {
     final currentFlags = _flags.fold(0, (acc, element) => acc + element.value);
 
     return _memberMethods.update(
-        serverId: server.id,
-        memberId: member.id,
+        serverId: server.id.value,
+        memberId: member.id.value,
         payload: {
           'flags': currentFlags - MemberFlag.bypassedVerification.value
         },
@@ -55,8 +55,8 @@ final class MemberFlagsManager {
     final currentFlags = flags.fold(0, (acc, element) => acc + element.value);
 
     return _memberMethods.update(
-        serverId: server.id,
-        memberId: member.id,
+        serverId: server.id.value,
+        memberId: member.id.value,
         payload: {'flags': currentFlags},
         reason: reason);
   }

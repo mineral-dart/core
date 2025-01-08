@@ -65,7 +65,11 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   Future<void> edit(
       String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components) async {
     _datastore.message.update(
-        id: id, channelId: channelId, content: content, embeds: embeds, components: components);
+        id: id.value,
+        channelId: channelId.value,
+        content: content,
+        embeds: embeds,
+        components: components);
   }
 
   @override
@@ -96,11 +100,7 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   Future<void> reply(
       {String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components}) async {
     _datastore.message.reply(
-        id: id,
-        channelId: channelId,
-        content: content,
-        embeds: embeds,
-        components: components);
+        id: id, channelId: channelId, content: content, embeds: embeds, components: components);
   }
 
   /// Pin the message.
