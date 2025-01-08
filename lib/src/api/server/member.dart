@@ -59,8 +59,7 @@ final class Member implements UserClient {
   /// ```dart
   /// final presence = await member.resolvePresence();
   /// ```
-  Future<Presence> resolvePresence({bool force = false}) =>
-      _wss.getMemberPresence('583050048766476353', '240561194958716928');
+  Future<Presence> resolvePresence() => _wss.getMemberPresence(serverId.value, id.value);
 
   /// Check if the member can bypass verification.
   ///
@@ -103,16 +102,16 @@ final class Member implements UserClient {
   /// ```dart
   /// await member.setUsername('new-username', 'Testing');
   /// ```
-  Future<void> setUsername(String value, String? reason) => _datastore.member
-      .update(serverId: serverId.value, memberId: id.value, payload: {'username': value}, reason: reason);
+  Future<void> setUsername(String value, String? reason) => _datastore.member.update(
+      serverId: serverId.value, memberId: id.value, payload: {'username': value}, reason: reason);
 
   /// Change the member's nickname.
   ///
   /// ```dart
   /// await member.setNickname('new-nickname', 'Testing');
   /// ```
-  Future<void> setNickname(String value, String? reason) => _datastore.member
-      .update(serverId: serverId.value, memberId: id.value, payload: {'nick': value}, reason: reason);
+  Future<void> setNickname(String value, String? reason) => _datastore.member.update(
+      serverId: serverId.value, memberId: id.value, payload: {'nick': value}, reason: reason);
 
   /// Ban the member.
   ///
@@ -161,16 +160,16 @@ final class Member implements UserClient {
   /// ```dart
   /// await member.enableMfa(reason: 'Testing');
   /// ```
-  Future<void> enableMfa({String? reason}) => _datastore.member
-      .update(serverId: serverId.value, memberId: id.value, payload: {'mfa_enable': true}, reason: reason);
+  Future<void> enableMfa({String? reason}) => _datastore.member.update(
+      serverId: serverId.value, memberId: id.value, payload: {'mfa_enable': true}, reason: reason);
 
   /// Disable the member's MFA.
   ///
   /// ```dart
   /// await member.disableMfa(reason: 'Testing');
   /// ```
-  Future<void> disableMfa({String? reason}) => _datastore.member
-      .update(serverId: serverId.value, memberId: id.value, payload: {'mfa_enable': false}, reason: reason);
+  Future<void> disableMfa({String? reason}) => _datastore.member.update(
+      serverId: serverId.value, memberId: id.value, payload: {'mfa_enable': false}, reason: reason);
 
   /// Toggle the member's MFA.
   ///
@@ -189,8 +188,8 @@ final class Member implements UserClient {
   ///   ...
   /// }), reason: 'Testing');
   /// ```
-  Future<void> edit(MemberBuilder builder, {String? reason}) =>
-      _datastore.member.update(serverId: serverId.value, memberId: id.value, reason: reason, payload: {
+  Future<void> edit(MemberBuilder builder, {String? reason}) => _datastore.member
+          .update(serverId: serverId.value, memberId: id.value, reason: reason, payload: {
         'nick': nickname,
         'mute': builder.isMuted,
         'deaf': builder.isDeafened,
