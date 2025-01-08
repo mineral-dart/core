@@ -18,7 +18,7 @@ final class ChannelMethods {
   Future<void> setName(String name, String? reason) async {
     final builder = ChannelBuilder(null)..setName(name);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -28,7 +28,7 @@ final class ChannelMethods {
   Future<void> setDescription(String value, String? reason) async {
     final builder = ChannelBuilder(null)..setTopic(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -38,7 +38,7 @@ final class ChannelMethods {
   Future<void> setCategory(String value, String? reason) async {
     final builder = ChannelBuilder(null)..setParentId(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -48,7 +48,7 @@ final class ChannelMethods {
   Future<void> setPosition(int value, String? reason) async {
     final builder = ChannelBuilder(null)..setPosition(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -58,7 +58,7 @@ final class ChannelMethods {
   Future<void> setNsfw(bool value, String? reason) async {
     final builder = ChannelBuilder(null)..setNsfw(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -68,7 +68,7 @@ final class ChannelMethods {
   Future<void> setRateLimitPerUser(Duration value, String? reason) async {
     final builder = ChannelBuilder(null)..setRateLimitPerUser(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -78,7 +78,7 @@ final class ChannelMethods {
   Future<void> setDefaultAutoArchiveDuration(Duration value, String? reason) async {
     final builder = ChannelBuilder(null)..setDefaultAutoArchiveDuration(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -88,7 +88,7 @@ final class ChannelMethods {
   Future<void> setDefaultThreadRateLimitPerUser(Duration value, String? reason) async {
     final builder = ChannelBuilder(null)..setDefaultThreadRateLimitPerUser(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -98,7 +98,7 @@ final class ChannelMethods {
   Future<void> setBitrate(int value, String? reason) async {
     final builder = ChannelBuilder(null)..setBitrate(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -108,7 +108,7 @@ final class ChannelMethods {
   Future<void> setUserLimit(int value, String? reason) async {
     final builder = ChannelBuilder(null)..setUserLimit(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -118,7 +118,7 @@ final class ChannelMethods {
   Future<void> setRtcRegion(String value, String? reason) async {
     final builder = ChannelBuilder(null)..setRtcRegion(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -128,7 +128,7 @@ final class ChannelMethods {
   Future<void> setVideoQuality(VideoQuality value, String? reason) async {
     final builder = ChannelBuilder(null)..setVideoQualityMode(value);
     await _datastore.channel.update(
-      id,
+      id.value,
       builder,
       serverId: _serverId?.value,
       reason: reason,
@@ -141,10 +141,10 @@ final class ChannelMethods {
       List<MessageEmbed>? embeds,
       Poll? poll,
       List<MessageComponent>? components}) async {
-    await _datastore.channel.createMessage(guildId, id, content, embeds, poll, components);
+    await _datastore.message.send(guildId?.value, id.value, content, embeds, poll, components);
   }
 
   Future<void> delete(String? reason) async {
-    await _datastore.channel.deleteChannel(id, reason);
+    await _datastore.channel.delete(id.value, reason);
   }
 }

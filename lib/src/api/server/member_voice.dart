@@ -4,8 +4,7 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
 
 final class MemberVoice {
-  MemberPartContract get _memberMethods =>
-      ioc.resolve<DataStoreContract>().member;
+  MemberPartContract get _memberMethods => ioc.resolve<DataStoreContract>().member;
 
   final Member _member;
 
@@ -18,8 +17,8 @@ final class MemberVoice {
   /// ```
   Future<void> move(Snowflake channelId, {String? reason}) async {
     await _memberMethods.update(
-      serverId: _member.serverId,
-      memberId: _member.id,
+      serverId: _member.serverId.value,
+      memberId: _member.id.value,
       payload: {'channel_id': channelId},
       reason: reason,
     );
@@ -32,8 +31,8 @@ final class MemberVoice {
   /// ```
   Future<void> disconnect({String? reason}) async {
     await _memberMethods.update(
-      serverId: _member.serverId,
-      memberId: _member.id,
+      serverId: _member.serverId.value,
+      memberId: _member.id.value,
       payload: {'channel_id': null},
       reason: reason,
     );
@@ -46,8 +45,8 @@ final class MemberVoice {
   /// ```
   Future<void> mute({String? reason}) async {
     await _memberMethods.update(
-      serverId: _member.serverId,
-      memberId: _member.id,
+      serverId: _member.serverId.value,
+      memberId: _member.id.value,
       payload: {'mute': true},
       reason: reason,
     );
@@ -60,8 +59,8 @@ final class MemberVoice {
   /// ```
   Future<void> unMute({String? reason}) async {
     await _memberMethods.update(
-      serverId: _member.serverId,
-      memberId: _member.id,
+      serverId: _member.serverId.value,
+      memberId: _member.id.value,
       payload: {'mute': false},
       reason: reason,
     );
@@ -74,8 +73,8 @@ final class MemberVoice {
   /// ```
   Future<void> deafen({String? reason}) async {
     await _memberMethods.update(
-      serverId: _member.serverId,
-      memberId: _member.id,
+      serverId: _member.serverId.value,
+      memberId: _member.id.value,
       payload: {'deaf': true},
       reason: reason,
     );
@@ -88,8 +87,8 @@ final class MemberVoice {
   /// ```
   Future<void> unDeafen({String? reason}) async {
     await _memberMethods.update(
-      serverId: _member.serverId,
-      memberId: _member.id,
+      serverId: _member.serverId.value,
+      memberId: _member.id.value,
       payload: {'deaf': false},
       reason: reason,
     );

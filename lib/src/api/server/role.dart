@@ -36,17 +36,15 @@ final class Role {
     required this.serverId,
   });
 
-  // todo: setPermissions, setPositions methods
-
   /// Set the role's name.
   ///
   /// ```dart
   ///  await role.setName('New Role Name', reason: 'Testing');
   ///  ```
   Future<void> setName(String name, String? reason) async {
-    await _datastore.role.updateRole(
-      id: id,
-      serverId: serverId,
+    await _datastore.role.update(
+      id: id.value,
+      serverId: serverId.value,
       reason: reason,
       payload: {'name': name},
     );
@@ -58,9 +56,9 @@ final class Role {
   /// await role.setColor(Color.fromRGB(255, 0, 0), reason: 'Testing');
   /// ```
   Future<void> setColor(Color color, String? reason) async {
-    await _datastore.role.updateRole(
-      id: id,
-      serverId: serverId,
+    await _datastore.role.update(
+      id: id.value,
+      serverId: serverId.value,
       reason: reason,
       payload: {'color': color.toInt()},
     );
@@ -72,9 +70,9 @@ final class Role {
   ///  await role.setHoist(true, reason: 'Testing');
   /// ```
   Future<void> setHoist(bool hoist, String? reason) async {
-    await _datastore.role.updateRole(
-      id: id,
-      serverId: serverId,
+    await _datastore.role.update(
+      id: id.value,
+      serverId: serverId.value,
       reason: reason,
       payload: {'hoist': hoist},
     );
@@ -86,9 +84,9 @@ final class Role {
   /// await role.setUnicodeEmoji('👑', reason: 'Testing');
   /// ```
   Future<void> setUnicodeEmoji(String emoji, String? reason) async {
-    await _datastore.role.updateRole(
-      id: id,
-      serverId: serverId,
+    await _datastore.role.update(
+      id: id.value,
+      serverId: serverId.value,
       reason: reason,
       payload: {'unicode_emoji': emoji},
     );
@@ -100,9 +98,9 @@ final class Role {
   /// await role.setMentionable(true, reason: 'Testing');
   /// ```
   Future<void> setMentionable(bool value, String? reason) async {
-    await _datastore.role.updateRole(
-      id: id,
-      serverId: serverId,
+    await _datastore.role.update(
+      id: id.value,
+      serverId: serverId.value,
       reason: reason,
       payload: {'mentionable': value},
     );
@@ -122,9 +120,9 @@ final class Role {
       String? emoji,
       bool? mentionable,
       String? reason}) async {
-    await _datastore.role.updateRole(
-      id: id,
-      serverId: serverId,
+    await _datastore.role.update(
+      id: id.value,
+      serverId: serverId.value,
       reason: reason,
       payload: {
         if (name != null) 'name': name,
@@ -142,7 +140,7 @@ final class Role {
   /// await role.delete(reason: 'Testing');
   /// ```
   Future<void> delete({String? reason}) =>
-      _datastore.role.deleteRole(id: id, guildId: serverId, reason: reason);
+      _datastore.role.delete(id: id.value, guildId: serverId.value, reason: reason);
 
   /// Get the server this role belongs to.
   /// ```dart

@@ -49,8 +49,11 @@ final class MemberVoiceManager {
       return;
     }
 
-    await _datastore.member
-        .update(serverId: _serverId, memberId: _memberId, reason: reason, payload: {'mute': true});
+    await _datastore.member.update(
+        serverId: _serverId.value,
+        memberId: _memberId.value,
+        reason: reason,
+        payload: {'mute': true});
   }
 
   /// Unmute the [Member].
@@ -64,8 +67,11 @@ final class MemberVoiceManager {
       return;
     }
 
-    await _datastore.member
-        .update(serverId: _serverId, memberId: _memberId, reason: reason, payload: {'mute': false});
+    await _datastore.member.update(
+        serverId: _serverId.value,
+        memberId: _memberId.value,
+        reason: reason,
+        payload: {'mute': false});
   }
 
   /// Toggle the [Member] mute status.
@@ -80,8 +86,8 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId,
-        memberId: _memberId,
+        serverId: _serverId.value,
+        memberId: _memberId.value,
         reason: reason,
         payload: {'mute': !(isMuted ?? false)});
   }
@@ -97,8 +103,11 @@ final class MemberVoiceManager {
       return;
     }
 
-    await _datastore.member
-        .update(serverId: _serverId, memberId: _memberId, reason: reason, payload: {'deaf': true});
+    await _datastore.member.update(
+        serverId: _serverId.value,
+        memberId: _memberId.value,
+        reason: reason,
+        payload: {'deaf': true});
   }
 
   /// Set the [Member] mute status.
@@ -112,8 +121,11 @@ final class MemberVoiceManager {
       return;
     }
 
-    await _datastore.member
-        .update(serverId: _serverId, memberId: _memberId, reason: reason, payload: {'mute': value});
+    await _datastore.member.update(
+        serverId: _serverId.value,
+        memberId: _memberId.value,
+        reason: reason,
+        payload: {'mute': value});
   }
 
   /// Un-deafen the [Member].
@@ -127,8 +139,11 @@ final class MemberVoiceManager {
       return;
     }
 
-    await _datastore.member
-        .update(serverId: _serverId, memberId: _memberId, reason: reason, payload: {'deaf': false});
+    await _datastore.member.update(
+        serverId: _serverId.value,
+        memberId: _memberId.value,
+        reason: reason,
+        payload: {'deaf': false});
   }
 
   /// Toggle the [Member] deafen status.
@@ -143,8 +158,8 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId,
-        memberId: _memberId,
+        serverId: _serverId.value,
+        memberId: _memberId.value,
         reason: reason,
         payload: {'deaf': !(isDeafened ?? false)});
   }
@@ -160,8 +175,11 @@ final class MemberVoiceManager {
       return;
     }
 
-    await _datastore.member
-        .update(serverId: _serverId, memberId: _memberId, reason: reason, payload: {'deaf': value});
+    await _datastore.member.update(
+        serverId: _serverId.value,
+        memberId: _memberId.value,
+        reason: reason,
+        payload: {'deaf': value});
   }
 
   /// Update the current [VoiceState] with multiple properties.
@@ -181,8 +199,8 @@ final class MemberVoiceManager {
     String? reason,
   }) async {
     await _datastore.member.update(
-      serverId: _serverId,
-      memberId: _memberId,
+      serverId: _serverId.value,
+      memberId: _memberId.value,
       reason: reason,
       payload: {
         if (mute != null) 'mute': mute,
@@ -204,8 +222,8 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId,
-        memberId: _memberId,
+        serverId: _serverId.value,
+        memberId: _memberId.value,
         reason: reason,
         payload: {'channel_id': channelId});
   }
@@ -222,6 +240,9 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId, memberId: _memberId, reason: reason, payload: {'channel_id': null});
+        serverId: _serverId.value,
+        memberId: _memberId.value,
+        reason: reason,
+        payload: {'channel_id': null});
   }
 }

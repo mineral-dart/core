@@ -103,7 +103,7 @@ final class ChannelManager<C extends Channel> {
   /// await server.setAfkChannel('1091121140090535956', reason: 'Testing');
   /// ```
   Future<void> setAfkChannel(String? channelId, {String? reason}) async {
-    await _datastore.server.updateServer(_serverId, {'afk_channel_id': channelId}, reason);
+    await _datastore.server.update(_serverId.value, {'afk_channel_id': channelId}, reason);
   }
 
   /// Set the server's system channel.
@@ -112,7 +112,7 @@ final class ChannelManager<C extends Channel> {
   /// await server.setSystemChannel('1091121140090535956', reason: 'Testing');
   /// ```
   Future<void> setSystemChannel(String? channelId, {String? reason}) async {
-    await _datastore.server.updateServer(_serverId, {'system_channel_id': channelId}, reason);
+    await _datastore.server.update(_serverId.value, {'system_channel_id': channelId}, reason);
   }
 
   /// Set the server's rules channel.
@@ -121,7 +121,7 @@ final class ChannelManager<C extends Channel> {
   /// await server.setRulesChannel('1091121140090535956', reason: 'Testing');
   /// ```
   Future<void> setRulesChannel(String? channelId, {String? reason}) async {
-    await _datastore.server.updateServer(_serverId, {'rules_channel_id': channelId}, reason);
+    await _datastore.server.update(_serverId.value, {'rules_channel_id': channelId}, reason);
   }
 
   /// Set the server's public updates channel.
@@ -131,7 +131,7 @@ final class ChannelManager<C extends Channel> {
   /// ```
   Future<void> setPublicUpdatesChannel(String? channelId, {String? reason}) async {
     await _datastore.server
-        .updateServer(_serverId, {'public_updates_channel_id': channelId}, reason);
+        .update(_serverId.value, {'public_updates_channel_id': channelId}, reason);
   }
 
   factory ChannelManager.empty(String serverId) {

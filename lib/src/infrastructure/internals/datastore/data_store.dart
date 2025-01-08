@@ -9,9 +9,13 @@ import 'package:mineral/src/infrastructure/internals/datastore/parts/role_part.d
 import 'package:mineral/src/infrastructure/internals/datastore/parts/server_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/sticker_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/user_part.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/request_bucket.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client.dart';
 
 final class DataStore implements DataStoreContract {
+  @override
+  final RequestBucket requestBucket = RequestBucket();
+
   @override
   final HttpClient client;
 

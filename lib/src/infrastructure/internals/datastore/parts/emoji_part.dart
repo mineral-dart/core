@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
@@ -18,22 +17,17 @@ final class EmojiPart implements EmojiPartContract {
   @override
   Future<Map<Snowflake, Emoji>> fetch(String serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Emoji>>();
-    final response = await _dataStore.client.get('/guilds/$serverId/channels');
 
-    final rawEmojis = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => await Future.wait(List.from(response.body)
-          .map((element) async => _marshaller.serializers.emojis.normalize(element))),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
-    };
+    final result = await _dataStore.requestBucket
+        .run<List>(() => _dataStore.client.get('/guilds/$serverId/emojis'));
 
-    final emojis = await Future.wait(rawEmojis.map((element) async {
-      return _marshaller.serializers.emojis.serialize(element);
-    }));
+    final emojis = await result.map((element) async {
+      final raw = await _marshaller.serializers.emojis.normalize(element);
+      return _marshaller.serializers.emojis.serialize(raw);
+    }).wait;
 
     completer.complete(emojis.asMap().map((_, value) => MapEntry(value.id!, value)));
+
     return completer.future;
   }
 
@@ -44,23 +38,19 @@ final class EmojiPart implements EmojiPartContract {
 
     final cachedEmoji = await _marshaller.cache?.get(key);
     if (!force && cachedEmoji != null) {
-      final channel = await _marshaller.serializers.emojis.serialize(cachedEmoji);
-      completer.complete(channel);
+      final emoji = await _marshaller.serializers.emojis.serialize(cachedEmoji);
+      completer.complete(emoji);
 
       return completer.future;
     }
 
-    final response = await _dataStore.client.get('/guilds/$serverId/emojis/$emojiId');
-    final emoji = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.emojis.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(
+        () => _dataStore.client.get('/guilds/$serverId/emojis/$emojiId'));
 
-    completer.complete(await _marshaller.serializers.emojis.serialize(emoji));
+    final raw = await _marshaller.serializers.emojis.normalize(result);
+    final emoji = await _marshaller.serializers.emojis.serialize(raw);
+
+    completer.complete(emoji);
 
     return completer.future;
   }
@@ -70,27 +60,23 @@ final class EmojiPart implements EmojiPartContract {
       {String? reason}) async {
     final completer = Completer<Emoji>();
 
-    final response = await _dataStore.client.post('/guilds/$serverId/emojis',
-        body: {
-          'name': name.replaceAll(' ', '_'),
-          'image': image.base64,
-          'roles': roles.isNotEmpty ? roles : null,
-        },
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.post('/guilds/$serverId/emojis',
+            body: {
+              'name': name.replaceAll(' ', '_'),
+              'image': image.base64,
+              'roles': roles.isNotEmpty ? roles : null,
+            },
+            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
 
-    final emoji = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.emojis.normalize({
-          ...response.body,
-          'guild_id': serverId,
-        }),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final raw = await _marshaller.serializers.channels.normalize(result);
+    final emoji = await _marshaller.serializers.emojis.serialize({
+      ...raw,
+      'guild_id': serverId,
+    });
 
-    completer.complete(await _marshaller.serializers.emojis.serialize(emoji));
+    completer.complete(emoji);
+
     return completer.future;
   }
 
@@ -102,36 +88,25 @@ final class EmojiPart implements EmojiPartContract {
       required String? reason}) async {
     final completer = Completer<Emoji>();
 
-    final response = await _dataStore.client.patch('/guilds/$serverId/emojis/$id',
-        body: payload,
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client
+        .patch('/guilds/$serverId/emojis/$id',
+            body: payload,
+            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
 
-    final emoji = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.emojis.normalize({
-          ...response.body,
-          'guild_id': serverId,
-        }),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final raw = await _marshaller.serializers.emojis.normalize({
+      ...result,
+      'guild_id': serverId,
+    });
+    final emoji = await _marshaller.serializers.emojis.serialize(raw);
 
-    completer.complete(await _marshaller.serializers.emojis.serialize(emoji));
+    completer.complete(emoji);
     return completer.future;
   }
 
   @override
   Future<void> delete(String serverId, String emojiId, {String? reason}) async {
-    final response = await _dataStore.client.delete('/guilds/$serverId/emojis/$emojiId',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
-
-    switch (response.statusCode) {
-      case int() when status.isRateLimit(response.statusCode):
-        throw HttpException(response.bodyString);
-      case int() when status.isError(response.statusCode):
-        throw HttpException(response.bodyString);
-    }
+    await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
+        '/guilds/$serverId/emojis/$emojiId',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
   }
 }

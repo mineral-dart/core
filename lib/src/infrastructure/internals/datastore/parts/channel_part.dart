@@ -1,13 +1,10 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
 final class ChannelPart implements ChannelPartContract {
@@ -20,20 +17,14 @@ final class ChannelPart implements ChannelPartContract {
   @override
   Future<Map<Snowflake, T>> fetch<T extends Channel>(String serverId, bool force) async {
     final completer = Completer<Map<Snowflake, T>>();
-    final response = await _dataStore.client.get('/guilds/$serverId/channels');
 
-    final rawChannels = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => await Future.wait(List.from(response.body)
-          .map((e) async => await _marshaller.serializers.channels.normalize(e))),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
-    };
+    final result = await _dataStore.requestBucket
+        .run<List>(() => _dataStore.client.get('/guilds/$serverId/channels'));
 
-    final channels = await Future.wait(rawChannels.map((element) async {
-      return _marshaller.serializers.channels.serialize(element);
-    }));
+    final channels = await result.map((element) async {
+      final raw = await _marshaller.serializers.channels.normalize(element);
+      return _marshaller.serializers.channels.serialize(raw);
+    }).wait;
 
     completer.complete(channels.asMap().map((_, value) => MapEntry(value.id, value as T)));
     return completer.future;
@@ -41,29 +32,24 @@ final class ChannelPart implements ChannelPartContract {
 
   @override
   Future<T?> get<T extends Channel>(String id, bool force) async {
-    final Completer<T> completer = Completer<T>();
-    final String key = _marshaller.cacheKey.channel(id);
+    final completer = Completer<T>();
 
+    final String key = _marshaller.cacheKey.channel(id);
     final cachedChannel = await _marshaller.cache?.get(key);
     if (!force && cachedChannel != null) {
       final channel = await _marshaller.serializers.channels.serialize(cachedChannel) as T;
-      completer.complete(channel);
 
+      completer.complete(channel);
       return completer.future;
     }
 
-    final response = await _dataStore.client.get('/channels/$id');
-    final channel = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.channels.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.get('/channels/$id'));
 
-    completer.complete(await _marshaller.serializers.channels.serialize(channel) as T);
+    final raw = await _marshaller.serializers.channels.normalize(result);
+    final channel = await _marshaller.serializers.channels.serialize(raw) as T;
 
+    completer.complete(channel);
     return completer.future;
   }
 
@@ -72,127 +58,60 @@ final class ChannelPart implements ChannelPartContract {
       {String? reason}) async {
     final completer = Completer<T>();
 
-    final response = await _dataStore.client.post('/guilds/$serverId/channels',
-        body: builder.build(),
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client
+        .post('/guilds/$serverId/channels',
+            body: builder.build(),
+            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
 
-    final channel = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.channels.normalize({
-          ...response.body,
-          'guild_id': serverId,
-        }),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final raw = await _marshaller.serializers.channels.normalize(result);
+    final channel = await _marshaller.serializers.channels.serialize({
+      ...raw,
+      'guild_id': serverId,
+    }) as T;
 
-    completer.complete(await _marshaller.serializers.channels.serialize(channel) as T);
+    completer.complete(channel);
     return completer.future;
   }
 
   @override
-  Future<PrivateChannel?> createPrivateChannel(
-      {required Snowflake id, required Snowflake recipientId}) async {
-    final response =
-        await _dataStore.client.post('/users/@me/channels', body: {'recipient_id': recipientId});
+  Future<PrivateChannel> createPrivateChannel(String id, String recipientId) async {
+    final completer = Completer<PrivateChannel>();
 
-    final Channel channel = await serializeChannelResponse(response);
+    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(
+        () => _dataStore.client.post('/users/@me/channels', body: {'recipient_id': recipientId}));
 
-    return channel as PrivateChannel?;
+    final raw = await _marshaller.serializers.channels.normalize(result);
+    final channel = await _marshaller.serializers.channels.serialize(raw);
+
+    completer.complete(channel as PrivateChannel);
+
+    return completer.future;
   }
 
   @override
-  Future<T?> update<T extends Channel>(Snowflake id, ChannelBuilderContract builder,
+  Future<T?> update<T extends Channel>(String id, ChannelBuilderContract builder,
       {String? serverId, String? reason}) async {
     final completer = Completer<T>();
 
-    final response = await _dataStore.client.patch('/channels/$id',
-        body: builder.build(),
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
+    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client
+        .patch('/channels/$id',
+            body: builder.build(),
+            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
 
-    final channel = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.channels.normalize({
-          ...response.body,
-          'guild_id': serverId,
-        }),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final raw = await _marshaller.serializers.channels.normalize(result);
+    final channel = await _marshaller.serializers.channels.serialize({
+      ...raw,
+      'guild_id': serverId,
+    }) as T;
 
-    completer.complete(await _marshaller.serializers.channels.serialize(channel) as T);
+    completer.complete(channel);
     return completer.future;
   }
 
   @override
-  Future<void> deleteChannel(Snowflake id, String? reason) async {
-    await _dataStore.client.delete('/channels/$id',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
-  }
-
-  @override
-  Future<T> createMessage<T extends Message>(
-      Snowflake? guildId,
-      Snowflake channelId,
-      String? content,
-      List<MessageEmbed>? embeds,
-      Poll? poll,
-      List<MessageComponent>? components) async {
-    final completer = Completer<T>();
-    final response = await _dataStore.client.post('/channels/$channelId/messages', body: {
-      'content': content,
-      'embeds': await Helper.createOrNullAsync(
-          field: embeds,
-          fn: () async => embeds?.map(_marshaller.serializers.embed.deserialize).toList()),
-      'poll': await Helper.createOrNullAsync(
-          field: poll, fn: () async => _marshaller.serializers.poll.deserialize(poll!)),
-      'components': components?.map((e) => e.toJson()).toList(),
-    });
-
-    final message = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
-
-    completer.complete(await _marshaller.serializers.message.serialize(message) as T);
-
-    return completer.future;
-  }
-
-  @override
-  Future<T> serializeChannelResponse<T extends Channel>(Response response) async {
-    return switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => () async {
-          final payload = await _marshaller.serializers.channels.normalize(response.body);
-          final channel = await _marshaller.serializers.channels.serialize(payload);
-
-          if (channel is ServerChannel) {
-            await _updateCacheFromChannelServer(channel.id, channel, payload);
-          }
-
-          return channel as T?;
-        },
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
-    } as Future<T>;
-  }
-
-  Future<void> _updateCacheFromChannelServer(
-      Snowflake id, ServerChannel channel, Map<String, dynamic> rawChannel) async {
-    final server = await _dataStore.server.get(rawChannel['guild_id'], true);
-
-    final rawServer = await _marshaller.serializers.server.deserialize(server);
-
-    await _marshaller.cache?.putMany({
-      _marshaller.cacheKey.server(server.id.value): rawServer,
-    });
+  Future<void> delete(String id, String? reason) async {
+    await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
+        '/channels/$id',
+        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
   }
 }

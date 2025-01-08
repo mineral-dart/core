@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:io';
 
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
@@ -17,22 +16,16 @@ final class StickerPart implements StickerPartContract {
   @override
   Future<Map<Snowflake, Sticker>> fetch(String serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Sticker>>();
-    final response = await _dataStore.client.get('/guilds/$serverId/stickers');
 
-    final rawEmojis = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => await Future.wait(List.from(response.body)
-          .map((element) async => _marshaller.serializers.sticker.normalize(element))),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}'),
-    };
+    final result = await _dataStore.requestBucket
+        .run<List>(() => _dataStore.client.get('/guilds/$serverId/stickers'));
 
-    final emojis = await Future.wait(rawEmojis.map((element) async {
-      return  _marshaller.serializers.sticker.serialize(element);
-    }));
+    final stickers = await result.map((element) async {
+      final raw = await _marshaller.serializers.sticker.normalize(element);
+      return _marshaller.serializers.sticker.serialize(raw);
+    }).wait;
 
-    completer.complete(emojis.asMap().map((_, value) => MapEntry(value.id!, value)));
+    completer.complete(stickers.asMap().map((_, value) => MapEntry(value.id, value)));
     return completer.future;
   }
 
@@ -44,23 +37,24 @@ final class StickerPart implements StickerPartContract {
     final cachedSticker = await _marshaller.cache?.get(key);
     if (!force && cachedSticker != null) {
       final sticker = await _marshaller.serializers.sticker.serialize(cachedSticker);
-      completer.complete(sticker);
 
+      completer.complete(sticker);
       return completer.future;
     }
 
-    final response = await _dataStore.client.get('/guilds/$serverId/stickers/$stickerId');
-    final sticker = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.sticker.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) => throw HttpException(response.bodyString),
-      _ => throw Exception('Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
+    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(
+        () => _dataStore.client.get('/guilds/$serverId/stickers/$stickerId'));
 
-    completer.complete(await _marshaller.serializers.sticker.serialize(sticker));
+    final raw = await _marshaller.serializers.sticker.normalize(result);
+    final sticker = await _marshaller.serializers.sticker.serialize(raw);
 
+    completer.complete(sticker);
     return completer.future;
+  }
+
+  @override
+  Future<void> delete(String serverId, String stickerId) async {
+    await _dataStore.requestBucket.run<Map<String, dynamic>>(
+        () => _dataStore.client.delete('/guilds/$serverId/stickers/$stickerId'));
   }
 }

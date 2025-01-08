@@ -1,5 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/services.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
 
 abstract interface class DataStorePart {}
@@ -12,18 +11,12 @@ abstract interface class ChannelPartContract implements DataStorePart {
   Future<T> create<T extends Channel>(String? serverId, ChannelBuilderContract builder,
       {String? reason});
 
-  Future<PrivateChannel?> createPrivateChannel(
-      {required Snowflake id, required Snowflake recipientId});
+  Future<PrivateChannel?> createPrivateChannel(String id, String recipientId);
 
-  Future<T?> update<T extends Channel>(Snowflake id, ChannelBuilderContract builder,
+  Future<T?> update<T extends Channel>(String id, ChannelBuilderContract builder,
       {String? serverId, String? reason});
 
-  Future<void> deleteChannel(Snowflake id, String? reason);
-
-  Future<T> createMessage<T extends Message>(Snowflake? guildId, Snowflake channelId,
-      String? content, List<MessageEmbed>? embeds, Poll? poll, List<MessageComponent>? components);
-
-  Future<T?> serializeChannelResponse<T extends Channel>(Response response);
+  Future<void> delete(String id, String? reason);
 }
 
 abstract interface class InteractionPartContract implements DataStorePart {
@@ -58,19 +51,19 @@ abstract interface class MemberPartContract implements DataStorePart {
   Future<Member?> get(String serverId, String id, bool force);
 
   Future<Member> update(
-      {required Snowflake serverId,
-      required Snowflake memberId,
+      {required String serverId,
+      required String memberId,
       required Map<String, dynamic> payload,
       String? reason});
 
-  Future<void> banMember(
-      {required Snowflake serverId,
+  Future<void> ban(
+      {required String serverId,
       required Duration? deleteSince,
-      required Snowflake memberId,
+      required String memberId,
       String? reason});
 
-  Future<void> kickMember(
-      {required Snowflake serverId, required Snowflake memberId, String? reason});
+  Future<void> kick(
+      {required String serverId, required String memberId, String? reason});
 
   Future<VoiceState?> getVoiceState(String serverId, String userId, bool force);
 }
@@ -79,8 +72,8 @@ abstract interface class MessagePartContract implements DataStorePart {
   Future<T?> get<T extends BaseMessage>(String channelId, String id, bool force);
 
   Future<T> update<T extends Message>({
-    required Snowflake id,
-    required Snowflake channelId,
+    required String id,
+    required String channelId,
     String? content,
     List<MessageEmbed>? embeds,
     List<MessageComponent>? components,
@@ -94,12 +87,15 @@ abstract interface class MessagePartContract implements DataStorePart {
 
   Future<void> delete(Snowflake channelId, Snowflake id);
 
+  Future<T> send<T extends Message>(String? guildId, String channelId, String? content,
+      List<MessageEmbed>? embeds, Poll? poll, List<MessageComponent>? components);
+
   Future<R> reply<T extends Channel, R extends Message>(
       {required Snowflake id,
-        required Snowflake channelId,
-        String? content,
-        List<MessageEmbed>? embeds,
-        List<MessageComponent>? components});
+      required Snowflake channelId,
+      String? content,
+      List<MessageEmbed>? embeds,
+      List<MessageComponent>? components});
 }
 
 abstract interface class RolePartContract implements DataStorePart {
@@ -110,32 +106,32 @@ abstract interface class RolePartContract implements DataStorePart {
   Future<Role> create(String serverId, String name, List<Permission> permissions, Color color,
       bool hoist, bool mentionable, String? reason);
 
-  Future<void> addRole(
-      {required Snowflake memberId,
-      required Snowflake serverId,
-      required Snowflake roleId,
+  Future<void> add(
+      {required String memberId,
+      required String serverId,
+      required String roleId,
       required String? reason});
 
-  Future<void> removeRole(
-      {required Snowflake memberId,
-      required Snowflake serverId,
-      required Snowflake roleId,
+  Future<void> remove(
+      {required String memberId,
+      required String serverId,
+      required String roleId,
       required String? reason});
 
-  Future<void> syncRoles(
-      {required Snowflake memberId,
-      required Snowflake serverId,
-      required List<Snowflake> roleIds,
+  Future<void> sync(
+      {required String memberId,
+      required String serverId,
+      required List<String> roleIds,
       required String? reason});
 
-  Future<Role?> updateRole(
-      {required Snowflake id,
-      required Snowflake serverId,
+  Future<Role?> update(
+      {required String id,
+      required String serverId,
       required Map<String, dynamic> payload,
       required String? reason});
 
-  Future<void> deleteRole(
-      {required Snowflake id, required Snowflake guildId, required String? reason});
+  Future<void> delete(
+      {required String id, required String guildId, required String? reason});
 }
 
 abstract interface class ServerMessagePartContract implements DataStorePart {
@@ -168,19 +164,17 @@ abstract interface class ServerMessagePartContract implements DataStorePart {
 abstract interface class ServerPartContract implements DataStorePart {
   Future<Server> get(String id, bool force);
 
-  Future<Server> updateServer(Snowflake id, Map<String, dynamic> payload, String? reason);
+  Future<Server> update(String id, Map<String, dynamic> payload, String? reason);
 
-  Future<List<T>> getChannels<T extends ServerChannel>(Snowflake id);
-
-  Future<Role> getRole(Snowflake serverId, Snowflake roleId);
-
-  Future<List<Role>> getRoles(Snowflake guildId, {bool force = false});
+  Future<void> delete(String id, String? reason);
 }
 
 abstract interface class StickerPartContract implements DataStorePart {
   Future<Map<Snowflake, Sticker>> fetch(String serverId, bool force);
 
   Future<Sticker?> get(String serverId, String id, bool force);
+
+  Future<void> delete(String serverId, String stickerId);
 }
 
 abstract interface class UserPartContract implements DataStorePart {
