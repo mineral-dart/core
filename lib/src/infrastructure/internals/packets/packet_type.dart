@@ -6,6 +6,8 @@ enum PacketType implements PacketTypeContract {
   interactionCreate('INTERACTION_CREATE'),
 
   messageCreate('MESSAGE_CREATE'),
+  messageReactionAdd('MESSAGE_REACTION_ADD'),
+  messageReactionRemove('MESSAGE_REACTION_REMOVE'),
 
   threadCreate('THREAD_CREATE'),
   threadUpdate('THREAD_UPDATE'),

@@ -27,6 +27,8 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/interacti
 import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/interaction_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/select_interaction_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_create_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_add_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_remove_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/presence_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/ready_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_create_packet.dart';
@@ -79,6 +81,8 @@ final class PacketListener implements PacketListenerContract {
     subscribe(GuildEmojisUpdatePacket.new);
     subscribe(GuildStickersUpdatePacket.new);
     subscribe(GuildAuditLogEntryCreatePacket.new);
+    subscribe(MessageReactionAddPacket.new);
+    subscribe(MessageReactionRemovePacket.new);
 
     subscribe(ButtonInteractionCreatePacket.new);
     subscribe(InteractionCreatePacket.new);
