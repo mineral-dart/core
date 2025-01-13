@@ -16,6 +16,8 @@ import 'package:mineral/src/domains/events/contracts/server/server_member_remove
 import 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_role_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';
@@ -136,4 +138,10 @@ final class ServerBucket {
 
   void threadMemberRemove(ServerThreadMemberRemoveEventHandler handle) =>
       _events.make(Event.serverThreadMemberRemove, handle);
+
+  void messageReactionAdd(ServerMessageReactionAddHandler handle) =>
+      _events.make(Event.serverMessageReactionAdd, handle);
+
+  void messageReactionRemove(ServerMessageReactionRemoveHandler handle) =>
+      _events.make(Event.serverMessageReactionRemove, handle);
 }

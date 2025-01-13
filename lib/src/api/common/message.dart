@@ -1,11 +1,16 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/api/common/managers/reaction_manager.dart';
 
 abstract interface class BaseMessage {
+  ReactionManger get reactions;
+
   Snowflake get id;
 
   String get content;
+
+  bool get authorIsBot;
 
   List<MessageEmbed> get embeds;
 
@@ -27,7 +32,20 @@ abstract interface class BaseMessage {
 }
 
 abstract interface class ServerMessage implements BaseMessage {
+  Snowflake get serverId;
+
   Future<Member> resolveMember({bool force = false});
+
+  /// Resolve the server where the message was sent.
+  /// ```dart
+  /// final server = await message.resolveServer();
+  /// ```
+  /// This will return a [Server] object.
+  /// If the server is not cached, you can force the fetch by passing `force: true`.
+  /// ```dart
+  /// final server = await message.resolveServer(force: true);
+  /// ```
+  Future<Server> resolveServer({bool force = false});
 }
 
 abstract interface class PrivateMessage implements BaseMessage {
@@ -39,16 +57,25 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   final MessageProperties _properties;
 
   @override
+  final ReactionManger reactions;
+
+  @override
   Snowflake get id => _properties.id;
 
   @override
   String get content => _properties.content;
 
   @override
+  bool get authorIsBot => _properties.authorIsBot;
+
+  @override
   List<MessageEmbed> get embeds => _properties.embeds;
 
   @override
   Snowflake get channelId => _properties.channelId;
+
+  @override
+  Snowflake get serverId => _properties.serverId!;
 
   @override
   Snowflake? get authorId => _properties.authorId;
@@ -59,12 +86,13 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   @override
   DateTime? get updatedAt => _properties.updatedAt;
 
-  Message(this._properties);
+  Message(this._properties)
+      : reactions = ReactionManger(_properties.id.value, _properties.channelId.value);
 
   @override
   Future<void> edit(
       String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components) async {
-    _datastore.message.update(
+    await _datastore.message.update(
         id: id.value,
         channelId: channelId.value,
         content: content,
@@ -74,8 +102,7 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
 
   @override
   Future<Member> resolveMember({bool force = false}) async {
-    final channel = await resolveChannel<ServerTextChannel>();
-    final member = await _datastore.member.get(channel.serverId.value, authorId!.value, force);
+    final member = await _datastore.member.get(serverId!.value, authorId!.value, force);
     return member!;
   }
 
@@ -90,6 +117,10 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
     final channel = await _datastore.channel.get<T>(channelId.value, false);
     return channel!;
   }
+
+  @override
+  Future<Server> resolveServer({bool force = false}) =>
+      _datastore.server.get(serverId!.value, force);
 
   /// Reply to the original message.
   ///

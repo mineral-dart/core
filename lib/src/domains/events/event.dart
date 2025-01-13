@@ -13,6 +13,8 @@ import 'package:mineral/src/domains/events/contracts/private/private_dialog_subm
 import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_button_click_event.dart';
@@ -31,6 +33,8 @@ import 'package:mineral/src/domains/events/contracts/server/server_member_remove
 import 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_role_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';
@@ -104,6 +108,8 @@ enum Event implements EnhancedEnum, EventType {
   serverThreadListSync(ServerThreadListSyncEvent,
       ['List<ThreadChannel> threads', 'Server server']),
   serverMemberChunk(ServerMemberChunkEvent, ['Server server', 'Map<Snowflake, Member> members']),
+  serverMessageReactionAdd(ServerMessageReactionAddEvent, ['MessageReaction reaction']),
+  serverMessageReactionRemove(ServerMessageReactionRemoveEvent, ['MessageReaction reaction']),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent, ['PrivateMessage message']),
@@ -117,6 +123,10 @@ enum Event implements EnhancedEnum, EventType {
       PrivateUserSelectEvent, ['PrivateSelectContext ctx', 'List<User> users']),
   privateTextSelect(PrivateTextSelectEvent,
       ['PrivateSelectContext ctx', 'List<String> values']),
+  privateMessageReactionAdd(PrivateMessageReactionAddEvent,
+      ['MessageReaction reaction']),
+  privateMessageReactionRemove(PrivateMessageReactionRemoveEvent,
+      ['MessageReaction reaction']),
 
   voiceStateUpdate(VoiceStateUpdateEvent, ['VoiceState before', 'VoiceState after']),
   voiceJoin(VoiceJoinEvent, ['VoiceState state']),

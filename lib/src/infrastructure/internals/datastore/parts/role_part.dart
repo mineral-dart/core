@@ -23,7 +23,11 @@ final class RolePart implements RolePartContract {
         .run<List>(() => _dataStore.client.get('/guilds/$serverId/roles'));
 
     final roles = await result.map((element) async {
-      final raw = await _marshaller.serializers.role.normalize(element);
+      final raw = await _marshaller.serializers.role.normalize({
+        ...element,
+        'guild_id': serverId,
+      });
+
       return _marshaller.serializers.role.serialize(raw);
     }).wait;
 

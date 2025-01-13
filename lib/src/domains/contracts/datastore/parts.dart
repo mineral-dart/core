@@ -62,8 +62,7 @@ abstract interface class MemberPartContract implements DataStorePart {
       required String memberId,
       String? reason});
 
-  Future<void> kick(
-      {required String serverId, required String memberId, String? reason});
+  Future<void> kick({required String serverId, required String memberId, String? reason});
 
   Future<VoiceState?> getVoiceState(String serverId, String userId, bool force);
 }
@@ -130,8 +129,7 @@ abstract interface class RolePartContract implements DataStorePart {
       required Map<String, dynamic> payload,
       required String? reason});
 
-  Future<void> delete(
-      {required String id, required String guildId, required String? reason});
+  Future<void> delete({required String id, required String guildId, required String? reason});
 }
 
 abstract interface class ServerMessagePartContract implements DataStorePart {
@@ -196,4 +194,19 @@ abstract interface class EmojiPartContract implements DataStorePart {
       required String? reason});
 
   Future<void> delete(String serverId, String emojiId, {String? reason});
+}
+
+abstract interface class ReactionPartContract implements DataStorePart {
+  Future<Map<Snowflake, User>> getUsersForEmoji(
+      String channelId, String messageId, PartialEmoji emoji);
+
+  Future<void> add(String channelId, String messageId, PartialEmoji emoji);
+
+  Future<void> remove(String channelId, String messageId, PartialEmoji emoji);
+
+  Future<void> removeAll(String channelId, String messageId);
+
+  Future<void> removeForEmoji(String channelId, String messageId, PartialEmoji emoji);
+
+  Future<void> removeForUser(String userId, String channelId, String messageId, PartialEmoji emoji);
 }
