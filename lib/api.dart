@@ -51,6 +51,7 @@ export 'package:mineral/src/api/common/image_asset.dart';
 export 'package:mineral/src/api/common/lang.dart';
 export 'package:mineral/src/api/common/message.dart';
 export 'package:mineral/src/api/common/message_properties.dart';
+export 'package:mineral/src/api/common/message_reaction.dart';
 export 'package:mineral/src/api/common/message_type.dart';
 export 'package:mineral/src/api/common/partial_application.dart';
 export 'package:mineral/src/api/common/partial_emoji.dart';

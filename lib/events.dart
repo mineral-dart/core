@@ -2,6 +2,9 @@
 library events;
 
 export 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
+export 'package:mineral/src/domains/events/contracts/common/voice_join_event.dart';
+export 'package:mineral/src/domains/events/contracts/common/voice_leave_event.dart';
+export 'package:mineral/src/domains/events/contracts/common/voice_state_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_button_click_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_channel_create_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_channel_delete_event.dart';
@@ -11,6 +14,8 @@ export 'package:mineral/src/domains/events/contracts/private/private_dialog_subm
 export 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
+export 'package:mineral/src/domains/events/contracts/server/private_message_reaction_add_event.dart';
+export 'package:mineral/src/domains/events/contracts/server/private_message_reaction_remove_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_button_click_event.dart';
@@ -28,6 +33,8 @@ export 'package:mineral/src/domains/events/contracts/server/server_member_remove
 export 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
+export 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
+export 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_role_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';

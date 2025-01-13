@@ -7,7 +7,7 @@ import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/sticker.dart';
 import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/api/server/member.dart';
-import 'package:mineral/src/api/server/message_reaction.dart';
+import 'package:mineral/src/api/common/message_reaction.dart';
 import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
