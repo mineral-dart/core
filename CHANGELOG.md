@@ -1,3 +1,10 @@
+# 4.0.0-dev.9
+- Complete overhaul of the API data structures
+- Continued implementation of API classes
+- Added rate-limit management
+- Implement `audit-log` event
+- Implement message reaction events
+
 # 4.0.0-dev.8
 - Fix `Member` option in commands
 - Fix `Role` option in commands
