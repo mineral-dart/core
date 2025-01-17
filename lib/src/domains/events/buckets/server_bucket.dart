@@ -1,3 +1,4 @@
+import 'package:mineral/src/domains/events/contracts/server/server_audit_log_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_button_click_event.dart';
@@ -144,4 +145,7 @@ final class ServerBucket {
 
   void messageReactionRemove(ServerMessageReactionRemoveHandler handle) =>
       _events.make(Event.serverMessageReactionRemove, handle);
+
+  void auditLog(ServerAuditLogEventHandler handle) =>
+      _events.make(Event.serverAuditLog, handle);
 }
