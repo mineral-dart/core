@@ -1,3 +1,4 @@
+import 'package:mineral/events.dart';
 import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -10,6 +11,10 @@ final class GuildAuditLogEntryCreatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final auditLog = AuditLog.fromJson(message.payload);
-    // TODO: Implement this packet
+
+    dispatch(
+      event: Event.serverAuditLog,
+      params: [auditLog],
+    );
   }
 }

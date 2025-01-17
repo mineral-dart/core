@@ -15,6 +15,7 @@ import 'package:mineral/src/domains/events/contracts/private/private_text_select
 import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_remove_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_audit_log_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_button_click_event.dart';
@@ -55,6 +56,7 @@ interface class EventType {}
 
 enum Event implements EnhancedEnum, EventType {
   ready(ReadyEvent, ['Bot bot']),
+  serverAuditLog(ServerAuditLogEvent, ['Server server']),
   serverCreate(ServerCreateEvent, ['Server server']),
   serverUpdate(ServerUpdateEvent, ['Server before', 'Server after']),
   serverDelete(ServerDeleteEvent, ['Server? server']),
