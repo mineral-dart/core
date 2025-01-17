@@ -15,7 +15,7 @@ final class Server {
   final ServerSettings settings;
   final RoleManager roles;
   final ChannelManager channels;
-  final ThreadsManager threads;
+  final ServerThreadManager threads;
   final ServerAsset assets;
 
   Server({

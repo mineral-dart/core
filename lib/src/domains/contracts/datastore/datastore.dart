@@ -1,5 +1,6 @@
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/parts/thread_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/request_bucket.dart';
 
 abstract class DataStoreContract {
@@ -26,4 +27,6 @@ abstract class DataStoreContract {
   EmojiPartContract get emoji;
 
   ReactionPartContract get reaction;
+
+  ThreadPart get thread;
 }

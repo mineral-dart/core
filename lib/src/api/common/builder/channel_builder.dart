@@ -72,6 +72,12 @@ abstract interface class VoiceChannelBuilder extends ChannelBuilderContract {
   void setVideoQualityMode(VideoQuality value);
 }
 
+abstract interface class ThreadChannelBuilder extends ChannelBuilderContract {
+  void setDefaultAutoArchiveDuration(Duration value);
+
+  void setDefaultThreadRateLimitPerUser(Duration value);
+}
+
 abstract interface class CategoryChannelBuilder extends ChannelBuilderContract {}
 
 final class ChannelBuilder
@@ -80,9 +86,10 @@ final class ChannelBuilder
         AnnouncementChannelBuilder,
         VoiceChannelBuilder,
         ForumChannelBuilder,
-        CategoryChannelBuilder {
-  final ChannelType? _type;
+        CategoryChannelBuilder,
+        ThreadChannelBuilder {
 
+  final ChannelType? _type;
   String? _name;
   String? _topic;
   int? _position;
@@ -196,10 +203,17 @@ final class ChannelBuilder
   ///  ```
   static CategoryChannelBuilder category() => ChannelBuilder(ChannelType.guildCategory);
 
+  /// Build category channel.
+  /// ```dart
+  /// final builder = ChannelBuilder.category()
+  ///   ..setName('category');
+  /// ```
+  static ThreadChannelBuilder thread(ChannelType type) => ChannelBuilder(type);
+
   @override
   Map<String, dynamic> build() {
     return {
-      if(_type != null) 'type': _type.value,
+      if (_type != null) 'type': _type.value,
       if (_name != null) 'name': _name,
       if (_topic != null) 'topic': _topic,
       if (_position != null) 'position': _position,

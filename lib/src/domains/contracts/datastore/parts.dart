@@ -1,4 +1,6 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/server/channels/private_thread_channel.dart';
+import 'package:mineral/src/api/server/channels/public_thread_channel.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
 
 abstract interface class DataStorePart {}
@@ -17,6 +19,22 @@ abstract interface class ChannelPartContract implements DataStorePart {
       {String? serverId, String? reason});
 
   Future<void> delete(String id, String? reason);
+}
+
+abstract interface class ThreadPartContract implements DataStorePart {
+  Future<ThreadResult> fetchActives(String serverId);
+
+  Future<Map<Snowflake, PublicThreadChannel>> fetchPublicArchived(String channelId);
+
+  Future<Map<Snowflake, PrivateThreadChannel>> fetchPrivateArchived(String channelId);
+
+  Future<T> createWithoutMessage<T extends ThreadChannel>(
+      String? serverId, String? channelId, ThreadChannelBuilder builder,
+      {String? reason});
+
+  Future<T> createFromMessage<T extends ThreadChannel>(
+      String? serverId, String? channelId, String? messageId, ThreadChannelBuilder builder,
+      {String? reason});
 }
 
 abstract interface class InteractionPartContract implements DataStorePart {
