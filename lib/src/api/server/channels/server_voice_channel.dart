@@ -1,15 +1,6 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/channel_methods.dart';
-import 'package:mineral/src/api/common/channel_permission_overwrite.dart';
-import 'package:mineral/src/api/common/channel_properties.dart';
 import 'package:mineral/src/api/common/managers/message_manager.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/common/types/channel_type.dart';
-import 'package:mineral/src/api/common/video_quality.dart';
-import 'package:mineral/src/api/server/channels/server_category_channel.dart';
-import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/api/server/server_message.dart';
 
 final class ServerVoiceChannel extends ServerChannel {
   final ChannelProperties _properties;
@@ -26,13 +17,10 @@ final class ServerVoiceChannel extends ServerChannel {
   @override
   String get name => _properties.name!;
 
-  @override
   int get position => _properties.position!;
 
-  @override
   ThreadsManager get threads => _properties.threads;
 
-  @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
 
   @override

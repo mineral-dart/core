@@ -2,7 +2,6 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/factories/channels/private_channel_factory.dart';

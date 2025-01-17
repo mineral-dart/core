@@ -17,7 +17,6 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
   PacketType get packetType => PacketType.interactionCreate;
 
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
-  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
@@ -49,8 +48,6 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _handleServerButton(
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final message = await _dataStore.message.get(payload['channel_id'], payload['message']['id'], false);
-
     final metadata = payload['message']['interaction_metadata'];
     final type =
         ButtonType.values.firstWhereOrNull((e) => e.value == metadata['type']);

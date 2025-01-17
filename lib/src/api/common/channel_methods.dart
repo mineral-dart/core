@@ -1,11 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/components/message_component.dart';
-import 'package:mineral/src/api/common/embed/message_embed.dart';
-import 'package:mineral/src/api/common/polls/poll.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/common/video_quality.dart';
 
 final class ChannelMethods {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();

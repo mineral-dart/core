@@ -1,5 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/message_reaction.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class MessageReactionSerializer<T extends Message>

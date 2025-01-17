@@ -15,8 +15,6 @@ final class ChannelUpdatePacket implements ListenablePacket {
 
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
-  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
-
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final rawBeforeChannel = await _marshaller.cache?.get(message.payload['id']);

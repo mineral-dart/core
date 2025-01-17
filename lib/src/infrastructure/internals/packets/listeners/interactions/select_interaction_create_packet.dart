@@ -4,7 +4,6 @@ import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/components/component_type.dart';
 import 'package:mineral/src/api/common/types/interaction_type.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
-import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/domains/components/selects/button_context.dart';
 import 'package:mineral/src/domains/components/selects/contexts/private_select_context.dart';
 import 'package:mineral/src/domains/components/selects/contexts/server_select_context.dart';

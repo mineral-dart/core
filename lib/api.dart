@@ -77,7 +77,6 @@ export 'package:mineral/src/api/common/video_quality.dart';
 // Private
 export 'package:mineral/src/api/private/channels/private_channel.dart';
 export 'package:mineral/src/api/private/channels/private_group_channel.dart';
-export 'package:mineral/src/api/private/private_message.dart';
 export 'package:mineral/src/api/private/user.dart';
 export 'package:mineral/src/api/private/user_assets.dart';
 // Server
@@ -112,7 +111,6 @@ export 'package:mineral/src/api/server/member_voice.dart';
 export 'package:mineral/src/api/server/role.dart';
 export 'package:mineral/src/api/server/server.dart';
 export 'package:mineral/src/api/server/server_assets.dart';
-export 'package:mineral/src/api/server/server_message.dart';
 export 'package:mineral/src/api/server/server_settings.dart';
 export 'package:mineral/src/api/server/server_subscription.dart';
 export 'package:mineral/src/domains/client/client.dart';

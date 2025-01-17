@@ -1,9 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/partial_emoji.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/server/role.dart';
 
 final class Emoji extends PartialEmoji {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();

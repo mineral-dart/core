@@ -1,6 +1,5 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/server/server_message.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/interaction.dart';
 
 final class ServerSelectContext implements SelectContext {
