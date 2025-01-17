@@ -13,8 +13,6 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
 
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
 
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
-
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   @override

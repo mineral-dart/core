@@ -1,11 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/premium_tier.dart';
-import 'package:mineral/src/api/common/presence.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/user_client.dart';
-import 'package:mineral/src/api/private/user_assets.dart';
 
 final class User implements UserClient {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();

@@ -20,13 +20,10 @@ final class ServerForumChannel extends ServerChannel {
   @override
   String get name => _properties.name!;
 
-  @override
   int get position => _properties.position!;
 
-  @override
   ThreadsManager get threads => _properties.threads;
 
-  @override
   List<ChannelPermissionOverwrite> get permissions => _properties.permissions!;
 
   String? get description => _properties.description;

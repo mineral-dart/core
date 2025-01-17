@@ -1,5 +1,5 @@
-import 'dart:io';
 import 'dart:convert' as convert;
+import 'dart:io';
 
 import 'package:mineral/src/api/common/types/enhanced_enum.dart';
 

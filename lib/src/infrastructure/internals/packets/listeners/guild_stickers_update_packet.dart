@@ -1,5 +1,4 @@
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/server/managers/sticker_manager.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';

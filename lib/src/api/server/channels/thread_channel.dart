@@ -36,13 +36,10 @@ class ThreadChannel extends ServerChannel {
 
   final String ownerId;
 
-  @override
   final int position = 0;
 
-  @override
   final List<ChannelPermissionOverwrite> permissions;
 
-  @override
   final ThreadsManager threads;
 
   ThreadChannel({
