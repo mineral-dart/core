@@ -67,7 +67,7 @@ final class ServerSerializer implements SerializerContract<Server> {
   @override
   Future<Server> serialize(Map<String, dynamic> payload) async {
     final channelManager = ChannelManager.fromMap(payload['id'], payload['channel_settings']);
-    final threadManager = ThreadsManager(payload['id']);
+    final threadManager = ThreadsManager(payload['id'], null);
     final roleManager = RoleManager(payload['id']);
     final memberManager = MemberManager(payload['id']);
 

@@ -4,7 +4,7 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/managers/message_manager.dart';
 import 'package:mineral/src/api/server/threads/thread_metadata.dart';
 
-class PublicThreadChannel extends ServerChannel {
+class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
   final ChannelProperties _properties;

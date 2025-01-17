@@ -128,6 +128,7 @@ final class ChannelProperties {
         defaultReactions: element['default_reactions'],
         defaultSortOrder: element['default_sort_order'],
         defaultForumLayout: element['default_forum_layout'],
-        threads: ThreadsManager(Snowflake.nullable(element['server_id'])));
+        threads: ThreadsManager(
+            Snowflake.nullable(element['server_id']), Snowflake.nullable(element['id'])));
   }
 }

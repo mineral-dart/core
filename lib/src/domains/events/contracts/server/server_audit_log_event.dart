@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:mineral/src/api/server/audit_log/audit_log.dart';
-import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 

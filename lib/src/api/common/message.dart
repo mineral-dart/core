@@ -172,4 +172,19 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   /// await message.delete();
   /// ```
   Future<void> delete() => _datastore.message.delete(channelId, id);
+
+  /// Create a thread from the message.
+  /// ```dart
+  /// final thread = await message.createThread<PublicThreadChannel>(builder);
+  /// ```
+  /// This will return a [ThreadChannel] object.
+  /// The `builder` parameter is a [ThreadChannelBuilder] object.
+  /// ```dart
+  /// final builder = ChannelBuilder.thread(ChannelType.guildPublicThread)
+  ///   ..setDefaultAutoArchiveDuration(Duration(seconds: 3600));
+  ///
+  ///  final thread = await message.createThread<PublicThreadChannel>(builder);
+  ///  ```
+  Future<T> createThread<T extends ThreadChannel>(ThreadChannelBuilder builder) =>
+      _datastore.thread.createFromMessage<T>(serverId.value, channelId.value, id?.value, builder);
 }

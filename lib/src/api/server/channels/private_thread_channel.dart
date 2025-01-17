@@ -1,9 +1,8 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/managers/message_manager.dart';
-import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/src/api/server/threads/thread_metadata.dart';
 
-class ThreadChannel extends ServerChannel {
+class PrivateThreadChannel extends ServerChannel implements ThreadChannel {
   late final ChannelMethods _methods;
 
   final MessageManager<ServerMessage> messages = MessageManager();
@@ -40,9 +39,7 @@ class ThreadChannel extends ServerChannel {
 
   final List<ChannelPermissionOverwrite> permissions;
 
-  final ThreadsManager threads;
-
-  ThreadChannel({
+  PrivateThreadChannel({
     required this.id,
     required this.name,
     required this.serverId,
@@ -55,7 +52,6 @@ class ThreadChannel extends ServerChannel {
     required this.flags,
     required this.ownerId,
     required this.permissions,
-    required this.threads,
   }) {
     _methods = ChannelMethods(null, id);
   }
