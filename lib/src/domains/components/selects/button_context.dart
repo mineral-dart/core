@@ -1,6 +1,7 @@
 import 'package:mineral/src/api/common/snowflake.dart';
+import 'package:mineral/src/domains/components/component_context.dart';
 
-abstract interface class SelectContext {
+abstract interface class SelectContext implements ComponentContext {
   Snowflake get id;
   Snowflake get applicationId;
   String get token;
