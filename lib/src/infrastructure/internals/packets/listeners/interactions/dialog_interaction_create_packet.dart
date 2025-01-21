@@ -19,6 +19,9 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
+  InteractiveComponentManagerContract get _interactiveComponentManager =>
+      ioc.resolve<InteractiveComponentManagerContract>();
+
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final type = InteractionType.values
@@ -61,6 +64,8 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
                 final String value => value == ctx!.customId,
                 _ => true
               });
+
+      _interactiveComponentManager.dispatch(ctx!.customId, [ctx, parameters]);
     }
   }
 }

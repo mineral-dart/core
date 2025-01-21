@@ -1,5 +1,9 @@
 library contracts;
 
+export 'package:mineral/src/domains/components/interactives/components/interactive_button.dart';
+export 'package:mineral/src/domains/components/interactives/components/interactive_component.dart';
+export 'package:mineral/src/domains/components/interactives/components/interactive_dialog.dart';
+export 'package:mineral/src/domains/components/interactives/interactive_component_manager.dart';
 export 'package:mineral/src/domains/contracts/cache/cache_provider_contract.dart';
 export 'package:mineral/src/domains/contracts/datastore/datastore.dart';
 export 'package:mineral/src/domains/contracts/datastore/parts.dart';
