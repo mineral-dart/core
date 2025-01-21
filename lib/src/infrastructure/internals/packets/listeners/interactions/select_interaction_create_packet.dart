@@ -23,6 +23,9 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
+  InteractiveComponentManagerContract get _interactiveComponentManager =>
+      ioc.resolve<InteractiveComponentManagerContract>();
+
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final type = InteractionType.values.firstWhereOrNull((e) => e.value == message.payload['type']);
@@ -66,6 +69,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
     final channels = channelIds.map((id) => serverChannels[id]).whereType<ServerChannel>();
 
+    _interactiveComponentManager.dispatch(ctx.customId, [ctx, channels]);
+
     return switch (ctx) {
       ServerSelectContext() =>
           dispatch(
@@ -96,6 +101,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
         event: Event.serverRoleSelect,
         params: [ctx, resolvedRoles],
         constraint: (String? customId) => customId == ctx.customId);
+
+    _interactiveComponentManager.dispatch(ctx.customId, [ctx, resolvedRoles]);
   }
 
   Future<void> _dispatchUserSelectMenu(SelectContext ctx, Map<String, dynamic> payload,
@@ -125,6 +132,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
       _ => Future.value([]),
     };
 
+    _interactiveComponentManager.dispatch(ctx.customId, [ctx, resolvedResource]);
+
     dispatch(
         event: event,
         params: [ctx, resolvedResource],
@@ -134,6 +143,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
   Future<void> _dispatchTextSelectMenu(SelectContext ctx, Map<String, dynamic> payload,
       DispatchEvent dispatch) async {
     final List<String> resolvedText = List.from(payload['data']['values']);
+
+    _interactiveComponentManager.dispatch(ctx.customId, [ctx, resolvedText]);
 
     return switch (ctx) {
       ServerSelectContext() =>
