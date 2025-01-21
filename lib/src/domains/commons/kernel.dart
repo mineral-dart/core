@@ -34,6 +34,8 @@ abstract interface class KernelContract {
 
   GlobalStateManagerContract get globalState;
 
+  InteractiveComponentManagerContract get interactiveComponent;
+
   Future<void> init();
 }
 
@@ -76,6 +78,9 @@ final class Kernel implements KernelContract {
   @override
   final GlobalStateManagerContract globalState;
 
+  @override
+  InteractiveComponentManagerContract interactiveComponent;
+
   Kernel(
     this._hasDefinedDevPort,
     this._devPort, {
@@ -86,6 +91,7 @@ final class Kernel implements KernelContract {
     required this.eventListener,
     required this.providerManager,
     required this.globalState,
+    required this.interactiveComponent,
     required this.watcherConfig,
     required this.wss,
   }) {

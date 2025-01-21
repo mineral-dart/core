@@ -29,6 +29,8 @@ final class Client {
   CommandInteractionManagerContract get _commands =>
       ioc.resolve<CommandInteractionManagerContract>();
 
+  InteractiveComponentService get components => _kernel.interactiveComponent;
+
   Client(KernelContract kernel)
       : events = EventBucket(kernel),
         commands = CommandBucket(),
@@ -45,6 +47,7 @@ final class Client {
           event: event.event,
           handle: (instance as dynamic).handle as Function,
           customId: event.customId),
+      final InteractiveComponent component => _kernel.interactiveComponent.register(component),
       _ => throw UnimplementedError(),
     };
   }

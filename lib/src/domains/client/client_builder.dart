@@ -143,6 +143,7 @@ final class ClientBuilder {
     final eventListener = EventListener();
     final providerManager = ProviderManager();
     final globalStateManager = ioc.make(GlobalStateManager.new);
+    final interactiveComponent = ioc.make<InteractiveComponentManagerContract>(InteractiveComponentManager.new);
     final wssOrchestrator =
         ioc.make<WebsocketOrchestratorContract>(() => WebsocketOrchestrator(shardConfig));
 
@@ -157,6 +158,7 @@ final class ClientBuilder {
       providerManager: providerManager,
       eventListener: eventListener,
       globalState: globalStateManager,
+      interactiveComponent: interactiveComponent,
       wss: wssOrchestrator,
     );
 
