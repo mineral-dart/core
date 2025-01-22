@@ -9,6 +9,7 @@ final class MessageEmbedBuilder {
   MessageEmbedFooter? footer;
   MessageEmbedAuthor? author;
   MessageEmbedImage? image;
+  MessageEmbedImage? thumbnail;
   List<MessageEmbedField> fields = [];
 
   MessageEmbedBuilder();
@@ -70,7 +71,7 @@ final class MessageEmbedBuilder {
 
   MessageEmbedBuilder setThumbnail(
       {required String url, String? proxyUrl, int? height, int? width}) {
-    image = MessageEmbedImage(
+    thumbnail = MessageEmbedImage(
         url: url, proxyUrl: proxyUrl, height: height, width: width);
     return this;
   }
@@ -91,7 +92,7 @@ final class MessageEmbedBuilder {
         color: color ?? Color('#000000'),
         assets: MessageEmbedAssets(
             image: image,
-            thumbnail: image,
+            thumbnail: thumbnail,
             video: image,
             footer: footer,
             author: author),
