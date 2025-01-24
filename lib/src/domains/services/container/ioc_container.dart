@@ -19,7 +19,7 @@ final class IocContainer {
     final service = _services[T];
 
     return switch (service) {
-      null => throw Exception('Service not found'),
+      null => throw Exception('Service "$service" not found'),
       _ => service,
     };
   }

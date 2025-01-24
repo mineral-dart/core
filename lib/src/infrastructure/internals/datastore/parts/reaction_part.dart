@@ -14,7 +14,7 @@ final class ReactionPart implements ReactionPartContract {
 
   @override
   Future<Map<Snowflake, User>> getUsersForEmoji(
-      String channelId, String messageId, PartialEmoji emoji) async {
+      Object channelId, Object messageId, PartialEmoji emoji) async {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
 
     final complete = Completer<Map<Snowflake, User>>();
@@ -31,27 +31,27 @@ final class ReactionPart implements ReactionPartContract {
   }
 
   @override
-  Future<void> add(String channelId, String messageId, PartialEmoji emoji) async {
+  Future<void> add(Object channelId, Object messageId, PartialEmoji emoji) async {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
     await _dataStore.requestBucket.run(() =>
         _dataStore.client.put('/channels/$channelId/messages/$messageId/reactions/$value/@me'));
   }
 
   @override
-  Future<void> remove(String channelId, String messageId, PartialEmoji emoji) async {
+  Future<void> remove(Object channelId, Object messageId, PartialEmoji emoji) async {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
     await _dataStore.requestBucket.run(() =>
         _dataStore.client.delete('/channels/$channelId/messages/$messageId/reactions/$value/@me'));
   }
 
   @override
-  Future<void> removeAll(String channelId, String messageId) {
+  Future<void> removeAll(Object channelId, Object messageId) {
     return _dataStore.requestBucket.run(
         () => _dataStore.client.delete('/channels/$channelId/messages/$messageId/reactions'));
   }
 
   @override
-  Future<void> removeForEmoji(String channelId, String messageId, PartialEmoji emoji) {
+  Future<void> removeForEmoji(Object channelId, Object messageId, PartialEmoji emoji) {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
     return _dataStore.requestBucket.run(() =>
         _dataStore.client.delete('/channels/$channelId/messages/$messageId/reactions/$value'));
@@ -59,7 +59,7 @@ final class ReactionPart implements ReactionPartContract {
 
   @override
   Future<void> removeForUser(
-      String userId, String channelId, String messageId, PartialEmoji emoji) async {
+      Object userId, Object channelId, Object messageId, PartialEmoji emoji) async {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
     await _dataStore.requestBucket.run(() => _dataStore.client
         .delete('/channels/$channelId/messages/$messageId/reactions/$value/$userId'));

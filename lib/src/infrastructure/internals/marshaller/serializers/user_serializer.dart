@@ -50,7 +50,7 @@ final class UserSerializer implements SerializerContract<User> {
               userAssets['avatar_decoration'])),
       banner: Helper.createOrNull(
           field: userAssets['banner'],
-          fn: () => ImageAsset(['banners', json['id']], json['banner'])),
+          fn: () => ImageAsset(['banners', json['id']], userAssets['banner'])),
     );
 
     return User(
@@ -71,7 +71,6 @@ final class UserSerializer implements SerializerContract<User> {
       assets: assets,
       createdAt: Helper.createOrNull(
           field: json['created_at'], fn: () => DateTime.parse(json['created_at'])),
-      // TODO: Implement presence deserialization
       presence: null,
     );
   }
@@ -98,7 +97,6 @@ final class UserSerializer implements SerializerContract<User> {
         'avatar_decoration': user.assets.avatarDecoration?.hash,
         'banner': user.assets.banner?.hash,
       },
-      // TODO: Implement presence serialization
     };
   }
 }

@@ -15,7 +15,7 @@ final class ServerPart implements ServerPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Server> get(String id, bool force) async {
+  Future<Server> get(Object id, bool force) async {
     final completer = Completer<Server>();
     final String key = _marshaller.cacheKey.server(id);
 
@@ -38,7 +38,7 @@ final class ServerPart implements ServerPartContract {
   }
 
   @override
-  Future<Server> update(String id, Map<String, dynamic> payload, String? reason) async {
+  Future<Server> update(Object id, Map<String, dynamic> payload, String? reason) async {
     final response = await _dataStore.client.patch('/guilds/$id',
         body: payload,
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
@@ -48,7 +48,7 @@ final class ServerPart implements ServerPartContract {
   }
 
   @override
-  Future<void> delete(String id, String? reason) async {
+  Future<void> delete(Object id, String? reason) async {
     await _dataStore.client.delete('/guilds/$id',
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)}));
   }

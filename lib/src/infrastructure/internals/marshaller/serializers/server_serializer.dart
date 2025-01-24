@@ -67,14 +67,14 @@ final class ServerSerializer implements SerializerContract<Server> {
   @override
   Future<Server> serialize(Map<String, dynamic> payload) async {
     final channelManager = ChannelManager.fromMap(payload['id'], payload['channel_settings']);
-    final threadManager = ThreadsManager(payload['id'], null);
-    final roleManager = RoleManager(payload['id']);
-    final memberManager = MemberManager(payload['id']);
+    final threadManager = ThreadsManager(Snowflake.parse(payload['id']), null);
+    final roleManager = RoleManager(Snowflake.parse(payload['id']));
+    final memberManager = MemberManager(Snowflake.parse(payload['id']));
 
     final serverAssets = ServerAsset(
-      Snowflake(payload['id']),
-      emojis: EmojiManager(payload['id']),
-      stickers: StickerManager(payload['id']),
+      Snowflake.parse(payload['id']),
+      emojis: EmojiManager(Snowflake.parse(payload['id'])),
+      stickers: StickerManager(Snowflake.parse(payload['id'])),
       icon: Helper.createOrNull(
           field: payload['icon'],
           fn: () => ImageAsset(['icons', payload['server_id']], payload['icon'])),
@@ -114,7 +114,7 @@ final class ServerSerializer implements SerializerContract<Server> {
         nsfwLevel: findInEnum(NsfwLevel.values, payload['settings']['nsfw_level']));
 
     return Server(
-      id: payload['id'],
+      id: Snowflake.parse(payload['id']),
       name: payload['name'],
       description: payload['description'],
       applicationId: payload['application_id'],
@@ -124,7 +124,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       channels: channelManager,
       assets: serverAssets,
       threads: threadManager,
-      ownerId: Snowflake(payload['owner_id']),
+      ownerId: Snowflake.parse(payload['owner_id']),
     );
   }
 

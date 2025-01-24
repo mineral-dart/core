@@ -3,7 +3,7 @@ abstract interface class WebsocketMessage<T> {
 
   DateTime get createdAt;
 
-  String get originalContent;
+  dynamic get originalContent;
 
   abstract T content;
 }
@@ -16,7 +16,7 @@ final class WebsocketMessageImpl<T> implements WebsocketMessage<T> {
   final DateTime createdAt = DateTime.now();
 
   @override
-  final String originalContent;
+  final dynamic originalContent;
 
   @override
   T content;

@@ -25,7 +25,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
       ..append('token', shard.wss.config.token)
       ..append('intents', shard.wss.config.intent)
       ..append('compress', shard.wss.config.compress)
-      ..append('properties', {'\$os': 'macos', '\$device': 'mineral'});
+      ..append('properties', {'os': 'macos', 'device': 'mineral'});
 
     shard.client.send(message.build());
   }

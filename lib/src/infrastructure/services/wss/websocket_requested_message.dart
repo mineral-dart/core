@@ -3,7 +3,7 @@ abstract interface class WebsocketRequestedMessage {
 
   String get channelName;
 
-  String get content;
+  dynamic content;
 }
 
 final class WebsocketRequestedMessageImpl implements WebsocketRequestedMessage {
@@ -14,7 +14,7 @@ final class WebsocketRequestedMessageImpl implements WebsocketRequestedMessage {
   final String channelName;
 
   @override
-  final String content;
+  dynamic content;
 
   WebsocketRequestedMessageImpl(
       {required this.channelName, required this.content});

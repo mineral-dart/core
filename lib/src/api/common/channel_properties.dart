@@ -98,7 +98,7 @@ final class ChannelProperties {
             ));
 
     return ChannelProperties(
-        id: Snowflake(element['id']),
+        id: Snowflake.parse(element['id']),
         type: findInEnum(ChannelType.values, element['type']),
         name: element['name'],
         description: element['description'],

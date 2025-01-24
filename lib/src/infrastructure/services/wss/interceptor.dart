@@ -1,9 +1,11 @@
+import 'dart:async';
+
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_requested_message.dart';
 
-typedef MessageInterceptor = Future<WebsocketMessage> Function(
+typedef MessageInterceptor = FutureOr<WebsocketMessage> Function(
     WebsocketMessage);
-typedef RequestInterceptor = Future<WebsocketRequestedMessage> Function(
+typedef RequestInterceptor = FutureOr<WebsocketRequestedMessage> Function(
     WebsocketRequestedMessage);
 
 abstract interface class Interceptor {

@@ -16,7 +16,7 @@ final class RolePart implements RolePartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Map<Snowflake, Role>> fetch(String serverId, bool force) async {
+  Future<Map<Snowflake, Role>> fetch(Object serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Role>>();
 
     final result = await _dataStore.requestBucket
@@ -36,7 +36,7 @@ final class RolePart implements RolePartContract {
   }
 
   @override
-  Future<Role?> get(String serverId, String id, bool force) async {
+  Future<Role?> get(Object serverId, Object id, bool force) async {
     final completer = Completer<Role>();
     final String key = _marshaller.cacheKey.serverRole(serverId, id);
 
@@ -59,7 +59,7 @@ final class RolePart implements RolePartContract {
   }
 
   @override
-  Future<Role> create(String serverId, String name, List<Permission> permissions, Color color,
+  Future<Role> create(Object serverId, String name, List<Permission> permissions, Color color,
       bool hoist, bool mentionable, String? reason) async {
     final completer = Completer<Role>();
 
@@ -86,9 +86,9 @@ final class RolePart implements RolePartContract {
 
   @override
   Future<void> add(
-      {required String memberId,
-      required String serverId,
-      required String roleId,
+      {required Object memberId,
+      required Object serverId,
+      required Object roleId,
       required String? reason}) async {
     await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.put(
         '/guilds/$serverId/members/$memberId/roles/$roleId',
@@ -97,9 +97,9 @@ final class RolePart implements RolePartContract {
 
   @override
   Future<void> remove(
-      {required String memberId,
-      required String serverId,
-      required String roleId,
+      {required Object memberId,
+      required Object serverId,
+      required Object roleId,
       required String? reason}) async {
     await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
         '/guilds/$serverId/members/$memberId/roles/$roleId',
@@ -108,9 +108,9 @@ final class RolePart implements RolePartContract {
 
   @override
   Future<void> sync(
-      {required String memberId,
-      required String serverId,
-      required List<String> roleIds,
+      {required Object memberId,
+      required Object serverId,
+      required List<Object> roleIds,
       required String? reason}) async {
     await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.patch(
         '/guilds/$serverId/members/$memberId',
@@ -120,8 +120,8 @@ final class RolePart implements RolePartContract {
 
   @override
   Future<Role?> update(
-      {required String id,
-      required String serverId,
+      {required Object id,
+      required Object serverId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
     final completer = Completer<Role?>();
@@ -142,7 +142,7 @@ final class RolePart implements RolePartContract {
 
   @override
   Future<void> delete(
-      {required String id, required String guildId, required String? reason}) async {
+      {required Object id, required Object guildId, required String? reason}) async {
     await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
         '/guilds/$guildId/roles/$id',
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));

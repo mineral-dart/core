@@ -43,7 +43,7 @@ final class Bot {
   String toString() => '<@$id>';
 
   factory Bot.fromJson(Map<String, dynamic> json) => Bot._(
-        id: Snowflake(json['user']['id']),
+        id: Snowflake.parse(json['user']['id']),
         discriminator: json['user']['discriminator'],
         version: json['v'],
         username: json['user']['username'],
@@ -54,9 +54,9 @@ final class Bot {
         sessionType: json['session_type'],
         privateChannels: json['private_channels'],
         presences: json['presences'],
-        guildIds: List<String>.from(json['guilds'].map((element) => element['id'])),
+        guildIds: List<String>.from(json['guilds'].map((element) => Snowflake.parse(element['id']))),
         application: PartialApplication(
-          id: json['application']['id'],
+          id: Snowflake.parse(json['application']['id']),
           flags: json['application']['flags'],
         ),
       );

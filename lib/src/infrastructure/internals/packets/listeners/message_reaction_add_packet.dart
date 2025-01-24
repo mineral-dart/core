@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -16,10 +17,10 @@ final class MessageReactionAddPacket implements ListenablePacket {
     final raw = await _marshaller.serializers.reaction.normalize(message.payload);
     final reaction = await _marshaller.serializers.reaction.serialize(raw);
 
-    final event = switch(message.payload['guild_id']) {
+    final serverId = Snowflake.nullable(message.payload['guild_id']);
+    final event = switch(serverId) {
       String() => Event.serverMessageReactionAdd,
       null => Event.privateMessageReactionAdd,
-      _ => throw UnimplementedError('Unknown message type: ${message.payload['guild_id']}'),
     };
 
     dispatch(event: event, params: [reaction]);

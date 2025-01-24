@@ -59,9 +59,7 @@ final class Shard implements ShardContract {
           print('error $error');
           networkError.dispatch(error);
         },
-        onClose: (int? exitCode) {
-          networkError.dispatch(exitCode);
-        },
+        onClose: networkError.dispatch,
         onOpen: (message) {
           if (message.content case ShardMessage(:final payload)) {
             logger.trace(jsonEncode(payload));
@@ -69,22 +67,16 @@ final class Shard implements ShardContract {
         });
 
     client.interceptor.message
-      ..add((WebsocketMessage message) async {
-        logger.trace({
-          'shard': shardName,
-          'message': message.content,
-        });
-
+      ..add((WebsocketMessage message) {
+        logger.trace({'shard': shardName, 'message': message.content});
         return message;
       })
-      ..add((message) async {
-        message.content = ShardMessage.of(jsonDecode(message.originalContent));
-        return message;
-      });
+      ..add(wss.config.encoding.decode);
+
+    client.interceptor.request.add(wss.config.encoding.encode);
 
     client.listen((message) {
-      if (message.content
-          case ShardMessage(opCode: final code, payload: final payload)) {
+      if (message.content case ShardMessage(opCode: final code, payload: final payload)) {
         switch (code) {
           case OpCode.hello:
             authentication.identify(payload);
@@ -97,7 +89,8 @@ final class Shard implements ShardContract {
           case OpCode.dispatch:
             if ([PacketType.ready.name, PacketType.guildCreate.name]
                 .contains((message.content as ShardMessage).type)) {
-              onceEventQueue.add(jsonDecode(message.originalContent));
+              final decoded = wss.config.encoding.decode(message);
+              onceEventQueue.add(decoded.content.serialize());
             }
 
             dispatchEvent.dispatch(message);
@@ -105,9 +98,6 @@ final class Shard implements ShardContract {
             authentication.heartbeat();
           default:
             print('Unknown op code ! $code');
-
-            // Unknown op code ! OpCode.heartbeat
-            print(message.originalContent);
         }
       }
     });

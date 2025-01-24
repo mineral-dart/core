@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/message_type.dart';
 import 'package:mineral/src/domains/events/event.dart';
@@ -21,10 +22,10 @@ final class MessageCreatePacket implements ListenablePacket {
     final payload = await _marshaller.serializers.message.normalize(message.payload);
     final serializedMessage = await _marshaller.serializers.message.serialize(payload);
 
-    final event = switch (message.payload['guild_id']) {
+    final serverId = Snowflake.nullable(message.payload['guild_id']);
+    final event = switch (serverId) {
       String() => Event.serverMessageCreate,
       Null() => Event.privateMessageCreate,
-      _ => throw Exception('Unknown channel'),
     };
 
     dispatch(event: event, params: [serializedMessage]);

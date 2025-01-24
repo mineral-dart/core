@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 
 import 'package:collection/collection.dart';
 import 'package:mineral/container.dart';
@@ -34,7 +33,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
     if (type == InteractionType.messageComponent &&
         componentType == ComponentType.button) {
-      final String? serverId = message.payload['guild']?['id'];
+      final serverId = Snowflake.nullable(message.payload['guild']?['id']);
 
       final type = ComponentType.values
           .firstWhereOrNull((e) => e.value == message.payload['data']['component_type']);
@@ -63,13 +62,13 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
     }
 
     final ctx = ServerButtonContext(
-      id: Snowflake(payload['id']),
-      applicationId: Snowflake(payload['application_id']),
+      id: Snowflake.parse(payload['id']),
+      applicationId: Snowflake.parse(payload['application_id']),
       version: payload['version'],
       token: payload['token'],
       customId: payload['data']['custom_id'],
-      channelId: Snowflake(payload['message']['channel_id']),
-      messageId: Snowflake(payload['message']['id']),
+      channelId: Snowflake.parse(payload['message']['channel_id']),
+      messageId: Snowflake.parse(payload['message']['id']),
     );
 
     dispatch(
@@ -93,12 +92,11 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
     }
 
     final ctx = PrivateButtonContext(
-      id: Snowflake(payload['id']),
+      id: Snowflake.parse(payload['id']),
       applicationId: Snowflake(payload['application_id']),
       version: payload['version'],
       token: payload['token'],
       customId: payload['data']['custom_id'],
-      // Todo : Voir si on peut récupérer la personne qui a cliqué sur le bouton
       authorId: Snowflake(payload['member']['user']['id']),
       channelId: Snowflake(payload['channel_id']),
       messageId: Snowflake(payload['message']['id']),

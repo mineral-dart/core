@@ -13,7 +13,7 @@ final class UserPart implements UserPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<User?> get(String id, bool force) async {
+  Future<User?> get(Object id, bool force) async {
     final completer = Completer<User>();
     final String key = _marshaller.cacheKey.user(id);
 
@@ -28,7 +28,7 @@ final class UserPart implements UserPartContract {
     final result = await _dataStore.requestBucket
         .run<Map<String, dynamic>>(() => _dataStore.client.get('/users/$id'));
 
-    final raw = await _marshaller.serializers.channels.normalize(result);
+    final raw = await _marshaller.serializers.user.normalize(result);
     final user = await _marshaller.serializers.user.serialize(raw);
 
     completer.complete(user);

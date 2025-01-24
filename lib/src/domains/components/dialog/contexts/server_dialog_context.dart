@@ -39,8 +39,8 @@ final class ServerDialogContext implements DialogContext {
       DataStoreContract datastore, Map<String, dynamic> payload) async {
     return ServerDialogContext(
       customId: payload['data']['custom_id'],
-      id: Snowflake(payload['id']),
-      applicationId: Snowflake(payload['application_id']),
+      id: Snowflake.parse(payload['id']),
+      applicationId: Snowflake.parse(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
       member: (await datastore.member.get(

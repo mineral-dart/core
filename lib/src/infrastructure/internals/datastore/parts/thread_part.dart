@@ -17,7 +17,7 @@ final class ThreadPart implements ThreadPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<ThreadResult> fetchActives(String serverId) async {
+  Future<ThreadResult> fetchActives(Object serverId) async {
     final completer = Completer<ThreadResult>();
 
     final result = await _dataStore.requestBucket
@@ -35,7 +35,7 @@ final class ThreadPart implements ThreadPartContract {
   }
 
   @override
-  Future<Map<Snowflake, PublicThreadChannel>> fetchPublicArchived(String channelId) async {
+  Future<Map<Snowflake, PublicThreadChannel>> fetchPublicArchived(Object channelId) async {
     final completer = Completer<Map<Snowflake, PublicThreadChannel>>();
 
     final result = await _dataStore.requestBucket
@@ -52,7 +52,7 @@ final class ThreadPart implements ThreadPartContract {
   }
 
   @override
-  Future<Map<Snowflake, PrivateThreadChannel>> fetchPrivateArchived(String channelId) async {
+  Future<Map<Snowflake, PrivateThreadChannel>> fetchPrivateArchived(Object channelId) async {
     final completer = Completer<Map<Snowflake, PrivateThreadChannel>>();
 
     final result = await _dataStore.requestBucket
@@ -69,7 +69,7 @@ final class ThreadPart implements ThreadPartContract {
   }
 
   @override
-  Future<T> createWithoutMessage<T extends ThreadChannel>(String? serverId, String? channelId, ThreadChannelBuilder builder,
+  Future<T> createWithoutMessage<T extends ThreadChannel>(Object? serverId, Object? channelId, ThreadChannelBuilder builder,
       {String? reason}) async {
     final completer = Completer<T>();
 
@@ -89,7 +89,7 @@ final class ThreadPart implements ThreadPartContract {
   }
 
   @override
-  Future<T> createFromMessage<T extends ThreadChannel>(String? serverId, String? channelId, String? messageId, ThreadChannelBuilder builder,
+  Future<T> createFromMessage<T extends ThreadChannel>(Object? serverId, Object? channelId, Object? messageId, ThreadChannelBuilder builder,
       {String? reason}) async {
     final completer = Completer<T>();
 

@@ -15,7 +15,7 @@ final class EmojiPart implements EmojiPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Map<Snowflake, Emoji>> fetch(String serverId, bool force) async {
+  Future<Map<Snowflake, Emoji>> fetch(Object serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Emoji>>();
 
     final result = await _dataStore.requestBucket
@@ -32,7 +32,7 @@ final class EmojiPart implements EmojiPartContract {
   }
 
   @override
-  Future<Emoji?> get(String serverId, String emojiId, bool force) async {
+  Future<Emoji?> get(Object serverId, Object emojiId, bool force) async {
     final completer = Completer<Emoji>();
     final String key = _marshaller.cacheKey.serverEmoji(serverId, emojiId);
 
@@ -56,7 +56,7 @@ final class EmojiPart implements EmojiPartContract {
   }
 
   @override
-  Future<Emoji> create(String serverId, String name, Image image, List<String> roles,
+  Future<Emoji> create(Object serverId, String name, Image image, List<Object> roles,
       {String? reason}) async {
     final completer = Completer<Emoji>();
 
@@ -82,8 +82,8 @@ final class EmojiPart implements EmojiPartContract {
 
   @override
   Future<Emoji?> update(
-      {required String id,
-      required String serverId,
+      {required Object id,
+      required Object serverId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
     final completer = Completer<Emoji>();
@@ -104,7 +104,7 @@ final class EmojiPart implements EmojiPartContract {
   }
 
   @override
-  Future<void> delete(String serverId, String emojiId, {String? reason}) async {
+  Future<void> delete(Object serverId, Object emojiId, {String? reason}) async {
     await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
         '/guilds/$serverId/emojis/$emojiId',
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));

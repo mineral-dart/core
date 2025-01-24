@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:io';
 import 'dart:isolate';
 
@@ -14,6 +13,8 @@ import 'package:path/path.dart' as path;
 
 final class HmrRunningStrategy implements RunningStrategy {
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
+
+  WebsocketOrchestratorContract get _wss => ioc.resolve<WebsocketOrchestratorContract>();
 
   final Stopwatch _watch;
   final HmrContract hmr;
@@ -77,6 +78,9 @@ final class HmrRunningStrategy implements RunningStrategy {
 
   @override
   void dispatch(WebsocketMessage message) {
-    hmr.send(json.decode(message.originalContent));
+    final strategy = _wss.config.encoding;
+    final decoded = strategy.decode(message);
+
+    hmr.send(decoded.content.serialize());
   }
 }
