@@ -1,9 +1,9 @@
 import 'package:uuid/uuid.dart';
 
 final class CacheKey {
-  String server(String id) => 'server/$id';
+  String server(Object id) => 'server/$id';
 
-  String serverAssets(String serverId, {bool ref = false}) {
+  String serverAssets(Object serverId, {bool ref = false}) {
     final key = '${server(serverId)}/assets';
     return ref ? 'ref:$key' : key;
   }
@@ -18,49 +18,49 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
-  String channel(String channelId) => 'channels/$channelId';
+  String channel(Object channelId) => 'channels/$channelId';
 
-  String channelPermission(String channelId, {String? serverId}) =>
+  String channelPermission(Object channelId, {Object? serverId}) =>
       '${channel(channelId)}/permissions';
 
-  String serverRole(String serverId, String roleId) => '${server(serverId)}/roles/$roleId';
+  String serverRole(Object serverId, Object roleId) => '${server(serverId)}/roles/$roleId';
 
-  String member(String serverId, String memberId, {bool ref = false}) {
+  String member(Object serverId, Object memberId, {bool ref = false}) {
     final key = '${server(serverId)}/members/$memberId';
     return ref ? 'ref:$key' : key;
   }
 
-  String memberAssets(String serverId, String memberId,
+  String memberAssets(Object serverId, Object memberId,
       {bool ref = false}) {
     final key = '${member(serverId, memberId)}/assets';
     return ref ? 'ref:$key' : key;
   }
 
-  String user(String userId, {bool ref = false}) {
+  String user(Object userId, {bool ref = false}) {
     final key = 'users/$userId';
     return ref ? 'ref:$key' : key;
   }
 
-  String voiceState(String serverId, String userId) => '${member(serverId, userId)}/voice_states';
+  String voiceState(Object serverId, Object userId) => '${member(serverId, userId)}/voice_states';
 
-  String userAssets(String userId, {bool ref = false}) {
+  String userAssets(Object userId, {bool ref = false}) {
     final key = '${user(userId)}/assets';
     return ref ? 'ref:$key' : key;
   }
 
-  String serverEmoji(String serverId, String emojiId) => '${server(serverId)}/emojis/$emojiId';
+  String serverEmoji(Object serverId, Object emojiId) => '${server(serverId)}/emojis/$emojiId';
 
-  String message(String channelId, String messageId) =>
+  String message(Object channelId, Object messageId) =>
       '${channel(channelId)}/messages/$messageId';
 
-  String embed(String messageId, {String? uid}) =>
+  String embed(Object messageId, {Object? uid}) =>
       'messages/$messageId/embeds/${uid ?? Uuid().v4()}';
 
-  String poll(String messageId, {String? uid}) =>
+  String poll(Object messageId, {Object? uid}) =>
       'messages/$messageId/polls/${uid ?? Uuid().v4()}';
 
-  String sticker(String serverId, String stickerId) =>
+  String sticker(Object serverId, Object stickerId) =>
       '${server(serverId)}/stickers/$stickerId';
 
-  String thread(String threadId) => 'threads/$threadId';
+  String thread(Object threadId) => 'threads/$threadId';
 }

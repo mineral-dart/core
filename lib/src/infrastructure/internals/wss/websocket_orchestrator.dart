@@ -121,7 +121,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
       final shard = Shard(
           shardName: 'shard #$i',
-          url: '$endpoint/?v=${config.version}',
+          url: '$endpoint/?v=${config.version}&encoding=${config.encoding.encoder.value}',
           hmr: hmr,
           wss: this,
           strategy: strategy);

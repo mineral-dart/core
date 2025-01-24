@@ -40,12 +40,12 @@ final class ServerSelectContext implements SelectContext {
       DataStoreContract datastore, Map<String, dynamic> payload) async {
     return ServerSelectContext(
       customId: payload['data']['custom_id'],
-      id: Snowflake(payload['id']),
-      applicationId: Snowflake(payload['application_id']),
+      id: Snowflake.parse(payload['id']),
+      applicationId: Snowflake.parse(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
-      message: (await datastore.message
-          .get<ServerMessage>(payload['channel_id'], payload['message']['id'], false))!,
+      message: (await datastore.message.get<ServerMessage>(
+          payload['channel_id'], payload['message']['id'], false))!,
       member: (await datastore.member
           .get(payload['guild_id'], payload['member']['user']['id'], false))!,
     );

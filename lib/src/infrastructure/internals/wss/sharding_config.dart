@@ -14,7 +14,7 @@ final class ShardingConfig implements ShardingConfigContract {
   final int version;
 
   @override
-  final String encoding;
+  final EncodingStrategy encoding;
 
   @override
   final int largeThreshold;
@@ -26,9 +26,9 @@ final class ShardingConfig implements ShardingConfigContract {
     required this.token,
     required this.intent,
     required this.version,
+    required this.encoding,
     this.shardCount,
     this.compress = false,
-    this.encoding = 'json',
     this.largeThreshold = 50,
   });
 }

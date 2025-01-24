@@ -40,8 +40,8 @@ final class PrivateSelectContext implements SelectContext {
       DataStoreContract datastore, Map<String, dynamic> payload) async {
     return PrivateSelectContext(
       customId: payload['data']['custom_id'],
-      id: Snowflake(payload['id']),
-      applicationId: Snowflake(payload['application_id']),
+      id: Snowflake.parse(payload['id']),
+      applicationId: Snowflake.parse(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
       message: (await datastore.message.get<PrivateMessage>(
@@ -49,7 +49,7 @@ final class PrivateSelectContext implements SelectContext {
         payload['message']['id'],
         false,
       ))!,
-      user: await marshaller.serializers.user.serialize(payload['user']),
+      user: (await datastore.user.get(payload['user']['id'], false))!,
     );
   }
 }

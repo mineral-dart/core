@@ -63,8 +63,8 @@ final class MemberSerializer implements SerializerContract<Member> {
     );
 
     return Member(
-      id: json['id'],
-      serverId: Snowflake(json['server_id']),
+      id: Snowflake.parse(json['id']),
+      serverId: Snowflake.parse(json['server_id']),
       username: json['nick'] ?? json['username'],
       nickname: json['nick'] ?? json['display_name'],
       globalName: json['global_name'],

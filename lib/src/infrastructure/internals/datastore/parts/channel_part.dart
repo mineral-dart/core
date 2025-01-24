@@ -15,7 +15,7 @@ final class ChannelPart implements ChannelPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Map<Snowflake, T>> fetch<T extends Channel>(String serverId, bool force) async {
+  Future<Map<Snowflake, T>> fetch<T extends Channel>(Object serverId, bool force) async {
     final completer = Completer<Map<Snowflake, T>>();
 
     final result = await _dataStore.requestBucket
@@ -31,7 +31,7 @@ final class ChannelPart implements ChannelPartContract {
   }
 
   @override
-  Future<T?> get<T extends Channel>(String id, bool force) async {
+  Future<T?> get<T extends Channel>(Object id, bool force) async {
     final completer = Completer<T>();
 
     final String key = _marshaller.cacheKey.channel(id);
@@ -54,7 +54,7 @@ final class ChannelPart implements ChannelPartContract {
   }
 
   @override
-  Future<T> create<T extends Channel>(String? serverId, ChannelBuilderContract builder,
+  Future<T> create<T extends Channel>(Object? serverId, ChannelBuilderContract builder,
       {String? reason}) async {
     final completer = Completer<T>();
 
@@ -74,7 +74,7 @@ final class ChannelPart implements ChannelPartContract {
   }
 
   @override
-  Future<PrivateChannel> createPrivateChannel(String id, String recipientId) async {
+  Future<PrivateChannel> createPrivateChannel(Object id, Object recipientId) async {
     final completer = Completer<PrivateChannel>();
 
     final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(
@@ -89,8 +89,8 @@ final class ChannelPart implements ChannelPartContract {
   }
 
   @override
-  Future<T?> update<T extends Channel>(String id, ChannelBuilderContract builder,
-      {String? serverId, String? reason}) async {
+  Future<T?> update<T extends Channel>(Object id, ChannelBuilderContract builder,
+      {Object? serverId, String? reason}) async {
     final completer = Completer<T>();
 
     final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client
@@ -109,7 +109,7 @@ final class ChannelPart implements ChannelPartContract {
   }
 
   @override
-  Future<void> delete(String id, String? reason) async {
+  Future<void> delete(Object id, String? reason) async {
     await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
         '/channels/$id',
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));

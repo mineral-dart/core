@@ -39,8 +39,8 @@ final class PrivateDialogContext implements DialogContext {
       MarshallerContract marshaller, Map<String, dynamic> payload) async {
     return PrivateDialogContext(
       customId: payload['data']['custom_id'],
-      id: Snowflake(payload['id']),
-      applicationId: Snowflake(payload['application_id']),
+      id: Snowflake.parse(payload['id']),
+      applicationId: Snowflake.parse(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
       user: await marshaller.serializers.user.serialize(payload['user']),

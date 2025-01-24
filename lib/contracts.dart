@@ -23,6 +23,7 @@ export 'package:mineral/src/domains/contracts/packets/packet_listener.dart';
 export 'package:mineral/src/domains/contracts/packets/packet_type.dart';
 export 'package:mineral/src/domains/contracts/placeholder/placeholder.dart';
 export 'package:mineral/src/domains/contracts/scaffolding/scaffold.dart';
+export 'package:mineral/src/domains/contracts/wss/encoding_strategy.dart';
 export 'package:mineral/src/domains/contracts/wss/shard.dart';
 export 'package:mineral/src/domains/contracts/wss/shard_authentication.dart';
 export 'package:mineral/src/domains/contracts/wss/sharding_config.dart';

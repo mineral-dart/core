@@ -145,9 +145,9 @@ final class ChannelManager<C extends Channel> {
     );
   }
 
-  factory ChannelManager.fromMap(String serverId, Map<String, dynamic> payload) {
+  factory ChannelManager.fromMap(Object serverId, Map<String, dynamic> payload) {
     return ChannelManager(
-      Snowflake(serverId),
+      Snowflake.parse(serverId),
       afkChannelId: Snowflake.nullable(payload['afk_channel_id']),
       systemChannelId: Snowflake.nullable(payload['system_channel_id']),
       rulesChannelId: Snowflake.nullable(payload['rules_channel_id']),

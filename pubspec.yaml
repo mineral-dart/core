@@ -27,6 +27,7 @@ dependencies:
   yaml: ^3.1.2
   mansion: ^0.1.0
   uuid: ^4.4.2
+  eterl: ^1.1.0
 
 dev_dependencies:
   lints: ^3.0.0

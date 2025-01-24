@@ -1,4 +1,5 @@
 import 'package:collection/collection.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/components/component_type.dart';
@@ -38,7 +39,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
       final selectMenuType = ComponentType.values
           .firstWhereOrNull((e) => e.value == message.payload['data']['component_type']);
 
-      final ctx = await switch (message.payload['guild_id']) {
+      final serverId = Snowflake.nullable(message.payload['guild_id']);
+      final ctx = await switch (serverId) {
         String() => ServerSelectContext.fromMap(_dataStore, message.payload),
         _ => PrivateSelectContext.fromMap(_marshaller, _dataStore, message.payload),
       };

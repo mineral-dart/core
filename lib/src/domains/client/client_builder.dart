@@ -29,6 +29,7 @@ final class ClientBuilder {
   ScaffoldContract _scaffold = DefaultScaffold();
   SendPort? _devPort;
   bool _hasDefinedDevPort = false;
+  EncodingStrategy _wsEncodingStrategy = JsonEncoderStrategy();
 
   final WatcherConfig _watcherConfig = WatcherConfig();
 
@@ -58,6 +59,11 @@ final class ClientBuilder {
 
   ClientBuilder setDiscordWssVersion(int version) {
     _env.list[AppEnv.discordWssVersion.key] = version.toString();
+    return this;
+  }
+
+  ClientBuilder setEncoder(Constructable<EncodingStrategy> encoding) {
+    _wsEncodingStrategy = encoding();
     return this;
   }
 
@@ -137,7 +143,7 @@ final class ClientBuilder {
       Header.contentType('application/json'),
     }));
 
-    final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion);
+    final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion, encoding: _wsEncodingStrategy);
 
     final packetListener = PacketListener();
     final eventListener = EventListener();

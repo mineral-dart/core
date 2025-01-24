@@ -16,7 +16,7 @@ final class MessagePart implements MessagePartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<T?> get<T extends BaseMessage>(String channelId, String id, bool force) async {
+  Future<T?> get<T extends BaseMessage>(Object channelId, Object id, bool force) async {
     final completer = Completer<T>();
 
     final cacheKey = _marshaller.cacheKey.message(channelId, id);
@@ -44,8 +44,8 @@ final class MessagePart implements MessagePartContract {
 
   @override
   Future<T> update<T extends Message>({
-    required String id,
-    required String channelId,
+    required Object id,
+    required Object channelId,
     String? content,
     List<MessageEmbed>? embeds,
     List<MessageComponent>? components,
@@ -93,7 +93,7 @@ final class MessagePart implements MessagePartContract {
   }
 
   @override
-  Future<T> send<T extends Message>(String? guildId, String channelId, String? content,
+  Future<T> send<T extends Message>(Object? guildId, Object channelId, String? content,
       List<MessageEmbed>? embeds, Poll? poll, List<MessageComponent>? components) async {
     final completer = Completer<T>();
     final response = await _dataStore.client.post('/channels/$channelId/messages', body: {

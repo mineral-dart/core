@@ -105,7 +105,7 @@ final class WebsocketClientImpl implements WebsocketClient {
     final interceptedMessage = await _handleMessageInterceptors(
         WebsocketMessageImpl(
             channelName: name,
-            originalContent: message as String,
+            originalContent: message,
             content: message));
 
     callback(interceptedMessage);

@@ -25,10 +25,10 @@ final class MessageReactionSerializer<T extends Message>
   @override
   Future<MessageReaction> serialize(Map<String, dynamic> json) async {
     return MessageReaction(
-        serverId: Snowflake(json['server_id']),
-        channelId: Snowflake(json['channel_id']),
-        userId: Snowflake(json['author_id']),
-        messageId: Snowflake(json['message_id']),
+        serverId: Snowflake.parse(json['server_id']),
+        channelId: Snowflake.parse(json['channel_id']),
+        userId: Snowflake.parse(json['author_id']),
+        messageId: Snowflake.parse(json['message_id']),
         emoji: PartialEmoji(json['emoji']['id'], json['emoji']['name'],
             json['emoji']['animated'] ?? false),
         isBurst: json['is_burst'] ?? false,

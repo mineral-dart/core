@@ -35,11 +35,11 @@ final class MessageProperties<T extends Channel> {
         .toList();
 
     return MessageProperties(
-      id: Snowflake(json['id']),
+      id: Snowflake.parse(json['id']),
       content: json['content'],
-      channelId: json['channel_id'],
-      authorId: json['author_id'],
-      serverId: json['server_id'],
+      channelId: Snowflake.parse(json['channel_id']),
+      authorId: Snowflake.nullable(json['author_id']),
+      serverId: Snowflake.nullable(json['server_id']),
       authorIsBot: json['author_is_bot'] ?? false,
       embeds: embeds,
       createdAt: DateTime.parse(json['timestamp']),

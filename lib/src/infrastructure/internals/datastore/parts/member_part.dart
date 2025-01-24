@@ -17,7 +17,7 @@ final class MemberPart implements MemberPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Map<Snowflake, Member>> fetch(String serverId, bool force) async {
+  Future<Map<Snowflake, Member>> fetch(Object serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Member>>();
 
     final result = await _dataStore.requestBucket
@@ -34,7 +34,7 @@ final class MemberPart implements MemberPartContract {
   }
 
   @override
-  Future<Member?> get(String serverId, String id, bool force) async {
+  Future<Member?> get(Object serverId, Object id, bool force) async {
     final completer = Completer<Member>();
     final String key = _marshaller.cacheKey.member(serverId, id);
 
@@ -58,8 +58,8 @@ final class MemberPart implements MemberPartContract {
 
   @override
   Future<Member> update(
-      {required String serverId,
-      required String memberId,
+      {required Object serverId,
+      required Object memberId,
       required Map<String, dynamic> payload,
       String? reason}) async {
     final completer = Completer<Member>();
@@ -81,9 +81,9 @@ final class MemberPart implements MemberPartContract {
 
   @override
   Future<void> ban(
-      {required String serverId,
+      {required Object serverId,
       required Duration? deleteSince,
-      required String memberId,
+      required Object memberId,
       String? reason}) async {
     await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.put(
         '/guilds/$serverId/bans/$memberId',
@@ -92,14 +92,14 @@ final class MemberPart implements MemberPartContract {
   }
 
   @override
-  Future<void> kick({required String serverId, required String memberId, String? reason}) async {
+  Future<void> kick({required Object serverId, required Object memberId, String? reason}) async {
     await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
         '/guilds/$serverId/members/$memberId',
         option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
   }
 
   @override
-  Future<VoiceState?> getVoiceState(String serverId, String userId, bool force) async {
+  Future<VoiceState?> getVoiceState(Object serverId, Object userId, bool force) async {
     final completer = Completer<VoiceState?>();
     final String key = _marshaller.cacheKey.voiceState(serverId, userId);
 

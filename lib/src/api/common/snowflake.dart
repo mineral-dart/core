@@ -1,7 +1,14 @@
 extension type Snowflake(String value) {
-  static Snowflake? nullable(String? value) => switch(value) {
+  static Snowflake? nullable(Object? value) => switch(value) {
     final String value => Snowflake(value),
+    final int value => Snowflake(value.toString()),
     _ => null,
+  };
+
+  factory Snowflake.parse(Object value) => switch(value) {
+    final String value => Snowflake(value),
+    final int value => Snowflake(value.toString()),
+    _ => throw ArgumentError('Invalid value $value'),
   };
 
   bool equals(String value) => this.value == value;

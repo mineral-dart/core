@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:collection/collection.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/commands/command_option_type.dart';
 import 'package:mineral/src/api/common/commands/command_type.dart';
@@ -58,7 +59,8 @@ final class CommandInteractionDispatcher implements InteractionDispatcherContrac
     final command = _interactionManager.commandsHandler
         .firstWhere((command) => command.$1 == data['data']['name']);
 
-    final commandContext = await switch (data['data']['guild_id']) {
+    final serverId = Snowflake.nullable(data['data']['guild_id']);
+    final commandContext = await switch (serverId) {
       String() => ServerCommandContext.fromMap(_marshaller, _dataStore, data),
       _ => GlobalCommandContext.fromMap(_marshaller, _dataStore, data),
     };

@@ -35,13 +35,18 @@ final class GlobalCommandContext implements CommandContext {
 
   static Future<GlobalCommandContext> fromMap(MarshallerContract marshaller,
       DataStoreContract datastore, Map<String, dynamic> payload) async {
+    final (user, channel) = await (
+      datastore.user.get(payload['member']['user']['id'], false),
+      datastore.channel.get(payload['channel_id'], false)
+    ).wait;
+
     return GlobalCommandContext(
-      id: Snowflake(payload['id']),
-      applicationId: Snowflake(payload['application_id']),
+      id: Snowflake.parse(payload['id']),
+      applicationId: Snowflake.parse(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
-      user: (await datastore.user.get(payload['member']['user']['id'], false))!,
-      channel: await datastore.channel.get(payload['channel_id'], false),
+      user: user!,
+      channel: channel,
     );
   }
 }

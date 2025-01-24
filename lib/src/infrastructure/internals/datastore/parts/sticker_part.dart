@@ -14,7 +14,7 @@ final class StickerPart implements StickerPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Map<Snowflake, Sticker>> fetch(String serverId, bool force) async {
+  Future<Map<Snowflake, Sticker>> fetch(Object serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Sticker>>();
 
     final result = await _dataStore.requestBucket
@@ -30,7 +30,7 @@ final class StickerPart implements StickerPartContract {
   }
 
   @override
-  Future<Sticker?> get(String serverId, String stickerId, bool force) async {
+  Future<Sticker?> get(Object serverId, Object stickerId, bool force) async {
     final completer = Completer<Sticker>();
     final String key = _marshaller.cacheKey.sticker(serverId, stickerId);
 
@@ -53,7 +53,7 @@ final class StickerPart implements StickerPartContract {
   }
 
   @override
-  Future<void> delete(String serverId, String stickerId) async {
+  Future<void> delete(Object serverId, Object stickerId) async {
     await _dataStore.requestBucket.run<Map<String, dynamic>>(
         () => _dataStore.client.delete('/guilds/$serverId/stickers/$stickerId'));
   }
