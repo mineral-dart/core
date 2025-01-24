@@ -1,46 +1,40 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/server/member.dart';
-import 'package:mineral/src/api/server/role.dart';
-import 'package:mineral/src/api/server/server.dart';
 
 final class MemberRoleManager {
-  RolePartContract get _roleMethods => ioc.resolve<DataStoreContract>().role;
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
-  late final Server server;
-  late final Member member;
-  final Map<Snowflake, Role> _roles;
+  final List<Snowflake> currentIds;
+  final Snowflake _serverId;
+  final Snowflake _memberId;
 
-  Map<Snowflake, Role> get list => _roles;
+  MemberRoleManager(this.currentIds, this._serverId, this._memberId);
 
-  MemberRoleManager(this._roles);
+  Future<Map<Snowflake, Role>> fetch({bool force = false}) async {
+    final roles = await _datastore.role.fetch(_serverId.value, force);
+    return Map.fromEntries(roles.entries
+        .where((element) => currentIds.contains(element.key))
+        .map((e) => MapEntry(e.key, e.value)));
+  }
 
   Future<void> add(String roleId, {String? reason}) async {
-    return _roleMethods.add(
-        memberId: member.id.value, serverId: server.id.value, roleId: roleId, reason: reason);
+    return _datastore.role
+        .add(memberId: _memberId.value, serverId: _serverId.value, roleId: roleId, reason: reason);
   }
 
   Future<void> remove(String roleId, {String? reason}) async {
-    return _roleMethods.remove(
-        memberId: member.id.value, serverId: server.id.value, roleId: roleId, reason: reason);
+    return _datastore.role.remove(
+        memberId: _memberId.value, serverId: _serverId.value, roleId: roleId, reason: reason);
   }
 
   Future<void> sync(List<String> roleIds, {String? reason}) async {
-    return _roleMethods.sync(
-        memberId: member.id.value, serverId: server.id.value, roleIds: roleIds, reason: reason);
+    return _datastore.role.sync(
+        memberId: _memberId.value, serverId: _serverId.value, roleIds: roleIds, reason: reason);
   }
 
   Future<void> clear({String? reason}) async {
-    return _roleMethods.sync(
-        memberId: member.id.value, serverId: server.id.value, roleIds: [], reason: reason);
-  }
-
-  factory MemberRoleManager.fromList(List<Role> payload) {
-    final roles = Map<Snowflake, Role>.from(payload.fold({}, (value, element) {
-      return {...value, element.id: element};
-    }));
-
-    return MemberRoleManager(roles);
+    return _datastore.role
+        .sync(memberId: _memberId.value, serverId: _serverId.value, roleIds: [], reason: reason);
   }
 }
