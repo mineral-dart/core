@@ -9,8 +9,6 @@ import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer
 final class MemberSerializer implements SerializerContract<Member> {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
-  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
-
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
     final payload = {
@@ -50,10 +48,6 @@ final class MemberSerializer implements SerializerContract<Member> {
 
   @override
   Future<Member> serialize(Map<String, dynamic> json) async {
-    final serverRoles = await _datastore.role.fetch(json['server_id'], false);
-    final roles =
-        List<Snowflake>.from(json['roles']).map((id) => serverRoles[id]).nonNulls.toList();
-
     final assets = Map<String, dynamic>.from(json['assets']);
     final memberAsset = MemberAssets(
       avatar: Helper.createOrNull(
@@ -80,7 +74,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       premiumSince: Helper.createOrNull(
           field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
       publicFlags: json['public_flags'],
-      roles: MemberRoleManager.fromList(roles),
+      roles: MemberRoleManager(json['id'], json['server_id'], json['roles']),
       isBot: json['is_bot'] ?? false,
       isPending: json['is_pending'] ?? false,
       timeout: MemberTimeout(
@@ -115,10 +109,8 @@ final class MemberSerializer implements SerializerContract<Member> {
         'avatar_decoration': member.assets.avatarDecoration?.hash,
         'banner': member.assets.banner?.hash,
       },
+      'roles': member.roles.currentIds,
       'flags': listToBitfield(member.flags.list),
-      'roles': member.roles.list.keys
-          .map((id) => _marshaller.cacheKey.serverRole(member.serverId.value, id.value))
-          .toList(),
       'premium_since': member.premiumSince?.toIso8601String(),
       'public_flags': member.publicFlags,
       'is_bot': member.isBot,
