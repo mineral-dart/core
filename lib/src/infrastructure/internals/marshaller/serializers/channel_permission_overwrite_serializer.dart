@@ -1,5 +1,4 @@
-import 'package:mineral/src/api/common/channel_permission_overwrite.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
@@ -29,10 +28,10 @@ final class ChannelPermissionOverwriteSerializer
   @override
   ChannelPermissionOverwrite serialize(Map<String, dynamic> json) {
     return ChannelPermissionOverwrite(
-      id: Snowflake(json['id']),
+      id: json['id'],
       type: findInEnum(ChannelPermissionOverwriteType.values, json['type']),
-      allow: json['allow'],
-      deny: json['deny'],
+      allow: bitfieldToList(Permission.values, json['allow']),
+      deny: bitfieldToList(Permission.values, json['deny']),
     );
   }
 

@@ -1,5 +1,4 @@
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/common/types/enhanced_enum.dart';
+import 'package:mineral/api.dart';
 
 enum ChannelPermissionOverwriteType implements EnhancedEnum<int> {
   role(0),
@@ -12,15 +11,15 @@ enum ChannelPermissionOverwriteType implements EnhancedEnum<int> {
 }
 
 final class ChannelPermissionOverwrite {
-  final Snowflake id;
+  final String id;
   final ChannelPermissionOverwriteType type;
-  final String allow;
-  final String deny;
+  final List<Permission> allow;
+  final List<Permission> deny;
 
   ChannelPermissionOverwrite({
     required this.id,
     required this.type,
-    required this.allow,
-    required this.deny,
+    this.allow = const [],
+    this.deny = const [],
   });
 }

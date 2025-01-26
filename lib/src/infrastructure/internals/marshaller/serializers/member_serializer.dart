@@ -62,6 +62,11 @@ final class MemberSerializer implements SerializerContract<Member> {
           fn: () => ImageAsset(['banners', assets['member_id']], assets['banner'])),
     );
 
+    final memberRoleManager = MemberRoleManager(
+        List<String>.from(json['roles']).map(Snowflake.parse).toList(),
+        json['server_id'],
+        json['id']);
+
     return Member(
       id: Snowflake.parse(json['id']),
       serverId: Snowflake.parse(json['server_id']),
@@ -74,7 +79,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       premiumSince: Helper.createOrNull(
           field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
       publicFlags: json['public_flags'],
-      roles: MemberRoleManager(json['id'], json['server_id'], json['roles']),
+      roles: memberRoleManager,
       isBot: json['is_bot'] ?? false,
       isPending: json['is_pending'] ?? false,
       timeout: MemberTimeout(

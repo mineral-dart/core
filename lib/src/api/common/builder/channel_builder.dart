@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/domains/commons/utils/utils.dart';
 
 abstract class ChannelBuilderContract {
   void setName(String value);
@@ -225,8 +226,8 @@ final class ChannelBuilder
             .map((element) => {
                   'id': element.id,
                   'type': element.type.value,
-                  'allow': element.allow,
-                  'deny': element.deny,
+                  'allow': listToBitfield(element.allow),
+                  'deny': listToBitfield(element.deny),
                 })
             .toList(),
       if (_parentId != null) 'parent_id': _parentId,
