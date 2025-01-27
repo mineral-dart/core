@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mineral/src/api/common/emoji.dart';
+import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
@@ -37,8 +38,8 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       return _marshaller.serializers.role.serialize(element);
     }).wait;
 
-    return Emoji(json['server_id'],
-      id: json['id'],
+    return Emoji(Snowflake.parse(json['server_id']),
+      id: Snowflake.parse(json['id']),
       name: json['name'],
       roles: roles?.fold({}, (value, element) => {...?value, element.id: element}) ?? {},
       managed: json['managed'],
@@ -50,7 +51,7 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
   @override
   Map<String, dynamic> deserialize(Emoji emoji) {
     return {
-      'id': emoji.id,
+      'id': emoji.id?.value,
       'name': emoji.name,
       'roles': emoji.roles.keys.toList(),
       'managed': emoji.managed,

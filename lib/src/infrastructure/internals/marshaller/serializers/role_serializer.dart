@@ -33,7 +33,7 @@ final class RoleSerializer implements SerializerContract<Role> {
 
   @override
   Future<Role> serialize(Map<String, dynamic> json) async => Role(
-    id: Snowflake(json['id']),
+    id: Snowflake.parse(json['id']),
     name: json['name'],
     color: Color.of(json['color'] ?? 0),
     hoist: json['hoist'] ?? false,
@@ -48,7 +48,7 @@ final class RoleSerializer implements SerializerContract<Role> {
     flags: json['flags'],
     icon: json['icon'],
     unicodeEmoji: json['unicode_emoji'],
-    serverId: Snowflake(json['server_id']),
+    serverId: Snowflake.parse(json['server_id']),
   );
 
   @override

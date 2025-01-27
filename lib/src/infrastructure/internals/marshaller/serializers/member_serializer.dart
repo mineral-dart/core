@@ -64,8 +64,8 @@ final class MemberSerializer implements SerializerContract<Member> {
 
     final memberRoleManager = MemberRoleManager(
         List<String>.from(json['roles']).map(Snowflake.parse).toList(),
-        json['server_id'],
-        json['id']);
+        Snowflake.parse(json['server_id']),
+        Snowflake.parse(json['id']));
 
     return Member(
       id: Snowflake.parse(json['id']),
@@ -104,7 +104,7 @@ final class MemberSerializer implements SerializerContract<Member> {
   @override
   Future<Map<String, dynamic>> deserialize(Member member) async {
     return {
-      'id': member.id,
+      'id': member.id.value,
       'username': member.username,
       'nickname': member.nickname,
       'global_name': member.globalName,
@@ -114,7 +114,7 @@ final class MemberSerializer implements SerializerContract<Member> {
         'avatar_decoration': member.assets.avatarDecoration?.hash,
         'banner': member.assets.banner?.hash,
       },
-      'roles': member.roles.currentIds,
+      'roles': member.roles.currentIds.map((e) => e.value).toList(),
       'flags': listToBitfield(member.flags.list),
       'premium_since': member.premiumSince?.toIso8601String(),
       'public_flags': member.publicFlags,
@@ -127,7 +127,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       'joined_at': member.joinedAt?.toIso8601String(),
       'permissions': listToBitfield(member.permissions.list),
       'accent_color': member.accentColor,
-      'server_id': member.serverId,
+      'server_id': member.serverId.value,
     };
   }
 }

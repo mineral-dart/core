@@ -39,7 +39,7 @@ final class MessageSerializer<T extends Message> implements SerializerContract<T
     });
 
     return {
-      'id': object.id,
+      'id': object.id.value,
       'content': object.content,
       'embeds': embeds.toList(),
       'author_id': object.authorId?.value,

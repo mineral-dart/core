@@ -34,7 +34,7 @@ final class PollSerializer implements SerializerContract<Poll> {
   @override
   Poll serialize(Map<String, dynamic> json) {
     return Poll(
-        messageId: Snowflake(json['message_id']),
+        messageId: Snowflake.nullable(json['message_id']),
         question: PollQuestion(content: json['question_text']),
         answers: List.from(json['answers'])
             .map((element) => PollAnswer(
@@ -61,7 +61,7 @@ final class PollSerializer implements SerializerContract<Poll> {
     }).toList();
 
     return {
-      'message_id': poll.messageId,
+      'message_id': poll.messageId?.value,
       'question_text': poll.question.content,
       'answers': answers,
       'expiry': poll.expireAt?.inMilliseconds,

@@ -67,11 +67,11 @@ final class Shard implements ShardContract {
         });
 
     client.interceptor.message
+      ..add(wss.config.encoding.decode)
       ..add((WebsocketMessage message) {
-        logger.trace({'shard': shardName, 'message': message.content});
+        logger.trace({'shard': shardName, 'message': message.content.payload});
         return message;
-      })
-      ..add(wss.config.encoding.decode);
+      });
 
     client.interceptor.request.add(wss.config.encoding.encode);
 
