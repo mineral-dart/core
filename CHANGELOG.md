@@ -1,3 +1,10 @@
+# 4.0.0-dev.10
+- Rework member `Role` properties
+- Enforce `Snowflake` type parsing
+- Change `PermissionOverwrite`
+- Add missing `thumbnail` property on `MessageEmbedBuilder`
+- Implement `InteractiveDialog`, `InteractiveMenu`, `InteractiveButton`
+
 # 4.0.0-dev.9
 - Complete overhaul of the API data structures
 - Continued implementation of API classes
