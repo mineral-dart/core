@@ -1,5 +1,4 @@
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/components/component_context.dart';
 
 abstract interface class InteractiveComponentService {
   T get<T extends InteractiveComponent>(String customId);

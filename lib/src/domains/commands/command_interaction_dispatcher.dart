@@ -3,12 +3,7 @@ import 'dart:async';
 import 'package:collection/collection.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/commands/command_option_type.dart';
-import 'package:mineral/src/api/common/commands/command_type.dart';
-import 'package:mineral/src/api/common/types/interaction_type.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
-import 'package:mineral/src/domains/commands/contexts/global_command_context.dart';
-import 'package:mineral/src/domains/commands/contexts/server_command_context.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 
 final class CommandInteractionDispatcher implements InteractionDispatcherContract {
