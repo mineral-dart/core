@@ -75,7 +75,7 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
       'timestamp': embed.timestamp?.toIso8601String(),
       'fields': embed.fields?.map((field) => field.toJson()).toList(),
       'color': embed.color?.toInt(),
-      ...assets!,
+      ...?assets,
     };
   }
 }
