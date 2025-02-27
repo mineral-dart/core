@@ -51,7 +51,7 @@ final class MessageEmbedBuilder {
   }
 
   MessageEmbedBuilder addField({required String name, required String value, bool inline = false}) {
-    fields.add(MessageEmbedField(name: name, value: value));
+    fields.add(MessageEmbedField(name: name, value: value, inline: inline));
     return this;
   }
 
