@@ -130,13 +130,13 @@ final class ChannelMethods {
     );
   }
 
-  Future<void> send(
+  Future<T> send<T extends Message>(
       {Snowflake? guildId,
       String? content,
       List<MessageEmbed>? embeds,
       Poll? poll,
       List<MessageComponent>? components}) async {
-    await _datastore.message.send(guildId?.value, id.value, content, embeds, poll, components);
+    return _datastore.message.send(guildId?.value, id.value, content, embeds, poll, components);
   }
 
   Future<void> delete(String? reason) async {

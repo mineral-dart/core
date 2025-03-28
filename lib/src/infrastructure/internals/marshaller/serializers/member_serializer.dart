@@ -19,9 +19,9 @@ final class MemberSerializer implements SerializerContract<Member> {
       'discriminator': json['user']['discriminator'],
       'assets': {
         'server_id': json['guild_id'],
-        'member_id': json['member_id'],
-        'avatar': json['avatar'],
-        'avatar_decoration': json['avatar_decoration_data']?['sku_id'],
+        'member_id': json['user']['id'],
+        'avatar': json['user']['avatar'],
+        'avatar_decoration': json['user']['avatar_decoration_data']?['sku_id'],
         'banner': json['banner'],
       },
       'flags': json['flags'],
@@ -49,14 +49,15 @@ final class MemberSerializer implements SerializerContract<Member> {
   @override
   Future<Member> serialize(Map<String, dynamic> json) async {
     final assets = Map<String, dynamic>.from(json['assets']);
+    print(assets);
     final memberAsset = MemberAssets(
       avatar: Helper.createOrNull(
           field: assets['avatar'],
-          fn: () => ImageAsset(['avatars', assets['member_id']], assets['avatar'])),
+          fn: () => ImageAsset(['avatars', assets['member_id'].toString()], assets['avatar'].toString())),
       avatarDecoration: Helper.createOrNull(
           field: assets['avatar_decoration'],
           fn: () =>
-              ImageAsset(['avatar-decorations', assets['member_id']], assets['avatar_decoration'])),
+              ImageAsset(['avatar-decorations', assets['member_id'].toString()], assets['avatar_decoration'].toString())),
       banner: Helper.createOrNull(
           field: assets['banner'],
           fn: () => ImageAsset(['banners', assets['member_id']], assets['banner'])),
