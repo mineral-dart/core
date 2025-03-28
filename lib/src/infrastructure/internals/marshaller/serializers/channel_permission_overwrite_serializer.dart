@@ -28,10 +28,10 @@ final class ChannelPermissionOverwriteSerializer
   @override
   ChannelPermissionOverwrite serialize(Map<String, dynamic> json) {
     return ChannelPermissionOverwrite(
-      id: json['id'],
+      id: json['id'].toString(),
       type: findInEnum(ChannelPermissionOverwriteType.values, json['type']),
-      allow: bitfieldToList(Permission.values, json['allow']),
-      deny: bitfieldToList(Permission.values, json['deny']),
+      allow: bitfieldToList(Permission.values, int.parse(json['allow'])),
+      deny: bitfieldToList(Permission.values, int.parse(json['deny'])),
     );
   }
 

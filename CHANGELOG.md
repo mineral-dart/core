@@ -1,3 +1,6 @@
+# 4.0.0-dev.11
+- Add `Message` as return type of `.send` and `.reply` methods
+
 # 4.0.0-dev.10
 - Rework member `Role` properties
 - Enforce `Snowflake` type parsing

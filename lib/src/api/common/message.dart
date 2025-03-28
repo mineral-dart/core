@@ -24,7 +24,7 @@ abstract interface class BaseMessage {
 
   Future<T> resolveChannel<T extends Channel>();
 
-  Future<void> reply(
+  Future<T> reply<T extends Message>(
       {String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components});
 
   Future<void> edit(
@@ -128,9 +128,9 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   /// await message.reply(content: 'Replying to the message');
   /// ```
   @override
-  Future<void> reply(
+  Future<T> reply<T extends Message>(
       {String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components}) async {
-    _datastore.message.reply(
+    return _datastore.message.reply(
         id: id, channelId: channelId, content: content, embeds: embeds, components: components);
   }
 

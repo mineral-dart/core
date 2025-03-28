@@ -103,7 +103,7 @@ final class ServerTextChannel extends ServerChannel {
   /// ```dart
   /// await channel.send(content: 'Hello, world!');
   /// ```
-  Future<void> send(
+  Future<T> send<T extends Message>(
           {String? content,
           List<MessageEmbed>? embeds,
           Poll? poll,
