@@ -49,7 +49,6 @@ final class MemberSerializer implements SerializerContract<Member> {
   @override
   Future<Member> serialize(Map<String, dynamic> json) async {
     final assets = Map<String, dynamic>.from(json['assets']);
-    print(assets);
     final memberAsset = MemberAssets(
       avatar: Helper.createOrNull(
           field: assets['avatar'],
