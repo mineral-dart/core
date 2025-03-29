@@ -63,7 +63,7 @@ final class MemberSerializer implements SerializerContract<Member> {
     );
 
     final memberRoleManager = MemberRoleManager(
-        List<String>.from(json['roles']).map(Snowflake.parse).toList(),
+        List.from(json['roles']).map(Snowflake.parse).toList(),
         Snowflake.parse(json['server_id']),
         Snowflake.parse(json['id']));
 

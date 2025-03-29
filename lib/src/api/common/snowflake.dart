@@ -5,7 +5,7 @@ extension type Snowflake(String value) {
     _ => null,
   };
 
-  factory Snowflake.parse(Object value) => switch(value) {
+  factory Snowflake.parse(dynamic value) => switch(value) {
     final String value => Snowflake(value),
     final int value => Snowflake(value.toString()),
     _ => throw ArgumentError('Invalid value $value'),
