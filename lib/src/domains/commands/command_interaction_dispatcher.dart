@@ -71,16 +71,14 @@ final class CommandInteractionDispatcher implements InteractionDispatcherContrac
           continue;
         }
 
-        options[Symbol(option['name'])] = switch (type) {
+        options[Symbol(option['name'])] = await switch (type) {
           CommandOptionType.user => switch (commandContext) {
               ServerCommandContext() =>
-                await _dataStore.member.get(commandContext.server.id.value, option['value'], false),
-              _ => _marshaller.serializers.user.serialize(option['value']),
+                _dataStore.member.get(commandContext.server.id.value, option['value'], false),
+              _ => _dataStore.user.get(option['value'], false),
             },
-          CommandOptionType.channel =>
-            await _marshaller.serializers.channels.serialize(option['value']),
-          CommandOptionType.role =>
-            await _dataStore.role.get(data['guild_id'], option['value'], false),
+          CommandOptionType.channel => _dataStore.channel.get(option['value'], false),
+          CommandOptionType.role => _dataStore.role.get(data['guild_id'], option['value'], false),
           // TODO attachement
           _ => option['value'],
         };

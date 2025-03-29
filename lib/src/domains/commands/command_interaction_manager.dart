@@ -24,8 +24,7 @@ abstract class CommandInteractionManagerContract {
   void addCommand(CommandBuilder command);
 }
 
-final class CommandInteractionManager
-    implements CommandInteractionManagerContract {
+final class CommandInteractionManager implements CommandInteractionManagerContract {
   @override
   final List<(String, Function handler)> commandsHandler = [];
 
@@ -58,8 +57,7 @@ final class CommandInteractionManager
     }
 
     final handlers = switch (command) {
-      final CommandDeclarationBuilder command =>
-        command.reduceHandlers(command.name!),
+      final CommandDeclarationBuilder command => command.reduceHandlers(command.name!),
       final CommandDefinitionBuilder definition =>
         definition.command.reduceHandlers(definition.command.name!),
       final _ => throw Exception('Unknown command type')
@@ -71,31 +69,30 @@ final class CommandInteractionManager
 
   @override
   Future<void> registerGlobal(Bot bot) async {
-    final List<CommandBuilder> globalCommands =
-        _getContext(CommandContextType.global);
+    final List<CommandBuilder> globalCommands = _getContext(CommandContextType.global);
     final payload = _serializeCommand(globalCommands);
 
-    await _dataStore.client
-        .put('/applications/${bot.id}/commands', body: payload);
+    await _dataStore.client.put('/applications/${bot.id}/commands', body: payload);
   }
 
   @override
   Future<void> registerServer(Bot bot, Server server) async {
-    final List<CommandBuilder> guildCommands =
-        _getContext(CommandContextType.server);
+    final List<CommandBuilder> guildCommands = _getContext(CommandContextType.server);
     final payload = _serializeCommand(guildCommands);
 
-    final response = await _dataStore.client.put(
-        '/applications/${bot.id}/guilds/${server.id}/commands',
-        body: payload);
+    final response = await _dataStore.client
+        .put('/applications/${bot.id}/guilds/${server.id}/commands', body: payload);
 
     if (response.statusCode == 400) {
+      final message = response.body['message'];
       final error = Map<String, dynamic>.from(response.body['errors'])
           .values
-          .firstOrNull?['_errors'];
-      final message = error[0]['message'];
+          .firstOrNull?['name'];
 
-      throw ClientException(message);
+      final errors = List.from(error?['_errors'] ?? [])
+          .firstOrNull;
+
+      throw Exception('${errors['code']}: ${errors['message']}');
     }
   }
 
@@ -115,8 +112,7 @@ final class CommandInteractionManager
     return commands.map((command) {
       return switch (command) {
         final CommandDeclarationBuilder command => command.toJson(),
-        final CommandDefinitionBuilder definition =>
-          definition.command.toJson(),
+        final CommandDefinitionBuilder definition => definition.command.toJson(),
         final _ => throw Exception('Unknown command type')
       };
     }).toList();
