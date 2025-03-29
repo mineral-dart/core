@@ -23,7 +23,12 @@ final class CommandDeclarationBuilder implements CommandBuilder {
   Function? _handle;
 
   CommandDeclarationBuilder setName(String name, {Translation? translation}) {
-    this.name = name;
+    if (name.contains(' ')) {
+      throw ArgumentError('Command name cannot contain spaces');
+    }
+
+    this.name = name.toLowerCase();
+
     if (translation != null) {
       _nameLocalizations = _helper.extractTranslations('name', translation);
     }
