@@ -32,7 +32,12 @@ enum PacketType {
   guildEmojisUpdate('GUILD_EMOJIS_UPDATE'),
   guildStickersUpdate('GUILD_STICKERS_UPDATE'),
 
-  channelPinsUpdate('CHANNEL_PINS_UPDATE');
+  channelPinsUpdate('CHANNEL_PINS_UPDATE'),
+  
+  autoModRuleCreate('AUTO_MODERATION_RULE_CREATE'),
+  autoModRuleUpdate('AUTO_MODERATION_RULE_UPDATE'),
+  autoModRuleDelete('AUTO_MODERATION_RULE_DELETE'),
+  autoModActionExecution('AUTO_MODERATION_ACTION_EXECUTION');
 
   final String name;
 
