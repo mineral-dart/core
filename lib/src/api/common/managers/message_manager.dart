@@ -10,11 +10,16 @@ final class MessageManager<T extends BaseMessage> {
 
   final DataStoreContract _datastore = ioc.resolve<DataStoreContract>();
 
-  final Map<Snowflake, T> list = {};
+  Future<T?> get(Snowflake id, {bool force = false}) =>
+      _datastore.message.get<T>(_channelId.value, id.value, force);
 
-  Future<T?> get(Snowflake id) =>
-      _datastore.message.get<T>(_channelId.value, id.value, false);
+  Future<T> getOrFail(Snowflake id, {bool force = false}) =>
+      _datastore.message.get<T>(_channelId.value, id.value, force) as Future<T>;
 
-  Future<T> getOrFail(Snowflake id) =>
-      _datastore.message.get<T>(_channelId.value, id.value, false) as Future<T>;
+  Future<Map<Snowflake, T>> fetch(
+          {Snowflake? around,
+          Snowflake? before,
+          Snowflake? after,
+          int? limit}) =>
+      _datastore.message.fetch<T>(_channelId.value);
 }

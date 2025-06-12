@@ -6,7 +6,7 @@ final class ServerAnnouncementChannel extends ServerChannel {
   final ChannelProperties _properties;
   late final ChannelMethods _methods;
 
-  final MessageManager<ServerMessage> messages = MessageManager();
+  late final MessageManager<ServerMessage> messages;
 
   @override
   Snowflake get id => _properties.id;
@@ -36,6 +36,7 @@ final class ServerAnnouncementChannel extends ServerChannel {
 
   ServerAnnouncementChannel(this._properties) {
     _methods = ChannelMethods(_properties.serverId!, _properties.id);
+    messages = MessageManager(_properties.id);
   }
 
   /// Sets the name of the channel.

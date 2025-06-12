@@ -10,7 +10,7 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   final ChannelProperties _properties;
   late final ChannelMethods _methods;
 
-  final MessageManager<ServerMessage> messages = MessageManager();
+  late final MessageManager<ServerMessage> messages;
 
   @override
   Snowflake get id => _properties.id;
@@ -54,6 +54,7 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
 
   PublicThreadChannel(this._properties, this.metadata) {
     _methods = ChannelMethods(_properties.serverId!, _properties.id);
+    messages = MessageManager(_properties.id);
   }
 
   /// Sets the name of the channel.
@@ -61,7 +62,8 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   /// ```dart
   /// await channel.setName('new-name');
   /// ```
-  Future<void> setName(String name, {String? reason}) => _methods.setName(name, reason);
+  Future<void> setName(String name, {String? reason}) =>
+      _methods.setName(name, reason);
 
   /// Sets the description of the channel.
   ///
@@ -92,7 +94,8 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   /// ```dart
   /// await channel.setNsfw(true);
   /// ```
-  Future<void> setNsfw(bool nsfw, {String? reason}) => _methods.setNsfw(nsfw, reason);
+  Future<void> setNsfw(bool nsfw, {String? reason}) =>
+      _methods.setNsfw(nsfw, reason);
 
   /// Sets the rate limit per user for the channel.
   ///
@@ -107,7 +110,8 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   /// ```dart
   /// await channel.setDefaultAutoArchiveDuration(60);
   /// ```
-  Future<void> setDefaultAutoArchiveDuration(Duration value, {String? reason}) =>
+  Future<void> setDefaultAutoArchiveDuration(Duration value,
+          {String? reason}) =>
       _methods.setDefaultAutoArchiveDuration(value, reason);
 
   /// Sets the default thread rate limit per user for the channel.
@@ -115,7 +119,8 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   /// ```dart
   /// await channel.setDefaultThreadRateLimitPerUser(10);
   /// ```
-  Future<void> setDefaultThreadRateLimitPerUser(Duration value, {String? reason}) =>
+  Future<void> setDefaultThreadRateLimitPerUser(Duration value,
+          {String? reason}) =>
       _methods.setDefaultThreadRateLimitPerUser(value, reason);
 
   /// Resolves the [User] object of the owner of the channel.
@@ -138,7 +143,11 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
           Poll? poll,
           List<MessageComponent>? components}) =>
       _methods.send(
-          guildId: serverId, content: content, embeds: embeds, poll: poll, components: components);
+          guildId: serverId,
+          content: content,
+          embeds: embeds,
+          poll: poll,
+          components: components);
 
   /// Deletes the channel.
   ///

@@ -4,7 +4,7 @@ import 'package:mineral/src/api/common/managers/message_manager.dart';
 final class PrivateGroupChannel extends Channel {
   final ChannelProperties _properties;
 
-  final MessageManager<PrivateMessage> messages = MessageManager();
+  late final MessageManager<PrivateMessage> messages;
 
   @override
   Snowflake get id => _properties.id;
@@ -14,5 +14,7 @@ final class PrivateGroupChannel extends Channel {
 
   List<User> get users => _properties.recipients;
 
-  PrivateGroupChannel(this._properties);
+  PrivateGroupChannel(this._properties) {
+    messages = MessageManager(_properties.id);
+  }
 }
