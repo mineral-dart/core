@@ -22,14 +22,18 @@ abstract class AuditLogActionContract {
 }
 
 final class ServerUpdateAuditLogAction extends AuditLog {
-  ServerUpdateAuditLogAction({required Snowflake serverId, required Snowflake userId})
+  ServerUpdateAuditLogAction(
+      {required Snowflake serverId, required Snowflake userId})
       : super(AuditLogType.guildUpdate, serverId, userId);
 }
 
 final class UnknownAuditLogAction extends AuditLog {
-  UnknownAuditLogAction({required Snowflake serverId, required Snowflake userId})
+  UnknownAuditLogAction(
+      {required Snowflake serverId, required Snowflake userId})
       : super(AuditLogType.guildUpdate, serverId, userId);
 
   factory UnknownAuditLogAction.fromJson(Map<String, dynamic> json) =>
-      UnknownAuditLogAction(serverId: json['guild_id'], userId: json['user_id']);
+      UnknownAuditLogAction(
+          serverId: Snowflake.parse(json['guild_id']),
+          userId: Snowflake.parse(json['user_id']));
 }
