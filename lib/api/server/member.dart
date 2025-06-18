@@ -52,22 +52,29 @@ final class Member {
 
   bool hasRejoined() => flags.list.contains(MemberFlag.didRejoin);
 
-  Future<void> setUsername(String value, String? reason) =>
-      _memberMethods.updateMember(
-          serverId: server.id,
-          memberId: id,
-          payload: {'username': value},
-          reason: reason);
+  Future<void> setUsername(String value, String? reason) => _memberMethods.updateMember(
+      serverId: server.id,
+      memberId: id,
+      payload: {'username': value},
+      reason: reason);
 
-  Future<void> setNickname(String value, String? reason) =>
-      _memberMethods.updateMember(
-          serverId: server.id,
-          memberId: id,
-          payload: {'nick': value},
-          reason: reason);
+  Future<void> setNickname(String value, String? reason) => _memberMethods.updateMember(
+      serverId: server.id,
+      memberId: id,
+      payload: {'nick': value},
+      reason: reason);
 
-  Future<void> ban({Duration? deleteSince, String? reason}) => _memberMethods
-      .banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
+  Future<void> setTimeout(Duration duration, {String? reason}) {
+    final timeout = DateTime.now().add(duration);
+    return _memberMethods.updateMember(
+        serverId: server.id,
+        memberId: id,
+        payload: {'communication_disabled_until': timeout.toIso8601String()},
+        reason: reason);
+  }
+
+  Future<void> ban({Duration? deleteSince, String? reason}) =>
+      _memberMethods.banMember(serverId: server.id, memberId: id, deleteSince: deleteSince);
 
   Future<void> kick({String? reason}) => _memberMethods.kickMember(
       serverId: server.id, memberId: id, reason: reason);
@@ -83,7 +90,7 @@ final class Member {
         payload: {'communication_disabled_until': timeout.toIso8601String()});
   }
 
-  Future<void> unExclude({String? reason}) => _memberMethods.updateMember(
+  Future<void> unExclude({Duration? duration, String? reason}) => _memberMethods.updateMember(
       serverId: server.id,
       memberId: id,
       reason: reason,
