@@ -80,6 +80,9 @@ export 'package:mineral/src/api/private/channels/private_group_channel.dart';
 export 'package:mineral/src/api/private/user.dart';
 export 'package:mineral/src/api/private/user_assets.dart';
 // Server
+export 'package:mineral/src/api/server/audit_log/actions/emoji.dart';
+export 'package:mineral/src/api/server/audit_log/actions/role.dart';
+export 'package:mineral/src/api/server/audit_log/actions/server.dart';
 export 'package:mineral/src/api/server/builders/member_builder.dart';
 export 'package:mineral/src/api/server/channels/server_announcement_channel.dart';
 export 'package:mineral/src/api/server/channels/server_category_channel.dart';

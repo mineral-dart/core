@@ -3,6 +3,7 @@ import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/server/audit_log/actions/emoji.dart';
 import 'package:mineral/src/api/server/audit_log/actions/role.dart';
+import 'package:mineral/src/api/server/audit_log/actions/server.dart';
 import 'package:mineral/src/api/server/audit_log/audit_log_action.dart';
 
 abstract class AuditLog {
@@ -30,6 +31,7 @@ abstract class AuditLog {
       AuditLogType.roleCreate => RoleCreateAuditLog.fromJson(json),
       AuditLogType.roleUpdate => RoleUpdateAuditLog.fromJson(json),
       AuditLogType.roleDelete => RoleDeleteAuditLog.fromJson(json),
+      AuditLogType.guildUpdate => ServerUpdateAuditLogAction.fromJson(json),
       _ => UnknownAuditLogAction.fromJson(json),
     };
 
