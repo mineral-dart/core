@@ -21,12 +21,6 @@ abstract class AuditLogActionContract {
   Future<Server> resolveServer() => _datastore.server.get(serverId.value, true);
 }
 
-final class ServerUpdateAuditLogAction extends AuditLog {
-  ServerUpdateAuditLogAction(
-      {required Snowflake serverId, required Snowflake userId})
-      : super(AuditLogType.guildUpdate, serverId, userId);
-}
-
 final class UnknownAuditLogAction extends AuditLog {
   UnknownAuditLogAction(
       {required Snowflake serverId, required Snowflake userId})
