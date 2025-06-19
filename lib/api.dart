@@ -79,6 +79,7 @@ export 'package:mineral/src/api/private/channels/private_channel.dart';
 export 'package:mineral/src/api/private/channels/private_group_channel.dart';
 export 'package:mineral/src/api/private/user.dart';
 export 'package:mineral/src/api/private/user_assets.dart';
+export 'package:mineral/src/api/server/audit_log/actions/channel.dart';
 // Server
 export 'package:mineral/src/api/server/audit_log/actions/emoji.dart';
 export 'package:mineral/src/api/server/audit_log/actions/role.dart';

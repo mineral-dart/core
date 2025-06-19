@@ -1,10 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/server/audit_log/actions/emoji.dart';
-import 'package:mineral/src/api/server/audit_log/actions/role.dart';
-import 'package:mineral/src/api/server/audit_log/actions/server.dart';
-import 'package:mineral/src/api/server/audit_log/audit_log_action.dart';
 
 abstract class AuditLog {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
@@ -16,37 +12,12 @@ abstract class AuditLog {
   AuditLog(this.type, this.serverId, this.userId);
 
   Future<Server> resolveServer() => _datastore.server.get(serverId.value, true);
-
-  factory AuditLog.fromJson(Map<String, dynamic> json) {
-    final logger = ioc.resolve<LoggerContract>();
-
-    final auditLogType = AuditLogType.values.firstWhere(
-        (element) => element.value == json['action_type'],
-        orElse: () => AuditLogType.unknown);
-
-    final auditLog = switch (auditLogType) {
-      AuditLogType.emojiCreate => EmojiCreateAuditLog.fromJson(json),
-      AuditLogType.emojiUpdate => EmojiUpdateAuditLog.fromJson(json),
-      AuditLogType.emojiDelete => EmojiDeleteAuditLog.fromJson(json),
-      AuditLogType.roleCreate => RoleCreateAuditLog.fromJson(json),
-      AuditLogType.roleUpdate => RoleUpdateAuditLog.fromJson(json),
-      AuditLogType.roleDelete => RoleDeleteAuditLog.fromJson(json),
-      AuditLogType.guildUpdate => ServerUpdateAuditLogAction.fromJson(json),
-      _ => UnknownAuditLogAction.fromJson(json),
-    };
-
-    if (auditLog case UnknownAuditLogAction()) {
-      logger.warn('Audit log action not found ${json['action_type']}');
-    }
-
-    return auditLog;
-  }
 }
 
 final class Change<B, A> {
   final String key;
   final B before;
-  final A after;
+  final A? after;
 
   Change(this.key, this.before, this.after);
 

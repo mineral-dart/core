@@ -24,10 +24,5 @@ abstract class AuditLogActionContract {
 final class UnknownAuditLogAction extends AuditLog {
   UnknownAuditLogAction(
       {required Snowflake serverId, required Snowflake userId})
-      : super(AuditLogType.guildUpdate, serverId, userId);
-
-  factory UnknownAuditLogAction.fromJson(Map<String, dynamic> json) =>
-      UnknownAuditLogAction(
-          serverId: Snowflake.parse(json['guild_id']),
-          userId: Snowflake.parse(json['user_id']));
+      : super(AuditLogType.unknown, serverId, userId);
 }
