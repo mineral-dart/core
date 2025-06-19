@@ -11,16 +11,20 @@ final class RoleCreateAuditLog extends AuditLog {
   final Snowflake roleId;
   final List<Change> changes;
 
-  String get roleName => changes.firstWhere((element) => element.key == 'name').after;
+  String get roleName =>
+      changes.firstWhere((element) => element.key == 'name').after;
 
-  Permissions get rolePermissions =>
-      Permissions.fromInt(changes.firstWhere((element) => element.key == 'permissions').after);
+  Permissions get roleOermissions => Permissions.fromInt(
+      changes.firstWhere((element) => element.key == 'permissions').after);
 
-  Color get roleColor => Color.of(changes.firstWhere((element) => element.key == 'color').after);
+  Color get roleColor =>
+      Color.of(changes.firstWhere((element) => element.key == 'color').after);
 
-  bool get isHoist => changes.firstWhere((element) => element.key == 'hoist').after;
+  bool get roleIsHoist =>
+      changes.firstWhere((element) => element.key == 'hoist').after;
 
-  bool get isMentionable => changes.firstWhere((element) => element.key == 'mentionable').after;
+  bool get roleIsMentionable =>
+      changes.firstWhere((element) => element.key == 'mentionable').after;
 
   RoleCreateAuditLog(
       {required Snowflake serverId,
@@ -33,14 +37,6 @@ final class RoleCreateAuditLog extends AuditLog {
     final role = await _datastore.role.get(serverId.value, roleId.value, force);
     return role!;
   }
-
-  factory RoleCreateAuditLog.fromJson(Map<String, dynamic> json) {
-    return RoleCreateAuditLog(
-        serverId: json['guild_id'],
-        userId: json['user_id'],
-        changes: List<Map<String, dynamic>>.from(json['changes']).map(Change.fromJson).toList(),
-        roleId: json['target_id']);
-  }
 }
 
 final class RoleUpdateAuditLog extends AuditLog {
@@ -52,7 +48,8 @@ final class RoleUpdateAuditLog extends AuditLog {
   Change get roleName => changes.firstWhere((element) => element.key == 'name');
 
   Change<List<Permission>, List<Permission>>? get rolePermissions {
-    final permissions = changes.firstWhereOrNull((element) => element.key == 'permissions');
+    final permissions =
+        changes.firstWhereOrNull((element) => element.key == 'permissions');
     return switch (permissions) {
       final Change change => Change(
           change.key,
@@ -63,14 +60,17 @@ final class RoleUpdateAuditLog extends AuditLog {
     };
   }
 
-  Change<Color, Color>? get roleColor => _resolveParameterOrNull<Color, int>('color', Color.of);
+  Change<Color, Color>? get roleColor =>
+      _resolveParameterOrNull<Color, int>('color', Color.of);
 
-  Change<bool, bool>? get isHoist => _resolveParameterOrNull<bool, String>('hoist', bool.parse);
+  Change<bool, bool>? get roleIsHoist =>
+      _resolveParameterOrNull<bool, String>('hoist', bool.parse);
 
-  Change<bool, bool>? get isMentionable =>
+  Change<bool, bool>? get roleIsMentionable =>
       _resolveParameterOrNull<bool, String>('mentionable', bool.parse);
 
-  Change<T, T>? _resolveParameterOrNull<T, S>(String key, T Function(S) transformer) {
+  Change<T, T>? _resolveParameterOrNull<T, S>(
+      String key, T Function(S) transformer) {
     final parameter = changes.firstWhereOrNull((element) => element.key == key);
     return switch (parameter) {
       final Change change => Change(
@@ -82,25 +82,17 @@ final class RoleUpdateAuditLog extends AuditLog {
     };
   }
 
+  Future<Role> resolveRole({bool force = false}) async {
+    final role = await _datastore.role.get(serverId.value, roleId.value, force);
+    return role!;
+  }
+
   RoleUpdateAuditLog(
       {required Snowflake serverId,
       required Snowflake userId,
       required this.roleId,
       required this.changes})
       : super(AuditLogType.roleCreate, serverId, userId);
-
-  Future<Role> resolveRole({bool force = false}) async {
-    final role = await _datastore.role.get(serverId.value, roleId.value, force);
-    return role!;
-  }
-
-  factory RoleUpdateAuditLog.fromJson(Map<String, dynamic> json) {
-    return RoleUpdateAuditLog(
-        serverId: json['guild_id'],
-        userId: json['user_id'],
-        roleId: json['target_id'],
-        changes: List<Map<String, dynamic>>.from(json['changes']).map(Change.fromJson).toList());
-  }
 }
 
 final class RoleDeleteAuditLog extends AuditLog {
@@ -113,12 +105,4 @@ final class RoleDeleteAuditLog extends AuditLog {
       required this.roleId,
       required this.roleName})
       : super(AuditLogType.emojiDelete, serverId, userId);
-
-  factory RoleDeleteAuditLog.fromJson(Map<String, dynamic> json) {
-    return RoleDeleteAuditLog(
-        serverId: json['guild_id'],
-        roleName: json['changes'][0]['old_value'],
-        userId: json['user_id'],
-        roleId: json['target_id']);
-  }
 }
