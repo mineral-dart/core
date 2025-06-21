@@ -39,7 +39,8 @@ final class ChannelManager<C extends Channel> {
   /// ```dart
   /// final channel = await server.channels.create<TextChannel>(builder, reason: 'Testing');
   /// ```
-  Future<T> create<T extends C>(ChannelBuilderContract builder, {String? reason}) =>
+  Future<T> create<T extends C>(ChannelBuilderContract builder,
+          {String? reason}) =>
       _datastore.channel.create<T>(_serverId.value, builder, reason: reason);
 
   /// Resolve the server's afk channel.
@@ -48,7 +49,8 @@ final class ChannelManager<C extends Channel> {
   /// ```
   Future<ServerVoiceChannel?> resolveAfkChannel({bool force = false}) async {
     return switch (afkChannelId) {
-      Snowflake(:final value) => _datastore.channel.get<ServerVoiceChannel>(value, force),
+      Snowflake(:final value) =>
+        _datastore.channel.get<ServerVoiceChannel>(value, force),
       _ => null,
     };
   }
@@ -59,7 +61,8 @@ final class ChannelManager<C extends Channel> {
   /// ```
   Future<ServerTextChannel?> resolveSystemChannel({bool force = false}) async {
     return switch (systemChannelId) {
-      Snowflake(:final value) => _datastore.channel.get<ServerTextChannel>(value, force),
+      Snowflake(:final value) =>
+        _datastore.channel.get<ServerTextChannel>(value, force),
       _ => null,
     };
   }
@@ -70,7 +73,8 @@ final class ChannelManager<C extends Channel> {
   /// ```
   Future<ServerTextChannel?> resolveRulesChannel({bool force = false}) async {
     return switch (rulesChannelId) {
-      Snowflake(:final value) => _datastore.channel.get<ServerTextChannel>(value, force),
+      Snowflake(:final value) =>
+        _datastore.channel.get<ServerTextChannel>(value, force),
       _ => null,
     };
   }
@@ -79,9 +83,11 @@ final class ChannelManager<C extends Channel> {
   /// ```dart
   /// final publicUpdatesChannel = await server.channels.resolvePublicUpdatesChannel();
   /// ```
-  Future<ServerTextChannel?> resolvePublicUpdatesChannel({bool force = false}) async {
+  Future<ServerTextChannel?> resolvePublicUpdatesChannel(
+      {bool force = false}) async {
     return switch (publicUpdatesChannelId) {
-      Snowflake(:final value) => _datastore.channel.get<ServerTextChannel>(value, force),
+      Snowflake(:final value) =>
+        _datastore.channel.get<ServerTextChannel>(value, force),
       _ => null,
     };
   }
@@ -90,9 +96,11 @@ final class ChannelManager<C extends Channel> {
   /// ```dart
   /// final safetyAlertsChannel = await server.channels.resolveSafetyAlertsChannel();
   /// ```
-  Future<ServerTextChannel?> resolveSafetyAlertsChannel({bool force = false}) async {
+  Future<ServerTextChannel?> resolveSafetyAlertsChannel(
+      {bool force = false}) async {
     return switch (safetyAlertsChannelId) {
-      Snowflake(:final value) => _datastore.channel.get<ServerTextChannel>(value, force),
+      Snowflake(:final value) =>
+        _datastore.channel.get<ServerTextChannel>(value, force),
       _ => null,
     };
   }
@@ -103,7 +111,8 @@ final class ChannelManager<C extends Channel> {
   /// await server.setAfkChannel('1091121140090535956', reason: 'Testing');
   /// ```
   Future<void> setAfkChannel(String? channelId, {String? reason}) async {
-    await _datastore.server.update(_serverId.value, {'afk_channel_id': channelId}, reason);
+    await _datastore.server
+        .update(_serverId.value, {'afk_channel_id': channelId}, reason);
   }
 
   /// Set the server's system channel.
@@ -112,7 +121,8 @@ final class ChannelManager<C extends Channel> {
   /// await server.setSystemChannel('1091121140090535956', reason: 'Testing');
   /// ```
   Future<void> setSystemChannel(String? channelId, {String? reason}) async {
-    await _datastore.server.update(_serverId.value, {'system_channel_id': channelId}, reason);
+    await _datastore.server
+        .update(_serverId.value, {'system_channel_id': channelId}, reason);
   }
 
   /// Set the server's rules channel.
@@ -121,7 +131,8 @@ final class ChannelManager<C extends Channel> {
   /// await server.setRulesChannel('1091121140090535956', reason: 'Testing');
   /// ```
   Future<void> setRulesChannel(String? channelId, {String? reason}) async {
-    await _datastore.server.update(_serverId.value, {'rules_channel_id': channelId}, reason);
+    await _datastore.server
+        .update(_serverId.value, {'rules_channel_id': channelId}, reason);
   }
 
   /// Set the server's public updates channel.
@@ -129,14 +140,15 @@ final class ChannelManager<C extends Channel> {
   /// ```dart
   /// await server.setPublicUpdatesChannel('1091121140090535956', reason: 'Testing');
   /// ```
-  Future<void> setPublicUpdatesChannel(String? channelId, {String? reason}) async {
-    await _datastore.server
-        .update(_serverId.value, {'public_updates_channel_id': channelId}, reason);
+  Future<void> setPublicUpdatesChannel(String? channelId,
+      {String? reason}) async {
+    await _datastore.server.update(
+        _serverId.value, {'public_updates_channel_id': channelId}, reason);
   }
 
   factory ChannelManager.empty(String serverId) {
     return ChannelManager(
-      Snowflake(serverId),
+      Snowflake.parse(serverId),
       afkChannelId: null,
       systemChannelId: null,
       rulesChannelId: null,
@@ -145,14 +157,17 @@ final class ChannelManager<C extends Channel> {
     );
   }
 
-  factory ChannelManager.fromMap(Object serverId, Map<String, dynamic> payload) {
+  factory ChannelManager.fromMap(
+      Object serverId, Map<String, dynamic> payload) {
     return ChannelManager(
       Snowflake.parse(serverId),
       afkChannelId: Snowflake.nullable(payload['afk_channel_id']),
       systemChannelId: Snowflake.nullable(payload['system_channel_id']),
       rulesChannelId: Snowflake.nullable(payload['rules_channel_id']),
-      publicUpdatesChannelId: Snowflake.nullable(payload['public_updates_channel_id']),
-      safetyAlertsChannelId: Snowflake.nullable(payload['safety_alerts_channel_id']),
+      publicUpdatesChannelId:
+          Snowflake.nullable(payload['public_updates_channel_id']),
+      safetyAlertsChannelId:
+          Snowflake.nullable(payload['safety_alerts_channel_id']),
     );
   }
 }

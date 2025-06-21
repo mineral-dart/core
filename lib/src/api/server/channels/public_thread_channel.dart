@@ -36,7 +36,7 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
 
   String? get rtcRegion => _properties.rtcRegion;
 
-  Snowflake get ownerId => Snowflake(_properties.ownerId!);
+  Snowflake get ownerId => Snowflake.parse(_properties.ownerId!);
 
   DateTime? get lastPinTimestamp => _properties.lastPinTimestamp != null
       ? DateTime.tryParse(_properties.lastPinTimestamp!)

@@ -2,7 +2,8 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/channel_factory.dart';
 
-final class UnknownChannelFactory implements ChannelFactoryContract<UnknownChannel> {
+final class UnknownChannelFactory
+    implements ChannelFactoryContract<UnknownChannel> {
   @override
   ChannelType get type => ChannelType.unknown;
 
@@ -22,9 +23,10 @@ final class UnknownChannelFactory implements ChannelFactoryContract<UnknownChann
   }
 
   @override
-  Future<UnknownChannel> serialize(MarshallerContract marshaller, Map<String, dynamic> json) async {
+  Future<UnknownChannel> serialize(
+      MarshallerContract marshaller, Map<String, dynamic> json) async {
     return UnknownChannel(
-      id: Snowflake(json['id']),
+      id: Snowflake.parse(json['id']),
       name: json['name'],
     );
   }
