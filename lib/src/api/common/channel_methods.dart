@@ -70,7 +70,8 @@ final class ChannelMethods {
     );
   }
 
-  Future<void> setDefaultAutoArchiveDuration(Duration value, String? reason) async {
+  Future<void> setDefaultAutoArchiveDuration(
+      Duration value, String? reason) async {
     final builder = ChannelBuilder(null)..setDefaultAutoArchiveDuration(value);
     await _datastore.channel.update(
       id.value,
@@ -80,8 +81,10 @@ final class ChannelMethods {
     );
   }
 
-  Future<void> setDefaultThreadRateLimitPerUser(Duration value, String? reason) async {
-    final builder = ChannelBuilder(null)..setDefaultThreadRateLimitPerUser(value);
+  Future<void> setDefaultThreadRateLimitPerUser(
+      Duration value, String? reason) async {
+    final builder = ChannelBuilder(null)
+      ..setDefaultThreadRateLimitPerUser(value);
     await _datastore.channel.update(
       id.value,
       builder,
@@ -136,7 +139,13 @@ final class ChannelMethods {
       List<MessageEmbed>? embeds,
       Poll? poll,
       List<MessageComponent>? components}) async {
-    return _datastore.message.send(guildId?.value, id.value, content, embeds, poll, components);
+    return _datastore.message
+        .send(guildId?.value, id.value, content, embeds, poll, components);
+  }
+
+  Future<T> sendV2<T extends Message>(
+      {required MessageComponentBuilder builder, Snowflake? guildId}) async {
+    return _datastore.message.sendV2(guildId?.value, id.value, builder);
   }
 
   Future<void> delete(String? reason) async {
