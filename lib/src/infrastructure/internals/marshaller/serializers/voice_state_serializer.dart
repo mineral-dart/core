@@ -24,7 +24,8 @@ final class VoiceStateSerializer implements SerializerContract<VoiceState> {
       'discoverable': json['discoverable'],
     };
 
-    final cacheKey = _marshaller.cacheKey.voiceState(json['guild_id'], json['user_id']);
+    final cacheKey =
+        _marshaller.cacheKey.voiceState(json['guild_id'], json['user_id']);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -33,21 +34,20 @@ final class VoiceStateSerializer implements SerializerContract<VoiceState> {
   @override
   Future<VoiceState> serialize(Map<String, dynamic> json) async {
     return VoiceState(
-      serverId: Snowflake(json['server_id']),
-      channelId: Snowflake.nullable(json['channel_id']),
-      userId: Snowflake(json['user_id']),
-      sessionId: json['session_id'],
-      isDeaf: json['deaf'],
-      isMute: json['mute'],
-      isSelfDeaf: json['self_deaf'],
-      isSelfMute: json['self_mute'],
-      hasSelfVideo: json['self_video'],
-      isSuppress: json['suppress'],
-      requestToSpeakTimestamp: json['request_to_speak_timestamp'] != null
-          ? DateTime.parse(json['request_to_speak_timestamp'])
-          : null,
-      isDiscoverable: json['discoverable']
-    );
+        serverId: Snowflake.parse(json['server_id']),
+        channelId: Snowflake.nullable(json['channel_id']),
+        userId: Snowflake.parse(json['user_id']),
+        sessionId: json['session_id'],
+        isDeaf: json['deaf'],
+        isMute: json['mute'],
+        isSelfDeaf: json['self_deaf'],
+        isSelfMute: json['self_mute'],
+        hasSelfVideo: json['self_video'],
+        isSuppress: json['suppress'],
+        requestToSpeakTimestamp: json['request_to_speak_timestamp'] != null
+            ? DateTime.parse(json['request_to_speak_timestamp'])
+            : null,
+        isDiscoverable: json['discoverable']);
   }
 
   @override
@@ -63,7 +63,8 @@ final class VoiceStateSerializer implements SerializerContract<VoiceState> {
       'self_mute': state.isSelfMute,
       'self_stream': state.hasSelfVideo,
       'suppress': state.isSuppress,
-      'request_to_speak_timestamp': state.requestToSpeakTimestamp?.toIso8601String(),
+      'request_to_speak_timestamp':
+          state.requestToSpeakTimestamp?.toIso8601String(),
       'discoverable': state.isDiscoverable,
     };
   }

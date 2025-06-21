@@ -11,7 +11,7 @@ final class PartialApplication {
 
   factory PartialApplication.fromJson(Map<String, dynamic> json) {
     return PartialApplication(
-      id: Snowflake(json['id']),
+      id: Snowflake.parse(json['id']),
       flags: json['flags'],
     );
   }

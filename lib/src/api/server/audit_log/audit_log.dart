@@ -11,7 +11,9 @@ abstract class AuditLog {
 
   AuditLog(this.type, this.serverId, this.userId);
 
-  Future<Server> resolveServer() => _datastore.server.get(serverId.value, true);
+  Future<Server> resolveServer({bool force = false}) {
+    return _datastore.server.get(serverId.value, force);
+  }
 }
 
 final class Change<B, A> {

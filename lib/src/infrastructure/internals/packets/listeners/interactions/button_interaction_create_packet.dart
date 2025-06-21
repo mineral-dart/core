@@ -35,11 +35,12 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
         componentType == ComponentType.button) {
       final serverId = Snowflake.nullable(message.payload['guild']?['id']);
 
-      final type = ComponentType.values
-          .firstWhereOrNull((e) => e.value == message.payload['data']['component_type']);
+      final type = ComponentType.values.firstWhereOrNull(
+          (e) => e.value == message.payload['data']['component_type']);
 
       if (type == null) {
-        _logger.warn('Component type ${message.payload['data']['component_type']} not found');
+        _logger.warn(
+            'Component type ${message.payload['data']['component_type']} not found');
         return;
       }
 
@@ -53,8 +54,10 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
   Future<void> _handleServerButton(
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final metadata = payload['message']['interaction_metadata'];
-    final targetButton = await _findButtonByCustomId(payload, payload['data']['custom_id']);
-    final type = ButtonType.values.firstWhereOrNull((e) => e.value == targetButton?['type']);
+    final targetButton =
+        await _findButtonByCustomId(payload, payload['data']['custom_id']);
+    final type = ButtonType.values
+        .firstWhereOrNull((e) => e.value == targetButton?['type']);
 
     if (type == null) {
       _logger.warn('Button type ${metadata['type']} not found');
@@ -82,9 +85,10 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
   Future<void> _handlePrivateButton(
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final metadata = payload['message']['interaction_metadata'];
-    final targetButton = await _findButtonByCustomId(payload, payload['data']['custom_id']);
-    final type =
-        ButtonType.values.firstWhereOrNull((e) => e.value == targetButton?['custom_id']);
+    final targetButton =
+        await _findButtonByCustomId(payload, payload['data']['custom_id']);
+    final type = ButtonType.values
+        .firstWhereOrNull((e) => e.value == targetButton?['custom_id']);
 
     if (type == null) {
       _logger.warn('Button type ${metadata['type']} not found');
@@ -93,13 +97,13 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
     final ctx = PrivateButtonContext(
       id: Snowflake.parse(payload['id']),
-      applicationId: Snowflake(payload['application_id']),
+      applicationId: Snowflake.parse(payload['application_id']),
       version: payload['version'],
       token: payload['token'],
       customId: payload['data']['custom_id'],
-      authorId: Snowflake(payload['member']['user']['id']),
-      channelId: Snowflake(payload['channel_id']),
-      messageId: Snowflake(payload['message']['id']),
+      authorId: Snowflake.parse(payload['member']['user']['id']),
+      channelId: Snowflake.parse(payload['channel_id']),
+      messageId: Snowflake.parse(payload['message']['id']),
     );
 
     dispatch(
@@ -108,7 +112,8 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
         constraint: (String? customId) => customId == ctx.customId);
   }
 
-  Future<Map<String, dynamic>?> _findButtonByCustomId(Map<String, dynamic> payload, String customId) {
+  Future<Map<String, dynamic>?> _findButtonByCustomId(
+      Map<String, dynamic> payload, String customId) {
     final completer = Completer<Map<String, dynamic>?>();
 
     final components = payload['message']['components'] as List<dynamic>?;
