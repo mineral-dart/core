@@ -65,12 +65,20 @@ class HttpClient implements HttpClientContract {
       request = await requestInterceptor(request);
     }
 
-    final http.Request httpRequest = http.Request(request.method!, request.url)
-      ..headers.addAll(_serializeHeaders(request.headers))
-      ..body = request.body != null ? jsonEncode(request.body) : '';
+    // print(jsonEncode(request.body));
 
-    final http.StreamedResponse streamedResponse =
-        await _client.send(httpRequest);
+    final req = switch (request.type) {
+      RequestType.json => http.Request(request.method!, request.url)
+        ..headers.addAll(_serializeHeaders(request.headers))
+        ..body = request.body != null ? jsonEncode(request.body) : '',
+      RequestType.formData =>
+        http.MultipartRequest(request.method!, request.url)
+          ..headers.addAll(_serializeHeaders(request.headers))
+          ..fields['payload_json'] = jsonEncode(request.body)
+          ..files.addAll(request.files),
+    };
+
+    final http.StreamedResponse streamedResponse = await _client.send(req);
     final http.Response res = await http.Response.fromStream(streamedResponse);
 
     Response response = ResponseImpl.fromHttpResponse(res);

@@ -60,6 +60,10 @@ final class MessageComponentBuilder {
     _components.add(gallery);
   }
 
+  void file(MessageFile file) {
+    _components.add(file);
+  }
+
   List<Map<String, dynamic>> build() {
     return _components.map((e) => e.toJson()).toList();
   }

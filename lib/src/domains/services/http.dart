@@ -1,3 +1,4 @@
+import 'package:http/http.dart' as http;
 import 'package:mineral/services.dart';
 
 abstract interface class HttpClientContract {
@@ -32,7 +33,14 @@ class Header {
   Header.userAgent(String value) : this('User-Agent', value);
 }
 
+enum RequestType {
+  json,
+  formData,
+}
+
 abstract interface class RequestContract {
+  RequestType get type;
+
   String? method;
 
   late Uri url;
@@ -42,6 +50,8 @@ abstract interface class RequestContract {
   Map<String, String> get queryParameters;
 
   Object? get body;
+
+  List<http.MultipartFile> get files;
 
   RequestContract copyWith({
     String? method,
