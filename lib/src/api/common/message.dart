@@ -25,10 +25,14 @@ abstract interface class BaseMessage {
   Future<T> resolveChannel<T extends Channel>();
 
   Future<T> reply<T extends Message>(
-      {String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components});
+      {String? content,
+      List<MessageEmbed>? embeds,
+      List<MessageComponent>? components});
 
-  Future<void> edit(
-      String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components);
+  Future<T> replyV2<T extends Message>(MessageComponentBuilder builder);
+
+  Future<void> edit(String? content, List<MessageEmbed>? embeds,
+      List<MessageComponent>? components);
 }
 
 abstract interface class ServerMessage implements BaseMessage {
@@ -87,11 +91,12 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   DateTime? get updatedAt => _properties.updatedAt;
 
   Message(this._properties)
-      : reactions = ReactionManger(_properties.id.value, _properties.channelId.value);
+      : reactions =
+            ReactionManger(_properties.id.value, _properties.channelId.value);
 
   @override
-  Future<void> edit(
-      String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components) async {
+  Future<void> edit(String? content, List<MessageEmbed>? embeds,
+      List<MessageComponent>? components) async {
     await _datastore.message.update(
         id: id.value,
         channelId: channelId.value,
@@ -102,7 +107,8 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
 
   @override
   Future<Member> resolveMember({bool force = false}) async {
-    final member = await _datastore.member.get(serverId!.value, authorId!.value, force);
+    final member =
+        await _datastore.member.get(serverId!.value, authorId!.value, force);
     return member!;
   }
 
@@ -129,9 +135,20 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   /// ```
   @override
   Future<T> reply<T extends Message>(
-      {String? content, List<MessageEmbed>? embeds, List<MessageComponent>? components}) async {
+      {String? content,
+      List<MessageEmbed>? embeds,
+      List<MessageComponent>? components}) async {
     return _datastore.message.reply(
-        id: id, channelId: channelId, content: content, embeds: embeds, components: components);
+        id: id,
+        channelId: channelId,
+        content: content,
+        embeds: embeds,
+        components: components);
+  }
+
+  @override
+  Future<T> replyV2<T extends Message>(MessageComponentBuilder builder) async {
+    return _datastore.message.replyV2(id, channelId, builder);
   }
 
   /// Pin the message.
@@ -185,6 +202,8 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   ///
   ///  final thread = await message.createThread<PublicThreadChannel>(builder);
   ///  ```
-  Future<T> createThread<T extends ThreadChannel>(ThreadChannelBuilder builder) =>
-      _datastore.thread.createFromMessage<T>(serverId.value, channelId.value, id?.value, builder);
+  Future<T> createThread<T extends ThreadChannel>(
+          ThreadChannelBuilder builder) =>
+      _datastore.thread.createFromMessage<T>(
+          serverId.value, channelId.value, id?.value, builder);
 }
