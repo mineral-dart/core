@@ -7,12 +7,8 @@ final class SelectMenuOption<T> {
   final PartialEmoji? emoji;
   final bool? isDefault;
 
-  SelectMenuOption(
-      {required this.label,
-      required this.value,
-      this.description,
-      this.emoji,
-      this.isDefault = false});
+  SelectMenuOption(this.label, this.value,
+      {this.description, this.emoji, this.isDefault = false});
 
   Map<String, dynamic> toJson() {
     return {

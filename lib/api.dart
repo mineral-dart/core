@@ -11,7 +11,6 @@ export 'package:mineral/src/api/common/channel_methods.dart';
 export 'package:mineral/src/api/common/channel_permission_overwrite.dart';
 export 'package:mineral/src/api/common/channel_properties.dart';
 export 'package:mineral/src/api/common/color.dart';
-// Commons
 export 'package:mineral/src/api/common/commands/builder/command_builder.dart';
 export 'package:mineral/src/api/common/commands/builder/command_declaration_builder.dart';
 export 'package:mineral/src/api/common/commands/builder/command_definition_builder.dart';
@@ -53,6 +52,16 @@ export 'package:mineral/src/api/common/message.dart';
 export 'package:mineral/src/api/common/message_properties.dart';
 export 'package:mineral/src/api/common/message_reaction.dart';
 export 'package:mineral/src/api/common/message_type.dart';
+export 'package:mineral/src/api/common/message_v2/message_button.dart';
+// Commons
+export 'package:mineral/src/api/common/message_v2/message_component_builder.dart';
+export 'package:mineral/src/api/common/message_v2/message_file.dart';
+export 'package:mineral/src/api/common/message_v2/message_gallery.dart';
+export 'package:mineral/src/api/common/message_v2/message_media.dart';
+export 'package:mineral/src/api/common/message_v2/message_menu.dart';
+export 'package:mineral/src/api/common/message_v2/message_row_builder.dart';
+export 'package:mineral/src/api/common/message_v2/message_section.dart';
+export 'package:mineral/src/api/common/message_v2/message_thumbnail.dart';
 export 'package:mineral/src/api/common/partial_application.dart';
 export 'package:mineral/src/api/common/partial_emoji.dart';
 export 'package:mineral/src/api/common/permission.dart';

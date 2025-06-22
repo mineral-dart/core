@@ -8,7 +8,14 @@ enum ComponentType implements EnhancedEnum<int> {
   userSelectMenu(5),
   roleSelectMenu(6),
   mentionableSelectMenu(7),
-  channelSelectMenu(8);
+  channelSelectMenu(8),
+  section(9),
+  textDisplay(10),
+  thumbnail(11),
+  mediaGallery(12),
+  file(13),
+  separator(14),
+  container(17);
 
   static const selectMenus = [
     textSelectMenu,

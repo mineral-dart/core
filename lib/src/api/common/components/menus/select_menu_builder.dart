@@ -39,13 +39,6 @@ final class SelectMenuTextBuilder<T>
       String? description,
       PartialEmoji? emoji,
       bool isDefault = false}) {
-    _options.add(SelectMenuOption(
-      label: label,
-      value: value,
-      description: description,
-      emoji: emoji,
-      isDefault: isDefault,
-    ));
     return this;
   }
 
@@ -91,7 +84,10 @@ final class SelectMenuChannelBuilder
           : null,
       'default_values': _defaultChannels.isNotEmpty
           ? _defaultChannels
-              .map((e) => {'id': e.value, 'type': 'channel'})
+              .map((e) => {
+                    'id': e.value,
+                    'type': 'channel',
+                  })
               .toList()
           : null,
     };

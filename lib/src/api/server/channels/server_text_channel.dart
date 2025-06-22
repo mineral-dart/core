@@ -107,6 +107,7 @@ final class ServerTextChannel extends ServerChannel {
   /// ```dart
   /// await channel.send(content: 'Hello, world!');
   /// ```
+  @Deprecated('Use sendV2 instead')
   Future<T> send<T extends Message>(
           {String? content,
           List<MessageEmbed>? embeds,
@@ -118,6 +119,9 @@ final class ServerTextChannel extends ServerChannel {
           embeds: embeds,
           poll: poll,
           components: components);
+
+  Future<T> sendV2<T extends Message>(MessageComponentBuilder builder) =>
+      _methods.sendV2(guildId: _properties.serverId, builder: builder);
 
   /// Deletes the channel.
   ///

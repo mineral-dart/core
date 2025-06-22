@@ -127,6 +127,9 @@ abstract interface class MessagePartContract implements DataStorePart {
       Poll? poll,
       List<MessageComponent>? components);
 
+  Future<T> sendV2<T extends Message>(
+      String? guildId, String channelId, MessageComponentBuilder builder);
+
   Future<R> reply<T extends Channel, R extends Message>(
       {required Snowflake id,
       required Snowflake channelId,

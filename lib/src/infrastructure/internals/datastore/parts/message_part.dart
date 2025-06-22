@@ -183,6 +183,36 @@ final class MessagePart implements MessagePartContract {
   }
 
   @override
+  Future<T> sendV2<T extends Message>(String? guildId, String channelId,
+      MessageComponentBuilder builder) async {
+    print(builder.build());
+
+    final completer = Completer<T>();
+
+    final response =
+        await _dataStore.client.post('/channels/$channelId/messages', body: {
+      'flags': 32768,
+      'components': builder.build(),
+    });
+
+    final message = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.message.normalize(response.body),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      _ => throw Exception(
+          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
+
+    completer.complete(
+        await _marshaller.serializers.message.serialize(message) as T);
+
+    return completer.future;
+  }
+
+  @override
   Future<R> reply<T extends Channel, R extends Message>(
       {required Snowflake id,
       required Snowflake channelId,
