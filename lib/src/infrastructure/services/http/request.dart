@@ -1,11 +1,18 @@
+import 'package:http/http.dart';
 import 'package:mineral/src/domains/services/http.dart';
 
 final class Request<T> implements RequestContract {
+  @override
+  RequestType type;
+
   @override
   String? method;
 
   @override
   dynamic body;
+
+  @override
+  List<MultipartFile> files;
 
   @override
   Set<Header> headers;
@@ -16,7 +23,15 @@ final class Request<T> implements RequestContract {
   @override
   Map<String, String> queryParameters;
 
-  Request(this.method, this.url, this.headers, this.body, this.queryParameters);
+  Request({
+    required this.type,
+    required this.method,
+    required this.url,
+    required this.headers,
+    required this.body,
+    required this.queryParameters,
+    required this.files,
+  });
 
   static Request json(
       {required String endpoint,
@@ -24,11 +39,31 @@ final class Request<T> implements RequestContract {
       Set<Header>? headers,
       dynamic body}) {
     return Request<Map<String, dynamic>>(
-      method,
-      Uri.parse(endpoint),
-      headers ?? {},
-      body,
-      {},
+      type: RequestType.json,
+      method: method,
+      url: Uri.parse(endpoint),
+      headers: {...headers ?? {}, Header.contentType('application/json')},
+      body: body,
+      queryParameters: {},
+      files: [],
+    );
+  }
+
+  static Request formData({
+    required String endpoint,
+    String? method,
+    Set<Header>? headers,
+    Map<String, dynamic>? body,
+    List<MultipartFile>? files,
+  }) {
+    return Request<Map<String, dynamic>>(
+      type: RequestType.formData,
+      method: method,
+      url: Uri.parse(endpoint),
+      headers: {...headers ?? {}, Header.contentType('multipart/form-data')},
+      body: body,
+      queryParameters: {},
+      files: files ?? [],
     );
   }
 
@@ -39,13 +74,16 @@ final class Request<T> implements RequestContract {
     Set<Header>? headers,
     Object? body,
     Map<String, String>? queryParameters,
+    List<MultipartFile>? files,
   }) {
     return Request(
-      method ?? this.method,
-      url ?? this.url,
-      {...this.headers, ...(headers ?? {})},
-      body ?? this.body,
-      {...this.queryParameters, ...(queryParameters ?? {})},
+      type: type,
+      method: method ?? this.method,
+      url: url ?? this.url,
+      headers: {...this.headers, ...(headers ?? {})},
+      body: body ?? this.body,
+      queryParameters: {...this.queryParameters, ...(queryParameters ?? {})},
+      files: files ?? this.files,
     );
   }
 }

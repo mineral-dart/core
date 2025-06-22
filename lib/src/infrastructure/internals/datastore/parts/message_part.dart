@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:http/http.dart' as http;
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
@@ -193,14 +194,37 @@ final class MessagePart implements MessagePartContract {
   @override
   Future<T> sendV2<T extends Message>(String? guildId, String channelId,
       MessageComponentBuilder builder) async {
-    print(builder.build());
-
     final completer = Completer<T>();
 
-    final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
-      'flags': 32768,
-      'components': builder.build(),
-    });
+    final components = builder.build();
+
+    final List<http.MultipartFile> files = [];
+    for (int i = 0; i < components.length; i++) {
+      if (components[i]['type'] == ComponentType.file.value) {
+        final filePath = components[i]['file']['url'];
+        final filename = filePath.split('/').last;
+
+        final multipartFile = http.MultipartFile.fromBytes(
+          'files[$i]',
+          components[i]['file']['bytes'],
+          filename: filename,
+        );
+
+        files.add(multipartFile);
+        components[i]['file']['url'] = 'attachment://$filename';
+        components[i]['file']['bytes'] = null;
+      }
+    }
+
+    final payload = {'flags': 32768, 'components': components};
+    final req = switch (files.isEmpty) {
+      true =>
+        Request.json(endpoint: '/channels/$channelId/messages', body: payload),
+      false => Request.formData(
+          endpoint: '/channels/$channelId/messages',
+          body: payload,
+          files: files),
+    };
 
     final response = await _dataStore.client.post(req);
 
