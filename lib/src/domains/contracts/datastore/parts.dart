@@ -136,6 +136,9 @@ abstract interface class MessagePartContract implements DataStorePart {
       String? content,
       List<MessageEmbed>? embeds,
       List<MessageComponent>? components});
+
+  Future<R> replyV2<T extends Channel, R extends Message>(
+      Snowflake id, Snowflake channelId, MessageComponentBuilder builder);
 }
 
 abstract interface class RolePartContract implements DataStorePart {

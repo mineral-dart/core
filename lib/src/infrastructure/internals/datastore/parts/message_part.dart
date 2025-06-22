@@ -271,4 +271,54 @@ final class MessagePart implements MessagePartContract {
     completer.complete(message);
     return completer.future;
   }
+
+  @override
+  Future<R> replyV2<T extends Channel, R extends Message>(Snowflake id,
+      Snowflake channelId, MessageComponentBuilder builder) async {
+    final completer = Completer<R>();
+
+    final components = builder.build();
+
+    final List<http.MultipartFile> files = [];
+    for (int i = 0; i < components.length; i++) {
+      if (components[i]['type'] == ComponentType.file.value) {
+        final filePath = components[i]['file']['url'];
+        final filename = filePath.split('/').last;
+
+        final multipartFile = http.MultipartFile.fromBytes(
+          'files[$i]',
+          components[i]['file']['bytes'],
+          filename: filename,
+        );
+
+        files.add(multipartFile);
+        components[i]['file']['url'] = 'attachment://$filename';
+        components[i]['file']['bytes'] = null;
+      }
+    }
+
+    final payload = {
+      'flags': 32768,
+      'components': components,
+      'message_reference': {'message_id': id, 'channel_id': channelId}
+    };
+
+    final req = switch (files.isEmpty) {
+      true =>
+        Request.json(endpoint: '/channels/$channelId/messages', body: payload),
+      false => Request.formData(
+          endpoint: '/channels/$channelId/messages',
+          body: payload,
+          files: files),
+    };
+
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
+
+    final raw = await _marshaller.serializers.message.normalize(result);
+    final message = await _marshaller.serializers.message.serialize(raw) as R;
+
+    completer.complete(message);
+    return completer.future;
+  }
 }
