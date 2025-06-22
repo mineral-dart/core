@@ -7,7 +7,6 @@ import 'package:mineral/src/api/server/channels/private_thread_channel.dart';
 import 'package:mineral/src/api/server/channels/public_thread_channel.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
-import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
 final class ThreadPart implements ThreadPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
@@ -20,63 +19,76 @@ final class ThreadPart implements ThreadPartContract {
   Future<ThreadResult> fetchActives(Object serverId) async {
     final completer = Completer<ThreadResult>();
 
+    final request = Request.json(endpoint: '/guilds/$serverId/threads/active');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get('/guilds/$serverId/threads/active'));
+        .run<List>(() => _dataStore.client.get(request));
 
     final channels = await result.map((element) async {
       final raw = await _marshaller.serializers.channels.normalize(element);
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(ThreadResult(
-        channels.asMap().map((key, value) => MapEntry(value.id, value as ServerChannel))));
+    completer.complete(ThreadResult(channels
+        .asMap()
+        .map((key, value) => MapEntry(value.id, value as ServerChannel))));
 
     return completer.future;
   }
 
   @override
-  Future<Map<Snowflake, PublicThreadChannel>> fetchPublicArchived(Object channelId) async {
+  Future<Map<Snowflake, PublicThreadChannel>> fetchPublicArchived(
+      Object channelId) async {
     final completer = Completer<Map<Snowflake, PublicThreadChannel>>();
 
+    final req = Request.json(endpoint: '/channels/$channelId/archived/public');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get('/channels/$channelId/archived/public'));
+        .run<List>(() => _dataStore.client.get(req));
 
     final channels = await result.map((element) async {
       final raw = await _marshaller.serializers.channels.normalize(element);
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(channels.asMap().map((key, value) => MapEntry(value.id, value as PublicThreadChannel)));
+    completer.complete(channels
+        .asMap()
+        .map((key, value) => MapEntry(value.id, value as PublicThreadChannel)));
 
     return completer.future;
   }
 
   @override
-  Future<Map<Snowflake, PrivateThreadChannel>> fetchPrivateArchived(Object channelId) async {
+  Future<Map<Snowflake, PrivateThreadChannel>> fetchPrivateArchived(
+      Object channelId) async {
     final completer = Completer<Map<Snowflake, PrivateThreadChannel>>();
 
+    final req = Request.json(endpoint: '/channels/$channelId/archived/private');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get('/channels/$channelId/archived/private'));
+        .run<List>(() => _dataStore.client.get(req));
 
     final channels = await result.map((element) async {
       final raw = await _marshaller.serializers.channels.normalize(element);
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(channels.asMap().map((key, value) => MapEntry(value.id, value as PrivateThreadChannel)));
+    completer.complete(channels.asMap().map(
+        (key, value) => MapEntry(value.id, value as PrivateThreadChannel)));
 
     return completer.future;
   }
 
   @override
-  Future<T> createWithoutMessage<T extends ThreadChannel>(Object? serverId, Object? channelId, ThreadChannelBuilder builder,
+  Future<T> createWithoutMessage<T extends ThreadChannel>(
+      Object? serverId, Object? channelId, ThreadChannelBuilder builder,
       {String? reason}) async {
     final completer = Completer<T>();
 
-    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client
-        .post('/channels/$channelId/threads',
-            body: builder.build(),
-            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
+    final req = Request.json(
+        endpoint: '/channels/$channelId/threads',
+        body: builder.build(),
+        headers: {DiscordHeader.auditLogReason(reason)});
+
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final channel = await _marshaller.serializers.channels.serialize({
@@ -89,14 +101,18 @@ final class ThreadPart implements ThreadPartContract {
   }
 
   @override
-  Future<T> createFromMessage<T extends ThreadChannel>(Object? serverId, Object? channelId, Object? messageId, ThreadChannelBuilder builder,
+  Future<T> createFromMessage<T extends ThreadChannel>(Object? serverId,
+      Object? channelId, Object? messageId, ThreadChannelBuilder builder,
       {String? reason}) async {
     final completer = Completer<T>();
 
-    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client
-        .post('/channels/$channelId/messages/$messageId/threads',
+    final req = Request.json(
+        endpoint: '/channels/$channelId/messages/$messageId/threads',
         body: builder.build(),
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
+        headers: {DiscordHeader.auditLogReason(reason)});
+
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final channel = await _marshaller.serializers.channels.serialize({

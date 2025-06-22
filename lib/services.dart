@@ -1,8 +1,8 @@
+export 'package:mineral/src/domains/services/http.dart';
 export 'package:mineral/src/infrastructure/internals/environment/environment.dart';
 export 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 export 'package:mineral/src/infrastructure/internals/wss/encoding_strategies/etf_encoder.dart';
 export 'package:mineral/src/infrastructure/internals/wss/encoding_strategies/json_encoder.dart';
-export 'package:mineral/src/infrastructure/services/http/header.dart';
 export 'package:mineral/src/infrastructure/services/http/http_client.dart';
 export 'package:mineral/src/infrastructure/services/http/http_client_config.dart';
 export 'package:mineral/src/infrastructure/services/http/http_client_status.dart';

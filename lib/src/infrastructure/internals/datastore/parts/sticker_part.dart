@@ -17,15 +17,17 @@ final class StickerPart implements StickerPartContract {
   Future<Map<Snowflake, Sticker>> fetch(Object serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Sticker>>();
 
+    final req = Request.json(endpoint: '/guilds/$serverId/stickers');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get('/guilds/$serverId/stickers'));
+        .run<List>(() => _dataStore.client.get(req));
 
     final stickers = await result.map((element) async {
       final raw = await _marshaller.serializers.sticker.normalize(element);
       return _marshaller.serializers.sticker.serialize(raw);
     }).wait;
 
-    completer.complete(stickers.asMap().map((_, value) => MapEntry(value.id, value)));
+    completer.complete(
+        stickers.asMap().map((_, value) => MapEntry(value.id, value)));
     return completer.future;
   }
 
@@ -36,14 +38,16 @@ final class StickerPart implements StickerPartContract {
 
     final cachedSticker = await _marshaller.cache?.get(key);
     if (!force && cachedSticker != null) {
-      final sticker = await _marshaller.serializers.sticker.serialize(cachedSticker);
+      final sticker =
+          await _marshaller.serializers.sticker.serialize(cachedSticker);
 
       completer.complete(sticker);
       return completer.future;
     }
 
-    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(
-        () => _dataStore.client.get('/guilds/$serverId/stickers/$stickerId'));
+    final req = Request.json(endpoint: '/guilds/$serverId/stickers/$stickerId');
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
 
     final raw = await _marshaller.serializers.sticker.normalize(result);
     final sticker = await _marshaller.serializers.sticker.serialize(raw);
@@ -54,7 +58,8 @@ final class StickerPart implements StickerPartContract {
 
   @override
   Future<void> delete(Object serverId, Object stickerId) async {
-    await _dataStore.requestBucket.run<Map<String, dynamic>>(
-        () => _dataStore.client.delete('/guilds/$serverId/stickers/$stickerId'));
+    final req = Request.json(endpoint: '/guilds/$serverId/stickers/$stickerId');
+    await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
   }
 }

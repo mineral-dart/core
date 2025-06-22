@@ -7,7 +7,6 @@ import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
-import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
 final class MemberPart implements MemberPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
@@ -20,16 +19,18 @@ final class MemberPart implements MemberPartContract {
   Future<Map<Snowflake, Member>> fetch(Object serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Member>>();
 
+    final req = Request.json(endpoint: '/guilds/$serverId/members');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get('/guilds/$serverId/members'));
+        .run<List>(() => _dataStore.client.get(req));
 
     final members = await result.map((element) async {
-      final raw =
-          await _marshaller.serializers.member.normalize({...element, 'guild_id': serverId});
+      final raw = await _marshaller.serializers.member
+          .normalize({...element, 'guild_id': serverId});
       return _marshaller.serializers.member.serialize(raw);
     }).wait;
 
-    completer.complete(members.asMap().map((_, value) => MapEntry(value.id, value)));
+    completer
+        .complete(members.asMap().map((_, value) => MapEntry(value.id, value)));
     return completer.future;
   }
 
@@ -40,16 +41,19 @@ final class MemberPart implements MemberPartContract {
 
     final cachedMember = await _marshaller.cache?.get(key);
     if (!force && cachedMember != null) {
-      final member = await _marshaller.serializers.member.serialize(cachedMember);
+      final member =
+          await _marshaller.serializers.member.serialize(cachedMember);
 
       completer.complete(member);
       return completer.future;
     }
 
+    final req = Request.json(endpoint: '/guilds/$serverId/members/$id');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get('/guilds/$serverId/members/$id'));
+        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
 
-    final raw = await _marshaller.serializers.member.normalize({...result, 'guild_id': serverId});
+    final raw = await _marshaller.serializers.member
+        .normalize({...result, 'guild_id': serverId});
     final member = await _marshaller.serializers.member.serialize(raw);
 
     completer.complete(member);
@@ -64,10 +68,12 @@ final class MemberPart implements MemberPartContract {
       String? reason}) async {
     final completer = Completer<Member>();
 
-    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client
-        .patch('/guilds/$serverId/members/$memberId',
-            body: payload,
-            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
+    final req = Request.json(
+        endpoint: '/guilds/$serverId/members/$memberId',
+        body: payload,
+        headers: {DiscordHeader.auditLogReason(reason)});
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.patch(req));
 
     final raw = await _marshaller.serializers.member.normalize(result);
     final member = await _marshaller.serializers.member.serialize({
@@ -85,34 +91,47 @@ final class MemberPart implements MemberPartContract {
       required Duration? deleteSince,
       required Object memberId,
       String? reason}) async {
-    await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.put(
-        '/guilds/$serverId/bans/$memberId',
+    final req = Request.json(
+        endpoint: '/guilds/$serverId/bans/$memberId',
         body: {'delete_message_seconds': deleteSince?.inSeconds},
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
+        headers: {DiscordHeader.auditLogReason(reason)});
+
+    await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.put(req));
   }
 
   @override
-  Future<void> kick({required Object serverId, required Object memberId, String? reason}) async {
-    await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
-        '/guilds/$serverId/members/$memberId',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
+  Future<void> kick(
+      {required Object serverId,
+      required Object memberId,
+      String? reason}) async {
+    final req = Request.json(
+        endpoint: '/guilds/$serverId/members/$memberId',
+        headers: {DiscordHeader.auditLogReason(reason)});
+
+    await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
   }
 
   @override
-  Future<VoiceState?> getVoiceState(Object serverId, Object userId, bool force) async {
+  Future<VoiceState?> getVoiceState(
+      Object serverId, Object userId, bool force) async {
     final completer = Completer<VoiceState?>();
     final String key = _marshaller.cacheKey.voiceState(serverId, userId);
 
     final cachedMember = await _marshaller.cache?.get(key);
     if (!force && cachedMember != null) {
-      final voiceState = await _marshaller.serializers.voice.serialize(cachedMember);
+      final voiceState =
+          await _marshaller.serializers.voice.serialize(cachedMember);
 
       completer.complete(voiceState);
       return completer.future;
     }
 
-    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(
-        () => _dataStore.client.get('/guilds/$serverId/voice-states/$userId'));
+    final req =
+        Request.json(endpoint: '/guilds/$serverId/voice-states/$userId');
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
 
     final raw = await _marshaller.serializers.voice.normalize(result);
     final voice = await _marshaller.serializers.voice.serialize(raw);

@@ -30,9 +30,11 @@ final class MessagePart implements MessagePartContract {
       if (limit != null) 'limit': limit,
     };
 
-    final response = await _dataStore.client.get(query.isEmpty
-        ? '/channels/$channelId/messages'
-        : '/channels/$channelId/messages?${query.entries.map((e) => '${e.key}=${e.value}').join('&')}');
+    final req = Request.json(
+        endpoint: query.isEmpty
+            ? '/channels/$channelId/messages'
+            : '/channels/$channelId/messages?${query.entries.map((e) => '${e.key}=${e.value}').join('&')}');
+    final response = await _dataStore.client.get(req);
 
     final messages = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => Future.wait(
@@ -71,8 +73,8 @@ final class MessagePart implements MessagePartContract {
       return completer.future;
     }
 
-    final response =
-        await _dataStore.client.get('/channels/$channelId/messages/$id');
+    final req = Request.json(endpoint: '/channels/$channelId/messages/$id');
+    final response = await _dataStore.client.get(req);
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         await _marshaller.serializers.message.normalize(response.body),
@@ -98,13 +100,14 @@ final class MessagePart implements MessagePartContract {
     List<MessageComponent>? components,
   }) async {
     final completer = Completer<T>();
-    final response = await _dataStore.client
-        .patch('/channels/$channelId/messages/$id', body: {
+    final req =
+        Request.json(endpoint: '/channels/$channelId/messages/$id', body: {
       'content': content,
       'embeds': AsyncList.nullable(
           embeds?.map(_marshaller.serializers.embed.deserialize).toList()),
       'components': components?.map((c) => c.toJson()).toList()
     });
+    final response = await _dataStore.client.patch(req);
 
     final rawMessage = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
@@ -125,22 +128,27 @@ final class MessagePart implements MessagePartContract {
 
   @override
   Future<void> pin(Snowflake channelId, Snowflake id) async {
-    await _dataStore.client.put('/channels/$channelId/pins/$id');
+    final req = Request.json(endpoint: '/channels/$channelId/pins/$id');
+    await _dataStore.client.put(req);
   }
 
   @override
   Future<void> unpin(Snowflake channelId, Snowflake id) async {
-    await _dataStore.client.delete('/channels/$channelId/pins/$id');
+    final req = Request.json(endpoint: '/channels/$channelId/pins/$id');
+    await _dataStore.client.delete(req);
   }
 
   @override
   Future<void> crosspost(Snowflake channelId, Snowflake id) async {
-    await _dataStore.client.post('/channels/$channelId/messages/$id/crosspost');
+    final req =
+        Request.json(endpoint: '/channels/$channelId/messages/$id/crosspost');
+    await _dataStore.client.post(req);
   }
 
   @override
   Future<void> delete(Snowflake channelId, Snowflake id) async {
-    await _dataStore.client.delete('/channels/$channelId/messages/$id');
+    final req = Request.json(endpoint: '/channels/$channelId/messages/$id');
+    await _dataStore.client.delete(req);
   }
 
   @override
@@ -152,8 +160,7 @@ final class MessagePart implements MessagePartContract {
       Poll? poll,
       List<MessageComponent>? components) async {
     final completer = Completer<T>();
-    final response =
-        await _dataStore.client.post('/channels/$channelId/messages', body: {
+    final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
       'content': content,
       'embeds': await Helper.createOrNullAsync(
           field: embeds,
@@ -164,6 +171,7 @@ final class MessagePart implements MessagePartContract {
           fn: () async => _marshaller.serializers.poll.deserialize(poll!)),
       'components': components?.map((e) => e.toJson()).toList(),
     });
+    final response = await _dataStore.client.post(req);
 
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
@@ -189,11 +197,12 @@ final class MessagePart implements MessagePartContract {
 
     final completer = Completer<T>();
 
-    final response =
-        await _dataStore.client.post('/channels/$channelId/messages', body: {
+    final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
       'flags': 32768,
       'components': builder.build(),
     });
+
+    final response = await _dataStore.client.post(req);
 
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
@@ -221,14 +230,17 @@ final class MessagePart implements MessagePartContract {
       List<MessageComponent>? components}) async {
     final completer = Completer<R>();
 
-    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(
-        () => _dataStore.client.post('/channels/$channelId/messages', body: {
-              'content': content,
-              'embeds': AsyncList.nullable(
-                  embeds?.map(_marshaller.serializers.embed.deserialize)),
-              'components': components?.map((c) => c.toJson()).toList(),
-              'message_reference': {'message_id': id, 'channel_id': channelId}
-            }));
+    final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
+      'content': content,
+      'embeds': AsyncList.nullable(
+          embeds?.map(_marshaller.serializers.embed.deserialize)),
+      'components': components?.map((c) => c.toJson()).toList(),
+      'message_reference': {'message_id': id, 'channel_id': channelId}
+    });
+
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
+
     final raw = await _marshaller.serializers.message.normalize(result);
     final message = await _marshaller.serializers.message.serialize(raw) as R;
 

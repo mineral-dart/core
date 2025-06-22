@@ -1,4 +1,4 @@
-import 'package:mineral/src/infrastructure/services/http/header.dart';
+import 'package:mineral/services.dart';
 
 final class DiscordHeader implements Header {
   @override

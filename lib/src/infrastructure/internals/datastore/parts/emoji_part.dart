@@ -5,7 +5,6 @@ import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
-import 'package:mineral/src/infrastructure/services/http/http_request_option.dart';
 
 final class EmojiPart implements EmojiPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
@@ -18,15 +17,17 @@ final class EmojiPart implements EmojiPartContract {
   Future<Map<Snowflake, Emoji>> fetch(Object serverId, bool force) async {
     final completer = Completer<Map<Snowflake, Emoji>>();
 
+    final req = Request.json(endpoint: '/guilds/$serverId/emojis');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get('/guilds/$serverId/emojis'));
+        .run<List>(() => _dataStore.client.get(req));
 
     final emojis = await result.map((element) async {
       final raw = await _marshaller.serializers.emojis.normalize(element);
       return _marshaller.serializers.emojis.serialize(raw);
     }).wait;
 
-    completer.complete(emojis.asMap().map((_, value) => MapEntry(value.id!, value)));
+    completer
+        .complete(emojis.asMap().map((_, value) => MapEntry(value.id!, value)));
 
     return completer.future;
   }
@@ -44,8 +45,9 @@ final class EmojiPart implements EmojiPartContract {
       return completer.future;
     }
 
-    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(
-        () => _dataStore.client.get('/guilds/$serverId/emojis/$emojiId'));
+    final req = Request.json(endpoint: '/guilds/$serverId/emojis/$emojiId');
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
 
     final raw = await _marshaller.serializers.emojis.normalize(result);
     final emoji = await _marshaller.serializers.emojis.serialize(raw);
@@ -56,18 +58,20 @@ final class EmojiPart implements EmojiPartContract {
   }
 
   @override
-  Future<Emoji> create(Object serverId, String name, Image image, List<Object> roles,
+  Future<Emoji> create(
+      Object serverId, String name, Image image, List<Object> roles,
       {String? reason}) async {
     final completer = Completer<Emoji>();
 
+    final req = Request.json(endpoint: '/guilds/$serverId/emojis', body: {
+      'name': name.replaceAll(' ', '_'),
+      'image': image.base64,
+      'roles': roles.isNotEmpty ? roles : null,
+    }, headers: {
+      DiscordHeader.auditLogReason(reason)
+    });
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.post('/guilds/$serverId/emojis',
-            body: {
-              'name': name.replaceAll(' ', '_'),
-              'image': image.base64,
-              'roles': roles.isNotEmpty ? roles : null,
-            },
-            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
+        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final emoji = await _marshaller.serializers.emojis.serialize({
@@ -88,10 +92,13 @@ final class EmojiPart implements EmojiPartContract {
       required String? reason}) async {
     final completer = Completer<Emoji>();
 
-    final result = await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client
-        .patch('/guilds/$serverId/emojis/$id',
-            body: payload,
-            option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
+    final req = Request.json(
+        endpoint: '/guilds/$serverId/emojis/$id',
+        body: payload,
+        headers: {DiscordHeader.auditLogReason(reason)});
+
+    final result = await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.patch(req));
 
     final raw = await _marshaller.serializers.emojis.normalize({
       ...result,
@@ -105,8 +112,11 @@ final class EmojiPart implements EmojiPartContract {
 
   @override
   Future<void> delete(Object serverId, Object emojiId, {String? reason}) async {
-    await _dataStore.requestBucket.run<Map<String, dynamic>>(() => _dataStore.client.delete(
-        '/guilds/$serverId/emojis/$emojiId',
-        option: HttpRequestOptionImpl(headers: {DiscordHeader.auditLogReason(reason)})));
+    final req = Request.json(
+        endpoint: '/guilds/$serverId/emojis/$emojiId',
+        headers: {DiscordHeader.auditLogReason(reason)});
+
+    await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
   }
 }

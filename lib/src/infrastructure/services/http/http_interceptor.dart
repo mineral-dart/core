@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:mineral/src/infrastructure/services/http/request.dart';
-import 'package:mineral/src/infrastructure/services/http/response.dart';
+import 'package:mineral/services.dart';
 
-typedef RequestInterceptor = FutureOr<Request> Function(Request);
+typedef RequestInterceptor = FutureOr<RequestContract> Function(
+    RequestContract);
 typedef ResponseInterceptor = FutureOr<Response> Function(Response);
 
 abstract interface class HttpInterceptor {

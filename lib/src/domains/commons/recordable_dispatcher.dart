@@ -1,4 +1,4 @@
-import 'package:mineral/src/domains/commons/kernel.dart';
+import 'package:mineral/src/domains/services/kernel.dart';
 
 abstract interface class RecordableDispatcher<T> {
   Type get match;
