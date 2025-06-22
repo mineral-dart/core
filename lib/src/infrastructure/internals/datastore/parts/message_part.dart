@@ -188,6 +188,7 @@ final class MessagePart implements MessagePartContract {
     print(builder.build());
 
     final completer = Completer<T>();
+
     final response =
         await _dataStore.client.post('/channels/$channelId/messages', body: {
       'flags': 32768,
