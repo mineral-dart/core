@@ -55,6 +55,7 @@ export 'package:mineral/src/api/common/message_type.dart';
 export 'package:mineral/src/api/common/message_v2/message_button.dart';
 // Commons
 export 'package:mineral/src/api/common/message_v2/message_component_builder.dart';
+export 'package:mineral/src/api/common/message_v2/message_gallery.dart';
 export 'package:mineral/src/api/common/message_v2/message_media.dart';
 export 'package:mineral/src/api/common/message_v2/message_menu.dart';
 export 'package:mineral/src/api/common/message_v2/message_row_builder.dart';

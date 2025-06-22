@@ -37,22 +37,22 @@ final class MessageMenu<T> implements MessageComponent {
         _defaultValues = defaultValues ?? [],
         _channelTypes = channelTypes ?? [];
 
-  static MessageMenu text<T>(
+  static MessageMenu text(
     String customId,
-    List<SelectMenuOption<T>> options, {
+    List<SelectMenuOption<String>> options, {
     String? placeholder,
     int? minLength,
     int? maxLength,
     bool? disabled,
   }) =>
-      MessageMenu<T>(ComponentType.textSelectMenu, customId,
+      MessageMenu(ComponentType.textSelectMenu, customId,
           placeholder: placeholder,
           minLength: minLength,
           maxLength: maxLength,
           disabled: disabled,
           options: options);
 
-  static MessageMenu channel<T>(
+  static MessageMenu channel(
     String customId, {
     String? placeholder,
     int? minValues,

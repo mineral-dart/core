@@ -46,19 +46,18 @@ final class MessageComponentBuilder {
     _components.add(row);
   }
 
-  void section({
-    required MessageComponentBuilder builder,
-    MessageButton? button,
-    MessageThumbnail? thumbnail,
-  }) {
-    for (final component in builder._components) {
+  void section(MessageSection section) {
+    for (final component in section.builder._components) {
       if (component is! MessageText) {
         throw FormatException('Section components must be text only');
       }
     }
 
-    _components
-        .add(MessageSection(builder, button: button, thumbnail: thumbnail));
+    _components.add(section);
+  }
+
+  void gallery(MessageGallery gallery) {
+    _components.add(gallery);
   }
 
   List<Map<String, dynamic>> build() {

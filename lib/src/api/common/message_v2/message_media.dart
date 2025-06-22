@@ -5,8 +5,8 @@ final class MessageMedia {
   final int? width;
   final String? contentType;
 
-  MessageMedia({
-    required this.url,
+  MessageMedia(
+    this.url, {
     this.proxyUrl,
     this.height,
     this.width,
