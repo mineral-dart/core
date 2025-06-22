@@ -1,8 +1,8 @@
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/private/channels/private_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
@@ -17,7 +17,8 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final channel = await _dataStore.channel.get(message.payload['channel_id'], false);
+    final channel =
+        await _dataStore.channel.get(message.payload['channel_id'], false);
 
     return switch (channel) {
       ServerChannel() => registerServerChannelPins(channel, dispatch),

@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class UserSerializer implements SerializerContract<User> {
@@ -65,12 +65,14 @@ final class UserSerializer implements SerializerContract<User> {
       verified: json['verified'],
       email: json['email'],
       flags: json['flags'],
-      premiumType: PremiumTier.values
-          .firstWhere((e) => e == json['premium_type'], orElse: () => PremiumTier.none),
+      premiumType: PremiumTier.values.firstWhere(
+          (e) => e == json['premium_type'],
+          orElse: () => PremiumTier.none),
       publicFlags: json['public_flags'],
       assets: assets,
       createdAt: Helper.createOrNull(
-          field: json['created_at'], fn: () => DateTime.parse(json['created_at'])),
+          field: json['created_at'],
+          fn: () => DateTime.parse(json['created_at'])),
       presence: null,
     );
   }

@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:collection/collection.dart';
 import 'package:mineral/api.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/factories/channels/private_channel_factory.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/factories/channels/server_announcement_channel_factory.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/factories/channels/server_category_channel_factory.dart';
@@ -16,7 +16,8 @@ import 'package:mineral/src/infrastructure/internals/marshaller/factories/channe
 import 'package:mineral/src/infrastructure/internals/marshaller/types/channel_factory.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class ChannelSerializer<T extends Channel?> implements SerializerContract<T> {
+final class ChannelSerializer<T extends Channel?>
+    implements SerializerContract<T> {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   final List<ChannelFactoryContract> _factories = [
@@ -33,8 +34,8 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
-    final channelFactory =
-        _factories.firstWhereOrNull((element) => element.type.value == json['type']);
+    final channelFactory = _factories
+        .firstWhereOrNull((element) => element.type.value == json['type']);
     if (channelFactory == null) {
       _marshaller.logger.warn('Channel type not found ${json['type']}');
       return json;
@@ -45,8 +46,10 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
 
   @override
   Future<T> serialize(Map<String, dynamic> json) {
-    final channelFactory = _factories.firstWhere((element) => element.type.value == json['type'],
-        orElse: () => _factories.firstWhere((element) => element.type == ChannelType.unknown));
+    final channelFactory = _factories.firstWhere(
+        (element) => element.type.value == json['type'],
+        orElse: () => _factories
+            .firstWhere((element) => element.type == ChannelType.unknown));
 
     if (channelFactory case UnknownChannelFactory()) {
       _marshaller.logger.warn('Channel type not found ${json['type']}');
@@ -57,7 +60,8 @@ final class ChannelSerializer<T extends Channel?> implements SerializerContract<
 
   @override
   Future<Map<String, dynamic>> deserialize(Channel? channel) async {
-    final channelFactory = _factories.firstWhereOrNull((element) => element.type == channel?.type);
+    final channelFactory =
+        _factories.firstWhereOrNull((element) => element.type == channel?.type);
     if (channelFactory != null) {
       return channelFactory.deserialize(_marshaller, channel!);
     }

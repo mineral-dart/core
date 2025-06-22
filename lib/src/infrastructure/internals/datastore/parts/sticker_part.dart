@@ -4,7 +4,7 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/sticker.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class StickerPart implements StickerPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();

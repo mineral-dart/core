@@ -133,7 +133,10 @@ final class MemberMoveAuditLog extends AuditLog {
   }
 
   Future<Channel?> resolveChannel({bool force = false}) async {
-    if (channelId == null) return null;
+    if (channelId == null) {
+      return null;
+    }
+
     final channel = await _datastore.channel.get(channelId!.value, force);
     return channel;
   }

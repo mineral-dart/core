@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class ChannelPermissionOverwriteSerializer
@@ -17,9 +17,8 @@ final class ChannelPermissionOverwriteSerializer
       'deny': json['deny'],
     };
 
-    final cacheKey = _marshaller.cacheKey.channelPermission(
-        payload['id'],
-        serverId: json['server_id']);
+    final cacheKey = _marshaller.cacheKey
+        .channelPermission(payload['id'], serverId: json['server_id']);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;

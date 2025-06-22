@@ -1,6 +1,6 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/contracts/packets/packet_dispatcher.dart';
-import 'package:mineral/src/domains/services/kernel.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_delete_packet.dart';
@@ -24,7 +24,6 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/guild_upd
 import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/button_interaction_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/command_interaction_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/dialog_interaction_create_packet.dart';
-import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/interaction_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/select_interaction_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_add_packet.dart';
@@ -44,7 +43,7 @@ final class PacketListener implements PacketListenerContract {
   @override
   late final PacketDispatcherContract dispatcher;
 
-  late final KernelContract kernel;
+  late final Kernel kernel;
 
   void subscribe(ListenablePacket Function() factory) {
     final packet = factory();
@@ -85,7 +84,6 @@ final class PacketListener implements PacketListenerContract {
     subscribe(MessageReactionRemovePacket.new);
 
     subscribe(ButtonInteractionCreatePacket.new);
-    subscribe(InteractionCreatePacket.new);
     subscribe(CommandInteractionCreatePacket.new);
     subscribe(SelectInteractionCreatePacket.new);
     subscribe(DialogInteractionCreatePacket.new);

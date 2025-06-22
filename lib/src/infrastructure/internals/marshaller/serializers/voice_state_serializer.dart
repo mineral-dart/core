@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class VoiceStateSerializer implements SerializerContract<VoiceState> {

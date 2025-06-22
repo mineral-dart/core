@@ -7,7 +7,7 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/domains/commons/utils/extensions.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class MessagePart implements MessagePartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();

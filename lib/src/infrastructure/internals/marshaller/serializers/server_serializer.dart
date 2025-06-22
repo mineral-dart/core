@@ -4,8 +4,8 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class ServerSerializer implements SerializerContract<Server> {
@@ -66,7 +66,8 @@ final class ServerSerializer implements SerializerContract<Server> {
 
   @override
   Future<Server> serialize(Map<String, dynamic> payload) async {
-    final channelManager = ChannelManager.fromMap(payload['id'], payload['channel_settings']);
+    final channelManager =
+        ChannelManager.fromMap(payload['id'], payload['channel_settings']);
     final threadManager = ThreadsManager(Snowflake.parse(payload['id']), null);
     final roleManager = RoleManager(Snowflake.parse(payload['id']));
     final memberManager = MemberManager(Snowflake.parse(payload['id']));
@@ -77,41 +78,49 @@ final class ServerSerializer implements SerializerContract<Server> {
       stickers: StickerManager(Snowflake.parse(payload['id'])),
       icon: Helper.createOrNull(
           field: payload['icon'],
-          fn: () => ImageAsset(['icons', payload['server_id']], payload['icon'])),
+          fn: () =>
+              ImageAsset(['icons', payload['server_id']], payload['icon'])),
       splash: Helper.createOrNull(
           field: payload['splash'],
-          fn: () => ImageAsset(['splashes', payload['server_id']], payload['splash'])),
+          fn: () => ImageAsset(
+              ['splashes', payload['server_id']], payload['splash'])),
       banner: Helper.createOrNull(
           field: payload['banner'],
-          fn: () => ImageAsset(['banners', payload['server_id']], payload['banner'])),
+          fn: () =>
+              ImageAsset(['banners', payload['server_id']], payload['banner'])),
       discoverySplash: Helper.createOrNull(
           field: payload['discovery_splash'],
-          fn: () => ImageAsset(['discovery-splashes', payload['id']], payload['discovery_splash'])),
+          fn: () => ImageAsset(['discovery-splashes', payload['id']],
+              payload['discovery_splash'])),
     );
-
 
     final serverSettings = ServerSettings(
         bitfieldPermission: payload['permissions'],
         afkTimeout: payload['afk_timeout'],
         hasWidgetEnabled: payload['widget_enabled'] ?? false,
-        explicitContentFilter:
-            findInEnum(ExplicitContentFilter.values, payload['settings']['explicit_content_filter']),
-        verificationLevel: findInEnum(VerificationLevel.values, payload['settings']['verification_level']),
-        defaultMessageNotifications:
-            findInEnum(DefaultMessageNotification.values, payload['settings']['default_message_notifications']),
+        explicitContentFilter: findInEnum(ExplicitContentFilter.values,
+            payload['settings']['explicit_content_filter']),
+        verificationLevel: findInEnum(VerificationLevel.values,
+            payload['settings']['verification_level']),
+        defaultMessageNotifications: findInEnum(
+            DefaultMessageNotification.values,
+            payload['settings']['default_message_notifications']),
         features: List<String>.from(payload['settings']['features']),
         mfaLevel: findInEnum(MfaLevel.values, payload['settings']['mfa_level']),
-        systemChannelFlags:
-            bitfieldToList(SystemChannelFlag.values, payload['settings']['system_channel_flags']),
+        systemChannelFlags: bitfieldToList(SystemChannelFlag.values,
+            payload['settings']['system_channel_flags']),
         vanityUrlCode: payload['vanity_url_code'],
         subscription: ServerSubscription(
-          tier: findInEnum(PremiumTier.values, payload['settings']['premium_tier']),
+          tier: findInEnum(
+              PremiumTier.values, payload['settings']['premium_tier']),
           subscriptionCount: payload['settings']['premium_subscription_count'],
-          hasEnabledProgressBar: payload['settings']['premium_progress_bar_enabled'],
+          hasEnabledProgressBar: payload['settings']
+              ['premium_progress_bar_enabled'],
         ),
         preferredLocale: payload['settings']['preferred_locale'],
         maxVideoChannelUsers: payload['max_video_channel_users'],
-        nsfwLevel: findInEnum(NsfwLevel.values, payload['settings']['nsfw_level']));
+        nsfwLevel:
+            findInEnum(NsfwLevel.values, payload['settings']['nsfw_level']));
 
     return Server(
       id: Snowflake.parse(payload['id']),
@@ -149,29 +158,37 @@ final class ServerSerializer implements SerializerContract<Server> {
         'widget_enabled': server.settings.hasWidgetEnabled,
         'explicit_content_filter': server.settings.explicitContentFilter.value,
         'verification_level': server.settings.verificationLevel.value,
-        'default_message_notifications': server.settings.defaultMessageNotifications.value,
+        'default_message_notifications':
+            server.settings.defaultMessageNotifications.value,
         'features': server.settings.features,
         'mfa_level': server.settings.mfaLevel.value,
-        'system_channel_flags': listToBitfield(server.settings.systemChannelFlags),
+        'system_channel_flags':
+            listToBitfield(server.settings.systemChannelFlags),
         'vanity_url_code': server.settings.vanityUrlCode,
         'premium_tier': server.settings.subscription.tier.value,
-        'premium_subscription_count': server.settings.subscription.subscriptionCount,
-        'premium_progress_bar_enabled': server.settings.subscription.hasEnabledProgressBar,
+        'premium_subscription_count':
+            server.settings.subscription.subscriptionCount,
+        'premium_progress_bar_enabled':
+            server.settings.subscription.hasEnabledProgressBar,
         'preferred_locale': server.settings.preferredLocale,
         'max_video_channel_users': server.settings.maxVideoChannelUsers,
         'nsfw_level': server.settings.nsfwLevel.value,
         'subscription': {
           'premium_tier': server.settings.subscription.tier.value,
-          'premium_subscription_count': server.settings.subscription.subscriptionCount,
-          'premium_progress_bar_enabled': server.settings.subscription.hasEnabledProgressBar,
+          'premium_subscription_count':
+              server.settings.subscription.subscriptionCount,
+          'premium_progress_bar_enabled':
+              server.settings.subscription.hasEnabledProgressBar,
         }
       },
       'channel_settings': {
         'afk_channel_id': server.channels.afkChannelId?.value,
         'system_channel_id': server.channels.systemChannelId?.value,
         'rules_channel_id': server.channels.rulesChannelId?.value,
-        'public_updates_channel_id': server.channels.publicUpdatesChannelId?.value,
-        'safety_alerts_channel_id': server.channels.safetyAlertsChannelId?.value,
+        'public_updates_channel_id':
+            server.channels.publicUpdatesChannelId?.value,
+        'safety_alerts_channel_id':
+            server.channels.safetyAlertsChannelId?.value,
       },
     };
   }

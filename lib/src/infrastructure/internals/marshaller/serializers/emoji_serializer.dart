@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:mineral/src/api/common/emoji.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class EmojiSerializer implements SerializerContract<Emoji> {
@@ -19,13 +19,15 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       'animated': json['animated'] ?? false,
       'roles': json['roles'] != null
           ? List.from(json['roles'])
-              .map((element) => _marshaller.cacheKey.serverEmoji(json['guild_id'], element['id']))
+              .map((element) => _marshaller.cacheKey
+                  .serverEmoji(json['guild_id'], element['id']))
               .toList()
           : <String>[],
       'server_id': json['guild_id'],
     };
 
-    final cacheKey = _marshaller.cacheKey.serverEmoji(json['guild_id'], json['id']);
+    final cacheKey =
+        _marshaller.cacheKey.serverEmoji(json['guild_id'], json['id']);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -38,10 +40,13 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       return _marshaller.serializers.role.serialize(element);
     }).wait;
 
-    return Emoji(Snowflake.parse(json['server_id']),
+    return Emoji(
+      Snowflake.parse(json['server_id']),
       id: Snowflake.parse(json['id']),
       name: json['name'],
-      roles: roles?.fold({}, (value, element) => {...?value, element.id: element}) ?? {},
+      roles: roles?.fold(
+              {}, (value, element) => {...?value, element.id: element}) ??
+          {},
       managed: json['managed'],
       animated: json['animated'],
       available: json['available'],

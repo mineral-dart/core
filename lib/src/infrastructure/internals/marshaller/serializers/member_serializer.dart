@@ -3,7 +3,7 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/permissions.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class MemberSerializer implements SerializerContract<Member> {
@@ -40,7 +40,8 @@ final class MemberSerializer implements SerializerContract<Member> {
       'server_id': json['guild_id'],
     };
 
-    final cacheKey = _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
+    final cacheKey =
+        _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -52,14 +53,17 @@ final class MemberSerializer implements SerializerContract<Member> {
     final memberAsset = MemberAssets(
       avatar: Helper.createOrNull(
           field: assets['avatar'],
-          fn: () => ImageAsset(['avatars', assets['member_id'].toString()], assets['avatar'].toString())),
+          fn: () => ImageAsset(['avatars', assets['member_id'].toString()],
+              assets['avatar'].toString())),
       avatarDecoration: Helper.createOrNull(
           field: assets['avatar_decoration'],
-          fn: () =>
-              ImageAsset(['avatar-decorations', assets['member_id'].toString()], assets['avatar_decoration'].toString())),
+          fn: () => ImageAsset(
+              ['avatar-decorations', assets['member_id'].toString()],
+              assets['avatar_decoration'].toString())),
       banner: Helper.createOrNull(
           field: assets['banner'],
-          fn: () => ImageAsset(['banners', assets['member_id']], assets['banner'])),
+          fn: () =>
+              ImageAsset(['banners', assets['member_id']], assets['banner'])),
     );
 
     final memberRoleManager = MemberRoleManager(
@@ -75,9 +79,11 @@ final class MemberSerializer implements SerializerContract<Member> {
       globalName: json['global_name'],
       discriminator: json['discriminator'],
       assets: memberAsset,
-      flags: MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
+      flags:
+          MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
       premiumSince: Helper.createOrNull(
-          field: json['premium_since'], fn: () => DateTime.parse(json['premium_since'])),
+          field: json['premium_since'],
+          fn: () => DateTime.parse(json['premium_since'])),
       publicFlags: json['public_flags'],
       roles: memberRoleManager,
       isBot: json['is_bot'] ?? false,
@@ -88,10 +94,12 @@ final class MemberSerializer implements SerializerContract<Member> {
               fn: () => DateTime.parse(json['communication_disabled_until']))),
       mfaEnabled: json['mfa_enabled'] ?? false,
       locale: json['locale'],
-      premiumType: PremiumTier.values
-          .firstWhere((e) => e == json['premium_type'], orElse: () => PremiumTier.none),
+      premiumType: PremiumTier.values.firstWhere(
+          (e) => e == json['premium_type'],
+          orElse: () => PremiumTier.none),
       joinedAt: Helper.createOrNull(
-          field: json['joined_at'], fn: () => DateTime.parse(json['joined_at'])),
+          field: json['joined_at'],
+          fn: () => DateTime.parse(json['joined_at'])),
       permissions: switch (json['permissions']) {
         int() => Permissions.fromInt(json['permissions']),
         String() => Permissions.fromInt(int.parse(json['permissions'])),

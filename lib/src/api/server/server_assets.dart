@@ -5,7 +5,7 @@ import 'package:mineral/src/api/common/image_asset.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/managers/emoji_manager.dart';
 import 'package:mineral/src/api/server/managers/sticker_manager.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class ServerAsset {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
@@ -35,7 +35,8 @@ final class ServerAsset {
   /// ```
   Future<void> setIcon(File icon, {String? reason}) async {
     final iconAsset = ImageAsset.makeAsset(icon);
-    await _datastore.server.update(serverId.value, {'icon': iconAsset.makeUrl()}, reason);
+    await _datastore.server
+        .update(serverId.value, {'icon': iconAsset.makeUrl()}, reason);
   }
 
   /// Set the server's banner.
@@ -45,7 +46,8 @@ final class ServerAsset {
   /// ```
   Future<void> setBanner(File banner, {String? reason}) async {
     final bannerAsset = ImageAsset.makeAsset(banner);
-    await _datastore.server.update(serverId.value, {'banner': bannerAsset.makeUrl()}, reason);
+    await _datastore.server
+        .update(serverId.value, {'banner': bannerAsset.makeUrl()}, reason);
   }
 
   /// Set the server's splash.
@@ -55,7 +57,8 @@ final class ServerAsset {
   /// ```
   Future<void> setSplash(File splash, {String? reason}) async {
     final splashAsset = ImageAsset.makeAsset(splash);
-    await _datastore.server.update(serverId.value, {'splash': splashAsset.makeUrl()}, reason);
+    await _datastore.server
+        .update(serverId.value, {'splash': splashAsset.makeUrl()}, reason);
   }
 
   /// Set the server's discovery splash.
@@ -63,9 +66,10 @@ final class ServerAsset {
   /// ```dart
   /// await server.assets.setDiscoverySplash(File('discovery_splash.png'), reason: 'Testing');
   /// ```
-  Future<void> setDiscoverySplash(File discoverySplash, {String? reason}) async {
+  Future<void> setDiscoverySplash(File discoverySplash,
+      {String? reason}) async {
     final discoverySplashAsset = ImageAsset.makeAsset(discoverySplash);
-    await _datastore.server
-        .update(serverId.value, {'discovery_splash': discoverySplashAsset.makeUrl()}, reason);
+    await _datastore.server.update(serverId.value,
+        {'discovery_splash': discoverySplashAsset.makeUrl()}, reason);
   }
 }

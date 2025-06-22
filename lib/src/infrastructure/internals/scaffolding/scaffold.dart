@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:path/path.dart';
 
 class DefaultScaffold implements ScaffoldContract {

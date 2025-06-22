@@ -1,12 +1,12 @@
+import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/events/buckets/private_bucket.dart';
 import 'package:mineral/src/domains/events/buckets/server_bucket.dart';
 import 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/voice_state_update_event.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/services/kernel.dart';
 
 final class EventBucket {
-  final KernelContract _kernel;
+  final Kernel _kernel;
 
   late final ServerBucket server;
   late final PrivateBucket private;

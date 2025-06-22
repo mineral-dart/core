@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/message_factory.dart';
 
 final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
@@ -17,7 +17,9 @@ final class PrivateMessageFactory implements MessageFactory<PrivateMessage> {
     return {
       'id': message.id,
       'content': message.content,
-      'embeds': message.embeds.map(_marshaller.serializers.embed.deserialize).toList(),
+      'embeds': message.embeds
+          .map(_marshaller.serializers.embed.deserialize)
+          .toList(),
       'channel_id': message.channelId,
       'created_at': message.createdAt.toIso8601String(),
       'updated_at': message.updatedAt?.toIso8601String(),

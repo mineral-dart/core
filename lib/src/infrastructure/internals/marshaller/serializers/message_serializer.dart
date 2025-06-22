@@ -1,9 +1,10 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class MessageSerializer<T extends Message> implements SerializerContract<T> {
+final class MessageSerializer<T extends Message>
+    implements SerializerContract<T> {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   @override
@@ -20,7 +21,8 @@ final class MessageSerializer<T extends Message> implements SerializerContract<T
       'edited_timestamp': json['edited_timestamp'],
     };
 
-    final cacheKey = _marshaller.cacheKey.message(json['channel_id'], json['id']);
+    final cacheKey =
+        _marshaller.cacheKey.message(json['channel_id'], json['id']);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;

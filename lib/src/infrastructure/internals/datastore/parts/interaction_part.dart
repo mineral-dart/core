@@ -5,7 +5,7 @@ import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/components/dialogs/dialog_builder.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/message_flag_type.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class InteractionPart implements InteractionPartContract {
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();

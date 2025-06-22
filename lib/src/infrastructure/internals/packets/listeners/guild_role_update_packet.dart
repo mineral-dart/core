@@ -1,6 +1,6 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
@@ -15,8 +15,10 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await _dataStore.server.get(message.payload['guild_id'], false);
-    final roleCacheKey = _marshaller.cacheKey.serverRole(server.id.value, message.payload['role']['id']);
+    final server =
+        await _dataStore.server.get(message.payload['guild_id'], false);
+    final roleCacheKey = _marshaller.cacheKey
+        .serverRole(server.id.value, message.payload['role']['id']);
 
     final rawBefore = await _marshaller.cache?.get(roleCacheKey);
     final before = rawBefore != null

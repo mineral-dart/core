@@ -6,8 +6,8 @@ import 'dart:isolate';
 import 'package:mansion/mansion.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
-import 'package:mineral/src/domains/services/kernel.dart';
+import 'package:mineral/src/domains/commons/kernel.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_builder.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
@@ -29,7 +29,7 @@ final class HotModuleReloading implements HmrContract {
   SendPort? devSendPort;
   DateTime? duration;
 
-  final KernelContract _kernel;
+  final Kernel _kernel;
   final Map<int, ShardContract> _shards;
   final Function() _createShards;
 

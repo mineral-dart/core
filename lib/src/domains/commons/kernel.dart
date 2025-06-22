@@ -6,14 +6,13 @@ import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
-import 'package:mineral/src/domains/services/kernel.dart';
 import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/running_strategies/default_running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/running_strategies/hmr_running_strategy.dart';
 
-final class Kernel implements KernelContract {
+final class Kernel {
   final _watch = Stopwatch();
 
   final bool _hasDefinedDevPort;
@@ -22,37 +21,26 @@ final class Kernel implements KernelContract {
 
   final WatcherConfig watcherConfig;
 
-  @override
   final WebsocketOrchestratorContract wss;
 
-  @override
   final LoggerContract logger;
 
-  @override
   final EnvContract environment;
 
-  @override
   final HttpClientContract httpClient;
 
-  @override
   final PacketListenerContract packetListener;
 
-  @override
   final EventListenerContract eventListener;
 
-  @override
   final ProviderManagerContract providerManager;
 
-  @override
   HmrContract? hmr;
 
-  @override
   late final RunningStrategy runningStrategy;
 
-  @override
   final GlobalStateManagerContract globalState;
 
-  @override
   InteractiveComponentManagerContract interactiveComponent;
 
   Kernel(
@@ -74,7 +62,6 @@ final class Kernel implements KernelContract {
         .add(Header.authorization('Bot ${wss.config.token}'));
   }
 
-  @override
   Future<void> init() async {
     final isDevelopmentMode = environment.get(AppEnv.dartEnv) == 'development';
     final useHmr = isDevelopmentMode && _hasDefinedDevPort;

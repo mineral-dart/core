@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/private/user.dart';
-import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class UserPart implements UserPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
