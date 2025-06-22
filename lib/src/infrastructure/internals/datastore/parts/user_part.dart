@@ -25,8 +25,9 @@ final class UserPart implements UserPartContract {
       return completer.future;
     }
 
+    final request = Request.json(endpoint: '/users/$id');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get('/users/$id'));
+        .run<Map<String, dynamic>>(() => _dataStore.client.get(request));
 
     final raw = await _marshaller.serializers.user.normalize(result);
     final user = await _marshaller.serializers.user.serialize(raw);

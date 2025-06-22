@@ -1,43 +1,17 @@
 import 'dart:isolate';
 
 import 'package:mineral/contracts.dart';
+import 'package:mineral/services.dart';
 import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
+import 'package:mineral/src/domains/services/kernel.dart';
 import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/running_strategies/default_running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/running_strategies/hmr_running_strategy.dart';
-import 'package:mineral/src/infrastructure/services/http/header.dart';
-import 'package:mineral/src/infrastructure/services/http/http_client.dart';
-
-abstract interface class KernelContract {
-  WebsocketOrchestratorContract get wss;
-
-  LoggerContract get logger;
-
-  EnvContract get environment;
-
-  HttpClientContract get httpClient;
-
-  PacketListenerContract get packetListener;
-
-  EventListenerContract get eventListener;
-
-  ProviderManagerContract get providerManager;
-
-  HmrContract? get hmr;
-
-  RunningStrategy get runningStrategy;
-
-  GlobalStateManagerContract get globalState;
-
-  InteractiveComponentManagerContract get interactiveComponent;
-
-  Future<void> init();
-}
 
 final class Kernel implements KernelContract {
   final _watch = Stopwatch();
@@ -96,9 +70,8 @@ final class Kernel implements KernelContract {
     required this.wss,
   }) {
     _watch.start();
-    httpClient.config.headers.addAll([
-      Header.authorization('Bot ${wss.config.token}'),
-    ]);
+    httpClient.config.headers
+        .add(Header.authorization('Bot ${wss.config.token}'));
   }
 
   @override
@@ -111,10 +84,12 @@ final class Kernel implements KernelContract {
     }
 
     if (useHmr) {
-      hmr = HotModuleReloading(_devPort, watcherConfig, this, () => wss.createShards(hmr, runningStrategy), wss.shards);
+      hmr = HotModuleReloading(_devPort, watcherConfig, this,
+          () => wss.createShards(hmr, runningStrategy), wss.shards);
       runningStrategy = HmrRunningStrategy(_watch, hmr!);
     } else {
-      runningStrategy = DefaultRunningStrategy(this, () => wss.createShards(hmr, runningStrategy));
+      runningStrategy = DefaultRunningStrategy(
+          this, () => wss.createShards(hmr, runningStrategy));
     }
 
     await runningStrategy.init();

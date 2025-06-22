@@ -15,21 +15,24 @@ final class InteractionPart implements InteractionPartContract {
   @override
   Future<void> replyInteraction(
       Snowflake id, String token, Map<String, dynamic> raw) async {
-    await _dataStore.client
-        .post('/interactions/$id/$token/callback', body: raw);
+    final req =
+        Request.json(endpoint: '/interactions/$id/$token/callback', body: raw);
+    await _dataStore.client.post(req);
   }
 
   @override
   Future<void> editInteraction(
       Snowflake botId, String token, Map<String, dynamic> raw) async {
-    await _dataStore.client
-        .patch('/webhooks/$botId/$token/messages/@original', body: raw);
+    final req = Request.json(
+        endpoint: '/webhooks/$botId/$token/messages/@original', body: raw);
+    await _dataStore.client.patch(req);
   }
 
   @override
   Future<void> deleteInteraction(Snowflake botId, String token) async {
-    await _dataStore.client
-        .delete('/webhooks/$botId/$token/messages/@original');
+    final req =
+        Request.json(endpoint: '/webhooks/$botId/$token/messages/@original');
+    await _dataStore.client.delete(req);
   }
 
   @override
@@ -45,21 +48,24 @@ final class InteractionPart implements InteractionPartContract {
   @override
   Future<void> followUpInteraction(
       Snowflake botId, String token, Map<String, dynamic> raw) async {
-    await _dataStore.client.post('/webhooks/$botId/$token', body: raw);
+    final req = Request.json(endpoint: '/webhooks/$botId/$token', body: raw);
+    await _dataStore.client.post(req);
   }
 
   @override
   Future<void> editFollowUpInteraction(Snowflake botId, String token,
       Snowflake messageId, Map<String, dynamic> raw) async {
-    await _dataStore.client
-        .patch('/webhooks/$botId/$token/messages/$messageId', body: raw);
+    final req = Request.json(
+        endpoint: '/webhooks/$botId/$token/messages/$messageId', body: raw);
+    await _dataStore.client.patch(req);
   }
 
   @override
   Future<void> deleteFollowUpInteraction(
       Snowflake botId, String token, Snowflake messageId) async {
-    await _dataStore.client
-        .delete('/webhooks/$botId/$token/messages/$messageId');
+    final req =
+        Request.json(endpoint: '/webhooks/$botId/$token/messages/$messageId');
+    await _dataStore.client.delete(req);
   }
 
   @override
@@ -75,23 +81,27 @@ final class InteractionPart implements InteractionPartContract {
   @override
   Future<void> editWaitInteraction(Snowflake botId, String token,
       Snowflake messageId, Map<String, dynamic> raw) async {
-    await _dataStore.client
-        .patch('/webhooks/$botId/$token/messages/$messageId', body: raw);
+    final req = Request.json(
+        endpoint: '/webhooks/$botId/$token/messages/$messageId', body: raw);
+    await _dataStore.client.patch(req);
   }
 
   @override
   Future<void> deleteWaitInteraction(
       Snowflake botId, String token, Snowflake messageId) async {
-    await _dataStore.client
-        .delete('/webhooks/$botId/$token/messages/$messageId');
+    final req =
+        Request.json(endpoint: '/webhooks/$botId/$token/messages/$messageId');
+    await _dataStore.client.delete(req);
   }
 
   @override
   Future<void> sendDialog(
       Snowflake id, String token, DialogBuilder dialog) async {
-    await _dataStore.client.post('/interactions/$id/$token/callback', body: {
+    final req =
+        Request.json(endpoint: '/interactions/$id/$token/callback', body: {
       'type': InteractionCallbackType.modal.value,
       'data': dialog.toJson(),
     });
+    await _dataStore.client.post(req);
   }
 }

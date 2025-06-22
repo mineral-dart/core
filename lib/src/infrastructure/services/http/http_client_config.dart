@@ -1,18 +1,18 @@
-import 'package:mineral/src/infrastructure/services/http/header.dart';
+import 'package:mineral/services.dart';
 
 abstract interface class HttpClientConfig {
-  String get baseUrl;
+  Uri get uri;
 
   Set<Header> get headers;
 }
 
 final class HttpClientConfigImpl implements HttpClientConfig {
   @override
-  final String baseUrl;
+  final Uri uri;
 
   @override
   final Set<Header> headers;
 
-  HttpClientConfigImpl({required this.baseUrl, Set<Header>? headers})
+  HttpClientConfigImpl({required this.uri, Set<Header>? headers})
       : headers = headers ?? {};
 }

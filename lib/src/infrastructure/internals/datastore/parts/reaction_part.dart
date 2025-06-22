@@ -18,50 +18,69 @@ final class ReactionPart implements ReactionPartContract {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
 
     final complete = Completer<Map<Snowflake, User>>();
-    final result = await _dataStore.requestBucket.run<List>(
-        () => _dataStore.client.get('/channels/$channelId/messages/$messageId/reactions/$value'));
+    final req = Request.json(
+        endpoint: '/channels/$channelId/messages/$messageId/reactions/$value');
+    final result = await _dataStore.requestBucket
+        .run<List>(() => _dataStore.client.get(req));
 
     final users = await result.map((element) async {
       final raw = await _marshaller.serializers.user.normalize(element);
       return _marshaller.serializers.user.serialize(raw);
     }).wait;
 
-    complete.complete(users.asMap().map((key, value) => MapEntry(value.id, value)));
+    complete
+        .complete(users.asMap().map((key, value) => MapEntry(value.id, value)));
     return complete.future;
   }
 
   @override
-  Future<void> add(Object channelId, Object messageId, PartialEmoji emoji) async {
+  Future<void> add(
+      Object channelId, Object messageId, PartialEmoji emoji) async {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
-    await _dataStore.requestBucket.run(() =>
-        _dataStore.client.put('/channels/$channelId/messages/$messageId/reactions/$value/@me'));
+    final req = Request.json(
+        endpoint:
+            '/channels/$channelId/messages/$messageId/reactions/$value/@me');
+    await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.put(req));
   }
 
   @override
-  Future<void> remove(Object channelId, Object messageId, PartialEmoji emoji) async {
+  Future<void> remove(
+      Object channelId, Object messageId, PartialEmoji emoji) async {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
-    await _dataStore.requestBucket.run(() =>
-        _dataStore.client.delete('/channels/$channelId/messages/$messageId/reactions/$value/@me'));
+    final req = Request.json(
+        endpoint:
+            '/channels/$channelId/messages/$messageId/reactions/$value/@me');
+    await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
   }
 
   @override
   Future<void> removeAll(Object channelId, Object messageId) {
-    return _dataStore.requestBucket.run(
-        () => _dataStore.client.delete('/channels/$channelId/messages/$messageId/reactions'));
+    final req = Request.json(
+        endpoint: '/channels/$channelId/messages/$messageId/reactions');
+    return _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
   }
 
   @override
-  Future<void> removeForEmoji(Object channelId, Object messageId, PartialEmoji emoji) {
+  Future<void> removeForEmoji(
+      Object channelId, Object messageId, PartialEmoji emoji) {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
-    return _dataStore.requestBucket.run(() =>
-        _dataStore.client.delete('/channels/$channelId/messages/$messageId/reactions/$value'));
+    final req = Request.json(
+        endpoint: '/channels/$channelId/messages/$messageId/reactions/$value');
+    return _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
   }
 
   @override
-  Future<void> removeForUser(
-      Object userId, Object channelId, Object messageId, PartialEmoji emoji) async {
+  Future<void> removeForUser(Object userId, Object channelId, Object messageId,
+      PartialEmoji emoji) async {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
-    await _dataStore.requestBucket.run(() => _dataStore.client
-        .delete('/channels/$channelId/messages/$messageId/reactions/$value/$userId'));
+    final req = Request.json(
+        endpoint:
+            '/channels/$channelId/messages/$messageId/reactions/$value/$userId');
+    await _dataStore.requestBucket
+        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
   }
 }

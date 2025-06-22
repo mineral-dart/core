@@ -1,26 +1,11 @@
-import 'package:mineral/src/infrastructure/services/http/header.dart';
+import 'package:mineral/src/domains/services/http.dart';
 
-abstract interface class Request {
-  String get method;
-
-  Uri get url;
-
-  Set<Header> get headers;
-
-  String get bodyString;
-
-  Object? get body;
-}
-
-final class RequestImpl implements Request {
+final class Request<T> implements RequestContract {
   @override
-  String method;
+  String? method;
 
   @override
-  Object? body;
-
-  @override
-  String bodyString;
+  dynamic body;
 
   @override
   Set<Header> headers;
@@ -28,10 +13,39 @@ final class RequestImpl implements Request {
   @override
   Uri url;
 
-  RequestImpl(
-      {required this.method,
-      required this.url,
-      required this.headers,
-      required this.bodyString,
-      required this.body});
+  @override
+  Map<String, String> queryParameters;
+
+  Request(this.method, this.url, this.headers, this.body, this.queryParameters);
+
+  static Request json(
+      {required String endpoint,
+      String? method,
+      Set<Header>? headers,
+      dynamic body}) {
+    return Request<Map<String, dynamic>>(
+      method,
+      Uri.parse(endpoint),
+      headers ?? {},
+      body,
+      {},
+    );
+  }
+
+  @override
+  Request copyWith({
+    String? method,
+    Uri? url,
+    Set<Header>? headers,
+    Object? body,
+    Map<String, String>? queryParameters,
+  }) {
+    return Request(
+      method ?? this.method,
+      url ?? this.url,
+      {...this.headers, ...(headers ?? {})},
+      body ?? this.body,
+      {...this.queryParameters, ...(queryParameters ?? {})},
+    );
+  }
 }

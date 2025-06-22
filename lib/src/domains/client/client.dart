@@ -3,9 +3,9 @@ import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/commands/command_declaration_bucket.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
-import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/commons/utils/listenable.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
+import 'package:mineral/src/domains/services/kernel.dart';
 
 import '../events/types/listenable_event.dart';
 
@@ -47,7 +47,8 @@ final class Client {
           event: event.event,
           handle: (instance as dynamic).handle as Function,
           customId: event.customId),
-      final InteractiveComponent component => _kernel.interactiveComponent.register(component),
+      final InteractiveComponent component =>
+        _kernel.interactiveComponent.register(component),
       _ => throw UnimplementedError(),
     };
   }

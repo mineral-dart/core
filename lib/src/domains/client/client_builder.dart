@@ -11,6 +11,7 @@ import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
 import 'package:mineral/src/domains/services/container/ioc_container.dart';
+import 'package:mineral/src/domains/services/kernel.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
@@ -67,13 +68,15 @@ final class ClientBuilder {
     return this;
   }
 
-  ClientBuilder setCache(ConstructableWithArgs<CacheProviderContract, EnvContract> cache) {
+  ClientBuilder setCache(
+      ConstructableWithArgs<CacheProviderContract, EnvContract> cache) {
     _cache = cache(_env);
     ioc.bind<CacheProviderContract>(() => _cache!);
     return this;
   }
 
-  ClientBuilder setLogger(ConstructableWithArgs<LoggerContract, EnvContract> logger) {
+  ClientBuilder setLogger(
+      ConstructableWithArgs<LoggerContract, EnvContract> logger) {
     _logger = logger(_env);
     return this;
   }
@@ -102,7 +105,8 @@ final class ClientBuilder {
     return this;
   }
 
-  ClientBuilder registerProvider<T extends ProviderContract>(T Function(Client) provider) {
+  ClientBuilder registerProvider<T extends ProviderContract>(
+      T Function(Client) provider) {
     _providers.add(provider);
     return this;
   }
@@ -138,20 +142,27 @@ final class ClientBuilder {
     final intent = int.parse(_env.get(AppEnv.intent));
 
     final http = HttpClient(
-        config: HttpClientConfigImpl(baseUrl: 'https://discord.com/api/v$httpVersion', headers: {
-      Header.userAgent('Mineral'),
-      Header.contentType('application/json'),
-    }));
+        config: HttpClientConfigImpl(
+            uri: Uri.parse('https://discord.com/api/v$httpVersion'),
+            headers: {
+          Header.userAgent('Mineral'),
+          Header.contentType('application/json'),
+        }));
 
-    final shardConfig = ShardingConfig(token: token, intent: intent, version: shardVersion, encoding: _wsEncodingStrategy);
+    final shardConfig = ShardingConfig(
+        token: token,
+        intent: intent,
+        version: shardVersion,
+        encoding: _wsEncodingStrategy);
 
     final packetListener = PacketListener();
     final eventListener = EventListener();
     final providerManager = ProviderManager();
     final globalStateManager = ioc.make(GlobalStateManager.new);
-    final interactiveComponent = ioc.make<InteractiveComponentManagerContract>(InteractiveComponentManager.new);
-    final wssOrchestrator =
-        ioc.make<WebsocketOrchestratorContract>(() => WebsocketOrchestrator(shardConfig));
+    final interactiveComponent = ioc.make<InteractiveComponentManagerContract>(
+        InteractiveComponentManager.new);
+    final wssOrchestrator = ioc.make<WebsocketOrchestratorContract>(
+        () => WebsocketOrchestrator(shardConfig));
 
     final kernel = Kernel(
       _hasDefinedDevPort,

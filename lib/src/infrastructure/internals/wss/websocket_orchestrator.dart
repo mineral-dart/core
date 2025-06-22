@@ -15,7 +15,8 @@ import 'package:mineral/src/infrastructure/io/exceptions/token_exception.dart';
 
 final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   @override
-  final List<({String uid, List<String> targetKeys, Completer completer})> requestQueue = [];
+  final List<({String uid, List<String> targetKeys, Completer completer})>
+      requestQueue = [];
 
   HttpClientContract get _httpClient => ioc.resolve<HttpClientContract>();
 
@@ -39,8 +40,11 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       if (message case WebsocketIsolateMessageTransfert(:final type)
           when type == MessageTransfertType.request) {
         _logger.trace('Sending message to all shards ${message.toJson()}');
-        requestQueue.add(
-            (uid: message.uid!, targetKeys: message.targetKeys, completer: message.completer!));
+        requestQueue.add((
+          uid: message.uid!,
+          targetKeys: message.targetKeys,
+          completer: message.completer!
+        ));
       }
 
       sendPort?.send(message.toJson());
@@ -56,26 +60,36 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   }
 
   void _sendToShards(WebsocketIsolateMessageTransfert message) {
-    shards.forEach((_, shard) => shard.client.send(json.encode(message.payload)));
+    shards
+        .forEach((_, shard) => shard.client.send(json.encode(message.payload)));
   }
 
   void _requestMessage(WebsocketIsolateMessageTransfert message) {
-    if (Isolate.current.debugName == 'main' && _env.get(AppEnv.dartEnv) == 'production') {
-      requestQueue
-          .add((uid: message.uid!, targetKeys: message.targetKeys, completer: message.completer!));
+    if (Isolate.current.debugName == 'main' &&
+        _env.get(AppEnv.dartEnv) == 'production') {
+      requestQueue.add((
+        uid: message.uid!,
+        targetKeys: message.targetKeys,
+        completer: message.completer!
+      ));
     }
 
     _sendToShards(message);
   }
 
   @override
-  void setBotPresence(List<BotActivity>? activities, StatusType? status, bool? afk) {
+  void setBotPresence(
+      List<BotActivity>? activities, StatusType? status, bool? afk) {
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.presenceUpdate)
       ..append('since', DateTime.now().millisecond)
-      ..append('activities',
-          activities != null ? activities.map((element) => element.toJson()).toList() : [])
-      ..append('status', status != null ? status.toString() : StatusType.online.toString())
+      ..append(
+          'activities',
+          activities != null
+              ? activities.map((element) => element.toJson()).toList()
+              : [])
+      ..append('status',
+          status != null ? status.toString() : StatusType.online.toString())
       ..append('afk', afk ?? false);
 
     send(WebsocketIsolateMessageTransfert.send(message.toJson()));
@@ -105,9 +119,12 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
 
   @override
   Future<Map<String, dynamic>> getWebsocketEndpoint() async {
-    final response = await _httpClient.get('/gateway/bot');
+    final request = Request.json(endpoint: '/gateway/bot');
+    final response = await _httpClient.get(request);
+
     return switch (response.statusCode) {
-      int() when _httpClient.status.isSuccess(response.statusCode) => response.body,
+      int() when _httpClient.status.isSuccess(response.statusCode) =>
+        response.body,
       int() when _httpClient.status.isError(response.statusCode) =>
         throw TokenException('This token is invalid or expired'),
       _ => throw (response.bodyString),
@@ -116,12 +133,14 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
 
   @override
   Future<void> createShards(HmrContract? hmr, RunningStrategy strategy) async {
-    final {'url': String endpoint, 'shards': int shardCount} = await getWebsocketEndpoint();
+    final {'url': String endpoint, 'shards': int shardCount} =
+        await getWebsocketEndpoint();
 
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
       final shard = Shard(
           shardName: 'shard #$i',
-          url: '$endpoint/?v=${config.version}&encoding=${config.encoding.encoder.value}',
+          url:
+              '$endpoint/?v=${config.version}&encoding=${config.encoding.encoder.value}',
           hmr: hmr,
           wss: this,
           strategy: strategy);
