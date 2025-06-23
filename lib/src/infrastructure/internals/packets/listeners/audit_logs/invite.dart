@@ -26,10 +26,14 @@ Future<AuditLog> inviteUpdateAuditLogHandler(Map<String, dynamic> json) async {
 }
 
 Future<AuditLog> inviteDeleteAuditLogHandler(Map<String, dynamic> json) async {
+  final code = List.from(json['changes']).firstWhere(
+    (change) => change['key'] == 'code',
+  )['old_value'];
+
   return InviteDeleteAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
-    inviteCode: json['target_id'],
+    inviteCode: code ?? 'Unknown',
     channelId: Snowflake.nullable(json['options']?['channel_id']),
   );
 }

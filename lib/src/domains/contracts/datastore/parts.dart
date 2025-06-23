@@ -265,3 +265,19 @@ abstract interface class ReactionPartContract implements DataStorePart {
   Future<void> removeForUser(
       String userId, Object channelId, Object messageId, PartialEmoji emoji);
 }
+
+abstract interface class InvitePartContract implements DataStorePart {
+  Future<Invite?> get(String code, bool force);
+
+  Future<InviteMetadata?> getExtrasMetadata(String code, bool force);
+
+  // Future<Invite> create(
+  //     String code,
+  //     String serverId,
+  //     String channelId,
+  //     String inviterId,
+  //     bool isTemporary,
+  //     int maxAge, int maxUses);
+
+  Future<void> delete(String code, String? reason);
+}

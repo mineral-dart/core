@@ -29,4 +29,6 @@ abstract class DataStoreContract {
   ReactionPartContract get reaction;
 
   ThreadPart get thread;
+
+  InvitePartContract get invite;
 }

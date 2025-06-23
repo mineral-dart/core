@@ -25,6 +25,8 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/interacti
 import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/command_interaction_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/dialog_interaction_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/interactions/select_interaction_create_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/invite_create_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/invite_delete_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_add_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_remove_packet.dart';
@@ -96,5 +98,8 @@ final class PacketListener implements PacketListenerContract {
     subscribe(VoiceJoinPacket.new);
     subscribe(VoiceStateUpdatePacket.new);
     subscribe(VoiceLeavePacket.new);
+
+    subscribe(InviteCreatePacket.new);
+    subscribe(InviteDeletePacket.new);
   }
 }

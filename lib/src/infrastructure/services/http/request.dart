@@ -37,14 +37,15 @@ final class Request<T> implements RequestContract {
       {required String endpoint,
       String? method,
       Set<Header>? headers,
-      dynamic body}) {
+      dynamic body,
+      Map<String, String>? queryParameters}) {
     return Request<Map<String, dynamic>>(
       type: RequestType.json,
       method: method,
       url: Uri.parse(endpoint),
       headers: {...headers ?? {}, Header.contentType('application/json')},
       body: body,
-      queryParameters: {},
+      queryParameters: queryParameters ?? {},
       files: [],
     );
   }
