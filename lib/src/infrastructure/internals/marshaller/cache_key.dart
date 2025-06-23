@@ -23,15 +23,15 @@ final class CacheKey {
   String channelPermission(Object channelId, {Object? serverId}) =>
       '${channel(channelId)}/permissions';
 
-  String serverRole(Object serverId, Object roleId) => '${server(serverId)}/roles/$roleId';
+  String serverRole(Object serverId, Object roleId) =>
+      '${server(serverId)}/roles/$roleId';
 
   String member(Object serverId, Object memberId, {bool ref = false}) {
     final key = '${server(serverId)}/members/$memberId';
     return ref ? 'ref:$key' : key;
   }
 
-  String memberAssets(Object serverId, Object memberId,
-      {bool ref = false}) {
+  String memberAssets(Object serverId, Object memberId, {bool ref = false}) {
     final key = '${member(serverId, memberId)}/assets';
     return ref ? 'ref:$key' : key;
   }
@@ -41,14 +41,18 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
-  String voiceState(Object serverId, Object userId) => '${member(serverId, userId)}/voice_states';
+  String voiceState(Object serverId, Object userId) =>
+      '${member(serverId, userId)}/voice_states';
+
+  String invite(String code) => 'invites/$code';
 
   String userAssets(Object userId, {bool ref = false}) {
     final key = '${user(userId)}/assets';
     return ref ? 'ref:$key' : key;
   }
 
-  String serverEmoji(Object serverId, Object emojiId) => '${server(serverId)}/emojis/$emojiId';
+  String serverEmoji(Object serverId, Object emojiId) =>
+      '${server(serverId)}/emojis/$emojiId';
 
   String message(Object channelId, Object messageId) =>
       '${channel(channelId)}/messages/$messageId';

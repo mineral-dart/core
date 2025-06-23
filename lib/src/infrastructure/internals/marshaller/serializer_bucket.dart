@@ -7,6 +7,7 @@ import 'package:mineral/src/api/common/message_reaction.dart';
 import 'package:mineral/src/api/common/polls/poll.dart';
 import 'package:mineral/src/api/common/sticker.dart';
 import 'package:mineral/src/api/private/user.dart';
+import 'package:mineral/src/api/server/invite.dart';
 import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/api/server/server.dart';
@@ -16,6 +17,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/serializers/chan
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/channel_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/embed_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/emoji_serializer.dart';
+import 'package:mineral/src/infrastructure/internals/marshaller/serializers/invite_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/member_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/message_reaction_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/message_serializer.dart';
@@ -41,6 +43,8 @@ final class SerializerBucket {
   final SerializerContract<Emoji> emojis;
 
   final SerializerContract<Sticker> sticker;
+
+  final SerializerContract<Invite> invite;
 
   final SerializerContract<ChannelPermissionOverwrite>
       channelPermissionOverwrite;
@@ -68,5 +72,6 @@ final class SerializerBucket {
         embed = EmbedSerializer(),
         poll = PollSerializer(),
         voice = VoiceStateSerializer(),
-        reaction = MessageReactionSerializer();
+        reaction = MessageReactionSerializer(),
+        invite = InviteSerializer();
 }

@@ -1,4 +1,6 @@
 import 'package:mineral/src/api/common/types/enhanced_enum.dart';
+import 'package:mineral/src/domains/events/contracts/common/invite_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/common/invite_delete_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/voice_join_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/voice_leave_event.dart';
@@ -56,6 +58,8 @@ interface class EventType {}
 
 enum Event implements EnhancedEnum, EventType {
   ready(ReadyEvent, ['Bot bot']),
+  inviteCreate(InviteCreateEvent, ['Invite invite']),
+  inviteDelete(InviteDeleteEvent, ['String code, Channel channel']),
   serverAuditLog(ServerAuditLogEvent, ['Server server']),
   serverCreate(ServerCreateEvent, ['Server server']),
   serverUpdate(ServerUpdateEvent, ['Server before', 'Server after']),
@@ -77,8 +81,8 @@ enum Event implements EnhancedEnum, EventType {
       ['Server server', 'ServerMember? before', 'Member after']),
   serverPresenceUpdate(ServerPresenceUpdateEvent,
       ['Member member', 'Server server', 'Presence presence']),
-  serverEmojisUpdate(
-      ServerEmojisUpdateEvent, ['Map<Snowflake, Emoji> emojis', 'Server server']),
+  serverEmojisUpdate(ServerEmojisUpdateEvent,
+      ['Map<Snowflake, Emoji> emojis', 'Server server']),
   serverStickersUpdate(ServerStickersUpdateEvent,
       ['Server server', 'Map<Snowflake, Sticker> stickers']),
   serverRoleCreate(ServerRolesCreateEvent, ['Server server', 'Role role']),
@@ -109,9 +113,12 @@ enum Event implements EnhancedEnum, EventType {
       ['ThreadChannel thread', 'Server server', 'Member member']),
   serverThreadListSync(ServerThreadListSyncEvent,
       ['List<ThreadChannel> threads', 'Server server']),
-  serverMemberChunk(ServerMemberChunkEvent, ['Server server', 'Map<Snowflake, Member> members']),
-  serverMessageReactionAdd(ServerMessageReactionAddEvent, ['MessageReaction reaction']),
-  serverMessageReactionRemove(ServerMessageReactionRemoveEvent, ['MessageReaction reaction']),
+  serverMemberChunk(ServerMemberChunkEvent,
+      ['Server server', 'Map<Snowflake, Member> members']),
+  serverMessageReactionAdd(
+      ServerMessageReactionAddEvent, ['MessageReaction reaction']),
+  serverMessageReactionRemove(
+      ServerMessageReactionRemoveEvent, ['MessageReaction reaction']),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent, ['PrivateMessage message']),
@@ -125,12 +132,13 @@ enum Event implements EnhancedEnum, EventType {
       PrivateUserSelectEvent, ['PrivateSelectContext ctx', 'List<User> users']),
   privateTextSelect(PrivateTextSelectEvent,
       ['PrivateSelectContext ctx', 'List<String> values']),
-  privateMessageReactionAdd(PrivateMessageReactionAddEvent,
-      ['MessageReaction reaction']),
-  privateMessageReactionRemove(PrivateMessageReactionRemoveEvent,
-      ['MessageReaction reaction']),
+  privateMessageReactionAdd(
+      PrivateMessageReactionAddEvent, ['MessageReaction reaction']),
+  privateMessageReactionRemove(
+      PrivateMessageReactionRemoveEvent, ['MessageReaction reaction']),
 
-  voiceStateUpdate(VoiceStateUpdateEvent, ['VoiceState before', 'VoiceState after']),
+  voiceStateUpdate(
+      VoiceStateUpdateEvent, ['VoiceState before', 'VoiceState after']),
   voiceJoin(VoiceJoinEvent, ['VoiceState state']),
   voiceLeave(VoiceLeaveEvent, ['VoiceState state']),
   voiceMove(VoiceMoveEvent, ['VoiceState? before', 'VoiceState after']);
