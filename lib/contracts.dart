@@ -8,8 +8,6 @@ export 'package:mineral/src/domains/components/interactives/interactive_componen
 export 'package:mineral/src/domains/services/cache/cache_provider_contract.dart';
 export 'package:mineral/src/domains/services/datastore/datastore.dart';
 export 'package:mineral/src/domains/services/datastore/parts.dart';
-export 'package:mineral/src/domains/services/environment/env.dart';
-export 'package:mineral/src/domains/services/environment/env_schema.dart';
 export 'package:mineral/src/domains/services/hmr/hmr.dart';
 export 'package:mineral/src/domains/services/hmr/watcher_element.dart';
 export 'package:mineral/src/domains/services/interactions/interaction_callback_type.dart';

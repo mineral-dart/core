@@ -1,5 +1,6 @@
 library api;
 
+export 'package:env_guard/env_guard.dart';
 export 'package:mineral/src/api/common/activity.dart';
 export 'package:mineral/src/api/common/activity_emoji.dart';
 export 'package:mineral/src/api/common/bot/bot.dart';

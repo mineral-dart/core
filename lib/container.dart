@@ -3,8 +3,6 @@ library container;
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
-import 'package:mineral/src/domains/services/environment/env.dart'
-    as env_service;
 import 'package:mineral/src/domains/services/logger/logger_contract.dart'
     as logger_service;
 
@@ -16,10 +14,6 @@ export 'package:mineral/src/domains/global_states/global_state_manager.dart'
 mixin Logger {
   logger_service.LoggerContract get logger =>
       ioc.resolve<logger_service.LoggerContract>();
-}
-
-mixin Env {
-  env_service.EnvContract get env => ioc.resolve<env_service.EnvContract>();
 }
 
 mixin State {

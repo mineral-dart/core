@@ -1,5 +1,4 @@
 export 'package:mineral/src/domains/services/http/http.dart';
-export 'package:mineral/src/infrastructure/internals/environment/environment.dart';
 export 'package:mineral/src/infrastructure/internals/marshaller/marshaller.dart';
 export 'package:mineral/src/infrastructure/internals/wss/encoding_strategies/etf_encoder.dart';
 export 'package:mineral/src/infrastructure/internals/wss/encoding_strategies/json_encoder.dart';
