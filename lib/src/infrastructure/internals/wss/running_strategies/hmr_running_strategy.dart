@@ -7,14 +7,15 @@ import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart' as services;
 import 'package:mineral/src/domains/commons/utils/file.dart';
-import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
+import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:path/path.dart' as path;
 
 final class HmrRunningStrategy implements RunningStrategy {
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
 
-  WebsocketOrchestratorContract get _wss => ioc.resolve<WebsocketOrchestratorContract>();
+  WebsocketOrchestratorContract get _wss =>
+      ioc.resolve<WebsocketOrchestratorContract>();
 
   final Stopwatch _watch;
   final HmrContract hmr;
@@ -26,7 +27,8 @@ final class HmrRunningStrategy implements RunningStrategy {
   @override
   Future<void> init() async {
     if (Isolate.current.debugName == 'main') {
-      final packageFile = File(path.join(Directory.current.path, 'pubspec.yaml'));
+      final packageFile =
+          File(path.join(Directory.current.path, 'pubspec.yaml'));
       final package = await packageFile.readAsYaml();
 
       final coreVersion = package['dependencies']['mineral'];

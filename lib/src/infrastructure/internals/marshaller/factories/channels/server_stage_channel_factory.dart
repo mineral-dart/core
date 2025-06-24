@@ -1,7 +1,7 @@
 import 'package:mineral/src/api/common/channel_properties.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 import 'package:mineral/src/api/server/channels/server_stage_channel.dart';
-import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/channel_factory.dart';
 
 final class ServerStageChannelFactory

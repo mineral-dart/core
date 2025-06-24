@@ -1,7 +1,7 @@
 import 'dart:collection';
 
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
+import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_client.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';

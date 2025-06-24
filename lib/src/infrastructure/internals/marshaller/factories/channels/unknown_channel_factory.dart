@@ -1,5 +1,5 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/channel_factory.dart';
 
 final class UnknownChannelFactory

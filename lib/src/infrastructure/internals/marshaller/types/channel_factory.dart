@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mineral/src/api/common/channel.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
-import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 
 abstract interface class ChannelFactoryContract<T extends Channel> {
   ChannelType get type;

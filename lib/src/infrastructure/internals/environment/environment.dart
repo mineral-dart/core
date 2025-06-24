@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:collection/collection.dart';
-import 'package:mineral/src/domains/contracts/environment/env.dart';
-import 'package:mineral/src/domains/contracts/environment/env_schema.dart';
+import 'package:mineral/src/domains/services/environment/env.dart';
+import 'package:mineral/src/domains/services/environment/env_schema.dart';
 
 final class Environment implements EnvContract {
   final Map<String, String> _values = {};

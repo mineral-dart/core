@@ -6,7 +6,7 @@ import 'package:mansion/mansion.dart';
 import 'package:mineral/services.dart' as services;
 import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/commons/utils/file.dart';
-import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
+import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:path/path.dart' as path;
 

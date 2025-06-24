@@ -1,4 +1,4 @@
-import 'package:mineral/src/domains/contracts/environment/env_schema.dart';
+import 'package:mineral/src/domains/services/environment/env_schema.dart';
 
 abstract interface class EnvContract {
   Map<String, String> get list;

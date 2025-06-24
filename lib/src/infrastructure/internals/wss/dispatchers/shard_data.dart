@@ -1,5 +1,5 @@
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
+import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';

@@ -1,5 +1,5 @@
 import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/domains/contracts/interactions/interaction_contract.dart';
+import 'package:mineral/src/domains/services/interactions/interaction_contract.dart';
 
 abstract class CommandContext {
   final Snowflake id;

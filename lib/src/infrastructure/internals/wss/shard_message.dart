@@ -1,5 +1,5 @@
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
+import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 
 final class ShardMessage<T> implements ShardMessageContract<T, OpCode> {
   @override

@@ -12,7 +12,7 @@ import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
-import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/channel_permission_overwrite_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/channel_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/embed_serializer.dart';

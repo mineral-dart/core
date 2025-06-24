@@ -1,7 +1,7 @@
 import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/bot/bot.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
-import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -43,7 +43,8 @@ final class GuildCreatePacket implements ListenablePacket {
       });
     }).wait;
 
-    final rawServer = await _marshaller.serializers.server.normalize(message.payload);
+    final rawServer =
+        await _marshaller.serializers.server.normalize(message.payload);
     final server = await _marshaller.serializers.server.serialize(rawServer);
 
     final bot = ioc.resolve<Bot>();

@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/contracts/wss/constants/shard_disconnect_error.dart';
+import 'package:mineral/src/domains/services/wss/constants/shard_disconnect_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 
 final class ShardNetworkError implements ShardNetworkErrorContract {

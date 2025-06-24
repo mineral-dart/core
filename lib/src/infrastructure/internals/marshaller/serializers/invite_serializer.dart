@@ -2,7 +2,7 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/api/server/invite.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
-import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
 final class InviteSerializer implements SerializerContract<Invite> {

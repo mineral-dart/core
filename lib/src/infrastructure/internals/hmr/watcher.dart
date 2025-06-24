@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:mineral/src/domains/contracts/hmr/watcher_element.dart';
+import 'package:mineral/src/domains/services/hmr/watcher_element.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/entities/directory_watcher_element.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/entities/file_watcher_element.dart';
 import 'package:watcher/watcher.dart';

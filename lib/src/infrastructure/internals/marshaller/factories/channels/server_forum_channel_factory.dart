@@ -5,7 +5,7 @@ import 'package:mineral/src/api/server/enums/forum_layout_types.dart';
 import 'package:mineral/src/api/server/enums/sort_order_forum.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
-import 'package:mineral/src/domains/contracts/marshaller/marshaller.dart';
+import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/channel_factory.dart';
 
 final class ServerForumChannelFactory

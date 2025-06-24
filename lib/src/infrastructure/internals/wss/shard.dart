@@ -3,8 +3,8 @@ import 'dart:convert';
 
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
-import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
+import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
+import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_data.dart';
@@ -76,7 +76,8 @@ final class Shard implements ShardContract {
     client.interceptor.request.add(wss.config.encoding.encode);
 
     client.listen((message) {
-      if (message.content case ShardMessage(opCode: final code, payload: final payload)) {
+      if (message.content
+          case ShardMessage(opCode: final code, payload: final payload)) {
         switch (code) {
           case OpCode.hello:
             authentication.identify(payload);

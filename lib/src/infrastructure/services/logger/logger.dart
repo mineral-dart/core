@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart' as logging;
 import 'package:mansion/mansion.dart';
-import 'package:mineral/src/domains/contracts/environment/env.dart';
-import 'package:mineral/src/domains/contracts/logger/log_level.dart';
-import 'package:mineral/src/domains/contracts/logger/logger_contract.dart';
+import 'package:mineral/src/domains/services/environment/env.dart';
+import 'package:mineral/src/domains/services/logger/log_level.dart';
+import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 
 final class Logger implements LoggerContract {

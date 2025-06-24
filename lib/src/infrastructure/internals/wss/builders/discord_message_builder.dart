@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
+import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 
 final class ShardMessageBuilder<OpCodeEnum extends OpCode> {
   OpCodeEnum? _code;

@@ -2,10 +2,10 @@ import 'dart:isolate';
 
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/domains/contracts/wss/running_strategy.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
+import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';

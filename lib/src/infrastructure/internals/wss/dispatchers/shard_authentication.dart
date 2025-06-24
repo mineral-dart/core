@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/contracts/wss/constants/op_code.dart';
+import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 

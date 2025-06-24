@@ -1,5 +1,5 @@
 import 'package:http/http.dart';
-import 'package:mineral/src/domains/contracts/http/http.dart';
+import 'package:mineral/src/domains/services/http/http.dart';
 
 final class Request<T> implements RequestContract {
   @override
