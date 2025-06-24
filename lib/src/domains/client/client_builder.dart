@@ -11,7 +11,7 @@ import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
-import 'package:mineral/src/infrastructure/internals/datastore/data_store.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/datastore.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
 import 'package:mineral/src/infrastructure/internals/scaffolding/scaffold.dart';
