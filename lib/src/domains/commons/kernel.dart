@@ -1,12 +1,12 @@
 import 'dart:isolate';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
-import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.dart';
 import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/running_strategies/default_running_strategy.dart';
@@ -24,8 +24,6 @@ final class Kernel {
   final WebsocketOrchestratorContract wss;
 
   final LoggerContract logger;
-
-  final EnvContract environment;
 
   final HttpClientContract httpClient;
 
@@ -47,7 +45,6 @@ final class Kernel {
     this._hasDefinedDevPort,
     this._devPort, {
     required this.logger,
-    required this.environment,
     required this.httpClient,
     required this.packetListener,
     required this.eventListener,
@@ -63,7 +60,7 @@ final class Kernel {
   }
 
   Future<void> init() async {
-    final isDevelopmentMode = environment.get(AppEnv.dartEnv) == 'development';
+    final isDevelopmentMode = env.get(AppEnv.dartEnv) == 'development';
     final useHmr = isDevelopmentMode && _hasDefinedDevPort;
 
     if ((useHmr && Isolate.current.debugName != 'main') || !useHmr) {

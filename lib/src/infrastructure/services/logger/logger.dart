@@ -3,34 +3,22 @@ import 'dart:io';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart' as logging;
 import 'package:mansion/mansion.dart';
-import 'package:mineral/src/domains/services/environment/env.dart';
 import 'package:mineral/src/domains/services/logger/log_level.dart';
 import 'package:mineral/src/domains/services/logger/logger_contract.dart';
-import 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 
 final class Logger implements LoggerContract {
   static Color get primaryColor => Color.fromRGB(140, 169, 238);
 
   static Color get mutedColor => Color.brightBlack;
 
-  final EnvContract _env;
+  final LogLevel _logLevel;
+  final String _dartEnv;
+
   final _logger = logging.Logger('Core');
 
-  Logger(this._env) {
-    final level = _env.get(AppEnv.logLevel);
-    final dartEnv = _env.get(AppEnv.dartEnv);
+  Logger(this._logLevel, this._dartEnv) {
+    logging.Logger.root.level = _logLevel.level;
 
-    final bool logLevel = LogLevel.values
-        .map((level) => level.name)
-        .contains(level.toUpperCase());
-    if (!logLevel) {
-      throw Exception(
-          'Invalid LOG_LEVEL environment variable, please include in ${LogLevel.values.map((level) => level.name.toLowerCase())}');
-    }
-
-    logging.Logger.root.level = LogLevel.values
-        .firstWhere((element) => element.name == level.toUpperCase())
-        .value;
     logging.Logger.root.onRecord.listen((record) {
       final time = '[${DateFormat.Hms().format(record.time)}]';
 
@@ -65,7 +53,7 @@ final class Logger implements LoggerContract {
         _ => makeMessage('unknown', Color.blue, [Print(record.message)]),
       };
 
-      if (dartEnv == 'production') {
+      if (_dartEnv == 'production') {
         message.writeWithoutAnsi();
         return;
       }

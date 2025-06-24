@@ -1,4 +1,4 @@
-import 'package:mineral/container.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:recase/recase.dart';
 
@@ -12,8 +12,7 @@ final class EnvPlaceholder implements PlaceholderContract {
   Map<String, dynamic> get values => _values;
 
   EnvPlaceholder() {
-    final env = ioc.resolve<EnvContract>();
-    _injectEntryMap(identifier, env.list);
+    _injectEntryMap(identifier, env.toJson());
   }
 
   void _injectEntryMap(String identifier, Map<String, dynamic> values) {
@@ -26,15 +25,17 @@ final class EnvPlaceholder implements PlaceholderContract {
   }
 
   @override
-  String apply(String value) => values.entries.fold(value, (acc, element) {
-        final finalValue = switch (element.value) {
-          String() => element.value,
-          int() => element.value.toString(),
-          _ => throw Exception('Invalid type')
-        };
+  String apply(String value) {
+    return values.entries.fold(value, (acc, element) {
+      final finalValue = switch (element.value) {
+        String() => element.value,
+        int() => element.value.toString(),
+        _ => throw Exception('Invalid type')
+      };
 
-        return acc
-            .replaceAll('{${element.key}}', finalValue)
-            .replaceAll('{{ ${element.key} }}', finalValue);
-      });
+      return acc
+          .replaceAll('{${element.key}}', finalValue)
+          .replaceAll('{{ ${element.key} }}', finalValue);
+    });
+  }
 }

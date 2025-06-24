@@ -18,8 +18,6 @@ final class Client {
 
   IocContainer get container => ioc;
 
-  EnvContract get environment => _kernel.environment;
-
   LoggerContract get logger => _kernel.logger;
 
   DataStoreContract get rest => ioc.resolve<DataStoreContract>();

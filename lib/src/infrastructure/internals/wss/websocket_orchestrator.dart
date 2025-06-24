@@ -20,8 +20,6 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
 
   HttpClientContract get _httpClient => ioc.resolve<HttpClientContract>();
 
-  EnvContract get _env => ioc.resolve<EnvContract>();
-
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
 
   @override
@@ -66,7 +64,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
 
   void _requestMessage(WebsocketIsolateMessageTransfert message) {
     if (Isolate.current.debugName == 'main' &&
-        _env.get(AppEnv.dartEnv) == 'production') {
+        env.get(AppEnv.dartEnv) == 'production') {
       requestQueue.add((
         uid: message.uid!,
         targetKeys: message.targetKeys,

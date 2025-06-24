@@ -20,8 +20,6 @@ import 'package:mineral/src/infrastructure/internals/wss/websocket_orchestrator.
 
 final class ClientBuilder {
   late final LoggerContract _logger;
-  final EnvContract _env = Environment();
-
   CacheProviderContract? _cache;
   final List<EnvSchema> _schemas = [];
   final List<ConstructableWithArgs<ProviderContract, Client>> _providers = [];
@@ -31,11 +29,12 @@ final class ClientBuilder {
   bool _hasDefinedDevPort = false;
   EncodingStrategy _wsEncodingStrategy = JsonEncoderStrategy();
 
-  final WatcherConfig _watcherConfig = WatcherConfig();
+  String? _token;
+  int? _intent;
+  int? _discordRestHttpVersion;
+  int? _discordWssVersion;
 
-  ClientBuilder() {
-    _logger = Logger(_env);
-  }
+  final WatcherConfig _watcherConfig = WatcherConfig();
 
   ClientBuilder overrideScaffold(Constructable<ScaffoldContract> scaffold) {
     _scaffold = scaffold();
@@ -43,22 +42,22 @@ final class ClientBuilder {
   }
 
   ClientBuilder setToken(String token) {
-    _env.list[AppEnv.token.key] = token;
+    _token = token;
     return this;
   }
 
   ClientBuilder setIntent(int intent) {
-    _env.list[AppEnv.intent.key] = intent.toString();
+    _intent = intent;
     return this;
   }
 
   ClientBuilder setDiscordRestHttpVersion(int version) {
-    _env.list[AppEnv.discordRestHttpVersion.key] = version.toString();
+    _discordRestHttpVersion = version;
     return this;
   }
 
   ClientBuilder setDiscordWssVersion(int version) {
-    _env.list[AppEnv.discordWssVersion.key] = version.toString();
+    _discordWssVersion = version;
     return this;
   }
 
@@ -68,15 +67,13 @@ final class ClientBuilder {
   }
 
   ClientBuilder setCache(
-      ConstructableWithArgs<CacheProviderContract, EnvContract> cache) {
-    _cache = cache(_env);
-    ioc.bind<CacheProviderContract>(() => _cache!);
+      ConstructableWithArgs<CacheProviderContract, Env> cache) {
+    _cache = ioc.make<CacheProviderContract>(() => cache(env));
     return this;
   }
 
-  ClientBuilder setLogger(
-      ConstructableWithArgs<LoggerContract, EnvContract> logger) {
-    _logger = logger(_env);
+  ClientBuilder setLogger(ConstructableWithArgs<LoggerContract, Env> logger) {
+    _logger = logger(env);
     return this;
   }
 
@@ -111,9 +108,7 @@ final class ClientBuilder {
   }
 
   void _validateEnvironment() {
-    _env
-      ..validate(AppEnv.values)
-      ..validate(_schemas);
+    env.defineOf(AppEnv.new);
   }
 
   void _createCache() {
@@ -127,18 +122,22 @@ final class ClientBuilder {
   Client build() {
     _watcherConfig.watchedFiles.add(_scaffold.entrypoint);
 
-    ioc
-      ..bind<ScaffoldContract>(() => _scaffold)
-      ..bind<LoggerContract>(() => _logger)
-      ..bind<EnvContract>(() => _env);
-
     _validateEnvironment();
+
+    final logLevel = env.get(AppEnv.logLevel);
+    final dartEnv = env.get<DartEnv>(AppEnv.dartEnv);
+
+    ioc.bind<ScaffoldContract>(() => _scaffold);
+    _logger = ioc.make<LoggerContract>(() => Logger(logLevel, dartEnv.value));
+
     _createCache();
 
-    final token = _env.get<String>(AppEnv.token);
-    final httpVersion = int.parse(_env.get(AppEnv.discordRestHttpVersion));
-    final shardVersion = int.parse(_env.get(AppEnv.discordWssVersion));
-    final intent = int.parse(_env.get(AppEnv.intent));
+    final token = _token ?? env.get<String>(AppEnv.token);
+    final httpVersion =
+        _discordRestHttpVersion ?? env.get<int>(AppEnv.discordRestHttpVersion);
+    final shardVersion =
+        _discordWssVersion ?? env.get<int>(AppEnv.discordWssVersion);
+    final intent = _intent ?? env.get<int>(AppEnv.intent);
 
     final http = HttpClient(
         config: HttpClientConfigImpl(
@@ -168,7 +167,6 @@ final class ClientBuilder {
       _devPort,
       watcherConfig: _watcherConfig,
       logger: _logger,
-      environment: _env,
       httpClient: http,
       packetListener: packetListener,
       providerManager: providerManager,
