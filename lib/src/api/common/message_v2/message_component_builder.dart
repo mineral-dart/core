@@ -60,7 +60,7 @@ final class MessageComponentBuilder {
     _components.add(gallery);
   }
 
-  void file(MessageFile file) {
+  void file(Attachment file) {
     _components.add(file);
   }
 
