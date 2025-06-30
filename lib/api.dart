@@ -83,6 +83,7 @@ export 'package:mineral/src/api/common/types/interaction_type.dart';
 export 'package:mineral/src/api/common/types/message_flag_type.dart';
 export 'package:mineral/src/api/common/types/status_type.dart';
 export 'package:mineral/src/api/common/types/sticker_type.dart';
+export 'package:mineral/src/api/common/typing.dart';
 export 'package:mineral/src/api/common/video_quality.dart';
 // Private
 export 'package:mineral/src/api/private/channels/private_channel.dart';

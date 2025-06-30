@@ -49,7 +49,8 @@ enum PacketType implements PacketTypeContract {
   voiceChannelStatusUpdate('VOICE_CHANNEL_STATUS_UPDATE'),
 
   inviteCreate('INVITE_CREATE'),
-  inviteDelete('INVITE_DELETE');
+  inviteDelete('INVITE_DELETE'),
+  typingStart('TYPING_START');
 
   @override
   final String name;
