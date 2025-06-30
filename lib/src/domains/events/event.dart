@@ -2,6 +2,7 @@ import 'package:mineral/src/api/common/types/enhanced_enum.dart';
 import 'package:mineral/src/domains/events/contracts/common/invite_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/invite_delete_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
+import 'package:mineral/src/domains/events/contracts/common/typing_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/voice_join_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/voice_leave_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/voice_move_event.dart';
@@ -60,6 +61,7 @@ enum Event implements EnhancedEnum, EventType {
   ready(ReadyEvent, ['Bot bot']),
   inviteCreate(InviteCreateEvent, ['Invite invite']),
   inviteDelete(InviteDeleteEvent, ['String code, Channel channel']),
+  typing(TypingEvent, ['Typing typing']),
   serverAuditLog(ServerAuditLogEvent, ['Server server']),
   serverCreate(ServerCreateEvent, ['Server server']),
   serverUpdate(ServerUpdateEvent, ['Server before', 'Server after']),
