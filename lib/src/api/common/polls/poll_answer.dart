@@ -10,6 +10,7 @@ final class PollAnswer {
   Map<String, dynamic> toJson() {
     return {
       'poll_media': {
+        'type': 'text',
         'text': content,
         ...?Helper.createOrNull(
             field: emoji,

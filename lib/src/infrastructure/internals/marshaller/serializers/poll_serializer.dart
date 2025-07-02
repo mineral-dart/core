@@ -54,10 +54,7 @@ final class PollSerializer implements SerializerContract<Poll> {
   @override
   Map<String, dynamic> deserialize(Poll poll) {
     final answers = poll.answers.map((element) {
-      return {
-        'emoji': element.emoji,
-        'text': element.content,
-      };
+      return element.toJson();
     }).toList();
 
     return {
