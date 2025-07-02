@@ -321,4 +321,10 @@ final class MessagePart implements MessagePartContract {
     completer.complete(message);
     return completer.future;
   }
+
+  @override
+  Future<Poll> sendPoll(String? guildId, String channelId, Poll poll) async {
+    await send(guildId, channelId, null, null, poll, null);
+    return poll;
+  }
 }
