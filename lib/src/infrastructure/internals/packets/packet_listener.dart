@@ -28,6 +28,8 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/interacti
 import 'package:mineral/src/infrastructure/internals/packets/listeners/invite_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/invite_delete_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_create_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/message_poll_vote_add_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/message_poll_vote_remove_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_add_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_remove_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/presence_update_packet.dart';
@@ -103,5 +105,8 @@ final class PacketListener implements PacketListenerContract {
     subscribe(InviteCreatePacket.new);
     subscribe(InviteDeletePacket.new);
     subscribe(TypingPacket.new);
+
+    subscribe(MessagePollVoteAddPacket.new);
+    subscribe(MessagePollVoteRemovePacket.new);
   }
 }
