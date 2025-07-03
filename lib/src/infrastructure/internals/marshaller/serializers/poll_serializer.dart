@@ -59,6 +59,7 @@ final class PollSerializer implements SerializerContract<Poll> {
 
     return {
       'message_id': poll.messageId?.value,
+      'question': poll.question.toJson(),
       'question_text': poll.question.content,
       'answers': answers,
       'expiry': poll.expireAt?.inMilliseconds,
