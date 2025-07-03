@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
+import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
 import 'package:mineral/src/domains/commons/utils/extensions.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
@@ -325,7 +326,6 @@ final class MessagePart implements MessagePartContract {
   @override
   Future<T> sendPoll<T extends Message>(String channelId, Poll poll) async {
     final completer = Completer<T>();
-    print('Sending poll: ${_marshaller.serializers.poll.deserialize(poll)}');
     final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
       'poll': _marshaller.serializers.poll.deserialize(poll)
     });
@@ -342,13 +342,39 @@ final class MessagePart implements MessagePartContract {
           'Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    print('Poll sent: $message');
     final serializedMessage = await _marshaller.serializers.message.serialize(message);
-
-    print('Serialized message: $serializedMessage');
 
     completer.complete(serializedMessage as T);
 
+    return completer.future;
+  }
+
+  @override
+  Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId, Snowflake messageId, int answerId) async {
+    final completer = Completer<PollAnswerVote>();
+    final server = serverId != null ? await _dataStore.server.get(serverId.value, false) : null;
+    final message = await _dataStore.message.get(channelId.value, messageId.value, false);
+
+    final req = Request.json(
+        endpoint: '/channels/${channelId.value}/polls/${messageId.value}/answers/$answerId');
+    final response = await _dataStore.client.get(req);
+
+    response.body['id'] = answerId;
+
+    final votes = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+      await (server != null
+          ?  PollAnswerVote.fromJson<ServerMessage>(response.body, server, message as ServerMessage)
+          :  PollAnswerVote.fromJson<PrivateMessage>(response.body, server, message as PrivateMessage)),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      _ => throw Exception(
+          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
+
+    completer.complete(votes);
     return completer.future;
   }
 }
