@@ -323,8 +323,32 @@ final class MessagePart implements MessagePartContract {
   }
 
   @override
-  Future<Poll> sendPoll(String? guildId, String channelId, Poll poll) async {
-    await send(guildId, channelId, null, null, poll, null);
-    return poll;
+  Future<T> sendPoll<T extends Message>(String channelId, Poll poll) async {
+    final completer = Completer<T>();
+    print('Sending poll: ${_marshaller.serializers.poll.deserialize(poll)}');
+    final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
+      'poll': _marshaller.serializers.poll.deserialize(poll)
+    });
+    final response = await _dataStore.client.post(req);
+
+    final message = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+      await _marshaller.serializers.message.normalize(response.body),
+      int() when status.isRateLimit(response.statusCode) =>
+      throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) =>
+      throw HttpException(response.bodyString),
+      _ => throw Exception(
+          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
+
+    print('Poll sent: $message');
+    final serializedMessage = await _marshaller.serializers.message.serialize(message);
+
+    print('Serialized message: $serializedMessage');
+
+    completer.complete(serializedMessage as T);
+
+    return completer.future;
   }
 }

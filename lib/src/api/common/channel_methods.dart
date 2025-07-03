@@ -148,8 +148,8 @@ final class ChannelMethods {
     return _datastore.message.sendV2(guildId?.value, id.value, builder);
   }
 
-  Future<Poll> sendPoll(Snowflake? guildId, Poll poll) async {
-    return _datastore.message.sendPoll(guildId?.value, id.value, poll);
+  Future<Message> sendPoll(Poll poll) async {
+    return _datastore.message.sendPoll<Message>(id.value, poll);
   }
 
   Future<void> delete(String? reason) async {
