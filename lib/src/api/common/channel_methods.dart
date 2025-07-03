@@ -148,8 +148,8 @@ final class ChannelMethods {
     return _datastore.message.sendV2(guildId?.value, id.value, builder);
   }
 
-  Future<Message> sendPoll(Poll poll) async {
-    return _datastore.message.sendPoll<Message>(id.value, poll);
+  Future<T> sendPoll<T extends Message>(Poll poll) async {
+    return _datastore.message.sendPoll<T>(id.value, poll);
   }
 
   Future<void> delete(String? reason) async {
