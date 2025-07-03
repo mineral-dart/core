@@ -6,7 +6,7 @@ import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef ServerPollVoteAddEventHandler = FutureOr<void> Function(Server, Message, int);
+typedef ServerPollVoteAddEventHandler = FutureOr<void> Function(PollAnswerVote<ServerMessage>, User);
 
 abstract class ServerPollVoteAddEvent implements ListenableEvent {
   @override
@@ -15,5 +15,5 @@ abstract class ServerPollVoteAddEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(Server server, Message message, int answerId);
+  FutureOr<void> handle(PollAnswerVote<ServerMessage> answer, User user);
 }
