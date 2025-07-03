@@ -128,9 +128,9 @@ enum Event implements EnhancedEnum, EventType {
       ServerMessageReactionRemoveEvent, ['MessageReaction reaction']),
 
   serverPollVoteAdd(
-      ServerPollVoteAddEvent, ['Server server', 'Message message', 'List<PollAnswerVote> answers']),
+      ServerPollVoteAddEvent, ['PollAnswerVote<ServerMessage> message', 'User user']),
   serverPollVoteRemove(
-      ServerPollVoteRemoveEvent, ['Server server', 'Message message', 'List<PollAnswerVote> answers']),
+      ServerPollVoteRemoveEvent, ['PollAnswerVote<ServerMessage> message', 'User user']),
 
   // private
   privateMessageCreate(PrivateMessageCreateEvent, ['PrivateMessage message']),
@@ -139,10 +139,10 @@ enum Event implements EnhancedEnum, EventType {
       ['PrivateChannel before', 'PrivateChannel after']),
 
   privatePollVoteAdd(
-      PrivatePollVoteAddEvent, ['PrivateMessage message', 'List<PollAnswerVote> answers']),
+      PrivatePollVoteAddEvent, ['PollAnswerVote<PrivateMessage> message', 'User user']),
 
   privatePollVoteRemove(
-      PrivatePollVoteRemoveEvent, ['PrivateMessage message', 'List<PollAnswerVote> answers']),
+      PrivatePollVoteRemoveEvent, ['PollAnswerVote<PrivateMessage> message', 'User user']),
 
   privateChannelDelete(PrivateChannelDeleteEvent, ['PrivateChannel? channel']),
   privateButtonClick(PrivateButtonClickEvent, ['PrivateButtonContext ctx']),
