@@ -50,6 +50,10 @@ enum PacketType implements PacketTypeContract {
 
   inviteCreate('INVITE_CREATE'),
   inviteDelete('INVITE_DELETE'),
+
+  messagePollVoteAdd('MESSAGE_POLL_VOTE_ADD'),
+  messagePollVoteRemove('MESSAGE_POLL_VOTE_REMOVE'),
+
   typingStart('TYPING_START');
 
   @override

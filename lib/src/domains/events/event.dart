@@ -14,10 +14,11 @@ import 'package:mineral/src/domains/events/contracts/private/private_channel_pin
 import 'package:mineral/src/domains/events/contracts/private/private_channel_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_dialog_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_remove_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_audit_log_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
@@ -39,6 +40,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_member_update
 import 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_role_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';
@@ -54,6 +56,9 @@ import 'package:mineral/src/domains/events/contracts/server/server_thread_member
 import 'package:mineral/src/domains/events/contracts/server/server_thread_member_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_thread_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_update_event.dart';
+
+import 'contracts/private/private_poll_vote_add_event.dart';
+import 'contracts/server/server_poll_vote_add_event.dart';
 
 interface class EventType {}
 
@@ -122,11 +127,23 @@ enum Event implements EnhancedEnum, EventType {
   serverMessageReactionRemove(
       ServerMessageReactionRemoveEvent, ['MessageReaction reaction']),
 
+  serverPollVoteAdd(
+      ServerPollVoteAddEvent, ['PollAnswerVote<ServerMessage> message', 'User user']),
+  serverPollVoteRemove(
+      ServerPollVoteRemoveEvent, ['PollAnswerVote<ServerMessage> message', 'User user']),
+
   // private
   privateMessageCreate(PrivateMessageCreateEvent, ['PrivateMessage message']),
   privateChannelCreate(PrivateChannelCreateEvent, ['PrivateChannel channel']),
   privateChannelUpdate(PrivateChannelUpdateEvent,
       ['PrivateChannel before', 'PrivateChannel after']),
+
+  privatePollVoteAdd(
+      PrivatePollVoteAddEvent, ['PollAnswerVote<PrivateMessage> message', 'User user']),
+
+  privatePollVoteRemove(
+      PrivatePollVoteRemoveEvent, ['PollAnswerVote<PrivateMessage> message', 'User user']),
+
   privateChannelDelete(PrivateChannelDeleteEvent, ['PrivateChannel? channel']),
   privateButtonClick(PrivateButtonClickEvent, ['PrivateButtonContext ctx']),
   privateDialogSubmit(PrivateDialogSubmitEvent, ['PrivateDialogContext ctx']),

@@ -123,6 +123,8 @@ final class ServerTextChannel extends ServerChannel {
   Future<T> sendV2<T extends Message>(MessageComponentBuilder builder) =>
       _methods.sendV2(guildId: _properties.serverId, builder: builder);
 
+  Future<T> sendPoll<T extends Message>(Poll poll) => _methods.sendPoll<T>(poll);
+
   /// Deletes the channel.
   ///
   /// ```dart

@@ -5,6 +5,7 @@ import 'package:http/http.dart' as http;
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
+import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
 import 'package:mineral/src/domains/commons/utils/extensions.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
@@ -319,6 +320,62 @@ final class MessagePart implements MessagePartContract {
     final message = await _marshaller.serializers.message.serialize(raw) as R;
 
     completer.complete(message);
+    return completer.future;
+  }
+
+  @override
+  Future<T> sendPoll<T extends Message>(String channelId, Poll poll) async {
+    final completer = Completer<T>();
+    final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
+      'poll': _marshaller.serializers.poll.deserialize(poll)
+    });
+    final response = await _dataStore.client.post(req);
+
+    final message = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+      await _marshaller.serializers.message.normalize(response.body),
+      int() when status.isRateLimit(response.statusCode) =>
+      throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) =>
+      throw HttpException(response.bodyString),
+      _ => throw Exception(
+          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
+
+    final serializedMessage = await _marshaller.serializers.message.serialize(message);
+
+    completer.complete(serializedMessage as T);
+
+    return completer.future;
+  }
+
+  @override
+  Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId, Snowflake messageId, int answerId) async {
+    final completer = Completer<PollAnswerVote>();
+
+    final req = Request.json(
+        endpoint: '/channels/${channelId.value}/polls/${messageId.value}/answers/$answerId');
+    final response = await _dataStore.client.get(req);
+
+    response.body['id'] = answerId;
+    response.body['message_id'] = messageId.value;
+    response.body['channel_id'] = channelId.value;
+    response.body['server_id'] = serverId?.value;
+
+    final answerPayload = switch (response.statusCode) {
+      int() when status.isSuccess(response.statusCode) =>
+        await _marshaller.serializers.pollAnswerVote.normalize(response.body),
+      int() when status.isRateLimit(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      int() when status.isError(response.statusCode) =>
+        throw HttpException(response.bodyString),
+      _ => throw Exception(
+          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+    };
+
+    final answer = await _marshaller.serializers.pollAnswerVote.serialize(answerPayload);
+
+    completer.complete(answer);
     return completer.future;
   }
 }

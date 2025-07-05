@@ -3,10 +3,12 @@ import 'package:mineral/src/domains/events/contracts/private/private_channel_cre
 import 'package:mineral/src/domains/events/contracts/private/private_channel_pins_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_dialog_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/private_message_reaction_remove_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
 
@@ -41,4 +43,10 @@ final class PrivateBucket {
 
   void privateMessageReactionRemove(PrivateMessageReactionRemoveHandler handle) =>
       _events.make(Event.privateMessageReactionRemove, handle);
+
+  void pollVoteAdd(PrivatePollVoteAddEventHandler handle) =>
+      _events.make(Event.privatePollVoteAdd, handle);
+
+  void pollVoteRemove(PrivatePollVoteRemoveEventHandler handle) =>
+      _events.make(Event.privatePollVoteRemove, handle);
 }

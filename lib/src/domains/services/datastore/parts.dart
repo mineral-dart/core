@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
 import 'package:mineral/src/api/server/channels/private_thread_channel.dart';
 import 'package:mineral/src/api/server/channels/public_thread_channel.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
@@ -103,6 +104,8 @@ abstract interface class MessagePartContract implements DataStorePart {
   Future<T?> get<T extends BaseMessage>(
       Object channelId, Object id, bool force);
 
+  Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId, Snowflake messageId, int answerId);
+
   Future<T> update<T extends Message>({
     required Object id,
     required Object channelId,
@@ -129,6 +132,8 @@ abstract interface class MessagePartContract implements DataStorePart {
 
   Future<T> sendV2<T extends Message>(
       String? guildId, String channelId, MessageComponentBuilder builder);
+
+  Future<T> sendPoll<T extends Message>(String channelId, Poll poll);
 
   Future<R> reply<T extends Channel, R extends Message>(
       {required Snowflake id,
