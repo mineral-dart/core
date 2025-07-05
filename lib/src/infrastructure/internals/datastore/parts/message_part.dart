@@ -352,20 +352,19 @@ final class MessagePart implements MessagePartContract {
   @override
   Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId, Snowflake messageId, int answerId) async {
     final completer = Completer<PollAnswerVote>();
-    final server = serverId != null ? await _dataStore.server.get(serverId.value, false) : null;
-    final message = await _dataStore.message.get(channelId.value, messageId.value, false);
 
     final req = Request.json(
         endpoint: '/channels/${channelId.value}/polls/${messageId.value}/answers/$answerId');
     final response = await _dataStore.client.get(req);
 
     response.body['id'] = answerId;
+    response.body['message_id'] = messageId.value;
+    response.body['channel_id'] = channelId.value;
+    response.body['server_id'] = serverId?.value;
 
-    final votes = switch (response.statusCode) {
+    final answerPayload = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-      await (server != null
-          ?  PollAnswerVote.fromJson<ServerMessage>(response.body, server, message as ServerMessage)
-          :  PollAnswerVote.fromJson<PrivateMessage>(response.body, server, message as PrivateMessage)),
+        await _marshaller.serializers.pollAnswerVote.normalize(response.body),
       int() when status.isRateLimit(response.statusCode) =>
         throw HttpException(response.bodyString),
       int() when status.isError(response.statusCode) =>
@@ -374,7 +373,9 @@ final class MessagePart implements MessagePartContract {
           'Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    completer.complete(votes);
+    final answer = await _marshaller.serializers.pollAnswerVote.serialize(answerPayload);
+
+    completer.complete(answer);
     return completer.future;
   }
 }
