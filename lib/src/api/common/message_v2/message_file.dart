@@ -37,6 +37,8 @@ final class Attachment implements MessageComponent {
     final uri = Uri.parse(url);
     final response = await http.get(uri);
 
+    _cachedAttachments[url] = response.bodyBytes;
+
     return Attachment(uri.path, spoiler: spoiler)..bytes = response.bodyBytes;
   }
 
