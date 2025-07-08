@@ -1,7 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/commons/utils/helper.dart';
 
 final class Interaction implements InteractionContract {
   final String _token;
@@ -9,8 +8,6 @@ final class Interaction implements InteractionContract {
   final Snowflake _botId = ioc.resolve<Bot>().id;
 
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
-
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   Interaction(this._token, this._id);
 
@@ -44,49 +41,26 @@ final class Interaction implements InteractionContract {
   }
 
   @override
-  Future<InteractionContract> followUp(
-      {String? content,
-      List<MessageEmbed> embeds = const [],
-      List<MessageComponent> components = const [],
+  Future<InteractionContract> followup(
+      {required MessageComponentBuilder builder,
       bool ephemeral = false}) async {
-    await _datastore.interaction.followUpInteraction(_botId, _token, {
-      'content': content,
-      'embeds': await Helper.createOrNullAsync(
-          field: embeds,
-          fn: () async =>
-              embeds.map(_marshaller.serializers.embed.deserialize).toList()),
-      'components': Helper.createOrNull(
-          field: components.isNotEmpty,
-          fn: () => components.map((e) => e.toJson()).toList()),
-      'flags': ephemeral
-          ? MessageFlagType.ephemeral.value
-          : MessageFlagType.none.value,
-    });
+    await _datastore.interaction
+        .createFollowup(_botId, _token, builder, ephemeral);
     return this;
   }
 
   @override
-  Future<InteractionContract> editFollowUp(
-      {String? content,
-      List<MessageEmbed> embeds = const [],
-      List<MessageComponent> components = const [],
+  Future<InteractionContract> editFollowup(
+      {required MessageComponentBuilder builder,
       bool ephemeral = false}) async {
-    await _datastore.interaction.editFollowUpInteraction(_botId, _token, _id, {
-      'content': content,
-      'embeds': await Helper.createOrNullAsync(
-          field: embeds,
-          fn: () async =>
-              embeds.map(_marshaller.serializers.embed.deserialize).toList()),
-      'components': Helper.createOrNull(
-          field: components.isNotEmpty,
-          fn: () => components.map((e) => e.toJson()).toList()),
-    });
+    await _datastore.interaction
+        .editFollowup(_botId, _token, _id, builder, ephemeral);
     return this;
   }
 
   @override
-  Future<void> deleteFollowUp() async {
-    await _datastore.interaction.deleteFollowUpInteraction(_botId, _token, _id);
+  Future<void> deleteFollowup() async {
+    await _datastore.interaction.deleteFollowup(_botId, _token, _id);
   }
 
   @override
@@ -96,27 +70,8 @@ final class Interaction implements InteractionContract {
   }
 
   @override
-  Future<InteractionContract> editWait(
-      {String? content,
-      List<MessageEmbed> embeds = const [],
-      List<MessageComponent> components = const [],
-      bool ephemeral = false}) async {
-    await _datastore.interaction.editWaitInteraction(_botId, _token, _id, {
-      'content': content,
-      'embeds': await Helper.createOrNullAsync(
-          field: embeds,
-          fn: () async =>
-              embeds.map(_marshaller.serializers.embed.deserialize).toList()),
-      'components': Helper.createOrNull(
-          field: components.isNotEmpty,
-          fn: () => components.map((e) => e.toJson()).toList()),
-    });
-    return this;
-  }
-
-  @override
   Future<void> deleteDefer() async {
-    await _datastore.interaction.deleteWaitInteraction(_botId, _token, _id);
+    await _datastore.interaction.deleteFollowup(_botId, _token, _id);
   }
 
   @override

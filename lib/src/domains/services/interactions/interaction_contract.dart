@@ -40,11 +40,8 @@ abstract class InteractionContract {
   /// ```dart
   /// final interaction = await interaction.followUp(content: 'Hello Mineral');
   /// ```
-  Future<InteractionContract> followUp(
-      {String content,
-      List<MessageEmbed> embeds,
-      List<MessageComponent> components,
-      bool ephemeral = false});
+  Future<InteractionContract> followup(
+      {required MessageComponentBuilder builder, bool ephemeral = false});
 
   /// Use to edit the follow up message.
   /// Usage:
@@ -52,11 +49,8 @@ abstract class InteractionContract {
   /// ```dart
   /// final interaction = await interaction.editFollowUp(content: 'New Hello Mineral');
   /// ```
-  Future<InteractionContract> editFollowUp(
-      {String content,
-      List<MessageEmbed> embeds,
-      List<MessageComponent> components,
-      bool ephemeral = false});
+  Future<InteractionContract> editFollowup(
+      {required MessageComponentBuilder builder, bool ephemeral = false});
 
   /// Use to delete the follow up message.
   /// Usage:
@@ -64,7 +58,7 @@ abstract class InteractionContract {
   /// ```dart
   /// await interaction.deleteFollowUp();
   /// ```
-  Future<void> deleteFollowUp();
+  Future<void> deleteFollowup();
 
   /// Use to defer the interaction, like a loading state.
   /// Usage:
@@ -73,18 +67,6 @@ abstract class InteractionContract {
   /// await interaction.defer();
   /// ```
   Future<InteractionContract> wait();
-
-  /// Use to edit the deferred message, delete the deferred message to a simple reply.
-  /// Usage:
-  ///
-  /// ```dart
-  /// await interaction.editDefer(content: 'Hello Mineral');
-  /// ```
-  Future<InteractionContract> editWait(
-      {String content,
-      List<MessageEmbed> embeds,
-      List<MessageComponent> components,
-      bool ephemeral = false});
 
   /// Use to delete the deferred message.
   /// Usage:

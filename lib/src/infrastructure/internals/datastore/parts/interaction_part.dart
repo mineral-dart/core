@@ -76,44 +76,61 @@ final class InteractionPart implements InteractionPartContract {
   }
 
   @override
-  Future<void> followUpInteraction(
-      Snowflake botId, String token, Map<String, dynamic> raw) async {
-    final req = Request.json(endpoint: '/webhooks/$botId/$token', body: raw);
-    await _dataStore.client.post(req);
+  Future<void> createFollowup(Snowflake id, String token,
+      MessageComponentBuilder builder, bool ephemeral) async {
+    final (components, files) = makeAttachmentFromBuilder(builder);
+
+    int flags = MessageFlagType.isComponentV2.value;
+    if (ephemeral) {
+      flags += MessageFlagType.ephemeral.value;
+    }
+
+    final req = Request.auto(
+      endpoint: '/webhooks/$id/$token',
+      body: {
+        'type': InteractionCallbackType.channelMessageWithSource.value,
+        'data': {'flags': flags, 'components': components}
+      },
+      files: files,
+    );
+
+    await _dataStore.requestBucket.query<Map>(req).run(_dataStore.client.post);
   }
 
   @override
-  Future<void> editFollowUpInteraction(Snowflake botId, String token,
-      Snowflake messageId, Map<String, dynamic> raw) async {
-    final req = Request.json(
-        endpoint: '/webhooks/$botId/$token/messages/$messageId', body: raw);
-    await _dataStore.client.patch(req);
-  }
+  Future<void> editFollowup(Snowflake botId, String token, Snowflake messageId,
+      MessageComponentBuilder builder, bool ephemeral) async {
+    final (components, files) = makeAttachmentFromBuilder(builder);
 
-  @override
-  Future<void> deleteFollowUpInteraction(
-      Snowflake botId, String token, Snowflake messageId) async {
-    final req =
-        Request.json(endpoint: '/webhooks/$botId/$token/messages/$messageId');
-    await _dataStore.client.delete(req);
+    int flags = MessageFlagType.isComponentV2.value;
+    if (ephemeral) {
+      flags += MessageFlagType.ephemeral.value;
+    }
+
+    final req = Request.auto(
+      endpoint: '/webhooks/$botId/$token/messages/$messageId',
+      body: {'flags': flags, 'components': components},
+      files: files,
+    );
+
+    await _dataStore.requestBucket.query<Map>(req).run(_dataStore.client.patch);
   }
 
   @override
   Future<void> waitInteraction(Snowflake id, String token) async {
-    // Todo: Implement this
-    throw UnimplementedError();
-  }
-
-  @override
-  Future<void> editWaitInteraction(Snowflake botId, String token,
-      Snowflake messageId, Map<String, dynamic> raw) async {
     final req = Request.json(
-        endpoint: '/webhooks/$botId/$token/messages/$messageId', body: raw);
-    await _dataStore.client.patch(req);
+      endpoint: '/webhooks/$id/$token',
+      body: {
+        'type': InteractionCallbackType.deferredUpdateMessage.value,
+        'data': {'flags': MessageFlagType.ephemeral.value}
+      },
+    );
+
+    await _dataStore.requestBucket.query<Map>(req).run(_dataStore.client.post);
   }
 
   @override
-  Future<void> deleteWaitInteraction(
+  Future<void> deleteFollowup(
       Snowflake botId, String token, Snowflake messageId) async {
     final req =
         Request.json(endpoint: '/webhooks/$botId/$token/messages/$messageId');
