@@ -68,14 +68,6 @@ abstract class InteractionContract {
   /// ```
   Future<InteractionContract> wait();
 
-  /// Use to delete the deferred message.
-  /// Usage:
-  ///
-  /// ```dart
-  /// await interaction.deleteDefer();
-  /// ```
-  Future<void> deleteDefer();
-
   /// Use to send a dialog to the interaction.
   ///
   /// Usage:
