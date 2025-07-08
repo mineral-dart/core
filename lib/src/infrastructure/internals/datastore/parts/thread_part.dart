@@ -21,7 +21,8 @@ final class ThreadPart implements ThreadPartContract {
 
     final request = Request.json(endpoint: '/guilds/$serverId/threads/active');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get(request));
+        .query<List<Map<String, dynamic>>>(request)
+        .run(_dataStore.client.get);
 
     final channels = await result.map((element) async {
       final raw = await _marshaller.serializers.channels.normalize(element);
@@ -42,7 +43,8 @@ final class ThreadPart implements ThreadPartContract {
 
     final req = Request.json(endpoint: '/channels/$channelId/archived/public');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get(req));
+        .query<List<Map<String, dynamic>>>(req)
+        .run(_dataStore.client.get);
 
     final channels = await result.map((element) async {
       final raw = await _marshaller.serializers.channels.normalize(element);
@@ -63,7 +65,8 @@ final class ThreadPart implements ThreadPartContract {
 
     final req = Request.json(endpoint: '/channels/$channelId/archived/private');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get(req));
+        .query<List<Map<String, dynamic>>>(req)
+        .run(_dataStore.client.get);
 
     final channels = await result.map((element) async {
       final raw = await _marshaller.serializers.channels.normalize(element);
@@ -88,7 +91,8 @@ final class ThreadPart implements ThreadPartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final channel = await _marshaller.serializers.channels.serialize({
@@ -112,7 +116,8 @@ final class ThreadPart implements ThreadPartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final channel = await _marshaller.serializers.channels.serialize({

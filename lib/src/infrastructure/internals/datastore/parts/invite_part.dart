@@ -29,7 +29,8 @@ final class InvitePart implements InvitePartContract {
 
     final req = Request.json(endpoint: '/invites/$code');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.get);
 
     final raw = await _marshaller.serializers.invite.normalize(result);
     final invite = await _marshaller.serializers.invite.serialize(raw);
@@ -48,7 +49,8 @@ final class InvitePart implements InvitePartContract {
     });
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.get);
 
     final metadata = InviteMetadata(
       approximateMemberCount: result['approximate_member_count'],
@@ -100,6 +102,7 @@ final class InvitePart implements InvitePartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 }

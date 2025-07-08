@@ -128,17 +128,8 @@ class PrivateThreadChannel extends ServerChannel implements ThreadChannel {
   /// ```dart
   /// await channel.send(content: 'Hello, world!');
   /// ```
-  Future<void> send(
-          {String? content,
-          List<MessageEmbed>? embeds,
-          Poll? poll,
-          List<MessageComponent>? components}) =>
-      _methods.send(
-          guildId: serverId,
-          content: content,
-          embeds: embeds,
-          poll: poll,
-          components: components);
+  Future<void> send(MessageComponentBuilder builder) =>
+      _methods.send(guildId: serverId, builder: builder);
 
   /// Deletes the channel.
   ///

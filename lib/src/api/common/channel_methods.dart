@@ -134,18 +134,8 @@ final class ChannelMethods {
   }
 
   Future<T> send<T extends Message>(
-      {Snowflake? guildId,
-      String? content,
-      List<MessageEmbed>? embeds,
-      Poll? poll,
-      List<MessageComponent>? components}) async {
-    return _datastore.message
-        .send(guildId?.value, id.value, content, embeds, poll, components);
-  }
-
-  Future<T> sendV2<T extends Message>(
       {required MessageComponentBuilder builder, Snowflake? guildId}) async {
-    return _datastore.message.sendV2(guildId?.value, id.value, builder);
+    return _datastore.message.send(guildId?.value, id.value, builder);
   }
 
   Future<T> sendPoll<T extends Message>(Poll poll) async {

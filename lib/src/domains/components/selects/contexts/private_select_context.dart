@@ -1,8 +1,13 @@
+import 'dart:async';
+
 import 'package:mineral/api.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/interaction.dart';
 
 final class PrivateSelectContext implements SelectContext {
+  DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
+
   @override
   final Snowflake id;
 
@@ -18,9 +23,11 @@ final class PrivateSelectContext implements SelectContext {
   @override
   final String customId;
 
-  final User user;
+  final Snowflake userId;
 
-  final PrivateMessage message;
+  final Snowflake? messageId;
+
+  final Snowflake? channelId;
 
   late final InteractionContract interaction;
 
@@ -30,10 +37,30 @@ final class PrivateSelectContext implements SelectContext {
     required this.token,
     required this.version,
     required this.customId,
-    required this.message,
-    required this.user,
+    required this.messageId,
+    required this.userId,
+    required this.channelId,
   }) {
     interaction = Interaction(token, id);
+  }
+
+  Future<User?> resolveUser({bool force = false}) =>
+      _datastore.user.get(userId.value, force);
+
+  FutureOr<PrivateMessage?> resolveMessage({bool force = false}) {
+    if ([channelId, messageId].contains(null)) {
+      return null;
+    }
+
+    return _datastore.message.get(channelId!.value, messageId!.value, force);
+  }
+
+  FutureOr<PrivateChannel?> resolveChannel({bool force = false}) {
+    if (channelId == null) {
+      return null;
+    }
+
+    return _datastore.channel.get<PrivateChannel>(channelId!.value, force);
   }
 
   static Future<PrivateSelectContext> fromMap(MarshallerContract marshaller,
@@ -44,12 +71,9 @@ final class PrivateSelectContext implements SelectContext {
       applicationId: Snowflake.parse(payload['application_id']),
       token: payload['token'],
       version: payload['version'],
-      message: (await datastore.message.get<PrivateMessage>(
-        payload['channel_id'],
-        payload['message']['id'],
-        false,
-      ))!,
-      user: (await datastore.user.get(payload['user']['id'], false))!,
+      userId: Snowflake.parse(payload['user']['id']),
+      messageId: Snowflake.nullable(payload['message']['id']),
+      channelId: Snowflake.nullable(payload['channel_id']),
     );
   }
 }

@@ -24,15 +24,23 @@ abstract interface class BaseMessage {
 
   Future<T> resolveChannel<T extends Channel>();
 
-  Future<T> reply<T extends Message>(
-      {String? content,
-      List<MessageEmbed>? embeds,
-      List<MessageComponent>? components});
+  /// Reply to the message with a new message.
+  ///
+  /// ```dart
+  /// {@macro message_component_builder}
+  ///
+  /// await message.reply(builder);
+  /// ```
+  Future<T> reply<T extends Message>(MessageComponentBuilder builder);
 
-  Future<T> replyV2<T extends Message>(MessageComponentBuilder builder);
-
-  Future<void> edit(String? content, List<MessageEmbed>? embeds,
-      List<MessageComponent>? components);
+  /// Edit the message with a new message.
+  ///
+  /// ```dart
+  /// {@macro message_component_builder}
+  ///
+  /// await message.edit(builder);
+  /// ```
+  Future<void> edit(MessageComponentBuilder builder);
 }
 
 abstract interface class ServerMessage implements BaseMessage {
@@ -95,14 +103,9 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
             ReactionManger(_properties.id.value, _properties.channelId.value);
 
   @override
-  Future<void> edit(String? content, List<MessageEmbed>? embeds,
-      List<MessageComponent>? components) async {
-    await _datastore.message.update(
-        id: id.value,
-        channelId: channelId.value,
-        content: content,
-        embeds: embeds,
-        components: components);
+  Future<void> edit(MessageComponentBuilder builder) async {
+    await _datastore.message
+        .update(id: id.value, channelId: channelId.value, builder: builder);
   }
 
   @override
@@ -128,27 +131,9 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   Future<Server> resolveServer({bool force = false}) =>
       _datastore.server.get(serverId!.value, force);
 
-  /// Reply to the original message.
-  ///
-  /// ```dart
-  /// await message.reply(content: 'Replying to the message');
-  /// ```
   @override
-  Future<T> reply<T extends Message>(
-      {String? content,
-      List<MessageEmbed>? embeds,
-      List<MessageComponent>? components}) async {
-    return _datastore.message.reply(
-        id: id,
-        channelId: channelId,
-        content: content,
-        embeds: embeds,
-        components: components);
-  }
-
-  @override
-  Future<T> replyV2<T extends Message>(MessageComponentBuilder builder) async {
-    return _datastore.message.replyV2(id, channelId, builder);
+  Future<T> reply<T extends Message>(MessageComponentBuilder builder) async {
+    return _datastore.message.reply(id, channelId, builder);
   }
 
   /// Pin the message.

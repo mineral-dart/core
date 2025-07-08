@@ -19,7 +19,8 @@ final class EmojiPart implements EmojiPartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/emojis');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get(req));
+        .query<List<Map<String, dynamic>>>(req)
+        .run(_dataStore.client.get);
 
     final emojis = await result.map((element) async {
       final raw = await _marshaller.serializers.emojis.normalize(element);
@@ -47,7 +48,8 @@ final class EmojiPart implements EmojiPartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/emojis/$emojiId');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.get);
 
     final raw = await _marshaller.serializers.emojis.normalize(result);
     final emoji = await _marshaller.serializers.emojis.serialize(raw);
@@ -71,7 +73,8 @@ final class EmojiPart implements EmojiPartContract {
       DiscordHeader.auditLogReason(reason)
     });
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final emoji = await _marshaller.serializers.emojis.serialize({
@@ -98,7 +101,8 @@ final class EmojiPart implements EmojiPartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.patch(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.patch);
 
     final raw = await _marshaller.serializers.emojis.normalize({
       ...result,
@@ -117,6 +121,7 @@ final class EmojiPart implements EmojiPartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 }

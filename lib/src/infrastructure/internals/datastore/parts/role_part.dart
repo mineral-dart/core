@@ -20,7 +20,8 @@ final class RolePart implements RolePartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/roles');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get(req));
+        .query<List<Map<String, dynamic>>>(req)
+        .run(_dataStore.client.get);
 
     final roles = await result.map((element) async {
       final raw = await _marshaller.serializers.role.normalize({
@@ -51,7 +52,8 @@ final class RolePart implements RolePartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/roles/$id');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.get);
 
     final raw = await _marshaller.serializers.role.normalize(result);
     final channel = await _marshaller.serializers.role.serialize(raw);
@@ -82,7 +84,8 @@ final class RolePart implements RolePartContract {
     });
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.role.normalize(result);
     final role = await _marshaller.serializers.role.serialize({
@@ -105,7 +108,8 @@ final class RolePart implements RolePartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.put(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.put);
   }
 
   @override
@@ -119,7 +123,8 @@ final class RolePart implements RolePartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 
   @override
@@ -134,7 +139,8 @@ final class RolePart implements RolePartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.patch(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.patch);
   }
 
   @override
@@ -150,7 +156,8 @@ final class RolePart implements RolePartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.patch(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.patch);
 
     final raw = await _marshaller.serializers.role.normalize(result);
     final role = await _marshaller.serializers.role.serialize({
@@ -172,6 +179,7 @@ final class RolePart implements RolePartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 }

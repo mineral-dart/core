@@ -19,7 +19,8 @@ final class StickerPart implements StickerPartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/stickers');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get(req));
+        .query<List<Map<String, dynamic>>>(req)
+        .run(_dataStore.client.get);
 
     final stickers = await result.map((element) async {
       final raw = await _marshaller.serializers.sticker.normalize(element);
@@ -47,7 +48,8 @@ final class StickerPart implements StickerPartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/stickers/$stickerId');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.get);
 
     final raw = await _marshaller.serializers.sticker.normalize(result);
     final sticker = await _marshaller.serializers.sticker.serialize(raw);
@@ -60,6 +62,7 @@ final class StickerPart implements StickerPartContract {
   Future<void> delete(Object serverId, Object stickerId) async {
     final req = Request.json(endpoint: '/guilds/$serverId/stickers/$stickerId');
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 }

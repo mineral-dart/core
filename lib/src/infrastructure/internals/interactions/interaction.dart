@@ -1,11 +1,6 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/common/bot/bot.dart';
-import 'package:mineral/src/api/common/components/dialogs/dialog_builder.dart';
-import 'package:mineral/src/api/common/components/message_component.dart';
-import 'package:mineral/src/api/common/embed/message_embed.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/common/types/message_flag_type.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 
 final class Interaction implements InteractionContract {
@@ -21,26 +16,10 @@ final class Interaction implements InteractionContract {
 
   @override
   Future<InteractionContract> reply(
-      {String? content,
-      List<MessageEmbed> embeds = const [],
-      List<MessageComponent> components = const [],
+      {required MessageComponentBuilder builder,
       bool ephemeral = false}) async {
-    await _datastore.interaction.replyInteraction(_id, _token, {
-      'type': InteractionCallbackType.channelMessageWithSource.value,
-      'data': {
-        'content': content,
-        'embeds': await Helper.createOrNullAsync(
-            field: embeds,
-            fn: () async =>
-                embeds.map(_marshaller.serializers.embed.deserialize).toList()),
-        'components': Helper.createOrNull(
-            field: components.isNotEmpty,
-            fn: () => components.map((e) => e.toJson()).toList()),
-        'flags': ephemeral
-            ? MessageFlagType.ephemeral.value
-            : MessageFlagType.none.value,
-      }
-    });
+    await _datastore.interaction
+        .replyInteraction(_id, _token, builder, ephemeral);
 
     return this;
   }
