@@ -88,4 +88,22 @@ final class MessageComponentBuilder {
   List<Map<String, dynamic>> build() {
     return _components.map((e) => e.toJson()).toList();
   }
+
+  void prepend(MessageComponentBuilder builder) {
+    _components.insertAll(0, builder._components);
+  }
+
+  void append(MessageComponentBuilder builder) {
+    _components.addAll(builder._components);
+  }
+
+  MessageComponentBuilder clone() {
+    return MessageComponentBuilder().._components.addAll(_components);
+  }
+
+  MessageComponentBuilder cloneFrom(MessageComponentBuilder builder) {
+    return MessageComponentBuilder()
+      .._components.addAll(_components)
+      .._components.addAll(builder._components);
+  }
 }

@@ -9,7 +9,9 @@ enum MessageFlagType {
   loading(1 << 7),
   failedToMentionSomeRoleInThread(1 << 8),
   suppressNotifications(1 << 12),
-  voiceMessage(1 << 13);
+  voiceMessage(1 << 13),
+  hasSnapshot(1 << 14),
+  isComponentV2(1 << 15);
 
   final int value;
   const MessageFlagType(this.value);

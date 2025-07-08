@@ -47,12 +47,12 @@ abstract interface class InteractionPartContract implements DataStorePart {
   Future<void> replyInteraction(Snowflake id, String token,
       MessageComponentBuilder builder, bool ephemeral);
 
-  Future<void> editInteraction(
-      Snowflake botId, String token, Map<String, dynamic> raw);
+  Future<void> editInteraction(Snowflake botId, String token,
+      MessageComponentBuilder builder, bool ephemeral);
 
   Future<void> deleteInteraction(Snowflake botId, String token);
 
-  Future<void> noReplyInteraction(Snowflake id, String token);
+  Future<void> noReplyInteraction(Snowflake id, String token, bool ephemeral);
 
   Future<void> followUpInteraction(
       Snowflake botId, String token, Map<String, dynamic> raw);
