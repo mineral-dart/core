@@ -1,6 +1,4 @@
-import 'package:mineral/src/api/common/components/dialogs/dialog_element.dart';
-import 'package:mineral/src/api/common/components/message_component.dart';
-import 'package:mineral/src/api/common/components/row_builder.dart';
+import 'package:mineral/api.dart';
 
 final class DialogBuilder implements MessageComponent {
   final List<MessageComponent> _elements = [];
@@ -41,7 +39,7 @@ final class DialogBuilder implements MessageComponent {
 
     element.setLabel(title);
 
-    final row = RowBuilder()..addComponent(element);
+    final row = MessageRowBuilder()..components.add(element);
 
     _elements.add(row);
   }
@@ -72,7 +70,7 @@ final class DialogBuilder implements MessageComponent {
 
     element.setLabel(title);
 
-    final row = RowBuilder()..addComponent(element);
+    final row = MessageRowBuilder()..components.add(element);
 
     _elements.add(row);
   }

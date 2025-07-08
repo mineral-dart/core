@@ -1,7 +1,18 @@
-import 'package:mineral/src/api/common/components/buttons/button_type.dart';
-import 'package:mineral/src/api/common/components/component_type.dart';
-import 'package:mineral/src/api/common/components/message_component.dart';
-import 'package:mineral/src/api/common/partial_emoji.dart';
+import 'package:mineral/api.dart';
+
+enum ButtonType implements EnhancedEnum<int> {
+  primary(1),
+  secondary(2),
+  success(3),
+  danger(4),
+  link(5),
+  premium(6);
+
+  @override
+  final int value;
+
+  const ButtonType(this.value);
+}
 
 final class MessageButton implements MessageComponent {
   final ButtonType _type;

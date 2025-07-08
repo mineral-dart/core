@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/message_v2/message_container.dart';
-import 'package:mineral/src/api/common/message_v2/message_separator.dart';
-import 'package:mineral/src/api/common/message_v2/message_text.dart';
+import 'package:mineral/src/api/common/message_components/message/message_container.dart';
+import 'package:mineral/src/api/common/message_components/message/message_separator.dart';
+import 'package:mineral/src/api/common/message_components/message/message_text.dart';
 
 /// ```dart
 /// {@template message_component_builder}
