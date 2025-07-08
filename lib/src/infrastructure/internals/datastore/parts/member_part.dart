@@ -21,7 +21,8 @@ final class MemberPart implements MemberPartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/members');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get(req));
+        .query<List<Map<String, dynamic>>>(req)
+        .run(_dataStore.client.get);
 
     final members = await result.map((element) async {
       final raw = await _marshaller.serializers.member
@@ -50,7 +51,8 @@ final class MemberPart implements MemberPartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/members/$id');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.get);
 
     final raw = await _marshaller.serializers.member
         .normalize({...result, 'guild_id': serverId});
@@ -73,7 +75,8 @@ final class MemberPart implements MemberPartContract {
         body: payload,
         headers: {DiscordHeader.auditLogReason(reason)});
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.patch(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.patch);
 
     final raw = await _marshaller.serializers.member.normalize(result);
     final member = await _marshaller.serializers.member.serialize({
@@ -97,7 +100,8 @@ final class MemberPart implements MemberPartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.put(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.put);
   }
 
   @override
@@ -110,7 +114,8 @@ final class MemberPart implements MemberPartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 
   @override
@@ -131,7 +136,8 @@ final class MemberPart implements MemberPartContract {
     final req =
         Request.json(endpoint: '/guilds/$serverId/voice-states/$userId');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.get);
 
     final raw = await _marshaller.serializers.voice.normalize(result);
     final voice = await _marshaller.serializers.voice.serialize(raw);

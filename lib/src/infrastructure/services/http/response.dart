@@ -47,8 +47,8 @@ final class ResponseImpl<T> implements Response<T> {
       required this.reasonPhrase,
       required this.method});
 
-  factory ResponseImpl.fromHttpResponse(http.Response response) {
-    return ResponseImpl._(
+  static ResponseImpl<T> fromHttpResponse<T>(http.Response response) {
+    return ResponseImpl<T>._(
         statusCode: response.statusCode,
         headers: response.headers.entries
             .map((entry) => Header(entry.key, entry.value))

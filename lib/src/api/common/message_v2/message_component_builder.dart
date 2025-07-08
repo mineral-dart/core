@@ -3,6 +3,27 @@ import 'package:mineral/src/api/common/message_v2/message_container.dart';
 import 'package:mineral/src/api/common/message_v2/message_separator.dart';
 import 'package:mineral/src/api/common/message_v2/message_text.dart';
 
+/// ```dart
+/// {@template message_component_builder}
+/// final buttons = [
+///   MessageButton.primary('primary', label: 'label'),
+///   MessageButton.secondary('secondary', label: 'label'),
+///   MessageButton.danger('danger', label: 'label'),
+///   MessageButton.link('https://google.com', label: 'label'),
+/// ];
+///
+/// final channelSelectMenu = MessageMenu.channel('channel',
+///   channelTypes: [ChannelType.guildText],
+///   defaultValues: [Snowflake.parse('1322554770057068636')]);
+///
+/// final builder = MessageComponentBuilder()
+///   ..text('# Hello from World')
+///   ..separator()
+///   ..text('Hello from ${message.channelId}')
+///   ..file(Attachment.path('assets/logo.png'))
+///   ..file(await Attachment.network('https://i.redd.it/d2hd73xxwvaa1.jpg'));
+/// {@endtemplate}
+/// ```
 final class MessageComponentBuilder {
   final List<MessageComponent> _components = [];
 

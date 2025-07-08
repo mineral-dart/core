@@ -1,13 +1,11 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:http/http.dart' as http;
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
-import 'package:mineral/src/domains/commons/utils/extensions.dart';
-import 'package:mineral/src/domains/commons/utils/helper.dart';
+import 'package:mineral/src/domains/commons/utils/attachment.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class MessagePart implements MessagePartContract {
@@ -76,7 +74,9 @@ final class MessagePart implements MessagePartContract {
     }
 
     final req = Request.json(endpoint: '/channels/$channelId/messages/$id');
+    print(req.url);
     final response = await _dataStore.client.get(req);
+
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         await _marshaller.serializers.message.normalize(response.body),
@@ -97,18 +97,21 @@ final class MessagePart implements MessagePartContract {
   Future<T> update<T extends Message>({
     required Object id,
     required Object channelId,
-    String? content,
-    List<MessageEmbed>? embeds,
-    List<MessageComponent>? components,
+    required MessageComponentBuilder builder,
   }) async {
     final completer = Completer<T>();
-    final req =
-        Request.json(endpoint: '/channels/$channelId/messages/$id', body: {
-      'content': content,
-      'embeds': AsyncList.nullable(
-          embeds?.map(_marshaller.serializers.embed.deserialize).toList()),
-      'components': components?.map((c) => c.toJson()).toList()
-    });
+    final (components, files) = makeAttachmentFromBuilder(builder);
+
+    final payload = {'flags': 32768, 'components': components};
+    final req = switch (files.isEmpty) {
+      true => Request.json(
+          endpoint: '/channels/$channelId/messages/$id', body: payload),
+      false => Request.formData(
+          endpoint: '/channels/$channelId/messages/$id',
+          body: payload,
+          files: files),
+    };
+
     final response = await _dataStore.client.patch(req);
 
     final rawMessage = switch (response.statusCode) {
@@ -154,68 +157,9 @@ final class MessagePart implements MessagePartContract {
   }
 
   @override
-  Future<T> send<T extends Message>(
-      Object? guildId,
-      Object channelId,
-      String? content,
-      List<MessageEmbed>? embeds,
-      Poll? poll,
-      List<MessageComponent>? components) async {
-    final completer = Completer<T>();
-    final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
-      'content': content,
-      'embeds': await Helper.createOrNullAsync(
-          field: embeds,
-          fn: () async =>
-              embeds?.map(_marshaller.serializers.embed.deserialize).toList()),
-      'poll': await Helper.createOrNullAsync(
-          field: poll,
-          fn: () async => _marshaller.serializers.poll.deserialize(poll!)),
-      'components': components?.map((e) => e.toJson()).toList(),
-    });
-    final response = await _dataStore.client.post(req);
-
-    final message = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      _ => throw Exception(
-          'Unknown status code: ${response.statusCode} ${response.bodyString}')
-    };
-
-    completer.complete(
-        await _marshaller.serializers.message.serialize(message) as T);
-
-    return completer.future;
-  }
-
-  @override
-  Future<T> sendV2<T extends Message>(String? guildId, String channelId,
+  Future<T> send<T extends Message>(String? guildId, String channelId,
       MessageComponentBuilder builder) async {
-    final completer = Completer<T>();
-
-    final components = builder.build();
-
-    final List<http.MultipartFile> files = [];
-    for (int i = 0; i < components.length; i++) {
-      if (components[i]['type'] == ComponentType.file.value) {
-        final filePath = components[i]['file']['url'];
-        final filename = filePath.split('/').last;
-
-        final multipartFile = http.MultipartFile.fromBytes(
-          'files[$i]',
-          components[i]['file']['bytes'],
-          filename: filename,
-        );
-
-        files.add(multipartFile);
-        components[i]['file']['url'] = 'attachment://$filename';
-        components[i]['file']['bytes'] = null;
-      }
-    }
+    final (components, files) = makeAttachmentFromBuilder(builder);
 
     final payload = {'flags': 32768, 'components': components};
     final req = switch (files.isEmpty) {
@@ -240,63 +184,13 @@ final class MessagePart implements MessagePartContract {
           'Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    completer.complete(
-        await _marshaller.serializers.message.serialize(message) as T);
-
-    return completer.future;
+    return _marshaller.serializers.message.serialize(message) as T;
   }
 
   @override
-  Future<R> reply<T extends Channel, R extends Message>(
-      {required Snowflake id,
-      required Snowflake channelId,
-      String? content,
-      List<MessageEmbed>? embeds,
-      List<MessageComponent>? components}) async {
-    final completer = Completer<R>();
-
-    final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
-      'content': content,
-      'embeds': AsyncList.nullable(
-          embeds?.map(_marshaller.serializers.embed.deserialize)),
-      'components': components?.map((c) => c.toJson()).toList(),
-      'message_reference': {'message_id': id, 'channel_id': channelId}
-    });
-
-    final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
-
-    final raw = await _marshaller.serializers.message.normalize(result);
-    final message = await _marshaller.serializers.message.serialize(raw) as R;
-
-    completer.complete(message);
-    return completer.future;
-  }
-
-  @override
-  Future<R> replyV2<T extends Channel, R extends Message>(Snowflake id,
+  Future<R> reply<T extends Channel, R extends Message>(Snowflake id,
       Snowflake channelId, MessageComponentBuilder builder) async {
-    final completer = Completer<R>();
-
-    final components = builder.build();
-
-    final List<http.MultipartFile> files = [];
-    for (int i = 0; i < components.length; i++) {
-      if (components[i]['type'] == ComponentType.file.value) {
-        final filePath = components[i]['file']['url'];
-        final filename = filePath.split('/').last;
-
-        final multipartFile = http.MultipartFile.fromBytes(
-          'files[$i]',
-          components[i]['file']['bytes'],
-          filename: filename,
-        );
-
-        files.add(multipartFile);
-        components[i]['file']['url'] = 'attachment://$filename';
-        components[i]['file']['bytes'] = null;
-      }
-    }
+    final (components, files) = makeAttachmentFromBuilder(builder);
 
     final payload = {
       'flags': 32768,
@@ -304,45 +198,41 @@ final class MessagePart implements MessagePartContract {
       'message_reference': {'message_id': id, 'channel_id': channelId}
     };
 
-    final req = switch (files.isEmpty) {
-      true =>
-        Request.json(endpoint: '/channels/$channelId/messages', body: payload),
-      false => Request.formData(
-          endpoint: '/channels/$channelId/messages',
-          body: payload,
-          files: files),
-    };
+    final req = Request.auto(
+      endpoint: '/channels/$channelId/messages',
+      body: payload,
+      files: files,
+    );
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.message.normalize(result);
-    final message = await _marshaller.serializers.message.serialize(raw) as R;
-
-    completer.complete(message);
-    return completer.future;
+    return _marshaller.serializers.message.serialize(raw) as R;
   }
 
   @override
   Future<T> sendPoll<T extends Message>(String channelId, Poll poll) async {
     final completer = Completer<T>();
-    final req = Request.json(endpoint: '/channels/$channelId/messages', body: {
-      'poll': _marshaller.serializers.poll.deserialize(poll)
-    });
+    final req = Request.json(
+        endpoint: '/channels/$channelId/messages',
+        body: {'poll': _marshaller.serializers.poll.deserialize(poll)});
     final response = await _dataStore.client.post(req);
 
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-      await _marshaller.serializers.message.normalize(response.body),
+        await _marshaller.serializers.message.normalize(response.body),
       int() when status.isRateLimit(response.statusCode) =>
-      throw HttpException(response.bodyString),
+        throw HttpException(response.bodyString),
       int() when status.isError(response.statusCode) =>
-      throw HttpException(response.bodyString),
+        throw HttpException(response.bodyString),
       _ => throw Exception(
           'Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    final serializedMessage = await _marshaller.serializers.message.serialize(message);
+    final serializedMessage =
+        await _marshaller.serializers.message.serialize(message);
 
     completer.complete(serializedMessage as T);
 
@@ -350,11 +240,13 @@ final class MessagePart implements MessagePartContract {
   }
 
   @override
-  Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId, Snowflake messageId, int answerId) async {
+  Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId,
+      Snowflake messageId, int answerId) async {
     final completer = Completer<PollAnswerVote>();
 
     final req = Request.json(
-        endpoint: '/channels/${channelId.value}/polls/${messageId.value}/answers/$answerId');
+        endpoint:
+            '/channels/${channelId.value}/polls/${messageId.value}/answers/$answerId');
     final response = await _dataStore.client.get(req);
 
     response.body['id'] = answerId;
@@ -373,7 +265,8 @@ final class MessagePart implements MessagePartContract {
           'Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    final answer = await _marshaller.serializers.pollAnswerVote.serialize(answerPayload);
+    final answer =
+        await _marshaller.serializers.pollAnswerVote.serialize(answerPayload);
 
     completer.complete(answer);
     return completer.future;

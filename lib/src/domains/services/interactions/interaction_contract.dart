@@ -1,6 +1,4 @@
-import 'package:mineral/src/api/common/components/dialogs/dialog_builder.dart';
-import 'package:mineral/src/api/common/components/message_component.dart';
-import 'package:mineral/src/api/common/embed/message_embed.dart';
+import 'package:mineral/api.dart';
 
 abstract class InteractionContract {
   /// Use to reply to the interaction.
@@ -10,10 +8,7 @@ abstract class InteractionContract {
   /// final interaction = await interaction.reply(content: 'Hello Mineral');
   /// ```
   Future<InteractionContract> reply(
-      {String content,
-      List<MessageEmbed> embeds,
-      List<MessageComponent> components,
-      bool ephemeral = false});
+      {required MessageComponentBuilder builder, bool ephemeral = false});
 
   /// Use to edit the reply to the interaction.
   /// Usage:

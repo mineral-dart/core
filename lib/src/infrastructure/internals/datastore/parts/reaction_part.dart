@@ -21,7 +21,8 @@ final class ReactionPart implements ReactionPartContract {
     final req = Request.json(
         endpoint: '/channels/$channelId/messages/$messageId/reactions/$value');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get(req));
+        .query<List<Map<String, dynamic>>>(req)
+        .run(_dataStore.client.get);
 
     final users = await result.map((element) async {
       final raw = await _marshaller.serializers.user.normalize(element);
@@ -41,7 +42,8 @@ final class ReactionPart implements ReactionPartContract {
         endpoint:
             '/channels/$channelId/messages/$messageId/reactions/$value/@me');
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.put(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.put);
   }
 
   @override
@@ -52,7 +54,8 @@ final class ReactionPart implements ReactionPartContract {
         endpoint:
             '/channels/$channelId/messages/$messageId/reactions/$value/@me');
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 
   @override
@@ -60,7 +63,8 @@ final class ReactionPart implements ReactionPartContract {
     final req = Request.json(
         endpoint: '/channels/$channelId/messages/$messageId/reactions');
     return _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 
   @override
@@ -70,7 +74,8 @@ final class ReactionPart implements ReactionPartContract {
     final req = Request.json(
         endpoint: '/channels/$channelId/messages/$messageId/reactions/$value');
     return _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 
   @override
@@ -81,6 +86,7 @@ final class ReactionPart implements ReactionPartContract {
         endpoint:
             '/channels/$channelId/messages/$messageId/reactions/$value/$userId');
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 }

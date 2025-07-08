@@ -68,6 +68,27 @@ final class Request<T> implements RequestContract {
     );
   }
 
+  static Request auto({
+    required String endpoint,
+    String? method,
+    Set<Header>? headers,
+    Map<String, dynamic>? body,
+    List<MultipartFile> files = const [],
+  }) {
+    return switch (files.isEmpty) {
+      true => Request.json(
+          endpoint: endpoint,
+          body: body,
+          headers: headers,
+        ),
+      false => Request.formData(
+          endpoint: endpoint,
+          body: body,
+          files: files,
+        ),
+    };
+  }
+
   @override
   Request copyWith({
     String? method,

@@ -29,7 +29,8 @@ final class ServerPart implements ServerPartContract {
 
     final req = Request.json(endpoint: '/guilds/$id');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.get);
 
     final raw = await _marshaller.serializers.server.normalize(result);
     final server = await _marshaller.serializers.server.serialize(raw);

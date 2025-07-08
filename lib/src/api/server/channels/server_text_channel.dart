@@ -102,28 +102,34 @@ final class ServerTextChannel extends ServerChannel {
           {String? reason}) =>
       _methods.setDefaultThreadRateLimitPerUser(value, reason);
 
-  /// Sends a message to the channel.
+  /// Sends a message with components to the channel.
   ///
   /// ```dart
-  /// await channel.send(content: 'Hello, world!');
+  /// final buttons = [
+  ///   MessageButton.primary('primary', label: 'label'),
+  ///   MessageButton.secondary('secondary', label: 'label'),
+  ///   MessageButton.danger('danger', label: 'label'),
+  ///   MessageButton.link('https://google.com', label: 'label'),
+  /// ];
+  ///
+  /// final channelSelectMenu = MessageMenu.channel('channel',
+  ///   channelTypes: [ChannelType.guildText],
+  ///   defaultValues: [Snowflake.parse('1322554770057068636')]);
+  ///
+  /// final builder = MessageComponentBuilder()
+  ///   ..text('# Hello from World')
+  ///   ..separator()
+  ///   ..text('Hello from ${message.channelId}')
+  ///   ..file(Attachment.path('assets/logo.png'))
+  ///   ..file(await Attachment.network('https://i.redd.it/d2hd73xxwvaa1.jpg'));
+  ///
+  /// final message = await channel.send(builder);
   /// ```
-  @Deprecated('Use sendV2 instead')
-  Future<T> send<T extends Message>(
-          {String? content,
-          List<MessageEmbed>? embeds,
-          Poll? poll,
-          List<MessageComponent>? components}) =>
-      _methods.send(
-          guildId: _properties.serverId,
-          content: content,
-          embeds: embeds,
-          poll: poll,
-          components: components);
+  Future<T> send<T extends Message>(MessageComponentBuilder builder) =>
+      _methods.send(guildId: _properties.serverId, builder: builder);
 
-  Future<T> sendV2<T extends Message>(MessageComponentBuilder builder) =>
-      _methods.sendV2(guildId: _properties.serverId, builder: builder);
-
-  Future<T> sendPoll<T extends Message>(Poll poll) => _methods.sendPoll<T>(poll);
+  Future<T> sendPoll<T extends Message>(Poll poll) =>
+      _methods.sendPoll<T>(poll);
 
   /// Deletes the channel.
   ///

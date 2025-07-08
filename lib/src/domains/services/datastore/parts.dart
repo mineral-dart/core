@@ -44,8 +44,8 @@ abstract interface class ThreadPartContract implements DataStorePart {
 }
 
 abstract interface class InteractionPartContract implements DataStorePart {
-  Future<void> replyInteraction(
-      Snowflake id, String token, Map<String, dynamic> raw);
+  Future<void> replyInteraction(Snowflake id, String token,
+      MessageComponentBuilder builder, bool ephemeral);
 
   Future<void> editInteraction(
       Snowflake botId, String token, Map<String, dynamic> raw);
@@ -104,14 +104,13 @@ abstract interface class MessagePartContract implements DataStorePart {
   Future<T?> get<T extends BaseMessage>(
       Object channelId, Object id, bool force);
 
-  Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId, Snowflake messageId, int answerId);
+  Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId,
+      Snowflake messageId, int answerId);
 
   Future<T> update<T extends Message>({
     required Object id,
     required Object channelId,
-    String? content,
-    List<MessageEmbed>? embeds,
-    List<MessageComponent>? components,
+    required MessageComponentBuilder builder,
   });
 
   Future<void> pin(Snowflake channelId, Snowflake id);
@@ -123,26 +122,11 @@ abstract interface class MessagePartContract implements DataStorePart {
   Future<void> delete(Snowflake channelId, Snowflake id);
 
   Future<T> send<T extends Message>(
-      String? guildId,
-      Object channelId,
-      String? content,
-      List<MessageEmbed>? embeds,
-      Poll? poll,
-      List<MessageComponent>? components);
-
-  Future<T> sendV2<T extends Message>(
       String? guildId, String channelId, MessageComponentBuilder builder);
 
   Future<T> sendPoll<T extends Message>(String channelId, Poll poll);
 
   Future<R> reply<T extends Channel, R extends Message>(
-      {required Snowflake id,
-      required Snowflake channelId,
-      String? content,
-      List<MessageEmbed>? embeds,
-      List<MessageComponent>? components});
-
-  Future<R> replyV2<T extends Channel, R extends Message>(
       Snowflake id, Snowflake channelId, MessageComponentBuilder builder);
 }
 

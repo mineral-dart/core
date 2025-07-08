@@ -20,7 +20,8 @@ final class ChannelPart implements ChannelPartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/channels');
     final result = await _dataStore.requestBucket
-        .run<List>(() => _dataStore.client.get(req));
+        .query<List<Map<String, dynamic>>>(req)
+        .run(_dataStore.client.get);
 
     final channels = await result.map((element) async {
       final raw = await _marshaller.serializers.channels.normalize(element);
@@ -48,7 +49,8 @@ final class ChannelPart implements ChannelPartContract {
 
     final req = Request.json(endpoint: '/channels/$id');
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.get(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.get);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final channel = await _marshaller.serializers.channels.serialize(raw) as T;
@@ -69,7 +71,8 @@ final class ChannelPart implements ChannelPartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final channel = await _marshaller.serializers.channels.serialize({
@@ -90,7 +93,8 @@ final class ChannelPart implements ChannelPartContract {
         endpoint: '/users/@me/channels', body: {'recipient_id': recipientId});
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.post(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final channel = await _marshaller.serializers.channels.serialize(raw);
@@ -112,7 +116,8 @@ final class ChannelPart implements ChannelPartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     final result = await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.patch(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.patch);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
     final channel = await _marshaller.serializers.channels.serialize({
@@ -131,6 +136,7 @@ final class ChannelPart implements ChannelPartContract {
         headers: {DiscordHeader.auditLogReason(reason)});
 
     await _dataStore.requestBucket
-        .run<Map<String, dynamic>>(() => _dataStore.client.delete(req));
+        .query<Map<String, dynamic>>(req)
+        .run(_dataStore.client.delete);
   }
 }

@@ -65,8 +65,6 @@ class HttpClient implements HttpClientContract {
       request = await requestInterceptor(request);
     }
 
-    // print(jsonEncode(request.body));
-
     final req = switch (request.type) {
       RequestType.json => http.Request(request.method!, request.url)
         ..headers.addAll(_serializeHeaders(request.headers))
@@ -81,7 +79,7 @@ class HttpClient implements HttpClientContract {
     final http.StreamedResponse streamedResponse = await _client.send(req);
     final http.Response res = await http.Response.fromStream(streamedResponse);
 
-    Response response = ResponseImpl.fromHttpResponse(res);
+    Response response = ResponseImpl.fromHttpResponse<T>(res);
 
     for (final handle in interceptor.response) {
       response = await handle(response);

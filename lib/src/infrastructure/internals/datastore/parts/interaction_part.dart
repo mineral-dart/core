@@ -1,10 +1,9 @@
 import 'dart:async';
 
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/api/common/components/dialogs/dialog_builder.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/common/types/message_flag_type.dart';
+import 'package:mineral/src/domains/commons/utils/attachment.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class InteractionPart implements InteractionPartContract {
@@ -13,10 +12,29 @@ final class InteractionPart implements InteractionPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<void> replyInteraction(
-      Snowflake id, String token, Map<String, dynamic> raw) async {
-    final req =
-        Request.json(endpoint: '/interactions/$id/$token/callback', body: raw);
+  Future<void> replyInteraction(Snowflake id, String token,
+      MessageComponentBuilder builder, bool ephemeral) async {
+    final (components, files) = makeAttachmentFromBuilder(builder);
+
+    int flags = 32768;
+    if (ephemeral) {
+      flags += MessageFlagType.ephemeral.value;
+    }
+
+    final payload = {
+      'type': 4,
+      'data': {'flags': flags, 'components': components}
+    };
+
+    final req = switch (files.isEmpty) {
+      true => Request.json(
+          endpoint: '/interactions/$id/$token/callback', body: payload),
+      false => Request.formData(
+          endpoint: '/interactions/$id/$token/callback',
+          body: payload,
+          files: files),
+    };
+
     await _dataStore.client.post(req);
   }
 
@@ -37,12 +55,12 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> noReplyInteraction(Snowflake id, String token) async {
-    await replyInteraction(id, token, {
-      'type': InteractionCallbackType.deferredUpdateMessage.value,
-      'data': {
-        'flags': MessageFlagType.ephemeral.value,
-      }
-    });
+    // await replyInteraction(id, token, {
+    //   'type': InteractionCallbackType.deferredUpdateMessage.value,
+    //   'data': {
+    //     'flags': MessageFlagType.ephemeral.value,
+    //   }
+    // });
   }
 
   @override
@@ -70,12 +88,12 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> waitInteraction(Snowflake id, String token) async {
-    await replyInteraction(id, token, {
-      'type': InteractionCallbackType.deferredUpdateMessage.value,
-      'data': {
-        'flags': MessageFlagType.ephemeral.value,
-      }
-    });
+    // await replyInteraction(id, token, {
+    //   'type': InteractionCallbackType.deferredUpdateMessage.value,
+    //   'data': {
+    //     'flags': MessageFlagType.ephemeral.value,
+    //   }
+    // });
   }
 
   @override
