@@ -16,9 +16,7 @@ abstract class InteractionContract {
   /// ```dart
   /// final interaction = await interaction.editReply(content: 'New Hello Mineral');
   Future<InteractionContract> editReply(
-      {String content,
-      List<MessageEmbed> embeds,
-      List<MessageComponent> components});
+      {required MessageComponentBuilder builder, bool ephemeral = false});
 
   /// Use to delete the reply to the interaction. Need a reply to delete.
   /// Usage:
@@ -34,7 +32,7 @@ abstract class InteractionContract {
   /// ```dart
   /// await interaction.noReply();
   /// ```
-  Future<void> noReply();
+  Future<void> noReply({bool ephemeral = false});
 
   /// Use to follow up the interaction.
   /// Usage:

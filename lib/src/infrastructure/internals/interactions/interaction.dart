@@ -26,19 +26,10 @@ final class Interaction implements InteractionContract {
 
   @override
   Future<InteractionContract> editReply(
-      {String? content,
-      List<MessageEmbed> embeds = const [],
-      List<MessageComponent> components = const []}) async {
-    await _datastore.interaction.editInteraction(_botId, _token, {
-      'content': content,
-      'embeds': await Helper.createOrNullAsync(
-          field: embeds,
-          fn: () async =>
-              embeds.map(_marshaller.serializers.embed.deserialize).toList()),
-      'components': Helper.createOrNull(
-          field: components.isNotEmpty,
-          fn: () => components.map((e) => e.toJson()).toList()),
-    });
+      {required MessageComponentBuilder builder,
+      bool ephemeral = false}) async {
+    await _datastore.interaction
+        .editInteraction(_botId, _token, builder, ephemeral);
     return this;
   }
 
@@ -48,8 +39,8 @@ final class Interaction implements InteractionContract {
   }
 
   @override
-  Future<void> noReply() async {
-    await _datastore.interaction.noReplyInteraction(_id, _token);
+  Future<void> noReply({bool ephemeral = false}) async {
+    await _datastore.interaction.noReplyInteraction(_id, _token, ephemeral);
   }
 
   @override
