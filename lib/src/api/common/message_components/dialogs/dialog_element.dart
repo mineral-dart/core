@@ -1,6 +1,6 @@
 import 'package:mineral/src/api/common/components/component_type.dart';
-import 'package:mineral/src/api/common/components/dialogs/dialog_element_type.dart';
 import 'package:mineral/src/api/common/components/message_component.dart';
+import 'package:mineral/src/api/common/message_components/dialogs/dialog_element_type.dart';
 
 abstract interface class DialogElement implements MessageComponent {}
 
