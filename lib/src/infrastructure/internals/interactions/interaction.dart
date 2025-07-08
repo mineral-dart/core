@@ -70,11 +70,6 @@ final class Interaction implements InteractionContract {
   }
 
   @override
-  Future<void> deleteDefer() async {
-    await _datastore.interaction.deleteFollowup(_botId, _token, _id);
-  }
-
-  @override
   Future<void> dialog(DialogBuilder dialog) async {
     await _datastore.interaction.sendDialog(_id, _token, dialog);
   }
