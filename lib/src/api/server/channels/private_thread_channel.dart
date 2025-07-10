@@ -129,7 +129,7 @@ class PrivateThreadChannel extends ServerChannel implements ThreadChannel {
   /// await channel.send(content: 'Hello, world!');
   /// ```
   Future<void> send(MessageComponentBuilder builder) =>
-      _methods.send(guildId: serverId, builder: builder);
+      _methods.send(serverId: serverId, builder: builder);
 
   /// Deletes the channel.
   ///
