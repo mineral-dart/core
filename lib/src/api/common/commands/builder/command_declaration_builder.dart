@@ -69,8 +69,7 @@ final class CommandDeclarationBuilder implements CommandBuilder {
     return this;
   }
 
-  CommandDeclarationBuilder createGroup(
-      CommandGroupBuilder Function(CommandGroupBuilder) group) {
+  CommandDeclarationBuilder createGroup(Function(CommandGroupBuilder) group) {
     final builder = CommandGroupBuilder();
     group(builder);
 
