@@ -184,7 +184,7 @@ final class MessagePart implements MessagePartContract {
           'Unknown status code: ${response.statusCode} ${response.bodyString}')
     };
 
-    return _marshaller.serializers.message.serialize(message) as T;
+    return _marshaller.serializers.message.serialize(message) as Future<T>;
   }
 
   @override
@@ -209,7 +209,7 @@ final class MessagePart implements MessagePartContract {
         .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.message.normalize(result);
-    return _marshaller.serializers.message.serialize(raw) as R;
+    return _marshaller.serializers.message.serialize(raw) as Future<R>;
   }
 
   @override

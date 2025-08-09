@@ -7,12 +7,9 @@ import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 
 final class ShardData implements ShardDataContract {
   final RunningStrategy _dispatchStrategy;
-  final HmrContract? hmr;
   final Shard _shard;
 
-  ShardData(Shard shard, this._dispatchStrategy)
-      : _shard = shard,
-        hmr = shard.hmr;
+  ShardData(Shard shard, this._dispatchStrategy) : _shard = shard;
 
   @override
   void dispatch(WebsocketMessage message) {

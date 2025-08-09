@@ -22,5 +22,5 @@ abstract class WebsocketOrchestratorContract {
 
   Future<Map<String, dynamic>> getWebsocketEndpoint();
 
-  Future<void> createShards(HmrContract? hmr, RunningStrategy strategy);
+  Future<void> createShards(RunningStrategy strategy);
 }

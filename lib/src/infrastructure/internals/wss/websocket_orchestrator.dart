@@ -32,7 +32,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
 
   @override
   void send(WebsocketIsolateMessageTransfert message) {
-    if (Isolate.current.debugName == 'dev') {
+    if (Isolate.current.debugName == 'development') {
       final sendPort = ioc.resolve<SendPort?>();
 
       if (message case WebsocketIsolateMessageTransfert(:final type)
@@ -130,18 +130,16 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   }
 
   @override
-  Future<void> createShards(HmrContract? hmr, RunningStrategy strategy) async {
+  Future<void> createShards(RunningStrategy strategy) async {
     final {'url': String endpoint, 'shards': int shardCount} =
         await getWebsocketEndpoint();
 
     for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
+      final url =
+          '$endpoint/?v=${config.version}&encoding=${config.encoding.encoder.value}';
+
       final shard = Shard(
-          shardName: 'shard #$i',
-          url:
-              '$endpoint/?v=${config.version}&encoding=${config.encoding.encoder.value}',
-          hmr: hmr,
-          wss: this,
-          strategy: strategy);
+          shardName: 'shard #$i', url: url, wss: this, strategy: strategy);
 
       shards.putIfAbsent(i, () => shard);
 

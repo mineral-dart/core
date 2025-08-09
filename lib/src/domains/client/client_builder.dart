@@ -1,6 +1,6 @@
-import 'dart:io';
 import 'dart:isolate';
 
+import 'package:glob/glob.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
@@ -12,9 +12,7 @@ import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/datastore.dart';
-import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
-import 'package:mineral/src/infrastructure/internals/scaffolding/scaffold.dart';
 import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/websocket_orchestrator.dart';
 
@@ -24,22 +22,15 @@ final class ClientBuilder {
   final List<EnvSchema> _schemas = [];
   final List<ConstructableWithArgs<ProviderContract, Client>> _providers = [];
 
-  ScaffoldContract _scaffold = DefaultScaffold();
   SendPort? _devPort;
   bool _hasDefinedDevPort = false;
-  EncodingStrategy _wsEncodingStrategy = JsonEncoderStrategy();
+  WebsocketEncoder _wssEncoder = WebsocketEncoder.json;
 
   String? _token;
   int? _intent;
   int? _discordRestHttpVersion;
   int? _discordWssVersion;
-
-  final WatcherConfig _watcherConfig = WatcherConfig();
-
-  ClientBuilder overrideScaffold(Constructable<ScaffoldContract> scaffold) {
-    _scaffold = scaffold();
-    return this;
-  }
+  final List<Glob> _watchedFiles = [];
 
   ClientBuilder setToken(String token) {
     _token = token;
@@ -61,8 +52,8 @@ final class ClientBuilder {
     return this;
   }
 
-  ClientBuilder setEncoder(Constructable<EncodingStrategy> encoding) {
-    _wsEncodingStrategy = encoding();
+  ClientBuilder setEncoder(WebsocketEncoder encoding) {
+    _wssEncoder = encoding;
     return this;
   }
 
@@ -91,13 +82,8 @@ final class ClientBuilder {
     return this;
   }
 
-  ClientBuilder addWatchedFile(File file) {
-    _watcherConfig.watchedFiles.add(file);
-    return this;
-  }
-
-  ClientBuilder addWatchedDirectory(Directory folder) {
-    _watcherConfig.watchedFolders.add(folder);
+  ClientBuilder watch(List<Glob> globs) {
+    _watchedFiles.addAll(globs);
     return this;
   }
 
@@ -112,32 +98,39 @@ final class ClientBuilder {
   }
 
   void _createCache() {
+    final isDevelopmentMode = env.get(AppEnv.dartEnv) == DartEnv.development;
+    final isMainIsolate = Isolate.current.debugName == 'main';
+
+    if (isDevelopmentMode && isMainIsolate) {
+      return;
+    }
+
     if (_cache case final CacheProviderContract cache) {
-      cache
-        ..logger = _logger
-        ..init();
+      cache.init();
     }
   }
 
   Client build() {
-    _watcherConfig.watchedFiles.add(_scaffold.entrypoint);
-
     _validateEnvironment();
 
     final logLevel = env.get(AppEnv.logLevel);
     final dartEnv = env.get<DartEnv>(AppEnv.dartEnv);
 
-    ioc.bind<ScaffoldContract>(() => _scaffold);
     _logger = ioc.make<LoggerContract>(() => Logger(logLevel, dartEnv.value));
 
     _createCache();
 
-    final token = _token ?? env.get<String>(AppEnv.token);
-    final httpVersion =
-        _discordRestHttpVersion ?? env.get<int>(AppEnv.discordRestHttpVersion);
-    final shardVersion =
-        _discordWssVersion ?? env.get<int>(AppEnv.discordWssVersion);
-    final intent = _intent ?? env.get<int>(AppEnv.intent);
+    final token = env.get<String>(AppEnv.token, defaultValue: _token);
+    final intent = env.get<int>(AppEnv.intent, defaultValue: _intent);
+
+    final httpVersion = env.get<int>(AppEnv.discordRestHttpVersion,
+        defaultValue: _discordRestHttpVersion);
+
+    final shardVersion = env.get<int>(AppEnv.discordWssVersion,
+        defaultValue: _discordWssVersion);
+
+    final wsEncodingStrategy =
+        env.get(AppEnv.discordWssEncoding, defaultValue: _wssEncoder);
 
     final http = HttpClient(
         config: HttpClientConfigImpl(
@@ -151,7 +144,7 @@ final class ClientBuilder {
         token: token,
         intent: intent,
         version: shardVersion,
-        encoding: _wsEncodingStrategy);
+        encoding: wsEncodingStrategy.strategy());
 
     final packetListener = PacketListener();
     final eventListener = EventListener();
@@ -165,7 +158,7 @@ final class ClientBuilder {
     final kernel = Kernel(
       _hasDefinedDevPort,
       _devPort,
-      watcherConfig: _watcherConfig,
+      _watchedFiles,
       logger: _logger,
       httpClient: http,
       packetListener: packetListener,
@@ -176,13 +169,11 @@ final class ClientBuilder {
       wss: wssOrchestrator,
     );
 
-    final datastore = DataStore(http);
-
     ioc
       ..bind<HttpClientContract>(() => http)
       ..bind<Kernel>(() => kernel)
       ..bind<MarshallerContract>(Marshaller.new)
-      ..bind<DataStoreContract>(() => datastore)
+      ..bind<DataStoreContract>(() => DataStore(http))
       ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new);
 
     packetListener
