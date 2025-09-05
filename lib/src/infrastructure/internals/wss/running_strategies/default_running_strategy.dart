@@ -1,48 +1,47 @@
 import 'dart:async';
 import 'dart:io';
-import 'dart:isolate';
 
-import 'package:mansion/mansion.dart';
-import 'package:mineral/services.dart' as services;
-import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/commons/utils/file.dart';
+import 'package:mineral/src/domains/services/packets/packet_dispatcher.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:path/path.dart' as path;
+import 'package:yaml/yaml.dart';
 
 final class DefaultRunningStrategy implements RunningStrategy {
-  final Kernel kernel;
-  final FutureOr<void> Function() onStartup;
+  final PacketDispatcherContract packetDispatcher;
 
-  DefaultRunningStrategy(this.kernel, this.onStartup) {
-    kernel.logger.trace('Default strategy initialized');
-  }
+  DefaultRunningStrategy(this.packetDispatcher);
 
   @override
-  Future<void> init() async {
-    if (Isolate.current.debugName == 'main') {
-      final packageFile =
-          File(path.join(Directory.current.path, 'pubspec.yaml'));
-      final package = await packageFile.readAsYaml();
+  Future<void> init(RunningStrategyFactory createShards) async {
+    final package = await readPubspec(Directory.current.path);
 
-      final coreVersion = package['dependencies']['mineral'];
+    final coreVersion = package['dependencies']['mineral'];
+    String version = 'not found';
 
-      stdout.writeAnsiAll([
-        CursorPosition.reset,
-        Clear.all,
-        AsciiControl.lineFeed,
-        SetStyles(Style.foreground(services.Logger.primaryColor), Style.bold),
-        Print('Mineral v$coreVersion'),
-        SetStyles.reset,
-        AsciiControl.lineFeed,
-      ]);
+    if (coreVersion case final YamlMap dep) {
+      if (dep['path'] != null) {
+        final location = path.join(Directory.current.path, dep['path']);
+        final remoteCorePackage = await readPubspec(location);
+        version = remoteCorePackage['version'];
+      }
+    } else {
+      version = package['dependencies']['mineral'];
     }
 
-    onStartup();
+    print('Core version: $version');
+
+    await createShards(this);
+  }
+
+  Future<Map> readPubspec(String location) async {
+    final packageFile = File(path.join(location, 'pubspec.yaml'));
+    return packageFile.readAsYaml();
   }
 
   @override
   void dispatch(WebsocketMessage payload) {
-    kernel.packetListener.dispatcher.dispatch(payload.content);
+    packetDispatcher.dispatch(payload.content);
   }
 }

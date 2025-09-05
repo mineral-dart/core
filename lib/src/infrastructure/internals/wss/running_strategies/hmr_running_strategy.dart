@@ -2,87 +2,129 @@ import 'dart:async';
 import 'dart:io';
 import 'dart:isolate';
 
+import 'package:glob/glob.dart';
+import 'package:hmr/hmr.dart';
 import 'package:mansion/mansion.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/services.dart' as services;
-import 'package:mineral/src/domains/commons/utils/file.dart';
+import 'package:mineral/src/domains/services/packets/packet_dispatcher.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
+import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:path/path.dart' as path;
 
 final class HmrRunningStrategy implements RunningStrategy {
-  LoggerContract get _logger => ioc.resolve<LoggerContract>();
-
   WebsocketOrchestratorContract get _wss =>
       ioc.resolve<WebsocketOrchestratorContract>();
 
-  final Stopwatch _watch;
-  final HmrContract hmr;
+  final SendPort? _devPort;
+  final PacketDispatcherContract _packetDispatcher;
+  final List<Glob> _watchedFiles;
 
-  HmrRunningStrategy(this._watch, this.hmr) {
-    _logger.trace('HMR strategy initialized');
-  }
+  late final Runner _runner;
+  (File, int)? lastFileChanged;
+
+  HmrRunningStrategy(this._devPort, this._packetDispatcher, this._watchedFiles);
 
   @override
-  Future<void> init() async {
+  Future<void> init(RunningStrategyFactory createShards) async {
     if (Isolate.current.debugName == 'main') {
-      final packageFile =
-          File(path.join(Directory.current.path, 'pubspec.yaml'));
-      final package = await packageFile.readAsYaml();
+      final mainFile =
+          File(path.joinAll([Directory.current.path, 'bin', 'main.dart']));
+      final tempDirectory = await Directory.systemTemp.createTemp();
 
-      final coreVersion = package['dependencies']['mineral'];
+      _runner = Runner(
+          entrypoint: mainFile,
+          tempDirectory: tempDirectory,
+          isolateName: 'development');
 
-      _watch.stop();
+      final dateTime = DateTime.now();
 
-      List<Sequence> buildSubtitle(String key, String value) {
-        return [
-          const CursorPosition.moveRight(2),
-          SetStyles(Style.foreground(services.Logger.primaryColor)),
-          Print('➜  '),
-          SetStyles(Style.foreground(Color.white), Style.bold),
-          Print('$key: '),
-          SetStyles.reset,
-          Print(value),
-        ];
+      Watcher(middlewares: [
+        IgnoreMiddleware(['~', '.dart_tool', '.git', '.idea', '.vscode']),
+        IncludeMiddleware([Glob('**.dart'), ..._watchedFiles]),
+        DebounceMiddleware(Duration(milliseconds: 50), dateTime),
+      ], onStart: handleStart, onFileChange: handleModify)
+          .watch();
+
+      await _runner.run();
+
+      _runner.listen((message) {
+        _wss.send(WebsocketIsolateMessageTransfert.fromJson(message));
+      });
+
+      await createShards(this);
+    } else {
+      final ReceivePort port = ReceivePort();
+      final Stream stream = port.asBroadcastStream();
+      _devPort!.send(port.sendPort);
+
+      await for (final Map<String, dynamic> message in stream) {
+        _packetDispatcher.dispatch(ShardMessage.of(message));
       }
-
-      stdout
-        ..writeAnsiAll([
-          CursorPosition.reset,
-          Clear.all,
-          AsciiControl.lineFeed,
-          const CursorPosition.moveRight(2),
-          SetStyles(Style.foreground(services.Logger.primaryColor), Style.bold),
-          Print('Mineral v$coreVersion'),
-          SetStyles.reset,
-          const CursorPosition.moveRight(2),
-          SetStyles(Style.foreground(services.Logger.mutedColor)),
-          Print('ready in '),
-          SetStyles(Style.foreground(Color.white)),
-          Print('${_watch.elapsedMilliseconds} ms'),
-          SetStyles.reset,
-          AsciiControl.lineFeed,
-          AsciiControl.lineFeed,
-        ])
-        ..writeAnsiAll([
-          ...buildSubtitle('Github', 'https://github.com/mineral-dart'),
-          AsciiControl.lineFeed,
-          ...buildSubtitle('Docs', 'https://mineral-foundation.org'),
-          SetStyles.reset,
-          AsciiControl.lineFeed,
-          AsciiControl.lineFeed,
-        ]);
     }
-
-    await hmr.spawn();
   }
 
   @override
-  void dispatch(WebsocketMessage message) {
+  Future<void> dispatch(WebsocketMessage message) async {
     final strategy = _wss.config.encoding;
     final decoded = strategy.decode(message);
 
-    hmr.send(decoded.content.serialize());
+    await _runner.send(decoded.content.serialize());
+  }
+
+  Future<void> handleStart() async {
+    final List<Sequence> sequences = [
+      const CursorPosition.moveTo(0, 0),
+      Clear.afterCursor,
+      Clear.allAndScrollback,
+      SetStyles(Style.foreground(Color.green)),
+      Print('[hmr]'),
+      Print(' wait to watch changes...'),
+      SetStyles.reset,
+      AsciiControl.lineFeed
+    ];
+
+    stdout.writeAnsiAll(sequences);
+  }
+
+  Future<void> handleModify(int eventType, File file) async {
+    lastFileChanged = (
+      file,
+      file.path != lastFileChanged?.$1.path ? 0 : lastFileChanged!.$2 + 1
+    );
+
+    final action = switch (eventType) {
+      FileSystemEvent.create => 'created',
+      FileSystemEvent.modify => 'modified',
+      FileSystemEvent.delete => 'deleted',
+      FileSystemEvent.move => 'moved',
+      _ => 'changed'
+    };
+
+    final List<Sequence> sequences = [
+      const CursorPosition.moveTo(0, 0),
+      Clear.afterCursor,
+      Clear.allAndScrollback,
+      SetStyles(Style.foreground(Color.green)),
+      Print('[hmr] $action '),
+      SetStyles(Style.foreground(Color.brightBlack)),
+      Print(file.path.replaceFirst('${Directory.current.path}/', '')),
+      SetStyles.reset
+    ];
+
+    if (lastFileChanged?.$2 != 0) {
+      sequences.addAll([
+        SetStyles(Style.foreground(Color.yellow)),
+        Print(' (x${lastFileChanged!.$2})'),
+        SetStyles.reset,
+      ]);
+    }
+
+    sequences.add(AsciiControl.lineFeed);
+
+    stdout.writeAnsiAll(sequences);
+    await _runner.reload();
   }
 }

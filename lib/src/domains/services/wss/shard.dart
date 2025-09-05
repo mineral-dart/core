@@ -13,8 +13,6 @@ abstract interface class ShardContract {
 
   WebsocketOrchestratorContract get wss;
 
-  HmrContract? get hmr;
-
   WebsocketClient get client;
 
   ShardAuthentication get authentication;

@@ -24,9 +24,6 @@ final class Shard implements ShardContract {
   final WebsocketOrchestratorContract wss;
 
   @override
-  final HmrContract? hmr;
-
-  @override
   late WebsocketClient client;
 
   @override
@@ -42,7 +39,6 @@ final class Shard implements ShardContract {
       {required this.shardName,
       required this.url,
       required this.wss,
-      required this.hmr,
       required RunningStrategy strategy}) {
     authentication = ShardAuthentication(this);
     networkError = ShardNetworkError(this);

@@ -1,5 +1,6 @@
 import 'dart:isolate';
 
+import 'package:glob/glob.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
@@ -7,8 +8,6 @@ import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
-import 'package:mineral/src/infrastructure/internals/hmr/hot_module_reloading.dart';
-import 'package:mineral/src/infrastructure/internals/hmr/watcher_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/running_strategies/default_running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/running_strategies/hmr_running_strategy.dart';
 
@@ -19,7 +18,7 @@ final class Kernel {
 
   final SendPort? _devPort;
 
-  final WatcherConfig watcherConfig;
+  final List<Glob> _watchedFiles;
 
   final WebsocketOrchestratorContract wss;
 
@@ -33,8 +32,6 @@ final class Kernel {
 
   final ProviderManagerContract providerManager;
 
-  HmrContract? hmr;
-
   late final RunningStrategy runningStrategy;
 
   final GlobalStateManagerContract globalState;
@@ -43,7 +40,8 @@ final class Kernel {
 
   Kernel(
     this._hasDefinedDevPort,
-    this._devPort, {
+    this._devPort,
+    this._watchedFiles, {
     required this.logger,
     required this.httpClient,
     required this.packetListener,
@@ -51,7 +49,6 @@ final class Kernel {
     required this.providerManager,
     required this.globalState,
     required this.interactiveComponent,
-    required this.watcherConfig,
     required this.wss,
   }) {
     _watch.start();
@@ -60,22 +57,18 @@ final class Kernel {
   }
 
   Future<void> init() async {
-    final isDevelopmentMode = env.get(AppEnv.dartEnv) == 'development';
+    final isDevelopmentMode = env.get(AppEnv.dartEnv) == DartEnv.development;
     final useHmr = isDevelopmentMode && _hasDefinedDevPort;
 
-    if ((useHmr && Isolate.current.debugName != 'main') || !useHmr) {
+    if ((useHmr && Isolate.current.debugName == DartEnv.development.value) ||
+        !useHmr) {
       await providerManager.ready();
     }
 
-    if (useHmr) {
-      hmr = HotModuleReloading(_devPort, watcherConfig, this,
-          () => wss.createShards(hmr, runningStrategy), wss.shards);
-      runningStrategy = HmrRunningStrategy(_watch, hmr!);
-    } else {
-      runningStrategy = DefaultRunningStrategy(
-          this, () => wss.createShards(hmr, runningStrategy));
-    }
+    runningStrategy = useHmr
+        ? HmrRunningStrategy(_devPort, packetListener.dispatcher, _watchedFiles)
+        : DefaultRunningStrategy(packetListener.dispatcher);
 
-    await runningStrategy.init();
+    await runningStrategy.init(wss.createShards);
   }
 }

@@ -1,8 +1,13 @@
+import 'dart:collection';
+
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 
 final class IocContainer {
   final Map<Type, dynamic> _services = {};
   final Map<Type, dynamic> _defaults = {};
+
+  UnmodifiableMapView<Type, dynamic> get services =>
+      UnmodifiableMapView(_services);
 
   void bind<T>(T Function() fn) {
     final service = fn();
@@ -19,7 +24,7 @@ final class IocContainer {
     final service = _services[T];
 
     return switch (service) {
-      null => throw Exception('Service "$service" not found'),
+      null => throw Exception('Service "$T" not found'),
       _ => service,
     };
   }

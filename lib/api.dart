@@ -144,3 +144,4 @@ export 'package:mineral/src/domains/events/contracts/common/invite_delete_event.
 export 'package:mineral/src/domains/global_states/global_state.dart';
 export 'package:mineral/src/domains/providers/provider.dart';
 export 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
+export 'package:mineral/src/infrastructure/internals/wss/encoding_strategies/websocket_encoder.dart';
