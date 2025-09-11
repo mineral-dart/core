@@ -31,6 +31,7 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/message_c
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_poll_vote_add_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_poll_vote_remove_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_add_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_remove_all_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/message_reaction_remove_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/presence_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/ready_packet.dart';
@@ -85,8 +86,10 @@ final class PacketListener implements PacketListenerContract {
     subscribe(GuildEmojisUpdatePacket.new);
     subscribe(GuildStickersUpdatePacket.new);
     subscribe(GuildAuditLogEntryCreatePacket.new);
+
     subscribe(MessageReactionAddPacket.new);
     subscribe(MessageReactionRemovePacket.new);
+    subscribe(MessageReactionRemoveAllPacket.new);
 
     subscribe(ButtonInteractionCreatePacket.new);
     subscribe(CommandInteractionCreatePacket.new);
