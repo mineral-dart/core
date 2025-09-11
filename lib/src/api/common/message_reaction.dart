@@ -30,7 +30,7 @@ abstract class BaseMessageReaction {
 }
 
 abstract interface class ServerMessageReaction extends BaseMessageReaction {
-  Snowflake get serverId;
+  Snowflake? get serverId;
 
   Future<Member?> resolveMember();
 }
@@ -43,7 +43,7 @@ final class MessageReaction implements ServerMessageReaction, PrivateMessageReac
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
   @override
-  final Snowflake serverId;
+  final Snowflake? serverId;
 
   @override
   final Snowflake channelId;
@@ -88,7 +88,7 @@ final class MessageReaction implements ServerMessageReaction, PrivateMessageReac
   /// final member = await reaction.resolveMember();
   /// ```
   @override
-  Future<Member?> resolveMember() => _datastore.member.get(serverId.value, userId.value, true);
+  Future<Member?> resolveMember() => _datastore.member.get(serverId!.value, userId.value, true);
 
   /// Get related [ServerVoiceChannel]
   /// ```dart
