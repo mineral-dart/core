@@ -15,6 +15,7 @@ import 'package:mineral/src/domains/events/contracts/private/private_channel_upd
 import 'package:mineral/src/domains/events/contracts/private/private_dialog_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_all_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
@@ -39,6 +40,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_member_select
 import 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_all_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
@@ -219,6 +221,11 @@ enum Event implements EnhancedEnum, EventType {
   serverMessageReactionRemove(ServerMessageReactionRemoveEvent, [
     ['MessageReaction', 'reaction']
   ]),
+  serverMessageReactionRemoveAll(ServerMessageReactionRemoveAllEvent, [
+    ['Server', 'server'],
+    ['ServerTextChannel', 'channel'],
+    ['Message', 'message']
+  ]),
   serverPollVoteAdd(ServerPollVoteAddEvent, [
     ['PollAnswerVote<ServerMessage>', 'message'],
     ['User', 'user']
@@ -269,6 +276,10 @@ enum Event implements EnhancedEnum, EventType {
   ]),
   privateMessageReactionRemove(PrivateMessageReactionRemoveEvent, [
     ['MessageReaction', 'reaction']
+  ]),
+  privateMessageReactionRemoveAll(PrivateMessageReactionRemoveAllEvent, [
+    ['PrivateChannel', 'channel'],
+    ['Message', 'message']
   ]),
   voiceStateUpdate(VoiceStateUpdateEvent, [
     ['VoiceState', 'before'],
