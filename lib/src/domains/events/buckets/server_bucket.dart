@@ -18,6 +18,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_member_select
 import 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_all_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_remove_event.dart';
@@ -147,6 +148,9 @@ final class ServerBucket {
 
   void messageReactionRemove(ServerMessageReactionRemoveHandler handle) =>
       _events.make(Event.serverMessageReactionRemove, handle);
+
+  void messageReactionRemoveAll(ServerMessageReactionRemoveAllHandler handle) =>
+      _events.make(Event.serverMessageReactionRemoveAll, handle);
 
   void auditLog(ServerAuditLogEventHandler handle) =>
       _events.make(Event.serverAuditLog, handle);
