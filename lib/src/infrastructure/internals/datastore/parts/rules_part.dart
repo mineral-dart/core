@@ -24,7 +24,7 @@ final class RulesPart implements RulesPartContract {
 
     final req = Request.json(endpoint: '/guilds/$serverId/auto-moderation/rules');
     final result = await _dataStore.requestBucket
-        .query<List<Map<String, dynamic>>>(req)
+        .query<List<dynamic>>(req)
         .run(_dataStore.client.get);
 
     final rules = await result.map((element) async {
