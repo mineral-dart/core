@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/server/managers/rules_manager.dart';
 
 final class ServerSettings {
   final String? bitfieldPermission;
@@ -15,6 +16,7 @@ final class ServerSettings {
   final String preferredLocale;
   final int? maxVideoChannelUsers;
   final NsfwLevel nsfwLevel;
+  final RulesManager rulesManager;
 
   ServerSettings({
     required this.bitfieldPermission,
@@ -31,5 +33,6 @@ final class ServerSettings {
     required this.preferredLocale,
     required this.maxVideoChannelUsers,
     required this.nsfwLevel,
+    required this.rulesManager,
   });
 }
