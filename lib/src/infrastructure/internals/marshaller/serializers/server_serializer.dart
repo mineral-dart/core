@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:mineral/api.dart';
+import 'package:mineral/src/api/server/managers/rules_manager.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
 import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
@@ -120,7 +121,9 @@ final class ServerSerializer implements SerializerContract<Server> {
         preferredLocale: payload['settings']['preferred_locale'],
         maxVideoChannelUsers: payload['max_video_channel_users'],
         nsfwLevel:
-            findInEnum(NsfwLevel.values, payload['settings']['nsfw_level']));
+            findInEnum(NsfwLevel.values, payload['settings']['nsfw_level']),
+        rulesManager: RulesManager(Snowflake.parse(payload['id'])));
+
 
     return Server(
       id: Snowflake.parse(payload['id']),

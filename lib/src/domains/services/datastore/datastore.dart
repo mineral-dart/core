@@ -26,6 +26,8 @@ abstract class DataStoreContract {
 
   EmojiPartContract get emoji;
 
+  RulesPartContract get rules;
+
   ReactionPartContract get reaction;
 
   ThreadPart get thread;

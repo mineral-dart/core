@@ -2,6 +2,11 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
 import 'package:mineral/src/api/server/channels/private_thread_channel.dart';
 import 'package:mineral/src/api/server/channels/public_thread_channel.dart';
+import 'package:mineral/src/api/server/moderation/action.dart';
+import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
+import 'package:mineral/src/api/server/moderation/enums/auto_moderation_event_type.dart';
+import 'package:mineral/src/api/server/moderation/enums/trigger_type.dart';
+import 'package:mineral/src/api/server/moderation/trigger_metadata.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
 
 abstract interface class DataStorePart {}
@@ -230,6 +235,32 @@ abstract interface class EmojiPartContract implements DataStorePart {
       required String? reason});
 
   Future<void> delete(Object serverId, String emojiId, {String? reason});
+}
+
+abstract interface class RulesPartContract implements DataStorePart {
+  Future<Map<Snowflake, AutoModerationRule>> fetch(Object serverId, bool force);
+
+  Future<AutoModerationRule?> get(Object serverId, Object id, bool force);
+
+  Future<AutoModerationRule> create(
+      {required Object serverId,
+      required String name,
+      required AutoModerationEventType eventType,
+      required TriggerType triggerType,
+      required List<Action> actions,
+      TriggerMetadata? triggerMetadata,
+      List<Snowflake> exemptRoles = const [],
+      List<Snowflake> exemptChannels = const [],
+      bool enabled = true,
+      String? reason});
+
+  Future<AutoModerationRule?> update(
+      {required Object id,
+      required Object serverId,
+      required Map<String, dynamic> payload,
+      required String? reason});
+
+  Future<void> delete(Object serverId, Object ruleId, {String? reason});
 }
 
 abstract interface class ReactionPartContract implements DataStorePart {

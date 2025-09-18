@@ -10,6 +10,7 @@ import 'package:mineral/src/api/common/sticker.dart';
 import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/api/server/invite.dart';
 import 'package:mineral/src/api/server/member.dart';
+import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
 import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/api/server/voice_state.dart';
@@ -25,6 +26,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/serializers/mess
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/poll_answer_vote_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/poll_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/role_serializer.dart';
+import 'package:mineral/src/infrastructure/internals/marshaller/serializers/rule_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/server_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/sticker_serializer.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/user_serializer.dart';
@@ -63,6 +65,8 @@ final class SerializerBucket {
 
   final SerializerContract<PollAnswerVote> pollAnswerVote;
 
+  final SerializerContract<AutoModerationRule> rules;
+
   SerializerBucket(MarshallerContract marshaller)
       : channels = ChannelSerializer(),
         server = ServerSerializer(),
@@ -78,5 +82,6 @@ final class SerializerBucket {
         voice = VoiceStateSerializer(),
         reaction = MessageReactionSerializer(),
         pollAnswerVote = PollAnswerVoteSerializer(),
+        rules = RuleSerializer(),
         invite = InviteSerializer();
 }

@@ -8,6 +8,7 @@ import 'package:mineral/src/infrastructure/internals/datastore/parts/member_part
 import 'package:mineral/src/infrastructure/internals/datastore/parts/message_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/reaction_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/role_part.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/parts/rules_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/server_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/sticker_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/thread_part.dart';
@@ -60,6 +61,10 @@ final class DataStore implements DataStoreContract {
   @override
   late final InvitePart invite;
 
+  @override
+  // TODO: implement rules
+  late final RulesPart rules;
+
   DataStore(this.client)
       : channel = ChannelPart(),
         server = ServerPart(),
@@ -72,5 +77,6 @@ final class DataStore implements DataStoreContract {
         emoji = EmojiPart(),
         reaction = ReactionPart(),
         thread = ThreadPart(),
+        rules = RulesPart(),
         invite = InvitePart();
 }
