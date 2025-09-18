@@ -13,6 +13,11 @@ final class CacheKey {
     return ref ? 'ref:$key' : key;
   }
 
+  String serverRules(Object serverId, Object ruleId, {bool ref = false}) {
+    final key = '${server(serverId)}/rules/$ruleId';
+    return ref ? 'ref:$key' : key;
+  }
+
   String serverSubscription(String serverId, {bool ref = false}) {
     final key = '${server(serverId)}/subscriptions';
     return ref ? 'ref:$key' : key;
