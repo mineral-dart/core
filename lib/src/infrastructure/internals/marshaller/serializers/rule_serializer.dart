@@ -1,12 +1,10 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/server/invite.dart';
 import 'package:mineral/src/api/server/moderation/action.dart';
 import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
 import 'package:mineral/src/api/server/moderation/enums/action_type.dart';
 import 'package:mineral/src/api/server/moderation/enums/auto_moderation_event_type.dart';
 import 'package:mineral/src/api/server/moderation/enums/trigger_type.dart';
 import 'package:mineral/src/api/server/moderation/trigger_metadata.dart';
-import 'package:mineral/src/domains/commons/utils/helper.dart';
 import 'package:mineral/src/domains/commons/utils/utils.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
@@ -43,7 +41,7 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
   @override
   Future<AutoModerationRule> serialize(Map<String, dynamic> json) async {
     return AutoModerationRule(
-        id: json['id'],
+        id: Snowflake.parse(json['id']),
         serverId: Snowflake.parse(json['serverId']),
         name: json['name'],
         creatorId: Snowflake.parse(json['creatorId']),
