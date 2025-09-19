@@ -2,9 +2,9 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/services/packets/packet_dispatcher.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/automoderation_action_execution_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/automoderation_rule_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/automoderation_rule_delete_packet.dart';
-import 'package:mineral/src/infrastructure/internals/packets/listeners/automoderation_rule_execution_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/automoderation_rule_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_create_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/channel_delete_packet.dart';
@@ -119,6 +119,6 @@ final class PacketListener implements PacketListenerContract {
     subscribe(AutomoderationRuleCreatePacket.new);
     subscribe(AutoModerationRuleUpdatePacket.new);
     subscribe(AutomoderationRuleDeletePacket.new);
-    subscribe(AutomoderationRuleExecutionPacket.new);
+    subscribe(AutomoderationActionExecutionPacket.new);
   }
 }
