@@ -29,6 +29,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_roles_remove_
 import 'package:mineral/src/domains/events/contracts/server/server_roles_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_rule_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_rule_delete_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_rule_execution_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_rule_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_stickers_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_text_select_event.dart';
@@ -173,4 +174,6 @@ final class ServerBucket {
   void ruleDelete(ServerRuleDeleteEventHandler handle) =>
       _events.make(Event.serverRuleDelete, handle);
 
+  void ruleExecution(ServerRuleExecutionEventHandler handle) =>
+      _events.make(Event.serverRuleExecution, handle);
 }

@@ -50,6 +50,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_roles_remove_
 import 'package:mineral/src/domains/events/contracts/server/server_roles_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_rule_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_rule_delete_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_rule_execution_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_rule_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_stickers_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_text_select_event.dart';
@@ -237,18 +238,18 @@ enum Event implements EnhancedEnum, EventType {
     ['PollAnswerVote<ServerMessage>', 'message'],
     ['User', 'user']
   ]),
-
   serverRuleCreate(ServerRuleCreateEvent, [
     ['AutoModerationRule', 'rule']
   ]),
-
   serverRuleUpdate(ServerRuleUpdateEvent, [
     ['AutoModerationRule?', 'before'],
     ['AutoModerationRule', 'after']
   ]),
-
   serverRuleDelete(ServerRuleDeleteEvent, [
     ['AutoModerationRule', 'rule']
+  ]),
+  serverRuleExecution(ServerRuleExecutionEvent, [
+    ['RuleExecution', 'execution']
   ]),
 
   // private
