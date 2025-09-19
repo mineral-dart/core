@@ -26,9 +26,9 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
       'actions': json['actions'],
       'enabled': json['enabled'],
       'exemptRoles': List<Snowflake>.from(
-          (json['exempt_roles'] as List).map((e) => Snowflake.parse(e))),
+          (json['exempt_roles'] as List).map(Snowflake.parse)),
       'exemptChannels': List<Snowflake>.from(
-          (json['exempt_channels'] as List).map((e) => Snowflake.parse(e))),
+          (json['exempt_channels'] as List).map(Snowflake.parse)),
     };
 
     final cacheKey = _marshaller.cacheKey
