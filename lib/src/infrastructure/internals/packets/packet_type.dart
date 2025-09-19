@@ -47,7 +47,7 @@ enum PacketType implements PacketTypeContract {
   autoModerationRuleCreate('AUTO_MODERATION_RULE_CREATE'),
   autoModerationRuleUpdate('AUTO_MODERATION_RULE_UPDATE'),
   autoModerationRuleDelete('AUTO_MODERATION_RULE_DELETE'),
-  autoModerationRuleExecution('AUTO_MODERATION_RULE_EXECUTION'),
+  autoModerationActionExecution('AUTO_MODERATION_ACTION_EXECUTION'),
 
   channelPinsUpdate('CHANNEL_PINS_UPDATE'),
 
