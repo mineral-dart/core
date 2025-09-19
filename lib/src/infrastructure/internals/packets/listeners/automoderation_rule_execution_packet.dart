@@ -14,8 +14,6 @@ final class AutomoderationRuleExecutionPacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.autoModerationRuleExecution;
 
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
-
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
   @override
