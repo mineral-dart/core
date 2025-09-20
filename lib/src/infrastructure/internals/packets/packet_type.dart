@@ -44,6 +44,11 @@ enum PacketType implements PacketTypeContract {
   guildEmojisUpdate('GUILD_EMOJIS_UPDATE'),
   guildStickersUpdate('GUILD_STICKERS_UPDATE'),
 
+  autoModerationRuleCreate('AUTO_MODERATION_RULE_CREATE'),
+  autoModerationRuleUpdate('AUTO_MODERATION_RULE_UPDATE'),
+  autoModerationRuleDelete('AUTO_MODERATION_RULE_DELETE'),
+  autoModerationActionExecution('AUTO_MODERATION_ACTION_EXECUTION'),
+
   channelPinsUpdate('CHANNEL_PINS_UPDATE'),
 
   voiceStateUpdate('VOICE_STATE_UPDATE'),

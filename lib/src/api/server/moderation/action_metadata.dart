@@ -10,4 +10,12 @@ final class ActionMetadata {
     required this.duration,
     this.customMessage,
   });
+
+  factory ActionMetadata.fromJson(Map<String, dynamic> json) {
+    return ActionMetadata(
+      channelId: json['channel_id'],
+      duration: json['duration_seconds'],
+      customMessage: json['custom_message'],
+    );
+  }
 }

@@ -27,6 +27,10 @@ import 'package:mineral/src/domains/events/contracts/server/server_role_select_e
 import 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_roles_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_roles_update_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_rule_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_rule_delete_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_rule_execution_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_rule_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_stickers_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_text_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_thread_create_event.dart';
@@ -160,4 +164,16 @@ final class ServerBucket {
 
   void pollVoteRemove(ServerPollVoteRemoveEventHandler handle) =>
       _events.make(Event.serverPollVoteRemove, handle);
+
+  void ruleCreate(ServerRuleCreateEventHandler handle) =>
+      _events.make(Event.serverRuleCreate, handle);
+
+  void ruleUpdate(ServerRuleUpdateEventHandler handle) =>
+      _events.make(Event.serverRuleUpdate, handle);
+
+  void ruleDelete(ServerRuleDeleteEventHandler handle) =>
+      _events.make(Event.serverRuleDelete, handle);
+
+  void ruleExecution(ServerRuleExecutionEventHandler handle) =>
+      _events.make(Event.serverRuleExecution, handle);
 }
