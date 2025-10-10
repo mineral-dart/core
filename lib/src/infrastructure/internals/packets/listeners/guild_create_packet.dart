@@ -43,6 +43,13 @@ final class GuildCreatePacket implements ListenablePacket {
       });
     }).wait;
 
+    await List.from(message.payload['voice_states']).map((element) async {
+      return _marshaller.serializers.voice.normalize({
+        ...element,
+        'guild_id': message.payload['id'],
+      });
+    }).wait;
+
     final rawServer =
         await _marshaller.serializers.server.normalize(message.payload);
     final server = await _marshaller.serializers.server.serialize(rawServer);
