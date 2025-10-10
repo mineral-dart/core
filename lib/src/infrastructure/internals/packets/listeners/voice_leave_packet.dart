@@ -13,18 +13,17 @@ final class VoiceLeavePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final rawVoiceState =
-        await _marshaller.serializers.voice.normalize(message.payload);
-
-    final voiceState =
-        await _marshaller.serializers.voice.serialize(rawVoiceState);
-
     if (message.payload['channel_id'] == null) {
-      final cacheKey = _marshaller.cacheKey
-          .voiceState(message.payload['guild_id'], message.payload['user_id']);
+      final cacheKey = _marshaller.cacheKey.voiceState(message.payload['guild_id'], message.payload['user_id']);
+      final beforeRaw = await _marshaller.cache?.get(cacheKey);
+      final before = beforeRaw != null ? await _marshaller.serializers.voice.serialize(beforeRaw) : null;
+
+      final rawVoiceState = await _marshaller.serializers.voice.normalize(message.payload);
+      final voiceState = await _marshaller.serializers.voice.serialize(rawVoiceState);
+
       await _marshaller.cache?.remove(cacheKey);
 
-      dispatch(event: Event.voiceLeave, params: [voiceState]);
+      dispatch(event: Event.voiceLeave, params: [before, voiceState]);
     }
   }
 }

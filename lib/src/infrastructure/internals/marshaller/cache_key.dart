@@ -47,7 +47,7 @@ final class CacheKey {
   }
 
   String voiceState(Object serverId, Object userId) =>
-      '${member(serverId, userId)}/voice_states';
+      'voice_states/${member(serverId, userId)}';
 
   String invite(String code) => 'invites/$code';
 

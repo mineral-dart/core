@@ -4,7 +4,7 @@ import 'package:mineral/src/api/server/voice_state.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef VoiceLeaveEventHandler = FutureOr Function(VoiceState);
+typedef VoiceLeaveEventHandler = FutureOr Function(VoiceState, VoiceState);
 
 abstract class VoiceLeaveEvent implements ListenableEvent {
   @override
@@ -13,5 +13,5 @@ abstract class VoiceLeaveEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(VoiceState state);
+  FutureOr<void> handle(VoiceState cached, VoiceState state);
 }

@@ -46,10 +46,11 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_up
 import 'package:mineral/src/infrastructure/internals/packets/listeners/typing_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_join_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_leave_packet.dart';
-import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_state_update_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_move_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_dispatcher.dart';
 
 final class PacketListener implements PacketListenerContract {
+
   @override
   late final PacketDispatcherContract dispatcher;
 
@@ -106,7 +107,7 @@ final class PacketListener implements PacketListenerContract {
     subscribe(ThreadMembersUpdatePacket.new);
 
     subscribe(VoiceJoinPacket.new);
-    subscribe(VoiceStateUpdatePacket.new);
+    subscribe(VoiceMovePacket.new);
     subscribe(VoiceLeavePacket.new);
 
     subscribe(InviteCreatePacket.new);

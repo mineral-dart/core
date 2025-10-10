@@ -5,7 +5,7 @@ import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.d
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 
-final class VoiceStateUpdatePacket implements ListenablePacket {
+final class VoiceMovePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.voiceStateUpdate;
 
@@ -17,14 +17,11 @@ final class VoiceStateUpdatePacket implements ListenablePacket {
         .voiceState(message.payload['guild_id'], message.payload['user_id']);
     final rawBefore = await _marshaller.cache?.get(cacheKey);
 
-    final rawVoiceState =
-        await _marshaller.serializers.voice.normalize(message.payload);
+    final rawVoiceState = await _marshaller.serializers.voice.normalize(message.payload);
     final voiceState =
         await _marshaller.serializers.voice.serialize(rawVoiceState);
 
-    if (rawBefore != null &&
-        rawBefore['channel_id'] != null &&
-        voiceState.channelId != null) {
+    if (rawBefore != null && rawBefore['channel_id'] != null && voiceState.channelId != null) {
       final before = await _marshaller.serializers.voice.serialize(rawBefore);
       dispatch(event: Event.voiceMove, params: [before, voiceState]);
     }
