@@ -50,6 +50,7 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_mov
 import 'package:mineral/src/infrastructure/internals/packets/packet_dispatcher.dart';
 
 final class PacketListener implements PacketListenerContract {
+
   @override
   late final PacketDispatcherContract dispatcher;
 
