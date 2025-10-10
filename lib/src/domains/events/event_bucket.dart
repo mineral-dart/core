@@ -1,11 +1,10 @@
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/commons/kernel.dart';
 import 'package:mineral/src/domains/events/buckets/private_bucket.dart';
 import 'package:mineral/src/domains/events/buckets/server_bucket.dart';
 import 'package:mineral/src/domains/events/contracts/common/invite_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/invite_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/voice_state_update_event.dart';
-import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/domains/events/contracts/common/voice_move_event.dart';
 
 final class EventBucket {
   final Kernel _kernel;
@@ -27,13 +26,13 @@ final class EventBucket {
   void voiceStateUpdate(VoiceStateUpdateEventHandler handle) =>
       _registerEvent(event: Event.voiceStateUpdate, handle: handle);
 
-  void voiceJoin(VoiceStateUpdateEventHandler handle) =>
+  void voiceJoin(VoiceJoinEventHandler handle) =>
       _registerEvent(event: Event.voiceJoin, handle: handle);
 
-  void voiceLeave(VoiceStateUpdateEventHandler handle) =>
+  void voiceLeave(VoiceLeaveEventHandler handle) =>
       _registerEvent(event: Event.voiceLeave, handle: handle);
 
-  void voiceMove(VoiceStateUpdateEventHandler handle) =>
+  void voiceMove(VoiceMoveEventHandler handle) =>
       _registerEvent(event: Event.voiceMove, handle: handle);
 
   void inviteCreate(InviteCreateEventHandler handle) =>
