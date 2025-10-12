@@ -28,7 +28,7 @@ dependencies:
   mansion: ^0.1.0
   uuid: ^4.4.2
   eterl: ^1.1.0
-  env_guard: ^1.3.1
+  env_guard: ^1.3.2
   hmr: ^1.4.0
   glob: ^2.1.3
 
