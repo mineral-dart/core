@@ -45,10 +45,6 @@ final class MessageComponentBuilder {
   }
 
   void button(MessageButton button) {
-    if (_components.isEmpty) {
-      return;
-    }
-
     if (_components.length > 5) {
       throw Exception('You can only add up to 5 buttons to a message');
     }

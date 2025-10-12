@@ -74,7 +74,6 @@ final class MessagePart implements MessagePartContract {
     }
 
     final req = Request.json(endpoint: '/channels/$channelId/messages/$id');
-    print(req.url);
     final response = await _dataStore.client.get(req);
 
     final message = switch (response.statusCode) {

@@ -39,7 +39,7 @@ final class DialogBuilder implements MessageComponent {
 
     element.setLabel(title);
 
-    final row = MessageRowBuilder()..components.add(element);
+    final row = MessageRowBuilder(components: [element]);
 
     _elements.add(row);
   }
@@ -70,7 +70,7 @@ final class DialogBuilder implements MessageComponent {
 
     element.setLabel(title);
 
-    final row = MessageRowBuilder()..components.add(element);
+    final row = MessageRowBuilder(components: [element]);
 
     _elements.add(row);
   }
