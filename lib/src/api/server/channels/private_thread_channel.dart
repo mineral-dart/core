@@ -19,6 +19,9 @@ class PrivateThreadChannel extends ServerChannel implements ThreadChannel {
   @override
   final Snowflake serverId;
 
+  @override
+  DateTime get createdAt => id.createdAt;
+
   final String channelId;
 
   final ThreadMetadata metadata;

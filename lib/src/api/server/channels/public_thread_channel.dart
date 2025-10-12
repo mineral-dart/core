@@ -24,6 +24,9 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   @override
   Snowflake get serverId => _properties.serverId!;
 
+  @override
+  DateTime get createdAt => id.createdAt;
+
   final ThreadMetadata metadata;
 
   int get rateLimitPerUser => _properties.rateLimitPerUser!;
