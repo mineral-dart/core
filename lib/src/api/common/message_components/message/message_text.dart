@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 
-final class MessageText implements MessageComponent {
+final class MessageText implements Component {
   ComponentType get type => ComponentType.textDisplay;
 
   final String _content;

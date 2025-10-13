@@ -14,7 +14,7 @@ enum ButtonType implements EnhancedEnum<int> {
   const ButtonType(this.value);
 }
 
-final class MessageButton implements MessageComponent {
+final class MessageButton implements Component {
   final ButtonType _type;
   final String? _customId;
   final String? _label;

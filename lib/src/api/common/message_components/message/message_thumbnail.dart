@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 
-final class MessageThumbnail implements MessageComponent {
+final class MessageThumbnail implements Component {
   ComponentType get type => ComponentType.thumbnail;
 
   final MessageMedia _media;

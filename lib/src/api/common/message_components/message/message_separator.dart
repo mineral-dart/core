@@ -8,7 +8,7 @@ enum SeparatorSize {
   const SeparatorSize(this.value);
 }
 
-final class MessageSeparator implements MessageComponent {
+final class MessageSeparator implements Component {
   ComponentType get type => ComponentType.separator;
 
   final bool _show;
