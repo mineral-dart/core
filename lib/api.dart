@@ -27,8 +27,8 @@ export 'package:mineral/src/api/common/commands/command_helper.dart';
 export 'package:mineral/src/api/common/commands/command_option.dart';
 export 'package:mineral/src/api/common/commands/command_option_type.dart';
 export 'package:mineral/src/api/common/commands/command_type.dart';
+export 'package:mineral/src/api/common/components/component.dart';
 export 'package:mineral/src/api/common/components/component_type.dart';
-export 'package:mineral/src/api/common/components/message_component.dart';
 export 'package:mineral/src/api/common/embed/message_embed.dart';
 export 'package:mineral/src/api/common/embed/message_embed_assets.dart';
 export 'package:mineral/src/api/common/embed/message_embed_author.dart';
@@ -149,4 +149,3 @@ export 'package:mineral/src/domains/global_states/global_state.dart';
 export 'package:mineral/src/domains/providers/provider.dart';
 export 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 export 'package:mineral/src/infrastructure/internals/wss/encoding_strategies/websocket_encoder.dart';
-
