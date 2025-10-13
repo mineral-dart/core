@@ -4,6 +4,7 @@ import 'package:mineral/src/api/common/types/channel_type.dart';
 abstract class Channel {
   Snowflake get id;
   ChannelType get type;
+  DateTime get createdAt => id.createdAt;
   T cast<T extends Channel>() => this as T;
 }
 

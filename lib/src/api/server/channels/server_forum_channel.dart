@@ -20,6 +20,9 @@ final class ServerForumChannel extends ServerChannel {
   @override
   String get name => _properties.name!;
 
+  @override
+  DateTime get createdAt => id.createdAt;
+
   int get position => _properties.position!;
 
   ThreadsManager get threads => _properties.threads;

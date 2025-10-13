@@ -32,6 +32,8 @@ final class Server {
     required this.threads,
   });
 
+  DateTime get createdAt => id.createdAt;
+
   /// Set the server's name.
   ///
   /// ```dart

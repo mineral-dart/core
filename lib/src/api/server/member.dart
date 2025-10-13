@@ -64,6 +64,8 @@ final class Member implements UserClient {
   Future<Presence> resolvePresence() =>
       _wss.getMemberPresence(serverId.value, id.value);
 
+  DateTime get createdAt => id.createdAt;
+
   /// Check if the member can bypass verification.
   ///
   /// ```dart
