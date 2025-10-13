@@ -139,7 +139,7 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> sendDialog(
-      Snowflake id, String token, DialogBuilder dialog) async {
+      Snowflake id, String token, ModalBuilder dialog) async {
     final req =
         Request.json(endpoint: '/interactions/$id/$token/callback', body: {
       'type': InteractionCallbackType.modal.value,

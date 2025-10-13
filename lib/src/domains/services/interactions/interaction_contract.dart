@@ -81,5 +81,5 @@ abstract class InteractionContract {
   ///
   /// await interaction.dialog(dialog);
   /// ```
-  Future<void> dialog(DialogBuilder dialog);
+  Future<void> dialog(ModalBuilder dialog);
 }
