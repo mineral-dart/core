@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/message_components/message/message_container.dart';
-import 'package:mineral/src/api/common/message_components/message/message_separator.dart';
-import 'package:mineral/src/api/common/message_components/message/message_text.dart';
+import 'package:mineral/src/api/common/components/message/message_container.dart';
+import 'package:mineral/src/api/common/components/message/message_separator.dart';
+import 'package:mineral/src/api/common/components/shared/text_display.dart';
 
 /// ```dart
 /// {@template message_component_builder}
@@ -28,7 +28,7 @@ final class MessageComponentBuilder {
   final List<Component> _components = [];
 
   void text(String text) {
-    _components.add(MessageText(text));
+    _components.add(TextDisplay(text));
   }
 
   void separator(
@@ -58,14 +58,14 @@ final class MessageComponentBuilder {
     _components.add(row);
   }
 
-  void selectMenu(MessageMenu menu) {
+  void selectMenu(SelectMenu menu) {
     final row = MessageRowBuilder(components: [menu]);
     _components.add(row);
   }
 
   void section(MessageSection section) {
     for (final component in section.builder._components) {
-      if (component is! MessageText) {
+      if (component is! TextDisplay) {
         throw FormatException('Section components must be text only');
       }
     }
