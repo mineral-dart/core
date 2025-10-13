@@ -4,7 +4,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:mineral/api.dart';
 
-final class Attachment implements MessageComponent {
+final class Attachment implements Component {
   ComponentType get type => ComponentType.file;
 
   static final Map<String, Uint8List> _cachedAttachments = {};

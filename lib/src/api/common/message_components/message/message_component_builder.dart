@@ -25,7 +25,7 @@ import 'package:mineral/src/api/common/message_components/message/message_text.d
 /// {@endtemplate}
 /// ```
 final class MessageComponentBuilder {
-  final List<MessageComponent> _components = [];
+  final List<Component> _components = [];
 
   void text(String text) {
     _components.add(MessageText(text));

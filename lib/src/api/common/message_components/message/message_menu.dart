@@ -1,10 +1,10 @@
 import 'package:mineral/src/api/common/components/component_type.dart';
-import 'package:mineral/src/api/common/components/message_component.dart';
+import 'package:mineral/src/api/common/components/component.dart';
 import 'package:mineral/src/api/common/partial_emoji.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 
-final class MessageMenu<T> implements MessageComponent {
+final class MessageMenu<T> implements Component {
   final ComponentType _type;
   final String _customId;
 

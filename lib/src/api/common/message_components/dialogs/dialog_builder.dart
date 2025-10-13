@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
 
-final class DialogBuilder implements MessageComponent {
-  final List<MessageComponent> _elements = [];
+final class DialogBuilder implements Component {
+  final List<Component> _elements = [];
 
   final String _customId;
   String? _title;
@@ -13,7 +13,7 @@ final class DialogBuilder implements MessageComponent {
     return this;
   }
 
-  void text(
+  void textInput(
       {required String customId,
       required String title,
       String? placeholder,

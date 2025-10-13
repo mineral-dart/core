@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 
-final class MessageContainer implements MessageComponent {
+final class MessageContainer implements Component {
   ComponentType get type => ComponentType.container;
 
   final Color? _color;

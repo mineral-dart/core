@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 
-final class MessageGallery implements MessageComponent {
+final class MessageGallery implements Component {
   ComponentType get type => ComponentType.mediaGallery;
 
   final List<GalleryItem> _items;

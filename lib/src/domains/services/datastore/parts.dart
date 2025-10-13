@@ -178,7 +178,7 @@ abstract interface class ServerMessagePartContract implements DataStorePart {
     required Snowflake serverId,
     String? content,
     List<MessageEmbed>? embeds,
-    List<MessageComponent>? components,
+    List<Component>? components,
   });
 
   Future<ServerMessage> reply(
@@ -187,7 +187,7 @@ abstract interface class ServerMessagePartContract implements DataStorePart {
       required Snowflake serverId,
       String? content,
       List<MessageEmbed>? embeds,
-      List<MessageComponent>? components});
+      List<Component>? components});
 
   Future<void> pin({required Snowflake id, required Snowflake channelId});
 
