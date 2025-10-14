@@ -1,15 +1,15 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/types/interaction_type.dart';
-import 'package:mineral/src/domains/components/dialog/contexts/private_dialog_context.dart';
-import 'package:mineral/src/domains/components/dialog/contexts/server_dialog_context.dart';
+import 'package:mineral/src/domains/components/modal/contexts/private_modal_context.dart';
+import 'package:mineral/src/domains/components/modal/contexts/server_modal_context.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 
-final class DialogInteractionCreatePacket implements ListenablePacket {
+final class ModalInteractionCreatePacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.interactionCreate;
 
@@ -38,16 +38,16 @@ final class DialogInteractionCreatePacket implements ListenablePacket {
       }).fold({}, (prev, curr) => {...prev, ...curr});
 
       final event = switch (interactionContext) {
-        InteractionContextType.server => Event.serverDialogSubmit,
-        InteractionContextType.privateChannel => Event.privateDialogSubmit,
+        InteractionContextType.server => Event.serverModalSubmit,
+        InteractionContextType.privateChannel => Event.privateModalSubmit,
         _ => null
       };
 
       final ctx = await switch (interactionContext) {
         InteractionContextType.server =>
-          ServerDialogContext.fromMap(_dataStore, message.payload),
+          ServerModalContext.fromMap(_dataStore, message.payload),
         InteractionContextType.privateChannel =>
-          PrivateDialogContext.fromMap(_marshaller, message.payload),
+          PrivateModalContext.fromMap(_marshaller, message.payload),
         _ => null
       };
 

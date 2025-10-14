@@ -70,7 +70,7 @@ final class Interaction implements InteractionContract {
   }
 
   @override
-  Future<void> dialog(ModalBuilder dialog) async {
-    await _datastore.interaction.sendDialog(_id, _token, dialog);
+  Future<void> modal(ModalBuilder modal) async {
+    await _datastore.interaction.sendModal(_id, _token, modal);
   }
 }

@@ -68,18 +68,19 @@ abstract class InteractionContract {
   /// ```
   Future<InteractionContract> wait();
 
-  /// Use to send a dialog to the interaction.
+  // TODO: Edit the documentation
+  /// Use to send a modal to the interaction.
   ///
   /// Usage:
   /// ```dart
-  /// final dialog = DialogBuilder('unique_custom_id')
+  /// final modal = ModalBuilder('unique_custom_id')
   ///   ..setTitle('Hello')
   ///   ..text('hello', (input) => input
   ///     ..setLabel('Hello')
   ///     ..setPlaceholder('World');
   ///   );
   ///
-  /// await interaction.dialog(dialog);
+  /// await interaction.modal(modal);
   /// ```
-  Future<void> dialog(ModalBuilder dialog);
+  Future<void> modal(ModalBuilder modal);
 }

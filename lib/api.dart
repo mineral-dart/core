@@ -137,9 +137,9 @@ export 'package:mineral/src/domains/commands/contexts/server_command_context.dar
 export 'package:mineral/src/domains/components/buttons/button_context.dart';
 export 'package:mineral/src/domains/components/buttons/contexts/private_button_context.dart';
 export 'package:mineral/src/domains/components/buttons/contexts/server_button_context.dart';
-export 'package:mineral/src/domains/components/dialog/contexts/private_dialog_context.dart';
-export 'package:mineral/src/domains/components/dialog/contexts/server_dialog_context.dart';
-export 'package:mineral/src/domains/components/dialog/dialog_context.dart';
+export 'package:mineral/src/domains/components/modal/contexts/private_modal_context.dart';
+export 'package:mineral/src/domains/components/modal/contexts/server_modal_context.dart';
+export 'package:mineral/src/domains/components/modal/modal_context.dart';
 export 'package:mineral/src/domains/components/selects/button_context.dart';
 export 'package:mineral/src/domains/components/selects/contexts/private_select_context.dart';
 export 'package:mineral/src/domains/components/selects/contexts/server_select_context.dart';
