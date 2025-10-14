@@ -1,10 +1,10 @@
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
-import 'package:mineral/src/domains/components/dialog/dialog_context.dart';
+import 'package:mineral/src/domains/components/modal/modal_context.dart';
 import 'package:mineral/src/infrastructure/internals/interactions/interaction.dart';
 
-final class ServerDialogContext implements DialogContext {
+final class ServerModalContext implements ModalContext {
   @override
   final Snowflake id;
 
@@ -24,7 +24,7 @@ final class ServerDialogContext implements DialogContext {
 
   late final InteractionContract interaction;
 
-  ServerDialogContext({
+  ServerModalContext({
     required this.id,
     required this.applicationId,
     required this.token,
@@ -35,9 +35,9 @@ final class ServerDialogContext implements DialogContext {
     interaction = Interaction(token, id);
   }
 
-  static Future<ServerDialogContext> fromMap(
+  static Future<ServerModalContext> fromMap(
       DataStoreContract datastore, Map<String, dynamic> payload) async {
-    return ServerDialogContext(
+    return ServerModalContext(
       customId: payload['data']['custom_id'],
       id: Snowflake.parse(payload['id']),
       applicationId: Snowflake.parse(payload['application_id']),

@@ -70,7 +70,7 @@ abstract interface class InteractionPartContract implements DataStorePart {
 
   Future<void> waitInteraction(Snowflake id, String token);
 
-  Future<void> sendDialog(Snowflake id, String token, ModalBuilder dialog);
+  Future<void> sendModal(Snowflake id, String token, ModalBuilder modal);
 }
 
 abstract interface class MemberPartContract implements DataStorePart {
