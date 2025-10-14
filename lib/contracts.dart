@@ -2,7 +2,7 @@ library contracts;
 
 export 'package:mineral/src/domains/components/interactives/components/interactive_button.dart';
 export 'package:mineral/src/domains/components/interactives/components/interactive_component.dart';
-export 'package:mineral/src/domains/components/interactives/components/interactive_dialog.dart';
+export 'package:mineral/src/domains/components/interactives/components/interactive_modal.dart';
 export 'package:mineral/src/domains/components/interactives/components/interactive_select_menu.dart';
 export 'package:mineral/src/domains/components/interactives/interactive_component_manager.dart';
 export 'package:mineral/src/domains/services/cache/cache_provider_contract.dart';
