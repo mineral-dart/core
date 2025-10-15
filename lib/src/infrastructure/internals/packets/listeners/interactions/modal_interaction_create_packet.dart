@@ -32,9 +32,18 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
           (element) => element.value == message.payload['context']);
 
       final Map<String, String> parameters =
-          List.from(message.payload['data']['components']).map((row) {
-        final component = row['components'][0];
-        return {component['custom_id']: component['value']};
+          List.from(message.payload['data']['components'])
+              .where((row) => row['component'] != null)
+              .map((row) {
+        final component = row['component'];
+        final customId = component['custom_id'];
+
+        // Handle both text inputs (value) and select menus (values)
+        final value = component.containsKey('values')
+            ? component['values'].toString()
+            : component['value']?.toString() ?? '';
+
+        return {customId: value};
       }).fold({}, (prev, curr) => {...prev, ...curr});
 
       final event = switch (interactionContext) {
