@@ -1,5 +1,5 @@
-import '../../../../../api.dart';
-import '../shared/text_display.dart';
+import 'package:mineral/api.dart';
+import 'package:mineral/src/api/common/components/shared/text_display.dart';
 import 'modal_label.dart';
 
 final class ModalBuilder {
