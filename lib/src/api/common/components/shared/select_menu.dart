@@ -41,14 +41,14 @@ final class SelectMenu<T> implements Component {
     String customId,
     List<SelectMenuOption<String>> options, {
     String? placeholder,
-    int? minLength,
-    int? maxLength,
+    int? minValues,
+    int? maxValues,
     bool? disabled,
   }) =>
       SelectMenu(ComponentType.textSelectMenu, customId,
           placeholder: placeholder,
-          minLength: minLength,
-          maxLength: maxLength,
+          minValues: minValues,
+          maxValues: maxValues,
           disabled: disabled,
           options: options);
 
