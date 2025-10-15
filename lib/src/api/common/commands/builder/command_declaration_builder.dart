@@ -6,7 +6,6 @@ import 'package:mineral/src/api/common/commands/command_helper.dart';
 import 'package:mineral/src/api/common/commands/command_option.dart';
 import 'package:mineral/src/api/common/commands/command_type.dart';
 import 'package:mineral/src/domains/commands/command_builder.dart';
-import 'package:mineral/src/infrastructure/io/exceptions/command_name_exception.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
 
@@ -24,7 +23,7 @@ final class CommandDeclarationBuilder implements CommandBuilder {
   Function? _handle;
 
   CommandDeclarationBuilder setName(String name, {Translation? translation}) {
-    _verifyName(name);
+    _helper.verifyName(name);
 
     this.name = name.toLowerCase();
 
@@ -32,22 +31,11 @@ final class CommandDeclarationBuilder implements CommandBuilder {
       _nameLocalizations = _helper.extractTranslations('name', translation);
 
       for (final nameTranslation in _nameLocalizations!.values) {
-        _verifyName(nameTranslation);
+        _helper.verifyName(nameTranslation);
       }
     }
 
     return this;
-  }
-
-  void _verifyName(String name) {
-    final regex = RegExp(
-      r"^[-_'A-Za-z0-9\u0900-\u097F\u0E00-\u0E7F]{1,32}$",
-      unicode: true,
-    );
-
-    if (!regex.hasMatch(name)) {
-      throw CommandNameException('Invalid command name for $name.');
-    }
   }
 
   CommandDeclarationBuilder setContext(CommandContextType context) {
