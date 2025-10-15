@@ -1,6 +1,4 @@
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/private/channels/private_channel.dart';
-import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
