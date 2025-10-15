@@ -15,39 +15,35 @@ enum ModalTextInputStyle implements EnhancedEnum<int> {
 final class ModalTextInput implements Component {
   ComponentType get type => ComponentType.textInput;
 
-  final String _customId;
+  final String customId;
   final ModalTextInputStyle style;
-  final int? _minLength;
-  final int? _maxLength;
-  final bool? _required;
-  final String? _value;
-  final String? _placeholder;
+  final int? minLength;
+  final int? maxLength;
+  final bool? isRequired;
+  final String? value;
+  final String? placeholder;
 
   ModalTextInput(
-    this._customId, {
+    this.customId, {
     required this.style,
-    int? minLength,
-    int? maxLength,
-    bool? required,
-    String? value,
-    String? placeholder,
-  })  : _minLength = minLength,
-        _maxLength = maxLength,
-        _required = required,
-        _value = value,
-        _placeholder = placeholder;
+    this.minLength,
+    this.maxLength,
+    this.isRequired,
+    this.value,
+    this.placeholder,
+  });
 
   @override
   Map<String, dynamic> toJson() {
     return {
       'type': type.value,
-      'custom_id': _customId,
+      'custom_id': customId,
       'style': style.value,
-      if (_minLength != null) 'min_length': _minLength,
-      if (_maxLength != null) 'max_length': _maxLength,
-      if (_placeholder != null) 'placeholder': _placeholder,
-      if (_value != null) 'value': _value,
-      if (_required != null) 'required': _required,
+      if (minLength != null) 'min_length': minLength,
+      if (maxLength != null) 'max_length': maxLength,
+      if (placeholder != null) 'placeholder': placeholder,
+      if (value != null) 'value': value,
+      if (isRequired != null) 'required': isRequired,
     };
   }
 }
