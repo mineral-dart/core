@@ -47,4 +47,7 @@ final class User implements UserClient {
   /// final member = await user.toMember('240561194958716928');
   /// ```
   Future<Member?> toMember(String serverId) => _datastore.member.get(serverId, id.value, false);
+
+  @override
+  String toString() => '<@$id>';
 }
