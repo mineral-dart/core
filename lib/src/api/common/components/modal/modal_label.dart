@@ -4,25 +4,23 @@ import 'package:mineral/src/api/common/components/component_type.dart';
 final class ModalLabel implements Component {
   ComponentType get type => ComponentType.label;
 
-  final String _label;
-  final Component _component;
-  final String? _description;
+  final String label;
+  final Component component;
+  final String? description;
 
-  ModalLabel(
-      {required String label,
-      required Component component,
-      String? description})
-      : _label = label,
-        _component = component,
-        _description = description;
+  ModalLabel({
+    required this.label,
+    required this.component,
+    this.description,
+  });
 
   @override
   Map<String, dynamic> toJson() {
     return {
       'type': type.value,
-      'label': _label,
-      if (_description != null) 'description': _description,
-      'component': _component,
+      'label': label,
+      if (description != null) 'description': description,
+      'component': component,
     };
   }
 }
