@@ -1,10 +1,10 @@
+import 'package:mineral/src/api/common/components/component.dart';
 import 'package:mineral/src/api/common/components/component_type.dart';
-import 'package:mineral/src/api/common/components/message_component.dart';
 import 'package:mineral/src/api/common/partial_emoji.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 
-final class MessageMenu<T> implements MessageComponent {
+final class SelectMenu<T> implements Component {
   final ComponentType _type;
   final String _customId;
 
@@ -19,7 +19,7 @@ final class MessageMenu<T> implements MessageComponent {
   final List<Snowflake> _defaultValues;
   final List<ChannelType> _channelTypes;
 
-  MessageMenu(this._type, this._customId,
+  SelectMenu(this._type, this._customId,
       {String? placeholder,
       int? minLength,
       int? maxLength,
@@ -37,22 +37,22 @@ final class MessageMenu<T> implements MessageComponent {
         _defaultValues = defaultValues ?? [],
         _channelTypes = channelTypes ?? [];
 
-  static MessageMenu text(
+  static SelectMenu text(
     String customId,
     List<SelectMenuOption<String>> options, {
     String? placeholder,
-    int? minLength,
-    int? maxLength,
+    int? minValues,
+    int? maxValues,
     bool? disabled,
   }) =>
-      MessageMenu(ComponentType.textSelectMenu, customId,
+      SelectMenu(ComponentType.textSelectMenu, customId,
           placeholder: placeholder,
-          minLength: minLength,
-          maxLength: maxLength,
+          minValues: minValues,
+          maxValues: maxValues,
           disabled: disabled,
           options: options);
 
-  static MessageMenu channel(
+  static SelectMenu channel(
     String customId, {
     String? placeholder,
     int? minValues,
@@ -61,7 +61,7 @@ final class MessageMenu<T> implements MessageComponent {
     List<Snowflake> defaultValues = const [],
     List<ChannelType> channelTypes = const [],
   }) =>
-      MessageMenu<String>(ComponentType.channelSelectMenu, customId,
+      SelectMenu<String>(ComponentType.channelSelectMenu, customId,
           placeholder: placeholder,
           minValues: minValues,
           maxValues: maxValues,
@@ -69,7 +69,7 @@ final class MessageMenu<T> implements MessageComponent {
           defaultValues: defaultValues,
           channelTypes: channelTypes);
 
-  factory MessageMenu.user(
+  factory SelectMenu.user(
     String customId, {
     String? placeholder,
     int? minValues,
@@ -77,14 +77,14 @@ final class MessageMenu<T> implements MessageComponent {
     bool? disabled,
     List<Snowflake> defaultValues = const [],
   }) =>
-      MessageMenu(ComponentType.userSelectMenu, customId,
+      SelectMenu(ComponentType.userSelectMenu, customId,
           placeholder: placeholder,
           minValues: minValues,
           maxValues: maxValues,
           disabled: disabled,
           defaultValues: defaultValues);
 
-  factory MessageMenu.role(
+  factory SelectMenu.role(
     String customId, {
     String? placeholder,
     int? minValues,
@@ -92,14 +92,14 @@ final class MessageMenu<T> implements MessageComponent {
     bool? disabled,
     List<Snowflake> defaultValues = const [],
   }) =>
-      MessageMenu(ComponentType.roleSelectMenu, customId,
+      SelectMenu(ComponentType.roleSelectMenu, customId,
           placeholder: placeholder,
           minValues: minValues,
           maxValues: maxValues,
           disabled: disabled,
           defaultValues: defaultValues);
 
-  factory MessageMenu.mentionable(
+  factory SelectMenu.mentionable(
     String customId, {
     String? placeholder,
     int? minValues,
@@ -107,7 +107,7 @@ final class MessageMenu<T> implements MessageComponent {
     bool? disabled,
     List<Snowflake> defaultValues = const [],
   }) =>
-      MessageMenu(ComponentType.mentionableSelectMenu, customId,
+      SelectMenu(ComponentType.mentionableSelectMenu, customId,
           placeholder: placeholder,
           minValues: minValues,
           maxValues: maxValues,

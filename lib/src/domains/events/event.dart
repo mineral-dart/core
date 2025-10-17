@@ -12,7 +12,7 @@ import 'package:mineral/src/domains/events/contracts/private/private_channel_cre
 import 'package:mineral/src/domains/events/contracts/private/private_channel_delete_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_channel_pins_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_channel_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_dialog_submit_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_modal_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_all_event.dart';
@@ -31,7 +31,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_channel_selec
 import 'package:mineral/src/domains/events/contracts/server/server_channel_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_dialog_submit_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_modal_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_chunk_event.dart';
@@ -164,8 +164,8 @@ enum Event implements EnhancedEnum, EventType {
   serverButtonClick(ServerButtonClickEvent, [
     ['ServerButtonContext', 'ctx']
   ]),
-  serverDialogSubmit(ServerDialogSubmitEvent, [
-    ['ServerDialogContext', 'ctx']
+  serverModalSubmit(ServerModalSubmitEvent, [
+    ['ServerModalContext', 'ctx']
   ]),
   serverChannelSelect(ServerChannelSelectEvent, [
     ['ServerSelectContext', 'ctx'],
@@ -277,8 +277,8 @@ enum Event implements EnhancedEnum, EventType {
   privateButtonClick(PrivateButtonClickEvent, [
     ['PrivateButtonContext', 'ctx']
   ]),
-  privateDialogSubmit(PrivateDialogSubmitEvent, [
-    ['PrivateDialogContext', 'ctx']
+  privateModalSubmit(PrivateModalSubmitEvent, [
+    ['PrivateModalContext', 'ctx']
   ]),
   privateUserSelect(PrivateUserSelectEvent, [
     ['PrivateSelectContext', 'ctx'],

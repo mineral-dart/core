@@ -70,7 +70,7 @@ abstract interface class InteractionPartContract implements DataStorePart {
 
   Future<void> waitInteraction(Snowflake id, String token);
 
-  Future<void> sendDialog(Snowflake id, String token, DialogBuilder dialog);
+  Future<void> sendModal(Snowflake id, String token, ModalBuilder modal);
 }
 
 abstract interface class MemberPartContract implements DataStorePart {
@@ -178,7 +178,7 @@ abstract interface class ServerMessagePartContract implements DataStorePart {
     required Snowflake serverId,
     String? content,
     List<MessageEmbed>? embeds,
-    List<MessageComponent>? components,
+    List<Component>? components,
   });
 
   Future<ServerMessage> reply(
@@ -187,7 +187,7 @@ abstract interface class ServerMessagePartContract implements DataStorePart {
       required Snowflake serverId,
       String? content,
       List<MessageEmbed>? embeds,
-      List<MessageComponent>? components});
+      List<Component>? components});
 
   Future<void> pin({required Snowflake id, required Snowflake channelId});
 

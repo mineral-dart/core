@@ -1,46 +1,24 @@
 import 'package:mineral/api.dart';
 
-final class MessageGallery implements MessageComponent {
-  ComponentType get type => ComponentType.mediaGallery;
+final class MessageThumbnail implements Component {
+  ComponentType get type => ComponentType.thumbnail;
 
-  final List<GalleryItem> _items;
+  final MessageMedia _media;
+  final String? _description;
+  final bool? _spoiler;
 
-  MessageGallery({required List<GalleryItem> items}) : _items = items;
+  MessageThumbnail(
+    MessageMedia media, {
+    String? description,
+    bool? spoiler,
+  })  : _media = media,
+        _description = description,
+        _spoiler = spoiler;
 
   @override
   Map<String, dynamic> toJson() {
     return {
       'type': type.value,
-      'items': _items.map((e) => e.toJson()).toList(),
-    };
-  }
-}
-
-final class GalleryItem {
-  final MessageMedia _media;
-  final String? _description;
-  final bool? _spoiler;
-
-  GalleryItem(
-    String url, {
-    String? proxyUrl,
-    int? height,
-    int? width,
-    String? contentType,
-    String? description,
-    bool? spoiler,
-  })  : _media = MessageMedia(
-          url,
-          proxyUrl: proxyUrl,
-          height: height,
-          width: width,
-          contentType: contentType,
-        ),
-        _description = description,
-        _spoiler = spoiler;
-
-  Map<String, dynamic> toJson() {
-    return {
       'media': {
         'url': _media.url,
         if (_media.proxyUrl != null) 'proxy_url': _media.proxyUrl,
