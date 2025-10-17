@@ -129,6 +129,7 @@ export 'package:mineral/src/api/server/server_settings.dart';
 export 'package:mineral/src/api/server/server_subscription.dart';
 export 'package:mineral/src/api/server/threads/thread_channel.dart';
 export 'package:mineral/src/api/server/threads/thread_result.dart';
+export 'package:mineral/src/api/server/voice_state.dart';
 export 'package:mineral/src/domains/client/client.dart';
 export 'package:mineral/src/domains/client/client_builder.dart';
 export 'package:mineral/src/domains/commands/command_context.dart';
