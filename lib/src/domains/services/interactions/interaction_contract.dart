@@ -8,7 +8,7 @@ abstract class InteractionContract {
   /// final interaction = await interaction.reply(content: 'Hello Mineral');
   /// ```
   Future<InteractionContract> reply(
-      {required MessageComponentBuilder builder, bool ephemeral = false});
+      {required MessageBuilder builder, bool ephemeral = false});
 
   /// Use to edit the reply to the interaction.
   /// Usage:
@@ -16,7 +16,7 @@ abstract class InteractionContract {
   /// ```dart
   /// final interaction = await interaction.editReply(content: 'New Hello Mineral');
   Future<InteractionContract> editReply(
-      {required MessageComponentBuilder builder, bool ephemeral = false});
+      {required MessageBuilder builder, bool ephemeral = false});
 
   /// Use to delete the reply to the interaction. Need a reply to delete.
   /// Usage:
@@ -41,7 +41,7 @@ abstract class InteractionContract {
   /// final interaction = await interaction.followUp(content: 'Hello Mineral');
   /// ```
   Future<InteractionContract> followup(
-      {required MessageComponentBuilder builder, bool ephemeral = false});
+      {required MessageBuilder builder, bool ephemeral = false});
 
   /// Use to edit the follow up message.
   /// Usage:
@@ -50,7 +50,7 @@ abstract class InteractionContract {
   /// final interaction = await interaction.editFollowUp(content: 'New Hello Mineral');
   /// ```
   Future<InteractionContract> editFollowup(
-      {required MessageComponentBuilder builder, bool ephemeral = false});
+      {required MessageBuilder builder, bool ephemeral = false});
 
   /// Use to delete the follow up message.
   /// Usage:

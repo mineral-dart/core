@@ -50,20 +50,20 @@ abstract interface class ThreadPartContract implements DataStorePart {
 
 abstract interface class InteractionPartContract implements DataStorePart {
   Future<void> replyInteraction(Snowflake id, String token,
-      MessageComponentBuilder builder, bool ephemeral);
+      MessageBuilder builder, bool ephemeral);
 
   Future<void> editInteraction(Snowflake botId, String token,
-      MessageComponentBuilder builder, bool ephemeral);
+      MessageBuilder builder, bool ephemeral);
 
   Future<void> deleteInteraction(Snowflake botId, String token);
 
   Future<void> noReplyInteraction(Snowflake id, String token, bool ephemeral);
 
   Future<void> createFollowup(Snowflake botId, String token,
-      MessageComponentBuilder builder, bool ephemeral);
+      MessageBuilder builder, bool ephemeral);
 
   Future<void> editFollowup(Snowflake botId, String token, Snowflake messageId,
-      MessageComponentBuilder builder, bool ephemeral);
+      MessageBuilder builder, bool ephemeral);
 
   Future<void> deleteFollowup(
       Snowflake botId, String token, Snowflake messageId);
@@ -109,7 +109,7 @@ abstract interface class MessagePartContract implements DataStorePart {
   Future<T> update<T extends Message>({
     required Object id,
     required Object channelId,
-    required MessageComponentBuilder builder,
+    required MessageBuilder builder,
   });
 
   Future<void> pin(Snowflake channelId, Snowflake id);
@@ -121,12 +121,12 @@ abstract interface class MessagePartContract implements DataStorePart {
   Future<void> delete(Snowflake channelId, Snowflake id);
 
   Future<T> send<T extends Message>(
-      String? serverId, String channelId, MessageComponentBuilder builder);
+      String? serverId, String channelId, MessageBuilder builder);
 
   Future<T> sendPoll<T extends Message>(String channelId, Poll poll);
 
   Future<R> reply<T extends Channel, R extends Message>(
-      Snowflake id, Snowflake channelId, MessageComponentBuilder builder);
+      Snowflake id, Snowflake channelId, MessageBuilder builder);
 }
 
 abstract interface class RolePartContract implements DataStorePart {

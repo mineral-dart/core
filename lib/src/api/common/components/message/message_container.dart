@@ -5,7 +5,7 @@ final class MessageContainer implements Component {
 
   final Color? _color;
   final bool? _spoiler;
-  final MessageComponentBuilder? _components;
+  final MessageBuilder? _components;
 
   MessageContainer(this._color, this._spoiler, this._components);
 

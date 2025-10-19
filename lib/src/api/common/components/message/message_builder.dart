@@ -1,10 +1,9 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/components/message/message_container.dart';
-import 'package:mineral/src/api/common/components/message/message_separator.dart';
 import 'package:mineral/src/api/common/components/shared/text_display.dart';
 
 /// ```dart
-/// {@template message_component_builder}
+/// {@template message_builder}
 /// final buttons = [
 ///   MessageButton.primary('primary', label: 'label'),
 ///   MessageButton.secondary('secondary', label: 'label'),
@@ -12,11 +11,11 @@ import 'package:mineral/src/api/common/components/shared/text_display.dart';
 ///   MessageButton.link('https://google.com', label: 'label'),
 /// ];
 ///
-/// final channelSelectMenu = MessageMenu.channel('channel',
+/// final channelSelectMenu = SelectMenu.channel('channel',
 ///   channelTypes: [ChannelType.guildText],
 ///   defaultValues: [Snowflake.parse('1322554770057068636')]);
 ///
-/// final builder = MessageComponentBuilder()
+/// final builder = MessageBuilder()
 ///   ..text('# Hello from World')
 ///   ..separator()
 ///   ..text('Hello from ${message.channelId}')
@@ -24,7 +23,7 @@ import 'package:mineral/src/api/common/components/shared/text_display.dart';
 ///   ..file(await Attachment.network('https://i.redd.it/d2hd73xxwvaa1.jpg'));
 /// {@endtemplate}
 /// ```
-final class MessageComponentBuilder {
+final class MessageBuilder {
   final List<Component> _components = [];
 
   void text(String text) {
@@ -37,7 +36,7 @@ final class MessageComponentBuilder {
   }
 
   void container({
-    required MessageComponentBuilder builder,
+    required MessageBuilder builder,
     Color? color,
     bool? spoiler,
   }) {
@@ -85,20 +84,20 @@ final class MessageComponentBuilder {
     return _components.map((e) => e.toJson()).toList();
   }
 
-  void prepend(MessageComponentBuilder builder) {
+  void prepend(MessageBuilder builder) {
     _components.insertAll(0, builder._components);
   }
 
-  void append(MessageComponentBuilder builder) {
+  void append(MessageBuilder builder) {
     _components.addAll(builder._components);
   }
 
-  MessageComponentBuilder clone() {
-    return MessageComponentBuilder().._components.addAll(_components);
+  MessageBuilder clone() {
+    return MessageBuilder().._components.addAll(_components);
   }
 
-  MessageComponentBuilder cloneFrom(MessageComponentBuilder builder) {
-    return MessageComponentBuilder()
+  MessageBuilder cloneFrom(MessageBuilder builder) {
+    return MessageBuilder()
       .._components.addAll(_components)
       .._components.addAll(builder._components);
   }
