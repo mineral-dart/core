@@ -34,6 +34,8 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
 
       final Map<String, dynamic> parameters = {};
       final components = List.from(message.payload['data']['components']);
+      final resolved = message.payload['data']['resolved'];
+      final guildId = message.payload['guild_id'];
       for (final row in components) {
         if (row['component'] == null) {
           continue;
@@ -46,13 +48,51 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
           final values = List<String>.from(component['values'] ?? []);
           if (customId.contains('user_select')) {
             // Resolve User instances
-            parameters[customId] = await Future.wait(
-                values.map((id) => _dataStore.user.get(id, false)));
+            if (guildId != null) {
+              // Resolve to Members in server context (match native select behavior)
+              parameters[customId] = await Future.wait(values
+                  .map((id) => _dataStore.member.get(guildId, id, false)));
+            } else {
+              parameters[customId] = await Future.wait(
+                  values.map((id) => _dataStore.user.get(id, false)));
+            }
           } else if (customId.contains('role_select')) {
-            // Resolve Role instances
-            final guildId = message.payload['guild_id'];
             parameters[customId] = await Future.wait(
-                values.map((id) => _dataStore.role.get(guildId, id, false)));
+              values.map(
+                (id) => _dataStore.role.get(guildId, id, false),
+              ),
+            );
+          } else if (customId.contains('mentionable_select')) {
+            final List<dynamic> mentionables = [];
+            for (final id in values) {
+              final isUser = resolved != null &&
+                  resolved['users'] != null &&
+                  resolved['users'][id] != null;
+              final isRole = resolved != null &&
+                  resolved['roles'] != null &&
+                  resolved['roles'][id] != null;
+
+              if (isUser) {
+                if (guildId != null) {
+                  final member =
+                      await _dataStore.member.get(guildId, id, false);
+                  if (member != null) {
+                    mentionables.add(member);
+                  }
+                } else {
+                  final user = await _dataStore.user.get(id, false);
+                  if (user != null) {
+                    mentionables.add(user);
+                  }
+                }
+              } else if (isRole && guildId != null) {
+                final role = await _dataStore.role.get(guildId, id, false);
+                if (role != null) {
+                  mentionables.add(role);
+                }
+              }
+            }
+            parameters[customId] = mentionables;
           } else if (customId.contains('channel_select')) {
             // Resolve Channel instances
             parameters[customId] = await Future.wait(
