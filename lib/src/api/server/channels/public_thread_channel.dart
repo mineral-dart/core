@@ -140,7 +140,7 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   /// ```dart
   /// await channel.send(content: 'Hello, world!');
   /// ```
-  Future<void> send(MessageComponentBuilder builder) =>
+  Future<void> send(MessageBuilder builder) =>
       _methods.send(serverId: serverId, builder: builder);
 
   /// Deletes the channel.

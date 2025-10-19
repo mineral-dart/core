@@ -13,7 +13,7 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> replyInteraction(Snowflake id, String token,
-      MessageComponentBuilder builder, bool ephemeral) async {
+      MessageBuilder builder, bool ephemeral) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     int flags = MessageFlagType.isComponentV2.value;
@@ -35,7 +35,7 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> editInteraction(Snowflake id, String token,
-      MessageComponentBuilder builder, bool ephemeral) async {
+      MessageBuilder builder, bool ephemeral) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     int flags = MessageFlagType.isComponentV2.value;
@@ -77,7 +77,7 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> createFollowup(Snowflake id, String token,
-      MessageComponentBuilder builder, bool ephemeral) async {
+      MessageBuilder builder, bool ephemeral) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     int flags = MessageFlagType.isComponentV2.value;
@@ -99,7 +99,7 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> editFollowup(Snowflake botId, String token, Snowflake messageId,
-      MessageComponentBuilder builder, bool ephemeral) async {
+      MessageBuilder builder, bool ephemeral) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     int flags = MessageFlagType.isComponentV2.value;

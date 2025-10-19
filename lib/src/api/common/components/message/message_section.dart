@@ -3,7 +3,7 @@ import 'package:mineral/api.dart';
 final class MessageSection implements Component {
   ComponentType get type => ComponentType.section;
 
-  final MessageComponentBuilder builder;
+  final MessageBuilder builder;
   final MessageButton? _button;
   final MessageThumbnail? _thumbnail;
 

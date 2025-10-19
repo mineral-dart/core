@@ -96,7 +96,7 @@ final class MessagePart implements MessagePartContract {
   Future<T> update<T extends Message>({
     required Object id,
     required Object channelId,
-    required MessageComponentBuilder builder,
+    required MessageBuilder builder,
   }) async {
     final completer = Completer<T>();
     final (components, files) = makeAttachmentFromBuilder(builder);
@@ -157,7 +157,7 @@ final class MessagePart implements MessagePartContract {
 
   @override
   Future<T> send<T extends Message>(String? guildId, String channelId,
-      MessageComponentBuilder builder) async {
+      MessageBuilder builder) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     final payload = {'flags': 32768, 'components': components};
@@ -188,7 +188,7 @@ final class MessagePart implements MessagePartContract {
 
   @override
   Future<R> reply<T extends Channel, R extends Message>(Snowflake id,
-      Snowflake channelId, MessageComponentBuilder builder) async {
+      Snowflake channelId, MessageBuilder builder) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     final payload = {
