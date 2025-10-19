@@ -32,6 +32,8 @@ final class SelectMenu<T> implements Component {
       : _placeholder = placeholder,
         _minLength = minLength,
         _maxLength = maxLength,
+        _minValues = minValues,
+        _maxValues = maxValues,
         _disabled = disabled,
         _options = options ?? [],
         _defaultValues = defaultValues ?? [],
