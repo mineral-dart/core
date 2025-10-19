@@ -29,22 +29,42 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
 
     if (type == InteractionType.modal) {
       final interactionContext = InteractionContextType.values.firstWhereOrNull(
-          (element) => element.value == message.payload['context']);
+        (element) => element.value == message.payload['context'],
+      );
 
-      final Map<String, String> parameters =
-          List.from(message.payload['data']['components'])
-              .where((row) => row['component'] != null)
-              .map((row) {
+      final Map<String, dynamic> parameters = {};
+      final components = List.from(message.payload['data']['components']);
+      for (final row in components) {
+        if (row['component'] == null) {
+          continue;
+        }
         final component = row['component'];
         final customId = component['custom_id'];
 
-        // Handle both text inputs (value) and select menus (values)
-        final value = component.containsKey('values')
-            ? component['values'].toString()
-            : component['value']?.toString() ?? '';
-
-        return {customId: value};
-      }).fold({}, (prev, curr) => {...prev, ...curr});
+        if (component.containsKey('values')) {
+          // Detect type by customId naming convention (user_select, role_select, channel_select)
+          final values = List<String>.from(component['values'] ?? []);
+          if (customId.contains('user_select')) {
+            // Resolve User instances
+            parameters[customId] = await Future.wait(
+                values.map((id) => _dataStore.user.get(id, false)));
+          } else if (customId.contains('role_select')) {
+            // Resolve Role instances
+            final guildId = message.payload['guild_id'];
+            parameters[customId] = await Future.wait(
+                values.map((id) => _dataStore.role.get(guildId, id, false)));
+          } else if (customId.contains('channel_select')) {
+            // Resolve Channel instances
+            parameters[customId] = await Future.wait(
+                values.map((id) => _dataStore.channel.get(id, false)));
+          } else {
+            // Default: just pass IDs
+            parameters[customId] = values;
+          }
+        } else {
+          parameters[customId] = component['value']?.toString() ?? '';
+        }
+      }
 
       final event = switch (interactionContext) {
         InteractionContextType.server => Event.serverModalSubmit,
