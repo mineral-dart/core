@@ -73,4 +73,8 @@ final class VoiceState {
     final voiceState = await _datastore.member.getVoiceState(serverId.value, userId.value, force);
     return MemberVoiceManager(serverId, userId, voiceState);
   }
+
+  Future<Server> resolveServer({bool force = false}) {
+    return _datastore.server.get(serverId!.value, force);
+  }
 }
