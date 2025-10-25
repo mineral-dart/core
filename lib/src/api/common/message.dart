@@ -31,7 +31,7 @@ abstract interface class BaseMessage {
   ///
   /// await message.reply(builder);
   /// ```
-  Future<T> reply<T extends Message>(MessageComponentBuilder builder);
+  Future<T> reply<T extends Message>(MessageBuilder builder);
 
   /// Edit the message with a new message.
   ///
@@ -40,7 +40,7 @@ abstract interface class BaseMessage {
   ///
   /// await message.edit(builder);
   /// ```
-  Future<void> edit(MessageComponentBuilder builder);
+  Future<void> edit(MessageBuilder builder);
 }
 
 abstract interface class ServerMessage implements BaseMessage {
@@ -103,7 +103,7 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
             ReactionManger(_properties.id.value, _properties.channelId.value);
 
   @override
-  Future<void> edit(MessageComponentBuilder builder) async {
+  Future<void> edit(MessageBuilder builder) async {
     await _datastore.message
         .update(id: id.value, channelId: channelId.value, builder: builder);
   }
@@ -132,7 +132,7 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
       _datastore.server.get(serverId!.value, force);
 
   @override
-  Future<T> reply<T extends Message>(MessageComponentBuilder builder) async {
+  Future<T> reply<T extends Message>(MessageBuilder builder) async {
     return _datastore.message.reply(id, channelId, builder);
   }
 

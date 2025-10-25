@@ -134,7 +134,7 @@ final class ChannelMethods {
   }
 
   Future<T> send<T extends Message>(
-      {required MessageComponentBuilder builder, Snowflake? serverId}) async {
+      {required MessageBuilder builder, Snowflake? serverId}) async {
     return _datastore.message.send(serverId?.value, id.value, builder);
   }
 

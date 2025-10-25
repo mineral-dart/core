@@ -47,6 +47,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
           _dispatchRoleSelectMenu(ctx, message.payload, dispatch);
         case ComponentType.userSelectMenu:
           _dispatchUserSelectMenu(ctx, message.payload, dispatch);
+        case ComponentType.mentionableSelectMenu:
+          _dispatchMentionableSelectMenu(ctx, message.payload, dispatch);
         case ComponentType.textSelectMenu:
           _dispatchTextSelectMenu(ctx, message.payload, dispatch);
         default:
@@ -130,6 +132,41 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
         event: event,
         params: [ctx, resolvedResource],
         constraint: (String? customId) => customId == ctx.customId);
+  }
+
+  Future<void> _dispatchMentionableSelectMenu(
+    SelectContext ctx,
+    Map<String, dynamic> payload,
+    DispatchEvent dispatch,
+  ) async {
+    final resolvedData = payload['data']['resolved'];
+    final values = List<String>.from(payload['data']['values'] ?? []);
+    final guildId = payload['guild_id'];
+
+    final List<dynamic> mentionables = [];
+    for (final id in values) {
+      if (resolvedData['users'] != null && resolvedData['users'][id] != null) {
+        final user = await _dataStore.user.get(id, false);
+        if (user != null) {
+          mentionables.add(user);
+        }
+      } else if (resolvedData['roles'] != null &&
+          resolvedData['roles'][id] != null) {
+        final role = await _dataStore.role.get(guildId, id, false);
+        if (role != null) {
+          mentionables.add(role);
+        }
+      }
+    }
+
+    _interactiveComponentManager.dispatch(ctx.customId, [ctx, mentionables]);
+
+    dispatch(
+      event: Event
+          .serverRoleSelect, // Peut-être Event.serverMentionableSelect si défini
+      params: [ctx, mentionables],
+      constraint: (String? customId) => customId == ctx.customId,
+    );
   }
 
   Future<void> _dispatchTextSelectMenu(SelectContext ctx,
