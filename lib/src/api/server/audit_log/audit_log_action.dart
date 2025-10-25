@@ -23,6 +23,6 @@ abstract class AuditLogActionContract {
 
 final class UnknownAuditLogAction extends AuditLog {
   UnknownAuditLogAction(
-      {required Snowflake serverId, required Snowflake userId})
+      {required Snowflake serverId, required Snowflake? userId})
       : super(AuditLogType.unknown, serverId, userId);
 }
