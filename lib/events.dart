@@ -4,6 +4,7 @@ library events;
 export 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
 export 'package:mineral/src/domains/events/contracts/common/voice_join_event.dart';
 export 'package:mineral/src/domains/events/contracts/common/voice_leave_event.dart';
+export 'package:mineral/src/domains/events/contracts/common/voice_move_event.dart';
 export 'package:mineral/src/domains/events/contracts/common/voice_state_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_button_click_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_channel_create_event.dart';
