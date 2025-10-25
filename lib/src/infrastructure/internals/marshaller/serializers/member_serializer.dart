@@ -11,29 +11,43 @@ final class MemberSerializer implements SerializerContract<Member> {
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
+    // Handle both nested user object (from GET) and flat structure (from PATCH)
+    final user = json['user'] as Map<String, dynamic>?;
+    final userId = user?['id'] ?? json['id'];
+    final username = user?['username'] ?? json['username'];
+    final globalName = user?['global_name'] ?? json['global_name'];
+    final discriminator = user?['discriminator'] ?? json['discriminator'];
+    final avatar = user?['avatar'] ?? json['avatar'];
+    final avatarDecorationData = user?['avatar_decoration_data'] ?? json['avatar_decoration_data'];
+    final publicFlags = user?['public_flags'] ?? json['public_flags'];
+    final isBot = user?['bot'] ?? json['bot'] ?? false;
+    final mfaEnabled = user?['mfa_enabled'] ?? json['mfa_enabled'] ?? false;
+    final locale = user?['locale'] ?? json['locale'];
+    final premiumType = user?['premium_type'] ?? json['premium_type'];
+    
     final payload = {
-      'id': json['user']['id'],
-      'username': json['user']['username'],
+      'id': userId,
+      'username': username,
       'nickname': json['nick'],
-      'global_name': json['user']['global_name'],
-      'discriminator': json['user']['discriminator'],
+      'global_name': globalName,
+      'discriminator': discriminator,
       'assets': {
         'server_id': json['guild_id'],
-        'member_id': json['user']['id'],
-        'avatar': json['user']['avatar'],
-        'avatar_decoration': json['user']['avatar_decoration_data']?['sku_id'],
+        'member_id': userId,
+        'avatar': avatar,
+        'avatar_decoration': avatarDecorationData?['sku_id'],
         'banner': json['banner'],
       },
       'flags': json['flags'],
-      'roles': List.from(json['roles']),
+      'roles': List.from(json['roles'] ?? []),
       'premium_since': json['premium_since'],
-      'public_flags': json['user']['public_flags'],
-      'is_bot': json['user']['bot'] ?? false,
+      'public_flags': publicFlags,
+      'is_bot': isBot,
       'is_pending': json['pending'] ?? false,
       'timeout': json['communication_disabled_until'],
-      'mfa_enabled': json['user']['mfa_enabled'] ?? false,
-      'locale': json['user']['locale'],
-      'premium_type': json['user']['premium_type'],
+      'mfa_enabled': mfaEnabled,
+      'locale': locale,
+      'premium_type': premiumType,
       'joined_at': json['joined_at'],
       'permissions': json['permissions'],
       'accent_color': json['accent_color'],
@@ -41,7 +55,7 @@ final class MemberSerializer implements SerializerContract<Member> {
     };
 
     final cacheKey =
-        _marshaller.cacheKey.member(json['guild_id'], json['user']['id']);
+        _marshaller.cacheKey.member(json['guild_id'], userId);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
