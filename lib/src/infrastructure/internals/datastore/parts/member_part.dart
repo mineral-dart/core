@@ -78,11 +78,11 @@ final class MemberPart implements MemberPartContract {
         .query<Map<String, dynamic>>(req)
         .run(_dataStore.client.patch);
 
-    final raw = await _marshaller.serializers.member.normalize(result);
-    final member = await _marshaller.serializers.member.serialize({
-      ...raw,
+    final raw = await _marshaller.serializers.member.normalize({
+      ...result,
       'guild_id': serverId,
     });
+    final member = await _marshaller.serializers.member.serialize(raw);
 
     completer.complete(member);
     return completer.future;

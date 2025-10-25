@@ -5,8 +5,8 @@ import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 Future<AuditLog> memberKickAuditLogHandler(Map<String, dynamic> json) async {
   return MemberKickAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
-    userId: Snowflake.parse(json['user_id']),
-    memberId: Snowflake.parse(json['target_id']),
+    userId: Snowflake.nullable(json['user_id']),
+    memberId: Snowflake.nullable(json['target_id']),
     reason: json['reason'],
   );
 }
@@ -14,7 +14,7 @@ Future<AuditLog> memberKickAuditLogHandler(Map<String, dynamic> json) async {
 Future<AuditLog> memberPruneAuditLogHandler(Map<String, dynamic> json) async {
   return MemberPruneAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
-    userId: Snowflake.parse(json['user_id']),
+    userId: Snowflake.nullable(json['user_id']),
     deleteMemberDays: json['options']?['delete_member_days'] ?? 0,
     membersRemoved: json['options']?['members_removed'] ?? 0,
   );
@@ -23,8 +23,8 @@ Future<AuditLog> memberPruneAuditLogHandler(Map<String, dynamic> json) async {
 Future<AuditLog> memberBanAddAuditLogHandler(Map<String, dynamic> json) async {
   return MemberBanAddAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
-    userId: Snowflake.parse(json['user_id']),
-    memberId: Snowflake.parse(json['target_id']),
+    userId: Snowflake.nullable(json['user_id']),
+    memberId: Snowflake.nullable(json['target_id']),
     reason: json['reason'],
   );
 }
@@ -33,16 +33,16 @@ Future<AuditLog> memberBanRemoveAuditLogHandler(
     Map<String, dynamic> json) async {
   return MemberBanRemoveAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
-    userId: Snowflake.parse(json['user_id']),
-    memberId: Snowflake.parse(json['target_id']),
+    userId: Snowflake.nullable(json['user_id']),
+    memberId: Snowflake.nullable(json['target_id']),
   );
 }
 
 Future<AuditLog> memberUpdateAuditLogHandler(Map<String, dynamic> json) async {
   return MemberUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
-    userId: Snowflake.parse(json['user_id']),
-    memberId: Snowflake.parse(json['target_id']),
+    userId: Snowflake.nullable(json['user_id']),
+    memberId: Snowflake.nullable(json['target_id']),
     changes: List<Map<String, dynamic>>.from(json['changes'])
         .map(Change.fromJson)
         .toList(),
@@ -53,8 +53,8 @@ Future<AuditLog> memberRoleUpdateAuditLogHandler(
     Map<String, dynamic> json) async {
   return MemberRoleUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
-    userId: Snowflake.parse(json['user_id']),
-    memberId: Snowflake.parse(json['target_id']),
+    userId: Snowflake.nullable(json['user_id']),
+    memberId: Snowflake.nullable(json['target_id']),
     changes: List<Map<String, dynamic>>.from(json['changes'])
         .map(Change.fromJson)
         .toList(),
@@ -64,11 +64,9 @@ Future<AuditLog> memberRoleUpdateAuditLogHandler(
 Future<AuditLog> memberMoveAuditLogHandler(Map<String, dynamic> json) async {
   return MemberMoveAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
-    userId: Snowflake.parse(json['user_id']),
-    memberId: Snowflake.parse(json['target_id']),
-    channelId: json['options']?['channel_id'] != null
-        ? Snowflake.parse(json['options']['channel_id'])
-        : null,
+    userId: Snowflake.nullable(json['user_id']),
+    memberId: Snowflake.nullable(json['target_id']),
+    channelId: Snowflake.nullable(json['options']?['channel_id']),
   );
 }
 
@@ -76,15 +74,15 @@ Future<AuditLog> memberDisconnectAuditLogHandler(
     Map<String, dynamic> json) async {
   return MemberDisconnectAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
-    userId: Snowflake.parse(json['user_id']),
-    memberId: Snowflake.parse(json['target_id']),
+    userId: Snowflake.nullable(json['user_id']),
+    memberId: Snowflake.nullable(json['target_id']),
   );
 }
 
 Future<AuditLog> botAddAuditLogHandler(Map<String, dynamic> json) async {
   return BotAddAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
-    userId: Snowflake.parse(json['user_id']),
-    botId: Snowflake.parse(json['target_id']),
+    userId: Snowflake.nullable(json['user_id']),
+    botId: Snowflake.nullable(json['target_id']),
   );
 }
