@@ -29,9 +29,9 @@ export 'package:mineral/src/api/common/commands/command_option_type.dart';
 export 'package:mineral/src/api/common/commands/command_type.dart';
 export 'package:mineral/src/api/common/components/component.dart';
 export 'package:mineral/src/api/common/components/component_type.dart';
-export 'package:mineral/src/api/common/components/message/message_button.dart';
 // Commons
 export 'package:mineral/src/api/common/components/message/message_builder.dart';
+export 'package:mineral/src/api/common/components/message/message_button.dart';
 export 'package:mineral/src/api/common/components/message/message_file.dart';
 export 'package:mineral/src/api/common/components/message/message_gallery.dart';
 export 'package:mineral/src/api/common/components/message/message_media.dart';
