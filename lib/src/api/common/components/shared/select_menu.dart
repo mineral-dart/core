@@ -19,17 +19,19 @@ final class SelectMenu<T> implements Component {
   final List<Snowflake> _defaultValues;
   final List<ChannelType> _channelTypes;
 
-  SelectMenu(this._type, this._customId,
-      {String? placeholder,
-      int? minLength,
-      int? maxLength,
-      int? minValues,
-      int? maxValues,
-      bool? disabled,
-      List<SelectMenuOption<T>>? options,
-      List<Snowflake>? defaultValues,
-      List<ChannelType>? channelTypes})
-      : _placeholder = placeholder,
+  SelectMenu(
+    this._type,
+    this._customId, {
+    String? placeholder,
+    int? minLength,
+    int? maxLength,
+    int? minValues,
+    int? maxValues,
+    bool? disabled,
+    List<SelectMenuOption<T>>? options,
+    List<Snowflake>? defaultValues,
+    List<ChannelType>? channelTypes,
+  })  : _placeholder = placeholder,
         _minLength = minLength,
         _maxLength = maxLength,
         _minValues = minValues,
@@ -46,13 +48,17 @@ final class SelectMenu<T> implements Component {
     int? minValues,
     int? maxValues,
     bool? disabled,
-  }) =>
-      SelectMenu(ComponentType.textSelectMenu, customId,
-          placeholder: placeholder,
-          minValues: minValues,
-          maxValues: maxValues,
-          disabled: disabled,
-          options: options);
+  }) {
+    return SelectMenu(
+      ComponentType.textSelectMenu,
+      customId,
+      placeholder: placeholder,
+      minValues: minValues,
+      maxValues: maxValues,
+      disabled: disabled,
+      options: options,
+    );
+  }
 
   static SelectMenu channel(
     String customId, {
@@ -62,14 +68,18 @@ final class SelectMenu<T> implements Component {
     bool? disabled,
     List<Snowflake> defaultValues = const [],
     List<ChannelType> channelTypes = const [],
-  }) =>
-      SelectMenu<String>(ComponentType.channelSelectMenu, customId,
-          placeholder: placeholder,
-          minValues: minValues,
-          maxValues: maxValues,
-          disabled: disabled,
-          defaultValues: defaultValues,
-          channelTypes: channelTypes);
+  }) {
+    return SelectMenu<String>(
+      ComponentType.channelSelectMenu,
+      customId,
+      placeholder: placeholder,
+      minValues: minValues,
+      maxValues: maxValues,
+      disabled: disabled,
+      defaultValues: defaultValues,
+      channelTypes: channelTypes,
+    );
+  }
 
   factory SelectMenu.user(
     String customId, {
@@ -78,13 +88,17 @@ final class SelectMenu<T> implements Component {
     int? maxValues,
     bool? disabled,
     List<Snowflake> defaultValues = const [],
-  }) =>
-      SelectMenu(ComponentType.userSelectMenu, customId,
-          placeholder: placeholder,
-          minValues: minValues,
-          maxValues: maxValues,
-          disabled: disabled,
-          defaultValues: defaultValues);
+  }) {
+    return SelectMenu(
+      ComponentType.userSelectMenu,
+      customId,
+      placeholder: placeholder,
+      minValues: minValues,
+      maxValues: maxValues,
+      disabled: disabled,
+      defaultValues: defaultValues,
+    );
+  }
 
   factory SelectMenu.role(
     String customId, {
@@ -93,13 +107,17 @@ final class SelectMenu<T> implements Component {
     int? maxValues,
     bool? disabled,
     List<Snowflake> defaultValues = const [],
-  }) =>
-      SelectMenu(ComponentType.roleSelectMenu, customId,
-          placeholder: placeholder,
-          minValues: minValues,
-          maxValues: maxValues,
-          disabled: disabled,
-          defaultValues: defaultValues);
+  }) {
+    return SelectMenu(
+      ComponentType.roleSelectMenu,
+      customId,
+      placeholder: placeholder,
+      minValues: minValues,
+      maxValues: maxValues,
+      disabled: disabled,
+      defaultValues: defaultValues,
+    );
+  }
 
   factory SelectMenu.mentionable(
     String customId, {
@@ -108,13 +126,17 @@ final class SelectMenu<T> implements Component {
     int? maxValues,
     bool? disabled,
     List<Snowflake> defaultValues = const [],
-  }) =>
-      SelectMenu(ComponentType.mentionableSelectMenu, customId,
-          placeholder: placeholder,
-          minValues: minValues,
-          maxValues: maxValues,
-          disabled: disabled,
-          defaultValues: defaultValues);
+  }) {
+    return SelectMenu(
+      ComponentType.mentionableSelectMenu,
+      customId,
+      placeholder: placeholder,
+      minValues: minValues,
+      maxValues: maxValues,
+      disabled: disabled,
+      defaultValues: defaultValues,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() {
@@ -133,15 +155,17 @@ final class SelectMenu<T> implements Component {
         'channel_types': _channelTypes.map((e) => e.value).toList(),
       if (_defaultValues.isNotEmpty)
         'default_values': _defaultValues
-            .map((e) => {
-                  'id': e.value,
-                  'type': switch (_type) {
-                    ComponentType.userSelectMenu => 'user',
-                    ComponentType.roleSelectMenu => 'role',
-                    ComponentType.channelSelectMenu => 'channel',
-                    _ => throw Exception('Invalid select menu type'),
-                  },
-                })
+            .map(
+              (e) => {
+                'id': e.value,
+                'type': switch (_type) {
+                  ComponentType.userSelectMenu => 'user',
+                  ComponentType.roleSelectMenu => 'role',
+                  ComponentType.channelSelectMenu => 'channel',
+                  _ => throw Exception('Invalid select menu type'),
+                },
+              },
+            )
             .toList(),
     };
   }
@@ -154,12 +178,13 @@ final class SelectMenuOption<T> {
   final PartialEmoji? emoji;
   final bool? isDefault;
 
-  SelectMenuOption(
-      {required this.label,
-      required this.value,
-      this.description,
-      this.emoji,
-      this.isDefault = false});
+  SelectMenuOption({
+    required this.label,
+    required this.value,
+    this.description,
+    this.emoji,
+    this.isDefault = false,
+  });
 
   Map<String, dynamic> toJson() {
     return {
