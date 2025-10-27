@@ -7,7 +7,13 @@ class BotActivity {
   PartialEmoji? emoji;
   String? state;
 
-  BotActivity({required this.type, this.name, this.url, this.emoji, this.state});
+  BotActivity({
+    required this.type,
+    this.name,
+    this.url,
+    this.emoji,
+    this.state,
+  });
 
   Object toJson() {
     return {
@@ -19,18 +25,31 @@ class BotActivity {
   }
 
   factory BotActivity.playing(String name) {
-    return BotActivity(name: name, type: GamePresence.game);
+    return BotActivity(
+      name: name,
+      type: GamePresence.game,
+    );
   }
 
   factory BotActivity.watching(String name) {
-    return BotActivity(name: name, type: GamePresence.watching);
+    return BotActivity(
+      name: name,
+      type: GamePresence.watching,
+    );
   }
 
   factory BotActivity.listening(String name) {
-    return BotActivity(name: name, type: GamePresence.listening);
+    return BotActivity(
+      name: name,
+      type: GamePresence.listening,
+    );
   }
 
   factory BotActivity.streaming(String name, String url) {
-    return BotActivity(name: name, type: GamePresence.streaming, url: url);
+    return BotActivity(
+      name: name,
+      type: GamePresence.streaming,
+      url: url,
+    );
   }
 }
