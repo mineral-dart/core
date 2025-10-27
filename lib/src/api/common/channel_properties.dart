@@ -9,7 +9,8 @@ import 'package:mineral/src/domains/common/utils/helper.dart';
 import 'package:mineral/src/domains/common/utils/utils.dart';
 
 final class ChannelProperties {
-  ChannelPartContract get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
+  ChannelPartContract get dataStoreChannel =>
+      ioc.resolve<DataStoreContract>().channel;
 
   final Snowflake id;
   final ChannelType type;
@@ -78,57 +79,65 @@ final class ChannelProperties {
   });
 
   static Future<ChannelProperties> serializeCache(
-      MarshallerContract marshaller, Map<String, dynamic> element) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> element,
+  ) async {
     final permissionOverwrites = await Helper.createOrNullAsync(
-        field: element['permission_overwrites'],
-        fn: () async => Future.wait(
-              List.from(element['permission_overwrites'])
-                  .map((json) async =>
-                      marshaller.serializers.channelPermissionOverwrite.serialize(json))
-                  .toList(),
-            ));
+      field: element['permission_overwrites'],
+      fn: () async => Future.wait(
+        List.from(element['permission_overwrites'])
+            .map((json) async => marshaller
+                .serializers.channelPermissionOverwrite
+                .serialize(json))
+            .toList(),
+      ),
+    );
 
     final recipients = await Helper.createOrNullAsync(
-        field: element['recipients'],
-        fn: () async => Future.wait(
-              List.from(element['recipients']).map((json) async {
-                final raw = await marshaller.serializers.user.normalize(json);
-                return marshaller.serializers.user.serialize(raw);
-              }).toList(),
-            ));
+      field: element['recipients'],
+      fn: () async => Future.wait(
+        List.from(element['recipients']).map((json) async {
+          final raw = await marshaller.serializers.user.normalize(json);
+          return marshaller.serializers.user.serialize(raw);
+        }).toList(),
+      ),
+    );
 
     return ChannelProperties(
-        id: Snowflake.parse(element['id']),
-        type: findInEnum(ChannelType.values, element['type']),
-        name: element['name'],
-        description: element['description'],
-        serverId: Snowflake.nullable(element['server_id']),
-        categoryId: Snowflake.nullable(element['parent_id']),
-        position: element['position'],
-        nsfw: element['nsfw'] ?? false,
-        lastMessageId: Snowflake.nullable(element['last_message_id']),
-        bitrate: element['bitrate'],
-        userLimit: element['user_limit'],
-        rateLimitPerUser: element['rate_limit_per_user'],
-        recipients: recipients ?? [],
-        icon: element['icon'],
-        ownerId: element['owner_id'],
-        applicationId: element['application_id'],
-        lastPinTimestamp: element['last_pin_timestamp'],
-        rtcRegion: element['rtc_region'],
-        videoQualityMode: element['video_quality_mode'],
-        messageCount: element['message_count'],
-        memberCount: element['member_count'],
-        defaultAutoArchiveDuration: element['default_auto_archive_duration'],
-        permissions: permissionOverwrites,
-        flags: element['flags'],
-        totalMessageSent: element['total_message_sent'],
-        available: element['available'],
-        appliedTags: element['applied_tags'] ?? [],
-        defaultReactions: element['default_reactions'],
-        defaultSortOrder: element['default_sort_order'],
-        defaultForumLayout: element['default_forum_layout'],
-        threads: ThreadsManager(
-            Snowflake.nullable(element['server_id']), Snowflake.nullable(element['id'])));
+      id: Snowflake.parse(element['id']),
+      type: findInEnum(ChannelType.values, element['type']),
+      name: element['name'],
+      description: element['description'],
+      serverId: Snowflake.nullable(element['server_id']),
+      categoryId: Snowflake.nullable(element['parent_id']),
+      position: element['position'],
+      nsfw: element['nsfw'] ?? false,
+      lastMessageId: Snowflake.nullable(element['last_message_id']),
+      bitrate: element['bitrate'],
+      userLimit: element['user_limit'],
+      rateLimitPerUser: element['rate_limit_per_user'],
+      recipients: recipients ?? [],
+      icon: element['icon'],
+      ownerId: element['owner_id'],
+      applicationId: element['application_id'],
+      lastPinTimestamp: element['last_pin_timestamp'],
+      rtcRegion: element['rtc_region'],
+      videoQualityMode: element['video_quality_mode'],
+      messageCount: element['message_count'],
+      memberCount: element['member_count'],
+      defaultAutoArchiveDuration: element['default_auto_archive_duration'],
+      permissions: permissionOverwrites,
+      flags: element['flags'],
+      totalMessageSent: element['total_message_sent'],
+      available: element['available'],
+      appliedTags: element['applied_tags'] ?? [],
+      defaultReactions: element['default_reactions'],
+      defaultSortOrder: element['default_sort_order'],
+      defaultForumLayout: element['default_forum_layout'],
+      threads: ThreadsManager(
+        Snowflake.nullable(element['server_id']),
+        Snowflake.nullable(element['id']),
+      ),
+    );
   }
 }
