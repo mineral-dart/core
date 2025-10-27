@@ -22,73 +22,109 @@ final class MessageButton implements Component {
   final PartialEmoji? _emoji;
   final bool _disabled;
 
-  MessageButton(
-      {required ButtonType type,
-      String? customId,
-      String? label,
-      String? url,
-      PartialEmoji? emoji,
-      bool? disabled})
-      : _type = type,
+  MessageButton({
+    required ButtonType type,
+    String? customId,
+    String? label,
+    String? url,
+    PartialEmoji? emoji,
+    bool? disabled,
+  })  : _type = type,
         _customId = customId,
         _label = label,
         _url = url,
         _emoji = emoji,
         _disabled = disabled ?? false;
 
-  factory MessageButton.primary(String customId,
-          {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
-          type: ButtonType.primary,
-          customId: customId,
-          label: label,
-          emoji: emoji,
-          disabled: disabled);
+  factory MessageButton.primary(
+    String customId, {
+    String? label,
+    PartialEmoji? emoji,
+    bool? disabled,
+  }) {
+    return MessageButton(
+      type: ButtonType.primary,
+      customId: customId,
+      label: label,
+      emoji: emoji,
+      disabled: disabled,
+    );
+  }
 
-  factory MessageButton.secondary(String customId,
-          {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
-          type: ButtonType.secondary,
-          customId: customId,
-          label: label,
-          emoji: emoji,
-          disabled: disabled);
+  factory MessageButton.secondary(
+    String customId, {
+    String? label,
+    PartialEmoji? emoji,
+    bool? disabled,
+  }) {
+    return MessageButton(
+      type: ButtonType.secondary,
+      customId: customId,
+      label: label,
+      emoji: emoji,
+      disabled: disabled,
+    );
+  }
 
-  factory MessageButton.success(String customId,
-          {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
-          type: ButtonType.success,
-          customId: customId,
-          label: label,
-          emoji: emoji,
-          disabled: disabled);
+  factory MessageButton.success(
+    String customId, {
+    String? label,
+    PartialEmoji? emoji,
+    bool? disabled,
+  }) {
+    return MessageButton(
+      type: ButtonType.success,
+      customId: customId,
+      label: label,
+      emoji: emoji,
+      disabled: disabled,
+    );
+  }
 
-  factory MessageButton.danger(String customId,
-          {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
-          type: ButtonType.danger,
-          customId: customId,
-          label: label,
-          emoji: emoji,
-          disabled: disabled);
+  factory MessageButton.danger(
+    String customId, {
+    String? label,
+    PartialEmoji? emoji,
+    bool? disabled,
+  }) {
+    return MessageButton(
+      type: ButtonType.danger,
+      customId: customId,
+      label: label,
+      emoji: emoji,
+      disabled: disabled,
+    );
+  }
 
-  factory MessageButton.link(String url,
-          {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
-          type: ButtonType.link,
-          url: url,
-          label: label,
-          emoji: emoji,
-          disabled: disabled);
+  factory MessageButton.link(
+    String url, {
+    String? label,
+    PartialEmoji? emoji,
+    bool? disabled,
+  }) {
+    return MessageButton(
+      type: ButtonType.link,
+      url: url,
+      label: label,
+      emoji: emoji,
+      disabled: disabled,
+    );
+  }
 
-  factory MessageButton.premium(String skuId,
-          {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
-          type: ButtonType.premium,
-          customId: skuId,
-          label: label,
-          emoji: emoji,
-          disabled: disabled);
+  factory MessageButton.premium(
+    String skuId, {
+    String? label,
+    PartialEmoji? emoji,
+    bool? disabled,
+  }) {
+    return MessageButton(
+      type: ButtonType.premium,
+      customId: skuId,
+      label: label,
+      emoji: emoji,
+      disabled: disabled,
+    );
+  }
 
   @override
   Map<String, dynamic> toJson() {
