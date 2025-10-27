@@ -11,9 +11,11 @@ import 'package:mineral/src/api/common/components/shared/text_display.dart';
 ///   MessageButton.link('https://google.com', label: 'label'),
 /// ];
 ///
-/// final channelSelectMenu = SelectMenu.channel('channel',
+/// final channelSelectMenu = SelectMenu.channel(
+///   'channel',
 ///   channelTypes: [ChannelType.guildText],
-///   defaultValues: [Snowflake.parse('1322554770057068636')]);
+///   defaultValues: [Snowflake.parse('1322554770057068636')],
+/// );
 ///
 /// final builder = MessageBuilder()
 ///   ..text('# Hello from World')
@@ -30,8 +32,10 @@ final class MessageBuilder {
     _components.add(TextDisplay(text));
   }
 
-  void separator(
-      {bool show = true, SeparatorSize spacing = SeparatorSize.small}) {
+  void separator({
+    bool show = true,
+    SeparatorSize spacing = SeparatorSize.small,
+  }) {
     _components.add(MessageSeparator(show, spacing));
   }
 
