@@ -5,7 +5,10 @@ final class PollAnswer {
   String content;
   PartialEmoji? emoji;
 
-  PollAnswer({required this.content, this.emoji});
+  PollAnswer({
+    required this.content,
+    this.emoji,
+  });
 
   Map<String, dynamic> toJson() {
     return {
@@ -13,13 +16,14 @@ final class PollAnswer {
         'type': 'text',
         'text': content,
         ...?Helper.createOrNull(
-            field: emoji,
-            fn: () => {
-                  'emoji': {
-                    'id': emoji?.id,
-                    'name': emoji?.name,
-                  },
-                })
+          field: emoji,
+          fn: () => {
+            'emoji': {
+              'id': emoji?.id,
+              'name': emoji?.name,
+            },
+          },
+        )
       }
     };
   }

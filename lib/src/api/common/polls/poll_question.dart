@@ -4,7 +4,10 @@ final class PollQuestion {
   String content;
   PartialEmoji? emoji;
 
-  PollQuestion({required this.content, this.emoji});
+  PollQuestion({
+    required this.content,
+    this.emoji,
+  });
 
   Map<String, dynamic> toJson() {
     return {
