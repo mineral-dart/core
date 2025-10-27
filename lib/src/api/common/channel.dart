@@ -17,5 +17,8 @@ final class UnknownChannel extends Channel {
 
   final String name;
 
-  UnknownChannel({required this.id, required this.name});
+  UnknownChannel({
+    required this.id,
+    required this.name,
+  });
 }
