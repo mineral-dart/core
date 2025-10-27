@@ -43,12 +43,16 @@ final class CommandDeclarationBuilder implements CommandBuilder {
     return this;
   }
 
-  CommandDeclarationBuilder setDescription(String description,
-      {Translation? translation}) {
+  CommandDeclarationBuilder setDescription(
+    String description, {
+    Translation? translation,
+  }) {
     _description = description;
     if (translation != null) {
-      _descriptionLocalizations =
-          _helper.extractTranslations('description', translation);
+      _descriptionLocalizations = _helper.extractTranslations(
+        'description',
+        translation,
+      );
     }
     return this;
   }
@@ -115,7 +119,8 @@ final class CommandDeclarationBuilder implements CommandBuilder {
     for (final subCommand in subCommands) {
       if (subCommand.handle case null) {
         throw MissingMethodException(
-            'Command "$commandName.${subCommand.name}" has no handler');
+          'Command "$commandName.${subCommand.name}" has no handler',
+        );
       }
 
       handlers.add(('$name.${subCommand.name}', subCommand.handle!));
@@ -124,7 +129,8 @@ final class CommandDeclarationBuilder implements CommandBuilder {
     for (final group in groups) {
       for (final subCommand in group.commands) {
         handlers.add(
-            ('$name.${group.name}.${subCommand.name}', subCommand.handle!));
+          ('$name.${group.name}.${subCommand.name}', subCommand.handle!),
+        );
       }
     }
 
