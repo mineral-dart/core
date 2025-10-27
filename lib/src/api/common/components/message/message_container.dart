@@ -7,7 +7,11 @@ final class MessageContainer implements Component {
   final bool? _spoiler;
   final MessageBuilder? _components;
 
-  MessageContainer(this._color, this._spoiler, this._components);
+  MessageContainer(
+    this._color,
+    this._spoiler,
+    this._components,
+  );
 
   @override
   Map<String, dynamic> toJson() {
