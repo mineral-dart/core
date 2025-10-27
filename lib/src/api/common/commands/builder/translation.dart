@@ -35,9 +35,12 @@ final class Translation {
       final Map<Lang, String> map = {};
 
       for (final MapEntry element in translation.value.entries) {
-        final lang = Lang.values.firstWhere((lang) => lang.uid == element.key,
-            orElse: () => throw Exception(
-                'Lang "${element.key}" not exists is the available languages'));
+        final lang = Lang.values.firstWhere(
+          (lang) => lang.uid == element.key,
+          orElse: () => throw Exception(
+            'Lang "${element.key}" not exists is the available languages',
+          ),
+        );
 
         map.putIfAbsent(lang, () => element.value);
       }
