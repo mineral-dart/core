@@ -68,7 +68,9 @@ final class Emoji extends PartialEmoji {
       id: id!.value,
       serverId: serverId.value,
       reason: reason,
-      payload: {'roles': [...roles.keys.map((e) => e.value), role.value]},
+      payload: {
+        'roles': [...roles.keys.map((e) => e.value), role.value]
+      },
     );
   }
 
@@ -81,7 +83,12 @@ final class Emoji extends PartialEmoji {
       id: id!.value,
       serverId: serverId.value,
       reason: reason,
-      payload: {'roles': roles.keys.map((e) => e.value).where((e) => e != role.value).toList()},
+      payload: {
+        'roles': roles.keys
+            .map((e) => e.value)
+            .where((e) => e != role.value)
+            .toList()
+      },
     );
   }
 
@@ -89,8 +96,12 @@ final class Emoji extends PartialEmoji {
   /// ```dart
   /// await emoji.update(name: 'New Emoji Name');
   /// ```
-  Future<void> update(
-      {String? name, Image? image, List<Snowflake> roles = const [], String? reason}) async {
+  Future<void> update({
+    String? name,
+    Image? image,
+    List<Snowflake> roles = const [],
+    String? reason,
+  }) async {
     await _datastore.emoji.update(
       id: id!.value,
       serverId: serverId.value,
@@ -109,7 +120,11 @@ final class Emoji extends PartialEmoji {
   /// ```
   Future<void> delete({String? reason}) {
     return switch (id) {
-      Snowflake(:final value) => _datastore.emoji.delete(serverId.value, value, reason: reason),
+      Snowflake(:final value) => _datastore.emoji.delete(
+          serverId.value,
+          value,
+          reason: reason,
+        ),
       _ => throw Exception('Unknown emoji id: $id'),
     };
   }
