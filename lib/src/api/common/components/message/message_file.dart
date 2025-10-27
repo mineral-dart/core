@@ -27,8 +27,11 @@ final class Attachment implements Component {
     return Attachment(path, spoiler: spoiler)..bytes = bytes;
   }
 
-  static Future<Attachment> network(String url,
-      {bool? spoiler, bool cache = false}) async {
+  static Future<Attachment> network(
+    String url, {
+    bool? spoiler,
+    bool cache = false,
+  }) async {
     if (cache && _cachedAttachments.containsKey(url)) {
       return Attachment(url, spoiler: spoiler)
         ..bytes = _cachedAttachments[url]!;
