@@ -1,11 +1,11 @@
 import 'package:mineral/api.dart';
 
-final class MessageText implements MessageComponent {
+final class TextDisplay implements Component {
   ComponentType get type => ComponentType.textDisplay;
 
   final String _content;
 
-  MessageText(this._content);
+  TextDisplay(this._content);
 
   @override
   Map<String, dynamic> toJson() {

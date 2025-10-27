@@ -128,7 +128,7 @@ final class ServerTextChannel extends ServerChannel {
   ///
   /// final message = await channel.send(builder);
   /// ```
-  Future<T> send<T extends Message>(MessageComponentBuilder builder) =>
+  Future<T> send<T extends Message>(MessageBuilder builder) =>
       _methods.send(serverId: _properties.serverId, builder: builder);
 
   Future<T> sendPoll<T extends Message>(Poll poll) =>

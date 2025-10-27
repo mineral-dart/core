@@ -1,7 +1,7 @@
 import 'package:mineral/api.dart';
 
-final class MessageRowBuilder implements MessageComponent {
-  final List<MessageComponent> components;
+final class MessageRowBuilder implements Component {
+  final List<Component> components;
 
   MessageRowBuilder({this.components = const []});
 

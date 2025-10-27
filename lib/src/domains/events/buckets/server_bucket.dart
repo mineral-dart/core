@@ -9,7 +9,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_channel_selec
 import 'package:mineral/src/domains/events/contracts/server/server_channel_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_dialog_submit_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_modal_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_chunk_event.dart';
@@ -111,9 +111,9 @@ final class ServerBucket {
   void buttonClick(ServerButtonClickEventHandler handle, {String? customId}) =>
       _events.make(Event.serverButtonClick, handle, customId: customId);
 
-  void dialogSubmit<T>(ServerDialogSubmitEventHandler<T> handle,
+  void modalSubmit<T>(ServerModalSubmitEventHandler<T> handle,
           {String? customId}) =>
-      _events.make(Event.serverDialogSubmit, handle, customId: customId);
+      _events.make(Event.serverModalSubmit, handle, customId: customId);
 
   void selectChannel(ServerChannelSelectEventHandler handle,
           {String? customId}) =>

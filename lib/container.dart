@@ -20,7 +20,7 @@ mixin State {
   GlobalStateService get state => ioc.resolve<GlobalStateService>();
 }
 
-mixin Component {
+mixin Components {
   InteractiveComponentService get components =>
       ioc.resolve<InteractiveComponentManagerContract>();
 }

@@ -6,7 +6,7 @@ typedef AttachmentResult = (
   List<http.MultipartFile>
 );
 
-AttachmentResult makeAttachmentFromBuilder(MessageComponentBuilder builder) {
+AttachmentResult makeAttachmentFromBuilder(MessageBuilder builder) {
   final components = builder.build();
   final files = <http.MultipartFile>[];
 
