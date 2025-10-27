@@ -11,12 +11,12 @@ export 'package:mineral/src/domains/events/contracts/private/private_channel_cre
 export 'package:mineral/src/domains/events/contracts/private/private_channel_delete_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_channel_pins_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_channel_update_event.dart';
-export 'package:mineral/src/domains/events/contracts/private/private_modal_submit_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
-export 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
-export 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
 export 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
+export 'package:mineral/src/domains/events/contracts/private/private_modal_submit_event.dart';
+export 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
+export 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_button_click_event.dart';
@@ -27,7 +27,6 @@ export 'package:mineral/src/domains/events/contracts/server/server_channel_selec
 export 'package:mineral/src/domains/events/contracts/server/server_channel_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_create_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_delete_event.dart';
-export 'package:mineral/src/domains/events/contracts/server/server_modal_submit_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_member_remove_event.dart';
@@ -36,6 +35,7 @@ export 'package:mineral/src/domains/events/contracts/server/server_member_update
 export 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
+export 'package:mineral/src/domains/events/contracts/server/server_modal_submit_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_role_select_event.dart';
 export 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';
