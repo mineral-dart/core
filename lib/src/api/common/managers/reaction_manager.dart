@@ -10,12 +10,14 @@ final class ReactionManger {
 
   ReactionManger(this._messageId, this._channelId);
 
-  Future<void> add(PartialEmoji emoji) => _datastore.reaction.add(_channelId, _messageId, emoji);
+  Future<void> add(PartialEmoji emoji) =>
+      _datastore.reaction.add(_channelId, _messageId, emoji);
 
   Future<void> remove(PartialEmoji emoji) =>
       _datastore.reaction.remove(_channelId, _messageId, emoji);
 
-  Future<void> removeAll() => _datastore.reaction.removeAll(_channelId, _messageId);
+  Future<void> removeAll() =>
+      _datastore.reaction.removeAll(_channelId, _messageId);
 
   Future<void> removeForEmoji(PartialEmoji emoji) =>
       _datastore.reaction.removeForEmoji(_channelId, _messageId, emoji);

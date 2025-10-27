@@ -16,10 +16,11 @@ final class MessageManager<T extends BaseMessage> {
   Future<T> getOrFail(Snowflake id, {bool force = false}) =>
       _datastore.message.get<T>(_channelId.value, id.value, force) as Future<T>;
 
-  Future<Map<Snowflake, T>> fetch(
-          {Snowflake? around,
-          Snowflake? before,
-          Snowflake? after,
-          int? limit}) =>
+  Future<Map<Snowflake, T>> fetch({
+    Snowflake? around,
+    Snowflake? before,
+    Snowflake? after,
+    int? limit,
+  }) =>
       _datastore.message.fetch<T>(_channelId.value);
 }
