@@ -8,7 +8,10 @@ final class ChannelMethods {
 
   final Snowflake id;
 
-  ChannelMethods(this._serverId, this.id);
+  ChannelMethods(
+    this._serverId,
+    this.id,
+  );
 
   Future<void> setName(String name, String? reason) async {
     final builder = ChannelBuilder(null)..setName(name);
@@ -71,7 +74,9 @@ final class ChannelMethods {
   }
 
   Future<void> setDefaultAutoArchiveDuration(
-      Duration value, String? reason) async {
+    Duration value,
+    String? reason,
+  ) async {
     final builder = ChannelBuilder(null)..setDefaultAutoArchiveDuration(value);
     await _datastore.channel.update(
       id.value,
@@ -82,9 +87,12 @@ final class ChannelMethods {
   }
 
   Future<void> setDefaultThreadRateLimitPerUser(
-      Duration value, String? reason) async {
+    Duration value,
+    String? reason,
+  ) async {
     final builder = ChannelBuilder(null)
       ..setDefaultThreadRateLimitPerUser(value);
+
     await _datastore.channel.update(
       id.value,
       builder,
@@ -133,8 +141,10 @@ final class ChannelMethods {
     );
   }
 
-  Future<T> send<T extends Message>(
-      {required MessageBuilder builder, Snowflake? serverId}) async {
+  Future<T> send<T extends Message>({
+    required MessageBuilder builder,
+    Snowflake? serverId,
+  }) async {
     return _datastore.message.send(serverId?.value, id.value, builder);
   }
 
