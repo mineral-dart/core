@@ -5,21 +5,13 @@ import 'package:mineral/src/api/common/managers/reaction_manager.dart';
 
 abstract interface class BaseMessage {
   ReactionManger get reactions;
-
   Snowflake get id;
-
   String get content;
-
   bool get authorIsBot;
-
   List<MessageEmbed> get embeds;
-
   Snowflake get channelId;
-
   Snowflake? get authorId;
-
   DateTime get createdAt;
-
   DateTime? get updatedAt;
 
   Future<T> resolveChannel<T extends Channel>();
@@ -99,25 +91,36 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   DateTime? get updatedAt => _properties.updatedAt;
 
   Message(this._properties)
-      : reactions =
-            ReactionManger(_properties.id.value, _properties.channelId.value);
+      : reactions = ReactionManger(
+          _properties.id.value,
+          _properties.channelId.value,
+        );
 
   @override
   Future<void> edit(MessageBuilder builder) async {
-    await _datastore.message
-        .update(id: id.value, channelId: channelId.value, builder: builder);
+    await _datastore.message.update(
+      id: id.value,
+      channelId: channelId.value,
+      builder: builder,
+    );
   }
 
   @override
   Future<Member> resolveMember({bool force = false}) async {
-    final member =
-        await _datastore.member.get(serverId!.value, authorId!.value, force);
+    final member = await _datastore.member.get(
+      serverId!.value,
+      authorId!.value,
+      force,
+    );
     return member!;
   }
 
   @override
   Future<User> resolveUser({bool force = false}) async {
-    final user = await _datastore.user.get(authorId!.value, force);
+    final user = await _datastore.user.get(
+      authorId!.value,
+      force,
+    );
     return user!;
   }
 
@@ -128,8 +131,10 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   }
 
   @override
-  Future<Server> resolveServer({bool force = false}) =>
-      _datastore.server.get(serverId!.value, force);
+  Future<Server> resolveServer({bool force = false}) => _datastore.server.get(
+        serverId!.value,
+        force,
+      );
 
   @override
   Future<T> reply<T extends Message>(MessageBuilder builder) async {
@@ -188,7 +193,12 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   ///  final thread = await message.createThread<PublicThreadChannel>(builder);
   ///  ```
   Future<T> createThread<T extends ThreadChannel>(
-          ThreadChannelBuilder builder) =>
+    ThreadChannelBuilder builder,
+  ) =>
       _datastore.thread.createFromMessage<T>(
-          serverId.value, channelId.value, id?.value, builder);
+        serverId.value,
+        channelId.value,
+        id?.value,
+        builder,
+      );
 }
