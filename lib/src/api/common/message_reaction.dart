@@ -13,25 +13,17 @@ enum MessageReactionType {
 
 abstract class BaseMessageReaction {
   Snowflake get channelId;
-
   Snowflake get userId;
-
   Snowflake get messageId;
-
   PartialEmoji get emoji;
-
   bool get isBurst;
-
   MessageReactionType get type;
-
   Future<T> resolveChannel<T extends Channel>();
-
   Future<T> resolveMessage<T extends BaseMessage>({bool force = false});
 }
 
 abstract interface class ServerMessageReaction extends BaseMessageReaction {
   Snowflake? get serverId;
-
   Future<Member?> resolveMember();
 }
 
@@ -39,7 +31,8 @@ abstract interface class PrivateMessageReaction extends BaseMessageReaction {
   Future<User> resolveUser();
 }
 
-final class MessageReaction implements ServerMessageReaction, PrivateMessageReaction {
+final class MessageReaction
+    implements ServerMessageReaction, PrivateMessageReaction {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
   @override
@@ -88,7 +81,11 @@ final class MessageReaction implements ServerMessageReaction, PrivateMessageReac
   /// final member = await reaction.resolveMember();
   /// ```
   @override
-  Future<Member?> resolveMember() => _datastore.member.get(serverId!.value, userId.value, true);
+  Future<Member?> resolveMember() => _datastore.member.get(
+        serverId!.value,
+        userId.value,
+        true,
+      );
 
   /// Get related [ServerVoiceChannel]
   /// ```dart
@@ -106,7 +103,11 @@ final class MessageReaction implements ServerMessageReaction, PrivateMessageReac
   /// ```
   @override
   Future<T> resolveMessage<T extends BaseMessage>({bool force = false}) async {
-    final message = await _datastore.message.get<T>(channelId.value, messageId.value, force);
+    final message = await _datastore.message.get<T>(
+      channelId.value,
+      messageId.value,
+      force,
+    );
     return message!;
   }
 }
