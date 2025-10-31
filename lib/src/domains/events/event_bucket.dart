@@ -4,7 +4,6 @@ import 'package:mineral/src/domains/events/buckets/private_bucket.dart';
 import 'package:mineral/src/domains/events/buckets/server_bucket.dart';
 import 'package:mineral/src/domains/events/contracts/common/invite_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/invite_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/voice_move_event.dart';
 
 final class EventBucket {
   final Kernel _kernel;
@@ -41,8 +40,14 @@ final class EventBucket {
   void inviteDelete(InviteDeleteEventHandler handle) =>
       _registerEvent(event: Event.inviteDelete, handle: handle);
 
-  void _registerEvent<T extends Function>(
-          {required Event event, required T handle, String? customId}) =>
-      _kernel.eventListener
-          .listen(event: event, handle: handle, customId: customId);
+  void _registerEvent<T extends Function>({
+    required Event event,
+    required T handle,
+    String? customId,
+  }) =>
+      _kernel.eventListener.listen(
+        event: event,
+        handle: handle,
+        customId: customId,
+      );
 }
