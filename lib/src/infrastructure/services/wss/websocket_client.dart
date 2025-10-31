@@ -7,19 +7,12 @@ import 'package:mineral/src/infrastructure/services/wss/websocket_requested_mess
 
 abstract interface class WebsocketClient {
   String get name;
-
   String get url;
-
   Stream? get stream;
-
   Interceptor get interceptor;
-
   Future<void> connect();
-
   void disconnect({int? code, String? reason});
-
   Future<void> send(String message);
-
   Future<void> listen(void Function(WebsocketMessage) callback);
 }
 
@@ -43,13 +36,13 @@ final class WebsocketClientImpl implements WebsocketClient {
   @override
   Stream? stream;
 
-  WebsocketClientImpl(
-      {required this.url,
-      this.name = 'default',
-      void Function(Object payload)? onError,
-      void Function(int? exitCode)? onClose,
-      void Function(WebsocketMessage)? onOpen})
-      : _onError = onError,
+  WebsocketClientImpl({
+    required this.url,
+    this.name = 'default',
+    void Function(Object payload)? onError,
+    void Function(int? exitCode)? onClose,
+    void Function(WebsocketMessage)? onOpen,
+  })  : _onError = onError,
         _onClose = onClose,
         _onOpen = onOpen;
 
@@ -103,10 +96,12 @@ final class WebsocketClientImpl implements WebsocketClient {
 
   Future<void> _handleMessage(callback, dynamic message) async {
     final interceptedMessage = await _handleMessageInterceptors(
-        WebsocketMessageImpl(
-            channelName: name,
-            originalContent: message,
-            content: message));
+      WebsocketMessageImpl(
+        channelName: name,
+        originalContent: message,
+        content: message,
+      ),
+    );
 
     callback(interceptedMessage);
   }
@@ -114,7 +109,8 @@ final class WebsocketClientImpl implements WebsocketClient {
   @override
   Future<void> send(String message) async {
     final interceptedMessage = await _handleRequestedMessageInterceptors(
-        WebsocketRequestedMessageImpl(channelName: name, content: message));
+      WebsocketRequestedMessageImpl(channelName: name, content: message),
+    );
 
     switch (_channel?.readyState) {
       case io.WebSocket.open:
@@ -125,7 +121,8 @@ final class WebsocketClientImpl implements WebsocketClient {
   }
 
   Future<WebsocketMessage> _handleMessageInterceptors(
-      WebsocketMessage message) async {
+    WebsocketMessage message,
+  ) async {
     for (final interceptor in interceptor.message) {
       message = await interceptor(message);
     }
@@ -134,7 +131,8 @@ final class WebsocketClientImpl implements WebsocketClient {
   }
 
   Future<WebsocketRequestedMessage> _handleRequestedMessageInterceptors(
-      WebsocketRequestedMessage message) async {
+    WebsocketRequestedMessage message,
+  ) async {
     for (final interceptor in interceptor.request) {
       message = await interceptor(message);
     }

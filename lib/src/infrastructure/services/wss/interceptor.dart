@@ -4,9 +4,12 @@ import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_requested_message.dart';
 
 typedef MessageInterceptor = FutureOr<WebsocketMessage> Function(
-    WebsocketMessage);
+  WebsocketMessage,
+);
+
 typedef RequestInterceptor = FutureOr<WebsocketRequestedMessage> Function(
-    WebsocketRequestedMessage);
+  WebsocketRequestedMessage,
+);
 
 abstract interface class Interceptor {
   List<MessageInterceptor> get message;

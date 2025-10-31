@@ -1,8 +1,6 @@
 abstract interface class WebsocketRequestedMessage {
   DateTime get createdAt;
-
   String get channelName;
-
   dynamic content;
 }
 
@@ -16,6 +14,8 @@ final class WebsocketRequestedMessageImpl implements WebsocketRequestedMessage {
   @override
   dynamic content;
 
-  WebsocketRequestedMessageImpl(
-      {required this.channelName, required this.content});
+  WebsocketRequestedMessageImpl({
+    required this.channelName,
+    required this.content,
+  });
 }
