@@ -33,8 +33,11 @@ final class GlobalCommandContext implements CommandContext {
     this.channel,
   }) : interaction = Interaction(token, id);
 
-  static Future<GlobalCommandContext> fromMap(MarshallerContract marshaller,
-      DataStoreContract datastore, Map<String, dynamic> payload) async {
+  static Future<GlobalCommandContext> fromMap(
+    MarshallerContract marshaller,
+    DataStoreContract datastore,
+    Map<String, dynamic> payload,
+  ) async {
     final (user, channel) = await (
       datastore.user.get(payload['member']['user']['id'], false),
       datastore.channel.get(payload['channel_id'], false)

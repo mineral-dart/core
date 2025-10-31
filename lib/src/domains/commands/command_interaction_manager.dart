@@ -71,24 +71,30 @@ final class CommandInteractionManager
 
   @override
   Future<void> registerGlobal(Bot bot) async {
-    final List<CommandBuilder> globalCommands =
-        _getContext(CommandContextType.global);
+    final List<CommandBuilder> globalCommands = _getContext(
+      CommandContextType.global,
+    );
     final payload = _serializeCommand(globalCommands);
 
     final req = Request.json(
-        endpoint: '/applications/${bot.id}/commands', body: payload);
+      endpoint: '/applications/${bot.id}/commands',
+      body: payload,
+    );
+
     await _dataStore.client.put(req);
   }
 
   @override
   Future<void> registerServer(Bot bot, Server server) async {
-    final List<CommandBuilder> guildCommands =
-        _getContext(CommandContextType.server);
+    final List<CommandBuilder> guildCommands = _getContext(
+      CommandContextType.server,
+    );
     final payload = _serializeCommand(guildCommands);
 
     final req = Request.json(
-        endpoint: '/applications/${bot.id}/guilds/${server.id}/commands',
-        body: payload);
+      endpoint: '/applications/${bot.id}/guilds/${server.id}/commands',
+      body: payload,
+    );
 
     final response = await _dataStore.client.put(req);
     if (response.statusCode == 400) {

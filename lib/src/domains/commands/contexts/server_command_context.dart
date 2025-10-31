@@ -36,8 +36,11 @@ final class ServerCommandContext implements CommandContext {
     this.channel,
   }) : interaction = Interaction(token, id);
 
-  static Future<ServerCommandContext> fromMap(MarshallerContract marshaller,
-      DataStoreContract datastore, Map<String, dynamic> payload) async {
+  static Future<ServerCommandContext> fromMap(
+    MarshallerContract marshaller,
+    DataStoreContract datastore,
+    Map<String, dynamic> payload,
+  ) async {
     final member = await datastore.member.get(
       payload['guild_id'],
       payload['member']['user']['id'],

@@ -25,13 +25,17 @@ final class CommandInteractionDispatcher
   }
 
   Future<void> _handleGroups(
-      Map<String, dynamic> data, Map<String, dynamic> group) async {
+    Map<String, dynamic> data,
+    Map<String, dynamic> group,
+  ) async {
     data['data']['options'] = group['options'];
     return _handleSubCommand(data, group);
   }
 
   Future<void> _handleSubCommand(
-      Map<String, dynamic> data, Map<String, dynamic> option) async {
+    Map<String, dynamic> data,
+    Map<String, dynamic> option,
+  ) async {
     data['data']['name'] = "${data['data']['name']}.${option['name']}";
     data['data']['options'] = option['options'];
 
@@ -41,8 +45,9 @@ final class CommandInteractionDispatcher
   Future<void> _handleCommand(Map<String, dynamic> data) async {
     if (data['data']['options'] != null) {
       for (final option in data['data']['options']) {
-        final type = CommandType.values
-            .firstWhereOrNull((e) => e.value == option['type']);
+        final type = CommandType.values.firstWhereOrNull(
+          (e) => e.value == option['type'],
+        );
 
         if (type == null) {
           continue;
@@ -55,8 +60,9 @@ final class CommandInteractionDispatcher
       }
     }
 
-    final command = _interactionManager.commandsHandler
-        .firstWhere((command) => command.$1 == data['data']['name']);
+    final command = _interactionManager.commandsHandler.firstWhere(
+      (command) => command.$1 == data['data']['name'],
+    );
 
     final serverId = Snowflake.nullable(data['data']['guild_id']);
     final commandContext = await switch (serverId) {
@@ -68,8 +74,9 @@ final class CommandInteractionDispatcher
 
     if (data['data']['options'] != null) {
       for (final option in data['data']['options']) {
-        final type = CommandOptionType.values
-            .firstWhereOrNull((e) => e.value == option['type']);
+        final type = CommandOptionType.values.firstWhereOrNull(
+          (e) => e.value == option['type'],
+        );
 
         if (type == null) {
           _marshaller.logger.warn("Unknown option type: ${option['type']}");
@@ -78,20 +85,32 @@ final class CommandInteractionDispatcher
 
         options[Symbol(option['name'])] = await switch (type) {
           CommandOptionType.user => switch (commandContext) {
-              ServerCommandContext() => _dataStore.member
-                  .get(commandContext.server.id.value, option['value'], false),
+              ServerCommandContext() => _dataStore.member.get(
+                  commandContext.server.id.value,
+                  option['value'],
+                  false,
+                ),
               _ => _dataStore.user.get(option['value'], false),
             },
-          CommandOptionType.channel =>
-            _dataStore.channel.get(option['value'], false),
-          CommandOptionType.role =>
-            _dataStore.role.get(data['guild_id'], option['value'], false),
+          CommandOptionType.channel => _dataStore.channel.get(
+              option['value'],
+              false,
+            ),
+          CommandOptionType.role => _dataStore.role.get(
+              data['guild_id'],
+              option['value'],
+              false,
+            ),
           // TODO attachement
           _ => option['value'],
         };
       }
     }
 
-    await Function.apply(command.$2, [commandContext], options);
+    await Function.apply(
+      command.$2,
+      [commandContext],
+      options,
+    );
   }
 }
