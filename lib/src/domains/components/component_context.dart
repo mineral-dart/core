@@ -1,3 +1,1 @@
-abstract interface class ComponentContext {
-
-}
+abstract interface class ComponentContext {}
