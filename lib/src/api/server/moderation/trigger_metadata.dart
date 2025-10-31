@@ -18,7 +18,7 @@ final class TriggerMetadata {
     this.mentionRaidProtectionEnabled,
   });
 
-  static fromJson(Map<String, dynamic> json) {
+  factory TriggerMetadata.fromJson(Map<String, dynamic> json) {
     return TriggerMetadata(
       keywordFilter: List<String>.from(json['keyword_filter'] ?? []),
       regexPatterns: List<String>.from(json['regex_patterns'] ?? []),
