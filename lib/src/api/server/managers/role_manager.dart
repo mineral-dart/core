@@ -27,12 +27,21 @@ final class RoleManager {
   /// ```dart
   /// final role = await server.roles.create('New Role');
   /// ```
-  Future<Role> create(
-          {required String name,
-          required List<Permission> permissions,
-          required Color color,
-          bool hoist = false,
-          bool mentionable = false,
-          String? reason}) =>
-      _datastore.role.create(_serverId.value, name, permissions, color, hoist, mentionable, reason);
+  Future<Role> create({
+    required String name,
+    required List<Permission> permissions,
+    required Color color,
+    bool hoist = false,
+    bool mentionable = false,
+    String? reason,
+  }) =>
+      _datastore.role.create(
+        _serverId.value,
+        name,
+        permissions,
+        color,
+        hoist,
+        mentionable,
+        reason,
+      );
 }

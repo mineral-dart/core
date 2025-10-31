@@ -1,7 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/server/voice_state.dart';
 
 final class MemberVoiceManager {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
@@ -50,10 +49,11 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'mute': true});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'mute': true},
+    );
   }
 
   /// Unmute the [Member].
@@ -68,10 +68,11 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'mute': false});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'mute': false},
+    );
   }
 
   /// Toggle the [Member] mute status.
@@ -86,10 +87,11 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'mute': !(isMuted ?? false)});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'mute': !(isMuted ?? false)},
+    );
   }
 
   /// Deafen the [Member].
@@ -104,10 +106,11 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'deaf': true});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'deaf': true},
+    );
   }
 
   /// Set the [Member] mute status.
@@ -122,10 +125,11 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'mute': value});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'mute': value},
+    );
   }
 
   /// Un-deafen the [Member].
@@ -140,10 +144,11 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'deaf': false});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'deaf': false},
+    );
   }
 
   /// Toggle the [Member] deafen status.
@@ -158,10 +163,11 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'deaf': !(isDeafened ?? false)});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'deaf': !(isDeafened ?? false)},
+    );
   }
 
   /// Set the [Member] deafen status.
@@ -176,10 +182,11 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'deaf': value});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'deaf': value},
+    );
   }
 
   /// Update the current [VoiceState] with multiple properties.
@@ -222,10 +229,11 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'channel_id': channelId});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'channel_id': channelId},
+    );
   }
 
   /// Disconnect the [Member] from the voice channel.
@@ -240,9 +248,10 @@ final class MemberVoiceManager {
     }
 
     await _datastore.member.update(
-        serverId: _serverId.value,
-        memberId: _memberId.value,
-        reason: reason,
-        payload: {'channel_id': null});
+      serverId: _serverId.value,
+      memberId: _memberId.value,
+      reason: reason,
+      payload: {'channel_id': null},
+    );
   }
 }

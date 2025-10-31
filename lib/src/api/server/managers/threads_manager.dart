@@ -13,10 +13,13 @@ abstract interface class ChannelThreadManager {
 
   Future<Map<Snowflake, PrivateThreadChannel>> fetchPrivateArchived();
 
-  Future<T> createWithoutMessage<T extends ThreadChannel>(ThreadChannelBuilder builder);
+  Future<T> createWithoutMessage<T extends ThreadChannel>(
+    ThreadChannelBuilder builder,
+  );
 }
 
-final class ThreadsManager implements ServerThreadManager, ChannelThreadManager {
+final class ThreadsManager
+    implements ServerThreadManager, ChannelThreadManager {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
   final Snowflake? _serverId;
@@ -25,7 +28,8 @@ final class ThreadsManager implements ServerThreadManager, ChannelThreadManager 
   ThreadsManager(this._serverId, this._channelId);
 
   @override
-  Future<ThreadResult> fetchActives() => _datastore.thread.fetchActives(_serverId!.value);
+  Future<ThreadResult> fetchActives() =>
+      _datastore.thread.fetchActives(_serverId!.value);
 
   @override
   Future<Map<Snowflake, PublicThreadChannel>> fetchPublicArchived() =>
@@ -36,6 +40,12 @@ final class ThreadsManager implements ServerThreadManager, ChannelThreadManager 
       _datastore.thread.fetchPrivateArchived(_channelId!.value);
 
   @override
-  Future<T> createWithoutMessage<T extends ThreadChannel>(ThreadChannelBuilder builder) =>
-      _datastore.thread.createWithoutMessage<T>(_serverId!.value, _channelId!.value, builder);
+  Future<T> createWithoutMessage<T extends ThreadChannel>(
+    ThreadChannelBuilder builder,
+  ) =>
+      _datastore.thread.createWithoutMessage<T>(
+        _serverId!.value,
+        _channelId!.value,
+        builder,
+      );
 }

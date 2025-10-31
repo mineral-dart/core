@@ -27,12 +27,17 @@ final class EmojiManager {
   /// ```dart
   /// final emoji = await server.emojis.create(name: 'New Emoji', );
   /// ```
-  Future<Emoji> create(
-          {required String name,
-          required Image image,
-          List<Snowflake> roles = const [],
-          String? reason}) =>
+  Future<Emoji> create({
+    required String name,
+    required Image image,
+    List<Snowflake> roles = const [],
+    String? reason,
+  }) =>
       _datastore.emoji.create(
-          _serverId.value, name, image, roles.map((element) => element.value).toList(),
-          reason: reason);
+        _serverId.value,
+        name,
+        image,
+        roles.map((element) => element.value).toList(),
+        reason: reason,
+      );
 }
