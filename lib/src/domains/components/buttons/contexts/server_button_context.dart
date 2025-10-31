@@ -44,7 +44,10 @@ final class ServerButtonContext implements ButtonContext {
   /// final channel = await ctx.resolveChannel();
   /// ```
   Future<ServerChannel> resolveChannel({bool force = false}) async {
-    final channel = await _dataStore.channel.get<ServerChannel>(channelId.value, force);
+    final channel = await _dataStore.channel.get<ServerChannel>(
+      channelId.value,
+      force,
+    );
     return channel!;
   }
 
@@ -53,8 +56,11 @@ final class ServerButtonContext implements ButtonContext {
   /// final message = await ctx.resolveMessage();
   /// ```
   Future<ServerMessage> resolveMessage({bool force = false}) async {
-    final message = await _dataStore.message
-        .get<ServerMessage>(channelId.value, messageId.value, force);
+    final message = await _dataStore.message.get<ServerMessage>(
+      channelId.value,
+      messageId.value,
+      force,
+    );
     return message!;
   }
 }
