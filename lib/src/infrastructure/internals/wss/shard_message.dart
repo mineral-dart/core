@@ -14,18 +14,23 @@ final class ShardMessage<T> implements ShardMessageContract<T, OpCode> {
   @override
   final T payload;
 
-  ShardMessage(
-      {required this.type,
-      required this.opCode,
-      required this.sequence,
-      required this.payload});
+  ShardMessage({
+    required this.type,
+    required this.opCode,
+    required this.sequence,
+    required this.payload,
+  });
 
-  factory ShardMessage.of(Map<String, dynamic> message) => ShardMessage(
+  factory ShardMessage.of(Map<String, dynamic> message) {
+    return ShardMessage(
       type: message['t'],
-      opCode:
-          OpCode.values.firstWhere((element) => element.value == message['op']),
+      opCode: OpCode.values.firstWhere(
+        (element) => element.value == message['op'],
+      ),
       sequence: message['s'],
-      payload: message['d']);
+      payload: message['d'],
+    );
+  }
 
   @override
   Object serialize() {

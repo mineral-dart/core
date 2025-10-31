@@ -58,8 +58,9 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   }
 
   void _sendToShards(WebsocketIsolateMessageTransfert message) {
-    shards
-        .forEach((_, shard) => shard.client.send(json.encode(message.payload)));
+    shards.forEach(
+      (_, shard) => shard.client.send(json.encode(message.payload)),
+    );
   }
 
   void _requestMessage(WebsocketIsolateMessageTransfert message) {
@@ -82,12 +83,15 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       ..setOpCode(OpCode.presenceUpdate)
       ..append('since', DateTime.now().millisecond)
       ..append(
-          'activities',
-          activities != null
-              ? activities.map((element) => element.toJson()).toList()
-              : [])
-      ..append('status',
-          status != null ? status.toString() : StatusType.online.toString())
+        'activities',
+        activities != null
+            ? activities.map((element) => element.toJson()).toList()
+            : [],
+      )
+      ..append(
+        'status',
+        status != null ? status.toString() : StatusType.online.toString(),
+      )
       ..append('afk', afk ?? false);
 
     send(WebsocketIsolateMessageTransfert.send(message.toJson()));
@@ -105,10 +109,11 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       ..append('nonce', timestamp.toString());
 
     final messageTransfert = WebsocketIsolateMessageTransfert.request(
-        payload: message.toJson(),
-        uid: timestamp.toString(),
-        completer: completer,
-        targetKeys: ['presences']);
+      payload: message.toJson(),
+      uid: timestamp.toString(),
+      completer: completer,
+      targetKeys: ['presences'],
+    );
 
     send(messageTransfert);
 
@@ -139,7 +144,11 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
           '$endpoint/?v=${config.version}&encoding=${config.encoding.encoder.value}';
 
       final shard = Shard(
-          shardName: 'shard #$i', url: url, wss: this, strategy: strategy);
+        shardName: 'shard #$i',
+        url: url,
+        wss: this,
+        strategy: strategy,
+      );
 
       shards.putIfAbsent(i, () => shard);
 

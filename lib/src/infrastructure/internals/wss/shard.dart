@@ -35,11 +35,12 @@ final class Shard implements ShardContract {
 
   late final ShardNetworkError networkError;
 
-  Shard(
-      {required this.shardName,
-      required this.url,
-      required this.wss,
-      required RunningStrategy strategy}) {
+  Shard({
+    required this.shardName,
+    required this.url,
+    required this.wss,
+    required RunningStrategy strategy,
+  }) {
     authentication = ShardAuthentication(this);
     networkError = ShardNetworkError(this);
     dispatchEvent = ShardData(this, strategy);
@@ -49,18 +50,19 @@ final class Shard implements ShardContract {
   Future<void> init() async {
     final logger = ioc.resolve<LoggerContract>();
     client = WebsocketClientImpl(
-        name: shardName,
-        url: url,
-        onError: (error) {
-          print('error $error');
-          networkError.dispatch(error);
-        },
-        onClose: networkError.dispatch,
-        onOpen: (message) {
-          if (message.content case ShardMessage(:final payload)) {
-            logger.trace(jsonEncode(payload));
-          }
-        });
+      name: shardName,
+      url: url,
+      onError: (error) {
+        print('error $error');
+        networkError.dispatch(error);
+      },
+      onClose: networkError.dispatch,
+      onOpen: (message) {
+        if (message.content case ShardMessage(:final payload)) {
+          logger.trace(jsonEncode(payload));
+        }
+      },
+    );
 
     client.interceptor.message
       ..add(wss.config.encoding.decode)
