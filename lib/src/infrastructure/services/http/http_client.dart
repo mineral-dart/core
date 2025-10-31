@@ -90,8 +90,11 @@ class HttpClient implements HttpClientContract {
 
   Map<String, String> _serializeHeaders(Set<Header> headers) {
     return headers.fold(
-        {},
-        (previousValue, element) =>
-            {...previousValue, element.key: element.value});
+      {},
+      (previousValue, element) => {
+        ...previousValue,
+        element.key: element.value,
+      },
+    );
   }
 }
