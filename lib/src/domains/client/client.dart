@@ -11,22 +11,15 @@ import '../events/types/listenable_event.dart';
 
 final class Client {
   final Kernel _kernel;
-
   final EventBucket events;
-
   final CommandBucket commands;
 
   IocContainer get container => ioc;
-
   LoggerContract get logger => _kernel.logger;
-
   DataStoreContract get rest => ioc.resolve<DataStoreContract>();
-
   WebsocketOrchestratorContract get wss => _kernel.wss;
-
   CommandInteractionManagerContract get _commands =>
       ioc.resolve<CommandInteractionManagerContract>();
-
   InteractiveComponentService get components => _kernel.interactiveComponent;
 
   Client(Kernel kernel)
@@ -44,7 +37,8 @@ final class Client {
       final ListenableEvent event => _kernel.eventListener.listen(
           event: event.event,
           handle: (instance as dynamic).handle as Function,
-          customId: event.customId),
+          customId: event.customId,
+        ),
       final InteractiveComponent component =>
         _kernel.interactiveComponent.register(component),
       _ => throw UnimplementedError(),
