@@ -17,18 +17,25 @@ final class ChannelCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final rawChannel =
-        await _marshaller.serializers.channels.normalize(message.payload);
-    final channel =
-        await _marshaller.serializers.channels.serialize(rawChannel);
+    final rawChannel = await _marshaller.serializers.channels.normalize(
+      message.payload,
+    );
+    final channel = await _marshaller.serializers.channels.serialize(
+      rawChannel,
+    );
 
     return switch (channel) {
-      ServerChannel() =>
-        dispatch(event: Event.serverChannelCreate, params: [channel]),
-      PrivateChannel() =>
-        dispatch(event: Event.serverChannelCreate, params: [channel]),
-      _ => _logger
-          .warn("Unknown channel type: $channel contact Mineral's core team.")
+      ServerChannel() => dispatch(
+          event: Event.serverChannelCreate,
+          params: [channel],
+        ),
+      PrivateChannel() => dispatch(
+          event: Event.serverChannelCreate,
+          params: [channel],
+        ),
+      _ => _logger.warn(
+          "Unknown channel type: $channel contact Mineral's core team.",
+        )
     };
   }
 }

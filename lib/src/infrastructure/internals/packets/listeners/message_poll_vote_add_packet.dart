@@ -24,18 +24,43 @@ final class MessagePollVoteAddPacket implements ListenablePacket {
     }
   }
 
-
-  Future<void> _server(Map<String, dynamic> payload, User user, DispatchEvent dispatch) async {
+  Future<void> _server(
+    Map<String, dynamic> payload,
+    User user,
+    DispatchEvent dispatch,
+  ) async {
     final server = await _dataStore.server.get(payload['guild_id'], false);
-    final message = await _dataStore.message.get<ServerMessage>(payload['channel_id'], payload['message_id'], false);
-    final answer = await _dataStore.message.getPollVotes(server.id, Snowflake.parse(payload['channel_id']), message!.id, payload['answer_id']);
+    final message = await _dataStore.message.get<ServerMessage>(
+      payload['channel_id'],
+      payload['message_id'],
+      false,
+    );
+    final answer = await _dataStore.message.getPollVotes(
+      server.id,
+      Snowflake.parse(payload['channel_id']),
+      message!.id,
+      payload['answer_id'],
+    );
 
     dispatch(event: Event.serverPollVoteAdd, params: [answer, user]);
   }
 
-  Future<void> _private(Map<String, dynamic> payload, User user, DispatchEvent dispatch) async {
-    final message = await _dataStore.message.get(payload['channel_id'], payload['message_id'], false);
-    final answer = await _dataStore.message.getPollVotes(null, Snowflake.parse(payload['channel_id']), message!.id, payload['answer_id']);
+  Future<void> _private(
+    Map<String, dynamic> payload,
+    User user,
+    DispatchEvent dispatch,
+  ) async {
+    final message = await _dataStore.message.get(
+      payload['channel_id'],
+      payload['message_id'],
+      false,
+    );
+    final answer = await _dataStore.message.getPollVotes(
+      null,
+      Snowflake.parse(payload['channel_id']),
+      message!.id,
+      payload['answer_id'],
+    );
 
     dispatch(event: Event.privatePollVoteAdd, params: [answer, user]);
   }

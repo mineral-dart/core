@@ -14,8 +14,10 @@ final class InviteDeletePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final code = message.payload['code'];
-    final channel =
-        await _datastore.channel.get(message.payload['channel_id'], false);
+    final channel = await _datastore.channel.get(
+      message.payload['channel_id'],
+      false,
+    );
 
     dispatch(event: Event.inviteDelete, params: [code, channel]);
   }

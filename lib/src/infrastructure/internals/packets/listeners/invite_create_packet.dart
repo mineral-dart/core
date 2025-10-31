@@ -13,9 +13,12 @@ final class InviteCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final normalized =
-        await _marshaller.serializers.invite.normalize(message.payload);
-    final invite = await _marshaller.serializers.invite.serialize(normalized);
+    final normalized = await _marshaller.serializers.invite.normalize(
+      message.payload,
+    );
+    final invite = await _marshaller.serializers.invite.serialize(
+      normalized,
+    );
 
     dispatch(event: Event.inviteCreate, params: [invite]);
   }

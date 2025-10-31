@@ -13,10 +13,12 @@ final class ChannelDeletePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final rawChannel =
-        await _marshaller.serializers.channels.normalize(message.payload);
-    final channel =
-        await _marshaller.serializers.channels.serialize(rawChannel);
+    final rawChannel = await _marshaller.serializers.channels.normalize(
+      message.payload,
+    );
+    final channel = await _marshaller.serializers.channels.serialize(
+      rawChannel,
+    );
 
     final channelCacheKey = _marshaller.cacheKey.channel(channel.id.value);
     await _marshaller.cache?.remove(channelCacheKey);

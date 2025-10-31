@@ -15,11 +15,14 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server =
-        await _dataStore.server.get(message.payload['guild_id'], false);
+    final server = await _dataStore.server.get(
+      message.payload['guild_id'],
+      false,
+    );
 
-    final emojis =
-        await List.from(message.payload['emojis']).map((element) async {
+    final emojis = await List.from(
+      message.payload['emojis'],
+    ).map((element) async {
       final raw = await _marshaller.serializers.emojis.normalize({
         ...element,
         'guild_id': server.id.value,
@@ -27,9 +30,12 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
       return _marshaller.serializers.emojis.serialize(raw);
     }).wait;
 
-    dispatch(event: Event.serverEmojisUpdate, params: [
-      emojis.asMap().map((_, element) => MapEntry(element.id, element)),
-      server
-    ]);
+    dispatch(
+      event: Event.serverEmojisUpdate,
+      params: [
+        emojis.asMap().map((_, element) => MapEntry(element.id, element)),
+        server
+      ],
+    );
   }
 }

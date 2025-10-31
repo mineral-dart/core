@@ -20,14 +20,31 @@ final class AutomoderationActionExecutionPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server = await _dataStore.server.get(message.payload['guild_id'], false);
-    final member = await _dataStore.member.get(message.payload['guild_id'], message.payload['user_id'], false);
+    final server = await _dataStore.server.get(
+      message.payload['guild_id'],
+      false,
+    );
+    final member = await _dataStore.member.get(
+      message.payload['guild_id'],
+      message.payload['user_id'],
+      false,
+    );
 
-    final triggerType = findInEnum(TriggerType.values, message.payload['rule_trigger_type']);
+    final triggerType = findInEnum(
+      TriggerType.values,
+      message.payload['rule_trigger_type'],
+    );
 
     final action = Action(
-        type: findInEnum(ActionType.values, message.payload['action']['type']),
-        metadata: Helper.createOrNull(field: message.payload['metadata'], fn: () => ActionMetadata.fromJson(message.payload['metadata'])));
+      type: findInEnum(
+        ActionType.values,
+        message.payload['action']['type'],
+      ),
+      metadata: Helper.createOrNull(
+        field: message.payload['metadata'],
+        fn: () => ActionMetadata.fromJson(message.payload['metadata']),
+      ),
+    );
 
     final ruleExecution = RuleExecution(
       ruleId: Snowflake.parse(message.payload['rule_id']),

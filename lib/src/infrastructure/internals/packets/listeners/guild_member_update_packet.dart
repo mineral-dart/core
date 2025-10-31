@@ -18,11 +18,17 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
     final serverId = message.payload['guild_id'];
     final server = await _dataStore.server.get(serverId, false);
 
-    final before =
-        _dataStore.member.get(serverId, message.payload['user']['id'], false);
-    final rawMember =
-        await _marshaller.serializers.member.normalize(message.payload);
-    final member = await _marshaller.serializers.member.serialize(rawMember);
+    final before = _dataStore.member.get(
+      serverId,
+      message.payload['user']['id'],
+      false,
+    );
+    final rawMember = await _marshaller.serializers.member.normalize(
+      message.payload,
+    );
+    final member = await _marshaller.serializers.member.serialize(
+      rawMember,
+    );
 
     final cacheKey = _marshaller.cacheKey.member(serverId, member.id.value);
     await _marshaller.cache?.put(cacheKey, member);

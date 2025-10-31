@@ -13,10 +13,14 @@ final class GuildMemberRemovePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server =
-        await _dataStore.server.get(message.payload['guild_id'], false);
-    final user =
-        await _dataStore.user.get(message.payload['user']['id'], false);
+    final server = await _dataStore.server.get(
+      message.payload['guild_id'],
+      false,
+    );
+    final user = await _dataStore.user.get(
+      message.payload['user']['id'],
+      false,
+    );
 
     dispatch(event: Event.serverMemberRemove, params: [server, user]);
   }

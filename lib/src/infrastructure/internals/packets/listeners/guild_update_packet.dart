@@ -1,6 +1,6 @@
 import 'package:mineral/src/domains/container/ioc_container.dart';
-import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/domains/events/event.dart';
+import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
@@ -19,9 +19,12 @@ final class GuildUpdatePacket implements ListenablePacket {
         ? await _marshaller.serializers.server.serialize(rawServer)
         : null;
 
-    final rawAfter =
-        await _marshaller.serializers.server.normalize(message.payload);
-    final after = await _marshaller.serializers.server.serialize(rawAfter);
+    final rawAfter = await _marshaller.serializers.server.normalize(
+      message.payload,
+    );
+    final after = await _marshaller.serializers.server.serialize(
+      rawAfter,
+    );
 
     dispatch(event: Event.serverUpdate, params: [before, after]);
   }

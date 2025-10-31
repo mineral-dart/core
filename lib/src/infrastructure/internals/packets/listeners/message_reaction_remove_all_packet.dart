@@ -25,18 +25,41 @@ final class MessageReactionRemoveAllPacket implements ListenablePacket {
     }
   }
 
-  Future<void> _server(DispatchEvent dispatch, Snowflake serverId, Snowflake channelId, Snowflake messageId) async {
-    final channel = await _dataStore.channel.get<ServerTextChannel>(channelId.value, false);
+  Future<void> _server(
+    DispatchEvent dispatch,
+    Snowflake serverId,
+    Snowflake channelId,
+    Snowflake messageId,
+  ) async {
+    final channel = await _dataStore.channel.get<ServerTextChannel>(
+      channelId.value,
+      false,
+    );
     final message = await channel?.messages.get(messageId);
     final server = await _dataStore.server.get(serverId.value, false);
 
-    dispatch(event: Event.serverMessageReactionRemoveAll, params: [server, channel, message]);
+    dispatch(
+      event: Event.serverMessageReactionRemoveAll,
+      params: [server, channel, message],
+    );
   }
 
-  Future<void> _private(DispatchEvent dispatch, Snowflake channelId, Snowflake messageId) async {
-    final channel = await _dataStore.channel.get<PrivateChannel>(channelId.value, false);
-    final message = await channel?.messages.get(messageId);
+  Future<void> _private(
+    DispatchEvent dispatch,
+    Snowflake channelId,
+    Snowflake messageId,
+  ) async {
+    final channel = await _dataStore.channel.get<PrivateChannel>(
+      channelId.value,
+      false,
+    );
+    final message = await channel?.messages.get(
+      messageId,
+    );
 
-    dispatch(event: Event.privateMessageReactionRemoveAll, params: [channel, message]);
+    dispatch(
+      event: Event.privateMessageReactionRemoveAll,
+      params: [channel, message],
+    );
   }
 }

@@ -14,13 +14,15 @@ final class MessageCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    if (![MessageType.initial.value, MessageType.reply.value]
-        .contains(message.payload['type'])) {
+    if (![MessageType.initial.value, MessageType.reply.value].contains(
+      message.payload['type'],
+    )) {
       return;
     }
 
-    final payload =
-        await _marshaller.serializers.message.normalize(message.payload);
+    final payload = await _marshaller.serializers.message.normalize(
+      message.payload,
+    );
     final serializedMessage =
         await _marshaller.serializers.message.serialize(payload);
 

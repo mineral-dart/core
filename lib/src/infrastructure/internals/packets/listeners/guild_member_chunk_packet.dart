@@ -22,11 +22,14 @@ final class GuildMemberChunkPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final server =
-        await _dataStore.server.get(message.payload['guild_id'], false);
+    final server = await _dataStore.server.get(
+      message.payload['guild_id'],
+      false,
+    );
 
-    final members =
-        await List.from(message.payload['members']).map((element) async {
+    final members = await List.from(
+      message.payload['members'],
+    ).map((element) async {
       final raw = await _marshaller.serializers.member.normalize({
         ...element,
         'guild_id': server.id.value,
@@ -35,13 +38,13 @@ final class GuildMemberChunkPacket implements ListenablePacket {
       return _marshaller.serializers.member.serialize(raw);
     }).wait;
 
-    final presences =
-        List<Map<String, dynamic>>.from(message.payload['presences'])
-            .map(Presence.fromJson)
-            .toList();
+    final presences = List<Map<String, dynamic>>.from(
+      message.payload['presences'],
+    ).map(Presence.fromJson).toList();
 
-    final resolver = _wss.requestQueue
-        .firstWhereOrNull((element) => element.uid == message.payload['nonce']);
+    final resolver = _wss.requestQueue.firstWhereOrNull(
+      (element) => element.uid == message.payload['nonce'],
+    );
     if (resolver != null && !resolver.completer.isCompleted) {
       if (resolver.targetKeys.length == 1 &&
           resolver.targetKeys.contains('presences')) {
