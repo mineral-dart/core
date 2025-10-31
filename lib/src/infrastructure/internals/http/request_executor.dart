@@ -8,7 +8,10 @@ final class RequestExecutor {
   final HttpClientContract client;
   final LoggerContract logger;
 
-  RequestExecutor({required this.client, required this.logger});
+  RequestExecutor({
+    required this.client,
+    required this.logger,
+  });
 
   Future<T> send<T>(RequestContract request) async {
     final response = await client.send(request);
