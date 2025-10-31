@@ -1,15 +1,15 @@
 import 'package:mineral/src/domains/events/contracts/private/private_button_click_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_channel_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_channel_pins_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_modal_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_all_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
+import 'package:mineral/src/domains/events/contracts/private/private_modal_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
 import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
 
@@ -42,10 +42,13 @@ final class PrivateBucket {
   void privateMessageReactionAdd(PrivateMessageReactionAddHandler handle) =>
       _events.make(Event.privateMessageReactionAdd, handle);
 
-  void privateMessageReactionRemove(PrivateMessageReactionRemoveHandler handle) =>
+  void privateMessageReactionRemove(
+    PrivateMessageReactionRemoveHandler handle,
+  ) =>
       _events.make(Event.privateMessageReactionRemove, handle);
 
-  void messageReactionRemoveAll(PrivateMessageReactionRemoveAllHandler handle) =>
+  void messageReactionRemoveAll(
+          PrivateMessageReactionRemoveAllHandler handle) =>
       _events.make(Event.privateMessageReactionRemoveAll, handle);
 
   void pollVoteAdd(PrivatePollVoteAddEventHandler handle) =>

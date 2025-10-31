@@ -9,7 +9,6 @@ import 'package:mineral/src/domains/events/contracts/server/server_channel_selec
 import 'package:mineral/src/domains/events/contracts/server/server_channel_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_modal_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_member_chunk_event.dart';
@@ -20,6 +19,7 @@ import 'package:mineral/src/domains/events/contracts/server/server_message_creat
 import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_all_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
+import 'package:mineral/src/domains/events/contracts/server/server_modal_submit_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_add_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_remove_event.dart';
 import 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
@@ -111,19 +111,25 @@ final class ServerBucket {
   void buttonClick(ServerButtonClickEventHandler handle, {String? customId}) =>
       _events.make(Event.serverButtonClick, handle, customId: customId);
 
-  void modalSubmit<T>(ServerModalSubmitEventHandler<T> handle,
-          {String? customId}) =>
+  void modalSubmit<T>(
+    ServerModalSubmitEventHandler<T> handle, {
+    String? customId,
+  }) =>
       _events.make(Event.serverModalSubmit, handle, customId: customId);
 
-  void selectChannel(ServerChannelSelectEventHandler handle,
-          {String? customId}) =>
+  void selectChannel(
+    ServerChannelSelectEventHandler handle, {
+    String? customId,
+  }) =>
       _events.make(Event.serverChannelSelect, handle, customId: customId);
 
   void selectRole(ServerRoleSelectEventHandler handle, {String? customId}) =>
       _events.make(Event.serverRoleSelect, handle, customId: customId);
 
-  void selectMember(ServerMemberSelectEventHandler handle,
-          {String? customId}) =>
+  void selectMember(
+    ServerMemberSelectEventHandler handle, {
+    String? customId,
+  }) =>
       _events.make(Event.serverMemberSelect, handle, customId: customId);
 
   void selectText(ServerTextSelectEventHandler handle, {String? customId}) =>
