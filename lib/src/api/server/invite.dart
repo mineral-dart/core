@@ -18,21 +18,20 @@ final class Invite {
   final DateTime? expiresAt;
   final bool isTemporary;
 
-  Invite(
-      {required this.type,
-      required this.code,
-      required this.maxAge,
-      required this.maxUses,
-      required this.inviterId,
-      required this.isTemporary,
-      required this.createdAt,
-      this.serverId,
-      this.channelId,
-      this.expiresAt});
+  Invite({
+    required this.type,
+    required this.code,
+    required this.maxAge,
+    required this.maxUses,
+    required this.inviterId,
+    required this.isTemporary,
+    required this.createdAt,
+    this.serverId,
+    this.channelId,
+    this.expiresAt,
+  });
 
-  Future<User?> resolveInviter() {
-    return _datastore.user.get(inviterId.value, false);
-  }
+  Future<User?> resolveInviter() => _datastore.user.get(inviterId.value, false);
 
   Future<T?> resolveChannel<T extends Channel>() async {
     if (channelId == null) {
