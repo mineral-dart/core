@@ -12,13 +12,17 @@ final class PacketDispatcher implements PacketDispatcherContract {
   PacketDispatcher(this._kernel);
 
   @override
-  void listen(PacketTypeContract packet,
-      Function(ShardMessage, DispatchEvent) listener) {
+  void listen(
+    PacketTypeContract packet,
+    Function(ShardMessage, DispatchEvent) listener,
+  ) {
     _packets.stream
         .where((event) => event.type == packet.name)
         .listen((ShardMessage message) {
-      Function.apply(
-          listener, [message, _kernel.eventListener.dispatcher.dispatch]);
+      Function.apply(listener, [
+        message,
+        _kernel.eventListener.dispatcher.dispatch,
+      ]);
     });
   }
 
