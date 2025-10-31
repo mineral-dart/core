@@ -32,8 +32,9 @@ final class RolePart implements RolePartContract {
       return _marshaller.serializers.role.serialize(raw);
     }).wait;
 
-    completer
-        .complete(roles.asMap().map((_, value) => MapEntry(value.id, value)));
+    completer.complete(
+      roles.asMap().map((_, value) => MapEntry(value.id, value)),
+    );
     return completer.future;
   }
 
@@ -73,15 +74,17 @@ final class RolePart implements RolePartContract {
       String? reason) async {
     final completer = Completer<Role>();
 
-    final req = Request.json(endpoint: '/guilds/$serverId/roles', body: {
-      'name': name,
-      'permissions': listToBitfield(permissions),
-      'color': color.toInt(),
-      'hoist': hoist,
-      'mentionable': mentionable,
-    }, headers: {
-      DiscordHeader.auditLogReason(reason)
-    });
+    final req = Request.json(
+      endpoint: '/guilds/$serverId/roles',
+      headers: {DiscordHeader.auditLogReason(reason)},
+      body: {
+        'name': name,
+        'permissions': listToBitfield(permissions),
+        'color': color.toInt(),
+        'hoist': hoist,
+        'mentionable': mentionable,
+      },
+    );
 
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -98,14 +101,16 @@ final class RolePart implements RolePartContract {
   }
 
   @override
-  Future<void> add(
-      {required Object memberId,
-      required Object serverId,
-      required Object roleId,
-      required String? reason}) async {
+  Future<void> add({
+    required Object memberId,
+    required Object serverId,
+    required Object roleId,
+    required String? reason,
+  }) async {
     final req = Request.json(
-        endpoint: '/guilds/$serverId/members/$memberId/roles/$roleId',
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/members/$memberId/roles/$roleId',
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -113,14 +118,16 @@ final class RolePart implements RolePartContract {
   }
 
   @override
-  Future<void> remove(
-      {required Object memberId,
-      required Object serverId,
-      required Object roleId,
-      required String? reason}) async {
+  Future<void> remove({
+    required Object memberId,
+    required Object serverId,
+    required Object roleId,
+    required String? reason,
+  }) async {
     final req = Request.json(
-        endpoint: '/guilds/$serverId/members/$memberId/roles/$roleId',
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/members/$memberId/roles/$roleId',
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -128,15 +135,17 @@ final class RolePart implements RolePartContract {
   }
 
   @override
-  Future<void> sync(
-      {required Object memberId,
-      required Object serverId,
-      required List<Object> roleIds,
-      required String? reason}) async {
+  Future<void> sync({
+    required Object memberId,
+    required Object serverId,
+    required List<Object> roleIds,
+    required String? reason,
+  }) async {
     final req = Request.json(
-        endpoint: '/guilds/$serverId/members/$memberId',
-        body: {'roles': roleIds},
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/members/$memberId',
+      headers: {DiscordHeader.auditLogReason(reason)},
+      body: {'roles': roleIds},
+    );
 
     await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -144,16 +153,18 @@ final class RolePart implements RolePartContract {
   }
 
   @override
-  Future<Role?> update(
-      {required Object id,
-      required Object serverId,
-      required Map<String, dynamic> payload,
-      required String? reason}) async {
+  Future<Role?> update({
+    required Object id,
+    required Object serverId,
+    required Map<String, dynamic> payload,
+    required String? reason,
+  }) async {
     final completer = Completer<Role?>();
     final req = Request.json(
-        endpoint: '/guilds/$serverId/roles/$id',
-        body: payload,
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/roles/$id',
+      headers: {DiscordHeader.auditLogReason(reason)},
+      body: payload,
+    );
 
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -170,13 +181,15 @@ final class RolePart implements RolePartContract {
   }
 
   @override
-  Future<void> delete(
-      {required Object id,
-      required Object guildId,
-      required String? reason}) async {
+  Future<void> delete({
+    required Object id,
+    required Object guildId,
+    required String? reason,
+  }) async {
     final req = Request.json(
-        endpoint: '/guilds/$guildId/roles/$id',
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$guildId/roles/$id',
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)

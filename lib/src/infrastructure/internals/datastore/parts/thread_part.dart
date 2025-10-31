@@ -29,16 +29,21 @@ final class ThreadPart implements ThreadPartContract {
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(ThreadResult(channels
-        .asMap()
-        .map((key, value) => MapEntry(value.id, value as ServerChannel))));
+    completer.complete(
+      ThreadResult(
+        channels
+            .asMap()
+            .map((key, value) => MapEntry(value.id, value as ServerChannel)),
+      ),
+    );
 
     return completer.future;
   }
 
   @override
   Future<Map<Snowflake, PublicThreadChannel>> fetchPublicArchived(
-      Object channelId) async {
+    Object channelId,
+  ) async {
     final completer = Completer<Map<Snowflake, PublicThreadChannel>>();
 
     final req = Request.json(endpoint: '/channels/$channelId/archived/public');
@@ -51,16 +56,19 @@ final class ThreadPart implements ThreadPartContract {
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(channels
-        .asMap()
-        .map((key, value) => MapEntry(value.id, value as PublicThreadChannel)));
+    completer.complete(
+      channels.asMap().map(
+            (key, value) => MapEntry(value.id, value as PublicThreadChannel),
+          ),
+    );
 
     return completer.future;
   }
 
   @override
   Future<Map<Snowflake, PrivateThreadChannel>> fetchPrivateArchived(
-      Object channelId) async {
+    Object channelId,
+  ) async {
     final completer = Completer<Map<Snowflake, PrivateThreadChannel>>();
 
     final req = Request.json(endpoint: '/channels/$channelId/archived/private');
@@ -73,22 +81,29 @@ final class ThreadPart implements ThreadPartContract {
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(channels.asMap().map(
-        (key, value) => MapEntry(value.id, value as PrivateThreadChannel)));
+    completer.complete(
+      channels.asMap().map(
+            (key, value) => MapEntry(value.id, value as PrivateThreadChannel),
+          ),
+    );
 
     return completer.future;
   }
 
   @override
   Future<T> createWithoutMessage<T extends ThreadChannel>(
-      Object? serverId, Object? channelId, ThreadChannelBuilder builder,
-      {String? reason}) async {
+    Object? serverId,
+    Object? channelId,
+    ThreadChannelBuilder builder, {
+    String? reason,
+  }) async {
     final completer = Completer<T>();
 
     final req = Request.json(
-        endpoint: '/channels/$channelId/threads',
-        body: builder.build(),
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/channels/$channelId/threads',
+      headers: {DiscordHeader.auditLogReason(reason)},
+      body: builder.build(),
+    );
 
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -105,15 +120,20 @@ final class ThreadPart implements ThreadPartContract {
   }
 
   @override
-  Future<T> createFromMessage<T extends ThreadChannel>(Object? serverId,
-      Object? channelId, Object? messageId, ThreadChannelBuilder builder,
-      {String? reason}) async {
+  Future<T> createFromMessage<T extends ThreadChannel>(
+    Object? serverId,
+    Object? channelId,
+    Object? messageId,
+    ThreadChannelBuilder builder, {
+    String? reason,
+  }) async {
     final completer = Completer<T>();
 
     final req = Request.json(
-        endpoint: '/channels/$channelId/messages/$messageId/threads',
-        body: builder.build(),
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/channels/$channelId/messages/$messageId/threads',
+      headers: {DiscordHeader.auditLogReason(reason)},
+      body: builder.build(),
+    );
 
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)

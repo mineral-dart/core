@@ -19,7 +19,9 @@ final class UserPart implements UserPartContract {
 
     final cachedUser = await _marshaller.cache?.get(key);
     if (!force && cachedUser != null) {
-      final user = await _marshaller.serializers.user.serialize(cachedUser);
+      final user = await _marshaller.serializers.user.serialize(
+        cachedUser,
+      );
 
       completer.complete(user);
       return completer.future;

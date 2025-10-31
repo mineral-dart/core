@@ -20,8 +20,9 @@ final class InvitePart implements InvitePartContract {
 
     final cachedInvite = await _marshaller.cache?.get(key);
     if (!force && cachedInvite != null) {
-      final invite =
-          await _marshaller.serializers.invite.serialize(cachedInvite);
+      final invite = await _marshaller.serializers.invite.serialize(
+        cachedInvite,
+      );
 
       completer.complete(invite);
       return completer.future;
@@ -43,10 +44,13 @@ final class InvitePart implements InvitePartContract {
   Future<InviteMetadata?> getExtrasMetadata(String code, bool force) async {
     final completer = Completer<InviteMetadata>();
 
-    final req = Request.json(endpoint: '/invites/$code', queryParameters: {
-      'with_counts': 'true',
-      'with_expiration': 'true',
-    });
+    final req = Request.json(
+      endpoint: '/invites/$code',
+      queryParameters: {
+        'with_counts': 'true',
+        'with_expiration': 'true',
+      },
+    );
 
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)

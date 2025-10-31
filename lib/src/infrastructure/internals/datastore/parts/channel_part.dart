@@ -15,7 +15,9 @@ final class ChannelPart implements ChannelPartContract {
 
   @override
   Future<Map<Snowflake, T>> fetch<T extends Channel>(
-      Object serverId, bool force) async {
+    Object serverId,
+    bool force,
+  ) async {
     final completer = Completer<Map<Snowflake, T>>();
 
     final req = Request.json(endpoint: '/guilds/$serverId/channels');
@@ -29,7 +31,8 @@ final class ChannelPart implements ChannelPartContract {
     }).wait;
 
     completer.complete(
-        channels.asMap().map((_, value) => MapEntry(value.id, value as T)));
+      channels.asMap().map((_, value) => MapEntry(value.id, value as T)),
+    );
     return completer.future;
   }
 
@@ -40,8 +43,9 @@ final class ChannelPart implements ChannelPartContract {
     final String key = _marshaller.cacheKey.channel(id);
     final cachedChannel = await _marshaller.cache?.get(key);
     if (!force && cachedChannel != null) {
-      final channel =
-          await _marshaller.serializers.channels.serialize(cachedChannel) as T;
+      final channel = await _marshaller.serializers.channels.serialize(
+        cachedChannel,
+      ) as T;
 
       completer.complete(channel);
       return completer.future;
@@ -61,14 +65,17 @@ final class ChannelPart implements ChannelPartContract {
 
   @override
   Future<T> create<T extends Channel>(
-      Object? serverId, ChannelBuilderContract builder,
-      {String? reason}) async {
+    Object? serverId,
+    ChannelBuilderContract builder, {
+    String? reason,
+  }) async {
     final completer = Completer<T>();
 
     final req = Request.json(
-        endpoint: '/guilds/$serverId/channels',
-        body: builder.build(),
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/channels',
+      body: builder.build(),
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -86,11 +93,15 @@ final class ChannelPart implements ChannelPartContract {
 
   @override
   Future<PrivateChannel> createPrivateChannel(
-      Object id, Object recipientId) async {
+    Object id,
+    Object recipientId,
+  ) async {
     final completer = Completer<PrivateChannel>();
 
     final req = Request.json(
-        endpoint: '/users/@me/channels', body: {'recipient_id': recipientId});
+      endpoint: '/users/@me/channels',
+      body: {'recipient_id': recipientId},
+    );
 
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -106,14 +117,18 @@ final class ChannelPart implements ChannelPartContract {
 
   @override
   Future<T?> update<T extends Channel>(
-      Object id, ChannelBuilderContract builder,
-      {Object? serverId, String? reason}) async {
+    Object id,
+    ChannelBuilderContract builder, {
+    Object? serverId,
+    String? reason,
+  }) async {
     final completer = Completer<T>();
 
     final req = Request.json(
-        endpoint: '/channels/$id',
-        body: builder.build(),
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/channels/$id',
+      body: builder.build(),
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -132,8 +147,9 @@ final class ChannelPart implements ChannelPartContract {
   @override
   Future<void> delete(Object id, String? reason) async {
     final req = Request.json(
-        endpoint: '/channels/$id',
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/channels/$id',
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)

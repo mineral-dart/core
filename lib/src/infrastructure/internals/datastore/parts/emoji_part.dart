@@ -27,8 +27,9 @@ final class EmojiPart implements EmojiPartContract {
       return _marshaller.serializers.emojis.serialize(raw);
     }).wait;
 
-    completer
-        .complete(emojis.asMap().map((_, value) => MapEntry(value.id!, value)));
+    completer.complete(
+      emojis.asMap().map((_, value) => MapEntry(value.id!, value)),
+    );
 
     return completer.future;
   }
@@ -61,17 +62,23 @@ final class EmojiPart implements EmojiPartContract {
 
   @override
   Future<Emoji> create(
-      Object serverId, String name, Image image, List<Object> roles,
-      {String? reason}) async {
+    Object serverId,
+    String name,
+    Image image,
+    List<Object> roles, {
+    String? reason,
+  }) async {
     final completer = Completer<Emoji>();
 
-    final req = Request.json(endpoint: '/guilds/$serverId/emojis', body: {
-      'name': name.replaceAll(' ', '_'),
-      'image': image.base64,
-      'roles': roles.isNotEmpty ? roles : null,
-    }, headers: {
-      DiscordHeader.auditLogReason(reason)
-    });
+    final req = Request.json(
+      endpoint: '/guilds/$serverId/emojis',
+      headers: {DiscordHeader.auditLogReason(reason)},
+      body: {
+        'name': name.replaceAll(' ', '_'),
+        'image': image.base64,
+        'roles': roles.isNotEmpty ? roles : null,
+      },
+    );
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
         .run(_dataStore.client.post);
@@ -88,17 +95,19 @@ final class EmojiPart implements EmojiPartContract {
   }
 
   @override
-  Future<Emoji?> update(
-      {required Object id,
-      required Object serverId,
-      required Map<String, dynamic> payload,
-      required String? reason}) async {
+  Future<Emoji?> update({
+    required Object id,
+    required Object serverId,
+    required Map<String, dynamic> payload,
+    required String? reason,
+  }) async {
     final completer = Completer<Emoji>();
 
     final req = Request.json(
-        endpoint: '/guilds/$serverId/emojis/$id',
-        body: payload,
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/emojis/$id',
+      headers: {DiscordHeader.auditLogReason(reason)},
+      body: payload,
+    );
 
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -117,8 +126,9 @@ final class EmojiPart implements EmojiPartContract {
   @override
   Future<void> delete(Object serverId, Object emojiId, {String? reason}) async {
     final req = Request.json(
-        endpoint: '/guilds/$serverId/emojis/$emojiId',
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/emojis/$emojiId',
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)

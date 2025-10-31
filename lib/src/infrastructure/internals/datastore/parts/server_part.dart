@@ -20,8 +20,9 @@ final class ServerPart implements ServerPartContract {
 
     final cachedServer = await _marshaller.cache?.get(key);
     if (!force && cachedServer != null) {
-      final server =
-          await _marshaller.serializers.server.serialize(cachedServer);
+      final server = await _marshaller.serializers.server.serialize(
+        cachedServer,
+      );
 
       completer.complete(server);
       return completer.future;
@@ -41,24 +42,30 @@ final class ServerPart implements ServerPartContract {
 
   @override
   Future<Server> update(
-      Object id, Map<String, dynamic> payload, String? reason) async {
+    Object id,
+    Map<String, dynamic> payload,
+    String? reason,
+  ) async {
     final req = Request.json(
-        endpoint: '/guilds/$id',
-        body: payload,
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$id',
+      body: payload,
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     final response = await _dataStore.client.patch(req);
 
-    final rawServer =
-        await _marshaller.serializers.server.normalize(response.body);
+    final rawServer = await _marshaller.serializers.server.normalize(
+      response.body,
+    );
     return _marshaller.serializers.server.serialize(rawServer);
   }
 
   @override
   Future<void> delete(Object id, String? reason) async {
     final req = Request.json(
-        endpoint: '/guilds/$id',
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$id',
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     await _dataStore.client.delete(req);
   }

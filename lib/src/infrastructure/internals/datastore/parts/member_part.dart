@@ -25,13 +25,16 @@ final class MemberPart implements MemberPartContract {
         .run(_dataStore.client.get);
 
     final members = await result.map((element) async {
-      final raw = await _marshaller.serializers.member
-          .normalize({...element, 'guild_id': serverId});
+      final raw = await _marshaller.serializers.member.normalize({
+        ...element,
+        'guild_id': serverId,
+      });
       return _marshaller.serializers.member.serialize(raw);
     }).wait;
 
-    completer
-        .complete(members.asMap().map((_, value) => MapEntry(value.id, value)));
+    completer.complete(
+      members.asMap().map((_, value) => MapEntry(value.id, value)),
+    );
     return completer.future;
   }
 
@@ -42,8 +45,9 @@ final class MemberPart implements MemberPartContract {
 
     final cachedMember = await _marshaller.cache?.get(key);
     if (!force && cachedMember != null) {
-      final member =
-          await _marshaller.serializers.member.serialize(cachedMember);
+      final member = await _marshaller.serializers.member.serialize(
+        cachedMember,
+      );
 
       completer.complete(member);
       return completer.future;
@@ -54,8 +58,9 @@ final class MemberPart implements MemberPartContract {
         .query<Map<String, dynamic>>(req)
         .run(_dataStore.client.get);
 
-    final raw = await _marshaller.serializers.member
-        .normalize({...result, 'guild_id': serverId});
+    final raw = await _marshaller.serializers.member.normalize(
+      {...result, 'guild_id': serverId},
+    );
     final member = await _marshaller.serializers.member.serialize(raw);
 
     completer.complete(member);
@@ -63,17 +68,19 @@ final class MemberPart implements MemberPartContract {
   }
 
   @override
-  Future<Member> update(
-      {required Object serverId,
-      required Object memberId,
-      required Map<String, dynamic> payload,
-      String? reason}) async {
+  Future<Member> update({
+    required Object serverId,
+    required Object memberId,
+    required Map<String, dynamic> payload,
+    String? reason,
+  }) async {
     final completer = Completer<Member>();
 
     final req = Request.json(
-        endpoint: '/guilds/$serverId/members/$memberId',
-        body: payload,
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/members/$memberId',
+      headers: {DiscordHeader.auditLogReason(reason)},
+      body: payload,
+    );
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
         .run(_dataStore.client.patch);
@@ -89,15 +96,17 @@ final class MemberPart implements MemberPartContract {
   }
 
   @override
-  Future<void> ban(
-      {required Object serverId,
-      required Duration? deleteSince,
-      required Object memberId,
-      String? reason}) async {
+  Future<void> ban({
+    required Object serverId,
+    required Duration? deleteSince,
+    required Object memberId,
+    String? reason,
+  }) async {
     final req = Request.json(
-        endpoint: '/guilds/$serverId/bans/$memberId',
-        body: {'delete_message_seconds': deleteSince?.inSeconds},
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/bans/$memberId',
+      headers: {DiscordHeader.auditLogReason(reason)},
+      body: {'delete_message_seconds': deleteSince?.inSeconds},
+    );
 
     await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -105,13 +114,15 @@ final class MemberPart implements MemberPartContract {
   }
 
   @override
-  Future<void> kick(
-      {required Object serverId,
-      required Object memberId,
-      String? reason}) async {
+  Future<void> kick({
+    required Object serverId,
+    required Object memberId,
+    String? reason,
+  }) async {
     final req = Request.json(
-        endpoint: '/guilds/$serverId/members/$memberId',
-        headers: {DiscordHeader.auditLogReason(reason)});
+      endpoint: '/guilds/$serverId/members/$memberId',
+      headers: {DiscordHeader.auditLogReason(reason)},
+    );
 
     await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
@@ -120,21 +131,26 @@ final class MemberPart implements MemberPartContract {
 
   @override
   Future<VoiceState?> getVoiceState(
-      Object serverId, Object userId, bool force) async {
+    Object serverId,
+    Object userId,
+    bool force,
+  ) async {
     final completer = Completer<VoiceState?>();
     final String key = _marshaller.cacheKey.voiceState(serverId, userId);
 
     final cachedMember = await _marshaller.cache?.get(key);
     if (!force && cachedMember != null) {
-      final voiceState =
-          await _marshaller.serializers.voice.serialize(cachedMember);
+      final voiceState = await _marshaller.serializers.voice.serialize(
+        cachedMember,
+      );
 
       completer.complete(voiceState);
       return completer.future;
     }
 
-    final req =
-        Request.json(endpoint: '/guilds/$serverId/voice-states/$userId');
+    final req = Request.json(
+      endpoint: '/guilds/$serverId/voice-states/$userId',
+    );
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
         .run(_dataStore.client.get);

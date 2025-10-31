@@ -28,7 +28,8 @@ final class StickerPart implements StickerPartContract {
     }).wait;
 
     completer.complete(
-        stickers.asMap().map((_, value) => MapEntry(value.id, value)));
+      stickers.asMap().map((_, value) => MapEntry(value.id, value)),
+    );
     return completer.future;
   }
 
@@ -39,8 +40,9 @@ final class StickerPart implements StickerPartContract {
 
     final cachedSticker = await _marshaller.cache?.get(key);
     if (!force && cachedSticker != null) {
-      final sticker =
-          await _marshaller.serializers.sticker.serialize(cachedSticker);
+      final sticker = await _marshaller.serializers.sticker.serialize(
+        cachedSticker,
+      );
 
       completer.complete(sticker);
       return completer.future;
