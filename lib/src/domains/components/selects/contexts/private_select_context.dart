@@ -63,8 +63,11 @@ final class PrivateSelectContext implements SelectContext {
     return _datastore.channel.get<PrivateChannel>(channelId!.value, force);
   }
 
-  static Future<PrivateSelectContext> fromMap(MarshallerContract marshaller,
-      DataStoreContract datastore, Map<String, dynamic> payload) async {
+  static Future<PrivateSelectContext> fromMap(
+    MarshallerContract marshaller,
+    DataStoreContract datastore,
+    Map<String, dynamic> payload,
+  ) async {
     return PrivateSelectContext(
       customId: payload['data']['custom_id'],
       id: Snowflake.parse(payload['id']),

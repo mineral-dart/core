@@ -58,8 +58,11 @@ final class ServerSelectContext implements SelectContext {
       return null;
     }
 
-    return _datastore.message
-        .get<ServerMessage>(serverId.value, messageId!.value, force);
+    return _datastore.message.get<ServerMessage>(
+      serverId.value,
+      messageId!.value,
+      force,
+    );
   }
 
   Future<T?> resolveChannel<T extends Channel>({bool force = false}) async {
@@ -74,7 +77,9 @@ final class ServerSelectContext implements SelectContext {
       _datastore.server.get(serverId.value, force);
 
   static Future<ServerSelectContext> fromMap(
-      DataStoreContract datastore, Map<String, dynamic> payload) async {
+    DataStoreContract datastore,
+    Map<String, dynamic> payload,
+  ) async {
     return ServerSelectContext(
       customId: payload['data']['custom_id'],
       id: Snowflake.parse(payload['id']),
