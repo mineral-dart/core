@@ -5,7 +5,6 @@ import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 
 abstract interface class AuditLogChange<B, A> {
   B get before;
-
   A get after;
 }
 
@@ -22,7 +21,8 @@ abstract class AuditLogActionContract {
 }
 
 final class UnknownAuditLogAction extends AuditLog {
-  UnknownAuditLogAction(
-      {required Snowflake serverId, required Snowflake? userId})
-      : super(AuditLogType.unknown, serverId, userId);
+  UnknownAuditLogAction({
+    required Snowflake serverId,
+    required Snowflake? userId,
+  }) : super(AuditLogType.unknown, serverId, userId);
 }

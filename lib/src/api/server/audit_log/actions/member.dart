@@ -17,9 +17,14 @@ final class MemberKickAuditLog extends AuditLog {
   }) : super(AuditLogType.memberKick, serverId, userId);
 
   Future<Member?> resolveMember({bool force = false}) async {
-    if (memberId == null) return null;
-    final member =
-        await _datastore.member.get(serverId.value, memberId!.value, force);
+    if (memberId == null) {
+      return null;
+    }
+    final member = await _datastore.member.get(
+      serverId.value,
+      memberId!.value,
+      force,
+    );
     return member;
   }
 }
@@ -53,8 +58,11 @@ final class MemberBanAddAuditLog extends AuditLog {
     if (memberId == null) {
       return null;
     }
-    final member =
-        await _datastore.member.get(serverId.value, memberId!.value, force);
+    final member = await _datastore.member.get(
+      serverId.value,
+      memberId!.value,
+      force,
+    );
     return member;
   }
 }
@@ -71,9 +79,14 @@ final class MemberBanRemoveAuditLog extends AuditLog {
   }) : super(AuditLogType.memberBanRemove, serverId, userId);
 
   Future<Member?> resolveMember({bool force = false}) async {
-    if (memberId == null) return null;
-    final member =
-        await _datastore.member.get(serverId.value, memberId!.value, force);
+    if (memberId == null) {
+      return null;
+    }
+    final member = await _datastore.member.get(
+      serverId.value,
+      memberId!.value,
+      force,
+    );
     return member;
   }
 }
@@ -92,9 +105,14 @@ final class MemberUpdateAuditLog extends AuditLog {
   }) : super(AuditLogType.memberUpdate, serverId, userId);
 
   Future<Member?> resolveMember({bool force = false}) async {
-    if (memberId == null) return null;
-    final member =
-        await _datastore.member.get(serverId.value, memberId!.value, force);
+    if (memberId == null) {
+      return null;
+    }
+    final member = await _datastore.member.get(
+      serverId.value,
+      memberId!.value,
+      force,
+    );
     return member;
   }
 }
@@ -113,9 +131,14 @@ final class MemberRoleUpdateAuditLog extends AuditLog {
   }) : super(AuditLogType.memberRoleUpdate, serverId, userId);
 
   Future<Member?> resolveMember({bool force = false}) async {
-    if (memberId == null) return null;
-    final member =
-        await _datastore.member.get(serverId.value, memberId!.value, force);
+    if (memberId == null) {
+      return null;
+    }
+    final member = await _datastore.member.get(
+      serverId.value,
+      memberId!.value,
+      force,
+    );
     return member;
   }
 }
@@ -134,9 +157,14 @@ final class MemberMoveAuditLog extends AuditLog {
   }) : super(AuditLogType.memberMove, serverId, userId);
 
   Future<Member?> resolveMember({bool force = false}) async {
-    if (memberId == null) return null;
-    final member =
-        await _datastore.member.get(serverId.value, memberId!.value, force);
+    if (memberId == null) {
+      return null;
+    }
+    final member = await _datastore.member.get(
+      serverId.value,
+      memberId!.value,
+      force,
+    );
     return member;
   }
 
@@ -162,9 +190,14 @@ final class MemberDisconnectAuditLog extends AuditLog {
   }) : super(AuditLogType.memberDisconnect, serverId, userId);
 
   Future<Member?> resolveMember({bool force = false}) async {
-    if (memberId == null) return null;
-    final member =
-        await _datastore.member.get(serverId.value, memberId!.value, force);
+    if (memberId == null) {
+      return null;
+    }
+    final member = await _datastore.member.get(
+      serverId.value,
+      memberId!.value,
+      force,
+    );
     return member;
   }
 }
@@ -181,9 +214,14 @@ final class BotAddAuditLog extends AuditLog {
   }) : super(AuditLogType.botAdd, serverId, userId);
 
   Future<Member?> resolveBot({bool force = false}) async {
-    if (botId == null) return null;
-    final member =
-        await _datastore.member.get(serverId.value, botId!.value, force);
+    if (botId == null) {
+      return null;
+    }
+    final member = await _datastore.member.get(
+      serverId.value,
+      botId!.value,
+      force,
+    );
     return member;
   }
 }

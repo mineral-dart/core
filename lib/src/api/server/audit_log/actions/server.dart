@@ -5,10 +5,10 @@ final class ServerUpdateAuditLogAction extends AuditLog {
   final Server server;
   final List<Change> changes;
 
-  ServerUpdateAuditLogAction(
-      {required Snowflake serverId,
-      required Snowflake userId,
-      required this.server,
-      required this.changes})
-      : super(AuditLogType.guildUpdate, serverId, userId);
+  ServerUpdateAuditLogAction({
+    required Snowflake serverId,
+    required Snowflake userId,
+    required this.server,
+    required this.changes,
+  }) : super(AuditLogType.guildUpdate, serverId, userId);
 }

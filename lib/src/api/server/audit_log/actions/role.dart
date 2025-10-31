@@ -15,7 +15,8 @@ final class RoleCreateAuditLog extends AuditLog {
       changes.firstWhere((element) => element.key == 'name').after;
 
   Permissions get roleOermissions => Permissions.fromInt(
-      changes.firstWhere((element) => element.key == 'permissions').after);
+        changes.firstWhere((element) => element.key == 'permissions').after,
+      );
 
   Color get roleColor =>
       Color.of(changes.firstWhere((element) => element.key == 'color').after);
@@ -26,12 +27,12 @@ final class RoleCreateAuditLog extends AuditLog {
   bool get roleIsMentionable =>
       changes.firstWhere((element) => element.key == 'mentionable').after;
 
-  RoleCreateAuditLog(
-      {required Snowflake serverId,
-      required Snowflake userId,
-      required this.roleId,
-      required this.changes})
-      : super(AuditLogType.roleCreate, serverId, userId);
+  RoleCreateAuditLog({
+    required Snowflake serverId,
+    required Snowflake userId,
+    required this.roleId,
+    required this.changes,
+  }) : super(AuditLogType.roleCreate, serverId, userId);
 
   Future<Role> resolveRole({bool force = false}) async {
     final role = await _datastore.role.get(serverId.value, roleId.value, force);
@@ -48,8 +49,9 @@ final class RoleUpdateAuditLog extends AuditLog {
   Change get roleName => changes.firstWhere((element) => element.key == 'name');
 
   Change<List<Permission>, List<Permission>>? get rolePermissions {
-    final permissions =
-        changes.firstWhereOrNull((element) => element.key == 'permissions');
+    final permissions = changes.firstWhereOrNull(
+      (element) => element.key == 'permissions',
+    );
     return switch (permissions) {
       final Change change => Change(
           change.key,
@@ -70,7 +72,9 @@ final class RoleUpdateAuditLog extends AuditLog {
       _resolveParameterOrNull<bool, String>('mentionable', bool.parse);
 
   Change<T, T>? _resolveParameterOrNull<T, S>(
-      String key, T Function(S) transformer) {
+    String key,
+    T Function(S) transformer,
+  ) {
     final parameter = changes.firstWhereOrNull((element) => element.key == key);
     return switch (parameter) {
       final Change change => Change(
@@ -87,22 +91,22 @@ final class RoleUpdateAuditLog extends AuditLog {
     return role!;
   }
 
-  RoleUpdateAuditLog(
-      {required Snowflake serverId,
-      required Snowflake userId,
-      required this.roleId,
-      required this.changes})
-      : super(AuditLogType.roleCreate, serverId, userId);
+  RoleUpdateAuditLog({
+    required Snowflake serverId,
+    required Snowflake userId,
+    required this.roleId,
+    required this.changes,
+  }) : super(AuditLogType.roleCreate, serverId, userId);
 }
 
 final class RoleDeleteAuditLog extends AuditLog {
   final Snowflake roleId;
   final String roleName;
 
-  RoleDeleteAuditLog(
-      {required Snowflake serverId,
-      required Snowflake userId,
-      required this.roleId,
-      required this.roleName})
-      : super(AuditLogType.emojiDelete, serverId, userId);
+  RoleDeleteAuditLog({
+    required Snowflake serverId,
+    required Snowflake userId,
+    required this.roleId,
+    required this.roleName,
+  }) : super(AuditLogType.emojiDelete, serverId, userId);
 }

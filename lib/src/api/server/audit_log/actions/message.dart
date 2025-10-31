@@ -41,8 +41,11 @@ final class MessagePinAuditLog extends AuditLog {
   }) : super(AuditLogType.messagePin, serverId, userId);
 
   Future<ServerMessage> resolveMessage({bool force = false}) async {
-    final message = await _datastore.message
-        .get<ServerMessage>(serverId.value, messageId.value, force);
+    final message = await _datastore.message.get<ServerMessage>(
+      serverId.value,
+      messageId.value,
+      force,
+    );
     return message!;
   }
 }
@@ -61,8 +64,11 @@ final class MessageUnpinAuditLog extends AuditLog {
   }) : super(AuditLogType.messageUnpin, serverId, userId);
 
   Future<ServerMessage> resolveMessage({bool force = false}) async {
-    final message = await _datastore.message
-        .get<ServerMessage>(serverId.value, messageId.value, force);
+    final message = await _datastore.message.get<ServerMessage>(
+      serverId.value,
+      messageId.value,
+      force,
+    );
     return message!;
   }
 }
