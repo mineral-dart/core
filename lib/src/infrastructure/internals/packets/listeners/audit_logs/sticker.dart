@@ -6,8 +6,11 @@ import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 
 Future<AuditLog> stickerCreateAuditLogHandler(Map<String, dynamic> json) async {
   final datastore = ioc.resolve<DataStoreContract>();
-  final sticker =
-      await datastore.sticker.get(json['guild_id'], json['target_id'], false);
+  final sticker = await datastore.sticker.get(
+    json['guild_id'],
+    json['target_id'],
+    false,
+  );
 
   return StickerCreateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
@@ -19,8 +22,11 @@ Future<AuditLog> stickerCreateAuditLogHandler(Map<String, dynamic> json) async {
 
 Future<AuditLog> stickerUpdateAuditLogHandler(Map<String, dynamic> json) async {
   final datastore = ioc.resolve<DataStoreContract>();
-  final sticker =
-      await datastore.sticker.get(json['guild_id'], json['target_id'], false);
+  final sticker = await datastore.sticker.get(
+    json['guild_id'],
+    json['target_id'],
+    false,
+  );
 
   return StickerUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),

@@ -3,7 +3,8 @@ import 'package:mineral/src/api/server/audit_log/actions/other.dart';
 import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 
 Future<AuditLog> creatorMonetizationRequestCreatedAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return CreatorMonetizationRequestCreatedAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -12,7 +13,8 @@ Future<AuditLog> creatorMonetizationRequestCreatedAuditLogHandler(
 }
 
 Future<AuditLog> creatorMonetizationTermsAcceptedAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return CreatorMonetizationTermsAcceptedAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -21,7 +23,8 @@ Future<AuditLog> creatorMonetizationTermsAcceptedAuditLogHandler(
 }
 
 Future<AuditLog> onboardingPromptCreateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return OnboardingPromptCreateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -31,7 +34,8 @@ Future<AuditLog> onboardingPromptCreateAuditLogHandler(
 }
 
 Future<AuditLog> onboardingPromptUpdateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return OnboardingPromptUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -43,7 +47,8 @@ Future<AuditLog> onboardingPromptUpdateAuditLogHandler(
 }
 
 Future<AuditLog> onboardingPromptDeleteAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return OnboardingPromptDeleteAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -53,7 +58,8 @@ Future<AuditLog> onboardingPromptDeleteAuditLogHandler(
 }
 
 Future<AuditLog> onboardingCreateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return OnboardingCreateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -64,7 +70,8 @@ Future<AuditLog> onboardingCreateAuditLogHandler(
 }
 
 Future<AuditLog> onboardingUpdateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return OnboardingUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -75,7 +82,8 @@ Future<AuditLog> onboardingUpdateAuditLogHandler(
 }
 
 Future<AuditLog> homeSettingsCreateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return HomeSettingsCreateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -86,7 +94,8 @@ Future<AuditLog> homeSettingsCreateAuditLogHandler(
 }
 
 Future<AuditLog> homeSettingsUpdateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return HomeSettingsUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),

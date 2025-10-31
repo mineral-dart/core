@@ -3,7 +3,8 @@ import 'package:mineral/src/api/server/audit_log/actions/auto_moderation.dart';
 import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 
 Future<AuditLog> autoModerationRuleCreateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return AutoModerationRuleCreateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -12,7 +13,8 @@ Future<AuditLog> autoModerationRuleCreateAuditLogHandler(
 }
 
 Future<AuditLog> autoModerationRuleUpdateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return AutoModerationRuleUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -24,7 +26,8 @@ Future<AuditLog> autoModerationRuleUpdateAuditLogHandler(
 }
 
 Future<AuditLog> autoModerationRuleDeleteAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return AutoModerationRuleDeleteAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -33,7 +36,8 @@ Future<AuditLog> autoModerationRuleDeleteAuditLogHandler(
 }
 
 Future<AuditLog> autoModerationBlockMessageAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return AutoModerationBlockMessageAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -43,7 +47,8 @@ Future<AuditLog> autoModerationBlockMessageAuditLogHandler(
 }
 
 Future<AuditLog> autoModerationFlagToChannelAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return AutoModerationFlagToChannelAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -55,7 +60,8 @@ Future<AuditLog> autoModerationFlagToChannelAuditLogHandler(
 }
 
 Future<AuditLog> autoModerationUserCommunicationDisabledAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return AutoModerationUserCommunicationDisabledAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     moderatorId: Snowflake.parse(json['user_id']),

@@ -3,7 +3,8 @@ import 'package:mineral/src/api/server/audit_log/actions/stage_instance.dart';
 import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 
 Future<AuditLog> stageInstanceCreateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return StageInstanceCreateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -14,7 +15,8 @@ Future<AuditLog> stageInstanceCreateAuditLogHandler(
 }
 
 Future<AuditLog> stageInstanceUpdateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return StageInstanceUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
@@ -26,7 +28,8 @@ Future<AuditLog> stageInstanceUpdateAuditLogHandler(
 }
 
 Future<AuditLog> stageInstanceDeleteAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return StageInstanceDeleteAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),

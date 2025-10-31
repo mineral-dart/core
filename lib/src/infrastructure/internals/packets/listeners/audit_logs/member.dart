@@ -30,7 +30,8 @@ Future<AuditLog> memberBanAddAuditLogHandler(Map<String, dynamic> json) async {
 }
 
 Future<AuditLog> memberBanRemoveAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return MemberBanRemoveAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.nullable(json['user_id']),
@@ -50,7 +51,8 @@ Future<AuditLog> memberUpdateAuditLogHandler(Map<String, dynamic> json) async {
 }
 
 Future<AuditLog> memberRoleUpdateAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return MemberRoleUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.nullable(json['user_id']),
@@ -71,7 +73,8 @@ Future<AuditLog> memberMoveAuditLogHandler(Map<String, dynamic> json) async {
 }
 
 Future<AuditLog> memberDisconnectAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return MemberDisconnectAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.nullable(json['user_id']),

@@ -8,9 +8,9 @@ Future<AuditLog> serverUpdateAuditLogHandler(Map<String, dynamic> json) async {
   final server = await datastore.server.get(json['guild_id'], true);
 
   return ServerUpdateAuditLogAction(
-      serverId: Snowflake.parse(json['guild_id']),
-      userId: Snowflake.parse(json['user_id']),
-      server: server,
-      changes:
-          List<Change>.from(json['changes'].map((e) => Change.fromJson(e))));
+    serverId: Snowflake.parse(json['guild_id']),
+    userId: Snowflake.parse(json['user_id']),
+    server: server,
+    changes: List<Change>.from(json['changes'].map((e) => Change.fromJson(e))),
+  );
 }

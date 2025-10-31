@@ -12,7 +12,8 @@ Future<AuditLog> messageDeleteAuditLogHandler(Map<String, dynamic> json) async {
 }
 
 Future<AuditLog> messageBulkDeleteAuditLogHandler(
-    Map<String, dynamic> json) async {
+  Map<String, dynamic> json,
+) async {
   return MessageBulkDeleteAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
