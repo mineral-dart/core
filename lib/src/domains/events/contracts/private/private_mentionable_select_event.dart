@@ -5,7 +5,9 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef PrivateMentionableSelectEventHandler = FutureOr<void> Function(
-    PrivateSelectContext ctx, List<dynamic> mentionables);
+  PrivateSelectContext ctx,
+  List<dynamic> mentionables,
+);
 
 abstract class PrivateMentionableSelectEvent implements ListenableEvent {
   @override
@@ -14,5 +16,8 @@ abstract class PrivateMentionableSelectEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(PrivateSelectContext ctx, List<dynamic> mentionables);
+  FutureOr<void> handle(
+    PrivateSelectContext ctx,
+    List<dynamic> mentionables,
+  );
 }

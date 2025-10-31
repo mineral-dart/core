@@ -5,7 +5,8 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef PrivateButtonClickEventHandler = FutureOr<void> Function(
-    PrivateButtonContext);
+  PrivateButtonContext,
+);
 
 abstract class PrivateButtonClickEvent implements ListenableEvent {
   @override
@@ -14,5 +15,7 @@ abstract class PrivateButtonClickEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(PrivateButtonContext ctx);
+  FutureOr<void> handle(
+    PrivateButtonContext ctx,
+  );
 }

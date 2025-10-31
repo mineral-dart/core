@@ -5,7 +5,8 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef PrivateChannelDeleteEventHandler = FutureOr<void> Function(
-    PrivateChannel);
+  PrivateChannel,
+);
 
 abstract class PrivateChannelDeleteEvent implements ListenableEvent {
   @override
@@ -14,5 +15,7 @@ abstract class PrivateChannelDeleteEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(PrivateChannel channel);
+  FutureOr<void> handle(
+    PrivateChannel channel,
+  );
 }

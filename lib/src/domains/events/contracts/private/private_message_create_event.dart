@@ -5,7 +5,8 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef PrivateMessageCreateEventHandler = FutureOr<void> Function(
-    PrivateMessage);
+  PrivateMessage,
+);
 
 abstract class PrivateMessageCreateEvent implements ListenableEvent {
   @override
@@ -14,5 +15,7 @@ abstract class PrivateMessageCreateEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(PrivateMessage message);
+  FutureOr<void> handle(
+    PrivateMessage message,
+  );
 }

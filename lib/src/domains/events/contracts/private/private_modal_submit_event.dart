@@ -5,7 +5,8 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef PrivateModalSubmitEventHandler = FutureOr<void> Function(
-    PrivateModalContext);
+  PrivateModalContext,
+);
 
 abstract class PrivateModalSubmitEvent implements ListenableEvent {
   @override
@@ -14,5 +15,7 @@ abstract class PrivateModalSubmitEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(PrivateModalContext ctx);
+  FutureOr<void> handle(
+    PrivateModalContext ctx,
+  );
 }
