@@ -42,6 +42,9 @@ final class ServerForumChannel extends ServerChannel {
   @override
   Snowflake get serverId => _properties.serverId!;
 
-  ServerForumChannel(this._properties,
-      {required this.sortOrder, required this.layoutType});
+  ServerForumChannel(
+    this._properties, {
+    required this.sortOrder,
+    required this.layoutType,
+  });
 }

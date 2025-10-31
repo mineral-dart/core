@@ -17,7 +17,8 @@ abstract class ServerChannel implements Channel {
   /// ```dart
   /// final server = await channel.resolveServer(force: true);
   /// ```
-  Future<Server> resolveServer({bool force = true}) => _dataStore.server.get(serverId.value, force);
+  Future<Server> resolveServer({bool force = true}) =>
+      _dataStore.server.get(serverId.value, force);
 
   /// Updates the channel.
   /// ```dart
@@ -28,7 +29,12 @@ abstract class ServerChannel implements Channel {
   /// await channel.update(builder);
   /// ```
   Future<void> update(ChannelBuilderContract builder, {String? reason}) =>
-      _dataStore.channel.update(id.value, builder, serverId: serverId.value, reason: reason);
+      _dataStore.channel.update(
+        id.value,
+        builder,
+        serverId: serverId.value,
+        reason: reason,
+      );
 
   @override
   T cast<T extends Channel>() => this as T;

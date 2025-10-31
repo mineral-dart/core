@@ -113,8 +113,10 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   /// ```dart
   /// await channel.setDefaultAutoArchiveDuration(60);
   /// ```
-  Future<void> setDefaultAutoArchiveDuration(Duration value,
-          {String? reason}) =>
+  Future<void> setDefaultAutoArchiveDuration(
+    Duration value, {
+    String? reason,
+  }) =>
       _methods.setDefaultAutoArchiveDuration(value, reason);
 
   /// Sets the default thread rate limit per user for the channel.
@@ -122,8 +124,10 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   /// ```dart
   /// await channel.setDefaultThreadRateLimitPerUser(10);
   /// ```
-  Future<void> setDefaultThreadRateLimitPerUser(Duration value,
-          {String? reason}) =>
+  Future<void> setDefaultThreadRateLimitPerUser(
+    Duration value, {
+    String? reason,
+  }) =>
       _methods.setDefaultThreadRateLimitPerUser(value, reason);
 
   /// Resolves the [User] object of the owner of the channel.
