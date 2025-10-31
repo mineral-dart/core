@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 
-enum AutoModerationEventType implements EnhancedEnum<int>  {
+enum AutoModerationEventType implements EnhancedEnum<int> {
   messageSend(1),
   memberUpdate(2);
 
