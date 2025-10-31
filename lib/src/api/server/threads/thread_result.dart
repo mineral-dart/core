@@ -8,19 +8,25 @@ final class ThreadResult {
   Map<Snowflake, PublicThreadChannel> get publicChannels {
     return _channels.values
         .whereType<PublicThreadChannel>()
-        .fold<Map<Snowflake, PublicThreadChannel>>({}, (acc, channel) {
-      acc[channel.id] = channel;
-      return acc;
-    });
+        .fold<Map<Snowflake, PublicThreadChannel>>(
+      {},
+      (acc, channel) {
+        acc[channel.id] = channel;
+        return acc;
+      },
+    );
   }
 
   Map<Snowflake, PrivateThreadChannel> get privateChannels {
     return _channels.values
         .whereType<PrivateThreadChannel>()
-        .fold<Map<Snowflake, PrivateThreadChannel>>({}, (acc, channel) {
-      acc[channel.id] = channel;
-      return acc;
-    });
+        .fold<Map<Snowflake, PrivateThreadChannel>>(
+      {},
+      (acc, channel) {
+        acc[channel.id] = channel;
+        return acc;
+      },
+    );
   }
 
   ThreadResult(this._channels);
