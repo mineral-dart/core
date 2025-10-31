@@ -21,8 +21,10 @@ final class MessageSerializer<T extends Message>
       'edited_timestamp': json['edited_timestamp'],
     };
 
-    final cacheKey =
-        _marshaller.cacheKey.message(json['channel_id'], json['id']);
+    final cacheKey = _marshaller.cacheKey.message(
+      json['channel_id'],
+      json['id'],
+    );
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;

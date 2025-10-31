@@ -19,15 +19,21 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       'animated': json['animated'] ?? false,
       'roles': json['roles'] != null
           ? List.from(json['roles'])
-              .map((element) => _marshaller.cacheKey
-                  .serverEmoji(json['guild_id'], element['id']))
+              .map(
+                (element) => _marshaller.cacheKey.serverEmoji(
+                  json['guild_id'],
+                  element['id'],
+                ),
+              )
               .toList()
           : <String>[],
       'server_id': json['guild_id'],
     };
 
-    final cacheKey =
-        _marshaller.cacheKey.serverEmoji(json['guild_id'], json['id']);
+    final cacheKey = _marshaller.cacheKey.serverEmoji(
+      json['guild_id'],
+      json['id'],
+    );
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -45,7 +51,9 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       id: Snowflake.parse(json['id']),
       name: json['name'],
       roles: roles?.fold(
-              {}, (value, element) => {...?value, element.id: element}) ??
+            {},
+            (value, element) => {...?value, element.id: element},
+          ) ??
           {},
       managed: json['managed'],
       animated: json['animated'],

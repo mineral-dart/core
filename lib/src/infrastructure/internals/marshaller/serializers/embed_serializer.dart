@@ -41,25 +41,32 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
       title: json['title'],
       description: json['description'],
       type: Helper.createOrNull(
-          field: json['type'],
-          fn: () => findInEnum(MessageEmbedType.values, json['type'])),
+        field: json['type'],
+        fn: () => findInEnum(MessageEmbedType.values, json['type']),
+      ),
       url: json['url'],
       timestamp: Helper.createOrNull(
-          field: json['timestamp'],
-          fn: () => DateTime.tryParse(json['timestamp'])),
+        field: json['timestamp'],
+        fn: () => DateTime.tryParse(json['timestamp']),
+      ),
       assets: Helper.createOrNull(
-          field: json['assets'],
-          fn: () => MessageEmbedAssets.fromJson(json['assets'])),
+        field: json['assets'],
+        fn: () => MessageEmbedAssets.fromJson(json['assets']),
+      ),
       provider: Helper.createOrNull(
-          field: json['provider'],
-          fn: () => MessageEmbedProvider.fromJson(json['provider'])),
+        field: json['provider'],
+        fn: () => MessageEmbedProvider.fromJson(json['provider']),
+      ),
       fields: Helper.createOrNull(
-          field: json['fields'],
-          fn: () => List.from(json['fields'])
-              .map((element) => MessageEmbedField.fromJson(element))
-              .toList()),
+        field: json['fields'],
+        fn: () => List.from(json['fields'])
+            .map((element) => MessageEmbedField.fromJson(element))
+            .toList(),
+      ),
       color: Helper.createOrNull(
-          field: json['color'], fn: () => Color.of(json['color'])),
+        field: json['color'],
+        fn: () => Color.of(json['color']),
+      ),
     );
   }
 

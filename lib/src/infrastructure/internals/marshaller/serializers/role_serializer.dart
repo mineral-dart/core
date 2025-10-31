@@ -25,8 +25,10 @@ final class RoleSerializer implements SerializerContract<Role> {
       'server_id': json['guild_id'],
     };
 
-    final cacheKey =
-        _marshaller.cacheKey.serverRole(json['guild_id'], json['id']);
+    final cacheKey = _marshaller.cacheKey.serverRole(
+      json['guild_id'],
+      json['id'],
+    );
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;

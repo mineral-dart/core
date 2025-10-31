@@ -36,17 +36,21 @@ final class StickerSerializer implements SerializerContract<Sticker> {
     return Sticker(
       id: Snowflake.parse(json['id']),
       name: json['name'],
-      type: StickerType.values
-          .firstWhere((element) => element.value == json['type']),
+      type: StickerType.values.firstWhere(
+        (element) => element.value == json['type'],
+      ),
       isAvailable: json['available'],
       packId: json['pack_id'],
       description: json['description'],
       tags: json['tags'],
       asset: json['asset'],
-      formatType: FormatType.values
-          .firstWhere((element) => element.value == json['format_type']),
+      formatType: FormatType.values.firstWhere(
+        (element) => element.value == json['format_type'],
+      ),
       sortValue: json['sort_value'],
-      serverId: Snowflake.parse(json['server_id']),
+      serverId: Snowflake.parse(
+        json['server_id'],
+      ),
     );
   }
 

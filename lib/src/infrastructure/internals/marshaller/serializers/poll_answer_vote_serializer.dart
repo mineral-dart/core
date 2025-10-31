@@ -1,12 +1,11 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
-import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 
-final class PollAnswerVoteSerializer implements SerializerContract<PollAnswerVote> {
+final class PollAnswerVoteSerializer
+    implements SerializerContract<PollAnswerVote> {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
@@ -27,7 +26,11 @@ final class PollAnswerVoteSerializer implements SerializerContract<PollAnswerVot
   @override
   Future<PollAnswerVote> serialize(Map<String, dynamic> json) async {
     final List<User> voters = [];
-    final message = await _datastore.message.get<Message>(json['channel_id'], json['message_id'], false);
+    final message = await _datastore.message.get<Message>(
+      json['channel_id'],
+      json['message_id'],
+      false,
+    );
     Server? server;
     for (final voter in json['users']) {
       final payload = await _marshaller.serializers.user.normalize(voter);
@@ -38,7 +41,6 @@ final class PollAnswerVoteSerializer implements SerializerContract<PollAnswerVot
     if (json['server_id'] != null) {
       server = await _datastore.server.get(json['server_id'], false);
     }
-
 
     return PollAnswerVote(
       id: json['id'] ?? Snowflake.parse(json['id']),
@@ -63,4 +65,3 @@ final class PollAnswerVoteSerializer implements SerializerContract<PollAnswerVot
     };
   }
 }
-

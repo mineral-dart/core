@@ -42,15 +42,26 @@ final class UserSerializer implements SerializerContract<User> {
     final userAssets = Map<String, dynamic>.from(json['assets']);
     final assets = UserAssets(
       avatar: Helper.createOrNull(
-          field: userAssets['avatar'],
-          fn: () => ImageAsset(['avatars', json['id']], userAssets['avatar'])),
+        field: userAssets['avatar'],
+        fn: () => ImageAsset(
+          ['avatars', json['id']],
+          userAssets['avatar'],
+        ),
+      ),
       avatarDecoration: Helper.createOrNull(
-          field: userAssets['avatar_decoration'],
-          fn: () => ImageAsset(['avatar-decorations', json['id']],
-              userAssets['avatar_decoration'])),
+        field: userAssets['avatar_decoration'],
+        fn: () => ImageAsset(
+          ['avatar-decorations', json['id']],
+          userAssets['avatar_decoration'],
+        ),
+      ),
       banner: Helper.createOrNull(
-          field: userAssets['banner'],
-          fn: () => ImageAsset(['banners', json['id']], userAssets['banner'])),
+        field: userAssets['banner'],
+        fn: () => ImageAsset(
+          ['banners', json['id']],
+          userAssets['banner'],
+        ),
+      ),
     );
 
     return User(
@@ -66,13 +77,17 @@ final class UserSerializer implements SerializerContract<User> {
       email: json['email'],
       flags: json['flags'],
       premiumType: PremiumTier.values.firstWhere(
-          (e) => e == json['premium_type'],
-          orElse: () => PremiumTier.none),
+        (e) => e == json['premium_type'],
+        orElse: () => PremiumTier.none,
+      ),
       publicFlags: json['public_flags'],
       assets: assets,
       createdAt: Helper.createOrNull(
-          field: json['created_at'],
-          fn: () => DateTime.parse(json['created_at'])),
+        field: json['created_at'],
+        fn: () => DateTime.parse(
+          json['created_at'],
+        ),
+      ),
       presence: null,
     );
   }

@@ -67,8 +67,10 @@ final class ServerSerializer implements SerializerContract<Server> {
 
   @override
   Future<Server> serialize(Map<String, dynamic> payload) async {
-    final channelManager =
-        ChannelManager.fromMap(payload['id'], payload['channel_settings']);
+    final channelManager = ChannelManager.fromMap(
+      payload['id'],
+      payload['channel_settings'],
+    );
     final threadManager = ThreadsManager(Snowflake.parse(payload['id']), null);
     final roleManager = RoleManager(Snowflake.parse(payload['id']));
     final memberManager = MemberManager(Snowflake.parse(payload['id']));
@@ -78,52 +80,74 @@ final class ServerSerializer implements SerializerContract<Server> {
       emojis: EmojiManager(Snowflake.parse(payload['id'])),
       stickers: StickerManager(Snowflake.parse(payload['id'])),
       icon: Helper.createOrNull(
-          field: payload['icon'],
-          fn: () =>
-              ImageAsset(['icons', payload['server_id']], payload['icon'])),
+        field: payload['icon'],
+        fn: () => ImageAsset(
+          ['icons', payload['server_id']],
+          payload['icon'],
+        ),
+      ),
       splash: Helper.createOrNull(
-          field: payload['splash'],
-          fn: () => ImageAsset(
-              ['splashes', payload['server_id']], payload['splash'])),
+        field: payload['splash'],
+        fn: () => ImageAsset(
+          ['splashes', payload['server_id']],
+          payload['splash'],
+        ),
+      ),
       banner: Helper.createOrNull(
-          field: payload['banner'],
-          fn: () =>
-              ImageAsset(['banners', payload['server_id']], payload['banner'])),
+        field: payload['banner'],
+        fn: () => ImageAsset(
+          ['banners', payload['server_id']],
+          payload['banner'],
+        ),
+      ),
       discoverySplash: Helper.createOrNull(
-          field: payload['discovery_splash'],
-          fn: () => ImageAsset(['discovery-splashes', payload['id']],
-              payload['discovery_splash'])),
+        field: payload['discovery_splash'],
+        fn: () => ImageAsset(
+          ['discovery-splashes', payload['id']],
+          payload['discovery_splash'],
+        ),
+      ),
     );
 
     final serverSettings = ServerSettings(
         bitfieldPermission: payload['permissions'],
         afkTimeout: payload['afk_timeout'],
         hasWidgetEnabled: payload['widget_enabled'] ?? false,
-        explicitContentFilter: findInEnum(ExplicitContentFilter.values,
-            payload['settings']['explicit_content_filter']),
-        verificationLevel: findInEnum(VerificationLevel.values,
-            payload['settings']['verification_level']),
+        explicitContentFilter: findInEnum(
+          ExplicitContentFilter.values,
+          payload['settings']['explicit_content_filter'],
+        ),
+        verificationLevel: findInEnum(
+          VerificationLevel.values,
+          payload['settings']['verification_level'],
+        ),
         defaultMessageNotifications: findInEnum(
-            DefaultMessageNotification.values,
-            payload['settings']['default_message_notifications']),
+          DefaultMessageNotification.values,
+          payload['settings']['default_message_notifications'],
+        ),
         features: List<String>.from(payload['settings']['features']),
         mfaLevel: findInEnum(MfaLevel.values, payload['settings']['mfa_level']),
-        systemChannelFlags: bitfieldToList(SystemChannelFlag.values,
-            payload['settings']['system_channel_flags']),
+        systemChannelFlags: bitfieldToList(
+          SystemChannelFlag.values,
+          payload['settings']['system_channel_flags'],
+        ),
         vanityUrlCode: payload['vanity_url_code'],
         subscription: ServerSubscription(
           tier: findInEnum(
-              PremiumTier.values, payload['settings']['premium_tier']),
+            PremiumTier.values,
+            payload['settings']['premium_tier'],
+          ),
           subscriptionCount: payload['settings']['premium_subscription_count'],
           hasEnabledProgressBar: payload['settings']
               ['premium_progress_bar_enabled'],
         ),
         preferredLocale: payload['settings']['preferred_locale'],
         maxVideoChannelUsers: payload['max_video_channel_users'],
-        nsfwLevel:
-            findInEnum(NsfwLevel.values, payload['settings']['nsfw_level']),
+        nsfwLevel: findInEnum(
+          NsfwLevel.values,
+          payload['settings']['nsfw_level'],
+        ),
         rulesManager: RulesManager(Snowflake.parse(payload['id'])));
-
 
     return Server(
       id: Snowflake.parse(payload['id']),
