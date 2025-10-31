@@ -12,21 +12,30 @@ final class Interaction implements InteractionContract {
   Interaction(this._token, this._id);
 
   @override
-  Future<InteractionContract> reply(
-      {required MessageBuilder builder,
-      bool ephemeral = false}) async {
-    await _datastore.interaction
-        .replyInteraction(_id, _token, builder, ephemeral);
-
+  Future<InteractionContract> reply({
+    required MessageBuilder builder,
+    bool ephemeral = false,
+  }) async {
+    await _datastore.interaction.replyInteraction(
+      _id,
+      _token,
+      builder,
+      ephemeral,
+    );
     return this;
   }
 
   @override
-  Future<InteractionContract> editReply(
-      {required MessageBuilder builder,
-      bool ephemeral = false}) async {
-    await _datastore.interaction
-        .editInteraction(_botId, _token, builder, ephemeral);
+  Future<InteractionContract> editReply({
+    required MessageBuilder builder,
+    bool ephemeral = false,
+  }) async {
+    await _datastore.interaction.editInteraction(
+      _botId,
+      _token,
+      builder,
+      ephemeral,
+    );
     return this;
   }
 
@@ -41,20 +50,31 @@ final class Interaction implements InteractionContract {
   }
 
   @override
-  Future<InteractionContract> followup(
-      {required MessageBuilder builder,
-      bool ephemeral = false}) async {
-    await _datastore.interaction
-        .createFollowup(_botId, _token, builder, ephemeral);
+  Future<InteractionContract> followup({
+    required MessageBuilder builder,
+    bool ephemeral = false,
+  }) async {
+    await _datastore.interaction.createFollowup(
+      _botId,
+      _token,
+      builder,
+      ephemeral,
+    );
     return this;
   }
 
   @override
-  Future<InteractionContract> editFollowup(
-      {required MessageBuilder builder,
-      bool ephemeral = false}) async {
-    await _datastore.interaction
-        .editFollowup(_botId, _token, _id, builder, ephemeral);
+  Future<InteractionContract> editFollowup({
+    required MessageBuilder builder,
+    bool ephemeral = false,
+  }) async {
+    await _datastore.interaction.editFollowup(
+      _botId,
+      _token,
+      _id,
+      builder,
+      ephemeral,
+    );
     return this;
   }
 
