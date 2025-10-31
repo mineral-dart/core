@@ -50,11 +50,13 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
             // Resolve User instances
             if (guildId != null) {
               // Resolve to Members in server context (match native select behavior)
-              parameters[customId] = await Future.wait(values
-                  .map((id) => _dataStore.member.get(guildId, id, false)));
+              parameters[customId] = await Future.wait(
+                values.map((id) => _dataStore.member.get(guildId, id, false)),
+              );
             } else {
               parameters[customId] = await Future.wait(
-                  values.map((id) => _dataStore.user.get(id, false)));
+                values.map((id) => _dataStore.user.get(id, false)),
+              );
             }
           } else if (customId.contains('role_select')) {
             parameters[customId] = await Future.wait(
@@ -74,8 +76,11 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
 
               if (isUser) {
                 if (guildId != null) {
-                  final member =
-                      await _dataStore.member.get(guildId, id, false);
+                  final member = await _dataStore.member.get(
+                    guildId,
+                    id,
+                    false,
+                  );
                   if (member != null) {
                     mentionables.add(member);
                   }
@@ -96,7 +101,8 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
           } else if (customId.contains('channel_select')) {
             // Resolve Channel instances
             parameters[customId] = await Future.wait(
-                values.map((id) => _dataStore.channel.get(id, false)));
+              values.map((id) => _dataStore.channel.get(id, false)),
+            );
           } else {
             // Default: just pass IDs
             parameters[customId] = values;
@@ -113,26 +119,32 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
       };
 
       final ctx = await switch (interactionContext) {
-        InteractionContextType.server =>
-          ServerModalContext.fromMap(_dataStore, message.payload),
-        InteractionContextType.privateChannel =>
-          PrivateModalContext.fromMap(_marshaller, message.payload),
+        InteractionContextType.server => ServerModalContext.fromMap(
+            _dataStore,
+            message.payload,
+          ),
+        InteractionContextType.privateChannel => PrivateModalContext.fromMap(
+            _marshaller,
+            message.payload,
+          ),
         _ => null
       };
 
       if ([event, ctx].contains(null)) {
         _logger.warn(
-            'Interaction context ${message.payload['context']} not found');
+          'Interaction context ${message.payload['context']} not found',
+        );
         return;
       }
 
       dispatch(
-          event: event!,
-          params: [ctx, parameters],
-          constraint: (String? customId) => switch (customId) {
-                final String value => value == ctx!.customId,
-                _ => true
-              });
+        event: event!,
+        params: [ctx, parameters],
+        constraint: (String? customId) => switch (customId) {
+          final String value => value == ctx!.customId,
+          _ => true
+        },
+      );
 
       _interactiveComponentManager.dispatch(ctx!.customId, [ctx, parameters]);
     }

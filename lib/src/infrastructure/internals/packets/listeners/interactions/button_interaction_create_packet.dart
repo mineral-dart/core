@@ -20,22 +20,26 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final type = InteractionType.values
-        .firstWhereOrNull((e) => e.value == message.payload['type']);
+    final type = InteractionType.values.firstWhereOrNull(
+      (e) => e.value == message.payload['type'],
+    );
 
     final componentType = ComponentType.values.firstWhereOrNull(
-        (e) => e.value == message.payload['data']['component_type']);
+      (e) => e.value == message.payload['data']['component_type'],
+    );
 
     if (type == InteractionType.messageComponent &&
         componentType == ComponentType.button) {
       final serverId = Snowflake.nullable(message.payload['guild']?['id']);
 
       final type = ComponentType.values.firstWhereOrNull(
-          (e) => e.value == message.payload['data']['component_type']);
+        (e) => e.value == message.payload['data']['component_type'],
+      );
 
       if (type == null) {
         _logger.warn(
-            'Component type ${message.payload['data']['component_type']} not found');
+          'Component type ${message.payload['data']['component_type']} not found',
+        );
         return;
       }
 
@@ -47,10 +51,14 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
   }
 
   Future<void> _handleServerButton(
-      Map<String, dynamic> payload, DispatchEvent dispatch) async {
+    Map<String, dynamic> payload,
+    DispatchEvent dispatch,
+  ) async {
     final metadata = payload['message']['interaction_metadata'];
-    final targetButton =
-        await _findButtonByCustomId(payload, payload['data']['custom_id']);
+    final targetButton = await _findButtonByCustomId(
+      payload,
+      payload['data']['custom_id'],
+    );
     final type = ButtonType.values
         .firstWhereOrNull((e) => e.value == targetButton?['type']);
 
@@ -70,18 +78,23 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
     );
 
     dispatch(
-        event: Event.serverButtonClick,
-        params: [ctx],
-        constraint: (String? customId) => customId == ctx.customId);
+      event: Event.serverButtonClick,
+      params: [ctx],
+      constraint: (String? customId) => customId == ctx.customId,
+    );
 
     _interactiveComponentManager.dispatch(ctx.customId, [ctx]);
   }
 
   Future<void> _handlePrivateButton(
-      Map<String, dynamic> payload, DispatchEvent dispatch) async {
+    Map<String, dynamic> payload,
+    DispatchEvent dispatch,
+  ) async {
     final metadata = payload['message']['interaction_metadata'];
-    final targetButton =
-        await _findButtonByCustomId(payload, payload['data']['custom_id']);
+    final targetButton = await _findButtonByCustomId(
+      payload,
+      payload['data']['custom_id'],
+    );
     final type = ButtonType.values
         .firstWhereOrNull((e) => e.value == targetButton?['custom_id']);
 
@@ -102,13 +115,16 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
     );
 
     dispatch(
-        event: Event.serverButtonClick,
-        params: [ctx],
-        constraint: (String? customId) => customId == ctx.customId);
+      event: Event.serverButtonClick,
+      params: [ctx],
+      constraint: (String? customId) => customId == ctx.customId,
+    );
   }
 
   Future<Map<String, dynamic>?> _findButtonByCustomId(
-      Map<String, dynamic> payload, String customId) {
+    Map<String, dynamic> payload,
+    String customId,
+  ) {
     final completer = Completer<Map<String, dynamic>?>();
 
     final components = payload['message']['components'] as List<dynamic>?;
