@@ -24,10 +24,11 @@ final class MemberFlagsManager {
   /// ```
   Future<void> allowBypassVerification({String? reason}) =>
       _memberMethods.update(
-          serverId: server.id.value,
-          memberId: member.id.value,
-          payload: {'flags': MemberFlag.bypassedVerification.value},
-          reason: reason);
+        serverId: server.id.value,
+        memberId: member.id.value,
+        payload: {'flags': MemberFlag.bypassedVerification.value},
+        reason: reason,
+      );
 
   /// Disallow the member to bypass verification.
   ///

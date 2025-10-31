@@ -47,14 +47,15 @@ final class VoiceState {
   /// ```dart
   /// final member = await voiceState.resolveMember();
   /// ```
-  Future<Member?> resolveMember() => _datastore.member.get(serverId.value, userId.value, true);
+  Future<Member?> resolveMember() =>
+      _datastore.member.get(serverId.value, userId.value, true);
 
   /// Get related [ServerVoiceChannel]
   /// ```dart
   /// final channel = await voiceState.resolveChannel();
   /// ```
   Future<ServerVoiceChannel?> resolveChannel() async {
-    return switch(channelId) {
+    return switch (channelId) {
       Snowflake(:final value) => await _datastore.channel.get(value, true),
       _ => null,
     };
@@ -70,7 +71,11 @@ final class VoiceState {
   /// final voice = await member.resolveVoiceContext(force: true);
   /// ```
   Future<MemberVoiceManager> resolveVoiceContext({bool force = false}) async {
-    final voiceState = await _datastore.member.getVoiceState(serverId.value, userId.value, force);
+    final voiceState = await _datastore.member.getVoiceState(
+      serverId.value,
+      userId.value,
+      force,
+    );
     return MemberVoiceManager(serverId, userId, voiceState);
   }
 
