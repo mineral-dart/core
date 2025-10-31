@@ -11,9 +11,13 @@ final class JsonEncoderStrategy implements EncodingStrategy {
 
   @override
   WebsocketMessage decode(WebsocketMessage message) {
-    return message..content = ShardMessage.of(json.decode(message.originalContent));
+    return message
+      ..content = ShardMessage.of(
+        json.decode(message.originalContent),
+      );
   }
 
   @override
-  WebsocketRequestedMessage encode(WebsocketRequestedMessage message) => message;
+  WebsocketRequestedMessage encode(WebsocketRequestedMessage message) =>
+      message;
 }
