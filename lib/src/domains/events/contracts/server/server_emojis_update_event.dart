@@ -6,7 +6,9 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef ServerEmojisUpdateEventHandler = FutureOr<void> Function(
-    EmojiManager, Server);
+  EmojiManager,
+  Server,
+);
 
 abstract class ServerEmojisUpdateEvent implements ListenableEvent {
   @override
@@ -15,5 +17,8 @@ abstract class ServerEmojisUpdateEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(EmojiManager emojisManager, Server server);
+  FutureOr<void> handle(
+    EmojiManager emojisManager,
+    Server server,
+  );
 }

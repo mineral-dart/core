@@ -6,7 +6,9 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef ServerChannelSelectEventHandler = FutureOr Function(
-    ServerSelectContext ctx, List<ServerChannel> channels);
+  ServerSelectContext ctx,
+  List<ServerChannel> channels,
+);
 
 abstract class ServerChannelSelectEvent implements ListenableEvent {
   @override
@@ -15,5 +17,8 @@ abstract class ServerChannelSelectEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(ServerSelectContext ctx, List<ServerChannel> channels);
+  FutureOr<void> handle(
+    ServerSelectContext ctx,
+    List<ServerChannel> channels,
+  );
 }

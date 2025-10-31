@@ -4,7 +4,9 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef ServerRuleExecutionEventHandler = FutureOr<void> Function(RuleExecution);
+typedef ServerRuleExecutionEventHandler = FutureOr<void> Function(
+  RuleExecution,
+);
 
 abstract class ServerRuleExecutionEvent implements ListenableEvent {
   @override
@@ -13,5 +15,7 @@ abstract class ServerRuleExecutionEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(RuleExecution execution);
+  FutureOr<void> handle(
+    RuleExecution execution,
+  );
 }

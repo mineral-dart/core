@@ -4,7 +4,9 @@ import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef ServerRuleCreateEventHandler = FutureOr<void> Function(AutoModerationRule);
+typedef ServerRuleCreateEventHandler = FutureOr<void> Function(
+  AutoModerationRule,
+);
 
 abstract class ServerRuleCreateEvent implements ListenableEvent {
   @override
@@ -13,5 +15,7 @@ abstract class ServerRuleCreateEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(AutoModerationRule rule);
+  FutureOr<void> handle(
+    AutoModerationRule rule,
+  );
 }

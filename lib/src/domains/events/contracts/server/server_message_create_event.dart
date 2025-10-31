@@ -13,5 +13,7 @@ abstract class ServerMessageCreateEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(ServerMessage message);
+  FutureOr<void> handle(
+    ServerMessage message,
+  );
 }

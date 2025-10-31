@@ -5,7 +5,9 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef ServerMentionableSelectEventHandler = FutureOr<void> Function(
-    ServerSelectContext ctx, List<dynamic> mentionables);
+  ServerSelectContext ctx,
+  List<dynamic> mentionables,
+);
 
 abstract class ServerMentionableSelectEvent implements ListenableEvent {
   @override
@@ -14,5 +16,8 @@ abstract class ServerMentionableSelectEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(ServerSelectContext ctx, List<dynamic> mentionables);
+  FutureOr<void> handle(
+    ServerSelectContext ctx,
+    List<dynamic> mentionables,
+  );
 }

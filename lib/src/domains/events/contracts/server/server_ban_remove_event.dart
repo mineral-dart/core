@@ -14,5 +14,8 @@ abstract class ServerBanRemoveEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(User user, Server server);
+  FutureOr<void> handle(
+    User user,
+    Server server,
+  );
 }

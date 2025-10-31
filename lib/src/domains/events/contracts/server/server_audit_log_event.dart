@@ -13,5 +13,7 @@ abstract class ServerAuditLogEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(AuditLog audit);
+  FutureOr<void> handle(
+    AuditLog audit,
+  );
 }

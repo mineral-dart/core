@@ -5,7 +5,8 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef ServerButtonClickEventHandler = FutureOr<void> Function(
-    ServerButtonContext);
+  ServerButtonContext,
+);
 
 abstract class ServerButtonClickEvent implements ListenableEvent {
   @override
@@ -14,5 +15,7 @@ abstract class ServerButtonClickEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(ServerButtonContext ctx);
+  FutureOr<void> handle(
+    ServerButtonContext ctx,
+  );
 }

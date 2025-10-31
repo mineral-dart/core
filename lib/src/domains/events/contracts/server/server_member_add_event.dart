@@ -14,5 +14,8 @@ abstract class ServerMemberAddEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(Member member, Server server);
+  FutureOr<void> handle(
+    Member member,
+    Server server,
+  );
 }

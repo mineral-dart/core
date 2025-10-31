@@ -6,7 +6,9 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef ServerChannelPinsUpdateEventHandler = FutureOr<void> Function(
-    Server, ServerChannel?);
+  Server,
+  ServerChannel?,
+);
 
 abstract class ServerChannelPinsUpdateEvent implements ListenableEvent {
   @override
@@ -15,5 +17,8 @@ abstract class ServerChannelPinsUpdateEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(Server server, ServerChannel channel);
+  FutureOr<void> handle(
+    Server server,
+    ServerChannel channel,
+  );
 }

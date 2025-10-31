@@ -5,7 +5,9 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef ServerModalSubmitEventHandler<T> = FutureOr Function(
-    ServerModalContext ctx, T data);
+  ServerModalContext ctx,
+  T data,
+);
 
 abstract class ServerModalSubmitEvent<T> implements ListenableEvent {
   @override
@@ -14,5 +16,8 @@ abstract class ServerModalSubmitEvent<T> implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(ServerModalContext ctx, T data);
+  FutureOr<void> handle(
+    ServerModalContext ctx,
+    T data,
+  );
 }

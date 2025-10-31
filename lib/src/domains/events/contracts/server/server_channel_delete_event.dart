@@ -5,7 +5,8 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef ServerChannelDeleteEventHandler = FutureOr<void> Function(
-    ServerChannel?);
+  ServerChannel?,
+);
 
 abstract class ServerChannelDeleteEvent implements ListenableEvent {
   @override
@@ -14,5 +15,7 @@ abstract class ServerChannelDeleteEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(ServerChannel? channel);
+  FutureOr<void> handle(
+    ServerChannel? channel,
+  );
 }

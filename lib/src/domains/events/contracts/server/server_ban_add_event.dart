@@ -7,7 +7,10 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 typedef ServerBanAddEventHandler = FutureOr<void> Function(
-    Member?, User, Server);
+  Member?,
+  User,
+  Server,
+);
 
 abstract class ServerBanAddEvent implements ListenableEvent {
   @override
@@ -16,5 +19,9 @@ abstract class ServerBanAddEvent implements ListenableEvent {
   @override
   String? customId;
 
-  FutureOr<void> handle(Member? member, User user, Server server);
+  FutureOr<void> handle(
+    Member? member,
+    User user,
+    Server server,
+  );
 }
