@@ -11,7 +11,9 @@ final class ServerCategoryChannelFactory
 
   @override
   Future<Map<String, dynamic>> normalize(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> json,
+  ) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -31,17 +33,24 @@ final class ServerCategoryChannelFactory
 
   @override
   Future<ServerCategoryChannel> serialize(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> json,
+  ) async {
     final properties = await ChannelProperties.serializeCache(marshaller, json);
     return ServerCategoryChannel(properties);
   }
 
   @override
   Future<Map<String, dynamic>> deserialize(
-      MarshallerContract marshaller, ServerCategoryChannel channel) async {
-    final permissions = await Future.wait(channel.permissions.map(
+    MarshallerContract marshaller,
+    ServerCategoryChannel channel,
+  ) async {
+    final permissions = await Future.wait(
+      channel.permissions.map(
         (element) async => marshaller.serializers.channelPermissionOverwrite
-            .deserialize(element)));
+            .deserialize(element),
+      ),
+    );
 
     return {
       'id': channel.id.value,

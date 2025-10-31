@@ -15,7 +15,9 @@ final class ServerForumChannelFactory
 
   @override
   Future<Map<String, dynamic>> normalize(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> json,
+  ) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -35,27 +37,40 @@ final class ServerForumChannelFactory
 
   @override
   Future<ServerForumChannel> serialize(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> json,
+  ) async {
     final properties = await ChannelProperties.serializeCache(marshaller, json);
     return ServerForumChannel(
       properties,
       sortOrder: Helper.createOrNull(
-          field: json['default_sort_order'],
-          fn: () =>
-              findInEnum(SortOrderType.values, json['default_sort_order'])),
+        field: json['default_sort_order'],
+        fn: () => findInEnum(
+          SortOrderType.values,
+          json['default_sort_order'],
+        ),
+      ),
       layoutType: Helper.createOrNull(
-          field: json['default_forum_layout'],
-          fn: () =>
-              findInEnum(ForumLayoutType.values, json['default_forum_layout'])),
+        field: json['default_forum_layout'],
+        fn: () => findInEnum(
+          ForumLayoutType.values,
+          json['default_forum_layout'],
+        ),
+      ),
     );
   }
 
   @override
   Future<Map<String, dynamic>> deserialize(
-      MarshallerContract marshaller, ServerForumChannel channel) async {
-    final permissions = await Future.wait(channel.permissions.map(
+    MarshallerContract marshaller,
+    ServerForumChannel channel,
+  ) async {
+    final permissions = await Future.wait(
+      channel.permissions.map(
         (element) async => marshaller.serializers.channelPermissionOverwrite
-            .deserialize(element)));
+            .deserialize(element),
+      ),
+    );
 
     return {
       'id': channel.id.value,

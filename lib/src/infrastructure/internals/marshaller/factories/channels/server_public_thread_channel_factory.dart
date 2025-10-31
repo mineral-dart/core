@@ -12,7 +12,9 @@ final class ServerPublicThreadChannelFactory
 
   @override
   Future<Map<String, dynamic>> normalize(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> json,
+  ) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -46,7 +48,9 @@ final class ServerPublicThreadChannelFactory
 
   @override
   Future<PublicThreadChannel> serialize(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> json,
+  ) async {
     final properties = await ChannelProperties.serializeCache(marshaller, json);
     final metadata = ThreadMetadata.fromMap(json);
 
@@ -55,7 +59,9 @@ final class ServerPublicThreadChannelFactory
 
   @override
   Future<Map<String, dynamic>> deserialize(
-      MarshallerContract marshaller, PublicThreadChannel channel) async {
+    MarshallerContract marshaller,
+    PublicThreadChannel channel,
+  ) async {
     return {
       'id': channel.id.value,
       'type': channel.type.value,

@@ -9,7 +9,9 @@ final class UnknownChannelFactory
 
   @override
   Future<Map<String, dynamic>> normalize(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> json,
+  ) async {
     final payload = {
       'id': json['id'],
       'type': json['type'],
@@ -24,7 +26,9 @@ final class UnknownChannelFactory
 
   @override
   Future<UnknownChannel> serialize(
-      MarshallerContract marshaller, Map<String, dynamic> json) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> json,
+  ) async {
     return UnknownChannel(
       id: Snowflake.parse(json['id']),
       name: json['name'],
@@ -33,7 +37,9 @@ final class UnknownChannelFactory
 
   @override
   Future<Map<String, dynamic>> deserialize(
-      MarshallerContract marshaller, UnknownChannel channel) async {
+    MarshallerContract marshaller,
+    UnknownChannel channel,
+  ) async {
     return {
       'id': channel.id.value,
       'type': channel.type.value,
