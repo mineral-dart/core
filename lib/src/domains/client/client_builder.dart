@@ -58,7 +58,8 @@ final class ClientBuilder {
   }
 
   ClientBuilder setCache(
-      ConstructableWithArgs<CacheProviderContract, Env> cache) {
+    ConstructableWithArgs<CacheProviderContract, Env> cache,
+  ) {
     _cache = ioc.make<CacheProviderContract>(() => cache(env));
     return this;
   }
@@ -88,7 +89,8 @@ final class ClientBuilder {
   }
 
   ClientBuilder registerProvider<T extends ProviderContract>(
-      T Function(Client) provider) {
+    T Function(Client) provider,
+  ) {
     _providers.add(provider);
     return this;
   }
@@ -123,37 +125,48 @@ final class ClientBuilder {
     final token = env.get<String>(AppEnv.token, defaultValue: _token);
     final intent = env.get<int>(AppEnv.intent, defaultValue: _intent);
 
-    final httpVersion = env.get<int>(AppEnv.discordRestHttpVersion,
-        defaultValue: _discordRestHttpVersion);
+    final httpVersion = env.get<int>(
+      AppEnv.discordRestHttpVersion,
+      defaultValue: _discordRestHttpVersion,
+    );
 
-    final shardVersion = env.get<int>(AppEnv.discordWssVersion,
-        defaultValue: _discordWssVersion);
+    final shardVersion = env.get<int>(
+      AppEnv.discordWssVersion,
+      defaultValue: _discordWssVersion,
+    );
 
-    final wsEncodingStrategy =
-        env.get(AppEnv.discordWssEncoding, defaultValue: _wssEncoder);
+    final wsEncodingStrategy = env.get(
+      AppEnv.discordWssEncoding,
+      defaultValue: _wssEncoder,
+    );
 
     final http = HttpClient(
-        config: HttpClientConfigImpl(
-            uri: Uri.parse('https://discord.com/api/v$httpVersion'),
-            headers: {
+      config: HttpClientConfigImpl(
+        uri: Uri.parse('https://discord.com/api/v$httpVersion'),
+        headers: {
           Header.userAgent('Mineral'),
           Header.contentType('application/json'),
-        }));
+        },
+      ),
+    );
 
     final shardConfig = ShardingConfig(
-        token: token,
-        intent: intent,
-        version: shardVersion,
-        encoding: wsEncodingStrategy.strategy());
+      token: token,
+      intent: intent,
+      version: shardVersion,
+      encoding: wsEncodingStrategy.strategy(),
+    );
 
     final packetListener = PacketListener();
     final eventListener = EventListener();
     final providerManager = ProviderManager();
     final globalStateManager = ioc.make(GlobalStateManager.new);
     final interactiveComponent = ioc.make<InteractiveComponentManagerContract>(
-        InteractiveComponentManager.new);
+      InteractiveComponentManager.new,
+    );
     final wssOrchestrator = ioc.make<WebsocketOrchestratorContract>(
-        () => WebsocketOrchestrator(shardConfig));
+      () => WebsocketOrchestrator(shardConfig),
+    );
 
     final kernel = Kernel(
       _hasDefinedDevPort,
