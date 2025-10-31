@@ -36,7 +36,9 @@ final class ServerModalContext implements ModalContext {
   }
 
   static Future<ServerModalContext> fromMap(
-      DataStoreContract datastore, Map<String, dynamic> payload) async {
+    DataStoreContract datastore,
+    Map<String, dynamic> payload,
+  ) async {
     return ServerModalContext(
       customId: payload['data']['custom_id'],
       id: Snowflake.parse(payload['id']),

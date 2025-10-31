@@ -36,7 +36,9 @@ final class PrivateModalContext implements ModalContext {
   }
 
   static Future<PrivateModalContext> fromMap(
-      MarshallerContract marshaller, Map<String, dynamic> payload) async {
+    MarshallerContract marshaller,
+    Map<String, dynamic> payload,
+  ) async {
     return PrivateModalContext(
       customId: payload['data']['custom_id'],
       id: Snowflake.parse(payload['id']),
