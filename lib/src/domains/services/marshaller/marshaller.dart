@@ -5,10 +5,7 @@ import 'package:mineral/src/infrastructure/internals/marshaller/serializer_bucke
 
 abstract interface class MarshallerContract {
   LoggerContract get logger;
-
   SerializerBucket get serializers;
-
   CacheProviderContract? get cache;
-
   CacheKey get cacheKey;
 }
