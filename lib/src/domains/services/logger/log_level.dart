@@ -1,4 +1,3 @@
-import 'package:env_guard/env_guard.dart';
 import 'package:logging/logging.dart' as logging;
 import 'package:mineral/api.dart';
 
