@@ -10,6 +10,6 @@ final class PollAnswerVote<T extends Message> {
     required this.id,
     required this.voters,
     required this.message,
-    this.server
+    this.server,
   });
 }
