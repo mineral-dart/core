@@ -6,9 +6,16 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 
 typedef RequestAction<T> = Future<Response<T>> Function(
-    RequestContract request);
+  RequestContract request,
+);
 
-enum QueueableRequestStatus { init, success, error, rateLimit, pending }
+enum QueueableRequestStatus {
+  init,
+  success,
+  error,
+  rateLimit,
+  pending,
+}
 
 final class QueueableRequest<T> {
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
@@ -25,12 +32,19 @@ final class QueueableRequest<T> {
   DateTime? retryAt;
   QueueableRequestStatus status = QueueableRequestStatus.init;
 
-  final T Function<T extends Exception>(Response)? _onError;
+  final T Function<E extends Exception>(Response)? _onError;
   final Function(T)? _onSuccess;
   final Function(Duration)? _onRateLimit;
 
-  QueueableRequest(this.bucket, this.query, this.request, this.completer,
-      this._onError, this._onSuccess, this._onRateLimit);
+  QueueableRequest(
+    this.bucket,
+    this.query,
+    this.request,
+    this.completer,
+    this._onError,
+    this._onSuccess,
+    this._onRateLimit,
+  );
 
   Future<void> execute() async {
     status = QueueableRequestStatus.pending;
@@ -69,7 +83,8 @@ final class QueueableRequest<T> {
       bucket.queue.remove(this);
       _onError?.call(response);
       completer.completeError(
-          _onError?.call(response) ?? HttpException(response.bodyString));
+        _onError?.call(response) ?? HttpException(response.bodyString),
+      );
     }
   }
 }
@@ -88,13 +103,22 @@ final class RequestHandler<T> {
 
   RequestHandler(this._bucket, this._request);
 
-  Future<T> run(Future<Response<T>> Function(RequestContract request) action,
-      {Function(T)? onSuccess,
-      T Function<T extends Exception>(Response)? onError,
-      Function(Duration)? onRateLimit}) async {
+  Future<T> run(
+    Future<Response<T>> Function(RequestContract request) action, {
+    Function(T)? onSuccess,
+    T Function<E extends Exception>(Response)? onError,
+    Function(Duration)? onRateLimit,
+  }) async {
     final completer = Completer<T>();
     final request = QueueableRequest<T>(
-        _bucket, _request, action, completer, onError, onSuccess, onRateLimit);
+      _bucket,
+      _request,
+      action,
+      completer,
+      onError,
+      onSuccess,
+      onRateLimit,
+    );
     _bucket.queue.add(request);
 
     await request.execute();
