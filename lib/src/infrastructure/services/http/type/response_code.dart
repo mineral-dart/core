@@ -39,8 +39,14 @@ enum ResponseCode {
         unknown
       ];
 
-  static List<ResponseCode> get successCodes =>
-      [success, created, accepted, noContent];
+  static List<ResponseCode> get successCodes => [
+        success,
+        created,
+        accepted,
+        noContent,
+      ];
 
-  static List<ResponseCode> get rateLimitCodes => [rateLimit];
+  static List<ResponseCode> get rateLimitCodes => [
+        rateLimit,
+      ];
 }
