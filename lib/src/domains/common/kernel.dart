@@ -52,8 +52,9 @@ final class Kernel {
     required this.wss,
   }) {
     _watch.start();
-    httpClient.config.headers
-        .add(Header.authorization('Bot ${wss.config.token}'));
+    httpClient.config.headers.add(
+      Header.authorization('Bot ${wss.config.token}'),
+    );
   }
 
   Future<void> init() async {
