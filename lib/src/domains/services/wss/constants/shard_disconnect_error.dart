@@ -29,5 +29,9 @@ enum ShardDisconnectError {
   final String message;
   final bool canBeReconnected;
 
-  const ShardDisconnectError(this.code, this.message, this.canBeReconnected);
+  const ShardDisconnectError(
+    this.code,
+    this.message,
+    this.canBeReconnected,
+  );
 }
