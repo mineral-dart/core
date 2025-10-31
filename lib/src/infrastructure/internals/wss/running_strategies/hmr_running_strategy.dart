@@ -30,23 +30,28 @@ final class HmrRunningStrategy implements RunningStrategy {
   @override
   Future<void> init(RunningStrategyFactory createShards) async {
     if (Isolate.current.debugName == 'main') {
-      final mainFile =
-          File(path.joinAll([Directory.current.path, 'bin', 'main.dart']));
+      final mainFile = File(
+        path.joinAll([Directory.current.path, 'bin', 'main.dart']),
+      );
       final tempDirectory = await Directory.systemTemp.createTemp();
 
       _runner = Runner(
-          entrypoint: mainFile,
-          tempDirectory: tempDirectory,
-          isolateName: 'development');
+        entrypoint: mainFile,
+        tempDirectory: tempDirectory,
+        isolateName: 'development',
+      );
 
       final dateTime = DateTime.now();
 
-      Watcher(middlewares: [
-        IgnoreMiddleware(['~', '.dart_tool', '.git', '.idea', '.vscode']),
-        IncludeMiddleware([Glob('**.dart'), ..._watchedFiles]),
-        DebounceMiddleware(Duration(milliseconds: 50), dateTime),
-      ], onStart: handleStart, onFileChange: handleModify)
-          .watch();
+      Watcher(
+        middlewares: [
+          IgnoreMiddleware(['~', '.dart_tool', '.git', '.idea', '.vscode']),
+          IncludeMiddleware([Glob('**.dart'), ..._watchedFiles]),
+          DebounceMiddleware(Duration(milliseconds: 50), dateTime),
+        ],
+        onStart: handleStart,
+        onFileChange: handleModify,
+      ).watch();
 
       await _runner.run();
 
