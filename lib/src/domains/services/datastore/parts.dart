@@ -2,109 +2,195 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
 import 'package:mineral/src/api/server/channels/private_thread_channel.dart';
 import 'package:mineral/src/api/server/channels/public_thread_channel.dart';
-import 'package:mineral/src/api/server/moderation/action.dart';
-import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
 import 'package:mineral/src/api/server/moderation/enums/auto_moderation_event_type.dart';
 import 'package:mineral/src/api/server/moderation/enums/trigger_type.dart';
 import 'package:mineral/src/api/server/moderation/trigger_metadata.dart';
-import 'package:mineral/src/api/server/voice_state.dart';
 
 abstract interface class DataStorePart {}
 
 abstract interface class ChannelPartContract implements DataStorePart {
   Future<Map<Snowflake, T>> fetch<T extends Channel>(
-      Object serverId, bool force);
+    Object serverId,
+    bool force,
+  );
 
-  Future<T?> get<T extends Channel>(Object id, bool force);
+  Future<T?> get<T extends Channel>(
+    Object id,
+    bool force,
+  );
 
   Future<T> create<T extends Channel>(
-      Object? serverId, ChannelBuilderContract builder,
-      {String? reason});
+    Object? serverId,
+    ChannelBuilderContract builder, {
+    String? reason,
+  });
 
-  Future<PrivateChannel?> createPrivateChannel(Object id, String recipientId);
+  Future<PrivateChannel?> createPrivateChannel(
+    Object id,
+    String recipientId,
+  );
 
   Future<T?> update<T extends Channel>(
-      Object id, ChannelBuilderContract builder,
-      {Object? serverId, String? reason});
+    Object id,
+    ChannelBuilderContract builder, {
+    Object? serverId,
+    String? reason,
+  });
 
-  Future<void> delete(Object id, String? reason);
+  Future<void> delete(
+    Object id,
+    String? reason,
+  );
 }
 
 abstract interface class ThreadPartContract implements DataStorePart {
-  Future<ThreadResult> fetchActives(Object serverId);
+  Future<ThreadResult> fetchActives(
+    Object serverId,
+  );
 
   Future<Map<Snowflake, PublicThreadChannel>> fetchPublicArchived(
-      Object channelId);
+    Object channelId,
+  );
 
   Future<Map<Snowflake, PrivateThreadChannel>> fetchPrivateArchived(
-      Object channelId);
+    Object channelId,
+  );
 
   Future<T> createWithoutMessage<T extends ThreadChannel>(
-      Object? serverId, Object? channelId, ThreadChannelBuilder builder,
-      {String? reason});
+    Object? serverId,
+    Object? channelId,
+    ThreadChannelBuilder builder, {
+    String? reason,
+  });
 
-  Future<T> createFromMessage<T extends ThreadChannel>(Object? serverId,
-      Object? channelId, Object? messageId, ThreadChannelBuilder builder,
-      {String? reason});
+  Future<T> createFromMessage<T extends ThreadChannel>(
+    Object? serverId,
+    Object? channelId,
+    Object? messageId,
+    ThreadChannelBuilder builder, {
+    String? reason,
+  });
 }
 
 abstract interface class InteractionPartContract implements DataStorePart {
-  Future<void> replyInteraction(Snowflake id, String token,
-      MessageBuilder builder, bool ephemeral);
+  Future<void> replyInteraction(
+    Snowflake id,
+    String token,
+    MessageBuilder builder,
+    bool ephemeral,
+  );
 
-  Future<void> editInteraction(Snowflake botId, String token,
-      MessageBuilder builder, bool ephemeral);
+  Future<void> editInteraction(
+    Snowflake botId,
+    String token,
+    MessageBuilder builder,
+    bool ephemeral,
+  );
 
-  Future<void> deleteInteraction(Snowflake botId, String token);
+  Future<void> deleteInteraction(
+    Snowflake botId,
+    String token,
+  );
 
-  Future<void> noReplyInteraction(Snowflake id, String token, bool ephemeral);
+  Future<void> noReplyInteraction(
+    Snowflake id,
+    String token,
+    bool ephemeral,
+  );
 
-  Future<void> createFollowup(Snowflake botId, String token,
-      MessageBuilder builder, bool ephemeral);
+  Future<void> createFollowup(
+    Snowflake botId,
+    String token,
+    MessageBuilder builder,
+    bool ephemeral,
+  );
 
-  Future<void> editFollowup(Snowflake botId, String token, Snowflake messageId,
-      MessageBuilder builder, bool ephemeral);
+  Future<void> editFollowup(
+    Snowflake botId,
+    String token,
+    Snowflake messageId,
+    MessageBuilder builder,
+    bool ephemeral,
+  );
 
   Future<void> deleteFollowup(
-      Snowflake botId, String token, Snowflake messageId);
+    Snowflake botId,
+    String token,
+    Snowflake messageId,
+  );
 
-  Future<void> waitInteraction(Snowflake id, String token);
+  Future<void> waitInteraction(
+    Snowflake id,
+    String token,
+  );
 
-  Future<void> sendModal(Snowflake id, String token, ModalBuilder modal);
+  Future<void> sendModal(
+    Snowflake id,
+    String token,
+    ModalBuilder modal,
+  );
 }
 
 abstract interface class MemberPartContract implements DataStorePart {
-  Future<Map<Snowflake, Member>> fetch(Object serverId, bool force);
+  Future<Map<Snowflake, Member>> fetch(
+    Object serverId,
+    bool force,
+  );
 
-  Future<Member?> get(Object serverId, Object id, bool force);
+  Future<Member?> get(
+    Object serverId,
+    Object id,
+    bool force,
+  );
 
-  Future<Member> update(
-      {required Object serverId,
-      required String memberId,
-      required Map<String, dynamic> payload,
-      String? reason});
+  Future<Member> update({
+    required Object serverId,
+    required String memberId,
+    required Map<String, dynamic> payload,
+    String? reason,
+  });
 
-  Future<void> ban(
-      {required Object serverId,
-      required Duration? deleteSince,
-      required String memberId,
-      String? reason});
+  Future<void> ban({
+    required Object serverId,
+    required Duration? deleteSince,
+    required String memberId,
+    String? reason,
+  });
 
-  Future<void> kick(
-      {required Object serverId, required String memberId, String? reason});
+  Future<void> kick({
+    required Object serverId,
+    required String memberId,
+    String? reason,
+  });
 
-  Future<VoiceState?> getVoiceState(Object serverId, String userId, bool force);
+  Future<VoiceState?> getVoiceState(
+    Object serverId,
+    String userId,
+    bool force,
+  );
 }
 
 abstract interface class MessagePartContract implements DataStorePart {
-  Future<Map<Snowflake, T>> fetch<T extends BaseMessage>(Object channelId,
-      {Snowflake? around, Snowflake? before, Snowflake? after, int? limit});
+  Future<Map<Snowflake, T>> fetch<T extends BaseMessage>(
+    Object channelId, {
+    Snowflake? around,
+    Snowflake? before,
+    Snowflake? after,
+    int? limit,
+  });
 
   Future<T?> get<T extends BaseMessage>(
-      Object channelId, Object id, bool force);
+    Object channelId,
+    Object id,
+    bool force,
+  );
 
-  Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId,
-      Snowflake messageId, int answerId);
+  Future<PollAnswerVote> getPollVotes(
+    Snowflake? serverId,
+    Snowflake channelId,
+    Snowflake messageId,
+    int answerId,
+  );
 
   Future<T> update<T extends Message>({
     required Object id,
@@ -112,27 +198,55 @@ abstract interface class MessagePartContract implements DataStorePart {
     required MessageBuilder builder,
   });
 
-  Future<void> pin(Snowflake channelId, Snowflake id);
+  Future<void> pin(
+    Snowflake channelId,
+    Snowflake id,
+  );
 
-  Future<void> unpin(Snowflake channelId, Snowflake id);
+  Future<void> unpin(
+    Snowflake channelId,
+    Snowflake id,
+  );
 
-  Future<void> crosspost(Snowflake channelId, Snowflake id);
+  Future<void> crosspost(
+    Snowflake channelId,
+    Snowflake id,
+  );
 
-  Future<void> delete(Snowflake channelId, Snowflake id);
+  Future<void> delete(
+    Snowflake channelId,
+    Snowflake id,
+  );
 
   Future<T> send<T extends Message>(
-      String? serverId, String channelId, MessageBuilder builder);
+    String? serverId,
+    String channelId,
+    MessageBuilder builder,
+  );
 
-  Future<T> sendPoll<T extends Message>(String channelId, Poll poll);
+  Future<T> sendPoll<T extends Message>(
+    String channelId,
+    Poll poll,
+  );
 
   Future<R> reply<T extends Channel, R extends Message>(
-      Snowflake id, Snowflake channelId, MessageBuilder builder);
+    Snowflake id,
+    Snowflake channelId,
+    MessageBuilder builder,
+  );
 }
 
 abstract interface class RolePartContract implements DataStorePart {
-  Future<Map<Snowflake, Role>> fetch(Object serverId, bool force);
+  Future<Map<Snowflake, Role>> fetch(
+    Object serverId,
+    bool force,
+  );
 
-  Future<Role?> get(Object serverId, Object id, bool force);
+  Future<Role?> get(
+    Object serverId,
+    Object id,
+    bool force,
+  );
 
   Future<Role> create(
       Object serverId,
@@ -143,32 +257,39 @@ abstract interface class RolePartContract implements DataStorePart {
       bool mentionable,
       String? reason);
 
-  Future<void> add(
-      {required String memberId,
-      required Object serverId,
-      required String roleId,
-      required String? reason});
+  Future<void> add({
+    required String memberId,
+    required Object serverId,
+    required String roleId,
+    required String? reason,
+  });
 
-  Future<void> remove(
-      {required String memberId,
-      required Object serverId,
-      required String roleId,
-      required String? reason});
+  Future<void> remove({
+    required String memberId,
+    required Object serverId,
+    required String roleId,
+    required String? reason,
+  });
 
-  Future<void> sync(
-      {required String memberId,
-      required Object serverId,
-      required List<String> roleIds,
-      required String? reason});
+  Future<void> sync({
+    required String memberId,
+    required Object serverId,
+    required List<String> roleIds,
+    required String? reason,
+  });
 
-  Future<Role?> update(
-      {required Object id,
-      required Object serverId,
-      required Map<String, dynamic> payload,
-      required String? reason});
+  Future<Role?> update({
+    required Object id,
+    required Object serverId,
+    required Map<String, dynamic> payload,
+    required String? reason,
+  });
 
-  Future<void> delete(
-      {required Object id, required String guildId, required String? reason});
+  Future<void> delete({
+    required Object id,
+    required String guildId,
+    required String? reason,
+  });
 }
 
 abstract interface class ServerMessagePartContract implements DataStorePart {
@@ -181,109 +302,200 @@ abstract interface class ServerMessagePartContract implements DataStorePart {
     List<Component>? components,
   });
 
-  Future<ServerMessage> reply(
-      {required Snowflake id,
-      required Snowflake channelId,
-      required Snowflake serverId,
-      String? content,
-      List<MessageEmbed>? embeds,
-      List<Component>? components});
+  Future<ServerMessage> reply({
+    required Snowflake id,
+    required Snowflake channelId,
+    required Snowflake serverId,
+    String? content,
+    List<MessageEmbed>? embeds,
+    List<Component>? components,
+  });
 
-  Future<void> pin({required Snowflake id, required Snowflake channelId});
+  Future<void> pin({
+    required Snowflake id,
+    required Snowflake channelId,
+  });
 
-  Future<void> unpin({required Snowflake id, required Snowflake channelId});
+  Future<void> unpin({
+    required Snowflake id,
+    required Snowflake channelId,
+  });
 
-  Future<void> crosspost({required Snowflake id, required Snowflake channelId});
+  Future<void> crosspost({
+    required Snowflake id,
+    required Snowflake channelId,
+  });
 
-  Future<void> delete({required Snowflake id, required Snowflake channelId});
+  Future<void> delete({
+    required Snowflake id,
+    required Snowflake channelId,
+  });
 }
 
 abstract interface class ServerPartContract implements DataStorePart {
-  Future<Server> get(Object id, bool force);
+  Future<Server> get(
+    Object id,
+    bool force,
+  );
 
   Future<Server> update(
-      Object id, Map<String, dynamic> payload, String? reason);
+    Object id,
+    Map<String, dynamic> payload,
+    String? reason,
+  );
 
-  Future<void> delete(Object id, String? reason);
+  Future<void> delete(
+    Object id,
+    String? reason,
+  );
 }
 
 abstract interface class StickerPartContract implements DataStorePart {
-  Future<Map<Snowflake, Sticker>> fetch(Object serverId, bool force);
+  Future<Map<Snowflake, Sticker>> fetch(
+    Object serverId,
+    bool force,
+  );
 
-  Future<Sticker?> get(Object serverId, Object id, bool force);
+  Future<Sticker?> get(
+    Object serverId,
+    Object id,
+    bool force,
+  );
 
-  Future<void> delete(Object serverId, Object stickerId);
+  Future<void> delete(
+    Object serverId,
+    Object stickerId,
+  );
 }
 
 abstract interface class UserPartContract implements DataStorePart {
-  Future<User?> get(Object id, bool force);
+  Future<User?> get(
+    Object id,
+    bool force,
+  );
 }
 
 abstract interface class EmojiPartContract implements DataStorePart {
-  Future<Map<Snowflake, Emoji>> fetch(Object serverId, bool force);
+  Future<Map<Snowflake, Emoji>> fetch(
+    Object serverId,
+    bool force,
+  );
 
-  Future<Emoji?> get(Object serverId, Object id, bool force);
+  Future<Emoji?> get(
+    Object serverId,
+    Object id,
+    bool force,
+  );
 
   Future<Emoji> create(
-      Object serverId, String name, Image image, List<Object> roles,
-      {String? reason});
+    Object serverId,
+    String name,
+    Image image,
+    List<Object> roles, {
+    String? reason,
+  });
 
-  Future<Emoji?> update(
-      {required Object id,
-      required Object serverId,
-      required Map<String, dynamic> payload,
-      required String? reason});
+  Future<Emoji?> update({
+    required Object id,
+    required Object serverId,
+    required Map<String, dynamic> payload,
+    required String? reason,
+  });
 
-  Future<void> delete(Object serverId, String emojiId, {String? reason});
+  Future<void> delete(
+    Object serverId,
+    String emojiId, {
+    String? reason,
+  });
 }
 
 abstract interface class RulesPartContract implements DataStorePart {
-  Future<Map<Snowflake, AutoModerationRule>> fetch(Object serverId, bool force);
+  Future<Map<Snowflake, AutoModerationRule>> fetch(
+    Object serverId,
+    bool force,
+  );
 
-  Future<AutoModerationRule?> get(Object serverId, Object id, bool force);
+  Future<AutoModerationRule?> get(
+    Object serverId,
+    Object id,
+    bool force,
+  );
 
-  Future<AutoModerationRule> create(
-      {required Object serverId,
-      required String name,
-      required AutoModerationEventType eventType,
-      required TriggerType triggerType,
-      required List<Action> actions,
-      TriggerMetadata? triggerMetadata,
-      List<Snowflake> exemptRoles = const [],
-      List<Snowflake> exemptChannels = const [],
-      bool enabled = true,
-      String? reason});
+  Future<AutoModerationRule> create({
+    required Object serverId,
+    required String name,
+    required AutoModerationEventType eventType,
+    required TriggerType triggerType,
+    required List<Action> actions,
+    TriggerMetadata? triggerMetadata,
+    List<Snowflake> exemptRoles = const [],
+    List<Snowflake> exemptChannels = const [],
+    bool enabled = true,
+    String? reason,
+  });
 
-  Future<AutoModerationRule?> update(
-      {required Object id,
-      required Object serverId,
-      required Map<String, dynamic> payload,
-      required String? reason});
+  Future<AutoModerationRule?> update({
+    required Object id,
+    required Object serverId,
+    required Map<String, dynamic> payload,
+    required String? reason,
+  });
 
-  Future<void> delete(Object serverId, Object ruleId, {String? reason});
+  Future<void> delete(
+    Object serverId,
+    Object ruleId, {
+    String? reason,
+  });
 }
 
 abstract interface class ReactionPartContract implements DataStorePart {
   Future<Map<Snowflake, User>> getUsersForEmoji(
-      Object channelId, Object messageId, PartialEmoji emoji);
+    Object channelId,
+    Object messageId,
+    PartialEmoji emoji,
+  );
 
-  Future<void> add(Object channelId, Object messageId, PartialEmoji emoji);
+  Future<void> add(
+    Object channelId,
+    Object messageId,
+    PartialEmoji emoji,
+  );
 
-  Future<void> remove(Object channelId, Object messageId, PartialEmoji emoji);
+  Future<void> remove(
+    Object channelId,
+    Object messageId,
+    PartialEmoji emoji,
+  );
 
-  Future<void> removeAll(Object channelId, Object messageId);
+  Future<void> removeAll(
+    Object channelId,
+    Object messageId,
+  );
 
   Future<void> removeForEmoji(
-      Object channelId, Object messageId, PartialEmoji emoji);
+    Object channelId,
+    Object messageId,
+    PartialEmoji emoji,
+  );
 
   Future<void> removeForUser(
-      String userId, Object channelId, Object messageId, PartialEmoji emoji);
+    String userId,
+    Object channelId,
+    Object messageId,
+    PartialEmoji emoji,
+  );
 }
 
 abstract interface class InvitePartContract implements DataStorePart {
-  Future<Invite?> get(String code, bool force);
+  Future<Invite?> get(
+    String code,
+    bool force,
+  );
 
-  Future<InviteMetadata?> getExtrasMetadata(String code, bool force);
+  Future<InviteMetadata?> getExtrasMetadata(
+    String code,
+    bool force,
+  );
 
   // Future<Invite> create(
   //     String code,
@@ -291,7 +503,11 @@ abstract interface class InvitePartContract implements DataStorePart {
   //     String channelId,
   //     String inviterId,
   //     bool isTemporary,
-  //     int maxAge, int maxUses);
+  //     int maxAge, int maxUses,
+  // );
 
-  Future<void> delete(String code, String? reason);
+  Future<void> delete(
+    String code,
+    String? reason,
+  );
 }
