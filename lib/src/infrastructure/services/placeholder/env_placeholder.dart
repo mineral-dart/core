@@ -16,26 +16,31 @@ final class EnvPlaceholder implements PlaceholderContract {
   }
 
   void _injectEntryMap(String identifier, Map<String, dynamic> values) {
-    final mapEntry = Map<String, dynamic>.from(values.map((key, value) {
-      final currentKey = key.snakeCase.toUpperCase();
-      return MapEntry('$identifier.$currentKey', value);
-    }));
+    final mapEntry = Map<String, dynamic>.from(
+      values.map((key, value) {
+        final currentKey = key.snakeCase.toUpperCase();
+        return MapEntry('$identifier.$currentKey', value);
+      }),
+    );
 
     _values.addAll(mapEntry);
   }
 
   @override
   String apply(String value) {
-    return values.entries.fold(value, (acc, element) {
-      final finalValue = switch (element.value) {
-        String() => element.value,
-        int() => element.value.toString(),
-        _ => throw Exception('Invalid type')
-      };
+    return values.entries.fold(
+      value,
+      (acc, element) {
+        final finalValue = switch (element.value) {
+          String() => element.value,
+          int() => element.value.toString(),
+          _ => throw Exception('Invalid type')
+        };
 
-      return acc
-          .replaceAll('{${element.key}}', finalValue)
-          .replaceAll('{{ ${element.key} }}', finalValue);
-    });
+        return acc
+            .replaceAll('{${element.key}}', finalValue)
+            .replaceAll('{{ ${element.key} }}', finalValue);
+      },
+    );
   }
 }
