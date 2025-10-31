@@ -11,7 +11,8 @@ abstract interface class InteractiveComponentManagerContract
   void dispatch(String customId, List params);
 }
 
-final class InteractiveComponentManager implements InteractiveComponentManagerContract {
+final class InteractiveComponentManager
+    implements InteractiveComponentManagerContract {
   final Map<String, InteractiveComponent> _components = {};
 
   @override
@@ -29,6 +30,8 @@ final class InteractiveComponentManager implements InteractiveComponentManagerCo
 
   @override
   T get<T extends InteractiveComponent>(String customId) =>
-      _components.values.firstWhere((e) => e.customId == customId,
-          orElse: () => throw Exception('Cannot found component')) as T;
+      _components.values.firstWhere(
+        (e) => e.customId == customId,
+        orElse: () => throw Exception('Cannot found component'),
+      ) as T;
 }
