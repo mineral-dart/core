@@ -4,8 +4,6 @@ import 'package:mineral/src/infrastructure/services/wss/websocket_requested_mess
 
 abstract interface class EncodingStrategy {
   WsEncoder get encoder;
-
   WebsocketMessage decode(WebsocketMessage message);
-
   WebsocketRequestedMessage encode(WebsocketRequestedMessage message);
 }

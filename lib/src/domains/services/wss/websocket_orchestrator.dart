@@ -13,14 +13,24 @@ abstract class WebsocketOrchestratorContract {
 
   Map<int, ShardContract> get shards;
 
-  void send(WebsocketIsolateMessageTransfert message);
+  void send(
+    WebsocketIsolateMessageTransfert message,
+  );
 
   void setBotPresence(
-      List<BotActivity>? activity, StatusType? status, bool? afk);
+    List<BotActivity>? activity,
+    StatusType? status,
+    bool? afk,
+  );
 
-  Future<Presence> getMemberPresence(String serverId, String id);
+  Future<Presence> getMemberPresence(
+    String serverId,
+    String id,
+  );
 
   Future<Map<String, dynamic>> getWebsocketEndpoint();
 
-  Future<void> createShards(RunningStrategy strategy);
+  Future<void> createShards(
+    RunningStrategy strategy,
+  );
 }
