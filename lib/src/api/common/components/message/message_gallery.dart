@@ -66,7 +66,7 @@ final class GalleryItem {
     };
   }
 
-  static Future<GalleryItem> fromFile(File file, String name) async {
+  factory GalleryItem.fromFile(File file, String name) {
       if (!file.existsSync()) {
         throw ArgumentError('File ${file.path} does not exist');
       }
@@ -75,7 +75,7 @@ final class GalleryItem {
         throw ArgumentError("Name can't be empty.");
       }
 
-      final bytes = await file.readAsBytes();
+      final bytes = file.readAsBytesSync();
       MessageGallery.set(name, bytes);
 
       final url = 'attachment://$name';
