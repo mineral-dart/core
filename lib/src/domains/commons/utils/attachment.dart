@@ -11,19 +11,44 @@ AttachmentResult makeAttachmentFromBuilder(MessageBuilder builder) {
   final files = <http.MultipartFile>[];
 
   for (int i = 0; i < components.length; i++) {
-    if (components[i]['type'] == ComponentType.file.value) {
-      final filePath = components[i]['file']['url'];
+    final comp = components[i];
+
+    if (comp['type'] == ComponentType.file.value) {
+      final filePath = comp['file']['url'];
       final filename = filePath.split('/').last;
 
       final multipartFile = http.MultipartFile.fromBytes(
-        'files[$i]',
-        components[i]['file']['bytes'],
+        'files[${files.length}]',
+        comp['file']['bytes'],
         filename: filename,
       );
 
       files.add(multipartFile);
-      components[i]['file']['url'] = 'attachment://$filename';
-      components[i]['file']['bytes'] = null;
+      comp['file']['url'] = 'attachment://$filename';
+      comp['file']['bytes'] = null;
+      continue;
+    }
+
+    if (comp['type'] == ComponentType.mediaGallery.value) {
+      final items = comp['items'] as List<dynamic>?;
+      if (items != null) {
+        for (final item in items) {
+          final media = item['media'] as Map<String, dynamic>?;
+          final url = media?['url'] as String?;
+          if (url != null && url.startsWith('attachment://')) {
+            final filename = url.replaceFirst('attachment://', '');
+            final bytes = MessageGallery.delete(filename);
+            if (bytes != null) {
+              final multipartFile = http.MultipartFile.fromBytes(
+                'files[${files.length}]',
+                bytes,
+                filename: filename,
+              );
+              files.add(multipartFile);
+            }
+          }
+        }
+      }
     }
   }
 

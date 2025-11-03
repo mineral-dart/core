@@ -1,7 +1,20 @@
+import 'dart:io';
+import 'dart:typed_data';
+
 import 'package:mineral/api.dart';
 
 final class MessageGallery implements Component {
   ComponentType get type => ComponentType.mediaGallery;
+
+  static final Map<String, Uint8List> _stagedFiles = {};
+
+  static void set(String name, Uint8List bytes) {
+    _stagedFiles[name] = bytes;
+  }
+
+  static Uint8List? delete(String name) {
+    return _stagedFiles.remove(name);
+  }
 
   final List<GalleryItem> _items;
 
@@ -51,5 +64,21 @@ final class GalleryItem {
       if (_description != null) 'description': _description,
       if (_spoiler != null) 'spoiler': _spoiler,
     };
+  }
+
+  static Future<GalleryItem> fromFile(File file, String name) async {
+      if (!file.existsSync()) {
+        throw ArgumentError('File ${file.path} does not exist');
+      }
+
+      if (name.isEmpty) {
+        throw ArgumentError("Name can't be empty.");
+      }
+
+      final bytes = await file.readAsBytes();
+      MessageGallery.set(name, bytes);
+
+      final url = 'attachment://$name';
+      return GalleryItem(url);
   }
 }
