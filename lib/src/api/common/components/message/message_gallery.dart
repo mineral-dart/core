@@ -66,6 +66,13 @@ final class GalleryItem {
     };
   }
 
+
+  /// ```dart
+  ///   final file = File("assets/logo.png");
+  //    final myImage = GalleryItem.fromFile(file, "test.png");
+  /// ```
+  ///
+  /// Used to put a image file to discord's gallery instead of an url.
   factory GalleryItem.fromFile(File file, String name) {
       if (!file.existsSync()) {
         throw ArgumentError('File ${file.path} does not exist');
