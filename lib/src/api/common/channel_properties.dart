@@ -5,8 +5,8 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
-import 'package:mineral/src/domains/commons/utils/helper.dart';
-import 'package:mineral/src/domains/commons/utils/utils.dart';
+import 'package:mineral/src/domains/common/utils/helper.dart';
+import 'package:mineral/src/domains/common/utils/utils.dart';
 
 final class ChannelProperties {
   ChannelPartContract get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;

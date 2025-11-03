@@ -1,8 +1,9 @@
+import 'dart:io';
+import 'dart:typed_data';
 import 'package:mineral/api.dart';
 
 final class MessageGallery implements Component {
   ComponentType get type => ComponentType.mediaGallery;
-
   final List<GalleryItem> _items;
 
   MessageGallery({required List<GalleryItem> items}) : _items = items;
@@ -20,6 +21,7 @@ final class GalleryItem {
   final MessageMedia _media;
   final String? _description;
   final bool? _spoiler;
+  Uint8List? _bytes;
 
   GalleryItem(
     String url, {
@@ -48,8 +50,31 @@ final class GalleryItem {
         if (_media.width != null) 'width': _media.width,
         if (_media.contentType != null) 'content_type': _media.contentType,
       },
+      if (_bytes != null) 'bytes': _bytes!,
       if (_description != null) 'description': _description,
       if (_spoiler != null) 'spoiler': _spoiler,
     };
+  }
+
+
+  /// ```dart
+  ///   final file = File("assets/logo.png");
+  //    final myImage = GalleryItem.fromFile(file, "test.png");
+  /// ```
+  ///
+  /// Used to put a image file to discord's gallery instead of an url.
+  factory GalleryItem.fromFile(File file, String name) {
+      if (!file.existsSync()) {
+        throw ArgumentError('File ${file.path} does not exist');
+      }
+
+      if (name.isEmpty) {
+        throw ArgumentError("Name can't be empty.");
+      }
+
+      final bytes = file.readAsBytesSync();
+
+      return GalleryItem('attachment://$name')
+      .._bytes = bytes;
   }
 }

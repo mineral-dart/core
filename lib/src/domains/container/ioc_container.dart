@@ -1,6 +1,6 @@
 import 'dart:collection';
 
-import 'package:mineral/src/domains/commons/utils/helper.dart';
+import 'package:mineral/src/domains/common/utils/helper.dart';
 
 final class IocContainer {
   final Map<Type, dynamic> _services = {};

@@ -1,4 +1,4 @@
-import 'package:mineral/src/domains/commons/kernel.dart';
+import 'package:mineral/src/domains/common/kernel.dart';
 import 'package:mineral/src/domains/services/datastore/datastore.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/channel_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/emoji_part.dart';

@@ -1,5 +1,5 @@
 import 'package:mineral/events.dart';
-import 'package:mineral/src/domains/commons/kernel.dart';
+import 'package:mineral/src/domains/common/kernel.dart';
 import 'package:mineral/src/domains/events/buckets/private_bucket.dart';
 import 'package:mineral/src/domains/events/buckets/server_bucket.dart';
 import 'package:mineral/src/domains/events/contracts/common/invite_create_event.dart';

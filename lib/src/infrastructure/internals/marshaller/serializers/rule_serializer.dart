@@ -5,7 +5,7 @@ import 'package:mineral/src/api/server/moderation/enums/action_type.dart';
 import 'package:mineral/src/api/server/moderation/enums/auto_moderation_event_type.dart';
 import 'package:mineral/src/api/server/moderation/enums/trigger_type.dart';
 import 'package:mineral/src/api/server/moderation/trigger_metadata.dart';
-import 'package:mineral/src/domains/commons/utils/utils.dart';
+import 'package:mineral/src/domains/common/utils/utils.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
