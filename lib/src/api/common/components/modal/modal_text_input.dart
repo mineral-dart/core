@@ -1,7 +1,7 @@
 import 'package:mineral/src/api/common/components/component.dart';
 import 'package:mineral/src/api/common/components/component_type.dart';
 import 'package:mineral/src/api/common/types/enhanced_enum.dart';
-import 'package:mineral/src/domains/commons/utils/helper.dart';
+import 'package:mineral/src/domains/common/utils/helper.dart';
 
 enum ModalTextInputStyle implements EnhancedEnum<int> {
   short(1),

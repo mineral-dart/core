@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'dart:io';
 
-import 'package:mineral/src/domains/commons/utils/file.dart';
+import 'package:mineral/src/domains/common/utils/file.dart';
 import 'package:mineral/src/domains/services/packets/packet_dispatcher.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';

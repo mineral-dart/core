@@ -1,5 +1,5 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/domains/commons/utils/utils.dart';
+import 'package:mineral/src/domains/common/utils/utils.dart';
 
 abstract class ChannelBuilderContract {
   void setName(String value);

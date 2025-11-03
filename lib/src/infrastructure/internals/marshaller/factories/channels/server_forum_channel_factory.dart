@@ -3,8 +3,8 @@ import 'package:mineral/src/api/common/types/channel_type.dart';
 import 'package:mineral/src/api/server/channels/server_forum_channel.dart';
 import 'package:mineral/src/api/server/enums/forum_layout_types.dart';
 import 'package:mineral/src/api/server/enums/sort_order_forum.dart';
-import 'package:mineral/src/domains/commons/utils/helper.dart';
-import 'package:mineral/src/domains/commons/utils/utils.dart';
+import 'package:mineral/src/domains/common/utils/helper.dart';
+import 'package:mineral/src/domains/common/utils/utils.dart';
 import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/channel_factory.dart';
 

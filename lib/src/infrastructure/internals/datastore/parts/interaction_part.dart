@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/domains/commons/utils/attachment.dart';
+import 'package:mineral/src/domains/common/utils/attachment.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class InteractionPart implements InteractionPartContract {

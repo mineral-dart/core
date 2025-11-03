@@ -1,8 +1,8 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/api/common/permissions.dart';
-import 'package:mineral/src/domains/commons/utils/helper.dart';
-import 'package:mineral/src/domains/commons/utils/utils.dart';
+import 'package:mineral/src/domains/common/utils/helper.dart';
+import 'package:mineral/src/domains/common/utils/utils.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/serializer.dart';
 

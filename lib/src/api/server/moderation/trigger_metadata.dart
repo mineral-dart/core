@@ -1,5 +1,5 @@
 import 'package:mineral/src/api/server/moderation/enums/keyword_preset_type.dart';
-import 'package:mineral/src/domains/commons/utils/utils.dart';
+import 'package:mineral/src/domains/common/utils/utils.dart';
 
 final class TriggerMetadata {
   final List<String> keywordFilter;
