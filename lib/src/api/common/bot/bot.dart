@@ -33,7 +33,9 @@ final class Bot {
     required this.presences,
     required this.guildIds,
     required this.application,
-  });
+  }) {
+    ioc.bind<Bot>(() => this);
+  }
 
   /// Updates presence of this
   void setPresence({List<BotActivity>? activities, StatusType? status, bool? afk}) =>
