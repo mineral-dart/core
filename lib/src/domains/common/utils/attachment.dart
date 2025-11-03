@@ -35,9 +35,11 @@ AttachmentResult makeAttachmentFromBuilder(MessageBuilder builder) {
         for (final item in items) {
           final media = item['media'] as Map<String, dynamic>?;
           final url = media?['url'] as String?;
-          if (url != null && url.startsWith('attachment://')) {
+
+          if (url != null && url.startsWith('attachment://') && item['bytes'] != null) {
             final filename = url.replaceFirst('attachment://', '');
-            final bytes = MessageGallery.delete(filename);
+            final bytes = item['bytes'];
+
             if (bytes != null) {
               final multipartFile = http.MultipartFile.fromBytes(
                 'files[${files.length}]',
