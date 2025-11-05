@@ -17,7 +17,7 @@ mixin Logger {
 }
 
 mixin State {
-  GlobalStateService get state => ioc.resolve<GlobalStateService>();
+  GlobalStateService get state => ioc.resolve<GlobalStateManager>();
 }
 
 mixin Components {
