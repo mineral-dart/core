@@ -12,6 +12,9 @@ final class Interaction implements InteractionContract {
   Interaction(this._token, this._id);
 
   @override
+  DateTime get createdAt => _id.createdAt;
+
+  @override
   Future<InteractionContract> reply(
       {required MessageBuilder builder,
       bool ephemeral = false}) async {

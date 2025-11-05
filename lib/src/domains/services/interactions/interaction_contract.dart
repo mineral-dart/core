@@ -1,6 +1,8 @@
 import 'package:mineral/api.dart';
 
 abstract class InteractionContract {
+  DateTime get createdAt;
+
   /// Use to reply to the interaction.
   /// Usage:
   ///
