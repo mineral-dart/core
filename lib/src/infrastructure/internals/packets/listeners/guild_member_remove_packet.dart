@@ -18,6 +18,6 @@ final class GuildMemberRemovePacket implements ListenablePacket {
     final user =
         await _dataStore.user.get(message.payload['user']['id'], false);
 
-    dispatch(event: Event.serverMemberRemove, params: [server, user]);
+    dispatch(event: Event.serverMemberRemove, params: [user, server]);
   }
 }
