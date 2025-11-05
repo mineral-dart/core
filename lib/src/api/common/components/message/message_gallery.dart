@@ -62,6 +62,7 @@ final class GalleryItem {
   //    final myImage = GalleryItem.fromFile(file, "test.png");
   /// ```
   ///
+  /// WARN: Please make sure you put the correct file extension in the name.
   /// Used to put a image file to discord's gallery instead of an url.
   factory GalleryItem.fromFile(File file, String name) {
       if (!file.existsSync()) {
