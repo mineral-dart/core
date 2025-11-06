@@ -34,17 +34,17 @@ final class ServerVoiceChannelFactory
       MarshallerContract marshaller, Map<String, dynamic> json) async {
     final properties = await ChannelProperties.serializeCache(marshaller, json);
     final voices = await marshaller.cache!.whereKeyStartsWith('voice_states/server/${properties.serverId}') ?? {};
-    final List<VoiceState> voicesStates = [];
+    final List<VoiceState> members = [];
 
     for (final voice in voices.values) {
       if (voice['channel_id'].toString() == properties.id.value) {
         final voiceState = await marshaller.serializers.voice.serialize(voice);
-        voicesStates.add(voiceState);
+        members.add(voiceState);
       }
     }
 
     return ServerVoiceChannel(properties)
-    ..voices = voicesStates;
+    ..members = members;
   }
 
   @override

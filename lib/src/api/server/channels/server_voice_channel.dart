@@ -33,7 +33,7 @@ final class ServerVoiceChannel extends ServerChannel {
 
   late final ServerCategoryChannel? category;
 
-  late final List<VoiceState> voices;
+  late final List<VoiceState> members;
 
   ServerVoiceChannel(this._properties) {
     _methods = ChannelMethods(_properties.serverId!, _properties.id);
