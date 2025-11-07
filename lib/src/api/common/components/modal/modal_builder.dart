@@ -1,5 +1,5 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/components/modal/modal_label.dart';
+import 'package:mineral/src/api/common/components/label.dart';
 import 'package:mineral/src/api/common/components/text_display.dart';
 
 final class ModalBuilder {
@@ -25,7 +25,7 @@ final class ModalBuilder {
     String? description,
   }) {
     _components.add(
-      ModalLabel(
+      Label(
         label: label,
         component: component,
         description: description,
