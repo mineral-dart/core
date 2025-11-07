@@ -41,7 +41,7 @@ export 'package:mineral/src/api/common/components/message/message_section.dart';
 export 'package:mineral/src/api/common/components/message/message_separator.dart';
 export 'package:mineral/src/api/common/components/message/message_thumbnail.dart';
 export 'package:mineral/src/api/common/components/modal/modal_builder.dart';
-export 'package:mineral/src/api/common/components/modal/modal_text_input.dart';
+export 'package:mineral/src/api/common/components/text_input.dart';
 export 'package:mineral/src/api/common/components/shared/select_menu.dart';
 export 'package:mineral/src/api/common/embed/message_embed.dart';
 export 'package:mineral/src/api/common/embed/message_embed_assets.dart';
