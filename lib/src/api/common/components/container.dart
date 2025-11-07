@@ -1,13 +1,13 @@
 import 'package:mineral/api.dart';
 
-final class MessageContainer implements Component {
+final class Container implements MessageComponent {
   ComponentType get type => ComponentType.container;
 
   final Color? _color;
   final bool? _spoiler;
   final MessageBuilder? _components;
 
-  MessageContainer(this._color, this._spoiler, this._components);
+  Container(this._color, this._spoiler, this._components);
 
   @override
   Map<String, dynamic> toJson() {

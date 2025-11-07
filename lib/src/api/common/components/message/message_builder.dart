@@ -1,5 +1,5 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/components/message/message_container.dart';
+import 'package:mineral/src/api/common/components/container.dart';
 import 'package:mineral/src/api/common/components/text_display.dart';
 
 /// ```dart
@@ -40,7 +40,7 @@ final class MessageBuilder {
     Color? color,
     bool? spoiler,
   }) {
-    _components.add(MessageContainer(color, spoiler, builder));
+    _components.add(Container(color, spoiler, builder));
   }
 
   void button(Button button) {
