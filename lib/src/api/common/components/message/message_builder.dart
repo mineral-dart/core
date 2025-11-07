@@ -32,7 +32,7 @@ final class MessageBuilder {
 
   void separator(
       {bool show = true, SeparatorSize spacing = SeparatorSize.small}) {
-    _components.add(MessageSeparator(show, spacing));
+    _components.add(Separator(show, spacing));
   }
 
   void container({

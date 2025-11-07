@@ -38,7 +38,7 @@ export 'package:mineral/src/api/common/components/message/message_file.dart';
 export 'package:mineral/src/api/common/components/message/message_gallery.dart';
 export 'package:mineral/src/api/common/components/action_row.dart';
 export 'package:mineral/src/api/common/components/section.dart';
-export 'package:mineral/src/api/common/components/message/message_separator.dart';
+export 'package:mineral/src/api/common/components/separator.dart';
 export 'package:mineral/src/api/common/components/message/message_thumbnail.dart';
 export 'package:mineral/src/api/common/components/modal/modal_builder.dart';
 export 'package:mineral/src/api/common/components/text_input.dart';
