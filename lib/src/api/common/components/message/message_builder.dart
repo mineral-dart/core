@@ -48,17 +48,17 @@ final class MessageBuilder {
       throw Exception('You can only add up to 5 buttons to a message');
     }
 
-    final row = MessageRowBuilder(components: [button]);
+    final row = ActionRow(components: [button]);
     _components.add(row);
   }
 
   void buttons(List<MessageButton> buttons) {
-    final row = MessageRowBuilder(components: buttons);
+    final row = ActionRow(components: buttons);
     _components.add(row);
   }
 
   void selectMenu(SelectMenu menu) {
-    final row = MessageRowBuilder(components: [menu]);
+    final row = ActionRow(components: [menu]);
     _components.add(row);
   }
 
