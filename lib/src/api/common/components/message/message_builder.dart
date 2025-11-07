@@ -62,7 +62,7 @@ final class MessageBuilder {
     _components.add(row);
   }
 
-  void section(MessageSection section) {
+  void section(Section section) {
     for (final component in section.builder._components) {
       if (component is! TextDisplay) {
         throw FormatException('Section components must be text only');
