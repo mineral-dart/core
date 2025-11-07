@@ -30,6 +30,8 @@ export 'package:mineral/src/api/common/commands/command_type.dart';
 export 'package:mineral/src/api/common/components/component.dart';
 export 'package:mineral/src/api/common/components/component_type.dart';
 export 'package:mineral/src/api/common/components/media_item.dart';
+export 'package:mineral/src/api/common/components/message_component.dart';
+export 'package:mineral/src/api/common/components/modal_component.dart';
 // Commons
 export 'package:mineral/src/api/common/components/message/message_builder.dart';
 export 'package:mineral/src/api/common/components/message/message_button.dart';
