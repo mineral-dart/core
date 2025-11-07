@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/components/modal/modal_label.dart';
-import 'package:mineral/src/api/common/components/shared/text_display.dart';
+import 'package:mineral/src/api/common/components/text_display.dart';
 
 final class ModalBuilder {
   final List<Component> _components = [];

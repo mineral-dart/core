@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/components/message/message_container.dart';
-import 'package:mineral/src/api/common/components/shared/text_display.dart';
+import 'package:mineral/src/api/common/components/text_display.dart';
 
 /// ```dart
 /// {@template message_builder}
