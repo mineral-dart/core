@@ -1,5 +1,4 @@
 import 'package:mineral/src/api/common/components/component.dart';
-import 'package:mineral/src/api/common/components/component_type.dart';
 import 'package:mineral/src/api/common/partial_emoji.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';

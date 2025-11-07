@@ -28,7 +28,6 @@ export 'package:mineral/src/api/common/commands/command_option.dart';
 export 'package:mineral/src/api/common/commands/command_option_type.dart';
 export 'package:mineral/src/api/common/commands/command_type.dart';
 export 'package:mineral/src/api/common/components/component.dart';
-export 'package:mineral/src/api/common/components/component_type.dart';
 export 'package:mineral/src/api/common/components/media_item.dart';
 export 'package:mineral/src/api/common/components/message_component.dart';
 export 'package:mineral/src/api/common/components/modal_component.dart';
