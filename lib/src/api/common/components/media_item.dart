@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'dart:typed_data';
 
-final class Asset {
+final class MediaItem {
   Uint8List? _bytes;
   final String url;
   final bool? spoiler;
@@ -11,9 +11,9 @@ final class Asset {
   final String? contentType;
   final String? description;
 
-  Asset(this.url, {this.spoiler, this.proxyUrl, this.height, this.width, this.contentType, this.description});
+  MediaItem(this.url, {this.spoiler, this.proxyUrl, this.height, this.width, this.contentType, this.description});
 
-  factory Asset.file(File file, String name, {bool? spoiler, String? proxyUrl, int? height, int? width, String? contentType, String? description}) {
+  factory MediaItem.file(File file, String name, {bool? spoiler, String? proxyUrl, int? height, int? width, String? contentType, String? description}) {
     if (!file.existsSync()) {
       throw ArgumentError('File ${file.path} does not exist');
     }
@@ -24,7 +24,7 @@ final class Asset {
 
     final bytes = file.readAsBytesSync();
 
-    return Asset(
+    return MediaItem(
       'attachment://$name',
       spoiler: spoiler,
       proxyUrl: proxyUrl,

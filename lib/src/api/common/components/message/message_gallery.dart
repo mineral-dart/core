@@ -1,11 +1,10 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/components/asset.dart';
 
 final class MessageGallery implements Component {
   ComponentType get type => ComponentType.mediaGallery;
-  final List<Asset> _items;
+  final List<MediaItem> _items;
 
-  MessageGallery({required List<Asset> items}) : _items = items;
+  MessageGallery({required List<MediaItem> items}) : _items = items;
 
   @override
   Map<String, dynamic> toJson() {
