@@ -34,7 +34,7 @@ export 'package:mineral/src/api/common/components/message_component.dart';
 export 'package:mineral/src/api/common/components/modal_component.dart';
 // Commons
 export 'package:mineral/src/api/common/components/message/message_builder.dart';
-export 'package:mineral/src/api/common/components/message/message_button.dart';
+export 'package:mineral/src/api/common/components/button.dart';
 export 'package:mineral/src/api/common/components/message/message_file.dart';
 export 'package:mineral/src/api/common/components/message/message_gallery.dart';
 export 'package:mineral/src/api/common/components/action_row.dart';

@@ -14,7 +14,7 @@ enum ButtonType implements EnhancedEnum<int> {
   const ButtonType(this.value);
 }
 
-final class MessageButton implements Component {
+final class Button implements MessageComponent {
   final ButtonType _type;
   final String? _customId;
   final String? _label;
@@ -22,7 +22,7 @@ final class MessageButton implements Component {
   final PartialEmoji? _emoji;
   final bool _disabled;
 
-  MessageButton(
+  Button(
       {required ButtonType type,
       String? customId,
       String? label,
@@ -36,54 +36,54 @@ final class MessageButton implements Component {
         _emoji = emoji,
         _disabled = disabled ?? false;
 
-  factory MessageButton.primary(String customId,
+  factory Button.primary(String customId,
           {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
+      Button(
           type: ButtonType.primary,
           customId: customId,
           label: label,
           emoji: emoji,
           disabled: disabled);
 
-  factory MessageButton.secondary(String customId,
+  factory Button.secondary(String customId,
           {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
+      Button(
           type: ButtonType.secondary,
           customId: customId,
           label: label,
           emoji: emoji,
           disabled: disabled);
 
-  factory MessageButton.success(String customId,
+  factory Button.success(String customId,
           {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
+      Button(
           type: ButtonType.success,
           customId: customId,
           label: label,
           emoji: emoji,
           disabled: disabled);
 
-  factory MessageButton.danger(String customId,
+  factory Button.danger(String customId,
           {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
+      Button(
           type: ButtonType.danger,
           customId: customId,
           label: label,
           emoji: emoji,
           disabled: disabled);
 
-  factory MessageButton.link(String url,
+  factory Button.link(String url,
           {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
+      Button(
           type: ButtonType.link,
           url: url,
           label: label,
           emoji: emoji,
           disabled: disabled);
 
-  factory MessageButton.premium(String skuId,
+  factory Button.premium(String skuId,
           {String? label, PartialEmoji? emoji, bool? disabled}) =>
-      MessageButton(
+      Button(
           type: ButtonType.premium,
           customId: skuId,
           label: label,

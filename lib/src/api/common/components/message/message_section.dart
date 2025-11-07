@@ -4,12 +4,12 @@ final class MessageSection implements Component {
   ComponentType get type => ComponentType.section;
 
   final MessageBuilder builder;
-  final MessageButton? _button;
+  final Button? _button;
   final MessageThumbnail? _thumbnail;
 
   MessageSection({
     required this.builder,
-    MessageButton? button,
+    Button? button,
     MessageThumbnail? thumbnail,
   })  : _button = button,
         _thumbnail = thumbnail;

@@ -43,7 +43,7 @@ final class MessageBuilder {
     _components.add(MessageContainer(color, spoiler, builder));
   }
 
-  void button(MessageButton button) {
+  void button(Button button) {
     if (_components.length > 5) {
       throw Exception('You can only add up to 5 buttons to a message');
     }
@@ -52,7 +52,7 @@ final class MessageBuilder {
     _components.add(row);
   }
 
-  void buttons(List<MessageButton> buttons) {
+  void buttons(List<Button> buttons) {
     final row = ActionRow(components: buttons);
     _components.add(row);
   }
