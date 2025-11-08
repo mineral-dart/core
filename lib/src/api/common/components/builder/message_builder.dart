@@ -76,7 +76,7 @@ final class MessageBuilder {
     _components.add(gallery);
   }
 
-  void file(MessageFile file) {
+  void file(AttachedFile file) {
     _components.add(file);
   }
 

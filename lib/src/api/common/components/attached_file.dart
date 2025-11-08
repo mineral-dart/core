@@ -1,14 +1,14 @@
 import 'package:http/http.dart' as http;
 import 'package:mineral/api.dart';
 
-final class MessageFile implements Component {
+final class AttachedFile implements MessageComponent {
   ComponentType get type => ComponentType.file;
 
   MediaItem item;
 
-  MessageFile(this.item);
+  AttachedFile(this.item);
 
-  static Future<MessageFile> network(String url, {bool? spoiler}) async {
+  static Future<AttachedFile> network(String url, {bool? spoiler}) async {
     final uri = Uri.parse(url);
     final response = await http.get(uri);
     final name = uri.pathSegments.isNotEmpty ? uri.pathSegments.last : 'file.txt';
@@ -16,7 +16,7 @@ final class MessageFile implements Component {
     ..bytes = response.bodyBytes
     ..spoiler = spoiler;
 
-    return MessageFile(media);
+    return AttachedFile(media);
   }
 
   @override
