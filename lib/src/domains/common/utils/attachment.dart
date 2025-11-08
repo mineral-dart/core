@@ -11,12 +11,11 @@ AttachmentResult makeAttachmentFromBuilder(MessageBuilder builder) {
     final comp = components[i];
 
     if (comp['type'] == ComponentType.file.value) {
-      final file = _prepareFile(comp, files.length);
+      final file = _prepareAsset(comp, files.length);
 
-      files.add(file);
-      comp['file']['url'] = 'attachment://${file.filename}';
-      comp['file']['bytes'] = null;
-      comp['id'] = files.length;
+      if (file != null) {
+        files.add(file);
+      }
 
       continue;
     }
@@ -52,23 +51,14 @@ http.MultipartFile? _prepareAsset(dynamic payload, int filesLength) {
     );
 
     payload['url'] = 'attachment://$filename';
+    payload['file'] = {
+      'url': 'attachment://$filename',
+      'name': filename,
+    };
     payload['bytes'] = null;
 
     return multipartFile;
   }
 
   return null;
-}
-
-http.MultipartFile _prepareFile(dynamic payload, int filesLength) {
-  final filePath = payload['file']['url'];
-  final filename = filePath.split('/').last;
-
-  final multipartFile = http.MultipartFile.fromBytes(
-    'files[$filesLength]',
-    payload['file']['bytes'],
-    filename: filename,
-  );
-
-  return multipartFile;
 }

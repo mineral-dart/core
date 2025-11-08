@@ -2,9 +2,9 @@ import 'dart:io';
 import 'dart:typed_data';
 
 final class MediaItem {
-  Uint8List? _bytes;
+  Uint8List? bytes;
   final String url;
-  final bool? spoiler;
+  bool? spoiler;
   final String? proxyUrl;
   final int? height;
   final int? width;
@@ -32,14 +32,14 @@ final class MediaItem {
       width: width,
       contentType: contentType,
       description: description,
-    ).._bytes = bytes;
+    )..bytes = bytes;
   }
 
   Map<String, dynamic> toJson() {
     return {
       if (description != null) 'description': description,
       'url': url,
-      if (_bytes != null) 'bytes': _bytes!,
+      if (bytes != null) 'bytes': bytes!,
       if (spoiler != null) 'spoiler': spoiler,
       'media': {
         'url': url,
