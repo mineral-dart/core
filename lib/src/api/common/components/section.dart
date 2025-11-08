@@ -5,12 +5,12 @@ final class Section implements MessageComponent {
 
   final MessageBuilder builder;
   final Button? _button;
-  final MessageThumbnail? _thumbnail;
+  final Thumbnail? _thumbnail;
 
   Section({
     required this.builder,
     Button? button,
-    MessageThumbnail? thumbnail,
+    Thumbnail? thumbnail,
   })  : _button = button,
         _thumbnail = thumbnail;
 

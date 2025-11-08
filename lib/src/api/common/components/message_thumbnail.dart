@@ -1,10 +1,10 @@
 import 'package:mineral/api.dart';
 
-final class MessageThumbnail implements Component {
+final class Thumbnail implements MessageComponent {
   ComponentType get type => ComponentType.thumbnail;
   final MediaItem media;
 
-  MessageThumbnail(this.media);
+  Thumbnail(this.media);
 
   @override
   Map<String, dynamic> toJson() {
