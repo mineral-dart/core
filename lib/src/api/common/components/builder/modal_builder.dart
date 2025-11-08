@@ -15,11 +15,11 @@ final class ModalBuilder {
     return this;
   }
 
-  void text(String text) {
+  void addText(String text) {
     _components.add(TextDisplay(text));
   }
 
-  void label({
+  void addLabel({
     required String label,
     required Component component,
     String? description,
