@@ -72,7 +72,7 @@ final class MessageBuilder {
     _components.add(section);
   }
 
-  void gallery(MessageGallery gallery) {
+  void gallery(MediaGallery gallery) {
     _components.add(gallery);
   }
 
