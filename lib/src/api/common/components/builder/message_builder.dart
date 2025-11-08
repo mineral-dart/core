@@ -26,16 +26,16 @@ import 'package:mineral/src/api/common/components/text_display.dart';
 final class MessageBuilder {
   final List<MessageComponent> _components = [];
 
-  void text(String text) {
+  void addText(String text) {
     _components.add(TextDisplay(text));
   }
 
-  void separator(
+  void addSeparator(
       {bool show = true, SeparatorSize spacing = SeparatorSize.small}) {
     _components.add(Separator(show, spacing));
   }
 
-  void container({
+  void addContainer({
     required MessageBuilder builder,
     Color? color,
     bool? spoiler,
@@ -43,7 +43,7 @@ final class MessageBuilder {
     _components.add(Container(color, spoiler, builder));
   }
 
-  void button(Button button) {
+  void addButton(Button button) {
     if (_components.length > 5) {
       throw Exception('You can only add up to 5 buttons to a message');
     }
@@ -52,17 +52,17 @@ final class MessageBuilder {
     _components.add(row);
   }
 
-  void buttons(List<Button> buttons) {
+  void addButtons(List<Button> buttons) {
     final row = ActionRow(components: buttons);
     _components.add(row);
   }
 
-  void selectMenu(SelectMenu menu) {
+  void addSelectMenu(SelectMenu menu) {
     final row = ActionRow(components: [menu]);
     _components.add(row);
   }
 
-  void section(Section section) {
+  void addSection(Section section) {
     for (final component in section.builder._components) {
       if (component is! TextDisplay) {
         throw FormatException('Section components must be text only');
@@ -72,11 +72,11 @@ final class MessageBuilder {
     _components.add(section);
   }
 
-  void gallery(MediaGallery gallery) {
+  void addGallery(MediaGallery gallery) {
     _components.add(gallery);
   }
 
-  void file(AttachedFile file) {
+  void addFile(AttachedFile file) {
     _components.add(file);
   }
 
@@ -84,19 +84,19 @@ final class MessageBuilder {
     return _components.map((e) => e.toJson()).toList();
   }
 
-  void prepend(MessageBuilder builder) {
+  void prependFrom(MessageBuilder builder) {
     _components.insertAll(0, builder._components);
   }
 
-  void append(MessageBuilder builder) {
+  void appendFrom(MessageBuilder builder) {
     _components.addAll(builder._components);
   }
 
-  MessageBuilder clone() {
+  MessageBuilder copy() {
     return MessageBuilder().._components.addAll(_components);
   }
 
-  MessageBuilder cloneFrom(MessageBuilder builder) {
+  MessageBuilder copyWith(MessageBuilder builder) {
     return MessageBuilder()
       .._components.addAll(_components)
       .._components.addAll(builder._components);
