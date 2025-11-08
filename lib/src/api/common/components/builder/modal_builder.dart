@@ -3,7 +3,7 @@ import 'package:mineral/src/api/common/components/label.dart';
 import 'package:mineral/src/api/common/components/text_display.dart';
 
 final class ModalBuilder {
-  final List<Component> _components = [];
+  final List<ModalComponent> _components = [];
 
   final String _customId;
   String? _title;
