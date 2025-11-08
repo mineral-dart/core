@@ -1,9 +1,6 @@
-import 'package:mineral/src/api/common/components/component.dart';
-import 'package:mineral/src/api/common/partial_emoji.dart';
-import 'package:mineral/src/api/common/snowflake.dart';
-import 'package:mineral/src/api/common/types/channel_type.dart';
+import 'package:mineral/api.dart';
 
-final class SelectMenu<T> implements Component {
+final class SelectMenu<T> implements MessageComponent, ModalComponent {
   final ComponentType _type;
   final String _customId;
 
