@@ -10,22 +10,56 @@ final class ModalBuilder {
 
   ModalBuilder(this._customId);
 
-  void addLabel({
+  ModalBuilder addSelectMenu({
+    required String customId,
     required String label,
-    required ModalComponent component,
+    required SelectMenu menu,
     String? description,
   }) {
     _components.add(
       Label(
         label: label,
-        component: component,
+        component: menu,
         description: description,
       ),
     );
+    return this;
   }
 
-  void addText(String text) {
+  ModalBuilder addText(String text) {
     _components.add(TextDisplay(text));
+    return this;
+  }
+
+  ModalBuilder addTextInput({
+    required String customId,
+    required String label,
+    TextInputStyle style = TextInputStyle.short,
+    String? placeholder,
+    String? value,
+    int? minLength,
+    int? maxLength,
+    bool? isRequired,
+    String? description,
+  }) {
+    final textInput = TextInput(
+      customId,
+      style: style,
+      placeholder: placeholder,
+      value: value,
+      minLength: minLength,
+      maxLength: maxLength,
+      isRequired: isRequired,
+    );
+
+    _components.add(
+      Label(
+        label: label,
+        component: textInput,
+        description: description,
+      ),
+    );
+    return this;
   }
 
   ModalBuilder setTitle(String title) {
@@ -33,7 +67,7 @@ final class ModalBuilder {
     return this;
   }
 
-  Map<String, dynamic> toJson() {
+  Map<String, dynamic> build() {
     return {
       'custom_id': _customId,
       'title': _title,
