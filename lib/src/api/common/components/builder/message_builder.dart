@@ -26,6 +26,12 @@ import 'package:mineral/src/api/common/components/text_display.dart';
 final class MessageBuilder {
   final List<MessageComponent> _components = [];
 
+  MessageBuilder();
+
+  factory MessageBuilder.text(String text) {
+    return MessageBuilder()..addText(text);
+  }
+
   void addText(String text) {
     _components.add(TextDisplay(text));
   }
