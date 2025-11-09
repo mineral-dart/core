@@ -38,6 +38,14 @@ final class MessageBuilder {
   }
 
   void addButtons(List<Button> buttons) {
+    if (buttons.length > 5) {
+      throw ArgumentError.value(
+        buttons.length,
+        'buttons',
+        'A row can contain at most 5 buttons (received ${buttons.length}).',
+      );
+    }
+
     final row = ActionRow(components: buttons);
     _components.add(row);
   }
