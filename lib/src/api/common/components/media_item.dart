@@ -13,7 +13,7 @@ final class MediaItem {
 
   MediaItem(this.url, {this.spoiler, this.proxyUrl, this.height, this.width, this.contentType, this.description});
 
-  factory MediaItem.file(File file, String name, {bool? spoiler, String? proxyUrl, int? height, int? width, String? contentType, String? description}) {
+  factory MediaItem.fromFile(File file, String name, {bool? spoiler, String? proxyUrl, int? height, int? width, String? contentType, String? description}) {
     if (!file.existsSync()) {
       throw ArgumentError('File ${file.path} does not exist');
     }
