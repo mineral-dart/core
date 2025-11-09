@@ -12,7 +12,7 @@ final class ModalBuilder {
 
   void addLabel({
     required String label,
-    required Component component,
+    required ModalComponent component,
     String? description,
   }) {
     _components.add(
