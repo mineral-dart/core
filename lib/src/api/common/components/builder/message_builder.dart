@@ -33,10 +33,6 @@ final class MessageBuilder {
   }
 
   void addButton(Button button) {
-    if (_components.length > 5) {
-      throw Exception('You can only add up to 5 buttons to a message');
-    }
-
     final row = ActionRow(components: [button]);
     _components.add(row);
   }
