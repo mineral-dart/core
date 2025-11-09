@@ -11,9 +11,16 @@ final class MediaItem {
   final String? contentType;
   final String? description;
 
-  MediaItem(this.url, {this.spoiler, this.proxyUrl, this.height, this.width, this.contentType, this.description});
-
-  factory MediaItem.fromFile(File file, String name, {bool? spoiler, String? proxyUrl, int? height, int? width, String? contentType, String? description}) {
+  factory MediaItem.fromFile(
+    File file,
+    String name, {
+    bool? spoiler,
+    String? proxyUrl,
+    int? height,
+    int? width,
+    String? contentType,
+    String? description,
+  }) {
     if (!file.existsSync()) {
       throw ArgumentError('File ${file.path} does not exist');
     }
@@ -24,7 +31,7 @@ final class MediaItem {
 
     final bytes = file.readAsBytesSync();
 
-    return MediaItem(
+    return MediaItem._(
       'attachment://$name',
       spoiler: spoiler,
       proxyUrl: proxyUrl,
@@ -34,6 +41,26 @@ final class MediaItem {
       description: description,
     )..bytes = bytes;
   }
+
+  MediaItem.fromNetwork(
+    this.url, {
+    this.spoiler,
+    this.proxyUrl,
+    this.height,
+    this.width,
+    this.contentType,
+    this.description,
+  });
+
+  MediaItem._(
+    this.url, {
+    required this.proxyUrl,
+    required this.height,
+    required this.width,
+    required this.contentType,
+    required this.description,
+    this.spoiler,
+  });
 
   Map<String, dynamic> toJson() {
     return {
