@@ -10,15 +10,6 @@ final class ModalBuilder {
 
   ModalBuilder(this._customId);
 
-  ModalBuilder setTitle(String title) {
-    _title = title;
-    return this;
-  }
-
-  void addText(String text) {
-    _components.add(TextDisplay(text));
-  }
-
   void addLabel({
     required String label,
     required Component component,
@@ -31,6 +22,15 @@ final class ModalBuilder {
         description: description,
       ),
     );
+  }
+
+  void addText(String text) {
+    _components.add(TextDisplay(text));
+  }
+
+  ModalBuilder setTitle(String title) {
+    _title = title;
+    return this;
   }
 
   Map<String, dynamic> toJson() {
