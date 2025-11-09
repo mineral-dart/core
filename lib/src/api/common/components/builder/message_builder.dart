@@ -32,23 +32,6 @@ final class MessageBuilder {
     return MessageBuilder()..addText(text);
   }
 
-  void addText(String text) {
-    _components.add(TextDisplay(text));
-  }
-
-  void addSeparator(
-      {bool show = true, SeparatorSize spacing = SeparatorSize.small}) {
-    _components.add(Separator(show, spacing));
-  }
-
-  void addContainer({
-    required MessageBuilder builder,
-    Color? color,
-    bool? spoiler,
-  }) {
-    _components.add(Container(color, spoiler, builder));
-  }
-
   void addButton(Button button) {
     if (_components.length > 5) {
       throw Exception('You can only add up to 5 buttons to a message');
@@ -63,9 +46,20 @@ final class MessageBuilder {
     _components.add(row);
   }
 
-  void addSelectMenu(SelectMenu menu) {
-    final row = ActionRow(components: [menu]);
-    _components.add(row);
+  void addContainer({
+    required MessageBuilder builder,
+    Color? color,
+    bool? spoiler,
+  }) {
+    _components.add(Container(color, spoiler, builder));
+  }
+
+  void addFile(AttachedFile file) {
+    _components.add(file);
+  }
+
+  void addGallery(MediaGallery gallery) {
+    _components.add(gallery);
   }
 
   void addSection(Section section) {
@@ -78,24 +72,26 @@ final class MessageBuilder {
     _components.add(section);
   }
 
-  void addGallery(MediaGallery gallery) {
-    _components.add(gallery);
+  void addSelectMenu(SelectMenu menu) {
+    final row = ActionRow(components: [menu]);
+    _components.add(row);
   }
 
-  void addFile(AttachedFile file) {
-    _components.add(file);
+  void addSeparator(
+      {bool show = true, SeparatorSize spacing = SeparatorSize.small}) {
+    _components.add(Separator(show, spacing));
   }
 
-  List<Map<String, dynamic>> build() {
-    return _components.map((e) => e.toJson()).toList();
-  }
-
-  void prependFrom(MessageBuilder builder) {
-    _components.insertAll(0, builder._components);
+  void addText(String text) {
+    _components.add(TextDisplay(text));
   }
 
   void appendFrom(MessageBuilder builder) {
     _components.addAll(builder._components);
+  }
+
+  List<Map<String, dynamic>> build() {
+    return _components.map((e) => e.toJson()).toList();
   }
 
   MessageBuilder copy() {
@@ -106,5 +102,9 @@ final class MessageBuilder {
     return MessageBuilder()
       .._components.addAll(_components)
       .._components.addAll(builder._components);
+  }
+
+  void prependFrom(MessageBuilder builder) {
+    _components.insertAll(0, builder._components);
   }
 }
