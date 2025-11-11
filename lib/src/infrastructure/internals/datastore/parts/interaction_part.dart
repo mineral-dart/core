@@ -146,7 +146,7 @@ final class InteractionPart implements InteractionPartContract {
     final req =
         Request.json(endpoint: '/interactions/$id/$token/callback', body: {
       'type': InteractionCallbackType.modal.value,
-      'data': modal.toJson(),
+      'data': modal.build(),
     });
     await _dataStore.client.post(req);
   }

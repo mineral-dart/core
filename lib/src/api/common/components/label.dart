@@ -1,15 +1,14 @@
-import 'package:mineral/src/api/common/components/component.dart';
-import 'package:mineral/src/api/common/components/component_type.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/common/utils/helper.dart';
 
-final class ModalLabel implements Component {
+final class Label implements ModalComponent {
   ComponentType get type => ComponentType.label;
 
   final String label;
   final Component component;
   final String? description;
 
-  ModalLabel({
+  Label({
     required this.label,
     required this.component,
     this.description,

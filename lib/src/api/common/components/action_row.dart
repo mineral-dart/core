@@ -1,9 +1,9 @@
 import 'package:mineral/api.dart';
 
-final class MessageRowBuilder implements Component {
+final class ActionRow implements MessageComponent {
   final List<Component> components;
 
-  MessageRowBuilder({this.components = const []});
+  ActionRow({this.components = const []});
 
   @override
   Map<String, dynamic> toJson() {

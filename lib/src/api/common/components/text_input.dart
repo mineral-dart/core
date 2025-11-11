@@ -1,30 +1,28 @@
-import 'package:mineral/src/api/common/components/component.dart';
-import 'package:mineral/src/api/common/components/component_type.dart';
-import 'package:mineral/src/api/common/types/enhanced_enum.dart';
+import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/common/utils/helper.dart';
 
-enum ModalTextInputStyle implements EnhancedEnum<int> {
+enum TextInputStyle implements EnhancedEnum<int> {
   short(1),
   paragraph(2);
 
   @override
   final int value;
 
-  const ModalTextInputStyle(this.value);
+  const TextInputStyle(this.value);
 }
 
-final class ModalTextInput implements Component {
+final class TextInput implements ModalComponent {
   ComponentType get type => ComponentType.textInput;
 
   final String customId;
-  final ModalTextInputStyle style;
+  final TextInputStyle style;
   final int? minLength;
   final int? maxLength;
   final bool? isRequired;
   final String? value;
   final String? placeholder;
 
-  ModalTextInput(
+  TextInput(
     this.customId, {
     required this.style,
     this.minLength,
