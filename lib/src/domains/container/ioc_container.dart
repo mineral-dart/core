@@ -8,9 +8,6 @@ final class IocContainer {
   UnmodifiableMapView<Type, dynamic> get services =>
       UnmodifiableMapView(_services);
 
-  UnmodifiableMapView<Type, dynamic> getServices() =>
-      UnmodifiableMapView(_services);
-
   void bind<T>(T Function() fn) {
     final service = fn();
     _services[T] = service;
