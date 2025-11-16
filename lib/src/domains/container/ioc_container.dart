@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:mineral/src/domains/common/utils/helper.dart';
 
 final class IocContainer {
@@ -7,6 +6,9 @@ final class IocContainer {
   final Map<Type, dynamic> _defaults = {};
 
   UnmodifiableMapView<Type, dynamic> get services =>
+      UnmodifiableMapView(_services);
+
+  UnmodifiableMapView<Type, dynamic> getServices() =>
       UnmodifiableMapView(_services);
 
   void bind<T>(T Function() fn) {

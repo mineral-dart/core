@@ -9,6 +9,8 @@ import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/services/packets/packet_dispatcher.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/ready_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
@@ -42,7 +44,8 @@ final class HmrRunningStrategy implements RunningStrategy {
       final dateTime = DateTime.now();
 
       Watcher(middlewares: [
-        IgnoreMiddleware(['~', '.dart_tool', '.git', '.idea', '.vscode']),
+        IgnoreMiddleware(
+            ['~', '.dart_tool', '.git', '.idea', '.vscode', '.cursor']),
         IncludeMiddleware([Glob('**.dart'), ..._watchedFiles]),
         DebounceMiddleware(Duration(milliseconds: 50), dateTime),
       ], onStart: handleStart, onFileChange: handleModify)
@@ -70,6 +73,12 @@ final class HmrRunningStrategy implements RunningStrategy {
   Future<void> dispatch(WebsocketMessage message) async {
     final strategy = _wss.config.encoding;
     final decoded = strategy.decode(message);
+    final messageContent = decoded.content.serialize();
+
+    if (messageContent case final Map<String, dynamic> json
+        when json['t'] == PacketType.ready.name) {
+      ioc.bind(() => ReadyPacketMessage(decoded.content));
+    }
 
     await _runner.send(decoded.content.serialize());
   }
@@ -123,8 +132,13 @@ final class HmrRunningStrategy implements RunningStrategy {
     }
 
     sequences.add(AsciiControl.lineFeed);
-
     stdout.writeAnsiAll(sequences);
+
     await _runner.reload();
+
+    if (ioc.resolveOrNull<ReadyPacketMessage>()
+        case final ReadyPacketMessage packet) {
+      await _runner.send(packet.message.serialize());
+    }
   }
 }
