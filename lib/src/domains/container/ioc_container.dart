@@ -1,5 +1,4 @@
 import 'dart:collection';
-
 import 'package:mineral/src/domains/common/utils/helper.dart';
 
 final class IocContainer {
