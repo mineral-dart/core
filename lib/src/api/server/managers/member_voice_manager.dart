@@ -1,7 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/api/server/voice_state.dart';
 
 final class MemberVoiceManager {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();

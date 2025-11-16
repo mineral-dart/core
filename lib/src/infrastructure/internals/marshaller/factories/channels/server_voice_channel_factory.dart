@@ -1,7 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/channel_properties.dart';
-import 'package:mineral/src/api/common/types/channel_type.dart';
-import 'package:mineral/src/api/server/channels/server_voice_channel.dart';
 import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/types/channel_factory.dart';
 
@@ -33,7 +30,9 @@ final class ServerVoiceChannelFactory
   Future<ServerVoiceChannel> serialize(
       MarshallerContract marshaller, Map<String, dynamic> json) async {
     final properties = await ChannelProperties.serializeCache(marshaller, json);
-    final voices = await marshaller.cache!.whereKeyStartsWith('voice_states/server/${properties.serverId}') ?? {};
+    final voices = await marshaller.cache!
+            .whereKeyStartsWith('voice_states/server/${properties.serverId}') ??
+        {};
     final List<VoiceState> members = [];
 
     for (final voice in voices.values) {
@@ -43,8 +42,7 @@ final class ServerVoiceChannelFactory
       }
     }
 
-    return ServerVoiceChannel(properties)
-    ..members = members;
+    return ServerVoiceChannel(properties)..members = members;
   }
 
   @override

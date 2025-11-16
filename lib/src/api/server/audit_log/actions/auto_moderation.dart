@@ -58,15 +58,13 @@ final class AutoModerationFlagToChannelAuditLog extends AuditLog {
 }
 
 final class AutoModerationUserCommunicationDisabledAuditLog extends AuditLog {
-  @override
-  final Snowflake userId;
   final int duration;
 
   AutoModerationUserCommunicationDisabledAuditLog({
     required Snowflake serverId,
     required Snowflake moderatorId,
-    required this.userId,
     required this.duration,
+    required Snowflake userId,
   }) : super(AuditLogType.autoModerationUserCommunicationDisabled, serverId,
             moderatorId);
 }

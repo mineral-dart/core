@@ -1,6 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/server/moderation/action.dart';
-import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
 import 'package:mineral/src/api/server/moderation/enums/action_type.dart';
 import 'package:mineral/src/api/server/moderation/enums/auto_moderation_event_type.dart';
 import 'package:mineral/src/api/server/moderation/enums/trigger_type.dart';
@@ -31,8 +29,8 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
           (json['exempt_channels'] as List).map(Snowflake.parse)),
     };
 
-    final cacheKey = _marshaller.cacheKey
-        .serverRules(json['guild_id'], json['id']);
+    final cacheKey =
+        _marshaller.cacheKey.serverRules(json['guild_id'], json['id']);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -41,28 +39,29 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
   @override
   Future<AutoModerationRule> serialize(Map<String, dynamic> json) async {
     return AutoModerationRule(
-        id: Snowflake.parse(json['id']),
-        serverId: Snowflake.parse(json['serverId']),
-        name: json['name'],
-        creatorId: Snowflake.parse(json['creatorId']),
-        eventTypes: findInEnum(AutoModerationEventType.values, json['eventType']),
-        triggerMetadata: TriggerMetadata.fromJson(json['triggerMetadata']),
-        action: (json['actions'] as List).map((action) {
-          final type = findInEnum(ActionType.values, action['type']);
-          return Action(type: type);
-        }).toList(),
-        enabled: json['enabled'] ?? true,
-        exemptRoles: List<Snowflake>.from(
-            (json['exemptRoles'] as List).map(Snowflake.parse)),
-        exemptChannels: List<Snowflake>.from((json['exemptChannels'] as List).map(Snowflake.parse)),
-        triggerTypes: findInEnum(TriggerType.values, json['triggerType']),
-            );
+      id: Snowflake.parse(json['id']),
+      serverId: Snowflake.parse(json['serverId']),
+      name: json['name'],
+      creatorId: Snowflake.parse(json['creatorId']),
+      eventTypes: findInEnum(AutoModerationEventType.values, json['eventType']),
+      triggerMetadata: TriggerMetadata.fromJson(json['triggerMetadata']),
+      action: (json['actions'] as List).map((action) {
+        final type = findInEnum(ActionType.values, action['type']);
+        return Action(type: type);
+      }).toList(),
+      enabled: json['enabled'] ?? true,
+      exemptRoles: List<Snowflake>.from(
+          (json['exemptRoles'] as List).map(Snowflake.parse)),
+      exemptChannels: List<Snowflake>.from(
+          (json['exemptChannels'] as List).map(Snowflake.parse)),
+      triggerTypes: findInEnum(TriggerType.values, json['triggerType']),
+    );
   }
 
   @override
   Map<String, dynamic> deserialize(AutoModerationRule rule) {
     return {
-       'id': rule.id,
+      'id': rule.id,
       'server_id': rule.serverId.toString(),
       'name': rule.name,
       'creator_id': rule.creatorId.toString(),

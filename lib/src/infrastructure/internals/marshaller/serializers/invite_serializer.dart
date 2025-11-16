@@ -1,5 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/server/invite.dart';
 import 'package:mineral/src/domains/common/utils/helper.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/services/marshaller/marshaller.dart';

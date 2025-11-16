@@ -4,7 +4,6 @@ import 'package:mineral/src/domains/events/buckets/private_bucket.dart';
 import 'package:mineral/src/domains/events/buckets/server_bucket.dart';
 import 'package:mineral/src/domains/events/contracts/common/invite_create_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/invite_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/voice_move_event.dart';
 
 final class EventBucket {
   final Kernel _kernel;

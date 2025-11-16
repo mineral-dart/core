@@ -2,12 +2,9 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
 import 'package:mineral/src/api/server/channels/private_thread_channel.dart';
 import 'package:mineral/src/api/server/channels/public_thread_channel.dart';
-import 'package:mineral/src/api/server/moderation/action.dart';
-import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
 import 'package:mineral/src/api/server/moderation/enums/auto_moderation_event_type.dart';
 import 'package:mineral/src/api/server/moderation/enums/trigger_type.dart';
 import 'package:mineral/src/api/server/moderation/trigger_metadata.dart';
-import 'package:mineral/src/api/server/voice_state.dart';
 
 abstract interface class DataStorePart {}
 
@@ -49,18 +46,18 @@ abstract interface class ThreadPartContract implements DataStorePart {
 }
 
 abstract interface class InteractionPartContract implements DataStorePart {
-  Future<void> replyInteraction(Snowflake id, String token,
-      MessageBuilder builder, bool ephemeral);
+  Future<void> replyInteraction(
+      Snowflake id, String token, MessageBuilder builder, bool ephemeral);
 
-  Future<void> editInteraction(Snowflake botId, String token,
-      MessageBuilder builder, bool ephemeral);
+  Future<void> editInteraction(
+      Snowflake botId, String token, MessageBuilder builder, bool ephemeral);
 
   Future<void> deleteInteraction(Snowflake botId, String token);
 
   Future<void> noReplyInteraction(Snowflake id, String token, bool ephemeral);
 
-  Future<void> createFollowup(Snowflake botId, String token,
-      MessageBuilder builder, bool ephemeral);
+  Future<void> createFollowup(
+      Snowflake botId, String token, MessageBuilder builder, bool ephemeral);
 
   Future<void> editFollowup(Snowflake botId, String token, Snowflake messageId,
       MessageBuilder builder, bool ephemeral);

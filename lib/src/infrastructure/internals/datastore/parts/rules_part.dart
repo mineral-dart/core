@@ -4,8 +4,6 @@ import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/api/server/moderation/action.dart';
-import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
 import 'package:mineral/src/api/server/moderation/enums/auto_moderation_event_type.dart';
 import 'package:mineral/src/api/server/moderation/enums/trigger_type.dart';
 import 'package:mineral/src/api/server/moderation/trigger_metadata.dart';
@@ -19,10 +17,12 @@ final class RulesPart implements RulesPartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Map<Snowflake, AutoModerationRule>> fetch(Object serverId, bool force) async {
+  Future<Map<Snowflake, AutoModerationRule>> fetch(
+      Object serverId, bool force) async {
     final completer = Completer<Map<Snowflake, AutoModerationRule>>();
 
-    final req = Request.json(endpoint: '/guilds/$serverId/auto-moderation/rules');
+    final req =
+        Request.json(endpoint: '/guilds/$serverId/auto-moderation/rules');
     final result = await _dataStore.requestBucket
         .query<List<dynamic>>(req)
         .run(_dataStore.client.get);
@@ -39,7 +39,8 @@ final class RulesPart implements RulesPartContract {
   }
 
   @override
-  Future<AutoModerationRule?> get(Object serverId, Object rulesId, bool force) async {
+  Future<AutoModerationRule?> get(
+      Object serverId, Object rulesId, bool force) async {
     final completer = Completer<AutoModerationRule>();
     final String key = _marshaller.cacheKey.serverRules(serverId, rulesId);
 
@@ -51,7 +52,8 @@ final class RulesPart implements RulesPartContract {
       return completer.future;
     }
 
-    final req = Request.json(endpoint: '/guilds/$serverId/auto-moderation/rules/$rulesId');
+    final req = Request.json(
+        endpoint: '/guilds/$serverId/auto-moderation/rules/$rulesId');
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
         .run(_dataStore.client.get);
@@ -76,31 +78,40 @@ final class RulesPart implements RulesPartContract {
     List<Snowflake> exemptChannels = const [],
     bool enabled = true,
     String? reason,
-}) async {
+  }) async {
     final completer = Completer<AutoModerationRule>();
 
-    final req = Request.json(endpoint: '/guilds/$serverId/auto-moderation/rules', body: {
-      'name': name,
-      'event_type': eventType.value,
-      'trigger_type': triggerType.value,
-      'trigger_metadata': triggerMetadata != null ? {
-        'keyword_filter': triggerMetadata.keywordFilter,
-        'regex_patterns': triggerMetadata.regexPatterns,
-        'presets': triggerMetadata.presets.map((e) => e.value).toList(),
-        'allow_list': triggerMetadata.allowList,
-        'mention_total_limit': triggerMetadata.mentionTotalLimit,
-        'mention_raid_protection_enabled': triggerMetadata.mentionRaidProtectionEnabled,
-      } : null,
-      'actions': actions.map((action) => {
-        'type': action.type.value,
-        if (action.metadata != null) 'metadata': action.metadata,
-      }).toList(),
-      'exempt_roles': exemptRoles.map((e) => e.toString()).toList(),
-      'exempt_channels': exemptChannels.map((e) => e.toString()).toList(),
-      'enabled': enabled,
-    }, headers: {
-      DiscordHeader.auditLogReason(reason)
-    });
+    final req = Request.json(
+        endpoint: '/guilds/$serverId/auto-moderation/rules',
+        body: {
+          'name': name,
+          'event_type': eventType.value,
+          'trigger_type': triggerType.value,
+          'trigger_metadata': triggerMetadata != null
+              ? {
+                  'keyword_filter': triggerMetadata.keywordFilter,
+                  'regex_patterns': triggerMetadata.regexPatterns,
+                  'presets':
+                      triggerMetadata.presets.map((e) => e.value).toList(),
+                  'allow_list': triggerMetadata.allowList,
+                  'mention_total_limit': triggerMetadata.mentionTotalLimit,
+                  'mention_raid_protection_enabled':
+                      triggerMetadata.mentionRaidProtectionEnabled,
+                }
+              : null,
+          'actions': actions
+              .map((action) => {
+                    'type': action.type.value,
+                    if (action.metadata != null) 'metadata': action.metadata,
+                  })
+              .toList(),
+          'exempt_roles': exemptRoles.map((e) => e.toString()).toList(),
+          'exempt_channels': exemptChannels.map((e) => e.toString()).toList(),
+          'enabled': enabled,
+        },
+        headers: {
+          DiscordHeader.auditLogReason(reason)
+        });
     final result = await _dataStore.requestBucket
         .query<Map<String, dynamic>>(req)
         .run(_dataStore.client.post);
