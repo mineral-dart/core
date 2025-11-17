@@ -2,6 +2,8 @@
 library events;
 
 export 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
+export 'package:mineral/src/domains/events/contracts/common/voice_connect_event.dart';
+export 'package:mineral/src/domains/events/contracts/common/voice_disconnect_event.dart';
 export 'package:mineral/src/domains/events/contracts/common/voice_join_event.dart';
 export 'package:mineral/src/domains/events/contracts/common/voice_leave_event.dart';
 export 'package:mineral/src/domains/events/contracts/common/voice_move_event.dart';
