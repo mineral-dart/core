@@ -44,6 +44,8 @@ import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_de
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_members_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/thread_update_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/typing_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_connect_packet.dart';
+import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_disconnect_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_join_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_leave_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listeners/voice_move_packet.dart';
@@ -106,6 +108,8 @@ final class PacketListener implements PacketListenerContract {
     subscribe(ThreadDeletePacket.new);
     subscribe(ThreadMembersUpdatePacket.new);
 
+    subscribe(VoiceConnectPacket.new);
+    subscribe(VoiceDisconnectPacket.new);
     subscribe(VoiceJoinPacket.new);
     subscribe(VoiceMovePacket.new);
     subscribe(VoiceLeavePacket.new);
