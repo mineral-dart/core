@@ -3,6 +3,8 @@ import 'package:mineral/src/domains/events/contracts/common/invite_create_event.
 import 'package:mineral/src/domains/events/contracts/common/invite_delete_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/typing_event.dart';
+import 'package:mineral/src/domains/events/contracts/common/voice_connect_event.dart';
+import 'package:mineral/src/domains/events/contracts/common/voice_disconnect_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/voice_join_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/voice_leave_event.dart';
 import 'package:mineral/src/domains/events/contracts/common/voice_move_event.dart';
@@ -311,6 +313,12 @@ enum Event implements EnhancedEnum, EventType {
   voiceStateUpdate(VoiceStateUpdateEvent, [
     ['VoiceState', 'before'],
     ['VoiceState', 'after']
+  ]),
+  voiceConnect(VoiceConnectEvent, [
+    ['VoiceState', 'state']
+  ]),
+  voiceDisconnect(VoiceDisconnectEvent, [
+    ['VoiceState', 'state']
   ]),
   voiceJoin(VoiceJoinEvent, [
     ['VoiceState', 'state']

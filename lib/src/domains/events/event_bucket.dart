@@ -25,6 +25,12 @@ final class EventBucket {
   void voiceStateUpdate(VoiceStateUpdateEventHandler handle) =>
       _registerEvent(event: Event.voiceStateUpdate, handle: handle);
 
+  void voiceConnect(VoiceConnectEventHandler handle) =>
+      _registerEvent(event: Event.voiceConnect, handle: handle);
+
+  void voiceDisconnect(VoiceDisconnectEventHandler handle) =>
+      _registerEvent(event: Event.voiceDisconnect, handle: handle);
+
   void voiceJoin(VoiceJoinEventHandler handle) =>
       _registerEvent(event: Event.voiceJoin, handle: handle);
 

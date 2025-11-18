@@ -5,7 +5,7 @@ import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.d
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 
-final class VoiceJoinPacket implements ListenablePacket {
+final class VoiceConnectPacket implements ListenablePacket {
   @override
   PacketType get packetType => PacketType.voiceStateUpdate;
 
@@ -26,11 +26,8 @@ final class VoiceJoinPacket implements ListenablePacket {
       rawVoiceState,
     );
 
-    // Trigger VoiceJoinEvent whenever a user joins ANY channel (including moves)
-    if (message.payload['channel_id'] != null &&
-        (before == null ||
-            before['channel_id'] != message.payload['channel_id'])) {
-      dispatch(event: Event.voiceJoin, params: [voiceState]);
+    if (before == null && message.payload['channel_id'] != null) {
+      dispatch(event: Event.voiceConnect, params: [voiceState]);
     }
   }
 }
