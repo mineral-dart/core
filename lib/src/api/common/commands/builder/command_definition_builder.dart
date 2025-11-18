@@ -101,7 +101,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
         final String value when value == 'choice.string' => ChoiceOption.string(
             name: name,
             description: description,
-            required: required,
+            isRequired: required,
             choices: List.from(element['choices'] ?? [])
                 .map((element) =>
                     Choice<String>(element['name'], element['value']))
@@ -110,7 +110,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
           ChoiceOption.integer(
               name: name,
               description: description,
-              required: required,
+              isRequired: required,
               choices: List.from(element['choices'] ?? [])
                   .map((element) =>
                       Choice(element['name'], int.parse(element['value'])))
@@ -118,7 +118,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
         final String value when value == 'choice.double' => ChoiceOption.double(
             name: name,
             description: description,
-            required: required,
+            isRequired: required,
             choices: List.from(element['choices'] ?? [])
                 .map((element) =>
                     Choice(element['name'], double.parse(element['value'])))
