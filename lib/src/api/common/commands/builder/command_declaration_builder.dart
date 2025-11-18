@@ -23,6 +23,91 @@ final class CommandDeclarationBuilder implements CommandBuilder {
   final List<CommandGroupBuilder> groups = [];
   Function? _handle;
 
+  CommandDeclarationBuilder addOption<T extends CommandOption>(T option) {
+    options.add(option);
+    return this;
+  }
+
+  CommandDeclarationBuilder addSubCommand(Function(SubCommandBuilder) command) {
+    final builder = SubCommandBuilder();
+    command(builder);
+
+    subCommands.add(builder);
+    return this;
+  }
+
+  CommandDeclarationBuilder createGroup(Function(CommandGroupBuilder) group) {
+    final builder = CommandGroupBuilder();
+    group(builder);
+
+    groups.add(builder);
+    return this;
+  }
+
+  List<(String, Function handler)> reduceHandlers(String commandName) {
+    if (subCommands.isEmpty && groups.isEmpty) {
+      return [('$name', _handle!)];
+    }
+
+    final List<(String, Function handler)> handlers = [];
+
+    for (final subCommand in subCommands) {
+      if (subCommand.handle case null) {
+        throw MissingMethodException(
+          'Command "$commandName.${subCommand.name}" has no handler',
+        );
+      }
+
+      handlers.add(('$name.${subCommand.name}', subCommand.handle!));
+    }
+
+    for (final group in groups) {
+      for (final subCommand in group.commands) {
+        handlers.add(
+          ('$name.${group.name}.${subCommand.name}', subCommand.handle!),
+        );
+      }
+    }
+
+    return handlers;
+  }
+
+  CommandDeclarationBuilder registerSubCommand(Function subCommandFactory) {
+    final instance = subCommandFactory();
+
+    if (instance is! SubCommandDeclaration) {
+      throw Exception('Factory must return a SubCommandDeclaration instance');
+    }
+
+    final builder = instance.build();
+    subCommands.add(builder);
+    return this;
+  }
+
+  CommandDeclarationBuilder setContext(CommandContextType context) {
+    this.context = context;
+    return this;
+  }
+
+  CommandDeclarationBuilder setDescription(
+    String description, {
+    Translation? translation,
+  }) {
+    _description = description;
+    if (translation != null) {
+      _descriptionLocalizations = _helper.extractTranslations(
+        'description',
+        translation,
+      );
+    }
+    return this;
+  }
+
+  CommandDeclarationBuilder setHandle(Function fn) {
+    _handle = fn;
+    return this;
+  }
+
   CommandDeclarationBuilder setName(String name, {Translation? translation}) {
     _helper.verifyName(name);
 
@@ -36,59 +121,6 @@ final class CommandDeclarationBuilder implements CommandBuilder {
       }
     }
 
-    return this;
-  }
-
-  CommandDeclarationBuilder setContext(CommandContextType context) {
-    this.context = context;
-    return this;
-  }
-
-  CommandDeclarationBuilder setDescription(String description,
-      {Translation? translation}) {
-    _description = description;
-    if (translation != null) {
-      _descriptionLocalizations =
-          _helper.extractTranslations('description', translation);
-    }
-    return this;
-  }
-
-  CommandDeclarationBuilder addOption<T extends CommandOption>(T option) {
-    options.add(option);
-    return this;
-  }
-
-  CommandDeclarationBuilder setHandle(Function fn) {
-    _handle = fn;
-    return this;
-  }
-
-  CommandDeclarationBuilder addSubCommand(Function(SubCommandBuilder) command) {
-    final builder = SubCommandBuilder();
-    command(builder);
-
-    subCommands.add(builder);
-    return this;
-  }
-
-  CommandDeclarationBuilder registerSubCommand(Function subCommandFactory) {
-    final instance = subCommandFactory();
-    
-    if (instance is! SubCommandDeclaration) {
-      throw Exception('Factory must return a SubCommandDeclaration instance');
-    }
-    
-    final builder = instance.build();
-    subCommands.add(builder);
-    return this;
-  }
-
-  CommandDeclarationBuilder createGroup(Function(CommandGroupBuilder) group) {
-    final builder = CommandGroupBuilder();
-    group(builder);
-
-    groups.add(builder);
     return this;
   }
 
@@ -116,31 +148,5 @@ final class CommandDeclarationBuilder implements CommandBuilder {
         'type': CommandType.subCommand.value,
       'options': options,
     };
-  }
-
-  List<(String, Function handler)> reduceHandlers(String commandName) {
-    if (subCommands.isEmpty && groups.isEmpty) {
-      return [('$name', _handle!)];
-    }
-
-    final List<(String, Function handler)> handlers = [];
-
-    for (final subCommand in subCommands) {
-      if (subCommand.handle case null) {
-        throw MissingMethodException(
-            'Command "$commandName.${subCommand.name}" has no handler');
-      }
-
-      handlers.add(('$name.${subCommand.name}', subCommand.handle!));
-    }
-
-    for (final group in groups) {
-      for (final subCommand in group.commands) {
-        handlers.add(
-            ('$name.${group.name}.${subCommand.name}', subCommand.handle!));
-      }
-    }
-
-    return handlers;
   }
 }
