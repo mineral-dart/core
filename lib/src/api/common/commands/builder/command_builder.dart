@@ -227,63 +227,6 @@ final class CommandBuilder {
   final List<CommandGroupBuilder> _groups = [];
   Function? _handle;
 
-  /// Sets the command name.
-  ///
-  /// The name is what users type to invoke the command (e.g., `/greet`, `/help`).
-  /// Command names must follow Discord's naming rules:
-  ///
-  /// - Must be lowercase (automatically converted)
-  /// - 1-32 characters long
-  /// - Can contain letters, numbers, hyphens, and underscores
-  /// - No spaces allowed
-  ///
-  /// Example:
-  /// ```dart
-  /// command.setName('user_info');
-  /// command.setName('ping');
-  /// command.setName('get-data');
-  /// ```
-  CommandBuilder setName(String name) {
-    _name = name;
-    return this;
-  }
-
-  /// Sets where the command can be used.
-  ///
-  /// Controls the availability of the command in different contexts:
-  ///
-  /// - [CommandContextType.server] - Only in server channels (default)
-  ///   - Provides [ServerCommandContext] with guild information
-  /// - [CommandContextType.all] - Available everywhere (servers and DMs)
-  ///   - Provides [GlobalCommandContext] without guild-specific features
-  ///
-  /// Example:
-  /// ```dart
-  /// // Server-only command (default)
-  /// command.setContext(CommandContextType.server);
-  ///
-  /// // Global command (available in servers and DMs)
-  /// command.setContext(CommandContextType.all);
-  /// ```
-  CommandBuilder setContext(CommandContextType context) {
-    this.context = context;
-    return this;
-  }
-
-  /// Sets the command description.
-  ///
-  /// The description appears in Discord's command picker and helps users
-  /// understand what the command does. Must be 1-100 characters long.
-  ///
-  /// Example:
-  /// ```dart
-  /// command.setDescription('Displays information about a user');
-  /// ```
-  CommandBuilder setDescription(String description) {
-    _description = description;
-    return this;
-  }
-
   /// Adds a command option (parameter).
   ///
   /// Options allow users to provide input when using the command. Discord supports
@@ -339,90 +282,6 @@ final class CommandBuilder {
   /// - [ChoiceOption] for options with predefined choices
   CommandBuilder addOption<T extends CommandOption>(T option) {
     _options.add(option);
-    return this;
-  }
-
-  /// Sets the command handler function.
-  ///
-  /// The handler is called when a user invokes the command. It must have
-  /// [CommandContext] as the first parameter, followed by named parameters
-  /// that correspond to the command's options.
-  ///
-  /// ## Handler Signature
-  ///
-  /// ```dart
-  /// void handler(
-  ///   CommandContext ctx, {
-  ///   required Type requiredParam,
-  ///   Type? optionalParam,
-  ///   Type paramWithDefault = defaultValue,
-  /// }) {
-  ///   // Implementation
-  /// }
-  /// ```
-  ///
-  /// ## Examples
-  ///
-  /// ### Simple handler
-  /// ```dart
-  /// command.handle((CommandContext ctx) {
-  ///   ctx.interaction.reply(
-  ///     builder: MessageBuilder.text('Hello!'),
-  ///   );
-  /// });
-  /// ```
-  ///
-  /// ### Handler with required parameter
-  /// ```dart
-  /// command.handle((CommandContext ctx, {required String message}) {
-  ///   ctx.interaction.reply(
-  ///     builder: MessageBuilder.text('You said: $message'),
-  ///   );
-  /// });
-  /// ```
-  ///
-  /// ### Handler with multiple parameters
-  /// ```dart
-  /// command.handle((
-  ///   CommandContext ctx, {
-  ///   required User target,
-  ///   String? reason,
-  ///   int duration = 60,
-  /// }) {
-  ///   final message = 'Action on ${target.username}';
-  ///   if (reason != null) message += ': $reason';
-  ///   message += ' (Duration: ${duration}s)';
-  ///   
-  ///   ctx.interaction.reply(
-  ///     builder: MessageBuilder.text(message),
-  ///   );
-  /// });
-  /// ```
-  ///
-  /// ### Async handler
-  /// ```dart
-  /// command.handle((CommandContext ctx, {required String query}) async {
-  ///   // Defer response for long operations
-  ///   await ctx.interaction.defer();
-  ///   
-  ///   final result = await database.query(query);
-  ///   
-  ///   await ctx.interaction.editReply(
-  ///     builder: MessageBuilder.text('Result: $result'),
-  ///   );
-  /// });
-  /// ```
-  ///
-  /// Throws [Exception] if the first parameter is not [CommandContext].
-  CommandBuilder handle(Function fn) {
-    final firstArg = fn.toString().split('(')[1].split(')')[0].split(' ')[0];
-
-    if (!firstArg.contains('CommandContext')) {
-      throw Exception(
-          'The first argument of the handler function must be CommandContext');
-    }
-
-    _handle = fn;
     return this;
   }
 
@@ -493,7 +352,8 @@ final class CommandBuilder {
   /// - [SubCommandBuilder] for building subcommands
   /// - [createGroup] for organizing subcommands into groups
   CommandBuilder addSubCommand(
-      SubCommandBuilder Function(SubCommandBuilder) command) {
+    SubCommandBuilder Function(SubCommandBuilder) command,
+  ) {
     final builder = SubCommandBuilder();
     command(builder);
     _subCommands.add(builder);
@@ -585,34 +445,97 @@ final class CommandBuilder {
   /// - [CommandGroupBuilder] for building command groups
   /// - [addSubCommand] for adding subcommands without groups
   CommandBuilder createGroup(
-      CommandGroupBuilder Function(CommandGroupBuilder) group) {
+    CommandGroupBuilder Function(CommandGroupBuilder) group,
+  ) {
     final builder = CommandGroupBuilder();
     group(builder);
     _groups.add(builder);
     return this;
   }
 
-  /// Converts the command to a JSON representation for the Discord API.
+  /// Sets the command handler function.
   ///
-  /// This method is typically called internally when registering commands
-  /// and should not need to be called directly in most cases.
+  /// The handler is called when a user invokes the command. It must have
+  /// [CommandContext] as the first parameter, followed by named parameters
+  /// that correspond to the command's options.
   ///
-  /// Returns a map containing the command structure formatted according to
-  /// Discord's API specification.
-  Map<String, dynamic> toJson() {
-    final List<Map<String, dynamic>> options = [
-      for (final option in _options) option.toJson(),
-      for (final subCommand in _subCommands) subCommand.toJson(),
-      for (final group in _groups) group.toJson(),
-    ];
+  /// ## Handler Signature
+  ///
+  /// ```dart
+  /// void handler(
+  ///   CommandContext ctx, {
+  ///   required Type requiredParam,
+  ///   Type? optionalParam,
+  ///   Type paramWithDefault = defaultValue,
+  /// }) {
+  ///   // Implementation
+  /// }
+  /// ```
+  ///
+  /// ## Examples
+  ///
+  /// ### Simple handler
+  /// ```dart
+  /// command.handle((CommandContext ctx) {
+  ///   ctx.interaction.reply(
+  ///     builder: MessageBuilder.text('Hello!'),
+  ///   );
+  /// });
+  /// ```
+  ///
+  /// ### Handler with required parameter
+  /// ```dart
+  /// command.handle((CommandContext ctx, {required String message}) {
+  ///   ctx.interaction.reply(
+  ///     builder: MessageBuilder.text('You said: $message'),
+  ///   );
+  /// });
+  /// ```
+  ///
+  /// ### Handler with multiple parameters
+  /// ```dart
+  /// command.handle((
+  ///   CommandContext ctx, {
+  ///   required User target,
+  ///   String? reason,
+  ///   int duration = 60,
+  /// }) {
+  ///   final message = 'Action on ${target.username}';
+  ///   if (reason != null) message += ': $reason';
+  ///   message += ' (Duration: ${duration}s)';
+  ///
+  ///   ctx.interaction.reply(
+  ///     builder: MessageBuilder.text(message),
+  ///   );
+  /// });
+  /// ```
+  ///
+  /// ### Async handler
+  /// ```dart
+  /// command.handle((CommandContext ctx, {required String query}) async {
+  ///   // Defer response for long operations
+  ///   await ctx.interaction.defer();
+  ///
+  ///   final result = await database.query(query);
+  ///
+  ///   await ctx.interaction.editReply(
+  ///     builder: MessageBuilder.text('Result: $result'),
+  ///   );
+  /// });
+  /// ```
+  ///
+  /// Throws [Exception] if the first parameter is not [CommandContext].
+  CommandBuilder handle(Function fn) {
+    final firstArg = fn.toString().split('(')[1].split(')')[0].split(' ')[0];
 
-    return {
-      'name': _name,
-      'description': _description,
-      if (_subCommands.isEmpty && _groups.isEmpty)
-        'type': CommandType.subCommand.value,
-      'options': options,
-    };
+    if (!firstArg.contains('CommandContext')) {
+      throw Exception(
+        'The first argument of the handler function must be CommandContext',
+      );
+    }
+
+    _handle = fn;
+    return this;
   }
 
   /// Extracts all command handlers with their full paths.
@@ -645,10 +568,91 @@ final class CommandBuilder {
     for (final group in _groups) {
       for (final subCommand in group.commands) {
         handlers.add(
-            ('$_name.${group.name}.${subCommand.name}', subCommand.handle!));
+          ('$_name.${group.name}.${subCommand.name}', subCommand.handle!),
+        );
       }
     }
 
     return handlers;
+  }
+
+  /// Sets where the command can be used.
+  ///
+  /// Controls the availability of the command in different contexts:
+  ///
+  /// - [CommandContextType.server] - Only in server channels (default)
+  ///   - Provides [ServerCommandContext] with guild information
+  /// - [CommandContextType.all] - Available everywhere (servers and DMs)
+  ///   - Provides [GlobalCommandContext] without guild-specific features
+  ///
+  /// Example:
+  /// ```dart
+  /// // Server-only command (default)
+  /// command.setContext(CommandContextType.server);
+  ///
+  /// // Global command (available in servers and DMs)
+  /// command.setContext(CommandContextType.all);
+  /// ```
+  CommandBuilder setContext(CommandContextType context) {
+    this.context = context;
+    return this;
+  }
+
+  /// Sets the command description.
+  ///
+  /// The description appears in Discord's command picker and helps users
+  /// understand what the command does. Must be 1-100 characters long.
+  ///
+  /// Example:
+  /// ```dart
+  /// command.setDescription('Displays information about a user');
+  /// ```
+  CommandBuilder setDescription(String description) {
+    _description = description;
+    return this;
+  }
+
+  /// Sets the command name.
+  ///
+  /// The name is what users type to invoke the command (e.g., `/greet`, `/help`).
+  /// Command names must follow Discord's naming rules:
+  ///
+  /// - Must be lowercase (automatically converted)
+  /// - 1-32 characters long
+  /// - Can contain letters, numbers, hyphens, and underscores
+  /// - No spaces allowed
+  ///
+  /// Example:
+  /// ```dart
+  /// command.setName('user_info');
+  /// command.setName('ping');
+  /// command.setName('get-data');
+  /// ```
+  CommandBuilder setName(String name) {
+    _name = name;
+    return this;
+  }
+
+  /// Converts the command to a JSON representation for the Discord API.
+  ///
+  /// This method is typically called internally when registering commands
+  /// and should not need to be called directly in most cases.
+  ///
+  /// Returns a map containing the command structure formatted according to
+  /// Discord's API specification.
+  Map<String, dynamic> toJson() {
+    final List<Map<String, dynamic>> options = [
+      for (final option in _options) option.toJson(),
+      for (final subCommand in _subCommands) subCommand.toJson(),
+      for (final group in _groups) group.toJson(),
+    ];
+
+    return {
+      'name': _name,
+      'description': _description,
+      if (_subCommands.isEmpty && _groups.isEmpty)
+        'type': CommandType.subCommand.value,
+      'options': options,
+    };
   }
 }
