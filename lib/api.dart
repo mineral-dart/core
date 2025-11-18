@@ -27,6 +27,7 @@ export 'package:mineral/src/api/common/commands/command_helper.dart';
 export 'package:mineral/src/api/common/commands/command_option.dart';
 export 'package:mineral/src/api/common/commands/command_option_type.dart';
 export 'package:mineral/src/api/common/commands/command_type.dart';
+export 'package:mineral/src/api/common/commands/sub_command_declaration.dart';
 export 'package:mineral/src/api/common/components/action_row.dart';
 export 'package:mineral/src/api/common/components/attached_file.dart';
 // Commons
