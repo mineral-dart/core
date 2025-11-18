@@ -19,17 +19,10 @@ final class VoiceJoinPacket implements ListenablePacket {
     );
     final before = await _marshaller.cache?.get(cacheKey);
 
-    final rawVoiceState = await _marshaller.serializers.voice.normalize(
-      message.payload,
-    );
-    final voiceState = await _marshaller.serializers.voice.serialize(
-      rawVoiceState,
-    );
-
     // Trigger VoiceJoinEvent whenever a user joins ANY channel (including moves)
-    if (message.payload['channel_id'] != null &&
-        (before == null ||
-            before['channel_id'] != message.payload['channel_id'])) {
+    if (message.payload['channel_id'] != null && (before == null || before['channel_id'] != message.payload['channel_id'])) {
+      final rawVoiceState = await _marshaller.serializers.voice.normalize(message.payload);
+      final voiceState = await _marshaller.serializers.voice.serialize(rawVoiceState);
       dispatch(event: Event.voiceJoin, params: [voiceState]);
     }
   }
