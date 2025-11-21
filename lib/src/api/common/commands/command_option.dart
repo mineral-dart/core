@@ -14,30 +14,30 @@ import 'package:mineral/src/api/common/types/channel_type.dart';
 /// - [Option] for standard command options
 /// - [ChoiceOption] for options with predefined choices
 abstract interface class CommandOption {
-  /// The unique name of this option.
+  /// For channel options, restricts which channel types are selectable.
   ///
-  /// Must be lowercase, alphanumeric with hyphens, and unique within the command.
-  String get name;
+  /// Only applies when [type] is [CommandOptionType.channel].
+  List<ChannelType>? get channelTypes;
 
   /// The user-visible description of this option.
   ///
   /// Explains the purpose and expected value to users.
   String get description;
 
-  /// The data type of this option's value.
-  ///
-  /// Determines what kind of input Discord accepts (string, integer, user, etc.).
-  CommandOptionType get type;
-
   /// Whether this option must be provided by the user.
   ///
   /// Required options must appear before optional ones.
   bool get isRequired;
 
-  /// For channel options, restricts which channel types are selectable.
+  /// The unique name of this option.
   ///
-  /// Only applies when [type] is [CommandOptionType.channel].
-  List<ChannelType>? get channelTypes;
+  /// Must be lowercase, alphanumeric with hyphens, and unique within the command.
+  String get name;
+
+  /// The data type of this option's value.
+  ///
+  /// Determines what kind of input Discord accepts (string, integer, user, etc.).
+  CommandOptionType get type;
 
   /// Converts this option to Discord API JSON format.
   Map<String, dynamic> toJson();
@@ -213,73 +213,23 @@ final class Option<T> implements CommandOption {
   @override
   final List<ChannelType>? channelTypes;
 
-  const Option._(this.name, this.description, this.type, this.channelTypes,
-      this.isRequired);
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'description': description,
-      'type': type.value,
-      'required': isRequired,
-      'channel_types': channelTypes?.map((e) => e.value).toList(),
-    };
-  }
-
-  /// Creates a string option for accepting text input.
+  /// Creates an attachment option for file uploads.
   ///
-  /// String options accept any text input from users.
+  /// Attachment options allow users to upload files.
   ///
   /// Example:
   /// ```dart
-  /// Option.string(
-  ///   name: 'message',
-  ///   description: 'Your message',
+  /// Option.attachment(
+  ///   name: 'file',
+  ///   description: 'File to upload',
   ///   required: true,
   /// )
   /// ```
-  factory Option.string(
+  factory Option.attachment(
           {required String name,
           required String description,
           bool required = false}) =>
-      Option._(name, description, CommandOptionType.string, null, required);
-
-  /// Creates an integer option for accepting whole numbers.
-  ///
-  /// Integer options accept whole numbers (no decimals).
-  ///
-  /// Example:
-  /// ```dart
-  /// Option.integer(
-  ///   name: 'count',
-  ///   description: 'Number of items (1-100)',
-  ///   required: false,
-  /// )
-  /// ```
-  factory Option.integer(
-          {required String name,
-          required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.integer, null, required);
-
-  /// Creates a double option for accepting decimal numbers.
-  ///
-  /// Double options accept decimal numbers.
-  ///
-  /// Example:
-  /// ```dart
-  /// Option.double(
-  ///   name: 'multiplier',
-  ///   description: 'Multiplier value (0.1-10.0)',
-  ///   required: false,
-  /// )
-  /// ```
-  factory Option.double(
-          {required String name,
-          required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.double, null, required);
+      Option._(name, description, CommandOptionType.attachment, null, required);
 
   /// Creates a boolean option for true/false choices.
   ///
@@ -298,24 +248,6 @@ final class Option<T> implements CommandOption {
           required String description,
           bool required = false}) =>
       Option._(name, description, CommandOptionType.boolean, null, required);
-
-  /// Creates a user option for selecting server members.
-  ///
-  /// User options allow selecting any user visible to the bot.
-  ///
-  /// Example:
-  /// ```dart
-  /// Option.user(
-  ///   name: 'target',
-  ///   description: 'User to mention',
-  ///   required: true,
-  /// )
-  /// ```
-  factory Option.user(
-          {required String name,
-          required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.user, null, required);
 
   /// Creates a channel option for selecting server channels.
   ///
@@ -339,23 +271,41 @@ final class Option<T> implements CommandOption {
       Option._(
           name, description, CommandOptionType.channel, channels, required);
 
-  /// Creates a role option for selecting server roles.
+  /// Creates a double option for accepting decimal numbers.
   ///
-  /// Role options allow selecting any role in the server.
+  /// Double options accept decimal numbers.
   ///
   /// Example:
   /// ```dart
-  /// Option.role(
-  ///   name: 'role',
-  ///   description: 'Role to assign',
-  ///   required: true,
+  /// Option.double(
+  ///   name: 'multiplier',
+  ///   description: 'Multiplier value (0.1-10.0)',
+  ///   required: false,
   /// )
   /// ```
-  factory Option.role(
+  factory Option.double(
           {required String name,
           required String description,
           bool required = false}) =>
-      Option._(name, description, CommandOptionType.role, null, required);
+      Option._(name, description, CommandOptionType.double, null, required);
+
+  /// Creates an integer option for accepting whole numbers.
+  ///
+  /// Integer options accept whole numbers (no decimals).
+  ///
+  /// Example:
+  /// ```dart
+  /// Option.integer(
+  ///   name: 'count',
+  ///   description: 'Number of items (1-100)',
+  ///   required: false,
+  /// )
+  /// ```
+  factory Option.integer(
+          {required String name,
+          required String description,
+          bool required = false}) =>
+      Option._(name, description, CommandOptionType.integer, null, required);
 
   /// Creates a mentionable option for selecting users or roles.
   ///
@@ -376,21 +326,71 @@ final class Option<T> implements CommandOption {
       Option._(
           name, description, CommandOptionType.mentionable, null, required);
 
-  /// Creates an attachment option for file uploads.
+  /// Creates a role option for selecting server roles.
   ///
-  /// Attachment options allow users to upload files.
+  /// Role options allow selecting any role in the server.
   ///
   /// Example:
   /// ```dart
-  /// Option.attachment(
-  ///   name: 'file',
-  ///   description: 'File to upload',
+  /// Option.role(
+  ///   name: 'role',
+  ///   description: 'Role to assign',
   ///   required: true,
   /// )
   /// ```
-  factory Option.attachment(
+  factory Option.role(
           {required String name,
           required String description,
           bool required = false}) =>
-      Option._(name, description, CommandOptionType.attachment, null, required);
+      Option._(name, description, CommandOptionType.role, null, required);
+
+  /// Creates a string option for accepting text input.
+  ///
+  /// String options accept any text input from users.
+  ///
+  /// Example:
+  /// ```dart
+  /// Option.string(
+  ///   name: 'message',
+  ///   description: 'Your message',
+  ///   required: true,
+  /// )
+  /// ```
+  factory Option.string(
+          {required String name,
+          required String description,
+          bool required = false}) =>
+      Option._(name, description, CommandOptionType.string, null, required);
+
+  /// Creates a user option for selecting server members.
+  ///
+  /// User options allow selecting any user visible to the bot.
+  ///
+  /// Example:
+  /// ```dart
+  /// Option.user(
+  ///   name: 'target',
+  ///   description: 'User to mention',
+  ///   required: true,
+  /// )
+  /// ```
+  factory Option.user(
+          {required String name,
+          required String description,
+          bool required = false}) =>
+      Option._(name, description, CommandOptionType.user, null, required);
+
+  const Option._(this.name, this.description, this.type, this.channelTypes,
+      this.isRequired);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'type': type.value,
+      'required': isRequired,
+      'channel_types': channelTypes?.map((e) => e.value).toList(),
+    };
+  }
 }
