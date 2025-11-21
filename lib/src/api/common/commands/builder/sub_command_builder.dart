@@ -298,120 +298,6 @@ final class SubCommandBuilder {
 
   SubCommandBuilder();
 
-  /// Sets the subcommand name with optional translations.
-  ///
-  /// The name is what users type to invoke the subcommand after the parent command.
-  /// Names are automatically validated according to Discord's naming rules.
-  ///
-  /// ## Naming Rules
-  ///
-  /// - Must be lowercase (automatically converted)
-  /// - 1-32 characters long
-  /// - Can contain letters, numbers, hyphens, and underscores
-  /// - No spaces allowed
-  ///
-  /// Providing translations allows Discord to show localized subcommand names
-  /// to users based on their language preferences.
-  ///
-  /// ## Examples
-  ///
-  /// ### Simple name
-  /// ```dart
-  /// subcommand.setName('add');
-  /// ```
-  ///
-  /// ### With translations
-  /// ```dart
-  /// subcommand.setName('add', translation: Translation.from({
-  ///   'en': 'add',
-  ///   'fr': 'ajouter',
-  ///   'es': 'agregar',
-  ///   'de': 'hinzufügen',
-  /// }));
-  /// ```
-  ///
-  /// ### Loading from configuration
-  /// ```dart
-  /// subcommand.setName(
-  ///   'remove',
-  ///   translation: Translation.fromYaml('assets/i18n/commands.yaml'),
-  /// );
-  /// ```
-  ///
-  /// Parameters:
-  /// - [name]: The subcommand name
-  /// - [translation]: Optional translation configuration for localization
-  ///
-  /// Returns this builder for method chaining.
-  ///
-  /// See also:
-  /// - [Translation] for localization configuration
-  /// - [setDescription] for setting the subcommand description
-  SubCommandBuilder setName(String name, {Translation? translation}) {
-    this.name = name;
-    if (translation != null) {
-      _nameLocalizations = _helper.extractTranslations('name', translation);
-    }
-
-    return this;
-  }
-
-  /// Sets the subcommand description with optional translations.
-  ///
-  /// The description appears in Discord's command picker and helps users
-  /// understand what the subcommand does. Must be 1-100 characters long.
-  ///
-  /// Providing translations allows Discord to show localized descriptions
-  /// to users based on their language preferences.
-  ///
-  /// ## Examples
-  ///
-  /// ### Simple description
-  /// ```dart
-  /// subcommand.setDescription('Add a new item');
-  /// ```
-  ///
-  /// ### With translations
-  /// ```dart
-  /// subcommand.setDescription(
-  ///   'Remove an item',
-  ///   translation: Translation.from({
-  ///     'en': 'Remove an item',
-  ///     'fr': 'Supprimer un élément',
-  ///     'es': 'Eliminar un elemento',
-  ///     'de': 'Ein Element entfernen',
-  ///     'ja': 'アイテムを削除',
-  ///   }),
-  /// );
-  /// ```
-  ///
-  /// ### Loading from file
-  /// ```dart
-  /// subcommand.setDescription(
-  ///   'List all items',
-  ///   translation: Translation.fromYaml('assets/i18n/list_command.yaml'),
-  /// );
-  /// ```
-  ///
-  /// Parameters:
-  /// - [description]: The subcommand description (1-100 characters)
-  /// - [translation]: Optional translation configuration for localization
-  ///
-  /// Returns this builder for method chaining.
-  ///
-  /// See also:
-  /// - [Translation] for localization configuration
-  /// - [setName] for setting the subcommand name
-  SubCommandBuilder setDescription(String description,
-      {Translation? translation}) {
-    _description = description;
-    if (translation != null) {
-      _descriptionLocalizations =
-          _helper.extractTranslations('description', translation);
-    }
-    return this;
-  }
-
   /// Adds an option (parameter) to the subcommand.
   ///
   /// Options allow users to provide input when using the subcommand. Discord supports
@@ -493,6 +379,62 @@ final class SubCommandBuilder {
   /// - [ChoiceOption] for options with predefined choices
   SubCommandBuilder addOption<T extends CommandOption>(T option) {
     options.add(option);
+    return this;
+  }
+
+  /// Sets the subcommand description with optional translations.
+  ///
+  /// The description appears in Discord's command picker and helps users
+  /// understand what the subcommand does. Must be 1-100 characters long.
+  ///
+  /// Providing translations allows Discord to show localized descriptions
+  /// to users based on their language preferences.
+  ///
+  /// ## Examples
+  ///
+  /// ### Simple description
+  /// ```dart
+  /// subcommand.setDescription('Add a new item');
+  /// ```
+  ///
+  /// ### With translations
+  /// ```dart
+  /// subcommand.setDescription(
+  ///   'Remove an item',
+  ///   translation: Translation.from({
+  ///     'en': 'Remove an item',
+  ///     'fr': 'Supprimer un élément',
+  ///     'es': 'Eliminar un elemento',
+  ///     'de': 'Ein Element entfernen',
+  ///     'ja': 'アイテムを削除',
+  ///   }),
+  /// );
+  /// ```
+  ///
+  /// ### Loading from file
+  /// ```dart
+  /// subcommand.setDescription(
+  ///   'List all items',
+  ///   translation: Translation.fromYaml('assets/i18n/list_command.yaml'),
+  /// );
+  /// ```
+  ///
+  /// Parameters:
+  /// - [description]: The subcommand description (1-100 characters)
+  /// - [translation]: Optional translation configuration for localization
+  ///
+  /// Returns this builder for method chaining.
+  ///
+  /// See also:
+  /// - [Translation] for localization configuration
+  /// - [setName] for setting the subcommand name
+  SubCommandBuilder setDescription(String description,
+      {Translation? translation}) {
+    _description = description;
+    if (translation != null) {
+      _descriptionLocalizations =
+          _helper.extractTranslations('description', translation);
+    }
     return this;
   }
 
@@ -615,6 +557,64 @@ final class SubCommandBuilder {
   /// - [GlobalCommandContext] for global subcommands
   SubCommandBuilder setHandle(Function fn) {
     handle = fn;
+    return this;
+  }
+
+  /// Sets the subcommand name with optional translations.
+  ///
+  /// The name is what users type to invoke the subcommand after the parent command.
+  /// Names are automatically validated according to Discord's naming rules.
+  ///
+  /// ## Naming Rules
+  ///
+  /// - Must be lowercase (automatically converted)
+  /// - 1-32 characters long
+  /// - Can contain letters, numbers, hyphens, and underscores
+  /// - No spaces allowed
+  ///
+  /// Providing translations allows Discord to show localized subcommand names
+  /// to users based on their language preferences.
+  ///
+  /// ## Examples
+  ///
+  /// ### Simple name
+  /// ```dart
+  /// subcommand.setName('add');
+  /// ```
+  ///
+  /// ### With translations
+  /// ```dart
+  /// subcommand.setName('add', translation: Translation.from({
+  ///   'en': 'add',
+  ///   'fr': 'ajouter',
+  ///   'es': 'agregar',
+  ///   'de': 'hinzufügen',
+  /// }));
+  /// ```
+  ///
+  /// ### Loading from configuration
+  /// ```dart
+  /// subcommand.setName(
+  ///   'remove',
+  ///   translation: Translation.fromYaml('assets/i18n/commands.yaml'),
+  /// );
+  /// ```
+  ///
+  /// Parameters:
+  /// - [name]: The subcommand name
+  /// - [translation]: Optional translation configuration for localization
+  ///
+  /// Returns this builder for method chaining.
+  ///
+  /// See also:
+  /// - [Translation] for localization configuration
+  /// - [setDescription] for setting the subcommand description
+  SubCommandBuilder setName(String name, {Translation? translation}) {
+    this.name = name;
+    if (translation != null) {
+      _nameLocalizations = _helper.extractTranslations('name', translation);
+    }
+
     return this;
   }
 
