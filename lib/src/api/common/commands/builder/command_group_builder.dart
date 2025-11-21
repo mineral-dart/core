@@ -318,122 +318,56 @@ final class CommandGroupBuilder {
 
   CommandGroupBuilder();
 
-  /// Sets the group name with optional translations.
+  /// Creates a [CommandGroupBuilder] from a JSON representation.
   ///
-  /// The name is what users see as the middle level in the command hierarchy.
-  /// For example, in `/admin user ban`, "user" is the group name.
+  /// This factory constructor deserializes a JSON map into a command group builder,
+  /// reconstructing the group with its name, description, and subcommands.
   ///
-  /// Names are automatically validated according to Discord's naming rules.
+  /// This is useful for loading group configurations from external sources or
+  /// deserializing group data.
   ///
-  /// ## Naming Rules
+  /// ## Example
   ///
-  /// - Must be lowercase (automatically converted)
-  /// - 1-32 characters long
-  /// - Can contain letters, numbers, hyphens, and underscores
-  /// - No spaces allowed
-  ///
-  /// Providing translations allows Discord to show localized group names
-  /// to users based on their language preferences.
-  ///
-  /// ## Examples
-  ///
-  /// ### Simple name
   /// ```dart
-  /// group.setName('moderation');
-  /// ```
+  /// final json = {
+  ///   'name': 'user',
+  ///   'description': 'User management',
+  ///   'commands': [
+  ///     {
+  ///       'name': 'ban',
+  ///       'description': 'Ban a user',
+  ///     },
+  ///     {
+  ///       'name': 'kick',
+  ///       'description': 'Kick a user',
+  ///     },
+  ///   ],
+  /// };
   ///
-  /// ### With translations
-  /// ```dart
-  /// group.setName('user', translation: Translation.from({
-  ///   'en': 'user',
-  ///   'fr': 'utilisateur',
-  ///   'es': 'usuario',
-  ///   'de': 'benutzer',
-  ///   'ja': 'ユーザー',
-  /// }));
-  /// ```
-  ///
-  /// ### Loading from configuration
-  /// ```dart
-  /// group.setName(
-  ///   'settings',
-  ///   translation: Translation.fromYaml('assets/i18n/groups.yaml'),
-  /// );
+  /// final group = CommandGroupBuilder.fromJson(json);
   /// ```
   ///
   /// Parameters:
-  /// - [name]: The group name
-  /// - [translation]: Optional translation configuration for localization
+  /// - [json]: A map containing the group configuration
   ///
-  /// Returns this builder for method chaining.
+  /// Returns a new [CommandGroupBuilder] instance configured from the JSON data.
   ///
-  /// See also:
-  /// - [Translation] for localization configuration
-  /// - [setDescription] for setting the group description
-  CommandGroupBuilder setName(String name, {Translation? translation}) {
-    this.name = name;
-    if (translation != null) {
-      _nameLocalizations = _helper.extractTranslations('name', translation);
+  /// Note: This factory only reconstructs the basic structure (names and descriptions).
+  /// Handlers, options, and other configurations must be added separately.
+  factory CommandGroupBuilder.fromJson(Map json) {
+    final builder = CommandGroupBuilder()
+      ..setName(json['name'])
+      ..setDescription(json['description']);
+
+    for (final command in json['commands']) {
+      builder.addSubCommand((builder) {
+        builder
+          ..setName(command['name'])
+          ..setDescription(command['description']);
+      });
     }
 
-    return this;
-  }
-
-  /// Sets the group description with optional translations.
-  ///
-  /// The description appears in Discord's command picker and helps users
-  /// understand what category of commands this group contains. Must be 1-100
-  /// characters long.
-  ///
-  /// Providing translations allows Discord to show localized descriptions
-  /// to users based on their language preferences.
-  ///
-  /// ## Examples
-  ///
-  /// ### Simple description
-  /// ```dart
-  /// group.setDescription('User management commands');
-  /// ```
-  ///
-  /// ### With translations
-  /// ```dart
-  /// group.setDescription(
-  ///   'Channel management',
-  ///   translation: Translation.from({
-  ///     'en': 'Channel management',
-  ///     'fr': 'Gestion des canaux',
-  ///     'es': 'Gestión de canales',
-  ///     'de': 'Kanalverwaltung',
-  ///     'ja': 'チャンネル管理',
-  ///   }),
-  /// );
-  /// ```
-  ///
-  /// ### Loading from file
-  /// ```dart
-  /// group.setDescription(
-  ///   'Role management commands',
-  ///   translation: Translation.fromYaml('assets/i18n/role_group.yaml'),
-  /// );
-  /// ```
-  ///
-  /// Parameters:
-  /// - [description]: The group description (1-100 characters)
-  /// - [translation]: Optional translation configuration for localization
-  ///
-  /// Returns this builder for method chaining.
-  ///
-  /// See also:
-  /// - [Translation] for localization configuration
-  /// - [setName] for setting the group name
-  CommandGroupBuilder setDescription(String description,
-      {Translation? translation}) {
-    _description = description;
-    if (translation != null) {
-      _descriptionLocalizations =
-          _helper.extractTranslations('description', translation);
-    }
-    return this;
+    return builder;
   }
 
   /// Adds a subcommand to this group.
@@ -540,6 +474,124 @@ final class CommandGroupBuilder {
     return this;
   }
 
+  /// Sets the group description with optional translations.
+  ///
+  /// The description appears in Discord's command picker and helps users
+  /// understand what category of commands this group contains. Must be 1-100
+  /// characters long.
+  ///
+  /// Providing translations allows Discord to show localized descriptions
+  /// to users based on their language preferences.
+  ///
+  /// ## Examples
+  ///
+  /// ### Simple description
+  /// ```dart
+  /// group.setDescription('User management commands');
+  /// ```
+  ///
+  /// ### With translations
+  /// ```dart
+  /// group.setDescription(
+  ///   'Channel management',
+  ///   translation: Translation.from({
+  ///     'en': 'Channel management',
+  ///     'fr': 'Gestion des canaux',
+  ///     'es': 'Gestión de canales',
+  ///     'de': 'Kanalverwaltung',
+  ///     'ja': 'チャンネル管理',
+  ///   }),
+  /// );
+  /// ```
+  ///
+  /// ### Loading from file
+  /// ```dart
+  /// group.setDescription(
+  ///   'Role management commands',
+  ///   translation: Translation.fromYaml('assets/i18n/role_group.yaml'),
+  /// );
+  /// ```
+  ///
+  /// Parameters:
+  /// - [description]: The group description (1-100 characters)
+  /// - [translation]: Optional translation configuration for localization
+  ///
+  /// Returns this builder for method chaining.
+  ///
+  /// See also:
+  /// - [Translation] for localization configuration
+  /// - [setName] for setting the group name
+  CommandGroupBuilder setDescription(String description,
+      {Translation? translation}) {
+    _description = description;
+    if (translation != null) {
+      _descriptionLocalizations =
+          _helper.extractTranslations('description', translation);
+    }
+    return this;
+  }
+
+  /// Sets the group name with optional translations.
+  ///
+  /// The name is what users see as the middle level in the command hierarchy.
+  /// For example, in `/admin user ban`, "user" is the group name.
+  ///
+  /// Names are automatically validated according to Discord's naming rules.
+  ///
+  /// ## Naming Rules
+  ///
+  /// - Must be lowercase (automatically converted)
+  /// - 1-32 characters long
+  /// - Can contain letters, numbers, hyphens, and underscores
+  /// - No spaces allowed
+  ///
+  /// Providing translations allows Discord to show localized group names
+  /// to users based on their language preferences.
+  ///
+  /// ## Examples
+  ///
+  /// ### Simple name
+  /// ```dart
+  /// group.setName('moderation');
+  /// ```
+  ///
+  /// ### With translations
+  /// ```dart
+  /// group.setName('user', translation: Translation.from({
+  ///   'en': 'user',
+  ///   'fr': 'utilisateur',
+  ///   'es': 'usuario',
+  ///   'de': 'benutzer',
+  ///   'ja': 'ユーザー',
+  /// }));
+  /// ```
+  ///
+  /// ### Loading from configuration
+  /// ```dart
+  /// group.setName(
+  ///   'settings',
+  ///   translation: Translation.fromYaml('assets/i18n/groups.yaml'),
+  /// );
+  /// ```
+  ///
+  /// Parameters:
+  /// - [name]: The group name
+  /// - [translation]: Optional translation configuration for localization
+  ///
+  /// Returns this builder for method chaining.
+  ///
+  /// See also:
+  /// - [Translation] for localization configuration
+  /// - [setDescription] for setting the group description
+  CommandGroupBuilder setName(String name, {Translation? translation}) {
+    this.name = name;
+    if (translation != null) {
+      _nameLocalizations = _helper.extractTranslations('name', translation);
+    }
+
+    return this;
+  }
+
   /// Converts the command group to a JSON representation for the Discord API.
   ///
   /// This method validates that required fields (name and description) are provided
@@ -589,57 +641,5 @@ final class CommandGroupBuilder {
       'type': CommandType.subCommandGroup.value,
       'options': commands.map((e) => e.toJson()).toList(),
     };
-  }
-
-  /// Creates a [CommandGroupBuilder] from a JSON representation.
-  ///
-  /// This factory constructor deserializes a JSON map into a command group builder,
-  /// reconstructing the group with its name, description, and subcommands.
-  ///
-  /// This is useful for loading group configurations from external sources or
-  /// deserializing group data.
-  ///
-  /// ## Example
-  ///
-  /// ```dart
-  /// final json = {
-  ///   'name': 'user',
-  ///   'description': 'User management',
-  ///   'commands': [
-  ///     {
-  ///       'name': 'ban',
-  ///       'description': 'Ban a user',
-  ///     },
-  ///     {
-  ///       'name': 'kick',
-  ///       'description': 'Kick a user',
-  ///     },
-  ///   ],
-  /// };
-  ///
-  /// final group = CommandGroupBuilder.fromJson(json);
-  /// ```
-  ///
-  /// Parameters:
-  /// - [json]: A map containing the group configuration
-  ///
-  /// Returns a new [CommandGroupBuilder] instance configured from the JSON data.
-  ///
-  /// Note: This factory only reconstructs the basic structure (names and descriptions).
-  /// Handlers, options, and other configurations must be added separately.
-  factory CommandGroupBuilder.fromJson(Map json) {
-    final builder = CommandGroupBuilder()
-      ..setName(json['name'])
-      ..setDescription(json['description']);
-
-    for (final command in json['commands']) {
-      builder.addSubCommand((builder) {
-        builder
-          ..setName(command['name'])
-          ..setDescription(command['description']);
-      });
-    }
-
-    return builder;
   }
 }
