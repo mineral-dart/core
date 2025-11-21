@@ -454,282 +454,6 @@ final class CommandDefinitionBuilder implements CommandBuilder {
   final Map<String, dynamic Function()> _commandMapper = {};
   final CommandDeclarationBuilder command = CommandDeclarationBuilder();
 
-  /// Extracts the default value from a localized field in the configuration.
-  ///
-  /// This internal method retrieves the `_default` value from a localized field,
-  /// which is required for all name and description fields.
-  ///
-  /// Parameters:
-  /// - [commandKey]: The command identifier for error messages
-  /// - [key]: The field name to extract (e.g., 'name', 'description')
-  /// - [payload]: The configuration map containing the field
-  ///
-  /// Returns the default value string.
-  ///
-  /// Throws [Exception] if the field or default value is missing.
-  String _extractDefaultValue(
-      String commandKey, String key, Map<String, dynamic> payload,) {
-    final Map<String, dynamic>? elements = payload[key];
-    if (elements == null) {
-      throw Exception('Missing "$key" key under $commandKey');
-    }
-
-    if (elements[_defaultIdentifier] case final String value) {
-      return value;
-    }
-
-    throw Exception(
-        'Missing "$key.$_defaultIdentifier" key under $commandKey struct');
-  }
-
-  /// Extracts translation mappings from a localized field in the configuration.
-  ///
-  /// This internal method processes all language-specific translations (excluding
-  /// the `_default` entry) and converts them into a [Lang]-keyed map.
-  ///
-  /// Parameters:
-  /// - [key]: The field name to extract translations from
-  /// - [payload]: The configuration map containing localized values
-  ///
-  /// Returns a map of [Lang] enum values to translated strings.
-  ///
-  /// Throws [Exception] if the field is missing or contains invalid language codes.
-  Map<Lang, String> _extractTranslations(
-      String key, Map<String, dynamic> payload) {
-    final Map<String, dynamic>? elements = payload[key];
-    if (elements == null) {
-      throw Exception('Missing "$key" key');
-    }
-
-    return elements.entries
-        .whereNot((element) => element.key == _defaultIdentifier)
-        .fold({}, (acc, element) {
-      final lang = Lang.values.firstWhere((lang) => lang.uid == element.key);
-      return {...acc, lang: element.value};
-    });
-  }
-
-  /// Processes and creates command groups from the configuration.
-  ///
-  /// This internal method extracts group definitions from the `groups` section
-  /// and creates [CommandGroupBuilder] instances with localized names and descriptions.
-  ///
-  /// Groups are used to organize subcommands into logical categories, creating
-  /// command hierarchies like `/parent group subcommand`.
-  ///
-  /// Parameters:
-  /// - [content]: The root configuration map
-  ///
-  /// Throws [Exception] if group definitions are malformed.
-  void _declareGroups(Map<String, dynamic> content) {
-    final Map<String, dynamic> groupList = content['groups'] ?? {};
-
-    for (final element in groupList.entries) {
-      final String defaultName =
-          _extractDefaultValue(element.key, 'name', element.value);
-      final String defaultDescription =
-          _extractDefaultValue(element.key, 'description', element.value);
-
-      final nameTranslations = _extractTranslations('name', element.value);
-      final descriptionTranslations =
-          _extractTranslations('description', element.value);
-
-      command.createGroup((group) {
-        return group
-          ..setName(defaultName,
-              translation: Translation({'name': nameTranslations}))
-          ..setDescription(defaultDescription,
-              translation: Translation({'name': descriptionTranslations}));
-      });
-    }
-  }
-
-  /// Processes and creates command options from a command configuration entry.
-  ///
-  /// This internal method extracts the `options` array from a command configuration
-  /// and creates appropriate [CommandOption] instances based on their types.
-  ///
-  /// Supported option types:
-  /// - Basic types: string, integer, double, boolean, user, channel, role, mention
-  /// - Choice types: choice.string, choice.integer, choice.double
-  ///
-  /// Each option can have localized names and descriptions, and can be marked
-  /// as required or optional.
-  ///
-  /// Parameters:
-  /// - [element]: A map entry containing the command configuration with options
-  ///
-  /// Returns a list of [CommandOption] instances.
-  ///
-  /// Throws [Exception] if option definitions are malformed or have unsupported types.
-  List<CommandOption> _declareOptions(MapEntry<String, dynamic> element) {
-    final options =
-        List<Map<String, dynamic>>.from(element.value['options'] ?? []);
-
-    return options.fold([], (acc, Map<String, dynamic> element) {
-      final String name = _extractDefaultValue('option', 'name', element);
-      final String description =
-          _extractDefaultValue('option', 'description', element);
-      final bool required = element['required'] ?? false;
-
-      final option = switch (element['type']) {
-        final String value when value == 'string' => Option.string(
-            name: name, description: description, required: required),
-        final String value when value == 'integer' => Option.integer(
-            name: name, description: description, required: required),
-        final String value when value == 'double' => Option.double(
-            name: name, description: description, required: required),
-        final String value when value == 'string' => Option.boolean(
-            name: name, description: description, required: required),
-        final String value when value == 'user' =>
-          Option.user(name: name, description: description, required: required),
-        final String value when value == 'channel' => Option.channel(
-            name: name, description: description, required: required),
-        final String value when value == 'role' =>
-          Option.role(name: name, description: description, required: required),
-        final String value when value == 'mention' => Option.mentionable(
-            name: name, description: description, required: required),
-        final String value when value == 'choice.string' => ChoiceOption.string(
-            name: name,
-            description: description,
-            required: required,
-            choices: List.from(element['choices'] ?? [])
-                .map((element) =>
-                    Choice<String>(element['name'], element['value']))
-                .toList()),
-        final String value when value == 'choice.integer' =>
-          ChoiceOption.integer(
-              name: name,
-              description: description,
-              required: required,
-              choices: List.from(element['choices'] ?? [])
-                  .map((element) =>
-                      Choice(element['name'], int.parse(element['value'])))
-                  .toList()),
-        final String value when value == 'choice.double' => ChoiceOption.double(
-            name: name,
-            description: description,
-            required: required,
-            choices: List.from(element['choices'] ?? [])
-                .map((element) =>
-                    Choice(element['name'], double.parse(element['value'])))
-                .toList()),
-        _ => throw Exception('Unknown option type')
-      };
-
-      return [...acc, option];
-    });
-  }
-
-  /// Processes and creates subcommands from the configuration.
-  ///
-  /// This internal method extracts subcommand definitions from the `commands` section
-  /// where command keys contain dots (e.g., `parent.subcommand` or `parent.group.subcommand`).
-  ///
-  /// Subcommands can either be:
-  /// - Direct subcommands: Attached directly to the parent command
-  /// - Grouped subcommands: Attached to a specific command group
-  ///
-  /// Each subcommand is registered in the internal command mapper for later
-  /// handler attachment via [setHandler].
-  ///
-  /// Parameters:
-  /// - [content]: The root configuration map
-  ///
-  /// Throws [Exception] if subcommand definitions are malformed.
-  void _declareSubCommands(Map<String, dynamic> content) {
-    final Map<String, dynamic> commandList = content['commands'] ?? {};
-
-    for (final element in commandList.entries) {
-      if (element.key.contains('.')) {
-        final String defaultName =
-            _extractDefaultValue(element.key, 'name', element.value);
-        final String defaultDescription =
-            _extractDefaultValue(element.key, 'description', element.value);
-
-        final nameTranslations = _extractTranslations('name', element.value);
-        final descriptionTranslations =
-            _extractTranslations('description', element.value);
-
-        if (element.value['group'] case final String group) {
-          final currentGroup = command.groups
-              .firstWhere((element) => element.name == group)
-            ..addSubCommand((command) {
-              command
-                ..setName(defaultName,
-                    translation: Translation({'name': nameTranslations}))
-                ..setDescription(defaultDescription,
-                    translation:
-                        Translation({'description': descriptionTranslations}));
-
-              command.options.addAll(_declareOptions(element));
-            });
-
-          final int currentGroupIndex = command.groups.indexOf(currentGroup);
-          final int currentSubCommandIndex =
-              currentGroup.commands.indexOf(currentGroup.commands.last);
-          _commandMapper[element.key] = () => command
-              .groups[currentGroupIndex].commands[currentSubCommandIndex];
-        } else {
-          command.addSubCommand((command) {
-            command
-              ..setName(defaultName,
-                  translation: Translation({'name': nameTranslations}))
-              ..setDescription(defaultDescription,
-                  translation:
-                      Translation({'description': descriptionTranslations}));
-
-            command.options.addAll(_declareOptions(element));
-          });
-          final currentSubCommandIndex =
-              command.subCommands.indexOf(command.subCommands.last);
-          _commandMapper[element.key] =
-              () => command.subCommands[currentSubCommandIndex];
-        }
-      }
-    }
-  }
-
-  /// Processes and creates the top-level command from the configuration.
-  ///
-  /// This internal method extracts the main command definition from the `commands`
-  /// section where the command key doesn't contain dots (indicating a top-level command).
-  ///
-  /// The command is configured with localized names, descriptions, and options,
-  /// and is registered in the internal command mapper.
-  ///
-  /// Parameters:
-  /// - [content]: The root configuration map
-  ///
-  /// Throws [Exception] if the command definition is malformed.
-  void _declareCommand(Map<String, dynamic> content) {
-    final Map<String, dynamic> commandList = content['commands'] ?? {};
-
-    for (final element in commandList.entries) {
-      if (!element.key.contains('.')) {
-        final String defaultName =
-            _extractDefaultValue(element.key, 'name', element.value);
-        final String defaultDescription =
-            _extractDefaultValue(element.key, 'description', element.value);
-
-        final nameTranslations = _extractTranslations('name', element.value);
-        final descriptionTranslations =
-            _extractTranslations('description', element.value);
-
-        command
-          ..setName(defaultName,
-              translation: Translation({'name': nameTranslations}))
-          ..setDescription(defaultDescription,
-              translation:
-                  Translation({'description': descriptionTranslations}));
-
-        command.options.addAll(_declareOptions(element));
-
-        _commandMapper[element.key] = () => command;
-      }
-    }
-  }
-
   /// Provides access to a specific command or subcommand for advanced configuration.
   ///
   /// This method allows you to access the builder instance for a specific command
@@ -1023,5 +747,281 @@ final class CommandDefinitionBuilder implements CommandBuilder {
     _declareCommand(payload);
     _declareGroups(payload);
     _declareSubCommands(payload);
+  }
+
+  /// Processes and creates the top-level command from the configuration.
+  ///
+  /// This internal method extracts the main command definition from the `commands`
+  /// section where the command key doesn't contain dots (indicating a top-level command).
+  ///
+  /// The command is configured with localized names, descriptions, and options,
+  /// and is registered in the internal command mapper.
+  ///
+  /// Parameters:
+  /// - [content]: The root configuration map
+  ///
+  /// Throws [Exception] if the command definition is malformed.
+  void _declareCommand(Map<String, dynamic> content) {
+    final Map<String, dynamic> commandList = content['commands'] ?? {};
+
+    for (final element in commandList.entries) {
+      if (!element.key.contains('.')) {
+        final String defaultName =
+            _extractDefaultValue(element.key, 'name', element.value);
+        final String defaultDescription =
+            _extractDefaultValue(element.key, 'description', element.value);
+
+        final nameTranslations = _extractTranslations('name', element.value);
+        final descriptionTranslations =
+            _extractTranslations('description', element.value);
+
+        command
+          ..setName(defaultName,
+              translation: Translation({'name': nameTranslations}))
+          ..setDescription(defaultDescription,
+              translation:
+                  Translation({'description': descriptionTranslations}));
+
+        command.options.addAll(_declareOptions(element));
+
+        _commandMapper[element.key] = () => command;
+      }
+    }
+  }
+
+  /// Processes and creates command groups from the configuration.
+  ///
+  /// This internal method extracts group definitions from the `groups` section
+  /// and creates [CommandGroupBuilder] instances with localized names and descriptions.
+  ///
+  /// Groups are used to organize subcommands into logical categories, creating
+  /// command hierarchies like `/parent group subcommand`.
+  ///
+  /// Parameters:
+  /// - [content]: The root configuration map
+  ///
+  /// Throws [Exception] if group definitions are malformed.
+  void _declareGroups(Map<String, dynamic> content) {
+    final Map<String, dynamic> groupList = content['groups'] ?? {};
+
+    for (final element in groupList.entries) {
+      final String defaultName =
+          _extractDefaultValue(element.key, 'name', element.value);
+      final String defaultDescription =
+          _extractDefaultValue(element.key, 'description', element.value);
+
+      final nameTranslations = _extractTranslations('name', element.value);
+      final descriptionTranslations =
+          _extractTranslations('description', element.value);
+
+      command.createGroup((group) {
+        return group
+          ..setName(defaultName,
+              translation: Translation({'name': nameTranslations}))
+          ..setDescription(defaultDescription,
+              translation: Translation({'name': descriptionTranslations}));
+      });
+    }
+  }
+
+  /// Processes and creates command options from a command configuration entry.
+  ///
+  /// This internal method extracts the `options` array from a command configuration
+  /// and creates appropriate [CommandOption] instances based on their types.
+  ///
+  /// Supported option types:
+  /// - Basic types: string, integer, double, boolean, user, channel, role, mention
+  /// - Choice types: choice.string, choice.integer, choice.double
+  ///
+  /// Each option can have localized names and descriptions, and can be marked
+  /// as required or optional.
+  ///
+  /// Parameters:
+  /// - [element]: A map entry containing the command configuration with options
+  ///
+  /// Returns a list of [CommandOption] instances.
+  ///
+  /// Throws [Exception] if option definitions are malformed or have unsupported types.
+  List<CommandOption> _declareOptions(MapEntry<String, dynamic> element) {
+    final options =
+        List<Map<String, dynamic>>.from(element.value['options'] ?? []);
+
+    return options.fold([], (acc, Map<String, dynamic> element) {
+      final String name = _extractDefaultValue('option', 'name', element);
+      final String description =
+          _extractDefaultValue('option', 'description', element);
+      final bool required = element['required'] ?? false;
+
+      final option = switch (element['type']) {
+        final String value when value == 'string' => Option.string(
+            name: name, description: description, required: required),
+        final String value when value == 'integer' => Option.integer(
+            name: name, description: description, required: required),
+        final String value when value == 'double' => Option.double(
+            name: name, description: description, required: required),
+        final String value when value == 'string' => Option.boolean(
+            name: name, description: description, required: required),
+        final String value when value == 'user' =>
+          Option.user(name: name, description: description, required: required),
+        final String value when value == 'channel' => Option.channel(
+            name: name, description: description, required: required),
+        final String value when value == 'role' =>
+          Option.role(name: name, description: description, required: required),
+        final String value when value == 'mention' => Option.mentionable(
+            name: name, description: description, required: required),
+        final String value when value == 'choice.string' => ChoiceOption.string(
+            name: name,
+            description: description,
+            required: required,
+            choices: List.from(element['choices'] ?? [])
+                .map((element) =>
+                    Choice<String>(element['name'], element['value']))
+                .toList()),
+        final String value when value == 'choice.integer' =>
+          ChoiceOption.integer(
+              name: name,
+              description: description,
+              required: required,
+              choices: List.from(element['choices'] ?? [])
+                  .map((element) =>
+                      Choice(element['name'], int.parse(element['value'])))
+                  .toList()),
+        final String value when value == 'choice.double' => ChoiceOption.double(
+            name: name,
+            description: description,
+            required: required,
+            choices: List.from(element['choices'] ?? [])
+                .map((element) =>
+                    Choice(element['name'], double.parse(element['value'])))
+                .toList()),
+        _ => throw Exception('Unknown option type')
+      };
+
+      return [...acc, option];
+    });
+  }
+
+  /// Processes and creates subcommands from the configuration.
+  ///
+  /// This internal method extracts subcommand definitions from the `commands` section
+  /// where command keys contain dots (e.g., `parent.subcommand` or `parent.group.subcommand`).
+  ///
+  /// Subcommands can either be:
+  /// - Direct subcommands: Attached directly to the parent command
+  /// - Grouped subcommands: Attached to a specific command group
+  ///
+  /// Each subcommand is registered in the internal command mapper for later
+  /// handler attachment via [setHandler].
+  ///
+  /// Parameters:
+  /// - [content]: The root configuration map
+  ///
+  /// Throws [Exception] if subcommand definitions are malformed.
+  void _declareSubCommands(Map<String, dynamic> content) {
+    final Map<String, dynamic> commandList = content['commands'] ?? {};
+
+    for (final element in commandList.entries) {
+      if (element.key.contains('.')) {
+        final String defaultName =
+            _extractDefaultValue(element.key, 'name', element.value);
+        final String defaultDescription =
+            _extractDefaultValue(element.key, 'description', element.value);
+
+        final nameTranslations = _extractTranslations('name', element.value);
+        final descriptionTranslations =
+            _extractTranslations('description', element.value);
+
+        if (element.value['group'] case final String group) {
+          final currentGroup = command.groups
+              .firstWhere((element) => element.name == group)
+            ..addSubCommand((command) {
+              command
+                ..setName(defaultName,
+                    translation: Translation({'name': nameTranslations}))
+                ..setDescription(defaultDescription,
+                    translation:
+                        Translation({'description': descriptionTranslations}));
+
+              command.options.addAll(_declareOptions(element));
+            });
+
+          final int currentGroupIndex = command.groups.indexOf(currentGroup);
+          final int currentSubCommandIndex =
+              currentGroup.commands.indexOf(currentGroup.commands.last);
+          _commandMapper[element.key] = () => command
+              .groups[currentGroupIndex].commands[currentSubCommandIndex];
+        } else {
+          command.addSubCommand((command) {
+            command
+              ..setName(defaultName,
+                  translation: Translation({'name': nameTranslations}))
+              ..setDescription(defaultDescription,
+                  translation:
+                      Translation({'description': descriptionTranslations}));
+
+            command.options.addAll(_declareOptions(element));
+          });
+          final currentSubCommandIndex =
+              command.subCommands.indexOf(command.subCommands.last);
+          _commandMapper[element.key] =
+              () => command.subCommands[currentSubCommandIndex];
+        }
+      }
+    }
+  }
+
+  /// Extracts the default value from a localized field in the configuration.
+  ///
+  /// This internal method retrieves the `_default` value from a localized field,
+  /// which is required for all name and description fields.
+  ///
+  /// Parameters:
+  /// - [commandKey]: The command identifier for error messages
+  /// - [key]: The field name to extract (e.g., 'name', 'description')
+  /// - [payload]: The configuration map containing the field
+  ///
+  /// Returns the default value string.
+  ///
+  /// Throws [Exception] if the field or default value is missing.
+  String _extractDefaultValue(
+      String commandKey, String key, Map<String, dynamic> payload,) {
+    final Map<String, dynamic>? elements = payload[key];
+    if (elements == null) {
+      throw Exception('Missing "$key" key under $commandKey');
+    }
+
+    if (elements[_defaultIdentifier] case final String value) {
+      return value;
+    }
+
+    throw Exception(
+        'Missing "$key.$_defaultIdentifier" key under $commandKey struct');
+  }
+
+  /// Extracts translation mappings from a localized field in the configuration.
+  ///
+  /// This internal method processes all language-specific translations (excluding
+  /// the `_default` entry) and converts them into a [Lang]-keyed map.
+  ///
+  /// Parameters:
+  /// - [key]: The field name to extract translations from
+  /// - [payload]: The configuration map containing localized values
+  ///
+  /// Returns a map of [Lang] enum values to translated strings.
+  ///
+  /// Throws [Exception] if the field is missing or contains invalid language codes.
+  Map<Lang, String> _extractTranslations(
+      String key, Map<String, dynamic> payload) {
+    final Map<String, dynamic>? elements = payload[key];
+    if (elements == null) {
+      throw Exception('Missing "$key" key');
+    }
+
+    return elements.entries
+        .whereNot((element) => element.key == _defaultIdentifier)
+        .fold({}, (acc, element) {
+      final lang = Lang.values.firstWhere((lang) => lang.uid == element.key);
+      return {...acc, lang: element.value};
+    });
   }
 }
