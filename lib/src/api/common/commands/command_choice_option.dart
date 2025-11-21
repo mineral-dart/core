@@ -2,6 +2,73 @@ import 'package:mineral/src/api/common/commands/command_option.dart';
 import 'package:mineral/src/api/common/commands/command_option_type.dart';
 import 'package:mineral/src/api/common/types/channel_type.dart';
 
+/// Represents a single choice in a [ChoiceOption].
+///
+/// A choice consists of a display name (what users see) and a value (what your
+/// handler receives). This separation allows for user-friendly display names
+/// while using simple, consistent values in your code.
+///
+/// ## Type Parameter
+///
+/// - [T]: The value type ([String], [int], or [double])
+///
+/// ## Usage
+///
+/// ### String Choices
+/// ```dart
+/// Choice('Red Color', 'red'),        // User sees "Red Color", handler gets "red"
+/// Choice('Blue Color', 'blue'),      // User sees "Blue Color", handler gets "blue"
+/// ```
+///
+/// ### Integer Choices
+/// ```dart
+/// Choice('Small (10)', 10),          // User sees "Small (10)", handler gets 10
+/// Choice('Large (50)', 50),          // User sees "Large (50)", handler gets 50
+/// ```
+///
+/// ### Double Choices
+/// ```dart
+/// Choice('Half Speed', 0.5),         // User sees "Half Speed", handler gets 0.5
+/// Choice('Double Speed', 2.0),       // User sees "Double Speed", handler gets 2.0
+/// ```
+///
+/// ### With Emojis
+/// ```dart
+/// Choice('🔴 Critical', 1),
+/// Choice('🟡 Warning', 2),
+/// Choice('🟢 Info', 3),
+/// ```
+///
+/// ## Best Practices
+///
+/// - **Descriptive names**: Make names clear and self-explanatory
+/// - **Short and sweet**: Keep names concise (1-100 characters)
+/// - **Consistent values**: Use a consistent format for values
+/// - **Visual indicators**: Use emojis to make choices more intuitive
+/// - **Unique values**: Ensure each choice has a unique value
+///
+/// See also:
+/// - [ChoiceOption] for creating options with choices
+final class Choice<T> {
+  /// The display name shown to users in Discord's interface.
+  ///
+  /// Can include emojis, spaces, and special characters. Must be 1-100 characters.
+  final String name;
+  
+  /// The value sent to your handler when this choice is selected.
+  ///
+  /// Should be a simple, consistent identifier. For strings, must be 1-100 characters.
+  final T value;
+
+  /// Creates a new choice with the given name and value.
+  ///
+  /// Example:
+  /// ```dart
+  /// const choice = Choice('Premium Plan', 'premium');
+  /// ```
+  const Choice(this.name, this.value);
+}
+
 /// A command option with predefined choices that users can select from.
 ///
 /// The [ChoiceOption] allows you to restrict user input to a specific set of
@@ -180,39 +247,21 @@ final class ChoiceOption implements CommandOption {
   /// The list of predefined choices users can select from.
   final List<Choice> choices;
 
-  const ChoiceOption._(this.name, this.description, this.type, this.isRequired,
-      this.channelTypes, this.choices);
-
-  /// Converts this choice option to a JSON representation for the Discord API.
-  ///
-  /// Returns a map containing the option configuration including all choices.
-  @override
-  Map<String, dynamic> toJson() {
-    return {
-      'name': name,
-      'description': description,
-      'type': type.value,
-      'required': isRequired,
-      'choices':
-          choices.map((e) => {'name': e.name, 'value': e.value}).toList(),
-    };
-  }
-
-  /// Creates a string choice option with predefined text choices.
+  /// Creates a double choice option with predefined decimal number choices.
   ///
   /// Users will see a dropdown with the choice names and the handler will
-  /// receive the selected choice's value as a [String].
+  /// receive the selected choice's value as a [double].
   ///
   /// Example:
   /// ```dart
-  /// ChoiceOption.string(
-  ///   name: 'region',
-  ///   description: 'Select your region',
-  ///   required: true,
+  /// ChoiceOption.double(
+  ///   name: 'tax_rate',
+  ///   description: 'Select tax rate',
+  ///   required: false,
   ///   choices: [
-  ///     Choice('North America', 'na'),
-  ///     Choice('Europe', 'eu'),
-  ///     Choice('Asia', 'asia'),
+  ///     Choice('5%', 0.05),
+  ///     Choice('10%', 0.10),
+  ///     Choice('15%', 0.15),
   ///   ],
   /// )
   /// ```
@@ -222,13 +271,13 @@ final class ChoiceOption implements CommandOption {
   /// - [description]: Description shown to users
   /// - [choices]: List of available choices (max 25)
   /// - [required]: Whether this option is required (default: false)
-  factory ChoiceOption.string(
+  factory ChoiceOption.double(
           {required String name,
           required String description,
-          required List<Choice<String>> choices,
+          required List<Choice<double>> choices,
           bool required = false}) =>
       ChoiceOption._(
-          name, description, CommandOptionType.string, required, null, choices);
+          name, description, CommandOptionType.double, required, null, choices);
 
   /// Creates an integer choice option with predefined number choices.
   ///
@@ -262,21 +311,21 @@ final class ChoiceOption implements CommandOption {
       ChoiceOption._(name, description, CommandOptionType.integer, required,
           null, choices);
 
-  /// Creates a double choice option with predefined decimal number choices.
+  /// Creates a string choice option with predefined text choices.
   ///
   /// Users will see a dropdown with the choice names and the handler will
-  /// receive the selected choice's value as a [double].
+  /// receive the selected choice's value as a [String].
   ///
   /// Example:
   /// ```dart
-  /// ChoiceOption.double(
-  ///   name: 'tax_rate',
-  ///   description: 'Select tax rate',
-  ///   required: false,
+  /// ChoiceOption.string(
+  ///   name: 'region',
+  ///   description: 'Select your region',
+  ///   required: true,
   ///   choices: [
-  ///     Choice('5%', 0.05),
-  ///     Choice('10%', 0.10),
-  ///     Choice('15%', 0.15),
+  ///     Choice('North America', 'na'),
+  ///     Choice('Europe', 'eu'),
+  ///     Choice('Asia', 'asia'),
   ///   ],
   /// )
   /// ```
@@ -286,78 +335,29 @@ final class ChoiceOption implements CommandOption {
   /// - [description]: Description shown to users
   /// - [choices]: List of available choices (max 25)
   /// - [required]: Whether this option is required (default: false)
-  factory ChoiceOption.double(
+  factory ChoiceOption.string(
           {required String name,
           required String description,
-          required List<Choice<double>> choices,
+          required List<Choice<String>> choices,
           bool required = false}) =>
       ChoiceOption._(
-          name, description, CommandOptionType.double, required, null, choices);
-}
+          name, description, CommandOptionType.string, required, null, choices);
 
-/// Represents a single choice in a [ChoiceOption].
-///
-/// A choice consists of a display name (what users see) and a value (what your
-/// handler receives). This separation allows for user-friendly display names
-/// while using simple, consistent values in your code.
-///
-/// ## Type Parameter
-///
-/// - [T]: The value type ([String], [int], or [double])
-///
-/// ## Usage
-///
-/// ### String Choices
-/// ```dart
-/// Choice('Red Color', 'red'),        // User sees "Red Color", handler gets "red"
-/// Choice('Blue Color', 'blue'),      // User sees "Blue Color", handler gets "blue"
-/// ```
-///
-/// ### Integer Choices
-/// ```dart
-/// Choice('Small (10)', 10),          // User sees "Small (10)", handler gets 10
-/// Choice('Large (50)', 50),          // User sees "Large (50)", handler gets 50
-/// ```
-///
-/// ### Double Choices
-/// ```dart
-/// Choice('Half Speed', 0.5),         // User sees "Half Speed", handler gets 0.5
-/// Choice('Double Speed', 2.0),       // User sees "Double Speed", handler gets 2.0
-/// ```
-///
-/// ### With Emojis
-/// ```dart
-/// Choice('🔴 Critical', 1),
-/// Choice('🟡 Warning', 2),
-/// Choice('🟢 Info', 3),
-/// ```
-///
-/// ## Best Practices
-///
-/// - **Descriptive names**: Make names clear and self-explanatory
-/// - **Short and sweet**: Keep names concise (1-100 characters)
-/// - **Consistent values**: Use a consistent format for values
-/// - **Visual indicators**: Use emojis to make choices more intuitive
-/// - **Unique values**: Ensure each choice has a unique value
-///
-/// See also:
-/// - [ChoiceOption] for creating options with choices
-final class Choice<T> {
-  /// The display name shown to users in Discord's interface.
-  ///
-  /// Can include emojis, spaces, and special characters. Must be 1-100 characters.
-  final String name;
-  
-  /// The value sent to your handler when this choice is selected.
-  ///
-  /// Should be a simple, consistent identifier. For strings, must be 1-100 characters.
-  final T value;
+  const ChoiceOption._(this.name, this.description, this.type, this.isRequired,
+      this.channelTypes, this.choices);
 
-  /// Creates a new choice with the given name and value.
+  /// Converts this choice option to a JSON representation for the Discord API.
   ///
-  /// Example:
-  /// ```dart
-  /// const choice = Choice('Premium Plan', 'premium');
-  /// ```
-  const Choice(this.name, this.value);
+  /// Returns a map containing the option configuration including all choices.
+  @override
+  Map<String, dynamic> toJson() {
+    return {
+      'name': name,
+      'description': description,
+      'type': type.value,
+      'required': isRequired,
+      'choices':
+          choices.map((e) => {'name': e.name, 'value': e.value}).toList(),
+    };
+  }
 }
