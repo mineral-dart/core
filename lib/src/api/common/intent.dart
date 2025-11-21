@@ -142,34 +142,6 @@
 /// - [ClientBuilder.setIntent] for setting intents
 /// - Discord's [Gateway Intents documentation](https://discord.com/developers/docs/topics/gateway#gateway-intents)
 final class Intent {
-  /// Combines all available intents (privileged and non-privileged).
-  ///
-  /// **Warning:** Requires all privileged intents to be enabled in the
-  /// Discord Developer Portal. Only use if your bot genuinely needs all events.
-  ///
-  /// Value: 53608447
-  static const int all = guilds |
-      guildMembers |
-      guildModeration |
-      guildEmojisAndStickers |
-      guildIntegrations |
-      guildWebhooks |
-      guildInvites |
-      guildVoiceStates |
-      guildPresences |
-      guildMessages |
-      guildMessageReactions |
-      guildMessageTyping |
-      directMessages |
-      directMessageReactions |
-      directMessageTyping |
-      messageContent |
-      guildScheduledEvents |
-      autoModerationConfiguration |
-      autoModerationExecution |
-      guildMessagePolls |
-      directMessagePolls;
-
   /// Combines all non-privileged intents.
   ///
   /// This is a safe default that doesn't require special approval from Discord.
@@ -194,6 +166,17 @@ final class Intent {
       autoModerationExecution |
       guildMessagePolls |
       directMessagePolls;
+
+  /// Combines all available intents (privileged and non-privileged).
+  ///
+  /// **Warning:** Requires all privileged intents to be enabled in the
+  /// Discord Developer Portal. Only use if your bot genuinely needs all events.
+  ///
+  /// Value: 53608447
+  static const int all = allNonPrivileged |
+      guildMembers |
+      guildPresences |
+      messageContent;
 
   // ============================================================================
   // Guild Events
