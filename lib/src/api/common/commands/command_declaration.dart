@@ -20,7 +20,7 @@ import 'package:mineral/src/domains/common/utils/listenable.dart';
 ///       ..setDescription('Check bot latency')
 ///       ..setHandle(handle);
 ///   }
-///   
+///
 ///   void handle(CommandContext ctx) {
 ///     ctx.interaction.reply(
 ///       builder: MessageBuilder.text('Pong!'),
@@ -50,7 +50,7 @@ import 'package:mineral/src/domains/common/utils/listenable.dart';
 ///       ))
 ///       ..setHandle(handle);
 ///   }
-///   
+///
 ///   void handle(CommandContext ctx, {required User target}) {
 ///     ctx.interaction.reply(
 ///       builder: MessageBuilder.text('Hello, ${target.username}!'),
