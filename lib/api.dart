@@ -54,6 +54,7 @@ export 'package:mineral/src/api/common/embed/message_embed_provider.dart';
 export 'package:mineral/src/api/common/embed/message_embed_type.dart';
 export 'package:mineral/src/api/common/emoji.dart';
 export 'package:mineral/src/api/common/image_asset.dart';
+export 'package:mineral/src/api/common/intent.dart';
 export 'package:mineral/src/api/common/lang.dart';
 export 'package:mineral/src/api/common/message.dart';
 export 'package:mineral/src/api/common/message_properties.dart';
