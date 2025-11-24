@@ -1,23 +1,23 @@
 final class ThreadMetadata {
-  final bool archived;
+  final bool isArchived;
   final int? autoArchiveDuration;
-  final bool locked;
+  final bool isLocked;
   final DateTime? archiveTimestamp;
   final bool isPublic;
 
   ThreadMetadata({
-    required this.archived,
+    required this.isArchived,
     required this.autoArchiveDuration,
-    required this.locked,
+    required this.isLocked,
     this.isPublic = true,
     this.archiveTimestamp,
   });
 
   factory ThreadMetadata.fromMap(Map<String, dynamic> json) {
     return ThreadMetadata(
-      archived: bool.parse(json['archived'] ?? 'false'),
+      isArchived: bool.parse(json['archived'] ?? 'false'),
       autoArchiveDuration: json['auto_archive_duration'],
-      locked: bool.parse(json['locked'] ?? 'false'),
+      isLocked: bool.parse(json['locked'] ?? 'false'),
       archiveTimestamp: json['archive_timestamp'] != null
           ? DateTime.parse(json['archive_timestamp'])
           : null,

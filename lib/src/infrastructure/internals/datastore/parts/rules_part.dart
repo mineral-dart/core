@@ -76,7 +76,7 @@ final class RulesPart implements RulesPartContract {
     TriggerMetadata? triggerMetadata,
     List<Snowflake> exemptRoles = const [],
     List<Snowflake> exemptChannels = const [],
-    bool enabled = true,
+    bool isEnabled = true,
     String? reason,
   }) async {
     final completer = Completer<AutoModerationRule>();
@@ -107,7 +107,7 @@ final class RulesPart implements RulesPartContract {
               .toList(),
           'exempt_roles': exemptRoles.map((e) => e.toString()).toList(),
           'exempt_channels': exemptChannels.map((e) => e.toString()).toList(),
-          'enabled': enabled,
+          'enabled': isEnabled,
         },
         headers: {
           DiscordHeader.auditLogReason(reason)

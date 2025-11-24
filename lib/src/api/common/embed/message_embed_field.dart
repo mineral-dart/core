@@ -3,10 +3,10 @@ import 'package:mineral/src/domains/common/utils/utils.dart';
 final class MessageEmbedField {
   final String name;
   final String value;
-  final bool inline;
+  final bool isInline;
 
   MessageEmbedField(
-      {required this.name, required this.value, this.inline = false}) {
+      {required this.name, required this.value, this.isInline = false}) {
     expectOrThrow(name.length <= 256,
         message: 'Name must be 256 or fewer in length');
     expectOrThrow(value.length <= 1024,
@@ -17,7 +17,7 @@ final class MessageEmbedField {
     return {
       'name': name,
       'value': value,
-      'inline': inline,
+      'inline': isInline,
     };
   }
 
@@ -25,7 +25,7 @@ final class MessageEmbedField {
     return MessageEmbedField(
       name: json['name'],
       value: json['value'],
-      inline: json['inline'],
+      isInline: json['inline'],
     );
   }
 }

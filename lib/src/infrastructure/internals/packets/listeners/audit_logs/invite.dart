@@ -9,7 +9,7 @@ Future<AuditLog> inviteCreateAuditLogHandler(Map<String, dynamic> json) async {
     inviteCode: json['changes'][0]['new_value'],
     maxAge: json['options']?['max_age'] ?? 0,
     maxUses: json['options']?['max_uses'] ?? 0,
-    temporary: json['options']?['temporary'] ?? false,
+    isInviteTemporary: json['options']?['temporary'] ?? false,
     channelId: Snowflake.nullable(json['options']?['channel_id']),
   );
 }

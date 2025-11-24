@@ -20,7 +20,7 @@ final class Button implements MessageComponent {
   final String? _label;
   final String? _url;
   final PartialEmoji? _emoji;
-  final bool _disabled;
+  final bool _isDisabled;
 
   Button(
       {required ButtonType type,
@@ -34,7 +34,7 @@ final class Button implements MessageComponent {
         _label = label,
         _url = url,
         _emoji = emoji,
-        _disabled = disabled ?? false;
+        _isDisabled = disabled ?? false;
 
   factory Button.primary(String customId,
           {String? label, PartialEmoji? emoji, bool? disabled}) =>
@@ -98,12 +98,12 @@ final class Button implements MessageComponent {
       'style': _type.value,
       if (_url != null) 'url': _url,
       if (_label != null) 'label': _label,
-      if (_disabled) 'disabled': _disabled,
+      if (_isDisabled) 'disabled': _isDisabled,
       if (_emoji != null)
         'emoji': {
           'name': _emoji.name,
           'id': _emoji.id,
-          'animated': _emoji.animated,
+          'animated': _emoji.isAnimated,
         },
     };
   }

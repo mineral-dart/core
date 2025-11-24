@@ -79,29 +79,29 @@ final class CommandDefinitionBuilder implements CommandBuilder {
       final String name = _extractDefaultValue('option', 'name', element);
       final String description =
           _extractDefaultValue('option', 'description', element);
-      final bool required = element['required'] ?? false;
+      final bool isRequired = element['required'] ?? false;
 
       final option = switch (element['type']) {
         final String value when value == 'string' => Option.string(
-            name: name, description: description, required: required),
+            name: name, description: description, isRequired: isRequired),
         final String value when value == 'integer' => Option.integer(
-            name: name, description: description, required: required),
+            name: name, description: description, isRequired: isRequired),
         final String value when value == 'double' => Option.double(
-            name: name, description: description, required: required),
+            name: name, description: description, isRequired: isRequired),
         final String value when value == 'string' => Option.boolean(
-            name: name, description: description, required: required),
+            name: name, description: description, isRequired: isRequired),
         final String value when value == 'user' =>
-          Option.user(name: name, description: description, required: required),
+          Option.user(name: name, description: description, isRequired: isRequired),
         final String value when value == 'channel' => Option.channel(
-            name: name, description: description, required: required),
+            name: name, description: description, isRequired: isRequired),
         final String value when value == 'role' =>
-          Option.role(name: name, description: description, required: required),
+          Option.role(name: name, description: description, isRequired: isRequired),
         final String value when value == 'mention' => Option.mentionable(
-            name: name, description: description, required: required),
+            name: name, description: description, isRequired: isRequired),
         final String value when value == 'choice.string' => ChoiceOption.string(
             name: name,
             description: description,
-            required: required,
+            isRequired: isRequired,
             choices: List.from(element['choices'] ?? [])
                 .map((element) =>
                     Choice<String>(element['name'], element['value']))
@@ -110,7 +110,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
           ChoiceOption.integer(
               name: name,
               description: description,
-              required: required,
+              isRequired: isRequired,
               choices: List.from(element['choices'] ?? [])
                   .map((element) =>
                       Choice(element['name'], int.parse(element['value'])))
@@ -118,7 +118,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
         final String value when value == 'choice.double' => ChoiceOption.double(
             name: name,
             description: description,
-            required: required,
+            isRequired: isRequired,
             choices: List.from(element['choices'] ?? [])
                 .map((element) =>
                     Choice(element['name'], double.parse(element['value'])))

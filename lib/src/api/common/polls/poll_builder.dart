@@ -8,7 +8,7 @@ final class PollBuilder {
   PollQuestion? _question;
   final List<PollAnswer> _answers = [];
   Duration? _expireAt;
-  bool _isAllowMultiple = false;
+  bool _isMultipleResponsesAllowed = false;
   PollLayout _layout = PollLayout.initial;
 
   PollBuilder setQuestion({required String question, PartialEmoji? emoji}) {
@@ -27,7 +27,7 @@ final class PollBuilder {
   }
 
   PollBuilder allowMultipleResponses(bool value) {
-    _isAllowMultiple = value;
+    _isMultipleResponsesAllowed = value;
     return this;
   }
 
@@ -45,7 +45,7 @@ final class PollBuilder {
       question: _question!,
       answers: _answers,
       expireAt: _expireAt,
-      isAllowMultiple: _isAllowMultiple,
+      isMultipleResponseAllowed: _isMultipleResponsesAllowed,
       layout: _layout,
     );
   }

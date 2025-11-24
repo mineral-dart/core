@@ -106,7 +106,7 @@ final class MemberSerializer implements SerializerContract<Member> {
           duration: Helper.createOrNull(
               field: json['communication_disabled_until'],
               fn: () => DateTime.parse(json['communication_disabled_until']))),
-      mfaEnabled: json['mfa_enabled'] ?? false,
+      hasMfaEnabled: json['mfa_enabled'] ?? false,
       locale: json['locale'],
       premiumType: PremiumTier.values.firstWhere(
           (e) => e == json['premium_type'],
@@ -143,7 +143,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       'is_bot': member.isBot,
       'is_pending': member.isPending,
       'timeout': member.timeout.duration?.toIso8601String(),
-      'mfa_enabled': member.mfaEnabled,
+      'mfa_enabled': member.hasMfaEnabled,
       'locale': member.locale,
       'premium_type': member.premiumType.value,
       'joined_at': member.joinedAt?.toIso8601String(),

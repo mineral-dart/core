@@ -10,7 +10,7 @@ abstract interface class BaseMessage {
 
   String get content;
 
-  bool get authorIsBot;
+  bool get isAuthorBot;
 
   List<MessageEmbed> get embeds;
 
@@ -78,7 +78,7 @@ final class Message implements ServerMessage, PrivateMessage, BaseMessage {
   String get content => _properties.content;
 
   @override
-  bool get authorIsBot => _properties.authorIsBot;
+  bool get isAuthorBot => _properties.isAuthorBot;
 
   @override
   List<MessageEmbed> get embeds => _properties.embeds;

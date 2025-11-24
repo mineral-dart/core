@@ -24,7 +24,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
       ..setOpCode(OpCode.identify)
       ..append('token', shard.wss.config.token)
       ..append('intents', shard.wss.config.intent)
-      ..append('compress', shard.wss.config.compress)
+      ..append('compress', shard.wss.config.isCompressed)
       ..append('properties', {'os': 'macos', 'device': 'mineral'});
 
     shard.client.send(message.build());

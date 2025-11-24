@@ -5,13 +5,13 @@ final class Presence {
   final DateTime? since;
   final List<Activity> activities;
   final StatusType status;
-  final bool afk;
+  final bool isAfk;
 
   Presence({
     required this.since,
     required this.activities,
     required this.status,
-    required this.afk,
+    required this.isAfk,
   });
 
   factory Presence.fromJson(Map<String, dynamic> json) {
@@ -21,7 +21,7 @@ final class Presence {
           json['activities'].map((e) => Activity.fromJson(e))),
       status: StatusType.values
           .firstWhere((element) => element.value == json['status']),
-      afk: json['afk'] ?? false,
+      isAfk: json['afk'] ?? false,
     );
   }
 }

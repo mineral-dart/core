@@ -47,7 +47,7 @@ final class MessageSerializer<T extends Message>
       'author_id': object.authorId?.value,
       'channel_id': object.channelId.value,
       'server_id': object.serverId?.value,
-      'author_is_bot': object.authorIsBot,
+      'author_is_bot': object.isAuthorBot,
       'timestamp': object.createdAt.toIso8601String(),
       'edited_timestamp': object.updatedAt?.toIso8601String(),
     };

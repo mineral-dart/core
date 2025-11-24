@@ -39,7 +39,7 @@ final class RulesManager {
     TriggerMetadata? triggerMetadata,
     List<Snowflake> exemptRoles = const [],
     List<Snowflake> exemptChannels = const [],
-    bool enabled = true,
+    bool isEnabled = true,
     String? reason,
   }) =>
       _datastore.rules.create(
@@ -51,7 +51,7 @@ final class RulesManager {
         triggerMetadata: triggerMetadata,
         exemptRoles: exemptRoles,
         exemptChannels: exemptChannels,
-        enabled: enabled,
+        isEnabled: isEnabled,
         reason: reason,
       );
 }

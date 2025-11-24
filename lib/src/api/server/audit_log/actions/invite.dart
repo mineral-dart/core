@@ -5,7 +5,7 @@ final class InviteCreateAuditLog extends AuditLog {
   final String inviteCode;
   final int maxAge;
   final int maxUses;
-  final bool temporary;
+  final bool isInviteTemporary;
   final Snowflake? channelId;
 
   InviteCreateAuditLog({
@@ -14,7 +14,7 @@ final class InviteCreateAuditLog extends AuditLog {
     required this.inviteCode,
     required this.maxAge,
     required this.maxUses,
-    required this.temporary,
+    required this.isInviteTemporary,
     this.channelId,
   }) : super(AuditLogType.inviteCreate, serverId, userId);
 }

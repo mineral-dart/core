@@ -47,7 +47,7 @@ final class MessageReactionSerializer<T extends Message>
       'emoji': {
         'id': object.emoji.id,
         'name': object.emoji.name,
-        'animated': object.emoji.animated,
+        'animated': object.emoji.isAnimated,
       },
       'message_id': object.messageId.value,
       'timestamp': object.isBurst,

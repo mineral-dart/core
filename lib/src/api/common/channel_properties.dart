@@ -18,7 +18,7 @@ final class ChannelProperties {
   final Snowflake? serverId;
   final Snowflake? categoryId;
   final int? position;
-  final bool nsfw;
+  final bool isNsfw;
   final Snowflake? lastMessageId;
   final int? bitrate;
   final int? userLimit;
@@ -51,7 +51,7 @@ final class ChannelProperties {
     required this.serverId,
     required this.categoryId,
     required this.position,
-    required this.nsfw,
+    required this.isNsfw,
     required this.lastMessageId,
     required this.bitrate,
     required this.userLimit,
@@ -105,7 +105,7 @@ final class ChannelProperties {
         serverId: Snowflake.nullable(element['server_id']),
         categoryId: Snowflake.nullable(element['parent_id']),
         position: element['position'],
-        nsfw: element['nsfw'] ?? false,
+        isNsfw: element['nsfw'] ?? false,
         lastMessageId: Snowflake.nullable(element['last_message_id']),
         bitrate: element['bitrate'],
         userLimit: element['user_limit'],

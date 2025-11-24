@@ -23,7 +23,7 @@ final class Member implements UserClient {
   final bool isBot;
   final bool isPending;
   final MemberTimeout timeout;
-  final bool mfaEnabled;
+  final bool hasMfaEnabled;
   final String? locale;
   final PremiumTier premiumType;
   final DateTime? joinedAt;
@@ -203,7 +203,7 @@ final class Member implements UserClient {
   /// await member.toggleMfa(reason: 'Testing');
   /// ```
   Future<void> toggleMfa({String? reason}) =>
-      mfaEnabled ? disableMfa(reason: reason) : enableMfa(reason: reason);
+      hasMfaEnabled ? disableMfa(reason: reason) : enableMfa(reason: reason);
 
   /// Edit the member.
   ///
@@ -240,7 +240,7 @@ final class Member implements UserClient {
     required this.isBot,
     required this.isPending,
     required this.timeout,
-    required this.mfaEnabled,
+    required this.hasMfaEnabled,
     required this.locale,
     required this.premiumType,
     required this.joinedAt,

@@ -68,8 +68,8 @@ final class RolePart implements RolePartContract {
       String name,
       List<Permission> permissions,
       Color color,
-      bool hoist,
-      bool mentionable,
+      bool isHoisted,
+      bool isMentionable,
       String? reason) async {
     final completer = Completer<Role>();
 
@@ -77,8 +77,8 @@ final class RolePart implements RolePartContract {
       'name': name,
       'permissions': listToBitfield(permissions),
       'color': color.toInt(),
-      'hoist': hoist,
-      'mentionable': mentionable,
+      'hoist': isHoisted,
+      'mentionable': isMentionable,
     }, headers: {
       DiscordHeader.auditLogReason(reason)
     });

@@ -49,7 +49,7 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
         final type = findInEnum(ActionType.values, action['type']);
         return Action(type: type);
       }).toList(),
-      enabled: json['enabled'] ?? true,
+      isEnabled: json['enabled'] ?? true,
       exemptRoles: List<Snowflake>.from(
           (json['exemptRoles'] as List).map(Snowflake.parse)),
       exemptChannels: List<Snowflake>.from(
@@ -81,7 +81,7 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
                 'type': action.type.value,
               })
           .toList(),
-      'enabled': rule.enabled,
+      'enabled': rule.isEnabled,
       'exempt_roles': rule.exemptRoles.map((e) => e.toString()).toList(),
       'exempt_channels': rule.exemptChannels.map((e) => e.toString()).toList(),
     };

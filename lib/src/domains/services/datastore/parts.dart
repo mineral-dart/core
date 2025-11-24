@@ -136,7 +136,7 @@ abstract interface class RolePartContract implements DataStorePart {
       String name,
       List<Permission> permissions,
       Color color,
-      bool hoist,
+      bool hoisted,
       bool mentionable,
       String? reason);
 
@@ -248,7 +248,7 @@ abstract interface class RulesPartContract implements DataStorePart {
       TriggerMetadata? triggerMetadata,
       List<Snowflake> exemptRoles = const [],
       List<Snowflake> exemptChannels = const [],
-      bool enabled = true,
+      bool isEnabled = true,
       String? reason});
 
   Future<AutoModerationRule?> update(

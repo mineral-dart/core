@@ -8,7 +8,7 @@ final class ShardingConfig implements ShardingConfigContract {
   final int intent;
 
   @override
-  final bool compress;
+  final bool isCompressed;
 
   @override
   final int version;
@@ -28,7 +28,7 @@ final class ShardingConfig implements ShardingConfigContract {
     required this.version,
     required this.encoding,
     this.shardCount,
-    this.compress = false,
+    this.isCompressed = false,
     this.largeThreshold = 50,
   });
 }

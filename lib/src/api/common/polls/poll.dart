@@ -7,7 +7,7 @@ final class Poll {
   final PollQuestion question;
   final List<PollAnswer> answers;
   final Duration? expireAt;
-  final bool isAllowMultiple;
+  final bool isMultipleResponseAllowed;
   final Snowflake? messageId;
   final PollLayout layout;
 
@@ -15,7 +15,7 @@ final class Poll {
     required this.question,
     required this.answers,
     required this.expireAt,
-    required this.isAllowMultiple,
+    required this.isMultipleResponseAllowed,
     this.messageId,
     this.layout = PollLayout.initial,
   });

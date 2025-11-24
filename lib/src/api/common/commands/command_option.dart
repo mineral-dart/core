@@ -48,57 +48,57 @@ final class Option<T> implements CommandOption {
   factory Option.string(
           {required String name,
           required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.string, null, required);
+          bool isRequired = false}) =>
+      Option._(name, description, CommandOptionType.string, null, isRequired);
 
   factory Option.integer(
           {required String name,
           required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.integer, null, required);
+          bool isRequired = false}) =>
+      Option._(name, description, CommandOptionType.integer, null, isRequired);
 
   factory Option.double(
           {required String name,
           required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.double, null, required);
+          bool isRequired = false}) =>
+      Option._(name, description, CommandOptionType.double, null, isRequired);
 
   factory Option.boolean(
           {required String name,
           required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.boolean, null, required);
+          bool isRequired = false}) =>
+      Option._(name, description, CommandOptionType.boolean, null, isRequired);
 
   factory Option.user(
           {required String name,
           required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.user, null, required);
+          bool isRequired = false}) =>
+      Option._(name, description, CommandOptionType.user, null, isRequired);
 
   factory Option.channel(
           {required String name,
           required String description,
           List<ChannelType> channels = const [],
-          bool required = false}) =>
+          bool isRequired = false}) =>
       Option._(
-          name, description, CommandOptionType.channel, channels, required);
+          name, description, CommandOptionType.channel, channels, isRequired);
 
   factory Option.role(
           {required String name,
           required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.role, null, required);
+          bool isRequired = false}) =>
+      Option._(name, description, CommandOptionType.role, null, isRequired);
 
   factory Option.mentionable(
           {required String name,
           required String description,
-          bool required = false}) =>
+          bool isRequired = false}) =>
       Option._(
-          name, description, CommandOptionType.mentionable, null, required);
+          name, description, CommandOptionType.mentionable, null, isRequired);
 
   factory Option.attachment(
           {required String name,
           required String description,
-          bool required = false}) =>
-      Option._(name, description, CommandOptionType.attachment, null, required);
+          bool isRequired = false}) =>
+      Option._(name, description, CommandOptionType.attachment, null, isRequired);
 }

@@ -31,8 +31,8 @@ final class RoleManager {
           {required String name,
           required List<Permission> permissions,
           required Color color,
-          bool hoist = false,
+          bool hoisted = false,
           bool mentionable = false,
           String? reason}) =>
-      _datastore.role.create(_serverId.value, name, permissions, color, hoist, mentionable, reason);
+      _datastore.role.create(_serverId.value, name, permissions, color, hoisted, mentionable, reason);
 }

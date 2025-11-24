@@ -13,11 +13,11 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> replyInteraction(Snowflake id, String token,
-      MessageBuilder builder, bool ephemeral) async {
+      MessageBuilder builder, bool isEphemeral) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     int flags = MessageFlagType.isComponentV2.value;
-    if (ephemeral) {
+    if (isEphemeral) {
       flags += MessageFlagType.ephemeral.value;
     }
 
@@ -35,11 +35,11 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> editInteraction(Snowflake id, String token,
-      MessageBuilder builder, bool ephemeral) async {
+      MessageBuilder builder, bool isEphemeral) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     int flags = MessageFlagType.isComponentV2.value;
-    if (ephemeral) {
+    if (isEphemeral) {
       flags += MessageFlagType.ephemeral.value;
     }
 
@@ -63,12 +63,12 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> noReplyInteraction(
-      Snowflake id, String token, bool ephemeral) async {
+      Snowflake id, String token, bool isEphemeral) async {
     final req = Request.json(
       endpoint: '/webhooks/$id/$token/messages/@original',
       body: {
         'type': InteractionCallbackType.deferredUpdateMessage.value,
-        'data': {if (ephemeral) 'flags': MessageFlagType.ephemeral.value}
+        'data': {if (isEphemeral) 'flags': MessageFlagType.ephemeral.value}
       },
     );
 
@@ -77,11 +77,11 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> createFollowup(Snowflake id, String token,
-      MessageBuilder builder, bool ephemeral) async {
+      MessageBuilder builder, bool isEphemeral) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     int flags = MessageFlagType.isComponentV2.value;
-    if (ephemeral) {
+    if (isEphemeral) {
       flags += MessageFlagType.ephemeral.value;
     }
 
@@ -99,11 +99,11 @@ final class InteractionPart implements InteractionPartContract {
 
   @override
   Future<void> editFollowup(Snowflake botId, String token, Snowflake messageId,
-      MessageBuilder builder, bool ephemeral) async {
+      MessageBuilder builder, bool isEphemeral) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     int flags = MessageFlagType.isComponentV2.value;
-    if (ephemeral) {
+    if (isEphemeral) {
       flags += MessageFlagType.ephemeral.value;
     }
 

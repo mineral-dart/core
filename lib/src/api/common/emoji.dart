@@ -7,18 +7,18 @@ final class Emoji extends PartialEmoji {
 
   final Snowflake serverId;
   final Map<Snowflake, Role> roles;
-  final bool managed;
-  final bool available;
+  final bool isManaged;
+  final bool isAvailable;
 
   Emoji(
     this.serverId, {
     required Snowflake id,
     required String name,
     required this.roles,
-    required this.managed,
-    required this.available,
-    required bool animated,
-  }) : super(id, name, animated);
+    required this.isManaged,
+    required this.isAvailable,
+    required bool isAnimated,
+  }) : super(id, name, isAnimated);
 
   /// Update image
   /// ```dart
