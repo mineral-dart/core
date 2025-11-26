@@ -5,6 +5,7 @@ import 'package:mineral/src/api/common/commands/command_context_type.dart';
 import 'package:mineral/src/api/common/commands/command_helper.dart';
 import 'package:mineral/src/api/common/commands/command_option.dart';
 import 'package:mineral/src/api/common/commands/command_type.dart';
+import 'package:mineral/src/api/common/commands/sub_command_declaration.dart';
 import 'package:mineral/src/domains/commands/command_builder.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
@@ -67,6 +68,18 @@ final class CommandDeclarationBuilder implements CommandBuilder {
     final builder = SubCommandBuilder();
     command(builder);
 
+    subCommands.add(builder);
+    return this;
+  }
+
+  CommandDeclarationBuilder registerSubCommand(Function subCommandFactory) {
+    final instance = subCommandFactory();
+    
+    if (instance is! SubCommandDeclaration) {
+      throw Exception('Factory must return a SubCommandDeclaration instance');
+    }
+    
+    final builder = instance.build();
     subCommands.add(builder);
     return this;
   }
