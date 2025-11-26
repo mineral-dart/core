@@ -1,6 +1,3 @@
-/// Events library;
-library events;
-
 export 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
 export 'package:mineral/src/domains/events/contracts/common/voice_connect_event.dart';
 export 'package:mineral/src/domains/events/contracts/common/voice_disconnect_event.dart';
