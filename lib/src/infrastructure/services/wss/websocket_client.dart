@@ -101,7 +101,7 @@ final class WebsocketClientImpl implements WebsocketClient {
     _onMessage = callback;
   }
 
-  Future<void> _handleMessage(callback, dynamic message) async {
+  Future<void> _handleMessage(dynamic callback, dynamic message) async {
     final interceptedMessage = await _handleMessageInterceptors(
         WebsocketMessageImpl(
             channelName: name,
