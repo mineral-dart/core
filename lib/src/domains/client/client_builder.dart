@@ -206,253 +206,6 @@ final class ClientBuilder {
   int? _discordWssVersion;
   final List<Glob> _watchedFiles = [];
 
-  /// Sets the Discord bot token for authentication.
-  ///
-  /// The token is used to authenticate your bot with Discord's gateway and REST API.
-  ///
-  /// **Priority:** This method overrides the `DISCORD_TOKEN` value from `.env` file.
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..setToken('YOUR_BOT_TOKEN')
-  ///   ..build();
-  /// ```
-  ///
-  /// If not set, the token will be read from the `DISCORD_TOKEN` environment
-  /// variable in your `.env` file.
-  ClientBuilder setToken(String token) {
-    _token = token;
-    return this;
-  }
-
-  /// Sets the gateway intents for event subscriptions.
-  ///
-  /// Intents control which events your bot receives from Discord. Use bitwise
-  /// OR (`|`) to combine multiple intents.
-  ///
-  /// **Priority:** This method overrides the `DISCORD_INTENT` value from `.env` file.
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..setIntent(Intent.guilds | Intent.guildMessages | Intent.guildMembers)
-  ///   ..build();
-  /// ```
-  ///
-  /// If not set, the intent will be read from the `DISCORD_INTENT` environment
-  /// variable in your `.env` file (as an integer).
-  ///
-  /// See also:
-  /// - [Intent] for available intent values
-  ClientBuilder setIntent(int intent) {
-    _intent = intent;
-    return this;
-  }
-
-  /// Sets the Discord REST API version to use.
-  ///
-  /// **Priority:** This method overrides the `DISCORD_REST_HTTP_VERSION` value
-  /// from `.env` file.
-  ///
-  /// **Default:** Version 10
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..setDiscordRestHttpVersion(10)
-  ///   ..build();
-  /// ```
-  ClientBuilder setDiscordRestHttpVersion(int version) {
-    _discordRestHttpVersion = version;
-    return this;
-  }
-
-  /// Sets the Discord Gateway (WebSocket) version to use.
-  ///
-  /// **Priority:** This method overrides the `DISCORD_WSS_VERSION` value
-  /// from `.env` file.
-  ///
-  /// **Default:** Version 10
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..setDiscordWssVersion(10)
-  ///   ..build();
-  /// ```
-  ClientBuilder setDiscordWssVersion(int version) {
-    _discordWssVersion = version;
-    return this;
-  }
-
-  /// Sets the WebSocket encoding strategy.
-  ///
-  /// Available encoders:
-  /// - [WebsocketEncoder.json]: JSON encoding (default, easier debugging)
-  /// - [WebsocketEncoder.etf]: ETF encoding (more efficient, recommended for production)
-  ///
-  /// **Priority:** This method overrides the `DISCORD_WSS_ENCODING` value
-  /// from `.env` file (values: "json" or "etf").
-  ///
-  /// **Default:** JSON encoding
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..setEncoder(WebsocketEncoder.etf)
-  ///   ..build();
-  /// ```
-  ClientBuilder setEncoder(WebsocketEncoder encoding) {
-    _wssEncoder = encoding;
-    return this;
-  }
-
-  /// Sets the cache provider for storing Discord entities.
-  ///
-  /// Cache providers store Discord objects (guilds, channels, users, etc.)
-  /// to reduce API calls and improve performance.
-  ///
-  /// Available providers:
-  /// - `MemoryProvider`: In-memory cache (default, good for development)
-  /// - `RedisProvider`: Redis cache (recommended for production)
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..setCache(RedisProvider.new)
-  ///   ..build();
-  /// ```
-  ClientBuilder setCache(
-      ConstructableWithArgs<CacheProviderContract, Env> cache) {
-    _cache = ioc.make<CacheProviderContract>(() => cache(env));
-    return this;
-  }
-
-  /// Sets a custom logger implementation.
-  ///
-  /// The logger is used for all framework logging. The default [Logger]
-  /// implementation respects the `LOG_LEVEL` environment variable.
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..setLogger(Logger.new)
-  ///   ..build();
-  /// ```
-  ClientBuilder setLogger(ConstructableWithArgs<LoggerContract, Env> logger) {
-    _logger = logger(env);
-    return this;
-  }
-
-  /// Enables hot module replacement (HMR) for development.
-  ///
-  /// When enabled, the bot can reload code changes without restarting.
-  /// Used in conjunction with [watch] to monitor file changes.
-  ///
-  /// Only active in development mode.
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..setHmrDevPort(devPort)
-  ///   ..watch([Glob('lib/**/*.dart')])
-  ///   ..build();
-  /// ```
-  ClientBuilder setHmrDevPort(SendPort? devPort) {
-    _devPort = devPort;
-    _hasDefinedDevPort = true;
-
-    ioc.bind<SendPort?>(() => _devPort);
-
-    return this;
-  }
-
-  /// Validates required environment variables at startup.
-  ///
-  /// Ensures that critical environment variables are defined before the
-  /// bot starts, preventing runtime errors.
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..validateEnvironment([
-  ///     EnvSchema('DATABASE_URL', required: true),
-  ///     EnvSchema('API_KEY', required: true),
-  ///     EnvSchema('PORT', required: false, defaultValue: '3000'),
-  ///   ])
-  ///   ..build();
-  /// ```
-  ClientBuilder validateEnvironment(List<EnvSchema> schema) {
-    _schemas.addAll(schema);
-    return this;
-  }
-
-  /// Watches files for changes to enable hot module replacement.
-  ///
-  /// Specify glob patterns for files to monitor. When files change,
-  /// the bot will reload the affected modules without restarting.
-  ///
-  /// Only active in development mode when used with [setHmrDevPort].
-  ///
-  /// Example:
-  /// ```dart
-  /// final client = ClientBuilder()
-  ///   ..setHmrDevPort(devPort)
-  ///   ..watch([
-  ///     Glob('lib/commands/**/*.dart'),
-  ///     Glob('lib/events/**/*.dart'),
-  ///   ])
-  ///   ..build();
-  /// ```
-  ClientBuilder watch(List<Glob> globs) {
-    _watchedFiles.addAll(globs);
-    return this;
-  }
-
-  /// Registers a custom service provider.
-  ///
-  /// Providers are initialized before the bot connects to Discord and can
-  /// inject services, handle lifecycle events, and extend bot functionality.
-  ///
-  /// Example:
-  /// ```dart
-  /// final class DatabaseProvider implements ProviderContract {
-  ///   late final Database db;
-  ///
-  ///   @override
-  ///   Future<void> init() async {
-  ///     db = await Database.connect();
-  ///   }
-  /// }
-  ///
-  /// final client = ClientBuilder()
-  ///   ..registerProvider((client) => DatabaseProvider())
-  ///   ..build();
-  /// ```
-  ClientBuilder registerProvider<T extends ProviderContract>(
-      T Function(Client) provider) {
-    _providers.add(provider);
-    return this;
-  }
-
-  void _validateEnvironment() {
-    env.defineOf(AppEnv.new);
-  }
-
-  void _createCache() {
-    final isDevelopmentMode = env.get(AppEnv.dartEnv) == DartEnv.development;
-    final isMainIsolate = Isolate.current.debugName == 'main';
-
-    if (isDevelopmentMode && isMainIsolate) {
-      return;
-    }
-
-    if (_cache case final CacheProviderContract cache) {
-      cache.init();
-    }
-  }
-
   /// Builds and returns the configured [Client] instance.
   ///
   /// This method:
@@ -551,5 +304,252 @@ final class ClientBuilder {
     }
 
     return client;
+  }
+
+  /// Registers a custom service provider.
+  ///
+  /// Providers are initialized before the bot connects to Discord and can
+  /// inject services, handle lifecycle events, and extend bot functionality.
+  ///
+  /// Example:
+  /// ```dart
+  /// final class DatabaseProvider implements ProviderContract {
+  ///   late final Database db;
+  ///
+  ///   @override
+  ///   Future<void> init() async {
+  ///     db = await Database.connect();
+  ///   }
+  /// }
+  ///
+  /// final client = ClientBuilder()
+  ///   ..registerProvider((client) => DatabaseProvider())
+  ///   ..build();
+  /// ```
+  ClientBuilder registerProvider<T extends ProviderContract>(
+      T Function(Client) provider) {
+    _providers.add(provider);
+    return this;
+  }
+
+  /// Sets the cache provider for storing Discord entities.
+  ///
+  /// Cache providers store Discord objects (guilds, channels, users, etc.)
+  /// to reduce API calls and improve performance.
+  ///
+  /// Available providers:
+  /// - `MemoryProvider`: In-memory cache (default, good for development)
+  /// - `RedisProvider`: Redis cache (recommended for production)
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..setCache(RedisProvider.new)
+  ///   ..build();
+  /// ```
+  ClientBuilder setCache(
+      ConstructableWithArgs<CacheProviderContract, Env> cache) {
+    _cache = ioc.make<CacheProviderContract>(() => cache(env));
+    return this;
+  }
+
+  /// Sets the Discord REST API version to use.
+  ///
+  /// **Priority:** This method overrides the `DISCORD_REST_HTTP_VERSION` value
+  /// from `.env` file.
+  ///
+  /// **Default:** Version 10
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..setDiscordRestHttpVersion(10)
+  ///   ..build();
+  /// ```
+  ClientBuilder setDiscordRestHttpVersion(int version) {
+    _discordRestHttpVersion = version;
+    return this;
+  }
+
+  /// Sets the Discord Gateway (WebSocket) version to use.
+  ///
+  /// **Priority:** This method overrides the `DISCORD_WSS_VERSION` value
+  /// from `.env` file.
+  ///
+  /// **Default:** Version 10
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..setDiscordWssVersion(10)
+  ///   ..build();
+  /// ```
+  ClientBuilder setDiscordWssVersion(int version) {
+    _discordWssVersion = version;
+    return this;
+  }
+
+  /// Sets the WebSocket encoding strategy.
+  ///
+  /// Available encoders:
+  /// - [WebsocketEncoder.json]: JSON encoding (default, easier debugging)
+  /// - [WebsocketEncoder.etf]: ETF encoding (more efficient, recommended for production)
+  ///
+  /// **Priority:** This method overrides the `DISCORD_WSS_ENCODING` value
+  /// from `.env` file (values: "json" or "etf").
+  ///
+  /// **Default:** JSON encoding
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..setEncoder(WebsocketEncoder.etf)
+  ///   ..build();
+  /// ```
+  ClientBuilder setEncoder(WebsocketEncoder encoding) {
+    _wssEncoder = encoding;
+    return this;
+  }
+
+  /// Enables hot module replacement (HMR) for development.
+  ///
+  /// When enabled, the bot can reload code changes without restarting.
+  /// Used in conjunction with [watch] to monitor file changes.
+  ///
+  /// Only active in development mode.
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..setHmrDevPort(devPort)
+  ///   ..watch([Glob('lib/**/*.dart')])
+  ///   ..build();
+  /// ```
+  ClientBuilder setHmrDevPort(SendPort? devPort) {
+    _devPort = devPort;
+    _hasDefinedDevPort = true;
+
+    ioc.bind<SendPort?>(() => _devPort);
+
+    return this;
+  }
+
+  /// Sets the gateway intents for event subscriptions.
+  ///
+  /// Intents control which events your bot receives from Discord. Use bitwise
+  /// OR (`|`) to combine multiple intents.
+  ///
+  /// **Priority:** This method overrides the `DISCORD_INTENT` value from `.env` file.
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..setIntent(Intent.guilds | Intent.guildMessages | Intent.guildMembers)
+  ///   ..build();
+  /// ```
+  ///
+  /// If not set, the intent will be read from the `DISCORD_INTENT` environment
+  /// variable in your `.env` file (as an integer).
+  ///
+  /// See also:
+  /// - [Intent] for available intent values
+  ClientBuilder setIntent(int intent) {
+    _intent = intent;
+    return this;
+  }
+
+  /// Sets a custom logger implementation.
+  ///
+  /// The logger is used for all framework logging. The default [Logger]
+  /// implementation respects the `LOG_LEVEL` environment variable.
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..setLogger(Logger.new)
+  ///   ..build();
+  /// ```
+  ClientBuilder setLogger(ConstructableWithArgs<LoggerContract, Env> logger) {
+    _logger = logger(env);
+    return this;
+  }
+
+  /// Sets the Discord bot token for authentication.
+  ///
+  /// The token is used to authenticate your bot with Discord's gateway and REST API.
+  ///
+  /// **Priority:** This method overrides the `DISCORD_TOKEN` value from `.env` file.
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..setToken('YOUR_BOT_TOKEN')
+  ///   ..build();
+  /// ```
+  ///
+  /// If not set, the token will be read from the `DISCORD_TOKEN` environment
+  /// variable in your `.env` file.
+  ClientBuilder setToken(String token) {
+    _token = token;
+    return this;
+  }
+
+  /// Validates required environment variables at startup.
+  ///
+  /// Ensures that critical environment variables are defined before the
+  /// bot starts, preventing runtime errors.
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..validateEnvironment([
+  ///     EnvSchema('DATABASE_URL', required: true),
+  ///     EnvSchema('API_KEY', required: true),
+  ///     EnvSchema('PORT', required: false, defaultValue: '3000'),
+  ///   ])
+  ///   ..build();
+  /// ```
+  ClientBuilder validateEnvironment(List<EnvSchema> schema) {
+    _schemas.addAll(schema);
+    return this;
+  }
+
+  /// Watches files for changes to enable hot module replacement.
+  ///
+  /// Specify glob patterns for files to monitor. When files change,
+  /// the bot will reload the affected modules without restarting.
+  ///
+  /// Only active in development mode when used with [setHmrDevPort].
+  ///
+  /// Example:
+  /// ```dart
+  /// final client = ClientBuilder()
+  ///   ..setHmrDevPort(devPort)
+  ///   ..watch([
+  ///     Glob('lib/commands/**/*.dart'),
+  ///     Glob('lib/events/**/*.dart'),
+  ///   ])
+  ///   ..build();
+  /// ```
+  ClientBuilder watch(List<Glob> globs) {
+    _watchedFiles.addAll(globs);
+    return this;
+  }
+
+  void _createCache() {
+    final isDevelopmentMode = env.get(AppEnv.dartEnv) == DartEnv.development;
+    final isMainIsolate = Isolate.current.debugName == 'main';
+
+    if (isDevelopmentMode && isMainIsolate) {
+      return;
+    }
+
+    if (_cache case final CacheProviderContract cache) {
+      cache.init();
+    }
+  }
+
+  void _validateEnvironment() {
+    env.defineOf(AppEnv.new);
   }
 }
