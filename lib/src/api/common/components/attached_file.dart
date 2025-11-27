@@ -3,12 +3,64 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:mineral/api.dart';
 
+/// Represents a file attachment in a Discord message.
+///
+/// [AttachedFile] allows attaching files from local storage or network URLs
+/// to messages. Supports images, videos, documents, and other file types.
+///
+/// ## Usage
+///
+/// ```dart
+/// // Attach local file
+/// final localFile = AttachedFile.fromFile(
+///   File('assets/document.pdf'),
+///   'document.pdf',
+///   description: 'Important document',
+/// );
+///
+/// // Attach from network URL
+/// final networkFile = await AttachedFile.fromNetwork(
+///   'https://example.com/image.jpg',
+///   'image.jpg',
+///   spoiler: false,
+/// );
+///
+/// // From MediaItem
+/// final media = MediaItem.fromFile(File('data.json'), 'data.json');
+/// final attachedFile = await AttachedFile.fromMediaItem(media);
+///
+/// // Send message with attachments
+/// await channel.send(
+///   MessageBuilder.content('Here are the files:')
+///     ..addAttachedFile(localFile)
+///     ..addAttachedFile(networkFile),
+/// );
+/// ```
+///
+/// ## File Types
+///
+/// - **Images**: PNG, JPEG, GIF, WebP (displayed inline)
+/// - **Videos**: MP4, WebM, MOV (displayed inline)
+/// - **Documents**: PDF, TXT, JSON, etc. (shown as download)
+/// - **Archives**: ZIP, RAR, etc.
+///
+/// ## Features
+///
+/// - Spoiler tags to hide previews
+/// - Descriptions for accessibility
+/// - Automatic content type detection
+/// - Dimension specification for images/videos
+///
+/// ## Limits
+///
+/// - File size: 10MB (Up to 100MB with Nitro)
+///
+/// See also:
+/// - [MediaItem] for creating media items
+/// - [MessageBuilder] for building messages with files
 final class AttachedFile implements MessageComponent {
-  ComponentType get type => ComponentType.file;
-
+  /// The media item representing the file.
   MediaItem item;
-
-  AttachedFile._(this.item);
 
   /// Creates an [AttachedFile] from a local file.
   ///
@@ -38,6 +90,17 @@ final class AttachedFile implements MessageComponent {
       description: description,
     );
     return AttachedFile._(mediaItem);
+  }
+
+  /// Private constructor. Use factory methods instead.
+  AttachedFile._(this.item);
+
+  /// The type of this component.
+  ComponentType get type => ComponentType.file;
+
+  @override
+  Map<String, dynamic> toJson() {
+    return {'type': type.value, ...item.toJson()};
   }
 
   /// Creates an [AttachedFile] from a [MediaItem].
@@ -124,10 +187,5 @@ final class AttachedFile implements MessageComponent {
       ..spoiler = spoiler;
 
     return AttachedFile._(media);
-  }
-
-  @override
-  Map<String, dynamic> toJson() {
-    return {'type': type.value, ...item.toJson()};
   }
 }
