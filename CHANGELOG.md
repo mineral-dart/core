@@ -1,3 +1,135 @@
+# 4.2.0
+
+## What's Changed
+
+- fix: late initialization error by @PandaGuerrier in https://github.com/mineral-dart/core/pull/101
+- feat: Improve some changes by @LeadcodeDev in https://github.com/mineral-dart/core/pull/102
+- feat: Upgrade of CLI service and some changes by @LeadcodeDev in https://github.com/mineral-dart/core/pull/103
+- add soundboard feature by @PandaGuerrier in https://github.com/mineral-dart/core/pull/104
+- fix: Lot of bug fixes (may refactoring) by @vic256 in https://github.com/mineral-dart/core/pull/105
+- docs: Write related guild documentations by @LeadcodeDev in https://github.com/mineral-dart/core/pull/106
+- feat: Add permission structure by @LeadcodeDev in https://github.com/mineral-dart/core/pull/108
+- feat: Added threads (only by message) by @PandaGuerrier in https://github.com/mineral-dart/core/pull/109
+- feat: Added activities in GUILD_CREATE packet. by @PandaGuerrier in https://github.com/mineral-dart/core/pull/107
+- feat: References by @PandaGuerrier in https://github.com/mineral-dart/core/pull/110
+- feat: doc by @PandaGuerrier in https://github.com/mineral-dart/core/pull/111
+- fix: Accept null guild features by @vic256 in https://github.com/mineral-dart/core/pull/112
+- fix: permissions by @PandaGuerrier in https://github.com/mineral-dart/core/pull/113
+- feat: commands (roles, users and channels) permissions by @PandaGuerrier in https://github.com/mineral-dart/core/pull/115
+- feat: improved the DX for subcommands by @PandaGuerrier in https://github.com/mineral-dart/core/pull/114
+- feat: implement discord features & improve commands by @LeadcodeDev in https://github.com/mineral-dart/core/pull/116
+- feat: implement missing features by @LeadcodeDev in https://github.com/mineral-dart/core/pull/117
+- Before release by @PandaGuerrier in https://github.com/mineral-dart/core/pull/118
+- Before release by @PandaGuerrier in https://github.com/mineral-dart/core/pull/119
+- feat: Implement snowflake timestamp by @vic256 in https://github.com/mineral-dart/core/pull/120
+- fix: option can be null by @PandaGuerrier in https://github.com/mineral-dart/core/pull/121
+- Added reaction events by @PandaGuerrier in https://github.com/mineral-dart/core/pull/122
+- fix: delete interaction message by @PandaGuerrier in https://github.com/mineral-dart/core/pull/123
+- feat: utils before release by @PandaGuerrier in https://github.com/mineral-dart/core/pull/124
+- fix: allow nullables by @LeadcodeDev in https://github.com/mineral-dart/core/pull/125
+- fix: guild create by @PandaGuerrier in https://github.com/mineral-dart/core/pull/126
+- New release by @PandaGuerrier in https://github.com/mineral-dart/core/pull/127
+- feat: implement error handling by @LeadcodeDev in https://github.com/mineral-dart/core/pull/128
+- feat: implement container by @LeadcodeDev in https://github.com/mineral-dart/core/pull/129
+- feat: implement http service by @LeadcodeDev in https://github.com/mineral-dart/core/pull/130
+- feat: implement environment service by @LeadcodeDev in https://github.com/mineral-dart/core/pull/131
+- feat: implement logger service by @LeadcodeDev in https://github.com/mineral-dart/core/pull/132
+- feat: implement kernel and developer settings by @LeadcodeDev in https://github.com/mineral-dart/core/pull/133
+- feat: implement http endpoint repositories by @LeadcodeDev in https://github.com/mineral-dart/core/pull/134
+- feat: implement console by @LeadcodeDev in https://github.com/mineral-dart/core/pull/135
+- feat: implement http rate limit by @abitofevrything in https://github.com/mineral-dart/core/pull/136
+- fix: intents by @LeadcodeDev in https://github.com/mineral-dart/core/pull/138
+- feat(events): event managing by @LeadcodeDev in https://github.com/mineral-dart/core/pull/139
+- feat(serializers): implement api serializers by @LeadcodeDev in https://github.com/mineral-dart/core/pull/140
+- feat: implement-hmr by @LeadcodeDev in https://github.com/mineral-dart/core/pull/141
+- feat: enhance infrastructure by @LeadcodeDev in https://github.com/mineral-dart/core/pull/152
+- feat: implement-slash-commands-builder by @LeadcodeDev in https://github.com/mineral-dart/core/pull/155
+- feat: implement-commands-domain by @PandaGuerrier in https://github.com/mineral-dart/core/pull/157
+- feat(ioc): change ioc resolver from string to type by @LeadcodeDev in https://github.com/mineral-dart/core/pull/159
+- feat(api): implement stage voice channels by @LeadcodeDev in https://github.com/mineral-dart/core/pull/164
+- feat: enhance marshaller data structure by @LeadcodeDev in https://github.com/mineral-dart/core/pull/168
+- feat: implement command translations and command definition by @LeadcodeDev in https://github.com/mineral-dart/core/pull/173
+- feat: implement command class by @LeadcodeDev in https://github.com/mineral-dart/core/pull/175
+- Implement interaction methods by @PandaGuerrier in https://github.com/mineral-dart/core/pull/166
+- fix: member not exist when ban by @LeadcodeDev in https://github.com/mineral-dart/core/pull/177
+- Implement member methods by @LeadcodeDev in https://github.com/mineral-dart/core/pull/178
+- feat: implement-components by @LeadcodeDev in https://github.com/mineral-dart/core/pull/182
+- feat: implement components by @LeadcodeDev in https://github.com/mineral-dart/core/pull/189
+- fix: multiple bugs by @PandaGuerrier in https://github.com/mineral-dart/core/pull/190
+- Remove member from cache when ban by @PyGaVS in https://github.com/mineral-dart/core/pull/180
+- feat: enhance serialization by @LeadcodeDev in https://github.com/mineral-dart/core/pull/195
+- feat: implement thread events by @PandaGuerrier in https://github.com/mineral-dart/core/pull/196
+- feat: implement server message methods by @LeadcodeDev in https://github.com/mineral-dart/core/pull/183
+- feat: implement server methods by @DakioCode in https://github.com/mineral-dart/core/pull/199
+- fix: missing server_id during member normalization in GuildMemberAddPacket by @ThibaultPointurier in https://github.com/mineral-dart/core/pull/201
+- fix: address multiple issues and refactor role normalization logic by @ThibaultPointurier in https://github.com/mineral-dart/core/pull/203
+- feat: implement cli by @LeadcodeDev in https://github.com/mineral-dart/core/pull/205
+- fix: change id from server to guild in channel update packet by @LeadcodeDev in https://github.com/mineral-dart/core/pull/210
+- fix: small problems by @PandaGuerrier in https://github.com/mineral-dart/core/pull/207
+- feat(docs): finish documenting methods in server side api by @PandaGuerrier in https://github.com/mineral-dart/core/pull/214
+- feat: implement global states by @LeadcodeDev in https://github.com/mineral-dart/core/pull/217
+- feat: enhance dependencies injection by @LeadcodeDev in https://github.com/mineral-dart/core/pull/219
+- feat: implement heartbeat failed 3 time by @LeadcodeDev in https://github.com/mineral-dart/core/pull/221
+- feat: implement scaffolding structure by @LeadcodeDev in https://github.com/mineral-dart/core/pull/222
+- feat: server forum channel type by @LeadcodeDev in https://github.com/mineral-dart/core/pull/224
+- fix: command role and member serialization by @LeadcodeDev in https://github.com/mineral-dart/core/pull/226
+- feat: migrate structure serialization by @LeadcodeDev in https://github.com/mineral-dart/core/pull/228
+- feat: implement ratelimit by @LeadcodeDev in https://github.com/mineral-dart/core/pull/229
+- feat: implement reaction events by @LeadcodeDev in https://github.com/mineral-dart/core/pull/230
+- feat: implement todo by @LeadcodeDev in https://github.com/mineral-dart/core/pull/232
+- feat: implement interactive components by @LeadcodeDev in https://github.com/mineral-dart/core/pull/234
+- feat: rework member roles by @LeadcodeDev in https://github.com/mineral-dart/core/pull/235
+- feat: implement etf encoding by @LeadcodeDev in https://github.com/mineral-dart/core/pull/236
+- fix: add message return type by @LeadcodeDev in https://github.com/mineral-dart/core/pull/241
+- feat: enhance command manager by @LeadcodeDev in https://github.com/mineral-dart/core/pull/243
+- fix: add missing 'inline' params in addField embed builder by @slabbdev in https://github.com/mineral-dart/core/pull/240
+- feat: implement audit log events by @LeadcodeDev in https://github.com/mineral-dart/core/pull/245
+- feat: implement component v2 message by @LeadcodeDev in https://github.com/mineral-dart/core/pull/246
+- feat: implement-formdata-and-message-files by @LeadcodeDev in https://github.com/mineral-dart/core/pull/247
+- feat: introduce invite events by @LeadcodeDev in https://github.com/mineral-dart/core/pull/248
+- feat: migrate environment service to env_guard package by @LeadcodeDev in https://github.com/mineral-dart/core/pull/249
+- feat: implement typing event by @LeadcodeDev in https://github.com/mineral-dart/core/pull/250
+- feat: implements polls events by @PandaGuerrier in https://github.com/mineral-dart/core/pull/253
+- feat: implement interactive component v2 by @LeadcodeDev in https://github.com/mineral-dart/core/pull/254
+- feat: migrate to hmr package by @LeadcodeDev in https://github.com/mineral-dart/core/pull/261
+- feat: implement message reaction remove all event by @PandaGuerrier in https://github.com/mineral-dart/core/pull/270
+- fix: set serverId to nullable snowflake for private issues by @PandaGuerrier in https://github.com/mineral-dart/core/pull/272
+- feat: implement auto moderation by @PandaGuerrier in https://github.com/mineral-dart/core/pull/274
+- feat: implement automod event by @PandaGuerrier in https://github.com/mineral-dart/core/pull/276
+- feat: createdAt getters by @DCodeProg in https://github.com/mineral-dart/core/pull/281
+- fix: null channel id voices by @PandaGuerrier in https://github.com/mineral-dart/core/pull/279
+- feat: added regex verification for name in commands by @PandaGuerrier in https://github.com/mineral-dart/core/pull/286
+- feat: override toString method in User class for easy mention by @DCodeProg in https://github.com/mineral-dart/core/pull/287
+- chore: remove unused import statements from automoderation rule packets by @DCodeProg in https://github.com/mineral-dart/core/pull/289
+- chore: add export for voice state in API by @DCodeProg in https://github.com/mineral-dart/core/pull/292
+- fix: audit logs causes crashs by @DCodeProg in https://github.com/mineral-dart/core/pull/293
+- fix: add missing export for voice_move_event by @DCodeProg in https://github.com/mineral-dart/core/pull/294
+- feat: add resolveServer method to voice state by @DCodeProg in https://github.com/mineral-dart/core/pull/295
+- feat: add support for modal components by @DCodeProg in https://github.com/mineral-dart/core/pull/288
+- fix: bind bot class to ioc services. by @PandaGuerrier in https://github.com/mineral-dart/core/pull/297
+- feat: implement message gallery component attached files by @PandaGuerrier in https://github.com/mineral-dart/core/pull/298
+- fix: resolve in GlobalStateManager instead of Service. by @PandaGuerrier in https://github.com/mineral-dart/core/pull/301
+- chore: add createdAt getter to Interaction class by @DCodeProg in https://github.com/mineral-dart/core/pull/299
+- feat: added member voices states from cache for voices by @PandaGuerrier in https://github.com/mineral-dart/core/pull/303
+- 306 rework attachments in interaction for better dev by @PandaGuerrier in https://github.com/mineral-dart/core/pull/308
+- refactor!: significant refactor of message and modal components by @DCodeProg in https://github.com/mineral-dart/core/pull/310
+- feat: rerun ready event to prevent the non-existence of bot instance by @LeadcodeDev in https://github.com/mineral-dart/core/pull/312
+- feat!: add VoiceConnect/Disconnect events and update voice event semantics by @DCodeProg in https://github.com/mineral-dart/core/pull/314
+- feat: implement Intent system for gateway event subscriptions by @DCodeProg in https://github.com/mineral-dart/core/pull/317
+- feat: add SubcommandDeclarationBuilder interface by @DCodeProg in https://github.com/mineral-dart/core/pull/315
+- docs: add package example by @DCodeProg in https://github.com/mineral-dart/core/pull/320
+- chore: update project dependencies by @DCodeProg in https://github.com/mineral-dart/core/pull/321
+
+## New Contributors
+
+- @abitofevrything made their first contribution in https://github.com/mineral-dart/core/pull/136
+- @PyGaVS made their first contribution in https://github.com/mineral-dart/core/pull/180
+- @DakioCode made their first contribution in https://github.com/mineral-dart/core/pull/199
+- @slabbdev made their first contribution in https://github.com/mineral-dart/core/pull/240
+- @DCodeProg made their first contribution in https://github.com/mineral-dart/core/pull/281
+
+**Full Changelog**: https://github.com/mineral-dart/core/compare/v3.1.0...v4.0.0
+
 # 4.1.0-dev.1
 
 ## Major Features
