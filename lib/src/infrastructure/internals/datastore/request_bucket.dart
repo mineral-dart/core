@@ -25,9 +25,9 @@ final class QueueableRequest<T> {
   DateTime? retryAt;
   QueueableRequestStatus status = QueueableRequestStatus.init;
 
-  final T Function<T extends Exception>(Response)? _onError;
-  final Function(T)? _onSuccess;
-  final Function(Duration)? _onRateLimit;
+  final Exception Function(Response)? _onError;
+  final void Function(T)? _onSuccess;
+  final void Function(Duration)? _onRateLimit;
 
   QueueableRequest(this.bucket, this.query, this.request, this.completer,
       this._onError, this._onSuccess, this._onRateLimit);
@@ -89,9 +89,9 @@ final class RequestHandler<T> {
   RequestHandler(this._bucket, this._request);
 
   Future<T> run(Future<Response<T>> Function(RequestContract request) action,
-      {Function(T)? onSuccess,
-      T Function<T extends Exception>(Response)? onError,
-      Function(Duration)? onRateLimit}) async {
+      {void Function(T)? onSuccess,
+      Exception Function(Response)? onError,
+      void Function(Duration)? onRateLimit}) async {
     final completer = Completer<T>();
     final request = QueueableRequest<T>(
         _bucket, _request, action, completer, onError, onSuccess, onRateLimit);

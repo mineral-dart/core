@@ -1,5 +1,3 @@
-library container;
-
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';

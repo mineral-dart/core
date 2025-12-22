@@ -1,5 +1,3 @@
-library contracts;
-
 export 'package:mineral/src/domains/components/interactives/components/interactive_button.dart';
 export 'package:mineral/src/domains/components/interactives/components/interactive_component.dart';
 export 'package:mineral/src/domains/components/interactives/components/interactive_modal.dart';
