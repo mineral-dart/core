@@ -1,6 +1,9 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/container.dart';
 import 'package:mineral/src/api/common/managers/message_manager.dart';
 import 'package:mineral/src/api/server/managers/threads_manager.dart';
+import 'package:mineral/src/api/server/voice/voice_context.dart';
+import 'package:mineral/src/infrastructure/internals/voice/voice_connection_manager.dart';
 
 final class ServerVoiceChannel extends ServerChannel {
   final ChannelProperties _properties;
@@ -118,4 +121,45 @@ final class ServerVoiceChannel extends ServerChannel {
   /// await channel.delete();
   /// ```
   Future<void> delete({String? reason}) => _methods.delete(reason);
+
+  /// Joins this voice channel and returns a [VoiceContext] for audio playback.
+  ///
+  /// This establishes a connection to Discord's voice server, which may take
+  /// a few seconds to complete.
+  ///
+  /// **Requires FFmpeg to be installed for audio playback.**
+  ///
+  /// Example:
+  /// ```dart
+  /// final channel = await server.channels.get<ServerVoiceChannel>('123456');
+  /// final voice = await channel.join();
+  ///
+  /// // Play an MP3 file
+  /// await voice.play(File('music/song.mp3'));
+  ///
+  /// // Disconnect when done
+  /// await voice.disconnect();
+  /// ```
+  ///
+  /// You can also listen to playback events:
+  /// ```dart
+  /// voice.onStart.listen((_) => print('Started playing'));
+  /// voice.onEnd.listen((_) => print('Finished playing'));
+  /// voice.onError.listen((error) => print('Error: $error'));
+  /// ```
+  ///
+  /// [selfMute] - Whether the bot should join muted.
+  /// [selfDeaf] - Whether the bot should join deafened.
+  ///
+  /// Throws [TimeoutException] if the connection takes too long.
+  /// Throws [StateError] if the voice server is unavailable.
+  Future<VoiceContext> join({bool selfMute = false, bool selfDeaf = false}) {
+    final voiceManager = ioc.resolve<VoiceConnectionManager>();
+    return voiceManager.join(
+      serverId: serverId,
+      channelId: id,
+      selfMute: selfMute,
+      selfDeaf: selfDeaf,
+    );
+  }
 }

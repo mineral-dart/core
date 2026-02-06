@@ -13,6 +13,7 @@ import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/datastore.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_listener.dart';
+import 'package:mineral/src/infrastructure/internals/voice/voice_connection_manager.dart';
 import 'package:mineral/src/infrastructure/internals/wss/sharding_config.dart';
 import 'package:mineral/src/infrastructure/internals/wss/websocket_orchestrator.dart';
 
@@ -174,7 +175,8 @@ final class ClientBuilder {
       ..bind<Kernel>(() => kernel)
       ..bind<MarshallerContract>(Marshaller.new)
       ..bind<DataStoreContract>(() => DataStore(http))
-      ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new);
+      ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new)
+      ..bind<VoiceConnectionManager>(VoiceConnectionManager.new);
 
     packetListener
       ..kernel = kernel

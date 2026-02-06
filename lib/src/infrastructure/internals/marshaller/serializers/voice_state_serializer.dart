@@ -46,7 +46,7 @@ final class VoiceStateSerializer implements SerializerContract<VoiceState> {
         requestToSpeakTimestamp: json['request_to_speak_timestamp'] != null
             ? DateTime.parse(json['request_to_speak_timestamp'])
             : null,
-        isDiscoverable: json['discoverable']);
+        isDiscoverable: json['discoverable'] ?? false);
   }
 
   @override
