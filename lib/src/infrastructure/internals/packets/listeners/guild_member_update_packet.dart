@@ -24,9 +24,6 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
         await _marshaller.serializers.member.normalize(message.payload);
     final member = await _marshaller.serializers.member.serialize(rawMember);
 
-    final cacheKey = _marshaller.cacheKey.member(serverId, member.id.value);
-    await _marshaller.cache?.put(cacheKey, member);
-
     dispatch(event: Event.serverMemberUpdate, params: [server, before, member]);
   }
 }
