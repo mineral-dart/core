@@ -52,4 +52,6 @@ final class Client {
   }
 
   Future<void> init() => _kernel.init();
+
+  Future<void> dispose() => _kernel.dispose();
 }

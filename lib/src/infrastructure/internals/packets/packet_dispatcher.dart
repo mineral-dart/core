@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/common/kernel.dart';
@@ -10,6 +12,7 @@ import 'package:rxdart/rxdart.dart';
 
 final class PacketDispatcher implements PacketDispatcherContract {
   final BehaviorSubject<ShardMessage> _packets = BehaviorSubject();
+  final List<StreamSubscription> _subscriptions = [];
   final Kernel _kernel;
 
   PacketDispatcher(this._kernel);
@@ -17,7 +20,7 @@ final class PacketDispatcher implements PacketDispatcherContract {
   @override
   void listen(PacketTypeContract packet,
       Function(ShardMessage, DispatchEvent) listener) {
-    _packets.stream
+    final subscription = _packets.stream
         .where((event) => event.type == packet.name)
         .listen((ShardMessage message) {
       if (message.type == PacketType.ready.name) {
@@ -26,11 +29,19 @@ final class PacketDispatcher implements PacketDispatcherContract {
       Function.apply(
           listener, [message, _kernel.eventListener.dispatcher.dispatch]);
     });
+
+    _subscriptions.add(subscription);
   }
 
   @override
   void dispatch(dynamic payload) => _packets.add(payload);
 
   @override
-  void dispose() => _packets.close();
+  void dispose() {
+    for (final subscription in _subscriptions) {
+      subscription.cancel();
+    }
+    _subscriptions.clear();
+    _packets.close();
+  }
 }
