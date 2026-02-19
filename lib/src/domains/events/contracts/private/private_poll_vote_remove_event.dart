@@ -14,5 +14,8 @@ abstract class PrivatePollVoteRemoveEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(PollAnswerVote<Message> answer, User user);
 }

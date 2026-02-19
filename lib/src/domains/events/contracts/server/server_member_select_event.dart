@@ -15,5 +15,8 @@ abstract class ServerMemberSelectEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(ServerSelectContext ctx, List<Member> members);
 }

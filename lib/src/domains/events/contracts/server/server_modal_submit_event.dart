@@ -14,5 +14,8 @@ abstract class ServerModalSubmitEvent<T> implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(ServerModalContext ctx, T data);
 }

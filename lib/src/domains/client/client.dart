@@ -6,8 +6,7 @@ import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/common/kernel.dart';
 import 'package:mineral/src/domains/common/utils/listenable.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
-
-import '../events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
 final class Client {
   final Kernel _kernel;
@@ -42,13 +41,15 @@ final class Client {
       final GlobalState state => _kernel.globalState.register<T>(state as T),
       final Provider provider => _kernel.providerManager.register(provider),
       final ListenableEvent event => _kernel.eventListener.listen(
-          event: event.event,
-          handle: (instance as dynamic).handle as Function,
-          customId: event.customId),
+          event: event.event, handle: event.handler, customId: event.customId),
       final InteractiveComponent component =>
         _kernel.interactiveComponent.register(component),
       _ => throw UnimplementedError(),
     };
+  }
+
+  set onCommandError(void Function(CommandFailure failure) handler) {
+    _commands.onCommandError = handler;
   }
 
   Future<void> init() => _kernel.init();

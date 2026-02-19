@@ -55,10 +55,10 @@ final class CommandInteractionDispatcher
       }
     }
 
-    final command = _interactionManager.commandsHandler
-        .firstWhereOrNull((command) => command.$1 == data['data']['name']);
+    final registration = _interactionManager.commandsHandler
+        .firstWhereOrNull((reg) => reg.name == data['data']['name']);
 
-    if (command == null) {
+    if (registration == null) {
       _marshaller.logger
           .warn('Unknown command received: "${data['data']['name']}"');
       return;
@@ -70,7 +70,7 @@ final class CommandInteractionDispatcher
       _ => GlobalCommandContext.fromMap(_marshaller, _dataStore, data),
     };
 
-    final Map<Symbol, dynamic> options = {};
+    final Map<String, dynamic> optionValues = {};
 
     if (data['data']['options'] != null) {
       for (final option in data['data']['options']) {
@@ -82,7 +82,7 @@ final class CommandInteractionDispatcher
           continue;
         }
 
-        options[Symbol(option['name'])] = await switch (type) {
+        optionValues[option['name']] = await switch (type) {
           CommandOptionType.user => switch (commandContext) {
               ServerCommandContext() => _dataStore.member
                   .get(commandContext.server.id.value, option['value'], false),
@@ -92,17 +92,46 @@ final class CommandInteractionDispatcher
             _dataStore.channel.get(option['value'], false),
           CommandOptionType.role =>
             _dataStore.role.get(data['guild_id'], option['value'], false),
-          // TODO attachement
           _ => option['value'],
         };
       }
     }
 
+    for (final declared in registration.declaredOptions) {
+      if (declared.isRequired && !optionValues.containsKey(declared.name)) {
+        _marshaller.logger.error(
+            'Command "${registration.name}" requires option "${declared.name}" '
+            'but it was not provided in the payload');
+        return;
+      }
+    }
+
     try {
-      await Function.apply(command.$2, [commandContext], options);
-    } on Exception catch (e) {
+      await registration.handler(commandContext, CommandOptions(optionValues));
+    } on Exception catch (e, stackTrace) {
+      final failure = CommandFailure(
+        commandName: registration.name,
+        error: e,
+        stackTrace: stackTrace,
+      );
       _marshaller.logger
-          .error('Failed to execute command handler "${command.$1}": $e');
+          .error('Failed to execute command handler "${registration.name}"');
+      _marshaller.logger.error('$e');
+      _marshaller.logger.trace('$stackTrace');
+      _interactionManager.onCommandError?.call(failure);
+    } on Error catch (e, stackTrace) {
+      final failure = CommandFailure(
+        commandName: registration.name,
+        error: e,
+        stackTrace: stackTrace,
+      );
+
+      _marshaller.logger
+          .error('Failed to execute command handler "${registration.name}"');
+      _marshaller.logger.error('$e');
+      _marshaller.logger.trace('$stackTrace');
+
+      _interactionManager.onCommandError?.call(failure);
     }
   }
 }

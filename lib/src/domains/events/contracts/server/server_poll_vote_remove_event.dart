@@ -14,5 +14,8 @@ abstract class ServerPollVoteRemoveEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(PollAnswerVote<Message> message, User user);
 }

@@ -10,6 +10,8 @@ import 'package:mineral/src/api/common/commands/command_choice_option.dart';
 import 'package:mineral/src/api/common/commands/command_option.dart';
 import 'package:mineral/src/api/common/lang.dart';
 import 'package:mineral/src/domains/commands/command_builder.dart';
+import 'package:mineral/src/domains/commands/command_context.dart';
+import 'package:mineral/src/domains/commands/command_handler.dart';
 import 'package:yaml/yaml.dart';
 
 final class CommandDefinitionBuilder implements CommandBuilder {
@@ -217,7 +219,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
     fn(command.value());
   }
 
-  void setHandler(String key, Function fn) {
+  void setHandler<T extends CommandContext>(String key, CommandHandler<T> fn) {
     final command =
         _commandMapper.entries.firstWhere((element) => element.key == key);
 

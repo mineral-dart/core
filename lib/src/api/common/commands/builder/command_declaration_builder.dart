@@ -7,6 +7,9 @@ import 'package:mineral/src/api/common/commands/command_option.dart';
 import 'package:mineral/src/api/common/commands/command_type.dart';
 import 'package:mineral/src/api/common/commands/sub_command_declaration.dart';
 import 'package:mineral/src/domains/commands/command_builder.dart';
+import 'package:mineral/src/domains/commands/command_context.dart';
+import 'package:mineral/src/domains/commands/command_handler.dart';
+import 'package:mineral/src/domains/commands/command_registration.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
 
@@ -59,7 +62,8 @@ final class CommandDeclarationBuilder implements CommandBuilder {
     return this;
   }
 
-  CommandDeclarationBuilder setHandle(Function fn) {
+  CommandDeclarationBuilder setHandle<T extends CommandContext>(
+      CommandHandler<T> fn) {
     _handle = fn;
     return this;
   }
@@ -74,11 +78,11 @@ final class CommandDeclarationBuilder implements CommandBuilder {
 
   CommandDeclarationBuilder registerSubCommand(Function subCommandFactory) {
     final instance = subCommandFactory();
-    
+
     if (instance is! SubCommandDeclaration) {
       throw Exception('Factory must return a SubCommandDeclaration instance');
     }
-    
+
     final builder = instance.build();
     subCommands.add(builder);
     return this;
@@ -118,12 +122,18 @@ final class CommandDeclarationBuilder implements CommandBuilder {
     };
   }
 
-  List<(String, Function handler)> reduceHandlers(String commandName) {
+  List<CommandRegistration> reduceHandlers(String commandName) {
     if (subCommands.isEmpty && groups.isEmpty) {
-      return [('$name', _handle!)];
+      return [
+        CommandRegistration(
+          name: '$name',
+          handler: _handle!,
+          declaredOptions: List.unmodifiable(options),
+        ),
+      ];
     }
 
-    final List<(String, Function handler)> handlers = [];
+    final List<CommandRegistration> registrations = [];
 
     for (final subCommand in subCommands) {
       if (subCommand.handle case null) {
@@ -131,16 +141,23 @@ final class CommandDeclarationBuilder implements CommandBuilder {
             'Command "$commandName.${subCommand.name}" has no handler');
       }
 
-      handlers.add(('$name.${subCommand.name}', subCommand.handle!));
+      registrations.add(CommandRegistration(
+        name: '$name.${subCommand.name}',
+        handler: subCommand.handle!,
+        declaredOptions: List.unmodifiable(subCommand.options),
+      ));
     }
 
     for (final group in groups) {
       for (final subCommand in group.commands) {
-        handlers.add(
-            ('$name.${group.name}.${subCommand.name}', subCommand.handle!));
+        registrations.add(CommandRegistration(
+          name: '$name.${group.name}.${subCommand.name}',
+          handler: subCommand.handle!,
+          declaredOptions: List.unmodifiable(subCommand.options),
+        ));
       }
     }
 
-    return handlers;
+    return registrations;
   }
 }

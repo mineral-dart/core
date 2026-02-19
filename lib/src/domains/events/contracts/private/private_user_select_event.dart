@@ -15,5 +15,8 @@ abstract class PrivateUserSelectEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(PrivateSelectContext ctx, List<User> users);
 }

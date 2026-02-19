@@ -13,5 +13,8 @@ abstract class ServerRuleUpdateEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(AutoModerationRule? before, AutoModerationRule after);
 }

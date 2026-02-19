@@ -14,5 +14,8 @@ abstract class InviteDeleteEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(String code, Channel channel);
 }
