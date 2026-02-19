@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io';
 
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/common/utils/file.dart';
 import 'package:mineral/src/domains/services/packets/packet_dispatcher.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
@@ -30,7 +32,7 @@ final class DefaultRunningStrategy implements RunningStrategy {
       version = package['dependencies']['mineral'];
     }
 
-    print('Core version: $version');
+    ioc.resolve<LoggerContract>().info('Core version: $version');
 
     await createShards(this);
   }

@@ -3,6 +3,7 @@ import 'dart:convert';
 
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/common/utils/redact.dart';
 import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -56,20 +57,26 @@ final class Shard implements ShardContract {
         name: shardName,
         url: this.url,
         onError: (error) {
-          print('error $error');
+          logger.error('WebSocket error: $error');
           networkError.dispatch(error);
         },
         onClose: networkError.dispatch,
         onOpen: (message) {
           if (message.content case ShardMessage(:final payload)) {
-            logger.trace(jsonEncode(payload));
+            logger.trace(jsonEncode(redactSensitiveFields(payload)));
           }
         });
 
     client.interceptor.message
       ..add(wss.config.encoding.decode)
       ..add((WebsocketMessage message) {
-        logger.trace({'shard': shardName, 'message': message.content.payload});
+        final logPayload = message.content.payload;
+        logger.trace({
+          'shard': shardName,
+          'message': logPayload is Map<String, dynamic>
+              ? redactSensitiveFields(logPayload)
+              : logPayload
+        });
         return message;
       });
 
@@ -98,7 +105,7 @@ final class Shard implements ShardContract {
           case OpCode.heartbeat:
             authentication.heartbeat();
           default:
-            print('Unknown op code ! $code');
+            logger.warn('Unknown op code: $code');
         }
       }
     });
