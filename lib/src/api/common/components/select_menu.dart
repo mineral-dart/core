@@ -119,7 +119,7 @@ final class SelectMenu<T> implements MessageComponent, ModalComponent {
       'custom_id': _customId,
       'placeholder': _placeholder,
       'disabled': _disabled,
-      if (_minValues != null) 'min_values': _minValues,
+      'min_values': (_minValues == null || _minValues! < 1) ? 1 : _minValues,
       if (_maxValues != null) 'max_values': _maxValues,
       if (_minLength != null) 'min_length': _minLength,
       if (_maxLength != null) 'max_length': _maxLength,

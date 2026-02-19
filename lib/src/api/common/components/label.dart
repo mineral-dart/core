@@ -23,7 +23,7 @@ final class Label implements ModalComponent {
         field: description,
         fn: () => description,
       ),
-      'component': component,
+      'component': component.toJson(),
     };
   }
 }
