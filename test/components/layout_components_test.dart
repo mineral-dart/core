@@ -101,7 +101,6 @@ void main() {
             'type': ComponentType.section.value,
             'accessory': {
               'type': ComponentType.thumbnail.value,
-              'url': 'https://example.com/avatar.png',
               'media': {
                 'url': 'https://example.com/avatar.png',
               },
@@ -228,13 +227,10 @@ void main() {
       final thumbnail =
           Thumbnail(MediaItem.fromNetwork('https://example.com/thumb.png'));
 
-      // NOTE: Discord API expects {type:11, media:{url:...}, description?, spoiler?}
-      // but current implementation spreads media.toJson() into the top level
       expect(
           thumbnail.toJson(),
           equals({
             'type': ComponentType.thumbnail.value,
-            'url': 'https://example.com/thumb.png',
             'media': {'url': 'https://example.com/thumb.png'},
           }));
     });
@@ -248,9 +244,22 @@ void main() {
           thumbnail.toJson(),
           equals({
             'type': ComponentType.thumbnail.value,
-            'description': 'Profile picture',
-            'url': 'https://example.com/thumb.png',
             'media': {'url': 'https://example.com/thumb.png'},
+            'description': 'Profile picture',
+          }));
+    });
+
+    test('generates valid Discord API JSON with spoiler', () {
+      final thumbnail = Thumbnail(MediaItem.fromNetwork(
+          'https://example.com/thumb.png',
+          spoiler: true));
+
+      expect(
+          thumbnail.toJson(),
+          equals({
+            'type': ComponentType.thumbnail.value,
+            'media': {'url': 'https://example.com/thumb.png'},
+            'spoiler': true,
           }));
     });
   });

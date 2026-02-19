@@ -6,46 +6,70 @@ import 'package:test/test.dart';
 
 void main() {
   group('Label', () {
-    test('generates Discord API JSON with TextInput', () {
+    test('generates valid Discord API JSON with TextInput', () {
       final input = TextInput('name_input', style: TextInputStyle.short);
       final label = Label(label: 'Your Name', component: input);
-      final json = label.toJson();
 
-      expect(json['type'], equals(ComponentType.label.value));
-      expect(json['label'], equals('Your Name'));
-      expect(json['description'], isNull);
-
-      // NOTE: Discord API expects component to be a serialized JSON object,
-      // but current implementation stores the raw Dart object
-      expect(json['component'], isA<TextInput>());
+      expect(
+          label.toJson(),
+          equals({
+            'type': ComponentType.label.value,
+            'label': 'Your Name',
+            'description': null,
+            'component': {
+              'type': ComponentType.textInput.value,
+              'custom_id': 'name_input',
+              'style': 1,
+            },
+          }));
     });
 
-    test('generates Discord API JSON with description', () {
+    test('generates valid Discord API JSON with description', () {
       final input = TextInput('email', style: TextInputStyle.short);
       final label = Label(
           label: 'Email',
           component: input,
           description: 'We will not share your email');
-      final json = label.toJson();
 
-      expect(json['type'], equals(ComponentType.label.value));
-      expect(json['label'], equals('Email'));
-      expect(json['description'], equals('We will not share your email'));
+      expect(
+          label.toJson(),
+          equals({
+            'type': ComponentType.label.value,
+            'label': 'Email',
+            'description': 'We will not share your email',
+            'component': {
+              'type': ComponentType.textInput.value,
+              'custom_id': 'email',
+              'style': 1,
+            },
+          }));
     });
 
-    test('generates Discord API JSON with SelectMenu', () {
+    test('generates valid Discord API JSON with SelectMenu', () {
       final menu = SelectMenu.text('role_select', [
         SelectMenuOption(label: 'Admin', value: 'admin'),
       ]);
       final label = Label(label: 'Select Role', component: menu);
-      final json = label.toJson();
 
-      expect(json['type'], equals(ComponentType.label.value));
-      expect(json['label'], equals('Select Role'));
-
-      // NOTE: Discord API expects component to be a serialized JSON object,
-      // but current implementation stores the raw Dart object
-      expect(json['component'], isA<SelectMenu>());
+      expect(
+          label.toJson(),
+          equals({
+            'type': ComponentType.label.value,
+            'label': 'Select Role',
+            'description': null,
+            'component': {
+              'type': ComponentType.textSelectMenu.value,
+              'custom_id': 'role_select',
+              'options': [
+                {
+                  'label': 'Admin',
+                  'value': 'admin',
+                  'description': null,
+                  'default': false,
+                },
+              ],
+            },
+          }));
     });
   });
 }

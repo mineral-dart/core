@@ -37,7 +37,8 @@ void main() {
     });
 
     group('addTextInput', () {
-      test('generates Label wrapping TextInput in components', () {
+      test('generates valid Discord API JSON with Label wrapping TextInput',
+          () {
         modal.addTextInput(
           customId: 'feedback',
           label: 'Your Feedback',
@@ -54,13 +55,22 @@ void main() {
         expect(result['components'], hasLength(1));
 
         final component = result['components'][0] as Map<String, dynamic>;
-        expect(component['type'], equals(ComponentType.label.value));
-        expect(component['label'], equals('Your Feedback'));
-        expect(component['description'], equals('Be specific'));
-
-        // NOTE: Discord API expects component to be a serialized JSON object,
-        // but current implementation stores the raw Dart object via Label.toJson()
-        expect(component['component'], isA<TextInput>());
+        expect(
+            component,
+            equals({
+              'type': ComponentType.label.value,
+              'label': 'Your Feedback',
+              'description': 'Be specific',
+              'component': {
+                'type': ComponentType.textInput.value,
+                'custom_id': 'feedback',
+                'style': 2,
+                'min_length': 10,
+                'max_length': 500,
+                'placeholder': 'Tell us what you think...',
+                'required': true,
+              },
+            }));
       });
 
       test('generates valid Discord API JSON with multiple text inputs', () {
@@ -81,9 +91,23 @@ void main() {
 
         final first = result['components'][0] as Map<String, dynamic>;
         expect(first['label'], equals('Username'));
+        expect(
+            first['component'],
+            equals({
+              'type': ComponentType.textInput.value,
+              'custom_id': 'username',
+              'style': 1,
+            }));
 
         final second = result['components'][1] as Map<String, dynamic>;
         expect(second['label'], equals('Bio'));
+        expect(
+            second['component'],
+            equals({
+              'type': ComponentType.textInput.value,
+              'custom_id': 'bio',
+              'style': 2,
+            }));
       });
     });
 
@@ -105,7 +129,8 @@ void main() {
     });
 
     group('addSelectMenu', () {
-      test('generates Label wrapping SelectMenu in components', () {
+      test('generates valid Discord API JSON with Label wrapping SelectMenu',
+          () {
         final menu = SelectMenu.text('category', [
           SelectMenuOption(label: 'Bug', value: 'bug'),
           SelectMenuOption(label: 'Feature', value: 'feature'),
@@ -121,13 +146,31 @@ void main() {
         expect(result['components'], hasLength(1));
 
         final component = result['components'][0] as Map<String, dynamic>;
-        expect(component['type'], equals(ComponentType.label.value));
-        expect(component['label'], equals('Issue Category'));
-        expect(component['description'], equals('Select the category'));
-
-        // NOTE: Discord API expects component to be a serialized JSON object,
-        // but current implementation stores the raw Dart object via Label.toJson()
-        expect(component['component'], isA<SelectMenu>());
+        expect(
+            component,
+            equals({
+              'type': ComponentType.label.value,
+              'label': 'Issue Category',
+              'description': 'Select the category',
+              'component': {
+                'type': ComponentType.textSelectMenu.value,
+                'custom_id': 'category',
+                'options': [
+                  {
+                    'label': 'Bug',
+                    'value': 'bug',
+                    'description': null,
+                    'default': false,
+                  },
+                  {
+                    'label': 'Feature',
+                    'value': 'feature',
+                    'description': null,
+                    'default': false,
+                  },
+                ],
+              },
+            }));
       });
     });
 
@@ -160,23 +203,45 @@ void main() {
         expect(result['title'], equals('Bug Report'));
         expect(result['components'], hasLength(3));
 
-        // First component: TextDisplay
-        final textDisplay = result['components'][0] as Map<String, dynamic>;
-        expect(textDisplay['type'], equals(ComponentType.textDisplay.value));
-        expect(textDisplay['content'],
-            equals('**Please describe the bug you encountered.**'));
+        expect(
+            result['components'][0],
+            equals({
+              'type': ComponentType.textDisplay.value,
+              'content': '**Please describe the bug you encountered.**',
+            }));
 
-        // Second component: Label wrapping TextInput
-        final titleLabel = result['components'][1] as Map<String, dynamic>;
-        expect(titleLabel['type'], equals(ComponentType.label.value));
-        expect(titleLabel['label'], equals('Bug Title'));
+        expect(
+            result['components'][1],
+            equals({
+              'type': ComponentType.label.value,
+              'label': 'Bug Title',
+              'description': null,
+              'component': {
+                'type': ComponentType.textInput.value,
+                'custom_id': 'title',
+                'style': 1,
+                'placeholder': 'Brief summary',
+                'max_length': 100,
+                'required': true,
+              },
+            }));
 
-        // Third component: Label wrapping TextInput
-        final descLabel = result['components'][2] as Map<String, dynamic>;
-        expect(descLabel['type'], equals(ComponentType.label.value));
-        expect(descLabel['label'], equals('Description'));
-        expect(descLabel['description'],
-            equals('Please provide as much detail as possible'));
+        expect(
+            result['components'][2],
+            equals({
+              'type': ComponentType.label.value,
+              'label': 'Description',
+              'description': 'Please provide as much detail as possible',
+              'component': {
+                'type': ComponentType.textInput.value,
+                'custom_id': 'description',
+                'style': 2,
+                'placeholder': 'Detailed description...',
+                'min_length': 20,
+                'max_length': 2000,
+                'required': true,
+              },
+            }));
       });
     });
   });

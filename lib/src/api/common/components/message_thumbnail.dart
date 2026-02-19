@@ -10,7 +10,15 @@ final class Thumbnail implements MessageComponent {
   Map<String, dynamic> toJson() {
     return {
       'type': type.value,
-      ...media.toJson(),
+      'media': {
+        'url': media.url,
+        if (media.proxyUrl != null) 'proxy_url': media.proxyUrl,
+        if (media.height != null) 'height': media.height,
+        if (media.width != null) 'width': media.width,
+        if (media.contentType != null) 'content_type': media.contentType,
+      },
+      if (media.description != null) 'description': media.description,
+      if (media.spoiler != null) 'spoiler': media.spoiler,
     };
   }
 }

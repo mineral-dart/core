@@ -17,15 +17,12 @@ void main() {
             ],
             placeholder: 'Choose a color');
 
-        // NOTE: Discord API treats placeholder and disabled as optional (absent when not set),
-        // but current implementation always emits them
         expect(
             menu.toJson(),
             equals({
               'type': ComponentType.textSelectMenu.value,
               'custom_id': 'color_select',
               'placeholder': 'Choose a color',
-              'disabled': null,
               'options': [
                 {
                   'label': 'Red',
@@ -51,9 +48,14 @@ void main() {
             equals({
               'type': ComponentType.textSelectMenu.value,
               'custom_id': 'empty_select',
-              'placeholder': null,
-              'disabled': null,
             }));
+      });
+
+      test('omits placeholder and disabled when not set', () {
+        final json = SelectMenu.text('sel', []).toJson();
+
+        expect(json.containsKey('placeholder'), isFalse);
+        expect(json.containsKey('disabled'), isFalse);
       });
 
       test('generates valid Discord API JSON with min and max values', () {
@@ -72,8 +74,6 @@ void main() {
             equals({
               'type': ComponentType.textSelectMenu.value,
               'custom_id': 'multi_select',
-              'placeholder': null,
-              'disabled': null,
               'min_values': 1,
               'max_values': 2,
               'options': [
@@ -107,7 +107,6 @@ void main() {
             equals({
               'type': ComponentType.textSelectMenu.value,
               'custom_id': 'disabled_select',
-              'placeholder': null,
               'disabled': true,
             }));
       });
@@ -123,7 +122,6 @@ void main() {
               'type': ComponentType.userSelectMenu.value,
               'custom_id': 'user_select',
               'placeholder': 'Pick a user',
-              'disabled': null,
             }));
       });
 
@@ -136,8 +134,6 @@ void main() {
             equals({
               'type': ComponentType.userSelectMenu.value,
               'custom_id': 'user_select',
-              'placeholder': null,
-              'disabled': null,
               'default_values': [
                 {'id': '123456789', 'type': 'user'},
               ],
@@ -154,8 +150,6 @@ void main() {
             equals({
               'type': ComponentType.roleSelectMenu.value,
               'custom_id': 'role_select',
-              'placeholder': null,
-              'disabled': null,
             }));
       });
 
@@ -168,8 +162,6 @@ void main() {
             equals({
               'type': ComponentType.roleSelectMenu.value,
               'custom_id': 'role_select',
-              'placeholder': null,
-              'disabled': null,
               'default_values': [
                 {'id': '987654321', 'type': 'role'},
               ],
@@ -186,8 +178,6 @@ void main() {
             equals({
               'type': ComponentType.mentionableSelectMenu.value,
               'custom_id': 'mention_select',
-              'placeholder': null,
-              'disabled': null,
             }));
       });
     });
@@ -201,8 +191,6 @@ void main() {
             equals({
               'type': ComponentType.channelSelectMenu.value,
               'custom_id': 'channel_select',
-              'placeholder': null,
-              'disabled': null,
             }));
       });
 
@@ -215,8 +203,6 @@ void main() {
             equals({
               'type': ComponentType.channelSelectMenu.value,
               'custom_id': 'channel_select',
-              'placeholder': null,
-              'disabled': null,
               'channel_types': [0, 2],
             }));
       });
@@ -230,8 +216,6 @@ void main() {
             equals({
               'type': ComponentType.channelSelectMenu.value,
               'custom_id': 'channel_select',
-              'placeholder': null,
-              'disabled': null,
               'default_values': [
                 {'id': '111222333', 'type': 'channel'},
               ],

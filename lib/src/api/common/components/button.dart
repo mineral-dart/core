@@ -19,6 +19,7 @@ final class Button implements MessageComponent {
   final String? _customId;
   final String? _label;
   final String? _url;
+  final String? _skuId;
   final PartialEmoji? _emoji;
   final bool _disabled;
 
@@ -27,12 +28,14 @@ final class Button implements MessageComponent {
       String? customId,
       String? label,
       String? url,
+      String? skuId,
       PartialEmoji? emoji,
       bool? disabled})
       : _type = type,
         _customId = customId,
         _label = label,
         _url = url,
+        _skuId = skuId,
         _emoji = emoji,
         _disabled = disabled ?? false;
 
@@ -85,7 +88,7 @@ final class Button implements MessageComponent {
           {String? label, PartialEmoji? emoji, bool? disabled}) =>
       Button(
           type: ButtonType.premium,
-          customId: skuId,
+          skuId: skuId,
           label: label,
           emoji: emoji,
           disabled: disabled);
@@ -93,9 +96,10 @@ final class Button implements MessageComponent {
   @override
   Map<String, dynamic> toJson() {
     return {
-      'custom_id': _customId,
       'type': ComponentType.button.value,
       'style': _type.value,
+      if (_customId != null) 'custom_id': _customId,
+      if (_skuId != null) 'sku_id': _skuId,
       if (_url != null) 'url': _url,
       if (_label != null) 'label': _label,
       if (_disabled) 'disabled': _disabled,

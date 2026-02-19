@@ -134,8 +134,6 @@ void main() {
                   {
                     'type': ComponentType.textSelectMenu.value,
                     'custom_id': 'color',
-                    'placeholder': null,
-                    'disabled': null,
                     'options': [
                       {
                         'label': 'Red',
@@ -221,7 +219,6 @@ void main() {
                 'accessory': {
                   'type': ComponentType.button.value,
                   'style': 5,
-                  'custom_id': null,
                   'url': 'https://example.com',
                   'label': 'Visit',
                 },

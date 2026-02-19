@@ -59,8 +59,6 @@ void main() {
               {
                 'type': ComponentType.textSelectMenu.value,
                 'custom_id': 'color_select',
-                'placeholder': null,
-                'disabled': null,
                 'options': [
                   {
                     'label': 'Red',

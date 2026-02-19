@@ -121,17 +121,20 @@ void main() {
       test('generates valid Discord API JSON', () {
         final button = Button.link('https://example.com', label: 'Visit');
 
-        // NOTE: Discord API expects custom_id to be absent for link buttons,
-        // but current implementation always emits custom_id (null for link buttons)
         expect(
             button.toJson(),
             equals({
               'type': ComponentType.button.value,
               'style': 5,
-              'custom_id': null,
               'url': 'https://example.com',
               'label': 'Visit',
             }));
+      });
+
+      test('omits custom_id', () {
+        final json = Button.link('https://example.com').toJson();
+
+        expect(json.containsKey('custom_id'), isFalse);
       });
 
       test('generates valid Discord API JSON with disabled', () {
@@ -143,7 +146,6 @@ void main() {
             equals({
               'type': ComponentType.button.value,
               'style': 5,
-              'custom_id': null,
               'url': 'https://example.com',
               'label': 'Disabled Link',
               'disabled': true,
@@ -155,16 +157,20 @@ void main() {
       test('generates valid Discord API JSON', () {
         final button = Button.premium('sku_12345', label: 'Subscribe');
 
-        // NOTE: Discord API expects a dedicated sku_id field for premium buttons,
-        // but current implementation stores skuId in custom_id
         expect(
             button.toJson(),
             equals({
               'type': ComponentType.button.value,
               'style': 6,
-              'custom_id': 'sku_12345',
+              'sku_id': 'sku_12345',
               'label': 'Subscribe',
             }));
+      });
+
+      test('omits custom_id', () {
+        final json = Button.premium('sku_12345').toJson();
+
+        expect(json.containsKey('custom_id'), isFalse);
       });
     });
   });
