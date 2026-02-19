@@ -17,7 +17,7 @@ abstract interface class ShardContract {
 
   ShardAuthentication get authentication;
 
-  Future<void> init();
+  Future<void> init({String? url});
 }
 
 abstract interface class ShardMessageContract<T, OpCodeEnum extends OpCode> {

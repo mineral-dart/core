@@ -16,20 +16,32 @@ final class ShardNetworkError implements ShardNetworkErrorContract {
       return;
     }
 
-    if ([1005].contains(payload)) {
-      ioc.resolve<LoggerContract>().trace('Unknown error with empty exit code');
-      exit(1);
-    }
+    final logger = ioc.resolve<LoggerContract>();
 
     final ShardDisconnectError? error = ShardDisconnectError.values
         .where((element) => element.code == payload)
         .firstOrNull;
 
-    if (error
-        case ShardDisconnectError(canBeReconnected: final canBeReconnected)) {
-      return canBeReconnected
-          ? shard.authentication.resume()
-          : shard.authentication.reconnect();
+    if (error != null) {
+      logger.warn('WebSocket closed with code ${error.code}: ${error.message}');
+
+      switch (error.action) {
+        case DisconnectAction.resume:
+          logger.trace('Attempting to resume session');
+          shard.authentication.resume();
+        case DisconnectAction.reconnect:
+          logger.trace('Attempting full reconnect');
+          shard.authentication.reconnect();
+        case DisconnectAction.fatal:
+          logger.error(
+              'Fatal gateway error: ${error.message} (${error.code}). Cannot reconnect.');
+          exit(1);
+      }
+      return;
     }
+
+    logger.warn(
+        'WebSocket closed with unknown code: $payload. Attempting reconnect.');
+    shard.authentication.reconnect();
   }
 }

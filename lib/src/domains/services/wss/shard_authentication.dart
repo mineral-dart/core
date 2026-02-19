@@ -5,11 +5,11 @@ abstract interface class ShardAuthenticationContract {
 
   Future<void> connect();
 
-  void reconnect();
+  Future<void> reconnect();
 
   void heartbeat();
 
   void ack();
 
-  void resume();
+  Future<void> resume();
 }

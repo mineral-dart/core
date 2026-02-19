@@ -29,7 +29,7 @@ final class Shard implements ShardContract {
   @override
   late final ShardAuthentication authentication;
 
-  final String url;
+  String url;
 
   late final ShardData dispatchEvent;
 
@@ -46,11 +46,15 @@ final class Shard implements ShardContract {
   }
 
   @override
-  Future<void> init() async {
+  Future<void> init({String? url}) async {
+    if (url != null) {
+      this.url = url;
+    }
+
     final logger = ioc.resolve<LoggerContract>();
     client = WebsocketClientImpl(
         name: shardName,
-        url: url,
+        url: this.url,
         onError: (error) {
           print('error $error');
           networkError.dispatch(error);
