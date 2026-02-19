@@ -170,11 +170,20 @@ final class ClientBuilder {
     );
 
     ioc
+      ..require<LoggerContract>()
+      ..require<HttpClientContract>()
+      ..require<Kernel>()
+      ..require<MarshallerContract>()
+      ..require<DataStoreContract>()
+      ..require<CommandInteractionManagerContract>()
+      ..require<WebsocketOrchestratorContract>()
+      ..require<InteractiveComponentManagerContract>()
       ..bind<HttpClientContract>(() => http)
       ..bind<Kernel>(() => kernel)
       ..bind<MarshallerContract>(Marshaller.new)
       ..bind<DataStoreContract>(() => DataStore(http))
-      ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new);
+      ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new)
+      ..validateBindings();
 
     packetListener
       ..kernel = kernel
