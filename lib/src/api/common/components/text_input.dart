@@ -1,5 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/src/domains/common/utils/helper.dart';
 
 enum TextInputStyle implements EnhancedEnum<int> {
   short(1),
@@ -38,26 +37,11 @@ final class TextInput implements ModalComponent {
       'type': type.value,
       'custom_id': customId,
       'style': style.value,
-      'min_length': Helper.createOrNull(
-        field: minLength,
-        fn: () => minLength,
-      ),
-      'max_length': Helper.createOrNull(
-        field: maxLength,
-        fn: () => maxLength,
-      ),
-      'placeholder': Helper.createOrNull(
-        field: placeholder,
-        fn: () => placeholder,
-      ),
-      'value': Helper.createOrNull(
-        field: value,
-        fn: () => value,
-      ),
-      'required': Helper.createOrNull(
-        field: isRequired,
-        fn: () => isRequired,
-      ),
+      if (minLength != null) 'min_length': minLength,
+      if (maxLength != null) 'max_length': maxLength,
+      if (placeholder != null) 'placeholder': placeholder,
+      if (value != null) 'value': value,
+      if (isRequired != null) 'required': isRequired,
     };
   }
 }
