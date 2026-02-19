@@ -1,9 +1,9 @@
-import 'dart:io';
-
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/common/kernel.dart';
 import 'package:mineral/src/domains/services/wss/constants/shard_disconnect_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/fatal_gateway_exception.dart';
 
 final class ShardNetworkError implements ShardNetworkErrorContract {
   final Shard shard;
@@ -35,7 +35,10 @@ final class ShardNetworkError implements ShardNetworkErrorContract {
         case DisconnectAction.fatal:
           logger.error(
               'Fatal gateway error: ${error.message} (${error.code}). Cannot reconnect.');
-          exit(1);
+          shard.authentication.cancelHeartbeat();
+          shard.client.disconnect();
+          ioc.resolve<Kernel>().dispose();
+          throw FatalGatewayException(error.message, error.code);
       }
       return;
     }
