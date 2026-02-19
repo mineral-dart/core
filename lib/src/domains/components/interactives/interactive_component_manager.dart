@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 
 abstract interface class InteractiveComponentService {
@@ -11,7 +12,8 @@ abstract interface class InteractiveComponentManagerContract
   void dispatch(String customId, List params);
 }
 
-final class InteractiveComponentManager implements InteractiveComponentManagerContract {
+final class InteractiveComponentManager
+    implements InteractiveComponentManagerContract {
   final Map<String, InteractiveComponent> _components = {};
 
   @override
@@ -22,8 +24,17 @@ final class InteractiveComponentManager implements InteractiveComponentManagerCo
   @override
   void dispatch(String customId, List params) {
     final component = _components[customId];
-    if (component != null) {
-      Function.apply((component as dynamic).handle, params);
+    if (component == null) {
+      return;
+    }
+
+    switch (component) {
+      case final InteractiveButton button:
+        button.handle(params[0] as ButtonContext);
+      case final InteractiveModal modal:
+        modal.handle(params[0] as ModalContext, params[1]);
+      case final InteractiveSelectMenu select:
+        select.handle(params[0] as SelectContext, params[1]);
     }
   }
 
