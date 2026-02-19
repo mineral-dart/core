@@ -69,13 +69,13 @@ void main() {
 
     group('setHandle', () {
       test('stores the handler function', () {
-        void handler() {}
+        final handler = (ctx, options) {};
         builder.setHandle(handler);
         expect(builder.handle, handler);
       });
 
       test('returns self for chaining', () {
-        final result = builder.setHandle(() {});
+        final result = builder.setHandle((ctx, options) {});
         expect(result, same(builder));
       });
     });
@@ -85,7 +85,7 @@ void main() {
         builder
           ..setName('ban')
           ..setDescription('Ban a user')
-          ..setHandle(() {});
+          ..setHandle((ctx, options) {});
 
         final json = builder.toJson();
 
@@ -101,7 +101,7 @@ void main() {
           ..setDescription('Ban a user')
           ..addOption(Option.user(
               name: 'target', description: 'User to ban', required: true))
-          ..setHandle(() {});
+          ..setHandle((ctx, options) {});
 
         final json = builder.toJson();
 
@@ -121,7 +121,7 @@ void main() {
         builder
           ..setName('ban', translation: translation)
           ..setDescription('Ban a user')
-          ..setHandle(() {});
+          ..setHandle((ctx, options) {});
 
         final json = builder.toJson();
 
@@ -139,7 +139,7 @@ void main() {
         builder
           ..setName('ban')
           ..setDescription('Ban a user', translation: translation)
-          ..setHandle(() {});
+          ..setHandle((ctx, options) {});
 
         final json = builder.toJson();
 

@@ -5,6 +5,7 @@ import 'package:mineral/src/api/common/commands/command_option.dart';
 import 'package:mineral/src/api/common/commands/command_option_type.dart';
 import 'package:mineral/src/api/common/commands/command_type.dart';
 import 'package:mineral/src/api/common/lang.dart';
+import 'package:mineral/src/domains/commands/command_handler.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/command_name_exception.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
@@ -94,7 +95,7 @@ void main() {
 
     group('setHandle', () {
       test('returns self for chaining', () {
-        final result = builder.setHandle(() {});
+        final result = builder.setHandle((ctx, options) {});
         expect(result, same(builder));
       });
     });
@@ -105,7 +106,7 @@ void main() {
           sub
             ..setName('user')
             ..setDescription('Ban a user')
-            ..setHandle(() {});
+            ..setHandle((ctx, options) {});
         });
 
         expect(builder.subCommands.length, 1);
@@ -117,7 +118,7 @@ void main() {
           sub
             ..setName('test')
             ..setDescription('test')
-            ..setHandle(() {});
+            ..setHandle((ctx, options) {});
         });
         expect(result, same(builder));
       });
@@ -133,7 +134,7 @@ void main() {
               sub
                 ..setName('ban')
                 ..setDescription('Ban a user')
-                ..setHandle(() {});
+                ..setHandle((ctx, options) {});
             });
         });
 
@@ -157,7 +158,7 @@ void main() {
         builder
           ..setName('ping')
           ..setDescription('Pong!')
-          ..setHandle(() {});
+          ..setHandle((ctx, options) {});
 
         final json = builder.toJson();
 
@@ -174,7 +175,7 @@ void main() {
           ..addOption(Option.user(
               name: 'target', description: 'User to ban', required: true))
           ..addOption(Option.string(name: 'reason', description: 'Reason'))
-          ..setHandle(() {});
+          ..setHandle((ctx, options) {});
 
         final json = builder.toJson();
 
@@ -194,13 +195,13 @@ void main() {
             sub
               ..setName('ban')
               ..setDescription('Ban user')
-              ..setHandle(() {});
+              ..setHandle((ctx, options) {});
           })
           ..addSubCommand((sub) {
             sub
               ..setName('kick')
               ..setDescription('Kick user')
-              ..setHandle(() {});
+              ..setHandle((ctx, options) {});
           });
 
         final json = builder.toJson();
@@ -221,7 +222,7 @@ void main() {
                 sub
                   ..setName('ban')
                   ..setDescription('Ban user')
-                  ..setHandle(() {});
+                  ..setHandle((ctx, options) {});
               });
           });
 
@@ -242,7 +243,7 @@ void main() {
         builder
           ..setName('ping', translation: translation)
           ..setDescription('Pong!')
-          ..setHandle(() {});
+          ..setHandle((ctx, options) {});
 
         final json = builder.toJson();
 
@@ -260,7 +261,7 @@ void main() {
         builder
           ..setName('ping')
           ..setDescription('Pong!', translation: translation)
-          ..setHandle(() {});
+          ..setHandle((ctx, options) {});
 
         final json = builder.toJson();
 
@@ -285,22 +286,22 @@ void main() {
 
     group('reduceHandlers', () {
       test('returns single handler for simple command', () {
-        void handler() {}
+        final CommandHandler handler = (ctx, options) {};
         builder
           ..setName('ping')
           ..setDescription('Pong!')
           ..setHandle(handler);
 
-        final handlers = builder.reduceHandlers('ping');
+        final registrations = builder.reduceHandlers('ping');
 
-        expect(handlers, hasLength(1));
-        expect(handlers.first.$1, 'ping');
-        expect(handlers.first.$2, handler);
+        expect(registrations, hasLength(1));
+        expect(registrations.first.name, 'ping');
+        expect(registrations.first.handler, handler);
       });
 
       test('returns handlers for subcommands with dotted names', () {
-        void banHandler() {}
-        void kickHandler() {}
+        final CommandHandler banHandler = (ctx, options) {};
+        final CommandHandler kickHandler = (ctx, options) {};
 
         builder
           ..setName('mod')
@@ -318,17 +319,17 @@ void main() {
               ..setHandle(kickHandler);
           });
 
-        final handlers = builder.reduceHandlers('mod');
+        final registrations = builder.reduceHandlers('mod');
 
-        expect(handlers, hasLength(2));
-        expect(handlers[0].$1, 'mod.ban');
-        expect(handlers[0].$2, banHandler);
-        expect(handlers[1].$1, 'mod.kick');
-        expect(handlers[1].$2, kickHandler);
+        expect(registrations, hasLength(2));
+        expect(registrations[0].name, 'mod.ban');
+        expect(registrations[0].handler, banHandler);
+        expect(registrations[1].name, 'mod.kick');
+        expect(registrations[1].handler, kickHandler);
       });
 
       test('returns handlers for groups with triple-dotted names', () {
-        void handler() {}
+        final CommandHandler handler = (ctx, options) {};
 
         builder
           ..setName('admin')
@@ -345,11 +346,29 @@ void main() {
               });
           });
 
-        final handlers = builder.reduceHandlers('admin');
+        final registrations = builder.reduceHandlers('admin');
 
-        expect(handlers, hasLength(1));
-        expect(handlers.first.$1, 'admin.user.ban');
-        expect(handlers.first.$2, handler);
+        expect(registrations, hasLength(1));
+        expect(registrations.first.name, 'admin.user.ban');
+        expect(registrations.first.handler, handler);
+      });
+
+      test('includes declared options in registration', () {
+        builder
+          ..setName('ban')
+          ..setDescription('Ban user')
+          ..addOption(
+              Option.user(name: 'target', description: 'User', required: true))
+          ..addOption(Option.string(name: 'reason', description: 'Reason'))
+          ..setHandle((ctx, options) {});
+
+        final registrations = builder.reduceHandlers('ban');
+
+        expect(registrations.first.declaredOptions, hasLength(2));
+        expect(registrations.first.declaredOptions[0].name, 'target');
+        expect(registrations.first.declaredOptions[0].isRequired, isTrue);
+        expect(registrations.first.declaredOptions[1].name, 'reason');
+        expect(registrations.first.declaredOptions[1].isRequired, isFalse);
       });
 
       test('throws MissingMethodException when subcommand has no handler', () {

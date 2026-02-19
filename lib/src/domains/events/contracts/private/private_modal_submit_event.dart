@@ -14,5 +14,8 @@ abstract class PrivateModalSubmitEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(PrivateModalContext ctx);
 }

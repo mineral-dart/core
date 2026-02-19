@@ -8,14 +8,17 @@ import 'package:mineral/src/api/common/commands/command_context_type.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/domains/commands/command_builder.dart';
 import 'package:mineral/src/domains/commands/command_interaction_dispatcher.dart';
+import 'package:mineral/src/domains/commands/command_registration.dart';
+import 'package:mineral/src/domains/commands/command_result.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
 import 'package:mineral/src/infrastructure/services/http/request.dart';
 
 abstract class CommandInteractionManagerContract {
-  final List<(String, Function handler)> commandsHandler = [];
+  final List<CommandRegistration> commandsHandler = [];
   final List<CommandBuilder> commands = [];
   late InteractionDispatcherContract dispatcher;
+  void Function(CommandFailure failure)? onCommandError;
 
   Future<void> registerGlobal(Bot bot);
 
@@ -27,10 +30,13 @@ abstract class CommandInteractionManagerContract {
 final class CommandInteractionManager
     implements CommandInteractionManagerContract {
   @override
-  final List<(String, Function handler)> commandsHandler = [];
+  final List<CommandRegistration> commandsHandler = [];
 
   @override
   final List<CommandBuilder> commands = [];
+
+  @override
+  void Function(CommandFailure failure)? onCommandError;
 
   @override
   late InteractionDispatcherContract dispatcher;

@@ -2,6 +2,8 @@ import 'package:mineral/src/api/common/commands/builder/translation.dart';
 import 'package:mineral/src/api/common/commands/command_helper.dart';
 import 'package:mineral/src/api/common/commands/command_option.dart';
 import 'package:mineral/src/api/common/commands/command_type.dart';
+import 'package:mineral/src/domains/commands/command_context.dart';
+import 'package:mineral/src/domains/commands/command_handler.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
 
 final class SubCommandBuilder {
@@ -40,7 +42,7 @@ final class SubCommandBuilder {
     return this;
   }
 
-  SubCommandBuilder setHandle(Function fn) {
+  SubCommandBuilder setHandle<T extends CommandContext>(CommandHandler<T> fn) {
     handle = fn;
     return this;
   }

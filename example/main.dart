@@ -11,7 +11,7 @@ void main(_, dynamic port) async {
     ..setName('hello')
     ..setDescription('Say hello')
     ..setHandle(
-      (ctx) {
+      (ServerCommandContext ctx, options) {
         final message = MessageBuilder.text('👋 Hello from Mineral!');
 
         final mineralLinkButton = Button.link(

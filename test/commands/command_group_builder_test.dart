@@ -49,7 +49,7 @@ void main() {
           sub
             ..setName('ban')
             ..setDescription('Ban a user')
-            ..setHandle(() {});
+            ..setHandle((ctx, options) {});
         });
 
         expect(builder.commands, hasLength(1));
@@ -62,13 +62,13 @@ void main() {
             sub
               ..setName('ban')
               ..setDescription('Ban')
-              ..setHandle(() {});
+              ..setHandle((ctx, options) {});
           })
           ..addSubCommand((sub) {
             sub
               ..setName('kick')
               ..setDescription('Kick')
-              ..setHandle(() {});
+              ..setHandle((ctx, options) {});
           });
 
         expect(builder.commands, hasLength(2));
@@ -81,7 +81,7 @@ void main() {
           sub
             ..setName('test')
             ..setDescription('test')
-            ..setHandle(() {});
+            ..setHandle((ctx, options) {});
         });
         expect(result, same(builder));
       });
@@ -96,7 +96,7 @@ void main() {
             sub
               ..setName('ban')
               ..setDescription('Ban user')
-              ..setHandle(() {});
+              ..setHandle((ctx, options) {});
           });
 
         final json = builder.toJson();
@@ -121,7 +121,7 @@ void main() {
             sub
               ..setName('test')
               ..setDescription('test')
-              ..setHandle(() {});
+              ..setHandle((ctx, options) {});
           });
 
         final json = builder.toJson();
@@ -144,7 +144,7 @@ void main() {
             sub
               ..setName('test')
               ..setDescription('test')
-              ..setHandle(() {});
+              ..setHandle((ctx, options) {});
           });
 
         final json = builder.toJson();
@@ -173,13 +173,13 @@ void main() {
             sub
               ..setName('ban')
               ..setDescription('Ban user')
-              ..setHandle(() {});
+              ..setHandle((ctx, options) {});
           })
           ..addSubCommand((sub) {
             sub
               ..setName('kick')
               ..setDescription('Kick user')
-              ..setHandle(() {});
+              ..setHandle((ctx, options) {});
           });
 
         final json = builder.toJson();

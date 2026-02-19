@@ -41,11 +41,15 @@ final class EventListener implements EventListenerContract {
         final bool Function(String?) constraint => constraint(customId),
         _ => true
       };
-    }).listen((element) {
+    }).listen((element) async {
       try {
-        Function.apply(handle, element.params);
-      } on Exception catch (e) {
+        await Function.apply(handle, element.params);
+      } on Exception catch (e, stackTrace) {
         kernel.logger.error('Failed to dispatch event "${event.name}": $e');
+        kernel.logger.trace('$stackTrace');
+      } on Error catch (e, stackTrace) {
+        kernel.logger.error('Failed to dispatch event "${event.name}": $e');
+        kernel.logger.trace('$stackTrace');
       }
     });
 

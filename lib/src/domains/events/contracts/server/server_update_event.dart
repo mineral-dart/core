@@ -13,5 +13,8 @@ abstract class ServerUpdateEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(Server before, Server after);
 }

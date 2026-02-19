@@ -13,5 +13,8 @@ abstract class ServerStickersUpdateEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(Server server, Map<Snowflake, Sticker> stickers);
 }

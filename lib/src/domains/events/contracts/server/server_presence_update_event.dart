@@ -14,5 +14,8 @@ abstract class ServerPresenceUpdateEvent implements ListenableEvent {
   @override
   String? customId;
 
+  @override
+  Function get handler => handle;
+
   FutureOr<void> handle(Member member, Presence presence);
 }
