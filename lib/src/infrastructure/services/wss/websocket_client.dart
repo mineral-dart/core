@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'dart:io' as io;
 
+import 'package:mineral/container.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/infrastructure/services/wss/interceptor.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_requested_message.dart';
@@ -81,7 +83,12 @@ final class WebsocketClientImpl implements WebsocketClient {
         _handleMessage(_onOpen, firstMessage);
       }
     } on io.WebSocketException catch (err) {
-      print(err);
+      final logger = ioc.resolveOrNull<LoggerContract>();
+      if (logger != null) {
+        logger.error('WebSocket connection failed: $err');
+      } else {
+        io.stderr.writeln('WebSocket connection failed: $err');
+      }
       _onError!({
         'error': err,
         'code': _channel?.closeCode,
@@ -104,9 +111,7 @@ final class WebsocketClientImpl implements WebsocketClient {
   Future<void> _handleMessage(dynamic callback, dynamic message) async {
     final interceptedMessage = await _handleMessageInterceptors(
         WebsocketMessageImpl(
-            channelName: name,
-            originalContent: message,
-            content: message));
+            channelName: name, originalContent: message, content: message));
 
     callback(interceptedMessage);
   }
