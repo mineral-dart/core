@@ -8,21 +8,25 @@ import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.d
 import 'package:mineral/src/infrastructure/internals/packets/listeners/ready_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:rxdart/rxdart.dart';
 
 final class PacketDispatcher implements PacketDispatcherContract {
-  final BehaviorSubject<ShardMessage> _packets = BehaviorSubject();
+  final Map<String, StreamController<ShardMessage>> _controllers = {};
   final List<StreamSubscription> _subscriptions = [];
   final Kernel _kernel;
 
   PacketDispatcher(this._kernel);
 
+  StreamController<ShardMessage> _controllerFor(String packetName) {
+    return _controllers.putIfAbsent(
+        packetName, StreamController<ShardMessage>.broadcast);
+  }
+
   @override
   void listen(PacketTypeContract packet,
       Function(ShardMessage, DispatchEvent) listener) {
-    final subscription = _packets.stream
-        .where((event) => event.type == packet.name)
-        .listen((ShardMessage message) {
+    final controller = _controllerFor(packet.name);
+
+    final subscription = controller.stream.listen((ShardMessage message) {
       if (message.type == PacketType.ready.name) {
         ioc.bind(() => ReadyPacketMessage(message));
       }
@@ -34,7 +38,14 @@ final class PacketDispatcher implements PacketDispatcherContract {
   }
 
   @override
-  void dispatch(dynamic payload) => _packets.add(payload);
+  void dispatch(dynamic payload) {
+    if (payload case ShardMessage(type: final String type)) {
+      final controller = _controllers[type];
+      if (controller != null && controller.hasListener) {
+        controller.add(payload);
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -42,6 +53,9 @@ final class PacketDispatcher implements PacketDispatcherContract {
       subscription.cancel();
     }
     _subscriptions.clear();
-    _packets.close();
+    for (final controller in _controllers.values) {
+      controller.close();
+    }
+    _controllers.clear();
   }
 }

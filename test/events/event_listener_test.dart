@@ -3,33 +3,29 @@ import 'dart:async';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_dispatcher.dart';
 import 'package:mineral/src/domains/events/internal_event_params.dart';
-import 'package:rxdart/rxdart.dart';
 import 'package:test/test.dart';
 
 /// Tests the event listener mechanism using the underlying stream directly.
 /// EventListener depends on Kernel (heavy), so we test the dispatch+listen
-/// pattern through BehaviorSubject which is the core mechanism.
+/// pattern through EventDispatcher which is the core mechanism.
 void main() {
   group('Event listener mechanism', () {
-    late BehaviorSubject<InternalEventParams> subject;
     late EventDispatcher dispatcher;
 
     setUp(() {
-      subject = BehaviorSubject();
-      dispatcher = EventDispatcher(subject);
+      dispatcher = EventDispatcher();
     });
 
     tearDown(() {
-      if (!subject.isClosed) {
-        subject.close();
-      }
+      dispatcher.dispose();
     });
 
     test('filters events by type', () async {
       final received = <Event>[];
 
-      subject.stream
-          .where((e) => e.event == Event.ready)
+      dispatcher
+          .controllerFor(Event.ready)
+          .stream
           .listen((e) => received.add(e.event));
 
       dispatcher
@@ -46,8 +42,9 @@ void main() {
     test('dispatches params to handler', () async {
       final receivedParams = <List>[];
 
-      subject.stream
-          .where((e) => e.event == Event.serverMemberAdd)
+      dispatcher
+          .controllerFor(Event.serverMemberAdd)
+          .stream
           .listen((e) => receivedParams.add(e.params));
 
       dispatcher.dispatch(
@@ -63,9 +60,7 @@ void main() {
     test('constraint filters on customId', () async {
       final received = <InternalEventParams>[];
 
-      subject.stream
-          .where((e) => e.event == Event.serverButtonClick)
-          .where((e) {
+      dispatcher.controllerFor(Event.serverButtonClick).stream.where((e) {
         return switch (e.constraint) {
           final bool Function(String?) constraint => constraint('btn-save'),
           _ => true
@@ -101,8 +96,9 @@ void main() {
     test('does not receive events after subscription cancel', () async {
       final received = <Event>[];
 
-      final sub = subject.stream
-          .where((e) => e.event == Event.ready)
+      final sub = dispatcher
+          .controllerFor(Event.ready)
+          .stream
           .listen((e) => received.add(e.event));
 
       dispatcher.dispatch(event: Event.ready, params: ['bot']);
@@ -120,13 +116,11 @@ void main() {
       final listener1 = <Event>[];
       final listener2 = <Event>[];
 
-      subject.stream
-          .where((e) => e.event == Event.ready)
-          .listen((e) => listener1.add(e.event));
+      final controller = dispatcher.controllerFor(Event.ready);
 
-      subject.stream
-          .where((e) => e.event == Event.ready)
-          .listen((e) => listener2.add(e.event));
+      controller.stream.listen((e) => listener1.add(e.event));
+
+      controller.stream.listen((e) => listener2.add(e.event));
 
       dispatcher.dispatch(event: Event.ready, params: ['bot']);
 
@@ -141,12 +135,14 @@ void main() {
       final readyEvents = <Event>[];
       final messageEvents = <Event>[];
 
-      subject.stream
-          .where((e) => e.event == Event.ready)
+      dispatcher
+          .controllerFor(Event.ready)
+          .stream
           .listen((e) => readyEvents.add(e.event));
 
-      subject.stream
-          .where((e) => e.event == Event.serverMessageCreate)
+      dispatcher
+          .controllerFor(Event.serverMessageCreate)
+          .stream
           .listen((e) => messageEvents.add(e.event));
 
       dispatcher

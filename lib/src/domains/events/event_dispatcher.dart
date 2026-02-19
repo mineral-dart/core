@@ -1,6 +1,7 @@
+import 'dart:async';
+
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/internal_event_params.dart';
-import 'package:rxdart/rxdart.dart';
 
 abstract interface class EventDispatcherContract {
   void dispatch({required Event event, required List params});
@@ -9,18 +10,29 @@ abstract interface class EventDispatcherContract {
 }
 
 final class EventDispatcher implements EventDispatcherContract {
-  final BehaviorSubject<InternalEventParams> _events;
+  final Map<Event, StreamController<InternalEventParams>> _controllers = {};
 
-  EventDispatcher(this._events);
+  StreamController<InternalEventParams> controllerFor(Event event) {
+    return _controllers.putIfAbsent(
+        event, StreamController<InternalEventParams>.broadcast);
+  }
 
   @override
   void dispatch(
       {required Event event,
       required List params,
       bool Function(String?)? constraint}) {
-    _events.add(InternalEventParams(event, params, constraint));
+    final controller = _controllers[event];
+    if (controller != null && controller.hasListener) {
+      controller.add(InternalEventParams(event, params, constraint));
+    }
   }
 
   @override
-  void dispose() => _events.close();
+  void dispose() {
+    for (final controller in _controllers.values) {
+      controller.close();
+    }
+    _controllers.clear();
+  }
 }

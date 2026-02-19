@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:mineral/src/domains/common/kernel.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_dispatcher.dart';
-import 'package:mineral/src/domains/events/internal_event_params.dart';
-import 'package:rxdart/rxdart.dart';
 
 abstract interface class EventListenerContract {
   Kernel get kernel;
@@ -18,25 +16,24 @@ abstract interface class EventListenerContract {
 }
 
 final class EventListener implements EventListenerContract {
-  final BehaviorSubject<InternalEventParams> _events = BehaviorSubject();
   final List<StreamSubscription> _subscriptions = [];
 
   @override
   late final Kernel kernel;
 
   @override
-  late final EventDispatcherContract dispatcher;
+  late final EventDispatcher dispatcher;
 
   EventListener() {
-    dispatcher = EventDispatcher(_events);
+    dispatcher = EventDispatcher();
   }
 
   @override
   StreamSubscription listen<T extends Function>(
       {required Event event, required T handle, required String? customId}) {
-    final subscription = _events.stream
-        .where((element) => element.event == event)
-        .where((element) {
+    final controller = dispatcher.controllerFor(event);
+
+    final subscription = controller.stream.where((element) {
       return switch (element.constraint) {
         final bool Function(String?) constraint => constraint(customId),
         _ => true
