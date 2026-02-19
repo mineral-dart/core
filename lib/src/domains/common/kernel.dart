@@ -82,4 +82,10 @@ final class Kernel {
       rethrow;
     }
   }
+
+  Future<void> dispose() async {
+    packetListener.dispose();
+    eventListener.dispose();
+    await providerManager.dispose();
+  }
 }

@@ -13,10 +13,13 @@ abstract interface class EventListenerContract {
 
   StreamSubscription listen<T extends Function>(
       {required Event event, required T handle, required String? customId});
+
+  void dispose();
 }
 
 final class EventListener implements EventListenerContract {
   final BehaviorSubject<InternalEventParams> _events = BehaviorSubject();
+  final List<StreamSubscription> _subscriptions = [];
 
   @override
   late final Kernel kernel;
@@ -31,7 +34,7 @@ final class EventListener implements EventListenerContract {
   @override
   StreamSubscription listen<T extends Function>(
       {required Event event, required T handle, required String? customId}) {
-    return _events.stream
+    final subscription = _events.stream
         .where((element) => element.event == event)
         .where((element) {
       return switch (element.constraint) {
@@ -45,5 +48,17 @@ final class EventListener implements EventListenerContract {
         kernel.logger.error('Failed to dispatch event "${event.name}": $e');
       }
     });
+
+    _subscriptions.add(subscription);
+    return subscription;
+  }
+
+  @override
+  void dispose() {
+    for (final subscription in _subscriptions) {
+      subscription.cancel();
+    }
+    _subscriptions.clear();
+    dispatcher.dispose();
   }
 }
