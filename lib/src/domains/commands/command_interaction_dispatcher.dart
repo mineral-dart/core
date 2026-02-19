@@ -92,6 +92,11 @@ final class CommandInteractionDispatcher
       }
     }
 
-    await Function.apply(command.$2, [commandContext], options);
+    try {
+      await Function.apply(command.$2, [commandContext], options);
+    } on Exception catch (e) {
+      _marshaller.logger
+          .error('Failed to execute command handler "${command.$1}": $e');
+    }
   }
 }

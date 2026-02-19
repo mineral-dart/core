@@ -38,6 +38,12 @@ final class EventListener implements EventListenerContract {
         final bool Function(String?) constraint => constraint(customId),
         _ => true
       };
-    }).listen((element) => Function.apply(handle, element.params));
+    }).listen((element) {
+      try {
+        Function.apply(handle, element.params);
+      } on Exception catch (e) {
+        kernel.logger.error('Failed to dispatch event "${event.name}": $e');
+      }
+    });
   }
 }
