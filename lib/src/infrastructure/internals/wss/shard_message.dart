@@ -1,3 +1,4 @@
+import 'package:collection/collection.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 
@@ -20,12 +21,17 @@ final class ShardMessage<T> implements ShardMessageContract<T, OpCode> {
       required this.sequence,
       required this.payload});
 
-  factory ShardMessage.of(Map<String, dynamic> message) => ShardMessage(
-      type: message['t'],
-      opCode:
-          OpCode.values.firstWhere((element) => element.value == message['op']),
-      sequence: message['s'],
-      payload: message['d']);
+  factory ShardMessage.of(Map<String, dynamic> message) {
+    final opCode = OpCode.values
+            .firstWhereOrNull((element) => element.value == message['op']) ??
+        OpCode.unknown;
+
+    return ShardMessage(
+        type: message['t'],
+        opCode: opCode,
+        sequence: message['s'],
+        payload: message['d']);
+  }
 
   @override
   Object serialize() {

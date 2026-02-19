@@ -11,7 +11,8 @@ enum OpCode {
   invalidSession(9),
   hello(10),
   heartbeatAck(11),
-  guildSync(12);
+  guildSync(12),
+  unknown(-1);
 
   final int value;
   const OpCode(this.value);

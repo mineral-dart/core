@@ -56,7 +56,13 @@ final class CommandInteractionDispatcher
     }
 
     final command = _interactionManager.commandsHandler
-        .firstWhere((command) => command.$1 == data['data']['name']);
+        .firstWhereOrNull((command) => command.$1 == data['data']['name']);
+
+    if (command == null) {
+      _marshaller.logger
+          .warn('Unknown command received: "${data['data']['name']}"');
+      return;
+    }
 
     final serverId = Snowflake.nullable(data['data']['guild_id']);
     final commandContext = await switch (serverId) {

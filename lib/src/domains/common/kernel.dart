@@ -62,13 +62,24 @@ final class Kernel {
 
     if ((useHmr && Isolate.current.debugName == DartEnv.development.value) ||
         !useHmr) {
-      await providerManager.ready();
+      try {
+        await providerManager.ready();
+      } on Exception catch (e) {
+        logger.error('Failed to initialize providers: $e');
+        rethrow;
+      }
     }
 
     runningStrategy = useHmr
         ? HmrRunningStrategy(_devPort, packetListener.dispatcher, _watchedFiles)
         : DefaultRunningStrategy(packetListener.dispatcher);
 
-    await runningStrategy.init(wss.createShards);
+    try {
+      await runningStrategy.init(wss.createShards);
+    } on Exception catch (e) {
+      logger.error('Failed to initialize WebSocket connection: $e');
+      await providerManager.dispose();
+      rethrow;
+    }
   }
 }
