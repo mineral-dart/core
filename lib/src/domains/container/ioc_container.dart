@@ -1,5 +1,10 @@
+import 'dart:async';
 import 'dart:collection';
 import 'package:mineral/src/domains/common/utils/helper.dart';
+
+abstract interface class Disposable {
+  FutureOr<void> dispose();
+}
 
 final class IocContainer {
   final Map<Type, dynamic> _services = {};
@@ -32,7 +37,7 @@ final class IocContainer {
 
   void override<T>(T key, Constructable<T> clazz) {
     if (!_services.containsKey(key)) {
-      throw Exception('Service not exists, you can\t override it');
+      throw Exception('Service "$T" does not exist, cannot override it');
     }
 
     _services[key as Type] = clazz();
@@ -40,13 +45,18 @@ final class IocContainer {
 
   void restore<T extends Type>(T key) {
     if (!_services.containsKey(key)) {
-      throw Exception('Service not exists, you can\t restore it');
+      throw Exception('Service "$T" does not exist, cannot restore it');
     }
 
     _services[key] = _defaults[key];
   }
 
-  void dispose() {
+  Future<void> dispose() async {
+    for (final service in _services.values) {
+      if (service case final Disposable disposable) {
+        await disposable.dispose();
+      }
+    }
     _services.clear();
     _defaults.clear();
   }
