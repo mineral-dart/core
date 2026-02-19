@@ -22,4 +22,8 @@ abstract interface class ShardingConfigContract {
   int get largeThreshold;
 
   int? get shardCount;
+
+  int get maxReconnectAttempts;
+
+  Duration get maxReconnectDelay;
 }

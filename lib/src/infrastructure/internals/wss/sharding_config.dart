@@ -22,6 +22,12 @@ final class ShardingConfig implements ShardingConfigContract {
   @override
   final int? shardCount;
 
+  @override
+  final int maxReconnectAttempts;
+
+  @override
+  final Duration maxReconnectDelay;
+
   ShardingConfig({
     required this.token,
     required this.intent,
@@ -30,5 +36,7 @@ final class ShardingConfig implements ShardingConfigContract {
     this.shardCount,
     this.compress = false,
     this.largeThreshold = 50,
+    this.maxReconnectAttempts = 10,
+    this.maxReconnectDelay = const Duration(seconds: 60),
   });
 }

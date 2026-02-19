@@ -13,6 +13,11 @@ final class ShardData implements ShardDataContract {
 
   @override
   void dispatch(WebsocketMessage message) {
+    if (message.content case ShardMessage(:final sequence)
+        when sequence != null) {
+      _shard.authentication.sequence = sequence;
+    }
+
     if (message.content case ShardMessage(:final type, :final payload)
         when type == PacketType.ready.name) {
       _shard.authentication.setupRequirements(payload);
