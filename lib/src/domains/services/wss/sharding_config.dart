@@ -13,7 +13,7 @@ abstract interface class ShardingConfigContract {
 
   int get intent;
 
-  bool get compress;
+  bool get isCompressed;
 
   int get version;
 

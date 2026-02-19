@@ -20,10 +20,10 @@ final class RoleCreateAuditLog extends AuditLog {
   Color get roleColor =>
       Color.of(changes.firstWhere((element) => element.key == 'color').after);
 
-  bool get roleIsHoist =>
+  bool get isRoleHoisted =>
       changes.firstWhere((element) => element.key == 'hoist').after;
 
-  bool get roleIsMentionable =>
+  bool get isRoleMentionable =>
       changes.firstWhere((element) => element.key == 'mentionable').after;
 
   RoleCreateAuditLog(

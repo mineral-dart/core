@@ -11,7 +11,7 @@ final class MessageProperties<T extends Channel> {
   final Snowflake channelId;
   final Snowflake? authorId;
   final Snowflake? serverId;
-  final bool authorIsBot;
+  final bool isAuthorBot;
   final List<MessageEmbed> embeds;
   final DateTime createdAt;
   final DateTime? updatedAt;
@@ -22,7 +22,7 @@ final class MessageProperties<T extends Channel> {
     required this.channelId,
     required this.authorId,
     required this.serverId,
-    required this.authorIsBot,
+    required this.isAuthorBot,
     required this.embeds,
     required this.createdAt,
     required this.updatedAt,
@@ -40,7 +40,7 @@ final class MessageProperties<T extends Channel> {
       channelId: Snowflake.parse(json['channel_id']),
       authorId: Snowflake.nullable(json['author_id']),
       serverId: Snowflake.nullable(json['server_id']),
-      authorIsBot: json['author_is_bot'] ?? false,
+      isAuthorBot: json['author_is_bot'] ?? false,
       embeds: embeds,
       createdAt: DateTime.parse(json['timestamp']),
       updatedAt: Helper.createOrNull(

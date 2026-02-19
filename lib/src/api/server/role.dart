@@ -11,10 +11,10 @@ final class Role {
   final Snowflake id;
   final String name;
   final Color color;
-  final bool hoist;
+  final bool isHoisted;
   final int position;
-  final bool managed;
-  final bool mentionable;
+  final bool isManaged;
+  final bool isMentionable;
   final int flags;
   final String? icon;
   final String? unicodeEmoji;
@@ -25,11 +25,11 @@ final class Role {
     required this.id,
     required this.name,
     required this.color,
-    required this.hoist,
+    required this.isHoisted,
     required this.position,
     required this.permissions,
-    required this.managed,
-    required this.mentionable,
+    required this.isManaged,
+    required this.isMentionable,
     required this.flags,
     required this.icon,
     required this.unicodeEmoji,
@@ -69,12 +69,12 @@ final class Role {
   /// ```dart
   ///  await role.setHoist(true, reason: 'Testing');
   /// ```
-  Future<void> setHoist(bool hoist, String? reason) async {
+  Future<void> setHoist(bool value, String? reason) async {
     await _datastore.role.update(
       id: id.value,
       serverId: serverId.value,
       reason: reason,
-      payload: {'hoist': hoist},
+      payload: {'hoist': value},
     );
   }
 

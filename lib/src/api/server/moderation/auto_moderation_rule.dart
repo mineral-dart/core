@@ -12,7 +12,7 @@ final class AutoModerationRule {
   final TriggerType triggerTypes;
   final TriggerMetadata triggerMetadata;
   final List<Action> action;
-  final bool enabled;
+  final bool isEnabled;
   final List<Snowflake> exemptRoles;
   final List<Snowflake> exemptChannels;
 
@@ -25,7 +25,7 @@ final class AutoModerationRule {
     required this.triggerTypes,
     required this.triggerMetadata,
     required this.action,
-    required this.enabled,
+    required this.isEnabled,
     required this.exemptRoles,
     required this.exemptChannels,
   });

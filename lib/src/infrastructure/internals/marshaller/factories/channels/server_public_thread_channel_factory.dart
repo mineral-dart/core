@@ -70,11 +70,11 @@ final class ServerPublicThreadChannelFactory
       'rtc_region': channel.rtcRegion,
       'owner_id': channel.ownerId.value,
       'thread_metadata': {
-        'archived': channel.metadata.archived,
+        'archived': channel.metadata.isArchived,
         'archive_timestamp':
             channel.metadata.archiveTimestamp?.toIso8601String(),
         'auto_archive_duration': channel.metadata.autoArchiveDuration,
-        'locked': channel.metadata.locked,
+        'locked': channel.metadata.isLocked,
       },
       'message_count': channel.messageCount,
       'member_count': channel.memberCount,

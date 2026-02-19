@@ -47,7 +47,7 @@ final class PollSerializer implements SerializerContract<Poll> {
             field: json['expiry'],
             fn: () =>
                 DateTime.parse(json['expiry']).difference(DateTime.now())),
-        isAllowMultiple: json['allow_multiselect'],
+        isMultipleResponseAllowed: json['allow_multiselect'],
         layout: findInEnum(PollLayout.values, json['layout_type']));
   }
 
@@ -63,7 +63,7 @@ final class PollSerializer implements SerializerContract<Poll> {
       'question_text': poll.question.content,
       'answers': answers,
       'expiry': poll.expireAt?.inMilliseconds,
-      'allow_multiselect': poll.isAllowMultiple,
+      'allow_multiselect': poll.isMultipleResponseAllowed,
       'layout_type': poll.layout.value,
     };
   }

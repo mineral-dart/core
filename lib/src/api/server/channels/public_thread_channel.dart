@@ -97,8 +97,8 @@ class PublicThreadChannel extends ServerChannel implements ThreadChannel {
   /// ```dart
   /// await channel.setNsfw(true);
   /// ```
-  Future<void> setNsfw(bool nsfw, {String? reason}) =>
-      _methods.setNsfw(nsfw, reason);
+  Future<void> setNsfw(bool value, {String? reason}) =>
+      _methods.setNsfw(value, reason);
 
   /// Sets the rate limit per user for the channel.
   ///

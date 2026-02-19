@@ -26,7 +26,7 @@ final class ServerAnnouncementChannel extends ServerChannel {
 
   String? get description => _properties.description;
 
-  bool get isNsfw => _properties.nsfw;
+  bool get isNsfw => _properties.isNsfw;
 
   @override
   Snowflake get serverId => _properties.serverId!;
@@ -79,8 +79,8 @@ final class ServerAnnouncementChannel extends ServerChannel {
   /// ```dart
   /// await channel.setNsfw(true);
   /// ```
-  Future<void> setNsfw(bool nsfw, {String? reason}) =>
-      _methods.setNsfw(nsfw, reason);
+  Future<void> setNsfw(bool value, {String? reason}) =>
+      _methods.setNsfw(value, reason);
 
   /// Deletes the channel.
   ///

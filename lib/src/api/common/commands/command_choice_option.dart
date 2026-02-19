@@ -39,25 +39,25 @@ final class ChoiceOption implements CommandOption {
           {required String name,
           required String description,
           required List<Choice<String>> choices,
-          bool required = false}) =>
+          bool isRequired = false}) =>
       ChoiceOption._(
-          name, description, CommandOptionType.string, required, null, choices);
+          name, description, CommandOptionType.string, isRequired, null, choices);
 
   factory ChoiceOption.integer(
           {required String name,
           required String description,
           required List<Choice<int>> choices,
-          bool required = false}) =>
-      ChoiceOption._(name, description, CommandOptionType.integer, required,
+          bool isRequired = false}) =>
+      ChoiceOption._(name, description, CommandOptionType.integer, isRequired,
           null, choices);
 
   factory ChoiceOption.double(
           {required String name,
           required String description,
           required List<Choice<double>> choices,
-          bool required = false}) =>
+          bool isRequired = false}) =>
       ChoiceOption._(
-          name, description, CommandOptionType.double, required, null, choices);
+          name, description, CommandOptionType.double, isRequired, null, choices);
 }
 
 final class Choice<T> {

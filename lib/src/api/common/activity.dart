@@ -36,6 +36,6 @@ final class Activity {
             fn: () => ActivityEmoji(
                 name: json['name'],
                 id: json['id'],
-                animated: json['animated'] ?? false)));
+                isAnimated: json['animated'] ?? false)));
   }
 }

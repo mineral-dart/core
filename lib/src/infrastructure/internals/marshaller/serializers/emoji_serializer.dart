@@ -47,9 +47,9 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       roles: roles?.fold(
               {}, (value, element) => {...?value, element.id: element}) ??
           {},
-      managed: json['managed'],
-      animated: json['animated'],
-      available: json['available'],
+      isManaged: json['managed'],
+      isAnimated: json['animated'],
+      isAvailable: json['available'],
     );
   }
 
@@ -59,9 +59,9 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       'id': emoji.id?.value,
       'name': emoji.name,
       'roles': emoji.roles.keys.toList(),
-      'managed': emoji.managed,
-      'animated': emoji.animated,
-      'available': emoji.available,
+      'managed': emoji.isManaged,
+      'animated': emoji.isAnimated,
+      'available': emoji.isAvailable,
       'server_id': emoji.serverId.value,
     };
   }

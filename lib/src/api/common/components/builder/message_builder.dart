@@ -393,13 +393,13 @@ final class MessageBuilder {
   /// ```
   ///
   /// Parameters:
-  /// - [show]: Whether to display the separator line (default: true)
+  /// - [isDividerVisible]: Whether to display the separator line (default: true)
   /// - [spacing]: The amount of vertical space (default: [SeparatorSize.small])
   void addSeparator({
-    bool show = true,
+    bool isDividerVisible = true,
     SeparatorSize spacing = SeparatorSize.small,
   }) {
-    _components.add(Separator(show, spacing));
+    _components.add(Separator(isDividerVisible, spacing));
   }
 
   /// Adds text content to the message.

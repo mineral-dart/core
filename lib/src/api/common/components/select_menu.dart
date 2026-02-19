@@ -9,7 +9,7 @@ final class SelectMenu<T> implements MessageComponent, ModalComponent {
   int? _maxLength;
   int? _minValues;
   int? _maxValues;
-  bool? _disabled;
+  bool? _isDisabled;
 
   final List<SelectMenuOption<T>> _options;
   final List<Snowflake> _defaultValues;
@@ -30,7 +30,7 @@ final class SelectMenu<T> implements MessageComponent, ModalComponent {
         _maxLength = maxLength,
         _minValues = minValues,
         _maxValues = maxValues,
-        _disabled = disabled,
+        _isDisabled = disabled,
         _options = options ?? [],
         _defaultValues = defaultValues ?? [],
         _channelTypes = channelTypes ?? [];
@@ -118,7 +118,7 @@ final class SelectMenu<T> implements MessageComponent, ModalComponent {
       'type': _type.value,
       'custom_id': _customId,
       'placeholder': _placeholder,
-      'disabled': _disabled,
+      'disabled': _isDisabled,
       if (_minValues != null) 'min_values': _minValues,
       if (_maxValues != null) 'max_values': _maxValues,
       if (_minLength != null) 'min_length': _minLength,
@@ -166,7 +166,7 @@ final class SelectMenuOption<T> {
         'emoji': {
           'name': emoji?.name,
           'id': emoji?.id,
-          'animated': emoji?.animated,
+          'animated': emoji?.isAnimated,
         },
       'default': isDefault,
     };
