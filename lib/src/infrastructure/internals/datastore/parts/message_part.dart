@@ -101,7 +101,10 @@ final class MessagePart implements MessagePartContract {
     final completer = Completer<T>();
     final (components, files) = makeAttachmentFromBuilder(builder);
 
-    final payload = {'flags': 32768, 'components': components};
+    final payload = {
+      'flags': MessageFlagType.isComponentV2.value,
+      'components': components
+    };
     final req = switch (files.isEmpty) {
       true => Request.json(
           endpoint: '/channels/$channelId/messages/$id', body: payload),
@@ -156,11 +159,14 @@ final class MessagePart implements MessagePartContract {
   }
 
   @override
-  Future<T> send<T extends Message>(String? guildId, String channelId,
-      MessageBuilder builder) async {
+  Future<T> send<T extends Message>(
+      String? guildId, String channelId, MessageBuilder builder) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
-    final payload = {'flags': 32768, 'components': components};
+    final payload = {
+      'flags': MessageFlagType.isComponentV2.value,
+      'components': components
+    };
     final req = switch (files.isEmpty) {
       true =>
         Request.json(endpoint: '/channels/$channelId/messages', body: payload),
@@ -187,12 +193,12 @@ final class MessagePart implements MessagePartContract {
   }
 
   @override
-  Future<R> reply<T extends Channel, R extends Message>(Snowflake id,
-      Snowflake channelId, MessageBuilder builder) async {
+  Future<R> reply<T extends Channel, R extends Message>(
+      Snowflake id, Snowflake channelId, MessageBuilder builder) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     final payload = {
-      'flags': 32768,
+      'flags': MessageFlagType.isComponentV2.value,
       'components': components,
       'message_reference': {'message_id': id, 'channel_id': channelId}
     };
