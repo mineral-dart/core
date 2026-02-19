@@ -13,12 +13,27 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   String? sessionId;
   String? resumeUrl;
   int attempts = 0;
+  bool _pendingResume = false;
+  Timer? _heartbeatTimer;
 
   ShardAuthentication(this.shard);
 
   @override
   void identify(Map<String, dynamic> payload) {
     createHeartbeatTimer(payload['heartbeat_interval']);
+
+    if (_pendingResume) {
+      _pendingResume = false;
+
+      final message = ShardMessageBuilder()
+        ..setOpCode(OpCode.resume)
+        ..append('token', shard.wss.config.token)
+        ..append('session_id', sessionId)
+        ..append('seq', sequence);
+
+      shard.client.send(message.build());
+      return;
+    }
 
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.identify)
@@ -31,7 +46,8 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   }
 
   void createHeartbeatTimer(int interval) {
-    Timer.periodic(Duration(milliseconds: interval), (timer) {
+    _heartbeatTimer?.cancel();
+    _heartbeatTimer = Timer.periodic(Duration(milliseconds: interval), (timer) {
       heartbeat();
     });
   }
@@ -60,6 +76,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
   @override
   Future<void> reconnect() async {
+    _heartbeatTimer?.cancel();
     attempts = 0;
     shard.client.disconnect();
     shard.init();
@@ -70,20 +87,19 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   Future<void> resetConnection() async {
     ioc.resolve<LoggerContract>().trace('Connection reset');
 
+    _heartbeatTimer?.cancel();
     attempts = 0;
     shard.client.disconnect();
     await shard.init();
   }
 
   @override
-  void resume() {
-    final message = ShardMessageBuilder()
-      ..setOpCode(OpCode.resume)
-      ..append('token', shard.wss.config.token)
-      ..append('session_id', sessionId)
-      ..append('seq', sequence);
-
-    shard.client.send(message.build());
+  Future<void> resume() async {
+    _heartbeatTimer?.cancel();
+    _pendingResume = true;
+    attempts = 0;
+    shard.client.disconnect();
+    await shard.init(url: resumeUrl);
   }
 
   @override
