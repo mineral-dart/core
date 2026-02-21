@@ -3,20 +3,37 @@ name: Publish to pub.dev
 on:
   push:
     tags:
-    - 'v[0-9]+.[0-9]+.[0-9]+*' # tag pattern on pub.dev: 'v'
+      - "mineral-[0-9]+.[0-9]+.[0-9]+*"
+      - "cache-[0-9]+.[0-9]+.[0-9]+*"
+      - "cli-[0-9]+.[0-9]+.[0-9]+*"
 
-# Publish using custom workflow
 jobs:
   publish:
     permissions:
-      id-token: write # This is required for authentication using OIDC
+      id-token: write
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+
       - name: Install dependencies
         run: dart pub get
-      # Here you can insert custom steps you need
-      # - run: dart tool/generate-code.dart
+
+      - name: Determine package from tag
+        id: package
+        run: |
+          TAG="${GITHUB_REF#refs/tags/}"
+          PACKAGE_NAME="${TAG%-v*}"
+          PACKAGE_DIR="packages/${PACKAGE_NAME}"
+          echo "name=${PACKAGE_NAME}" >> $GITHUB_OUTPUT
+          echo "dir=${PACKAGE_DIR}" >> $GITHUB_OUTPUT
+          echo "Publishing package: ${PACKAGE_NAME} from ${PACKAGE_DIR}"
+
+      - name: Verify package directory exists
+        run: test -d "${{ steps.package.outputs.dir }}"
+
       - name: Publish
+        working-directory: ${{ steps.package.outputs.dir }}
         run: dart pub publish --force
