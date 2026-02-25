@@ -16,6 +16,10 @@ final class ShardNetworkError implements ShardNetworkErrorContract {
       return;
     }
 
+    if (shard.authentication.intentionalDisconnect) {
+      return;
+    }
+
     final logger = ioc.resolve<LoggerContract>();
 
     final ShardDisconnectError? error = ShardDisconnectError.values

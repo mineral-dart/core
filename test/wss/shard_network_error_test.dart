@@ -189,6 +189,19 @@ void main() {
       expect((shard.client as _FakeWebsocketClient).disconnected, isFalse);
     });
 
+    test('does nothing when intentionalDisconnect is true', () {
+      final shard = _createShard();
+      shard.client = _FakeWebsocketClient();
+      shard.authentication.intentionalDisconnect = true;
+      final networkError = ShardNetworkError(shard);
+
+      networkError.dispatch(4000);
+
+      expect(logger.warnings, isEmpty);
+      expect(logger.errors, isEmpty);
+      expect((shard.client as _FakeWebsocketClient).disconnected, isFalse);
+    });
+
     group('resume codes', () {
       test('logs warning for code 4000 (unknownError)', () {
         final shard = _createShard();
@@ -329,7 +342,7 @@ void main() {
           .toList();
 
       expect(resumeCodes,
-          containsAll([4000, 4001, 4002, 4003, 4005, 4007, 4008, 4009]));
+          containsAll([4000, 4001, 4002, 4003, 4007, 4008, 4009]));
     });
 
     test('reconnect codes include all expected Discord reconnect codes', () {
@@ -338,7 +351,7 @@ void main() {
           .map((e) => e.code)
           .toList();
 
-      expect(reconnectCodes, containsAll([1000, 1001, 1002, 1003, 1005]));
+      expect(reconnectCodes, containsAll([1000, 1001, 1002, 1003, 1005, 4005]));
     });
 
     test('fatal codes include all expected Discord fatal codes', () {

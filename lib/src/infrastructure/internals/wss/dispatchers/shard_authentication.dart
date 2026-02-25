@@ -18,12 +18,14 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   int attempts = 0;
   int _reconnectAttempts = 0;
   bool _pendingResume = false;
+  bool intentionalDisconnect = false;
   Timer? _heartbeatTimer;
 
   ShardAuthentication(this.shard);
 
   @override
   void identify(Map<String, dynamic> payload) {
+    intentionalDisconnect = false;
     createHeartbeatTimer(payload['heartbeat_interval']);
 
     if (_pendingResume) {
@@ -97,6 +99,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
     cancelHeartbeat();
     attempts = 0;
+    intentionalDisconnect = true;
     shard.client.disconnect();
 
     _reconnectAttempts++;
@@ -123,6 +126,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
     cancelHeartbeat();
     attempts = 0;
+    intentionalDisconnect = true;
     shard.client.disconnect();
 
     _reconnectAttempts++;
@@ -153,6 +157,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
     cancelHeartbeat();
     _pendingResume = true;
     attempts = 0;
+    intentionalDisconnect = true;
     shard.client.disconnect();
 
     _reconnectAttempts++;

@@ -308,8 +308,6 @@ void main() {
 
     group('reconnect()', () {
       test('disconnects the client', () {
-        // reconnect() is async; it disconnects, then calls Future.delayed
-        // then shard.init(). We absorb downstream errors.
         runZonedGuarded(() {
           auth.reconnect();
         }, (_, __) {});
@@ -327,12 +325,19 @@ void main() {
         expect(auth.attempts, equals(0));
       });
 
+      test('sets intentionalDisconnect to true', () {
+        runZonedGuarded(() {
+          auth.reconnect();
+        }, (_, __) {});
+
+        expect(auth.intentionalDisconnect, isTrue);
+      });
+
       test('logs reconnect warning', () async {
         runZonedGuarded(() {
           auth.reconnect();
         }, (_, __) {});
 
-        // Give a tick for async operations
         await Future<void>.delayed(Duration.zero);
 
         expect(logger.warnings, contains(contains('Reconnecting')));
@@ -356,6 +361,14 @@ void main() {
         }, (_, __) {});
 
         expect(auth.attempts, equals(0));
+      });
+
+      test('sets intentionalDisconnect to true', () {
+        runZonedGuarded(() {
+          auth.resume();
+        }, (_, __) {});
+
+        expect(auth.intentionalDisconnect, isTrue);
       });
     });
   });

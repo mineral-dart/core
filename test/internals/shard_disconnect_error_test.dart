@@ -23,7 +23,7 @@ void main() {
     });
 
     test('resumable Discord codes have resume action', () {
-      const resumableCodes = [4000, 4001, 4002, 4003, 4005, 4007, 4008, 4009];
+      const resumableCodes = [4000, 4001, 4002, 4003, 4007, 4008, 4009];
 
       for (final code in resumableCodes) {
         final error =
