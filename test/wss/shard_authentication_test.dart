@@ -104,9 +104,12 @@ final class _FakeWebsocketClient implements WebsocketClient {
     connected = true;
   }
 
+  int? lastDisconnectCode;
+
   @override
-  void disconnect({int? code, String? reason}) {
+  Future<void> disconnect({int? code, String? reason}) async {
     disconnected = true;
+    lastDisconnectCode = code;
   }
 
   @override
@@ -292,23 +295,39 @@ void main() {
       });
     });
 
+    group('invalidateSession()', () {
+      test('clears sessionId and resumeUrl', () {
+        auth.setupRequirements({
+          'session_id': 'abc',
+          'resume_gateway_url': 'wss://resume',
+        });
+
+        auth.invalidateSession();
+
+        expect(auth.sessionId, isNull);
+        expect(auth.resumeUrl, isNull);
+      });
+    });
+
     group('resetReconnectAttempts()', () {
-      test('resets reconnect attempts counter', () {
-        // Trigger a reconnect to increment the counter
+      test('resets reconnect attempts counter', () async {
+        // Trigger reconnects to increment the counter
         runZonedGuarded(() {
           auth.reconnect();
         }, (_, __) {});
+
+        // Give async reconnect time to start
+        await Future<void>.delayed(Duration.zero);
 
         auth.resetReconnectAttempts();
 
         // Should be able to reconnect again without hitting max
-        // (the counter was reset)
         runZonedGuarded(() {
           auth.reconnect();
         }, (_, __) {});
 
-        // If it didn't reset, this second reconnect would have
-        // thrown FatalGatewayException with maxReconnectAttempts=3
+        await Future<void>.delayed(Duration.zero);
+
         expect(logger.warnings, contains(contains('Reconnecting')));
       });
     });
@@ -364,6 +383,14 @@ void main() {
         expect(auth.intentionalDisconnect, isTrue);
       });
 
+      test('uses internal close code 4900', () {
+        runZonedGuarded(() {
+          auth.reconnect();
+        }, (_, __) {});
+
+        expect(fakeClient.lastDisconnectCode, equals(4900));
+      });
+
       test('logs reconnect warning', () async {
         runZonedGuarded(() {
           auth.reconnect();
@@ -400,6 +427,14 @@ void main() {
         }, (_, __) {});
 
         expect(auth.intentionalDisconnect, isTrue);
+      });
+
+      test('uses internal close code 4900', () {
+        runZonedGuarded(() {
+          auth.resume();
+        }, (_, __) {});
+
+        expect(fakeClient.lastDisconnectCode, equals(4900));
       });
     });
   });

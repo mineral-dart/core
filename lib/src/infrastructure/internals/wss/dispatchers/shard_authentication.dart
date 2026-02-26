@@ -9,6 +9,10 @@ import 'package:mineral/src/infrastructure/internals/wss/builders/discord_messag
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/fatal_gateway_exception.dart';
 
+/// Custom close code for library-internal disconnects.
+/// Preserves the Discord session (unlike 1000/1001 which invalidate it).
+const int _internalCloseCode = 4900;
+
 final class ShardAuthentication implements ShardAuthenticationContract {
   final Shard shard;
   final Random _random = Random();
@@ -42,11 +46,18 @@ final class ShardAuthentication implements ShardAuthenticationContract {
       return;
     }
 
+    if (shard.wss.config.compress) {
+      ioc.resolve<LoggerContract>().warn(
+        'compress: true is configured but zlib-stream decompression is not implemented. '
+        'Forcing compress: false to prevent unreadable frames.',
+      );
+    }
+
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.identify)
       ..append('token', shard.wss.config.token)
       ..append('intents', shard.wss.config.intent)
-      ..append('compress', shard.wss.config.compress)
+      ..append('compress', false)
       ..append('large_threshold', shard.wss.config.largeThreshold)
       ..append('shard', [shard.shardIndex, shard.shardCount])
       ..append('properties', {
@@ -115,7 +126,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
     cancelHeartbeat();
     attempts = 0;
     intentionalDisconnect = true;
-    shard.client.disconnect();
+    await shard.client.disconnect(code: _internalCloseCode);
 
     _reconnectAttempts++;
 
@@ -142,7 +153,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
     cancelHeartbeat();
     attempts = 0;
     intentionalDisconnect = true;
-    shard.client.disconnect();
+    await shard.client.disconnect(code: _internalCloseCode);
 
     _reconnectAttempts++;
 
@@ -173,7 +184,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
     _pendingResume = true;
     attempts = 0;
     intentionalDisconnect = true;
-    shard.client.disconnect();
+    await shard.client.disconnect(code: _internalCloseCode);
 
     _reconnectAttempts++;
 
@@ -196,6 +207,11 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
   void resetReconnectAttempts() {
     _reconnectAttempts = 0;
+  }
+
+  void invalidateSession() {
+    sessionId = null;
+    resumeUrl = null;
   }
 
   @override

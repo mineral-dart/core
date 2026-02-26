@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 import 'dart:io' as io;
 
 import 'package:mineral/container.dart';
@@ -18,7 +19,7 @@ abstract interface class WebsocketClient {
 
   Future<void> connect();
 
-  void disconnect({int? code, String? reason});
+  Future<void> disconnect({int? code, String? reason});
 
   Future<void> send(String message);
 
@@ -32,6 +33,12 @@ final class WebsocketClientImpl implements WebsocketClient {
   final void Function(int? exitCode)? _onClose;
   final void Function(WebsocketMessage)? _onOpen;
   void Function(WebsocketMessage)? _onMessage;
+
+  // Rate limiter: Discord allows 120 gateway commands per 60 seconds.
+  static const int _rateLimitMax = 120;
+  int _tokens = _rateLimitMax;
+  final Queue<String> _sendQueue = Queue<String>();
+  Timer? _refillTimer;
 
   @override
   final Interceptor interceptor = InterceptorImpl();
@@ -60,6 +67,15 @@ final class WebsocketClientImpl implements WebsocketClient {
     try {
       _channel = await io.WebSocket.connect(url);
       stream = _channel!.asBroadcastStream();
+
+      _tokens = _rateLimitMax;
+      _refillTimer?.cancel();
+      _refillTimer = Timer.periodic(const Duration(milliseconds: 500), (_) {
+        if (_tokens < _rateLimitMax) {
+          _tokens++;
+          _drainQueue();
+        }
+      });
 
       if (_onError != null) {
         stream!.handleError((err) {
@@ -98,9 +114,11 @@ final class WebsocketClientImpl implements WebsocketClient {
   }
 
   @override
-  void disconnect({int? code = 1000, String? reason}) {
+  Future<void> disconnect({int? code = 1000, String? reason}) async {
+    _refillTimer?.cancel();
+    _sendQueue.clear();
     _channelListener?.cancel();
-    _channel?.close(code, reason);
+    await _channel?.close(code, reason);
   }
 
   @override
@@ -123,9 +141,23 @@ final class WebsocketClientImpl implements WebsocketClient {
 
     switch (_channel?.readyState) {
       case io.WebSocket.open:
-        _channel?.add(interceptedMessage.content);
+        if (_tokens > 0) {
+          _tokens--;
+          _channel?.add(interceptedMessage.content);
+        } else {
+          _sendQueue.add(interceptedMessage.content as String);
+        }
       case io.WebSocket.closed when _onClose != null:
         _onClose(_channel!.closeCode!);
+    }
+  }
+
+  void _drainQueue() {
+    while (_sendQueue.isNotEmpty &&
+        _tokens > 0 &&
+        _channel?.readyState == io.WebSocket.open) {
+      _tokens--;
+      _channel?.add(_sendQueue.removeFirst());
     }
   }
 

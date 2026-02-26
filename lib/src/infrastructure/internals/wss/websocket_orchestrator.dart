@@ -93,6 +93,14 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
     send(WebsocketIsolateMessageTransfert.send(message.toJson()));
   }
 
+  /// Returns the shard index responsible for a given guild.
+  /// Formula: shard_id = (guild_id >> 22) % num_shards
+  int _shardForGuild(String guildId) {
+    final id = BigInt.parse(guildId);
+    if (shards.isEmpty) return 0;
+    return ((id >> 22) % BigInt.from(shards.length)).toInt();
+  }
+
   @override
   Future<Presence> getMemberPresence(String serverId, String id) {
     final completer = Completer<Presence>();
@@ -105,13 +113,27 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       ..append('presences', true)
       ..append('nonce', timestamp.toString());
 
-    final messageTransfert = WebsocketIsolateMessageTransfert.request(
+    final targetIndex = _shardForGuild(serverId);
+    final targetShard = shards[targetIndex];
+
+    if (targetShard != null) {
+      requestQueue.add((
+        uid: timestamp.toString(),
+        targetKeys: ['presences'],
+        completer: completer,
+      ));
+      targetShard.client.send(json.encode(message.toJson()));
+    } else {
+      _logger.warn(
+        'Shard $targetIndex not found for guild $serverId, broadcasting',
+      );
+      send(WebsocketIsolateMessageTransfert.request(
         payload: message.toJson(),
         uid: timestamp.toString(),
         completer: completer,
-        targetKeys: ['presences']);
-
-    send(messageTransfert);
+        targetKeys: ['presences'],
+      ));
+    }
 
     return completer.future;
   }
@@ -132,26 +154,51 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
 
   @override
   Future<void> createShards(RunningStrategy strategy) async {
-    final {'url': String endpoint, 'shards': int shardCount} =
-        await getWebsocketEndpoint();
+    final response = await getWebsocketEndpoint();
+    final String endpoint = response['url'] as String;
+    final int shardCount = response['shards'] as int;
+
+    final sessionLimit =
+        response['session_start_limit'] as Map<String, dynamic>?;
+    final int remaining = (sessionLimit?['remaining'] as int?) ?? 1;
+    final int resetAfter = (sessionLimit?['reset_after'] as int?) ?? 0;
+    final int maxConcurrency = (sessionLimit?['max_concurrency'] as int?) ?? 1;
+
+    _logger.info(
+      'Gateway session_start_limit: remaining=$remaining, '
+      'reset_after=${resetAfter}ms, max_concurrency=$maxConcurrency',
+    );
+
+    if (remaining <= 0) {
+      throw StateError(
+        'No remaining gateway sessions. Reset after ${resetAfter}ms.',
+      );
+    }
 
     final totalShards = config.shardCount ?? shardCount;
 
-    for (int i = 0; i < totalShards; i++) {
-      final url =
-          '$endpoint/?v=${config.version}&encoding=${config.encoding.encoder.value}';
+    for (int bucket = 0; bucket < totalShards; bucket += maxConcurrency) {
+      if (bucket > 0) {
+        await Future<void>.delayed(const Duration(seconds: 5));
+      }
 
-      final shard = Shard(
-          shardName: 'shard #$i',
-          shardIndex: i,
-          shardCount: totalShards,
-          url: url,
-          wss: this,
-          strategy: strategy);
+      final end = (bucket + maxConcurrency).clamp(0, totalShards);
+      for (int i = bucket; i < end; i++) {
+        final url =
+            '$endpoint/?v=${config.version}&encoding=${config.encoding.encoder.value}';
 
-      shards.putIfAbsent(i, () => shard);
+        final shard = Shard(
+            shardName: 'shard #$i',
+            shardIndex: i,
+            shardCount: totalShards,
+            url: url,
+            wss: this,
+            strategy: strategy);
 
-      await shard.init();
+        shards.putIfAbsent(i, () => shard);
+
+        await shard.init();
+      }
     }
   }
 }

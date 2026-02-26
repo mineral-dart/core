@@ -11,6 +11,7 @@ enum ShardDisconnectError {
   disconnect(1002, 'Disconnect', DisconnectAction.reconnect),
   invalidData(1003, 'Invalid contracts', DisconnectAction.reconnect),
   noStatusReceived(1005, 'No status received', DisconnectAction.reconnect),
+  abnormalClosure(1006, 'Abnormal closure', DisconnectAction.reconnect),
   policyViolation(1008, 'Policy violation', DisconnectAction.reconnect),
   tooBig(1009, 'Message too big', DisconnectAction.reconnect),
   extensionRequired(1010, 'Extension required', DisconnectAction.reconnect),
