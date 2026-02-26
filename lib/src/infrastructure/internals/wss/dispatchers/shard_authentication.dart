@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 import 'dart:math';
 
 import 'package:mineral/container.dart';
@@ -46,15 +47,27 @@ final class ShardAuthentication implements ShardAuthenticationContract {
       ..append('token', shard.wss.config.token)
       ..append('intents', shard.wss.config.intent)
       ..append('compress', shard.wss.config.compress)
-      ..append('properties', {'os': 'macos', 'device': 'mineral'});
+      ..append('large_threshold', shard.wss.config.largeThreshold)
+      ..append('shard', [shard.shardIndex, shard.shardCount])
+      ..append('properties', {
+        'os': Platform.operatingSystem,
+        'browser': 'mineral',
+        'device': 'mineral',
+      });
 
     shard.client.send(message.build());
   }
 
   void createHeartbeatTimer(int interval) {
     _heartbeatTimer?.cancel();
-    _heartbeatTimer = Timer.periodic(Duration(milliseconds: interval), (timer) {
+    final jitterDelay =
+        Duration(milliseconds: (_random.nextDouble() * interval).toInt());
+    _heartbeatTimer = Timer(jitterDelay, () {
       heartbeat();
+      _heartbeatTimer =
+          Timer.periodic(Duration(milliseconds: interval), (timer) {
+        heartbeat();
+      });
     });
   }
 
@@ -65,7 +78,9 @@ final class ShardAuthentication implements ShardAuthenticationContract {
       return resetConnection();
     }
 
-    final message = ShardMessageBuilder()..setOpCode(OpCode.heartbeat);
+    final message = ShardMessageBuilder()
+      ..setOpCode(OpCode.heartbeat)
+      ..setPayload(sequence);
     shard.client.send(message.build());
 
     attempts++;
@@ -179,10 +194,13 @@ final class ShardAuthentication implements ShardAuthenticationContract {
     await shard.init(url: resumeUrl);
   }
 
+  void resetReconnectAttempts() {
+    _reconnectAttempts = 0;
+  }
+
   @override
   void setupRequirements(Map<String, dynamic> payload) {
     _reconnectAttempts = 0;
-    sequence = payload['sequence'];
     sessionId = payload['session_id'];
     resumeUrl = payload['resume_gateway_url'];
   }

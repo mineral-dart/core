@@ -98,7 +98,7 @@ final class WebsocketClientImpl implements WebsocketClient {
   }
 
   @override
-  void disconnect({int? code = 4000, String? reason}) {
+  void disconnect({int? code = 1000, String? reason}) {
     _channelListener?.cancel();
     _channel?.close(code, reason);
   }

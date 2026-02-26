@@ -130,6 +130,8 @@ final class _FakeInterceptor implements Interceptor {
 Shard _createShard() {
   return Shard(
     shardName: 'test-shard-0',
+    shardIndex: 0,
+    shardCount: 1,
     url: 'wss://fake',
     wss: _FakeWebsocketOrchestrator(),
     strategy: _FakeRunningStrategy(),
@@ -205,12 +207,24 @@ void main() {
     });
 
     group('heartbeat()', () {
-      test('sends heartbeat message', () async {
+      test('sends heartbeat message with sequence number', () async {
+        auth.sequence = 42;
         await auth.heartbeat();
 
         expect(fakeClient.sentMessages, hasLength(1));
         final msg = _decodeMessage(fakeClient.sentMessages.first);
         expect(msg['op'], equals(1)); // OpCode.heartbeat = 1
+        expect(msg['d'], equals(42));
+      });
+
+      test('sends heartbeat with null sequence when no events received',
+          () async {
+        await auth.heartbeat();
+
+        expect(fakeClient.sentMessages, hasLength(1));
+        final msg = _decodeMessage(fakeClient.sentMessages.first);
+        expect(msg['op'], equals(1));
+        expect(msg['d'], isNull);
       });
 
       test('increments attempts on each call', () async {
@@ -257,28 +271,45 @@ void main() {
     });
 
     group('setupRequirements()', () {
-      test('stores sequence, sessionId, and resumeUrl', () {
+      test('stores sessionId and resumeUrl', () {
         auth.setupRequirements({
-          'sequence': 42,
           'session_id': 'session-abc',
           'resume_gateway_url': 'wss://resume.discord.gg',
         });
 
-        expect(auth.sequence, equals(42));
         expect(auth.sessionId, equals('session-abc'));
         expect(auth.resumeUrl, equals('wss://resume.discord.gg'));
       });
 
       test('handles null values gracefully', () {
         auth.setupRequirements({
-          'sequence': null,
           'session_id': null,
           'resume_gateway_url': null,
         });
 
-        expect(auth.sequence, isNull);
         expect(auth.sessionId, isNull);
         expect(auth.resumeUrl, isNull);
+      });
+    });
+
+    group('resetReconnectAttempts()', () {
+      test('resets reconnect attempts counter', () {
+        // Trigger a reconnect to increment the counter
+        runZonedGuarded(() {
+          auth.reconnect();
+        }, (_, __) {});
+
+        auth.resetReconnectAttempts();
+
+        // Should be able to reconnect again without hitting max
+        // (the counter was reset)
+        runZonedGuarded(() {
+          auth.reconnect();
+        }, (_, __) {});
+
+        // If it didn't reset, this second reconnect would have
+        // thrown FatalGatewayException with maxReconnectAttempts=3
+        expect(logger.warnings, contains(contains('Reconnecting')));
       });
     });
 

@@ -30,6 +30,9 @@ final class Shard implements ShardContract {
   @override
   late final ShardAuthentication authentication;
 
+  final int shardIndex;
+  final int shardCount;
+
   String url;
 
   late final ShardData dispatchEvent;
@@ -38,6 +41,8 @@ final class Shard implements ShardContract {
 
   Shard(
       {required this.shardName,
+      required this.shardIndex,
+      required this.shardCount,
       required this.url,
       required this.wss,
       required RunningStrategy strategy}) {

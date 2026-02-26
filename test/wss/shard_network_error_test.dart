@@ -138,6 +138,8 @@ final class _FakeInterceptor implements Interceptor {
 Shard _createShard({int maxReconnect = 0}) {
   return Shard(
     shardName: 'test-shard-0',
+    shardIndex: 0,
+    shardCount: 1,
     url: 'wss://fake',
     wss: _FakeWebsocketOrchestrator(maxReconnect: maxReconnect),
     strategy: _FakeRunningStrategy(),

@@ -80,7 +80,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       List<BotActivity>? activities, StatusType? status, bool? afk) {
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.presenceUpdate)
-      ..append('since', DateTime.now().millisecond)
+      ..append('since', afk == true ? DateTime.now().millisecondsSinceEpoch : null)
       ..append(
           'activities',
           activities != null
@@ -100,7 +100,8 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.requestGuildMember)
       ..append('guild_id', serverId)
-      ..append('user_ids', id)
+      ..append('user_ids', [id])
+      ..append('limit', 0)
       ..append('presences', true)
       ..append('nonce', timestamp.toString());
 
@@ -134,12 +135,19 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
     final {'url': String endpoint, 'shards': int shardCount} =
         await getWebsocketEndpoint();
 
-    for (int i = 0; i < (config.shardCount ?? shardCount); i++) {
+    final totalShards = config.shardCount ?? shardCount;
+
+    for (int i = 0; i < totalShards; i++) {
       final url =
           '$endpoint/?v=${config.version}&encoding=${config.encoding.encoder.value}';
 
       final shard = Shard(
-          shardName: 'shard #$i', url: url, wss: this, strategy: strategy);
+          shardName: 'shard #$i',
+          shardIndex: i,
+          shardCount: totalShards,
+          url: url,
+          wss: this,
+          strategy: strategy);
 
       shards.putIfAbsent(i, () => shard);
 
