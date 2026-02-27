@@ -83,6 +83,7 @@ final class ChannelProperties {
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
               List.from(element['permission_overwrites'])
+                  .where((json) => json['type'] != null)
                   .map((json) async =>
                       marshaller.serializers.channelPermissionOverwrite.serialize(json))
                   .toList(),

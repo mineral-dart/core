@@ -1,6 +1,4 @@
 import 'dart:async';
-
-import 'package:collection/collection.dart';
 import 'package:mineral/src/api/common/types/enhanced_enum.dart';
 
 FutureOr<T?> createOrNull<T>(
@@ -25,7 +23,10 @@ int listToBitfield<T extends EnhancedEnum<int>>(List<T> values) {
 }
 
 T findInEnum<T extends EnhancedEnum<R>, R>(List<T> values, R value) {
-  return values.firstWhereOrNull((element) => element.value == value) as T;
+  return values.firstWhere(
+    (element) => element.value == value,
+    orElse: () => throw ArgumentError('No $T found for value "$value"'),
+  );
 }
 
 void expectOrThrow(bool value, {String? message}) {
