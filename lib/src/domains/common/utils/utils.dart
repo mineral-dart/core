@@ -22,10 +22,12 @@ int listToBitfield<T extends EnhancedEnum<int>>(List<T> values) {
       0, (previousValue, element) => previousValue += element.value);
 }
 
-T findInEnum<T extends EnhancedEnum<R>, R>(List<T> values, R value) {
+T findInEnum<T extends EnhancedEnum<R>, R>(List<T> values, R value, {T? orElse}) {
   return values.firstWhere(
     (element) => element.value == value,
-    orElse: () => throw ArgumentError('No $T found for value "$value"'),
+    orElse: orElse != null
+        ? () => orElse
+        : () => throw ArgumentError('No $T found for value "$value"'),
   );
 }
 

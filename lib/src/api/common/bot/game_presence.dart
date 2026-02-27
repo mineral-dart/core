@@ -1,4 +1,5 @@
 enum GamePresence {
+  unknown(-1),
   game(0),
   streaming(1),
   listening(2),

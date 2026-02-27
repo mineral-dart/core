@@ -5,7 +5,8 @@ enum TriggerType implements EnhancedEnum<int>  {
   spam(3),
   keywordPreset(4),
   mentionSpam(5),
-  memberProfile(6);
+  memberProfile(6),
+  unknown(-1);
 
   @override
   final int value;

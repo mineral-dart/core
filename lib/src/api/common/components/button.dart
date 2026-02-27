@@ -6,7 +6,8 @@ enum ButtonType implements EnhancedEnum<int> {
   success(3),
   danger(4),
   link(5),
-  premium(6);
+  premium(6),
+  unknown(-1);
 
   @override
   final int value;

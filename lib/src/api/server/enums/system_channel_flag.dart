@@ -6,7 +6,8 @@ enum SystemChannelFlag implements EnhancedEnum<int> {
   suppressGuildReminderNotifications(1 << 2),
   suppressJoinNotificationReplies(1 << 3),
   suppressRoleSubscriptionPurchaseNotifications(1 << 4),
-  suppressRoleSubscriptionPurchaseNotificationReplies(1 << 5);
+  suppressRoleSubscriptionPurchaseNotificationReplies(1 << 5),
+  unknown(-1);
 
   @override
   final int value;

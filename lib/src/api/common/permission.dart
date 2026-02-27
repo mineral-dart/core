@@ -43,7 +43,8 @@ enum Permission implements EnhancedEnum<int> {
   useExternalStickers(1 << 37),
   sendMessageInThreads(1 << 38),
   startEmbeddedActivities(1 << 39),
-  moderateMembers(1 << 40);
+  moderateMembers(1 << 40),
+  unknown(-1);
 
   @override
   final int value;

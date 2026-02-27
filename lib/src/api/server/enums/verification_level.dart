@@ -5,7 +5,8 @@ enum VerificationLevel implements EnhancedEnum<int> {
   low(1),
   medium(2),
   high(3),
-  veryHigh(4);
+  veryHigh(4),
+  unknown(-1);
 
   @override
   final int value;

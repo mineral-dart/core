@@ -31,7 +31,8 @@ enum MessageType implements EnhancedEnum<int> {
   stageEnd(28),
   stageSpeaker(29),
   stageTopic(31),
-  guildApplicationPremiumSubscription(32);
+  guildApplicationPremiumSubscription(32),
+  unknown(-1);
 
   @override
   final int value;

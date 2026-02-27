@@ -16,7 +16,8 @@ enum ComponentType implements EnhancedEnum<int> {
   file(13),
   separator(14),
   container(17),
-  label(18);
+  label(18),
+  unknown(-1);
 
   static const selectMenus = [
     textSelectMenu,

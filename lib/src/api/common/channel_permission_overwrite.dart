@@ -2,7 +2,8 @@ import 'package:mineral/api.dart';
 
 enum ChannelPermissionOverwriteType implements EnhancedEnum<int> {
   role(0),
-  member(1);
+  member(1),
+  unknown(-1);
 
   @override
   final int value;

@@ -83,7 +83,6 @@ final class ChannelProperties {
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
               List.from(element['permission_overwrites'])
-                  .where((json) => json['type'] != null)
                   .map((json) async =>
                       marshaller.serializers.channelPermissionOverwrite.serialize(json))
                   .toList(),
@@ -100,7 +99,7 @@ final class ChannelProperties {
 
     return ChannelProperties(
         id: Snowflake.parse(element['id']),
-        type: findInEnum(ChannelType.values, element['type']),
+        type: findInEnum(ChannelType.values, element['type'], orElse: ChannelType.unknown),
         name: element['name'],
         description: element['description'],
         serverId: Snowflake.nullable(element['server_id']),

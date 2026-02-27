@@ -6,7 +6,8 @@ enum LogLevel implements EnhancedEnum<String>, Enumerable<String> {
   fatal('FATAL', Level.SHOUT),
   error('ERROR', Level.SEVERE),
   warn('WARN', Level.WARNING),
-  info('INFO', Level.INFO);
+  info('INFO', Level.INFO),
+  unknown('unknown', Level.OFF);
 
   @override
   final String value;

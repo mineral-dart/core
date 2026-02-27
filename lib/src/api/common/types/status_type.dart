@@ -4,7 +4,8 @@ enum StatusType implements EnhancedEnum<String> {
   online('online'),
   idle('idle'),
   doNotDerange('dnd'),
-  offline('offline');
+  offline('offline'),
+  unknown('unknown');
 
   @override
   final String value;
