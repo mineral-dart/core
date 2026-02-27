@@ -8,7 +8,8 @@ enum ImageExtension implements EnhancedEnum<String> {
   jpeg('.jpeg'),
   webp('.webp'),
   gif('.gif'),
-  lottie('.json');
+  lottie('.json'),
+  unknown('unknown');
 
   @override
   final String value;

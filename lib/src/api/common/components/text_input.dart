@@ -2,7 +2,8 @@ import 'package:mineral/api.dart';
 
 enum TextInputStyle implements EnhancedEnum<int> {
   short(1),
-  paragraph(2);
+  paragraph(2),
+  unknown(-1);
 
   @override
   final int value;

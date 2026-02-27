@@ -23,7 +23,7 @@ final class TriggerMetadata {
       keywordFilter: List<String>.from(json['keyword_filter'] ?? []),
       regexPatterns: List<String>.from(json['regex_patterns'] ?? []),
       presets: (json['presets'] as List<dynamic>?)
-              ?.map((e) => findInEnum(KeywordPresetType.values, e))
+              ?.map((e) => findInEnum(KeywordPresetType.values, e, orElse: KeywordPresetType.unknown))
               .whereType<KeywordPresetType>()
               .toList() ??
           [],

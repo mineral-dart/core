@@ -99,7 +99,7 @@ final class ChannelProperties {
 
     return ChannelProperties(
         id: Snowflake.parse(element['id']),
-        type: findInEnum(ChannelType.values, element['type']),
+        type: findInEnum(ChannelType.values, element['type'], orElse: ChannelType.unknown),
         name: element['name'],
         description: element['description'],
         serverId: Snowflake.nullable(element['server_id']),

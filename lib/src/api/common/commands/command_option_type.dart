@@ -9,7 +9,8 @@ enum CommandOptionType implements EnhancedEnum<int> {
   role(8),
   mentionable(9),
   double(10),
-  attachment(11);
+  attachment(11),
+  unknown(-1);
 
   @override
   final int value;

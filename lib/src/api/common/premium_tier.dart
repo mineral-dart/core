@@ -4,7 +4,8 @@ enum PremiumTier implements EnhancedEnum<int> {
   none(0),
   classic(1),
   game(2),
-  basic(3);
+  basic(3),
+  unknown(-1);
 
   @override
   final int value;

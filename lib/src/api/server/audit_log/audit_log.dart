@@ -29,7 +29,7 @@ final class Change<B, A> {
 }
 
 enum AuditLogType implements EnhancedEnum<int> {
-  unknown(0),
+  unknown(-1),
   guildUpdate(1),
   channelCreate(10),
   channelUpdate(11),

@@ -6,7 +6,8 @@ enum MessageEmbedType implements EnhancedEnum<String> {
   video('video'),
   gifv('gifv'),
   article('article'),
-  link('link');
+  link('link'),
+  unknown('unknown');
 
   @override
   final String value;

@@ -51,6 +51,7 @@ final class CommandInteractionDispatcher
         return switch (type) {
           CommandType.subCommand => await _handleSubCommand(data, option),
           CommandType.subCommandGroup => await _handleGroups(data, option),
+          CommandType.unknown => null,
         };
       }
     }
