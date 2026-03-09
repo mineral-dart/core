@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:collection/collection.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
@@ -50,7 +48,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final metadata = payload['message']['interaction_metadata'];
     final targetButton =
-        await _findButtonByCustomId(payload, payload['data']['custom_id']);
+        findButtonByCustomId(payload, payload['data']['custom_id']);
     final type = ButtonType.values
         .firstWhereOrNull((e) => e.value == targetButton?['type']);
 
@@ -81,7 +79,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final metadata = payload['message']['interaction_metadata'];
     final targetButton =
-        await _findButtonByCustomId(payload, payload['data']['custom_id']);
+        findButtonByCustomId(payload, payload['data']['custom_id']);
     final type = ButtonType.values
         .firstWhereOrNull((e) => e.value == targetButton?['custom_id']);
 
@@ -107,24 +105,20 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
         constraint: (String? customId) => customId == ctx.customId);
   }
 
-  Future<Map<String, dynamic>?> _findButtonByCustomId(
+  Map<String, dynamic>? findButtonByCustomId(
       Map<String, dynamic> payload, String customId) {
-    final completer = Completer<Map<String, dynamic>?>();
-
     final components = payload['message']['components'] as List<dynamic>?;
-    if (components != null) {
-      for (final component in components) {
-        final subComponents = component['components'] as List<dynamic>?;
-        if (subComponents != null) {
-          for (final subComponent in subComponents) {
-            if (subComponent['custom_id'] == customId) {
-              completer.complete(subComponent as Map<String, dynamic>);
-            }
-          }
+    if (components == null) return null;
+
+    for (final component in components) {
+      final subComponents = component['components'] as List<dynamic>?;
+      if (subComponents == null) continue;
+      for (final subComponent in subComponents) {
+        if (subComponent['custom_id'] == customId) {
+          return subComponent as Map<String, dynamic>;
         }
       }
     }
-
-    return completer.future;
+    return null;
   }
 }

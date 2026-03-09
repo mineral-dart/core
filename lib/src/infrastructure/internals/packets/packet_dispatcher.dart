@@ -26,11 +26,11 @@ final class PacketDispatcher implements PacketDispatcherContract {
       Function(ShardMessage, DispatchEvent) listener) {
     final controller = _controllerFor(packet.name);
 
-    final subscription = controller.stream.listen((ShardMessage message) {
+    final subscription = controller.stream.listen((ShardMessage message) async {
       if (message.type == PacketType.ready.name) {
         ioc.bind(() => ReadyPacketMessage(message));
       }
-      Function.apply(
+      await Function.apply(
           listener, [message, _kernel.eventListener.dispatcher.dispatch]);
     });
 
