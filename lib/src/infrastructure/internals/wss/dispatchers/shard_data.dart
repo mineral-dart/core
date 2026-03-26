@@ -23,6 +23,11 @@ final class ShardData implements ShardDataContract {
       _shard.authentication.setupRequirements(payload);
     }
 
+    if (message.content case ShardMessage(:final type)
+        when type == PacketType.resumed.name) {
+      _shard.authentication.resetReconnectAttempts();
+    }
+
     _dispatchStrategy.dispatch(message);
   }
 }

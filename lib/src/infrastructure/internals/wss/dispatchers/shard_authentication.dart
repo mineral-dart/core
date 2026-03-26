@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:io' show Platform;
 import 'dart:math';
 
 import 'package:mineral/container.dart';
@@ -7,6 +8,10 @@ import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/fatal_gateway_exception.dart';
+
+/// Custom close code for library-internal disconnects.
+/// Preserves the Discord session (unlike 1000/1001 which invalidate it).
+const int _internalCloseCode = 4900;
 
 final class ShardAuthentication implements ShardAuthenticationContract {
   final Shard shard;
@@ -18,12 +23,14 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   int attempts = 0;
   int _reconnectAttempts = 0;
   bool _pendingResume = false;
+  bool intentionalDisconnect = false;
   Timer? _heartbeatTimer;
 
   ShardAuthentication(this.shard);
 
   @override
   void identify(Map<String, dynamic> payload) {
+    intentionalDisconnect = false;
     createHeartbeatTimer(payload['heartbeat_interval']);
 
     if (_pendingResume) {
@@ -39,20 +46,39 @@ final class ShardAuthentication implements ShardAuthenticationContract {
       return;
     }
 
+    if (shard.wss.config.compress) {
+      ioc.resolve<LoggerContract>().warn(
+        'compress: true is configured but zlib-stream decompression is not implemented. '
+        'Forcing compress: false to prevent unreadable frames.',
+      );
+    }
+
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.identify)
       ..append('token', shard.wss.config.token)
       ..append('intents', shard.wss.config.intent)
-      ..append('compress', shard.wss.config.compress)
-      ..append('properties', {'os': 'macos', 'device': 'mineral'});
+      ..append('compress', false)
+      ..append('large_threshold', shard.wss.config.largeThreshold)
+      ..append('shard', [shard.shardIndex, shard.shardCount])
+      ..append('properties', {
+        'os': Platform.operatingSystem,
+        'browser': 'mineral',
+        'device': 'mineral',
+      });
 
     shard.client.send(message.build());
   }
 
   void createHeartbeatTimer(int interval) {
     _heartbeatTimer?.cancel();
-    _heartbeatTimer = Timer.periodic(Duration(milliseconds: interval), (timer) {
+    final jitterDelay =
+        Duration(milliseconds: (_random.nextDouble() * interval).toInt());
+    _heartbeatTimer = Timer(jitterDelay, () {
       heartbeat();
+      _heartbeatTimer =
+          Timer.periodic(Duration(milliseconds: interval), (timer) {
+        heartbeat();
+      });
     });
   }
 
@@ -63,7 +89,9 @@ final class ShardAuthentication implements ShardAuthenticationContract {
       return resetConnection();
     }
 
-    final message = ShardMessageBuilder()..setOpCode(OpCode.heartbeat);
+    final message = ShardMessageBuilder()
+      ..setOpCode(OpCode.heartbeat)
+      ..setPayload(sequence);
     shard.client.send(message.build());
 
     attempts++;
@@ -97,7 +125,8 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
     cancelHeartbeat();
     attempts = 0;
-    shard.client.disconnect();
+    intentionalDisconnect = true;
+    await shard.client.disconnect(code: _internalCloseCode);
 
     _reconnectAttempts++;
 
@@ -123,7 +152,8 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
     cancelHeartbeat();
     attempts = 0;
-    shard.client.disconnect();
+    intentionalDisconnect = true;
+    await shard.client.disconnect(code: _internalCloseCode);
 
     _reconnectAttempts++;
 
@@ -153,7 +183,8 @@ final class ShardAuthentication implements ShardAuthenticationContract {
     cancelHeartbeat();
     _pendingResume = true;
     attempts = 0;
-    shard.client.disconnect();
+    intentionalDisconnect = true;
+    await shard.client.disconnect(code: _internalCloseCode);
 
     _reconnectAttempts++;
 
@@ -174,10 +205,18 @@ final class ShardAuthentication implements ShardAuthenticationContract {
     await shard.init(url: resumeUrl);
   }
 
+  void resetReconnectAttempts() {
+    _reconnectAttempts = 0;
+  }
+
+  void invalidateSession() {
+    sessionId = null;
+    resumeUrl = null;
+  }
+
   @override
   void setupRequirements(Map<String, dynamic> payload) {
     _reconnectAttempts = 0;
-    sequence = payload['sequence'];
     sessionId = payload['session_id'];
     resumeUrl = payload['resume_gateway_url'];
   }

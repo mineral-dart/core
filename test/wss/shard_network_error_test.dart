@@ -109,9 +109,12 @@ final class _FakeWebsocketClient implements WebsocketClient {
   Interceptor get interceptor => _FakeInterceptor();
   @override
   Future<void> connect() async {}
+  int? lastDisconnectCode;
+
   @override
-  void disconnect({int? code, String? reason}) {
+  Future<void> disconnect({int? code, String? reason}) async {
     disconnected = true;
+    lastDisconnectCode = code;
   }
 
   @override
@@ -138,6 +141,8 @@ final class _FakeInterceptor implements Interceptor {
 Shard _createShard({int maxReconnect = 0}) {
   return Shard(
     shardName: 'test-shard-0',
+    shardIndex: 0,
+    shardCount: 1,
     url: 'wss://fake',
     wss: _FakeWebsocketOrchestrator(maxReconnect: maxReconnect),
     strategy: _FakeRunningStrategy(),
@@ -183,6 +188,19 @@ void main() {
       final networkError = ShardNetworkError(shard);
 
       networkError.dispatch(null);
+
+      expect(logger.warnings, isEmpty);
+      expect(logger.errors, isEmpty);
+      expect((shard.client as _FakeWebsocketClient).disconnected, isFalse);
+    });
+
+    test('does nothing when intentionalDisconnect is true', () {
+      final shard = _createShard();
+      shard.client = _FakeWebsocketClient();
+      shard.authentication.intentionalDisconnect = true;
+      final networkError = ShardNetworkError(shard);
+
+      networkError.dispatch(4000);
 
       expect(logger.warnings, isEmpty);
       expect(logger.errors, isEmpty);
@@ -243,6 +261,16 @@ void main() {
         expect(logger.warnings, contains(contains('code 1001')));
       });
 
+      test('logs warning for code 1006 (abnormalClosure)', () {
+        final shard = _createShard();
+        shard.client = _FakeWebsocketClient();
+        final networkError = ShardNetworkError(shard);
+
+        _dispatchSilently(() => networkError.dispatch(1006));
+
+        expect(logger.warnings, contains(contains('code 1006')));
+      });
+
       test('disconnects client when reconnecting', () {
         final shard = _createShard();
         final fakeClient = _FakeWebsocketClient();
@@ -252,6 +280,21 @@ void main() {
         _dispatchSilently(() => networkError.dispatch(1000));
 
         expect(fakeClient.disconnected, isTrue);
+      });
+
+      test('invalidates session before reconnect on code 1000', () {
+        final shard = _createShard();
+        shard.client = _FakeWebsocketClient();
+        shard.authentication.setupRequirements({
+          'session_id': 'dead-session',
+          'resume_gateway_url': 'wss://old-resume',
+        });
+        final networkError = ShardNetworkError(shard);
+
+        _dispatchSilently(() => networkError.dispatch(1000));
+
+        expect(shard.authentication.sessionId, isNull);
+        expect(shard.authentication.resumeUrl, isNull);
       });
     });
 
@@ -329,7 +372,7 @@ void main() {
           .toList();
 
       expect(resumeCodes,
-          containsAll([4000, 4001, 4002, 4003, 4005, 4007, 4008, 4009]));
+          containsAll([4000, 4001, 4002, 4003, 4007, 4008, 4009]));
     });
 
     test('reconnect codes include all expected Discord reconnect codes', () {
@@ -338,7 +381,7 @@ void main() {
           .map((e) => e.code)
           .toList();
 
-      expect(reconnectCodes, containsAll([1000, 1001, 1002, 1003, 1005]));
+      expect(reconnectCodes, containsAll([1000, 1001, 1002, 1003, 1005, 1006, 4005]));
     });
 
     test('fatal codes include all expected Discord fatal codes', () {

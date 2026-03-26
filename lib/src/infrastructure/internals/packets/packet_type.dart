@@ -2,6 +2,7 @@ import 'package:mineral/contracts.dart';
 
 enum PacketType implements PacketTypeContract {
   ready('READY'),
+  resumed('RESUMED'),
 
   interactionCreate('INTERACTION_CREATE'),
 

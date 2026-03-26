@@ -30,6 +30,9 @@ final class Shard implements ShardContract {
   @override
   late final ShardAuthentication authentication;
 
+  final int shardIndex;
+  final int shardCount;
+
   String url;
 
   late final ShardData dispatchEvent;
@@ -38,6 +41,8 @@ final class Shard implements ShardContract {
 
   Shard(
       {required this.shardName,
+      required this.shardIndex,
+      required this.shardCount,
       required this.url,
       required this.wss,
       required RunningStrategy strategy}) {
@@ -58,7 +63,11 @@ final class Shard implements ShardContract {
         url: this.url,
         onError: (error) {
           logger.error('WebSocket error: $error');
-          networkError.dispatch(error);
+          if (error is Map && error['code'] is int) {
+            networkError.dispatch(error['code']);
+          } else {
+            networkError.dispatch(null);
+          }
         },
         onClose: networkError.dispatch,
         onOpen: (message) {
@@ -93,7 +102,11 @@ final class Shard implements ShardContract {
           case OpCode.reconnect:
             authentication.reconnect();
           case OpCode.invalidSession:
-            authentication.resume();
+            if (payload == true) {
+              authentication.resume();
+            } else {
+              authentication.reconnect();
+            }
           case OpCode.dispatch:
             if ([PacketType.ready.name, PacketType.guildCreate.name]
                 .contains((message.content as ShardMessage).type)) {

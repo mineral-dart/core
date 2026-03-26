@@ -104,9 +104,12 @@ final class _FakeWebsocketClient implements WebsocketClient {
     connected = true;
   }
 
+  int? lastDisconnectCode;
+
   @override
-  void disconnect({int? code, String? reason}) {
+  Future<void> disconnect({int? code, String? reason}) async {
     disconnected = true;
+    lastDisconnectCode = code;
   }
 
   @override
@@ -130,6 +133,8 @@ final class _FakeInterceptor implements Interceptor {
 Shard _createShard() {
   return Shard(
     shardName: 'test-shard-0',
+    shardIndex: 0,
+    shardCount: 1,
     url: 'wss://fake',
     wss: _FakeWebsocketOrchestrator(),
     strategy: _FakeRunningStrategy(),
@@ -205,12 +210,24 @@ void main() {
     });
 
     group('heartbeat()', () {
-      test('sends heartbeat message', () async {
+      test('sends heartbeat message with sequence number', () async {
+        auth.sequence = 42;
         await auth.heartbeat();
 
         expect(fakeClient.sentMessages, hasLength(1));
         final msg = _decodeMessage(fakeClient.sentMessages.first);
         expect(msg['op'], equals(1)); // OpCode.heartbeat = 1
+        expect(msg['d'], equals(42));
+      });
+
+      test('sends heartbeat with null sequence when no events received',
+          () async {
+        await auth.heartbeat();
+
+        expect(fakeClient.sentMessages, hasLength(1));
+        final msg = _decodeMessage(fakeClient.sentMessages.first);
+        expect(msg['op'], equals(1));
+        expect(msg['d'], isNull);
       });
 
       test('increments attempts on each call', () async {
@@ -257,28 +274,61 @@ void main() {
     });
 
     group('setupRequirements()', () {
-      test('stores sequence, sessionId, and resumeUrl', () {
+      test('stores sessionId and resumeUrl', () {
         auth.setupRequirements({
-          'sequence': 42,
           'session_id': 'session-abc',
           'resume_gateway_url': 'wss://resume.discord.gg',
         });
 
-        expect(auth.sequence, equals(42));
         expect(auth.sessionId, equals('session-abc'));
         expect(auth.resumeUrl, equals('wss://resume.discord.gg'));
       });
 
       test('handles null values gracefully', () {
         auth.setupRequirements({
-          'sequence': null,
           'session_id': null,
           'resume_gateway_url': null,
         });
 
-        expect(auth.sequence, isNull);
         expect(auth.sessionId, isNull);
         expect(auth.resumeUrl, isNull);
+      });
+    });
+
+    group('invalidateSession()', () {
+      test('clears sessionId and resumeUrl', () {
+        auth.setupRequirements({
+          'session_id': 'abc',
+          'resume_gateway_url': 'wss://resume',
+        });
+
+        auth.invalidateSession();
+
+        expect(auth.sessionId, isNull);
+        expect(auth.resumeUrl, isNull);
+      });
+    });
+
+    group('resetReconnectAttempts()', () {
+      test('resets reconnect attempts counter', () async {
+        // Trigger reconnects to increment the counter
+        runZonedGuarded(() {
+          auth.reconnect();
+        }, (_, __) {});
+
+        // Give async reconnect time to start
+        await Future<void>.delayed(Duration.zero);
+
+        auth.resetReconnectAttempts();
+
+        // Should be able to reconnect again without hitting max
+        runZonedGuarded(() {
+          auth.reconnect();
+        }, (_, __) {});
+
+        await Future<void>.delayed(Duration.zero);
+
+        expect(logger.warnings, contains(contains('Reconnecting')));
       });
     });
 
@@ -308,8 +358,6 @@ void main() {
 
     group('reconnect()', () {
       test('disconnects the client', () {
-        // reconnect() is async; it disconnects, then calls Future.delayed
-        // then shard.init(). We absorb downstream errors.
         runZonedGuarded(() {
           auth.reconnect();
         }, (_, __) {});
@@ -327,12 +375,27 @@ void main() {
         expect(auth.attempts, equals(0));
       });
 
+      test('sets intentionalDisconnect to true', () {
+        runZonedGuarded(() {
+          auth.reconnect();
+        }, (_, __) {});
+
+        expect(auth.intentionalDisconnect, isTrue);
+      });
+
+      test('uses internal close code 4900', () {
+        runZonedGuarded(() {
+          auth.reconnect();
+        }, (_, __) {});
+
+        expect(fakeClient.lastDisconnectCode, equals(4900));
+      });
+
       test('logs reconnect warning', () async {
         runZonedGuarded(() {
           auth.reconnect();
         }, (_, __) {});
 
-        // Give a tick for async operations
         await Future<void>.delayed(Duration.zero);
 
         expect(logger.warnings, contains(contains('Reconnecting')));
@@ -356,6 +419,22 @@ void main() {
         }, (_, __) {});
 
         expect(auth.attempts, equals(0));
+      });
+
+      test('sets intentionalDisconnect to true', () {
+        runZonedGuarded(() {
+          auth.resume();
+        }, (_, __) {});
+
+        expect(auth.intentionalDisconnect, isTrue);
+      });
+
+      test('uses internal close code 4900', () {
+        runZonedGuarded(() {
+          auth.resume();
+        }, (_, __) {});
+
+        expect(fakeClient.lastDisconnectCode, equals(4900));
       });
     });
   });
