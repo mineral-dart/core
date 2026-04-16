@@ -113,47 +113,42 @@ void main() {
     });
 
     test('multiple listeners receive same event', () async {
-      final listener1 = <Event>[];
-      final listener2 = <Event>[];
-
       final controller = dispatcher.controllerFor(Event.ready);
 
-      controller.stream.listen((e) => listener1.add(e.event));
-
-      controller.stream.listen((e) => listener2.add(e.event));
+      final future1 = controller.stream.first;
+      final future2 = controller.stream.first;
 
       dispatcher.dispatch(event: Event.ready, params: ['bot']);
 
-      await Future.delayed(Duration(milliseconds: 50));
-
-      expect(listener1, hasLength(1));
-      expect(listener2, hasLength(1));
+      final results = await Future.wait([future1, future2]);
+      expect(results[0].event, Event.ready);
+      expect(results[1].event, Event.ready);
     });
 
     test('different listeners on different events receive only their events',
         () async {
-      final readyEvents = <Event>[];
-      final messageEvents = <Event>[];
-
-      dispatcher
+      final readyFuture = dispatcher
           .controllerFor(Event.ready)
           .stream
-          .listen((e) => readyEvents.add(e.event));
+          .take(2)
+          .toList();
 
-      dispatcher
+      final messageFuture = dispatcher
           .controllerFor(Event.serverMessageCreate)
           .stream
-          .listen((e) => messageEvents.add(e.event));
+          .first;
 
       dispatcher
         ..dispatch(event: Event.ready, params: ['bot'])
         ..dispatch(event: Event.serverMessageCreate, params: ['msg'])
         ..dispatch(event: Event.ready, params: ['bot']);
 
-      await Future.delayed(Duration(milliseconds: 50));
+      final readyEvents = await readyFuture;
+      final messageEvent = await messageFuture;
 
       expect(readyEvents, hasLength(2));
-      expect(messageEvents, hasLength(1));
+      expect(readyEvents.every((e) => e.event == Event.ready), isTrue);
+      expect(messageEvent.event, Event.serverMessageCreate);
     });
   });
 }

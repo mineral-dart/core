@@ -41,8 +41,8 @@ void main() {
       expect(CommandOptionType.attachment.value, 11);
     });
 
-    test('has 9 values total', () {
-      expect(CommandOptionType.values, hasLength(9));
+    test('has 10 values total', () {
+      expect(CommandOptionType.values, hasLength(10));
     });
 
     test('all values have unique int values', () {
@@ -60,8 +60,8 @@ void main() {
       expect(CommandType.subCommandGroup.value, 2);
     });
 
-    test('has 2 values total', () {
-      expect(CommandType.values, hasLength(2));
+    test('has 3 values total', () {
+      expect(CommandType.values, hasLength(3));
     });
   });
 
