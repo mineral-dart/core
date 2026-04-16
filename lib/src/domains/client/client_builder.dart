@@ -182,7 +182,10 @@ final class ClientBuilder {
       ..bind<HttpClientContract>(() => http)
       ..bind<Kernel>(() => kernel)
       ..bind<MarshallerContract>(Marshaller.new)
-      ..bind<DataStoreContract>(() => DataStore(http))
+      ..bind<DataStoreContract>(() => DataStore(
+            client: http,
+            marshaller: ioc.resolve<MarshallerContract>(),
+          ))
       ..bind<CommandInteractionManagerContract>(CommandInteractionManager.new)
       ..validateBindings();
 

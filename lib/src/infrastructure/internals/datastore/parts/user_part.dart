@@ -1,12 +1,12 @@
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/private/user.dart';
-import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class UserPart implements UserPartContract {
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+  final MarshallerContract _marshaller;
+  final DataStoreContract _dataStore;
 
-  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+  UserPart(this._marshaller, this._dataStore);
 
   HttpClientStatus get status => _dataStore.client.status;
 

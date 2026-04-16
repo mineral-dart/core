@@ -1,5 +1,4 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/server/moderation/enums/auto_moderation_event_type.dart';
@@ -8,9 +7,10 @@ import 'package:mineral/src/api/server/moderation/trigger_metadata.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 
 final class RulesPart implements RulesPartContract {
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+  final MarshallerContract _marshaller;
+  final DataStoreContract _dataStore;
 
-  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+  RulesPart(this._marshaller, this._dataStore);
 
   HttpClientStatus get status => _dataStore.client.status;
 
@@ -24,7 +24,8 @@ final class RulesPart implements RulesPartContract {
         .run(_dataStore.client.get);
 
     final rules = await result.map((element) async {
-      final raw = await _marshaller.serializers.rules.normalize(element as Map<String, dynamic>);
+      final raw = await _marshaller.serializers.rules
+          .normalize(element as Map<String, dynamic>);
       return _marshaller.serializers.rules.serialize(raw);
     }).wait;
 

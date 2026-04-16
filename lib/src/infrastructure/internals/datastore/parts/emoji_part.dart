@@ -1,13 +1,13 @@
 import 'package:mineral/api.dart';
-import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 
 final class EmojiPart implements EmojiPartContract {
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+  final MarshallerContract _marshaller;
+  final DataStoreContract _dataStore;
 
-  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+  EmojiPart(this._marshaller, this._dataStore);
 
   HttpClientStatus get status => _dataStore.client.status;
 

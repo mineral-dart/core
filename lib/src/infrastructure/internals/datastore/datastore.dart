@@ -1,5 +1,6 @@
-import 'package:mineral/src/domains/common/kernel.dart';
+import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/services/datastore/datastore.dart';
+import 'package:mineral/src/domains/services/http/http.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/channel_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/emoji_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/interaction_part.dart';
@@ -14,7 +15,6 @@ import 'package:mineral/src/infrastructure/internals/datastore/parts/sticker_par
 import 'package:mineral/src/infrastructure/internals/datastore/parts/thread_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/user_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/request_bucket.dart';
-import 'package:mineral/src/domains/services/http/http.dart';
 
 final class DataStore implements DataStoreContract {
   @override
@@ -22,8 +22,6 @@ final class DataStore implements DataStoreContract {
 
   @override
   final HttpClientContract client;
-
-  late final Kernel kernel;
 
   @override
   late final ChannelPart channel;
@@ -59,24 +57,25 @@ final class DataStore implements DataStoreContract {
   late final ThreadPart thread;
 
   @override
-  late final InvitePart invite;
-
-  @override
   // TODO: implement rules
   late final RulesPart rules;
 
-  DataStore(this.client)
-      : channel = ChannelPart(),
-        server = ServerPart(),
-        member = MemberPart(),
-        user = UserPart(),
-        role = RolePart(),
-        message = MessagePart(),
-        interaction = InteractionPart(),
-        sticker = StickerPart(),
-        emoji = EmojiPart(),
-        reaction = ReactionPart(),
-        thread = ThreadPart(),
-        rules = RulesPart(),
-        invite = InvitePart();
+  @override
+  late final InvitePart invite;
+
+  DataStore({required this.client, required MarshallerContract marshaller}) {
+    channel = ChannelPart(marshaller, this);
+    server = ServerPart(marshaller, this);
+    member = MemberPart(marshaller, this);
+    user = UserPart(marshaller, this);
+    role = RolePart(marshaller, this);
+    message = MessagePart(marshaller, this);
+    interaction = InteractionPart(this);
+    sticker = StickerPart(marshaller, this);
+    emoji = EmojiPart(marshaller, this);
+    reaction = ReactionPart(marshaller, this);
+    thread = ThreadPart(marshaller, this);
+    rules = RulesPart(marshaller, this);
+    invite = InvitePart(marshaller, this);
+  }
 }

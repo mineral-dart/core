@@ -1,13 +1,13 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 
 final class ServerPart implements ServerPartContract {
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+  final MarshallerContract _marshaller;
+  final DataStoreContract _dataStore;
 
-  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+  ServerPart(this._marshaller, this._dataStore);
 
   HttpClientStatus get status => _dataStore.client.status;
 
@@ -44,8 +44,8 @@ final class ServerPart implements ServerPartContract {
 
     final response = await _dataStore.client.patch(req);
 
-    final rawServer =
-        await _marshaller.serializers.server.normalize(response.body as Map<String, dynamic>);
+    final rawServer = await _marshaller.serializers.server
+        .normalize(response.body as Map<String, dynamic>);
     return _marshaller.serializers.server.serialize(rawServer);
   }
 

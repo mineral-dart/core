@@ -3,14 +3,14 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
 import 'package:mineral/src/domains/common/utils/attachment.dart';
-import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/response_handler.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/serialization_exception.dart';
 
 final class MessagePart with ResponseHandler implements MessagePartContract {
-  MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
+  final MarshallerContract _marshaller;
+  final DataStoreContract _dataStore;
 
-  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+  MessagePart(this._marshaller, this._dataStore);
 
   @override
   HttpClientStatus get status => _dataStore.client.status;
@@ -37,10 +37,13 @@ final class MessagePart with ResponseHandler implements MessagePartContract {
     );
     final response = await _dataStore.client.get(req);
 
-    final messages = await handleResponse(response, (body) => Future.wait(
-      List.from(body as Iterable<dynamic>)
-          .map((e) async => _marshaller.serializers.message.normalize(e as Map<String, dynamic>)),
-    ));
+    final messages = await handleResponse(
+        response,
+        (body) => Future.wait(
+              List.from(body as Iterable<dynamic>).map((e) async => _marshaller
+                  .serializers.message
+                  .normalize(e as Map<String, dynamic>)),
+            ));
 
     final serializedMessages = await Future.wait(
       messages.map((e) async {
@@ -85,8 +88,10 @@ final class MessagePart with ResponseHandler implements MessagePartContract {
     final req = Request.json(endpoint: '/channels/$channelId/messages/$id');
     final response = await _dataStore.client.get(req);
 
-    final message = await handleResponse(response, (body) =>
-        _marshaller.serializers.message.normalize(body as Map<String, dynamic>));
+    final message = await handleResponse(
+        response,
+        (body) => _marshaller.serializers.message
+            .normalize(body as Map<String, dynamic>));
 
     final serialized = await _marshaller.serializers.message.serialize(message);
     if (serialized is! T) {
@@ -123,8 +128,10 @@ final class MessagePart with ResponseHandler implements MessagePartContract {
 
     final response = await _dataStore.client.patch(req);
 
-    final rawMessage = await handleResponse(response, (body) =>
-        _marshaller.serializers.message.normalize(body as Map<String, dynamic>));
+    final rawMessage = await handleResponse(
+        response,
+        (body) => _marshaller.serializers.message
+            .normalize(body as Map<String, dynamic>));
 
     final message = await _marshaller.serializers.message.serialize(rawMessage);
     if (message is! T)
@@ -186,8 +193,10 @@ final class MessagePart with ResponseHandler implements MessagePartContract {
 
     final response = await _dataStore.client.post(req);
 
-    final message = await handleResponse(response, (body) =>
-        _marshaller.serializers.message.normalize(body as Map<String, dynamic>));
+    final message = await handleResponse(
+        response,
+        (body) => _marshaller.serializers.message
+            .normalize(body as Map<String, dynamic>));
 
     final serialized = await _marshaller.serializers.message.serialize(message);
     if (serialized is! T)
@@ -238,8 +247,10 @@ final class MessagePart with ResponseHandler implements MessagePartContract {
     );
     final response = await _dataStore.client.post(req);
 
-    final message = await handleResponse(response, (body) =>
-        _marshaller.serializers.message.normalize(body as Map<String, dynamic>));
+    final message = await handleResponse(
+        response,
+        (body) => _marshaller.serializers.message
+            .normalize(body as Map<String, dynamic>));
 
     final serializedMessage = await _marshaller.serializers.message.serialize(
       message,
@@ -270,8 +281,10 @@ final class MessagePart with ResponseHandler implements MessagePartContract {
     response.body['channel_id'] = channelId.value;
     response.body['server_id'] = serverId?.value;
 
-    final answerPayload = await handleResponse(response, (body) =>
-        _marshaller.serializers.pollAnswerVote.normalize(body as Map<String, dynamic>));
+    final answerPayload = await handleResponse(
+        response,
+        (body) => _marshaller.serializers.pollAnswerVote
+            .normalize(body as Map<String, dynamic>));
 
     final answer = await _marshaller.serializers.pollAnswerVote.serialize(
       answerPayload,

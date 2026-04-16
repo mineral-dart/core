@@ -2,10 +2,11 @@ import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/domains/common/utils/attachment.dart';
-import 'package:mineral/src/domains/container/ioc_container.dart';
 
 final class InteractionPart implements InteractionPartContract {
-  DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
+  final DataStoreContract _dataStore;
+
+  InteractionPart(this._dataStore);
 
   HttpClientStatus get status => _dataStore.client.status;
 
