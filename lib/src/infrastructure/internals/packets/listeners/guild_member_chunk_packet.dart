@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:collection/collection.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/events.dart';
 import 'package:mineral/src/api/common/presence.dart';
@@ -40,8 +39,7 @@ final class GuildMemberChunkPacket implements ListenablePacket {
             .map(Presence.fromJson)
             .toList();
 
-    final resolver = _wss.requestQueue
-        .firstWhereOrNull((element) => element.uid == message.payload['nonce']);
+    final resolver = _wss.findInRequestQueue(message.payload['nonce']);
     if (resolver != null && !resolver.completer.isCompleted) {
       if (resolver.targetKeys.length == 1 &&
           resolver.targetKeys.contains('presences')) {
@@ -59,7 +57,7 @@ final class GuildMemberChunkPacket implements ListenablePacket {
             .complete({'members': members, 'presences': presences});
       }
 
-      _wss.requestQueue.remove(resolver);
+      _wss.removeFromRequestQueue(resolver);
     }
 
     dispatch(event: Event.serverMemberChunk, params: [server, members]);

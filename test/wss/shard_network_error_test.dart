@@ -67,8 +67,13 @@ final class _FakeWebsocketOrchestrator extends WebsocketOrchestratorContract {
       : _config = _FakeShardingConfig(maxReconnect: maxReconnect);
 
   @override
-  final List<({String uid, List<String> targetKeys, Completer completer})>
-      requestQueue = [];
+  final List<RequestQueueEntry> requestQueue = [];
+  @override
+  void addToRequestQueue(RequestQueueEntry entry) => requestQueue.add(entry);
+  @override
+  RequestQueueEntry? findInRequestQueue(String uid) => null;
+  @override
+  void removeFromRequestQueue(RequestQueueEntry entry) => requestQueue.remove(entry);
   @override
   ShardingConfigContract get config => _config;
   @override

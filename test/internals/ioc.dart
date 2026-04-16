@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:mineral/container.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/service_not_found_exception.dart';
 import 'package:test/test.dart';
 
 abstract interface class AbstractClass {}
@@ -8,6 +11,15 @@ final class FooWithoutAbstract {}
 final class Foo implements AbstractClass {}
 
 final class Bar implements AbstractClass {}
+
+final class DisposableService implements Disposable {
+  bool disposed = false;
+
+  @override
+  FutureOr<void> dispose() {
+    disposed = true;
+  }
+}
 
 void main() {
   group('service ioc', () {
@@ -158,6 +170,130 @@ void main() {
       expect(ioc.resolveOrNull<Foo>(), isNull);
 
       scope.dispose();
+    });
+  });
+
+  group('dispose with Disposable', () {
+    test('calls dispose on services implementing Disposable', () async {
+      final container = IocContainer();
+      container.bind<DisposableService>(DisposableService.new);
+
+      final service = container.resolve<DisposableService>();
+      expect(service.disposed, isFalse);
+
+      await container.dispose();
+      expect(service.disposed, isTrue);
+    });
+
+    test('does not throw when disposing non-Disposable services', () async {
+      final container = IocContainer();
+      container.bind<Foo>(Foo.new);
+
+      await expectLater(container.dispose(), completes);
+    });
+
+    test('calls dispose on all Disposable services', () async {
+      final container = IocContainer();
+      container
+        ..bind<DisposableService>(DisposableService.new)
+        ..bind<Foo>(Foo.new);
+
+      final service = container.resolve<DisposableService>();
+
+      await container.dispose();
+      expect(service.disposed, isTrue);
+    });
+  });
+
+  group('ServiceNotFoundException', () {
+    final container = IocContainer();
+
+    tearDown(container.dispose);
+
+    test('resolve throws ServiceNotFoundException on missing service', () {
+      expect(
+        () => container.resolve<Foo>(),
+        throwsA(isA<ServiceNotFoundException>()),
+      );
+    });
+
+    test('override throws ServiceNotFoundException on missing service', () {
+      expect(
+        () => container.override<Foo>(Foo.new),
+        throwsA(isA<ServiceNotFoundException>()),
+      );
+    });
+
+    test('restore throws ServiceNotFoundException on missing service', () {
+      expect(
+        () => container.restore<Foo>(),
+        throwsA(isA<ServiceNotFoundException>()),
+      );
+    });
+
+    test('exception contains the service type', () {
+      expect(
+        () => container.resolve<Foo>(),
+        throwsA(isA<ServiceNotFoundException>()
+            .having((e) => e.serviceType, 'serviceType', Foo)),
+      );
+    });
+  });
+
+  group('multiple scopes', () {
+    test('grandchild resolves service from grandparent', () {
+      final grandparent = IocContainer()..bind<AbstractClass>(Foo.new);
+      final parent = grandparent.createScope();
+      final grandchild = parent.createScope();
+
+      expect(grandchild.resolve<AbstractClass>(), isA<Foo>());
+
+      grandparent.dispose();
+    });
+
+    test('grandchild resolveOrNull falls back to grandparent', () {
+      final grandparent = IocContainer()..bind<Foo>(Foo.new);
+      final parent = grandparent.createScope();
+      final grandchild = parent.createScope();
+
+      expect(grandchild.resolveOrNull<Foo>(), isA<Foo>());
+
+      grandparent.dispose();
+    });
+
+    test('middle scope override does not affect grandparent', () {
+      final grandparent = IocContainer()..bind<AbstractClass>(Foo.new);
+      final parent = grandparent.createScope()
+        ..bind<AbstractClass>(Bar.new);
+      final grandchild = parent.createScope();
+
+      expect(grandchild.resolve<AbstractClass>(), isA<Bar>());
+      expect(grandparent.resolve<AbstractClass>(), isA<Foo>());
+
+      grandparent.dispose();
+    });
+
+    test('grandchild override does not affect parent or grandparent', () {
+      final grandparent = IocContainer()..bind<AbstractClass>(Foo.new);
+      final parent = grandparent.createScope();
+      final grandchild = parent.createScope()
+        ..bind<AbstractClass>(Bar.new);
+
+      expect(grandchild.resolve<AbstractClass>(), isA<Bar>());
+      expect(parent.resolve<AbstractClass>(), isA<Foo>());
+      expect(grandparent.resolve<AbstractClass>(), isA<Foo>());
+
+      grandparent.dispose();
+    });
+
+    test('grandchild returns null when no scope has the service', () {
+      final grandparent = IocContainer();
+      final parent = grandparent.createScope();
+      final grandchild = parent.createScope();
+
+      expect(grandchild.resolveOrNull<Foo>(), isNull);
+
+      grandparent.dispose();
     });
   });
 }

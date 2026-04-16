@@ -5,9 +5,16 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
 
+typedef RequestQueueEntry = ({String uid, List<String> targetKeys, Completer completer});
+
 abstract class WebsocketOrchestratorContract {
-  List<({String uid, List<String> targetKeys, Completer completer})>
-      get requestQueue;
+  List<RequestQueueEntry> get requestQueue;
+
+  void addToRequestQueue(RequestQueueEntry entry);
+
+  RequestQueueEntry? findInRequestQueue(String uid);
+
+  void removeFromRequestQueue(RequestQueueEntry entry);
 
   ShardingConfigContract get config;
 

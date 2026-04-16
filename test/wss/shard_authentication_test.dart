@@ -58,21 +58,37 @@ final class _FakeShardingConfig implements ShardingConfigContract {
 
 final class _FakeWebsocketOrchestrator extends WebsocketOrchestratorContract {
   @override
-  final List<({String uid, List<String> targetKeys, Completer completer})>
-      requestQueue = [];
+  final List<RequestQueueEntry> requestQueue = [];
+
+  @override
+  void addToRequestQueue(RequestQueueEntry entry) => requestQueue.add(entry);
+
+  @override
+  RequestQueueEntry? findInRequestQueue(String uid) => null;
+
+  @override
+  void removeFromRequestQueue(RequestQueueEntry entry) =>
+      requestQueue.remove(entry);
+
   @override
   ShardingConfigContract get config => _FakeShardingConfig();
+
   @override
   Map<int, ShardContract> get shards => {};
+
   @override
   void send(WebsocketIsolateMessageTransfert message) {}
+
   @override
   void setBotPresence(
       List<BotActivity>? activity, StatusType? status, bool? afk) {}
+
   @override
   Future<Map<String, dynamic>> getWebsocketEndpoint() async => {};
+
   @override
   Future<void> createShards(RunningStrategy strategy) async {}
+
   @override
   Future<Presence> getMemberPresence(String serverId, String id) {
     throw UnimplementedError();
@@ -82,6 +98,7 @@ final class _FakeWebsocketOrchestrator extends WebsocketOrchestratorContract {
 final class _FakeRunningStrategy implements RunningStrategy {
   @override
   FutureOr<void> init(RunningStrategyFactory createShards) async {}
+
   @override
   FutureOr<void> dispatch(WebsocketMessage message) {}
 }

@@ -14,9 +14,28 @@ import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_messa
 import 'package:mineral/src/infrastructure/io/exceptions/token_exception.dart';
 
 final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
+  final List<RequestQueueEntry> _requestQueue = [];
+
   @override
-  final List<({String uid, List<String> targetKeys, Completer completer})>
-      requestQueue = [];
+  List<RequestQueueEntry> get requestQueue => List.unmodifiable(_requestQueue);
+
+  @override
+  void addToRequestQueue(RequestQueueEntry entry) {
+    _requestQueue.add(entry);
+  }
+
+  @override
+  RequestQueueEntry? findInRequestQueue(String uid) {
+    for (final entry in _requestQueue) {
+      if (entry.uid == uid) return entry;
+    }
+    return null;
+  }
+
+  @override
+  void removeFromRequestQueue(RequestQueueEntry entry) {
+    _requestQueue.remove(entry);
+  }
 
   HttpClientContract get _httpClient => ioc.resolve<HttpClientContract>();
 
@@ -38,7 +57,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       if (message case WebsocketIsolateMessageTransfert(:final type)
           when type == MessageTransfertType.request) {
         _logger.trace('Sending message to all shards ${message.toJson()}');
-        requestQueue.add((
+        addToRequestQueue((
           uid: message.uid!,
           targetKeys: message.targetKeys,
           completer: message.completer!
@@ -65,7 +84,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   void _requestMessage(WebsocketIsolateMessageTransfert message) {
     if (Isolate.current.debugName == 'main' &&
         env.get(AppEnv.dartEnv) == 'production') {
-      requestQueue.add((
+      addToRequestQueue((
         uid: message.uid!,
         targetKeys: message.targetKeys,
         completer: message.completer!
@@ -118,7 +137,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
     final targetShard = shards[targetIndex];
 
     if (targetShard != null) {
-      requestQueue.add((
+      addToRequestQueue((
         uid: timestamp.toString(),
         targetKeys: ['presences'],
         completer: completer,

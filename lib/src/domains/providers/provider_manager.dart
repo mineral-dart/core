@@ -33,7 +33,7 @@ final class ProviderManager implements ProviderManagerContract {
 
   @override
   Future<void> dispose() async {
-    for (final provider in _providers) {
+    for (final provider in _providers.reversed) {
       try {
         await provider.dispose();
       } on Exception catch (e) {

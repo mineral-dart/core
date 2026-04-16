@@ -94,8 +94,13 @@ final class _FakeWss extends WebsocketOrchestratorContract {
   @override
   final ShardingConfigContract config = _FakeShardingConfig();
   @override
-  List<({String uid, List<String> targetKeys, Completer completer})>
-      get requestQueue => [];
+  List<RequestQueueEntry> get requestQueue => [];
+  @override
+  void addToRequestQueue(RequestQueueEntry entry) {}
+  @override
+  RequestQueueEntry? findInRequestQueue(String uid) => null;
+  @override
+  void removeFromRequestQueue(RequestQueueEntry entry) {}
   @override
   Map<int, ShardContract> get shards => {};
   @override

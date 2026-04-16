@@ -118,12 +118,16 @@ final class ShardAuthentication implements ShardAuthenticationContract {
     return Duration(seconds: baseSeconds) + jitter;
   }
 
-  @override
-  Future<void> reconnect() async {
+  Future<void> _reconnectWithStrategy({
+    required String action,
+    bool resume = false,
+    String? url,
+  }) async {
     final logger = ioc.resolve<LoggerContract>();
     final maxAttempts = shard.wss.config.maxReconnectAttempts;
 
     cancelHeartbeat();
+    if (resume) _pendingResume = true;
     attempts = 0;
     intentionalDisconnect = true;
     await shard.client.disconnect(code: _internalCloseCode);
@@ -141,69 +145,22 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
     final delay = _backoffDelay();
     logger.warn(
-        'Reconnecting ${shard.shardName} in ${delay.inSeconds}s (attempt $_reconnectAttempts/$maxAttempts)');
+        '$action ${shard.shardName} in ${delay.inSeconds}s (attempt $_reconnectAttempts/$maxAttempts)');
     await Future<void>.delayed(delay);
 
-    await shard.init();
-  }
-
-  Future<void> resetConnection() async {
-    ioc.resolve<LoggerContract>().trace('Connection reset');
-
-    cancelHeartbeat();
-    attempts = 0;
-    intentionalDisconnect = true;
-    await shard.client.disconnect(code: _internalCloseCode);
-
-    _reconnectAttempts++;
-
-    final maxAttempts = shard.wss.config.maxReconnectAttempts;
-    if (_reconnectAttempts > maxAttempts) {
-      ioc.resolve<LoggerContract>().error(
-          'Max reconnect attempts ($maxAttempts) reached for ${shard.shardName}');
-      throw FatalGatewayException(
-        'Max reconnect attempts ($maxAttempts) reached',
-        -1,
-      );
-    }
-
-    final delay = _backoffDelay();
-    ioc.resolve<LoggerContract>().warn(
-        'Resetting connection for ${shard.shardName} in ${delay.inSeconds}s (attempt $_reconnectAttempts/$maxAttempts)');
-    await Future<void>.delayed(delay);
-
-    await shard.init();
+    await shard.init(url: url);
   }
 
   @override
-  Future<void> resume() async {
-    final logger = ioc.resolve<LoggerContract>();
-    final maxAttempts = shard.wss.config.maxReconnectAttempts;
+  Future<void> reconnect() =>
+      _reconnectWithStrategy(action: 'Reconnecting');
 
-    cancelHeartbeat();
-    _pendingResume = true;
-    attempts = 0;
-    intentionalDisconnect = true;
-    await shard.client.disconnect(code: _internalCloseCode);
+  Future<void> resetConnection() =>
+      _reconnectWithStrategy(action: 'Resetting connection for');
 
-    _reconnectAttempts++;
-
-    if (_reconnectAttempts > maxAttempts) {
-      logger.error(
-          'Max reconnect attempts ($maxAttempts) reached for ${shard.shardName}');
-      throw FatalGatewayException(
-        'Max reconnect attempts ($maxAttempts) reached',
-        -1,
-      );
-    }
-
-    final delay = _backoffDelay();
-    logger.warn(
-        'Resuming ${shard.shardName} in ${delay.inSeconds}s (attempt $_reconnectAttempts/$maxAttempts)');
-    await Future<void>.delayed(delay);
-
-    await shard.init(url: resumeUrl);
-  }
+  @override
+  Future<void> resume() =>
+      _reconnectWithStrategy(action: 'Resuming', resume: true, url: resumeUrl);
 
   void resetReconnectAttempts() {
     _reconnectAttempts = 0;
