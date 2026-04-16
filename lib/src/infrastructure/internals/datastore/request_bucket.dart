@@ -43,9 +43,7 @@ final class QueueableRequest<T> {
       bucket.queue.remove(this);
       _onSuccess?.call(response.body as T);
       completer.complete(response.body as T);
-    }
-
-    if (response.statusCode case final int code
+    } else if (response.statusCode case final int code
         when _httpStatus.isRateLimit(code)) {
       bucket.hasGlobalLocked = response.body['global'];
 
@@ -60,9 +58,7 @@ final class QueueableRequest<T> {
 
       _onRateLimit?.call(Duration(seconds: value));
       await Future.delayed(Duration(seconds: value), execute);
-    }
-
-    if (response.statusCode case final int code
+    } else if (response.statusCode case final int code
         when _httpStatus.isError(code)) {
       status = QueueableRequestStatus.error;
 
