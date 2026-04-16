@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
@@ -16,8 +14,6 @@ final class RolePart implements RolePartContract {
 
   @override
   Future<Map<Snowflake, Role>> fetch(Object serverId, bool force) async {
-    final completer = Completer<Map<Snowflake, Role>>();
-
     final req = Request.json(endpoint: '/guilds/$serverId/roles');
     final result = await _dataStore.requestBucket
         .query<List<Map<String, dynamic>>>(req)
@@ -32,22 +28,18 @@ final class RolePart implements RolePartContract {
       return _marshaller.serializers.role.serialize(raw);
     }).wait;
 
-    completer
-        .complete(roles.asMap().map((_, value) => MapEntry(value.id, value)));
-    return completer.future;
+    return roles.asMap().map((_, value) => MapEntry(value.id, value));
   }
 
   @override
   Future<Role?> get(Object serverId, Object id, bool force) async {
-    final completer = Completer<Role>();
     final String key = _marshaller.cacheKey.serverRole(serverId, id);
 
     final cachedRole = await _marshaller.cache?.get(key);
     if (!force && cachedRole != null) {
       final role = await _marshaller.serializers.role.serialize(cachedRole);
 
-      completer.complete(role);
-      return completer.future;
+      return role;
     }
 
     final req = Request.json(endpoint: '/guilds/$serverId/roles/$id');
@@ -58,8 +50,7 @@ final class RolePart implements RolePartContract {
     final raw = await _marshaller.serializers.role.normalize(result);
     final channel = await _marshaller.serializers.role.serialize(raw);
 
-    completer.complete(channel);
-    return completer.future;
+    return channel;
   }
 
   @override
@@ -71,8 +62,6 @@ final class RolePart implements RolePartContract {
       bool hoist,
       bool mentionable,
       String? reason) async {
-    final completer = Completer<Role>();
-
     final req = Request.json(endpoint: '/guilds/$serverId/roles', body: {
       'name': name,
       'permissions': listToBitfield(permissions),
@@ -93,8 +82,7 @@ final class RolePart implements RolePartContract {
       'guild_id': serverId,
     });
 
-    completer.complete(role);
-    return completer.future;
+    return role;
   }
 
   @override
@@ -149,7 +137,6 @@ final class RolePart implements RolePartContract {
       required Object serverId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
-    final completer = Completer<Role?>();
     final req = Request.json(
         endpoint: '/guilds/$serverId/roles/$id',
         body: payload,
@@ -165,8 +152,7 @@ final class RolePart implements RolePartContract {
       'guild_id': serverId,
     });
 
-    completer.complete(role);
-    return completer.future;
+    return role;
   }
 
   @override

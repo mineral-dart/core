@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
@@ -17,8 +15,6 @@ final class MemberPart implements MemberPartContract {
 
   @override
   Future<Map<Snowflake, Member>> fetch(Object serverId, bool force) async {
-    final completer = Completer<Map<Snowflake, Member>>();
-
     final req = Request.json(endpoint: '/guilds/$serverId/members');
     final result = await _dataStore.requestBucket
         .query<List<Map<String, dynamic>>>(req)
@@ -30,14 +26,11 @@ final class MemberPart implements MemberPartContract {
       return _marshaller.serializers.member.serialize(raw);
     }).wait;
 
-    completer
-        .complete(members.asMap().map((_, value) => MapEntry(value.id, value)));
-    return completer.future;
+    return members.asMap().map((_, value) => MapEntry(value.id, value));
   }
 
   @override
   Future<Member?> get(Object serverId, Object id, bool force) async {
-    final completer = Completer<Member>();
     final String key = _marshaller.cacheKey.member(serverId, id);
 
     final cachedMember = await _marshaller.cache?.get(key);
@@ -45,8 +38,7 @@ final class MemberPart implements MemberPartContract {
       final member =
           await _marshaller.serializers.member.serialize(cachedMember);
 
-      completer.complete(member);
-      return completer.future;
+      return member;
     }
 
     final req = Request.json(endpoint: '/guilds/$serverId/members/$id');
@@ -58,8 +50,7 @@ final class MemberPart implements MemberPartContract {
         .normalize({...result, 'guild_id': serverId});
     final member = await _marshaller.serializers.member.serialize(raw);
 
-    completer.complete(member);
-    return completer.future;
+    return member;
   }
 
   @override
@@ -68,8 +59,6 @@ final class MemberPart implements MemberPartContract {
       required Object memberId,
       required Map<String, dynamic> payload,
       String? reason}) async {
-    final completer = Completer<Member>();
-
     final req = Request.json(
         endpoint: '/guilds/$serverId/members/$memberId',
         body: payload,
@@ -84,8 +73,7 @@ final class MemberPart implements MemberPartContract {
     });
     final member = await _marshaller.serializers.member.serialize(raw);
 
-    completer.complete(member);
-    return completer.future;
+    return member;
   }
 
   @override
@@ -121,7 +109,6 @@ final class MemberPart implements MemberPartContract {
   @override
   Future<VoiceState?> getVoiceState(
       Object serverId, Object userId, bool force) async {
-    final completer = Completer<VoiceState?>();
     final String key = _marshaller.cacheKey.voiceState(serverId, userId);
 
     final cachedMember = await _marshaller.cache?.get(key);
@@ -129,8 +116,7 @@ final class MemberPart implements MemberPartContract {
       final voiceState =
           await _marshaller.serializers.voice.serialize(cachedMember);
 
-      completer.complete(voiceState);
-      return completer.future;
+      return voiceState;
     }
 
     final req =
@@ -142,7 +128,6 @@ final class MemberPart implements MemberPartContract {
     final raw = await _marshaller.serializers.voice.normalize(result);
     final voice = await _marshaller.serializers.voice.serialize(raw);
 
-    completer.complete(voice);
-    return completer.future;
+    return voice;
   }
 }

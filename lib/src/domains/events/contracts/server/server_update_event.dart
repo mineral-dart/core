@@ -2,16 +2,13 @@ import 'dart:async';
 
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef ServerUpdateEventHandler = FutureOr<void> Function(Server, Server);
 
-abstract class ServerUpdateEvent implements ListenableEvent {
+abstract class ServerUpdateEvent extends BaseListenableEvent {
   @override
   Event get event => Event.serverUpdate;
-
-  @override
-  String? customId;
 
   @override
   Function get handler => handle;

@@ -2,12 +2,12 @@ import 'dart:async';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef ServerThreadUpdateEventHandler = FutureOr<void> Function(
     Server, ThreadChannel?, ThreadChannel);
 
-abstract class ServerThreadUpdateEvent implements ListenableEvent {
+abstract class ServerThreadUpdateEvent extends BaseListenableEvent {
   @override
   Event get event => Event.serverThreadUpdate;
 

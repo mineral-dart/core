@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
@@ -19,8 +17,6 @@ final class RulesPart implements RulesPartContract {
   @override
   Future<Map<Snowflake, AutoModerationRule>> fetch(
       Object serverId, bool force) async {
-    final completer = Completer<Map<Snowflake, AutoModerationRule>>();
-
     final req =
         Request.json(endpoint: '/guilds/$serverId/auto-moderation/rules');
     final result = await _dataStore.requestBucket
@@ -32,24 +28,18 @@ final class RulesPart implements RulesPartContract {
       return _marshaller.serializers.rules.serialize(raw);
     }).wait;
 
-    completer
-        .complete(rules.asMap().map((_, value) => MapEntry(value.id!, value)));
-
-    return completer.future;
+    return rules.asMap().map((_, value) => MapEntry(value.id!, value));
   }
 
   @override
   Future<AutoModerationRule?> get(
       Object serverId, Object rulesId, bool force) async {
-    final completer = Completer<AutoModerationRule>();
     final String key = _marshaller.cacheKey.serverRules(serverId, rulesId);
 
     final cachedEmoji = await _marshaller.cache?.get(key);
     if (!force && cachedEmoji != null) {
       final rule = await _marshaller.serializers.rules.serialize(cachedEmoji);
-      completer.complete(rule);
-
-      return completer.future;
+      return rule;
     }
 
     final req = Request.json(
@@ -61,9 +51,7 @@ final class RulesPart implements RulesPartContract {
     final raw = await _marshaller.serializers.rules.normalize(result);
     final rule = await _marshaller.serializers.rules.serialize(raw);
 
-    completer.complete(rule);
-
-    return completer.future;
+    return rule;
   }
 
   @override
@@ -79,8 +67,6 @@ final class RulesPart implements RulesPartContract {
     bool enabled = true,
     String? reason,
   }) async {
-    final completer = Completer<AutoModerationRule>();
-
     final req = Request.json(
         endpoint: '/guilds/$serverId/auto-moderation/rules',
         body: {
@@ -122,9 +108,7 @@ final class RulesPart implements RulesPartContract {
       'guild_id': serverId,
     });
 
-    completer.complete(rule);
-
-    return completer.future;
+    return rule;
   }
 
   @override
@@ -133,8 +117,6 @@ final class RulesPart implements RulesPartContract {
       required Object serverId,
       required Map<String, dynamic> payload,
       required String? reason}) async {
-    final completer = Completer<AutoModerationRule>();
-
     final req = Request.json(
         endpoint: '/guilds/$serverId/auto-moderation/rules/$id',
         body: payload,
@@ -150,8 +132,7 @@ final class RulesPart implements RulesPartContract {
     });
     final rule = await _marshaller.serializers.rules.serialize(raw);
 
-    completer.complete(rule);
-    return completer.future;
+    return rule;
   }
 
   @override

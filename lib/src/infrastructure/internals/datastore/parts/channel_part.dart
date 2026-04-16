@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
@@ -17,8 +15,6 @@ final class ChannelPart implements ChannelPartContract {
   @override
   Future<Map<Snowflake, T>> fetch<T extends Channel>(
       Object serverId, bool force) async {
-    final completer = Completer<Map<Snowflake, T>>();
-
     final req = Request.json(endpoint: '/guilds/$serverId/channels');
     final result = await _dataStore.requestBucket
         .query<List<Map<String, dynamic>>>(req)
@@ -29,19 +25,16 @@ final class ChannelPart implements ChannelPartContract {
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(channels.asMap().map((_, value) {
+    return channels.asMap().map((_, value) {
       if (value is! T)
         throw SerializationException(
             'Expected $T but got ${value.runtimeType}');
       return MapEntry(value.id, value);
-    }));
-    return completer.future;
+    });
   }
 
   @override
   Future<T?> get<T extends Channel>(Object id, bool force) async {
-    final completer = Completer<T>();
-
     final String key = _marshaller.cacheKey.channel(id);
     final cachedChannel = await _marshaller.cache?.get(key);
     if (!force && cachedChannel != null) {
@@ -50,10 +43,8 @@ final class ChannelPart implements ChannelPartContract {
       if (serialized is! T)
         throw SerializationException(
             'Expected $T but got ${serialized.runtimeType}');
-      final channel = serialized;
 
-      completer.complete(channel);
-      return completer.future;
+      return serialized;
     }
 
     final req = Request.json(endpoint: '/channels/$id');
@@ -67,16 +58,13 @@ final class ChannelPart implements ChannelPartContract {
       throw SerializationException(
           'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(serialized);
-    return completer.future;
+    return serialized;
   }
 
   @override
   Future<T> create<T extends Channel>(
       Object? serverId, ChannelBuilderContract builder,
       {String? reason}) async {
-    final completer = Completer<T>();
-
     final req = Request.json(
         endpoint: '/guilds/$serverId/channels',
         body: builder.build(),
@@ -95,15 +83,12 @@ final class ChannelPart implements ChannelPartContract {
       throw SerializationException(
           'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(serialized);
-    return completer.future;
+    return serialized;
   }
 
   @override
   Future<PrivateChannel> createPrivateChannel(
       Object id, Object recipientId) async {
-    final completer = Completer<PrivateChannel>();
-
     final req = Request.json(
         endpoint: '/users/@me/channels', body: {'recipient_id': recipientId});
 
@@ -114,17 +99,13 @@ final class ChannelPart implements ChannelPartContract {
     final raw = await _marshaller.serializers.channels.normalize(result);
     final channel = await _marshaller.serializers.channels.serialize(raw);
 
-    completer.complete(channel as PrivateChannel);
-
-    return completer.future;
+    return channel as PrivateChannel;
   }
 
   @override
   Future<T?> update<T extends Channel>(
       Object id, ChannelBuilderContract builder,
       {Object? serverId, String? reason}) async {
-    final completer = Completer<T>();
-
     final req = Request.json(
         endpoint: '/channels/$id',
         body: builder.build(),
@@ -143,8 +124,7 @@ final class ChannelPart implements ChannelPartContract {
       throw SerializationException(
           'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(serialized);
-    return completer.future;
+    return serialized;
   }
 
   @override

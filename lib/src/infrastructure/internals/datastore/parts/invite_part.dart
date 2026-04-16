@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
@@ -15,7 +13,6 @@ final class InvitePart implements InvitePartContract {
 
   @override
   Future<Invite?> get(String code, bool force) async {
-    final completer = Completer<Invite>();
     final String key = _marshaller.cacheKey.invite(code);
 
     final cachedInvite = await _marshaller.cache?.get(key);
@@ -23,8 +20,7 @@ final class InvitePart implements InvitePartContract {
       final invite =
           await _marshaller.serializers.invite.serialize(cachedInvite);
 
-      completer.complete(invite);
-      return completer.future;
+      return invite;
     }
 
     final req = Request.json(endpoint: '/invites/$code');
@@ -35,14 +31,11 @@ final class InvitePart implements InvitePartContract {
     final raw = await _marshaller.serializers.invite.normalize(result);
     final invite = await _marshaller.serializers.invite.serialize(raw);
 
-    completer.complete(invite);
-    return completer.future;
+    return invite;
   }
 
   @override
   Future<InviteMetadata?> getExtrasMetadata(String code, bool force) async {
-    final completer = Completer<InviteMetadata>();
-
     final req = Request.json(endpoint: '/invites/$code', queryParameters: {
       'with_counts': 'true',
       'with_expiration': 'true',
@@ -57,8 +50,7 @@ final class InvitePart implements InvitePartContract {
       approximatePresenceCount: result['approximate_presence_count'],
     );
 
-    completer.complete(metadata);
-    return completer.future;
+    return metadata;
   }
 
   // @override

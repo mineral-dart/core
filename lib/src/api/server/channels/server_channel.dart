@@ -5,32 +5,45 @@ import 'package:mineral/contracts.dart';
 abstract class ServerChannel implements Channel {
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
-  String get name;
+  ChannelProperties get properties;
 
-  Snowflake get serverId;
+  ChannelMethods get methods;
+
+  @override
+  Snowflake get id => properties.id;
+
+  @override
+  ChannelType get type => properties.type;
+
+  String get name => properties.name!;
+
+  @override
+  DateTime get createdAt => id.createdAt;
+
+  Snowflake get serverId => properties.serverId!;
+
+  int get position => properties.position!;
+
+  List<ChannelPermissionOverwrite> get permissions => properties.permissions!;
+
+  Snowflake? get categoryId => properties.categoryId;
 
   /// Resolves the [Server] the channel belongs to.
-  /// ```dart
-  /// final server = await channel.resolveServer();
-  /// ```
-  /// If [force] is set to `true`, the server will be fetched from the API instead of [CacheProviderContract].
-  /// ```dart
-  /// final server = await channel.resolveServer(force: true);
-  /// ```
   Future<Server> resolveServer({bool force = true}) =>
       _dataStore.server.get(serverId.value, force);
 
   /// Updates the channel.
-  /// ```dart
-  /// final builder = ChannelBuilder.text()
-  ///  ..setName('new-name')
-  ///  ..setPosition(1);
-  ///
-  /// await channel.update(builder);
-  /// ```
   Future<void> update(ChannelBuilderContract builder, {String? reason}) =>
       _dataStore.channel
           .update(id.value, builder, serverId: serverId.value, reason: reason);
+
+  Future<void> setName(String name, {String? reason}) =>
+      methods.setName(name, reason);
+
+  Future<void> setPosition(int position, {String? reason}) =>
+      methods.setPosition(position, reason);
+
+  Future<void> delete({String? reason}) => methods.delete(reason);
 
   @override
   T cast<T extends Channel>() => this as T;

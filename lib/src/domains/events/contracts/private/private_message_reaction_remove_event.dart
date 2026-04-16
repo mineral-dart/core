@@ -2,17 +2,14 @@ import 'dart:async';
 
 import 'package:mineral/src/api/common/message_reaction.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef PrivateMessageReactionRemoveHandler = FutureOr<void> Function(
     MessageReaction reaction);
 
-abstract class PrivateMessageReactionRemoveEvent implements ListenableEvent {
+abstract class PrivateMessageReactionRemoveEvent extends BaseListenableEvent {
   @override
   Event get event => Event.privateMessageReactionRemove;
-
-  @override
-  String? customId;
 
   @override
   Function get handler => handle;

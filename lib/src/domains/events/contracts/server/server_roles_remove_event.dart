@@ -3,16 +3,13 @@ import 'dart:async';
 import 'package:mineral/src/api/server/role.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef ServerRolesDeleteEventHandler = FutureOr<void> Function(Server, Role?);
 
-abstract class ServerRolesDeleteEvent implements ListenableEvent {
+abstract class ServerRolesDeleteEvent extends BaseListenableEvent {
   @override
   Event get event => Event.serverRoleDelete;
-
-  @override
-  String? customId;
 
   @override
   Function get handler => handle;

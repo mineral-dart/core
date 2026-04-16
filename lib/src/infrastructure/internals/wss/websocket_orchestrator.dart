@@ -49,9 +49,15 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
 
   WebsocketOrchestrator(this.config);
 
+  /// Whether this orchestrator is running inside the HMR child isolate.
+  bool get _isHmrIsolate => Isolate.current.debugName == 'development';
+
+  /// Whether this orchestrator is running inside the main application isolate.
+  bool get _isMainIsolate => Isolate.current.debugName == 'main';
+
   @override
   void send(WebsocketIsolateMessageTransfert message) {
-    if (Isolate.current.debugName == 'development') {
+    if (_isHmrIsolate) {
       final sendPort = ioc.resolve<SendPort?>();
 
       if (message case WebsocketIsolateMessageTransfert(:final type)
@@ -82,8 +88,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   }
 
   void _requestMessage(WebsocketIsolateMessageTransfert message) {
-    if (Isolate.current.debugName == 'main' &&
-        env.get(AppEnv.dartEnv) == 'production') {
+    if (_isMainIsolate && env.get(AppEnv.dartEnv) == 'production') {
       addToRequestQueue((
         uid: message.uid!,
         targetKeys: message.targetKeys,

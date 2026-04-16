@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/private/user.dart';
@@ -14,15 +12,13 @@ final class UserPart implements UserPartContract {
 
   @override
   Future<User?> get(Object id, bool force) async {
-    final completer = Completer<User>();
     final String key = _marshaller.cacheKey.user(id);
 
     final cachedUser = await _marshaller.cache?.get(key);
     if (!force && cachedUser != null) {
       final user = await _marshaller.serializers.user.serialize(cachedUser);
 
-      completer.complete(user);
-      return completer.future;
+      return user;
     }
 
     final request = Request.json(endpoint: '/users/$id');
@@ -33,7 +29,6 @@ final class UserPart implements UserPartContract {
     final raw = await _marshaller.serializers.user.normalize(result);
     final user = await _marshaller.serializers.user.serialize(raw);
 
-    completer.complete(user);
-    return completer.future;
+    return user;
   }
 }

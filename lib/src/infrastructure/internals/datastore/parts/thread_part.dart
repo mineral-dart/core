@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
@@ -18,8 +16,6 @@ final class ThreadPart implements ThreadPartContract {
 
   @override
   Future<ThreadResult> fetchActives(Object serverId) async {
-    final completer = Completer<ThreadResult>();
-
     final request = Request.json(endpoint: '/guilds/$serverId/threads/active');
     final result = await _dataStore.requestBucket
         .query<List<Map<String, dynamic>>>(request)
@@ -30,18 +26,14 @@ final class ThreadPart implements ThreadPartContract {
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(ThreadResult(channels
+    return ThreadResult(channels
         .asMap()
-        .map((key, value) => MapEntry(value.id, value as ServerChannel))));
-
-    return completer.future;
+        .map((key, value) => MapEntry(value.id, value as ServerChannel)));
   }
 
   @override
   Future<Map<Snowflake, PublicThreadChannel>> fetchPublicArchived(
       Object channelId) async {
-    final completer = Completer<Map<Snowflake, PublicThreadChannel>>();
-
     final req = Request.json(endpoint: '/channels/$channelId/archived/public');
     final result = await _dataStore.requestBucket
         .query<List<Map<String, dynamic>>>(req)
@@ -52,18 +44,14 @@ final class ThreadPart implements ThreadPartContract {
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(channels
+    return channels
         .asMap()
-        .map((key, value) => MapEntry(value.id, value as PublicThreadChannel)));
-
-    return completer.future;
+        .map((key, value) => MapEntry(value.id, value as PublicThreadChannel));
   }
 
   @override
   Future<Map<Snowflake, PrivateThreadChannel>> fetchPrivateArchived(
       Object channelId) async {
-    final completer = Completer<Map<Snowflake, PrivateThreadChannel>>();
-
     final req = Request.json(endpoint: '/channels/$channelId/archived/private');
     final result = await _dataStore.requestBucket
         .query<List<Map<String, dynamic>>>(req)
@@ -74,18 +62,14 @@ final class ThreadPart implements ThreadPartContract {
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(channels.asMap().map(
-        (key, value) => MapEntry(value.id, value as PrivateThreadChannel)));
-
-    return completer.future;
+    return channels.asMap().map(
+        (key, value) => MapEntry(value.id, value as PrivateThreadChannel));
   }
 
   @override
   Future<T> createWithoutMessage<T extends ThreadChannel>(
       Object? serverId, Object? channelId, ThreadChannelBuilder builder,
       {String? reason}) async {
-    final completer = Completer<T>();
-
     final req = Request.json(
         endpoint: '/channels/$channelId/threads',
         body: builder.build(),
@@ -104,16 +88,13 @@ final class ThreadPart implements ThreadPartContract {
       throw SerializationException(
           'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(serialized);
-    return completer.future;
+    return serialized;
   }
 
   @override
   Future<T> createFromMessage<T extends ThreadChannel>(Object? serverId,
       Object? channelId, Object? messageId, ThreadChannelBuilder builder,
       {String? reason}) async {
-    final completer = Completer<T>();
-
     final req = Request.json(
         endpoint: '/channels/$channelId/messages/$messageId/threads',
         body: builder.build(),
@@ -132,7 +113,6 @@ final class ThreadPart implements ThreadPartContract {
       throw SerializationException(
           'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(serialized);
-    return completer.future;
+    return serialized;
   }
 }

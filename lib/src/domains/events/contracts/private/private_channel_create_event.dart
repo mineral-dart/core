@@ -1,15 +1,12 @@
 import 'dart:async';
 
 import 'package:mineral/src/api/private/channels/private_channel.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef PrivateChannelCreateEventHandler = FutureOr<void> Function(
     PrivateChannel);
 
-abstract class PrivateChannelCreateEvent implements ListenableEvent {
-  @override
-  String? customId;
-
+abstract class PrivateChannelCreateEvent extends BaseListenableEvent {
   @override
   Function get handler => handle;
 

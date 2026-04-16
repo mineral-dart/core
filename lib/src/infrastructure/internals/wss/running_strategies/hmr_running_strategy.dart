@@ -31,7 +31,7 @@ final class HmrRunningStrategy implements RunningStrategy {
 
   @override
   Future<void> init(RunningStrategyFactory createShards) async {
-    if (Isolate.current.debugName == 'main') {
+    if (Isolate.current.debugName == 'main') { // Main isolate spawns HMR child
       final mainFile =
           File(path.joinAll([Directory.current.path, 'bin', 'main.dart']));
       final tempDirectory = await Directory.systemTemp.createTemp();

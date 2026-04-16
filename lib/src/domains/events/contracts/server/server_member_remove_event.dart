@@ -3,16 +3,13 @@ import 'dart:async';
 import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/api/server/server.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef ServerMemberRemoveEventHandler = FutureOr<void> Function(User?, Server);
 
-abstract class ServerMemberRemoveEvent implements ListenableEvent {
+abstract class ServerMemberRemoveEvent extends BaseListenableEvent {
   @override
   Event get event => Event.serverMemberRemove;
-
-  @override
-  String? customId;
 
   @override
   Function get handler => handle;

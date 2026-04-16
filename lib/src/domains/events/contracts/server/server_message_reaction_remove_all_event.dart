@@ -2,17 +2,14 @@ import 'dart:async';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef ServerMessageReactionRemoveAllHandler = FutureOr<void> Function(
     Server, ServerTextChannel, Message);
 
-abstract class ServerMessageReactionRemoveAllEvent implements ListenableEvent {
+abstract class ServerMessageReactionRemoveAllEvent extends BaseListenableEvent {
   @override
   Event get event => Event.serverMessageReactionRemoveAll;
-
-  @override
-  String? customId;
 
   @override
   Function get handler => handle;

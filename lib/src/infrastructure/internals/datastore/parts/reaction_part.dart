@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
@@ -17,7 +15,6 @@ final class ReactionPart implements ReactionPartContract {
       Object channelId, Object messageId, PartialEmoji emoji) async {
     final value = emoji.id != null ? '${emoji.name}:${emoji.id}' : emoji.name;
 
-    final complete = Completer<Map<Snowflake, User>>();
     final req = Request.json(
         endpoint: '/channels/$channelId/messages/$messageId/reactions/$value');
     final result = await _dataStore.requestBucket
@@ -29,9 +26,7 @@ final class ReactionPart implements ReactionPartContract {
       return _marshaller.serializers.user.serialize(raw);
     }).wait;
 
-    complete
-        .complete(users.asMap().map((key, value) => MapEntry(value.id, value)));
-    return complete.future;
+    return users.asMap().map((key, value) => MapEntry(value.id, value));
   }
 
   @override

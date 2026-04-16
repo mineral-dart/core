@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:io';
 
 import 'package:mineral/api.dart';
@@ -25,8 +24,6 @@ final class MessagePart implements MessagePartContract {
     Snowflake? after,
     int? limit,
   }) async {
-    final completer = Completer<Map<Snowflake, T>>();
-
     final query = {
       if (around != null) 'around': around.value,
       if (before != null) 'before': before.value,
@@ -73,8 +70,7 @@ final class MessagePart implements MessagePartContract {
       (previousValue, element) => {...previousValue, element.id: element},
     );
 
-    completer.complete(results);
-    return completer.future;
+    return results;
   }
 
   @override
@@ -83,8 +79,6 @@ final class MessagePart implements MessagePartContract {
     Object id,
     bool force,
   ) async {
-    final completer = Completer<T>();
-
     final cacheKey = _marshaller.cacheKey.message(channelId, id);
     final cachedMessage = await _marshaller.cache?.get(cacheKey);
     if (!force && cachedMessage != null) {
@@ -96,9 +90,7 @@ final class MessagePart implements MessagePartContract {
           'Expected $T but got ${message.runtimeType}',
         );
       }
-      completer.complete(message as T);
-
-      return completer.future;
+      return message as T;
     }
 
     final req = Request.json(endpoint: '/channels/$channelId/messages/$id');
@@ -122,8 +114,7 @@ final class MessagePart implements MessagePartContract {
         'Expected $T but got ${serialized.runtimeType}',
       );
     }
-    completer.complete(serialized as T);
-    return completer.future;
+    return serialized as T;
   }
 
   @override
@@ -132,7 +123,6 @@ final class MessagePart implements MessagePartContract {
     required Object channelId,
     required MessageBuilder builder,
   }) async {
-    final completer = Completer<T>();
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     final payload = {
@@ -170,9 +160,7 @@ final class MessagePart implements MessagePartContract {
       throw SerializationException(
         'Expected $T but got ${message.runtimeType}',
       );
-    completer.complete(message);
-
-    return completer.future;
+    return message;
   }
 
   @override
@@ -282,7 +270,6 @@ final class MessagePart implements MessagePartContract {
 
   @override
   Future<T> sendPoll<T extends Message>(String channelId, Poll poll) async {
-    final completer = Completer<T>();
     final req = Request.json(
       endpoint: '/channels/$channelId/messages',
       body: {'poll': _marshaller.serializers.poll.deserialize(poll)},
@@ -309,9 +296,7 @@ final class MessagePart implements MessagePartContract {
       throw SerializationException(
         'Expected $T but got ${serializedMessage.runtimeType}',
       );
-    completer.complete(serializedMessage);
-
-    return completer.future;
+    return serializedMessage;
   }
 
   @override
@@ -321,8 +306,6 @@ final class MessagePart implements MessagePartContract {
     Snowflake messageId,
     int answerId,
   ) async {
-    final completer = Completer<PollAnswerVote>();
-
     final req = Request.json(
       endpoint:
           '/channels/${channelId.value}/polls/${messageId.value}/answers/$answerId',
@@ -350,7 +333,6 @@ final class MessagePart implements MessagePartContract {
       answerPayload,
     );
 
-    completer.complete(answer);
-    return completer.future;
+    return answer;
   }
 }

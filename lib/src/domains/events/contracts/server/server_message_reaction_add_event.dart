@@ -2,17 +2,14 @@ import 'dart:async';
 
 import 'package:mineral/src/api/common/message_reaction.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef ServerMessageReactionAddHandler = FutureOr<void> Function(
     MessageReaction reaction);
 
-abstract class ServerMessageReactionAddEvent implements ListenableEvent {
+abstract class ServerMessageReactionAddEvent extends BaseListenableEvent {
   @override
   Event get event => Event.serverMessageReactionAdd;
-
-  @override
-  String? customId;
 
   @override
   Function get handler => handle;

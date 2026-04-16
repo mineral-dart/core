@@ -2,16 +2,13 @@ import 'dart:async';
 
 import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef VoiceConnectEventHandler = FutureOr Function(VoiceState);
 
-abstract class VoiceConnectEvent implements ListenableEvent {
+abstract class VoiceConnectEvent extends BaseListenableEvent {
   @override
   Event get event => Event.voiceConnect;
-
-  @override
-  String? customId;
 
   @override
   Function get handler => handle;

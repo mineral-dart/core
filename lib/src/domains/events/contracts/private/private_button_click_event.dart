@@ -2,17 +2,14 @@ import 'dart:async';
 
 import 'package:mineral/src/domains/components/buttons/contexts/private_button_context.dart';
 import 'package:mineral/src/domains/events/event.dart';
-import 'package:mineral/src/domains/events/types/listenable_event.dart';
+import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 
 typedef PrivateButtonClickEventHandler = FutureOr<void> Function(
     PrivateButtonContext);
 
-abstract class PrivateButtonClickEvent implements ListenableEvent {
+abstract class PrivateButtonClickEvent extends BaseListenableEvent {
   @override
   Event get event => Event.privateButtonClick;
-
-  @override
-  String? customId;
 
   @override
   Function get handler => handle;

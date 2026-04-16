@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
@@ -15,7 +13,6 @@ final class ServerPart implements ServerPartContract {
 
   @override
   Future<Server> get(Object id, bool force) async {
-    final completer = Completer<Server>();
     final String key = _marshaller.cacheKey.server(id);
 
     final cachedServer = await _marshaller.cache?.get(key);
@@ -23,8 +20,7 @@ final class ServerPart implements ServerPartContract {
       final server =
           await _marshaller.serializers.server.serialize(cachedServer);
 
-      completer.complete(server);
-      return completer.future;
+      return server;
     }
 
     final req = Request.json(endpoint: '/guilds/$id');
@@ -35,8 +31,7 @@ final class ServerPart implements ServerPartContract {
     final raw = await _marshaller.serializers.server.normalize(result);
     final server = await _marshaller.serializers.server.serialize(raw);
 
-    completer.complete(server);
-    return completer.future;
+    return server;
   }
 
   @override
