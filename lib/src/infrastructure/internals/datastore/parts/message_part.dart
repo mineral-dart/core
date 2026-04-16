@@ -1,19 +1,18 @@
-import 'dart:io';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
 import 'package:mineral/src/domains/common/utils/attachment.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
-import 'package:mineral/src/infrastructure/io/exceptions/http_status_exception.dart';
+import 'package:mineral/src/infrastructure/internals/datastore/parts/response_handler.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/serialization_exception.dart';
 
-final class MessagePart implements MessagePartContract {
+final class MessagePart with ResponseHandler implements MessagePartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
 
+  @override
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
@@ -38,20 +37,10 @@ final class MessagePart implements MessagePartContract {
     );
     final response = await _dataStore.client.get(req);
 
-    final messages = await switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) => Future.wait(
-          List.from(
-            response.body as Iterable<dynamic>,
-          ).map((e) async => _marshaller.serializers.message.normalize(e as Map<String, dynamic>)),
-        ),
-      int() when status.isRateLimit(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      int() when status.isError(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      _ => throw HttpStatusException(response.statusCode, response.bodyString),
-    };
+    final messages = await handleResponse(response, (body) => Future.wait(
+      List.from(body as Iterable<dynamic>)
+          .map((e) async => _marshaller.serializers.message.normalize(e as Map<String, dynamic>)),
+    ));
 
     final serializedMessages = await Future.wait(
       messages.map((e) async {
@@ -96,17 +85,8 @@ final class MessagePart implements MessagePartContract {
     final req = Request.json(endpoint: '/channels/$channelId/messages/$id');
     final response = await _dataStore.client.get(req);
 
-    final message = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body as Map<String, dynamic>),
-      int() when status.isRateLimit(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      int() when status.isError(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      _ => throw HttpStatusException(response.statusCode, response.bodyString),
-    };
+    final message = await handleResponse(response, (body) =>
+        _marshaller.serializers.message.normalize(body as Map<String, dynamic>));
 
     final serialized = await _marshaller.serializers.message.serialize(message);
     if (serialized is! T) {
@@ -143,17 +123,8 @@ final class MessagePart implements MessagePartContract {
 
     final response = await _dataStore.client.patch(req);
 
-    final rawMessage = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body as Map<String, dynamic>),
-      int() when status.isRateLimit(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      int() when status.isError(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      _ => throw HttpStatusException(response.statusCode, response.bodyString),
-    };
+    final rawMessage = await handleResponse(response, (body) =>
+        _marshaller.serializers.message.normalize(body as Map<String, dynamic>));
 
     final message = await _marshaller.serializers.message.serialize(rawMessage);
     if (message is! T)
@@ -215,17 +186,8 @@ final class MessagePart implements MessagePartContract {
 
     final response = await _dataStore.client.post(req);
 
-    final message = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body as Map<String, dynamic>),
-      int() when status.isRateLimit(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      int() when status.isError(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      _ => throw HttpStatusException(response.statusCode, response.bodyString),
-    };
+    final message = await handleResponse(response, (body) =>
+        _marshaller.serializers.message.normalize(body as Map<String, dynamic>));
 
     final serialized = await _marshaller.serializers.message.serialize(message);
     if (serialized is! T)
@@ -276,17 +238,8 @@ final class MessagePart implements MessagePartContract {
     );
     final response = await _dataStore.client.post(req);
 
-    final message = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body as Map<String, dynamic>),
-      int() when status.isRateLimit(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      int() when status.isError(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      _ => throw HttpStatusException(response.statusCode, response.bodyString),
-    };
+    final message = await handleResponse(response, (body) =>
+        _marshaller.serializers.message.normalize(body as Map<String, dynamic>));
 
     final serializedMessage = await _marshaller.serializers.message.serialize(
       message,
@@ -317,17 +270,8 @@ final class MessagePart implements MessagePartContract {
     response.body['channel_id'] = channelId.value;
     response.body['server_id'] = serverId?.value;
 
-    final answerPayload = switch (response.statusCode) {
-      int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.pollAnswerVote.normalize(response.body as Map<String, dynamic>),
-      int() when status.isRateLimit(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      int() when status.isError(response.statusCode) => throw HttpException(
-          response.bodyString,
-        ),
-      _ => throw HttpStatusException(response.statusCode, response.bodyString),
-    };
+    final answerPayload = await handleResponse(response, (body) =>
+        _marshaller.serializers.pollAnswerVote.normalize(body as Map<String, dynamic>));
 
     final answer = await _marshaller.serializers.pollAnswerVote.serialize(
       answerPayload,
