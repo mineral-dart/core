@@ -110,11 +110,11 @@ final class ServerSerializer implements SerializerContract<Server> {
             DefaultMessageNotification.values,
             settings['default_message_notifications'],
             orElse: DefaultMessageNotification.unknown),
-        features: List<String>.from(settings['features'] as Iterable<dynamic>),
+        features: List.unmodifiable(List<String>.from(settings['features'] as Iterable<dynamic>)),
         mfaLevel: findInEnum(MfaLevel.values, settings['mfa_level'],
             orElse: MfaLevel.unknown),
-        systemChannelFlags: bitfieldToList(SystemChannelFlag.values,
-            settings['system_channel_flags'] as int),
+        systemChannelFlags: List.unmodifiable(bitfieldToList(SystemChannelFlag.values,
+            settings['system_channel_flags'] as int)),
         vanityUrlCode: payload['vanity_url_code'] as String?,
         subscription: ServerSubscription(
           tier: findInEnum(

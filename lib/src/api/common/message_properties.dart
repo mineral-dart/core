@@ -30,9 +30,9 @@ final class MessageProperties<T extends Channel> {
 
   factory MessageProperties.fromJson(Map<String, dynamic> json) {
     final embedSerializer = ioc.resolve<MarshallerContract>().serializers.embed;
-    final embeds = List.from(json['embeds'] as Iterable<dynamic>)
-        .map((element) => embedSerializer.serialize(element as Map<String, dynamic>) as MessageEmbed)
-        .toList();
+    final embeds = List<MessageEmbed>.unmodifiable(
+        (json['embeds'] as Iterable<dynamic>)
+            .map((element) => embedSerializer.serialize(element as Map<String, dynamic>) as MessageEmbed));
 
     return MessageProperties(
       id: Snowflake.parse(json['id']),

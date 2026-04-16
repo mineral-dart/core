@@ -34,7 +34,7 @@ final class ChannelProperties {
   final int? messageCount;
   final int? memberCount;
   final int? defaultAutoArchiveDuration;
-  final List<ChannelPermissionOverwrite>? permissions;
+  final List<ChannelPermissionOverwrite> permissions;
   final int? flags;
   final int? totalMessageSent;
   final dynamic available;
@@ -113,7 +113,7 @@ final class ChannelProperties {
         bitrate: element['bitrate'] as int?,
         userLimit: element['user_limit'] as int?,
         rateLimitPerUser: element['rate_limit_per_user'] as int?,
-        recipients: recipients ?? [],
+        recipients: List.unmodifiable(recipients ?? []),
         icon: element['icon'] as String?,
         ownerId: element['owner_id'] as String?,
         applicationId: element['application_id'] as String?,
@@ -123,11 +123,11 @@ final class ChannelProperties {
         messageCount: element['message_count'] as int?,
         memberCount: element['member_count'] as int?,
         defaultAutoArchiveDuration: element['default_auto_archive_duration'] as int?,
-        permissions: permissionOverwrites,
+        permissions: List.unmodifiable(permissionOverwrites ?? []),
         flags: element['flags'] as int?,
         totalMessageSent: element['total_message_sent'] as int?,
         available: element['available'],
-        appliedTags: element['applied_tags'] as List<Snowflake>? ?? [],
+        appliedTags: List.unmodifiable(element['applied_tags'] as List<Snowflake>? ?? []),
         defaultReactions: element['default_reactions'],
         defaultSortOrder: element['default_sort_order'] as int?,
         defaultForumLayout: element['default_forum_layout'] as int?,

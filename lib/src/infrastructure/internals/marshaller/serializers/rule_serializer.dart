@@ -23,10 +23,10 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
       'triggerMetadata': json['trigger_metadata'],
       'actions': json['actions'],
       'enabled': json['enabled'],
-      'exemptRoles': List<Snowflake>.from(
-          (json['exempt_roles'] as List).map(Snowflake.parse)),
-      'exemptChannels': List<Snowflake>.from(
-          (json['exempt_channels'] as List).map(Snowflake.parse)),
+      'exemptRoles': List<Snowflake>.unmodifiable(List<Snowflake>.from(
+          (json['exempt_roles'] as List).map(Snowflake.parse))),
+      'exemptChannels': List<Snowflake>.unmodifiable(List<Snowflake>.from(
+          (json['exempt_channels'] as List).map(Snowflake.parse))),
     };
 
     final cacheKey =
@@ -46,17 +46,17 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
       eventTypes: findInEnum(AutoModerationEventType.values, json['eventType'],
           orElse: AutoModerationEventType.unknown),
       triggerMetadata: TriggerMetadata.fromJson(json['triggerMetadata'] as Map<String, dynamic>),
-      action: (json['actions'] as List<dynamic>).map((action) {
+      action: List.unmodifiable((json['actions'] as List<dynamic>).map((action) {
         final actionMap = action as Map<String, dynamic>;
         final type = findInEnum(ActionType.values, actionMap['type'],
             orElse: ActionType.unknown);
         return Action(type: type);
-      }).toList(),
+      })),
       enabled: json['enabled'] as bool? ?? true,
-      exemptRoles: List<Snowflake>.from(
-          (json['exemptRoles'] as List).map(Snowflake.parse)),
-      exemptChannels: List<Snowflake>.from(
-          (json['exemptChannels'] as List).map(Snowflake.parse)),
+      exemptRoles: List<Snowflake>.unmodifiable(List<Snowflake>.from(
+          (json['exemptRoles'] as List).map(Snowflake.parse))),
+      exemptChannels: List<Snowflake>.unmodifiable(List<Snowflake>.from(
+          (json['exemptChannels'] as List).map(Snowflake.parse))),
       triggerTypes: findInEnum(TriggerType.values, json['triggerType'],
           orElse: TriggerType.unknown),
     );

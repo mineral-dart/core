@@ -15,8 +15,8 @@ final class Bot {
   final int flags;
   final String? avatar;
   final String sessionType;
-  final List privateChannels;
-  final List presences;
+  final List<dynamic> privateChannels;
+  final List<dynamic> presences;
   final List<String> guildIds;
   final PartialApplication application;
 
@@ -59,9 +59,9 @@ final class Bot {
         flags: user['flags'] as int,
         avatar: user['avatar'] as String?,
         sessionType: json['session_type'] as String,
-        privateChannels: json['private_channels'] as List<dynamic>,
-        presences: json['presences'] as List<dynamic>,
-        guildIds: List<String>.from(
+        privateChannels: List.unmodifiable(json['private_channels'] as List<dynamic>),
+        presences: List.unmodifiable(json['presences'] as List<dynamic>),
+        guildIds: List.unmodifiable(
             (json['guilds'] as Iterable<dynamic>).map((element) => Snowflake.parse((element as Map<String, dynamic>)['id']))),
         application: PartialApplication(
           id: Snowflake.parse(application['id']),

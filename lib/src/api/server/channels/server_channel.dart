@@ -24,7 +24,7 @@ abstract class ServerChannel implements Channel {
 
   int get position => properties.position!;
 
-  List<ChannelPermissionOverwrite> get permissions => properties.permissions!;
+  List<ChannelPermissionOverwrite> get permissions => properties.permissions;
 
   Snowflake? get categoryId => properties.categoryId;
 
