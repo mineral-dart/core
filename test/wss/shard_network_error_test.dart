@@ -73,7 +73,8 @@ final class _FakeWebsocketOrchestrator extends WebsocketOrchestratorContract {
   @override
   RequestQueueEntry? findInRequestQueue(String uid) => null;
   @override
-  void removeFromRequestQueue(RequestQueueEntry entry) => requestQueue.remove(entry);
+  void removeFromRequestQueue(RequestQueueEntry entry) =>
+      requestQueue.remove(entry);
   @override
   ShardingConfigContract get config => _config;
   @override

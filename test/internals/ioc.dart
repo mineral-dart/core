@@ -263,8 +263,7 @@ void main() {
 
     test('middle scope override does not affect grandparent', () {
       final grandparent = IocContainer()..bind<AbstractClass>(Foo.new);
-      final parent = grandparent.createScope()
-        ..bind<AbstractClass>(Bar.new);
+      final parent = grandparent.createScope()..bind<AbstractClass>(Bar.new);
       final grandchild = parent.createScope();
 
       expect(grandchild.resolve<AbstractClass>(), isA<Bar>());
@@ -276,8 +275,7 @@ void main() {
     test('grandchild override does not affect parent or grandparent', () {
       final grandparent = IocContainer()..bind<AbstractClass>(Foo.new);
       final parent = grandparent.createScope();
-      final grandchild = parent.createScope()
-        ..bind<AbstractClass>(Bar.new);
+      final grandchild = parent.createScope()..bind<AbstractClass>(Bar.new);
 
       expect(grandchild.resolve<AbstractClass>(), isA<Bar>());
       expect(parent.resolve<AbstractClass>(), isA<Foo>());

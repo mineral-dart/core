@@ -26,7 +26,8 @@ void main() {
     });
 
     test('InvalidCommandException contains descriptive message', () {
-      final exception = InvalidCommandException('Command /hello already exists');
+      final exception =
+          InvalidCommandException('Command /hello already exists');
       expect(exception.message, contains('/hello'));
       expect(exception.toString(), contains('InvalidCommandException'));
     });

@@ -7,7 +7,8 @@ import 'package:mineral/src/domains/events/types/base_listenable_event.dart';
 typedef PrivateMessageReactionRemoveAllHandler = FutureOr<void> Function(
     PrivateChannel, Message);
 
-abstract class PrivateMessageReactionRemoveAllEvent extends BaseListenableEvent {
+abstract class PrivateMessageReactionRemoveAllEvent
+    extends BaseListenableEvent {
   @override
   Event get event => Event.privateMessageReactionRemoveAll;
 

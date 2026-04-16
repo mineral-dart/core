@@ -189,8 +189,7 @@ void main() {
         await Future<void>.delayed(Duration.zero);
 
         expect(errors.whereType<FatalGatewayException>(), isNotEmpty);
-        expect(logger.errors,
-            contains(contains('Max reconnect attempts')));
+        expect(logger.errors, contains(contains('Max reconnect attempts')));
       });
 
       test('throws FatalGatewayException with correct message', () async {
@@ -247,9 +246,8 @@ void main() {
 
         await Future<void>.delayed(Duration.zero);
 
-        final reconnectWarnings = logger.warnings
-            .where((w) => w.contains('Reconnecting'))
-            .toList();
+        final reconnectWarnings =
+            logger.warnings.where((w) => w.contains('Reconnecting')).toList();
         expect(reconnectWarnings, hasLength(2));
       });
 
@@ -284,9 +282,8 @@ void main() {
         await Future<void>.delayed(Duration.zero);
 
         // Both reconnect attempts should have logged "attempt 1/3"
-        final attemptLogs = logger.warnings
-            .where((w) => w.contains('attempt 1/'))
-            .toList();
+        final attemptLogs =
+            logger.warnings.where((w) => w.contains('attempt 1/')).toList();
         expect(attemptLogs, hasLength(2));
       });
 
@@ -325,9 +322,8 @@ void main() {
         await Future<void>.delayed(Duration.zero);
 
         // After reset, the reconnect should succeed (log a warning, not throw)
-        final postResetWarnings = logger.warnings
-            .where((w) => w.contains('Reconnecting'))
-            .toList();
+        final postResetWarnings =
+            logger.warnings.where((w) => w.contains('Reconnecting')).toList();
         expect(postResetWarnings.length, greaterThanOrEqualTo(2));
         expect(errors.whereType<FatalGatewayException>(), isEmpty);
       });

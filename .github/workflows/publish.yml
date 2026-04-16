@@ -16,7 +16,9 @@ jobs:
       - uses: dart-lang/setup-dart@v1
       - name: Install dependencies
         run: dart pub get
-      # Here you can insert custom steps you need
-      # - run: dart tool/generate-code.dart
+      - name: Analyze
+        run: dart analyze --fatal-infos
+      - name: Run tests
+        run: dart test
       - name: Publish
         run: dart pub publish --force

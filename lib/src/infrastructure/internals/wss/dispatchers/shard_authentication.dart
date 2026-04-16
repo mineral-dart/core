@@ -152,8 +152,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   }
 
   @override
-  Future<void> reconnect() =>
-      _reconnectWithStrategy(action: 'Reconnecting');
+  Future<void> reconnect() => _reconnectWithStrategy(action: 'Reconnecting');
 
   Future<void> resetConnection() =>
       _reconnectWithStrategy(action: 'Resetting connection for');

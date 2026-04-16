@@ -62,8 +62,9 @@ final class ThreadPart implements ThreadPartContract {
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    return channels.asMap().map(
-        (key, value) => MapEntry(value.id, value as PrivateThreadChannel));
+    return channels
+        .asMap()
+        .map((key, value) => MapEntry(value.id, value as PrivateThreadChannel));
   }
 
   @override

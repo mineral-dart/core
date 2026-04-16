@@ -5,7 +5,11 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
 
-typedef RequestQueueEntry = ({String uid, List<String> targetKeys, Completer completer});
+typedef RequestQueueEntry = ({
+  String uid,
+  List<String> targetKeys,
+  Completer completer
+});
 
 abstract class WebsocketOrchestratorContract {
   List<RequestQueueEntry> get requestQueue;

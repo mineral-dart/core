@@ -45,6 +45,5 @@ final class ServerTextChannel extends ServerChannel {
   Future<T> send<T extends Message>(MessageBuilder builder) =>
       methods.send(serverId: properties.serverId, builder: builder);
 
-  Future<T> sendPoll<T extends Message>(Poll poll) =>
-      methods.sendPoll<T>(poll);
+  Future<T> sendPoll<T extends Message>(Poll poll) => methods.sendPoll<T>(poll);
 }

@@ -11,8 +11,8 @@ final class FakeWebsocketOrchestrator extends WebsocketOrchestratorContract {
   final FakeShardingConfig _config;
 
   FakeWebsocketOrchestrator({int maxReconnectAttempts = 3})
-      : _config = FakeShardingConfig(
-            maxReconnectAttempts: maxReconnectAttempts);
+      : _config =
+            FakeShardingConfig(maxReconnectAttempts: maxReconnectAttempts);
 
   @override
   final List<RequestQueueEntry> requestQueue = [];
@@ -25,6 +25,7 @@ final class FakeWebsocketOrchestrator extends WebsocketOrchestratorContract {
     }
     return null;
   }
+
   @override
   void removeFromRequestQueue(RequestQueueEntry entry) =>
       requestQueue.remove(entry);

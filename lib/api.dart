@@ -151,9 +151,9 @@ export 'package:mineral/src/domains/components/modal/modal_context.dart';
 export 'package:mineral/src/domains/components/selects/contexts/private_select_context.dart';
 export 'package:mineral/src/domains/components/selects/contexts/server_select_context.dart';
 export 'package:mineral/src/domains/components/selects/select_context.dart';
-export 'package:mineral/src/domains/events/contracts/common/invite_delete_event.dart';
 export 'package:mineral/src/domains/global_states/global_state.dart';
 export 'package:mineral/src/domains/providers/provider.dart';
+// TODO(audit): Consider moving these internal exports to a separate file in a future major version.
 export 'package:mineral/src/infrastructure/internals/environment/app_env.dart';
 export 'package:mineral/src/infrastructure/internals/wss/encoding_strategies/websocket_encoder.dart';
 export 'package:mineral/src/infrastructure/io/exceptions/mineral_exception.dart';
