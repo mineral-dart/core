@@ -132,13 +132,14 @@ final class ClientBuilder {
     final wsEncodingStrategy =
         env.get(AppEnv.discordWssEncoding, defaultValue: _wssEncoder);
 
-    final http = HttpClient(
-        config: HttpClientConfigImpl(
-            uri: Uri.parse('https://discord.com/api/v$httpVersion'),
-            headers: {
-          Header.userAgent('Mineral'),
-          Header.contentType('application/json'),
-        }));
+    final http = ResilientHttpClient(
+        HttpClient(
+            config: HttpClientConfigImpl(
+                uri: Uri.parse('https://discord.com/api/v$httpVersion'),
+                headers: {
+              Header.userAgent('Mineral'),
+              Header.contentType('application/json'),
+            })));
 
     final shardConfig = ShardingConfig(
         token: token,

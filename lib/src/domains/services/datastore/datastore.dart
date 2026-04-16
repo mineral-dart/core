@@ -1,12 +1,12 @@
 import 'package:mineral/contracts.dart';
-import 'package:mineral/services.dart';
+import 'package:mineral/src/domains/services/http/http.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/thread_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/request_bucket.dart';
 
 abstract class DataStoreContract {
   RequestBucket get requestBucket;
 
-  HttpClient get client;
+  HttpClientContract get client;
 
   ChannelPartContract get channel;
 

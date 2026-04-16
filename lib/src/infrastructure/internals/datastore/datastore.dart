@@ -14,14 +14,14 @@ import 'package:mineral/src/infrastructure/internals/datastore/parts/sticker_par
 import 'package:mineral/src/infrastructure/internals/datastore/parts/thread_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/user_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/request_bucket.dart';
-import 'package:mineral/src/infrastructure/services/http/http_client.dart';
+import 'package:mineral/src/domains/services/http/http.dart';
 
 final class DataStore implements DataStoreContract {
   @override
   final RequestBucket requestBucket = RequestBucket();
 
   @override
-  final HttpClient client;
+  final HttpClientContract client;
 
   late final Kernel kernel;
 
