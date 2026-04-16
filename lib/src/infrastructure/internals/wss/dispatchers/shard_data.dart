@@ -20,7 +20,7 @@ final class ShardData implements ShardDataContract {
 
     if (message.content case ShardMessage(:final type, :final payload)
         when type == PacketType.ready.name) {
-      _shard.authentication.setupRequirements(payload);
+      _shard.authentication.setupRequirements(payload as Map<String, dynamic>);
     }
 
     if (message.content case ShardMessage(:final type)

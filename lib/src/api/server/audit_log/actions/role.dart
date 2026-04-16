@@ -12,19 +12,19 @@ final class RoleCreateAuditLog extends AuditLog {
   final List<Change> changes;
 
   String get roleName =>
-      changes.firstWhere((element) => element.key == 'name').after;
+      changes.firstWhere((element) => element.key == 'name').after as String;
 
   Permissions get roleOermissions => Permissions.fromInt(
-      changes.firstWhere((element) => element.key == 'permissions').after);
+      changes.firstWhere((element) => element.key == 'permissions').after as int);
 
   Color get roleColor =>
-      Color.of(changes.firstWhere((element) => element.key == 'color').after);
+      Color.of(changes.firstWhere((element) => element.key == 'color').after as int);
 
   bool get roleIsHoist =>
-      changes.firstWhere((element) => element.key == 'hoist').after;
+      changes.firstWhere((element) => element.key == 'hoist').after as bool;
 
   bool get roleIsMentionable =>
-      changes.firstWhere((element) => element.key == 'mentionable').after;
+      changes.firstWhere((element) => element.key == 'mentionable').after as bool;
 
   RoleCreateAuditLog(
       {required Snowflake serverId,
@@ -53,8 +53,8 @@ final class RoleUpdateAuditLog extends AuditLog {
     return switch (permissions) {
       final Change change => Change(
           change.key,
-          Permissions.fromInt(change.before).list,
-          Permissions.fromInt(change.after).list,
+          Permissions.fromInt(change.before as int).list,
+          Permissions.fromInt(change.after as int).list,
         ),
       _ => null,
     };
@@ -75,8 +75,8 @@ final class RoleUpdateAuditLog extends AuditLog {
     return switch (parameter) {
       final Change change => Change(
           change.key,
-          transformer(change.before),
-          transformer(change.after),
+          transformer(change.before as S),
+          transformer(change.after as S),
         ),
       _ => null,
     };

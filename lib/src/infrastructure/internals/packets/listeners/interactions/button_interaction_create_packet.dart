@@ -24,22 +24,23 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
     final componentType = ComponentType.values.firstWhereOrNull(
         (e) => e.value == message.payload['data']['component_type']);
 
+    final payload = message.payload as Map<String, dynamic>;
     if (type == InteractionType.messageComponent &&
         componentType == ComponentType.button) {
-      final serverId = Snowflake.nullable(message.payload['guild']?['id']);
+      final serverId = Snowflake.nullable((payload['guild'] as Map<String, dynamic>?)?['id'] as String?);
 
       final type = ComponentType.values.firstWhereOrNull(
-          (e) => e.value == message.payload['data']['component_type']);
+          (e) => e.value == (payload['data'] as Map<String, dynamic>)['component_type']);
 
       if (type == null) {
         _logger.warn(
-            'Component type ${message.payload['data']['component_type']} not found');
+            'Component type ${(payload['data'] as Map<String, dynamic>)['component_type']} not found');
         return;
       }
 
       return switch (serverId) {
-        String() => _handleServerButton(message.payload, dispatch),
-        _ => _handlePrivateButton(message.payload, dispatch),
+        String() => _handleServerButton(payload, dispatch),
+        _ => _handlePrivateButton(payload, dispatch),
       };
     }
   }
@@ -48,23 +49,23 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final metadata = payload['message']['interaction_metadata'];
     final targetButton =
-        findButtonByCustomId(payload, payload['data']['custom_id']);
+        findButtonByCustomId(payload, (payload['data'] as Map<String, dynamic>)['custom_id'] as String);
     final type = ButtonType.values
         .firstWhereOrNull((e) => e.value == targetButton?['type']);
 
     if (type == null) {
-      _logger.warn('Button type ${metadata['type']} not found');
+      _logger.warn('Button type ${(metadata as Map<String, dynamic>)['type']} not found');
       return;
     }
 
     final ctx = ServerButtonContext(
       id: Snowflake.parse(payload['id']),
       applicationId: Snowflake.parse(payload['application_id']),
-      version: payload['version'],
-      token: payload['token'],
-      customId: payload['data']['custom_id'],
-      channelId: Snowflake.parse(payload['message']['channel_id']),
-      messageId: Snowflake.parse(payload['message']['id']),
+      version: payload['version'] as int,
+      token: payload['token'] as String,
+      customId: (payload['data'] as Map<String, dynamic>)['custom_id'] as String,
+      channelId: Snowflake.parse((payload['message'] as Map<String, dynamic>)['channel_id']),
+      messageId: Snowflake.parse((payload['message'] as Map<String, dynamic>)['id']),
     );
 
     dispatch(
@@ -79,24 +80,24 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final metadata = payload['message']['interaction_metadata'];
     final targetButton =
-        findButtonByCustomId(payload, payload['data']['custom_id']);
+        findButtonByCustomId(payload, (payload['data'] as Map<String, dynamic>)['custom_id'] as String);
     final type = ButtonType.values
         .firstWhereOrNull((e) => e.value == targetButton?['custom_id']);
 
     if (type == null) {
-      _logger.warn('Button type ${metadata['type']} not found');
+      _logger.warn('Button type ${(metadata as Map<String, dynamic>)['type']} not found');
       return;
     }
 
     final ctx = PrivateButtonContext(
       id: Snowflake.parse(payload['id']),
       applicationId: Snowflake.parse(payload['application_id']),
-      version: payload['version'],
-      token: payload['token'],
-      customId: payload['data']['custom_id'],
-      authorId: Snowflake.parse(payload['member']['user']['id']),
+      version: payload['version'] as int,
+      token: payload['token'] as String,
+      customId: (payload['data'] as Map<String, dynamic>)['custom_id'] as String,
+      authorId: Snowflake.parse(((payload['member'] as Map<String, dynamic>)['user'] as Map<String, dynamic>)['id']),
       channelId: Snowflake.parse(payload['channel_id']),
-      messageId: Snowflake.parse(payload['message']['id']),
+      messageId: Snowflake.parse((payload['message'] as Map<String, dynamic>)['id']),
     );
 
     dispatch(

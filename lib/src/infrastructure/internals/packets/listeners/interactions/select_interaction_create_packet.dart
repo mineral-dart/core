@@ -23,37 +23,39 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final payload = message.payload as Map<String, dynamic>;
+    final data = payload['data'] as Map<String, dynamic>;
     final type = InteractionType.values
-        .firstWhereOrNull((e) => e.value == message.payload['type']);
+        .firstWhereOrNull((e) => e.value == payload['type']);
 
     final componentType = ComponentType.values.firstWhereOrNull(
-        (e) => e.value == message.payload['data']['component_type']);
+        (e) => e.value == data['component_type']);
 
     if (type == InteractionType.messageComponent &&
         ComponentType.selectMenus.contains(componentType)) {
       final selectMenuType = ComponentType.values.firstWhereOrNull(
-          (e) => e.value == message.payload['data']['component_type']);
+          (e) => e.value == data['component_type']);
 
-      final serverId = Snowflake.nullable(message.payload['guild_id']);
+      final serverId = Snowflake.nullable(payload['guild_id'] as String?);
       final SelectContext ctx = await switch (serverId) {
-        String() => ServerSelectContext.fromMap(_dataStore, message.payload)
+        String() => ServerSelectContext.fromMap(_dataStore, payload)
             as Future<SelectContext>,
         _ =>
-          PrivateSelectContext.fromMap(_marshaller, _dataStore, message.payload)
+          PrivateSelectContext.fromMap(_marshaller, _dataStore, payload)
               as Future<SelectContext>,
       };
 
       switch (selectMenuType) {
         case ComponentType.channelSelectMenu:
-          _dispatchChannelSelectMenu(ctx, message.payload, dispatch);
+          _dispatchChannelSelectMenu(ctx, payload, dispatch);
         case ComponentType.roleSelectMenu:
-          _dispatchRoleSelectMenu(ctx, message.payload, dispatch);
+          _dispatchRoleSelectMenu(ctx, payload, dispatch);
         case ComponentType.userSelectMenu:
-          _dispatchUserSelectMenu(ctx, message.payload, dispatch);
+          _dispatchUserSelectMenu(ctx, payload, dispatch);
         case ComponentType.mentionableSelectMenu:
-          _dispatchMentionableSelectMenu(ctx, message.payload, dispatch);
+          _dispatchMentionableSelectMenu(ctx, payload, dispatch);
         case ComponentType.textSelectMenu:
-          _dispatchTextSelectMenu(ctx, message.payload, dispatch);
+          _dispatchTextSelectMenu(ctx, payload, dispatch);
         default:
           _logger.warn('Select menu type $selectMenuType not found');
       }
@@ -63,10 +65,11 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
   Future<void> _dispatchChannelSelectMenu(SelectContext ctx,
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final serverChannels =
-        await _dataStore.channel.fetch(payload['guild_id'], false);
+        await _dataStore.channel.fetch(payload['guild_id'] as String, false);
 
-    final resolvedData = payload['data']['resolved'];
-    final channelIds = Map.from(resolvedData['channels']).keys;
+    final data = payload['data'] as Map<String, dynamic>;
+    final resolvedData = data['resolved'] as Map<String, dynamic>;
+    final channelIds = Map.from(resolvedData['channels'] as Map<dynamic, dynamic>).keys;
 
     final channels =
         channelIds.map((id) => serverChannels[id]).whereType<ServerChannel>();
@@ -88,10 +91,11 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _dispatchRoleSelectMenu(SelectContext ctx,
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final serverRoles = await _dataStore.role.fetch(payload['guild_id'], false);
+    final serverRoles = await _dataStore.role.fetch(payload['guild_id'] as String, false);
 
-    final resolvedData = payload['data']['resolved'];
-    final roleIds = Map.from(resolvedData['roles']).keys;
+    final data = payload['data'] as Map<String, dynamic>;
+    final resolvedData = data['resolved'] as Map<String, dynamic>;
+    final roleIds = Map.from(resolvedData['roles'] as Map<dynamic, dynamic>).keys;
 
     final resolvedRoles = roleIds.map((id) => serverRoles[id]);
 
@@ -105,8 +109,9 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _dispatchUserSelectMenu(SelectContext ctx,
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final resolvedData = payload['data']['resolved'];
-    final userIds = Map.from(resolvedData['users']).keys;
+    final data = payload['data'] as Map<String, dynamic>;
+    final resolvedData = data['resolved'] as Map<String, dynamic>;
+    final userIds = Map.from(resolvedData['users'] as Map<dynamic, dynamic>).keys;
 
     final event = switch (ctx) {
       ServerSelectContext() => Event.serverMemberSelect,
@@ -121,10 +126,10 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
     final resolvedResource = await switch (ctx) {
       ServerSelectContext() => Future.wait(userIds.map((id) {
-          return _dataStore.member.get(payload['guild_id'], id, false);
+          return _dataStore.member.get(payload['guild_id'] as String, id as String, false);
         })),
       PrivateSelectContext() =>
-        Future.wait(userIds.map((id) => _dataStore.user.get(id, false))),
+        Future.wait(userIds.map((id) => _dataStore.user.get(id as String, false))),
       _ => Future.value([]),
     };
 
@@ -142,20 +147,22 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     Map<String, dynamic> payload,
     DispatchEvent dispatch,
   ) async {
-    final resolvedData = payload['data']['resolved'];
-    final values = List<String>.from(payload['data']['values'] ?? []);
-    final guildId = payload['guild_id'];
+    final data = payload['data'] as Map<String, dynamic>;
+    final resolvedData = data['resolved'] as Map<String, dynamic>;
+    final values = List<String>.from(data['values'] as Iterable<dynamic>? ?? []);
+    final guildId = payload['guild_id'] as String?;
 
     final List<dynamic> mentionables = [];
     for (final id in values) {
-      if (resolvedData['users'] != null && resolvedData['users'][id] != null) {
+      final users = resolvedData['users'] as Map<String, dynamic>?;
+      final roles = resolvedData['roles'] as Map<String, dynamic>?;
+      if (users != null && users[id] != null) {
         final user = await _dataStore.user.get(id, false);
         if (user != null) {
           mentionables.add(user);
         }
-      } else if (resolvedData['roles'] != null &&
-          resolvedData['roles'][id] != null) {
-        final role = await _dataStore.role.get(guildId, id, false);
+      } else if (roles != null && roles[id] != null) {
+        final role = await _dataStore.role.get(guildId!, id, false);
         if (role != null) {
           mentionables.add(role);
         }
@@ -174,7 +181,7 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
   Future<void> _dispatchTextSelectMenu(SelectContext ctx,
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final List<String> resolvedText = List.from(payload['data']['values']);
+    final List<String> resolvedText = List.from((payload['data'] as Map<String, dynamic>)['values'] as Iterable<dynamic>);
 
     _interactiveComponentManager.dispatch(ctx.customId, [ctx, resolvedText]);
 

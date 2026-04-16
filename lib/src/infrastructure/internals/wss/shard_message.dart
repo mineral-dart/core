@@ -27,10 +27,10 @@ final class ShardMessage<T> implements ShardMessageContract<T, OpCode> {
         OpCode.unknown;
 
     return ShardMessage(
-        type: message['t'],
+        type: message['t'] as String?,
         opCode: opCode,
-        sequence: message['s'],
-        payload: message['d']);
+        sequence: message['s'] as int?,
+        payload: message['d'] as T);
   }
 
   @override

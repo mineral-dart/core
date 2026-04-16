@@ -19,15 +19,18 @@ final class ServerModalContext extends ComponentContextBase
 
   static Future<ServerModalContext> fromMap(
       DataStoreContract datastore, Map<String, dynamic> payload) async {
+    final data = payload['data'] as Map<String, dynamic>;
+    final memberMap = payload['member'] as Map<String, dynamic>;
+    final memberUser = memberMap['user'] as Map<String, dynamic>;
     return ServerModalContext(
-      customId: payload['data']['custom_id'],
+      customId: data['custom_id'] as String,
       id: Snowflake.parse(payload['id']),
       applicationId: Snowflake.parse(payload['application_id']),
-      token: payload['token'],
-      version: payload['version'],
+      token: payload['token'] as String,
+      version: payload['version'] as int,
       member: (await datastore.member.get(
-        payload['guild_id'],
-        payload['member']['user']['id'],
+        payload['guild_id'] as String,
+        memberUser['id'] as String,
         false,
       ))!,
     );

@@ -22,10 +22,10 @@ final class MessageEmbedImage {
 
   factory MessageEmbedImage.fromJson(Map<String, dynamic> raw) {
     return MessageEmbedImage(
-      url: raw['url'],
-      proxyUrl: raw['proxy_url'],
-      height: raw['height'],
-      width: raw['width'],
+      url: raw['url'] as String,
+      proxyUrl: raw['proxy_url'] as String?,
+      height: raw['height'] as int?,
+      width: raw['width'] as int?,
     );
   }
 }

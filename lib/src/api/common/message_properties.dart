@@ -30,22 +30,22 @@ final class MessageProperties<T extends Channel> {
 
   factory MessageProperties.fromJson(Map<String, dynamic> json) {
     final embedSerializer = ioc.resolve<MarshallerContract>().serializers.embed;
-    final embeds = List.from(json['embeds'])
-        .map((element) => embedSerializer.serialize(element) as MessageEmbed)
+    final embeds = List.from(json['embeds'] as Iterable<dynamic>)
+        .map((element) => embedSerializer.serialize(element as Map<String, dynamic>) as MessageEmbed)
         .toList();
 
     return MessageProperties(
       id: Snowflake.parse(json['id']),
-      content: json['content'],
+      content: json['content'] as String,
       channelId: Snowflake.parse(json['channel_id']),
       authorId: Snowflake.nullable(json['author_id']),
       serverId: Snowflake.nullable(json['server_id']),
-      authorIsBot: json['author_is_bot'] ?? false,
+      authorIsBot: json['author_is_bot'] as bool? ?? false,
       embeds: embeds,
-      createdAt: DateTime.parse(json['timestamp']),
+      createdAt: DateTime.parse(json['timestamp'] as String),
       updatedAt: Helper.createOrNull(
           field: json['edited_timestamp'],
-          fn: () => DateTime.parse(json['edited_timestamp'])),
+          fn: () => DateTime.parse(json['edited_timestamp'] as String)),
     );
   }
 }

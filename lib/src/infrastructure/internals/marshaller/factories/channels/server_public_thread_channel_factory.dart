@@ -38,7 +38,7 @@ final class ServerPublicThreadChannelFactory
       'total_message_sent': json['total_message_sent'],
     };
 
-    final cacheKey = marshaller.cacheKey.channel(json['id']);
+    final cacheKey = marshaller.cacheKey.channel(json['id'] as String);
     await marshaller.cache?.put(cacheKey, payload);
 
     return payload;

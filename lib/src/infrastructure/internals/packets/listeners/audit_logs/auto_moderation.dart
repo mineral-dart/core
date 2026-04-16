@@ -17,7 +17,7 @@ Future<AuditLog> autoModerationRuleUpdateAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     ruleId: Snowflake.parse(json['target_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -38,7 +38,7 @@ Future<AuditLog> autoModerationBlockMessageAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     messageId: Snowflake.parse(json['target_id']),
-    ruleTriggerType: json['options']?['rule_trigger_type'] ?? 'Unknown',
+    ruleTriggerType: json['options']?['rule_trigger_type'] as String? ?? 'Unknown',
   );
 }
 
@@ -60,6 +60,6 @@ Future<AuditLog> autoModerationUserCommunicationDisabledAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     moderatorId: Snowflake.parse(json['user_id']),
     userId: Snowflake.parse(json['target_id']),
-    duration: json['options']?['duration'] ?? 0,
+    duration: json['options']?['duration'] as int? ?? 0,
   );
 }

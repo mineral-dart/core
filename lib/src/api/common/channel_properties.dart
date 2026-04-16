@@ -83,55 +83,55 @@ final class ChannelProperties {
     final permissionOverwrites = await Helper.createOrNullAsync(
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
-              List.from(element['permission_overwrites'])
+              List.from(element['permission_overwrites'] as Iterable<dynamic>)
                   .map((json) async => marshaller
                       .serializers.channelPermissionOverwrite
-                      .serialize(json))
+                      .serialize(json as Map<String, dynamic>))
                   .toList(),
             ));
 
     final recipients = await Helper.createOrNullAsync(
         field: element['recipients'],
         fn: () async => Future.wait(
-              List.from(element['recipients']).map((json) async {
-                final raw = await marshaller.serializers.user.normalize(json);
+              List.from(element['recipients'] as Iterable<dynamic>).map((json) async {
+                final raw = await marshaller.serializers.user.normalize(json as Map<String, dynamic>);
                 return marshaller.serializers.user.serialize(raw);
               }).toList(),
             ));
 
     return ChannelProperties(
-        id: Snowflake.parse(element['id']),
+        id: Snowflake.parse(element['id'] as String),
         type: findInEnum(ChannelType.values, element['type'],
             orElse: ChannelType.unknown),
-        name: element['name'],
-        description: element['description'],
-        serverId: Snowflake.nullable(element['server_id']),
-        categoryId: Snowflake.nullable(element['parent_id']),
-        position: element['position'],
-        nsfw: element['nsfw'] ?? false,
-        lastMessageId: Snowflake.nullable(element['last_message_id']),
-        bitrate: element['bitrate'],
-        userLimit: element['user_limit'],
-        rateLimitPerUser: element['rate_limit_per_user'],
+        name: element['name'] as String?,
+        description: element['description'] as String?,
+        serverId: Snowflake.nullable(element['server_id'] as String?),
+        categoryId: Snowflake.nullable(element['parent_id'] as String?),
+        position: element['position'] as int?,
+        nsfw: element['nsfw'] as bool? ?? false,
+        lastMessageId: Snowflake.nullable(element['last_message_id'] as String?),
+        bitrate: element['bitrate'] as int?,
+        userLimit: element['user_limit'] as int?,
+        rateLimitPerUser: element['rate_limit_per_user'] as int?,
         recipients: recipients ?? [],
-        icon: element['icon'],
-        ownerId: element['owner_id'],
-        applicationId: element['application_id'],
-        lastPinTimestamp: element['last_pin_timestamp'],
-        rtcRegion: element['rtc_region'],
-        videoQualityMode: element['video_quality_mode'],
-        messageCount: element['message_count'],
-        memberCount: element['member_count'],
-        defaultAutoArchiveDuration: element['default_auto_archive_duration'],
+        icon: element['icon'] as String?,
+        ownerId: element['owner_id'] as String?,
+        applicationId: element['application_id'] as String?,
+        lastPinTimestamp: element['last_pin_timestamp'] as String?,
+        rtcRegion: element['rtc_region'] as String?,
+        videoQualityMode: element['video_quality_mode'] as int?,
+        messageCount: element['message_count'] as int?,
+        memberCount: element['member_count'] as int?,
+        defaultAutoArchiveDuration: element['default_auto_archive_duration'] as int?,
         permissions: permissionOverwrites,
-        flags: element['flags'],
-        totalMessageSent: element['total_message_sent'],
+        flags: element['flags'] as int?,
+        totalMessageSent: element['total_message_sent'] as int?,
         available: element['available'],
-        appliedTags: element['applied_tags'] ?? [],
+        appliedTags: element['applied_tags'] as List<Snowflake>? ?? [],
         defaultReactions: element['default_reactions'],
-        defaultSortOrder: element['default_sort_order'],
-        defaultForumLayout: element['default_forum_layout'],
-        threads: ThreadsManager(Snowflake.nullable(element['server_id']),
-            Snowflake.nullable(element['id'])));
+        defaultSortOrder: element['default_sort_order'] as int?,
+        defaultForumLayout: element['default_forum_layout'] as int?,
+        threads: ThreadsManager(Snowflake.nullable(element['server_id'] as String?),
+            Snowflake.nullable(element['id'] as String?)));
   }
 }

@@ -16,7 +16,7 @@ final class UnknownChannelFactory
       'name': json['name'],
     };
 
-    final cacheKey = marshaller.cacheKey.channel(json['id']);
+    final cacheKey = marshaller.cacheKey.channel(json['id'] as String);
     await marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -27,7 +27,7 @@ final class UnknownChannelFactory
       MarshallerContract marshaller, Map<String, dynamic> json) async {
     return UnknownChannel(
       id: Snowflake.parse(json['id']),
-      name: json['name'],
+      name: json['name'] as String,
     );
   }
 

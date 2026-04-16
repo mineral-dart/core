@@ -26,7 +26,7 @@ final class RoleSerializer implements SerializerContract<Role> {
     };
 
     final cacheKey =
-        _marshaller.cacheKey.serverRole(json['guild_id'], json['id']);
+        _marshaller.cacheKey.serverRole(json['guild_id'] as String, json['id'] as String);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -35,20 +35,20 @@ final class RoleSerializer implements SerializerContract<Role> {
   @override
   Future<Role> serialize(Map<String, dynamic> json) async => Role(
         id: Snowflake.parse(json['id']),
-        name: json['name'],
-        color: Color.of(json['color'] ?? 0),
-        hoist: json['hoist'] ?? false,
-        position: json['position'] ?? 0,
+        name: json['name'] as String,
+        color: Color.of(json['color'] as int? ?? 0),
+        hoist: json['hoist'] as bool? ?? false,
+        position: json['position'] as int? ?? 0,
         permissions: switch (json['permissions']) {
-          int() => Permissions.fromInt(json['permissions']),
-          String() => Permissions.fromInt(int.parse(json['permissions'])),
+          int() => Permissions.fromInt(json['permissions'] as int),
+          String() => Permissions.fromInt(int.parse(json['permissions'] as String)),
           _ => Permissions.fromInt(0),
         },
-        managed: json['managed'],
-        mentionable: json['mentionable'],
-        flags: json['flags'],
-        icon: json['icon'],
-        unicodeEmoji: json['unicode_emoji'],
+        managed: json['managed'] as bool,
+        mentionable: json['mentionable'] as bool,
+        flags: json['flags'] as int,
+        icon: json['icon'] as String?,
+        unicodeEmoji: json['unicode_emoji'] as String?,
         serverId: Snowflake.parse(json['server_id']),
       );
 

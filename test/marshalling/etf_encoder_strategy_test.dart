@@ -111,7 +111,7 @@ void main() {
         expect(result.content, isNotNull);
 
         // Verify we can unpack it back
-        final unpacked = eterl.unpack<Map<String, dynamic>>(result.content);
+        final unpacked = eterl.unpack<Map<String, dynamic>>(result.content as List<int>);
         expect(unpacked['op'], 1);
         expect(unpacked['d'], isNull);
       });

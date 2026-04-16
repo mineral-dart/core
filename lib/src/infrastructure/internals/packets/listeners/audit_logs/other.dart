@@ -7,7 +7,7 @@ Future<AuditLog> creatorMonetizationRequestCreatedAuditLogHandler(
   return CreatorMonetizationRequestCreatedAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
-    requestId: json['target_id'],
+    requestId: json['target_id'] as String,
   );
 }
 
@@ -16,7 +16,7 @@ Future<AuditLog> creatorMonetizationTermsAcceptedAuditLogHandler(
   return CreatorMonetizationTermsAcceptedAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
-    termsId: json['target_id'],
+    termsId: json['target_id'] as String,
   );
 }
 
@@ -26,7 +26,7 @@ Future<AuditLog> onboardingPromptCreateAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     promptId: Snowflake.parse(json['target_id']),
-    promptTitle: json['changes'][0]['new_value'],
+    promptTitle: ((json['changes'] as List<dynamic>)[0] as Map<String, dynamic>)['new_value'] as String,
   );
 }
 
@@ -36,7 +36,7 @@ Future<AuditLog> onboardingPromptUpdateAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     promptId: Snowflake.parse(json['target_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -48,7 +48,7 @@ Future<AuditLog> onboardingPromptDeleteAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     promptId: Snowflake.parse(json['target_id']),
-    promptTitle: json['changes'][0]['old_value'],
+    promptTitle: ((json['changes'] as List<dynamic>)[0] as Map<String, dynamic>)['old_value'] as String,
   );
 }
 
@@ -57,7 +57,7 @@ Future<AuditLog> onboardingCreateAuditLogHandler(
   return OnboardingCreateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -68,7 +68,7 @@ Future<AuditLog> onboardingUpdateAuditLogHandler(
   return OnboardingUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -79,7 +79,7 @@ Future<AuditLog> homeSettingsCreateAuditLogHandler(
   return HomeSettingsCreateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -90,7 +90,7 @@ Future<AuditLog> homeSettingsUpdateAuditLogHandler(
   return HomeSettingsUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );

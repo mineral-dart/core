@@ -18,7 +18,7 @@ final class ChannelCreatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final rawChannel =
-        await _marshaller.serializers.channels.normalize(message.payload);
+        await _marshaller.serializers.channels.normalize(message.payload as Map<String, dynamic>);
     final channel =
         await _marshaller.serializers.channels.serialize(rawChannel);
 

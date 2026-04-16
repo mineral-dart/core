@@ -27,25 +27,28 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
     final type = InteractionType.values
         .firstWhereOrNull((e) => e.value == message.payload['type']);
 
+    final payload = message.payload as Map<String, dynamic>;
     if (type == InteractionType.modal) {
       final interactionContext = InteractionContextType.values.firstWhereOrNull(
-        (element) => element.value == message.payload['context'],
+        (element) => element.value == payload['context'],
       );
 
       final Map<String, dynamic> parameters = {};
-      final components = List.from(message.payload['data']['components']);
-      final resolved = message.payload['data']['resolved'];
-      final guildId = message.payload['guild_id'];
+      final data = payload['data'] as Map<String, dynamic>;
+      final components = List.from(data['components'] as Iterable<dynamic>);
+      final resolved = data['resolved'];
+      final guildId = payload['guild_id'] as String?;
       for (final row in components) {
-        if (row['component'] == null) {
+        final rowMap = row as Map<String, dynamic>;
+        if (rowMap['component'] == null) {
           continue;
         }
-        final component = row['component'];
-        final customId = component['custom_id'];
+        final component = rowMap['component'] as Map<String, dynamic>;
+        final customId = component['custom_id'] as String;
 
         if (component.containsKey('values')) {
           // Detect type by customId naming convention (user_select, role_select, channel_select)
-          final values = List<String>.from(component['values'] ?? []);
+          final values = List<String>.from(component['values'] as Iterable<dynamic>? ?? []);
           if (customId.contains('user_select')) {
             // Resolve User instances
             if (guildId != null) {
@@ -59,18 +62,19 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
           } else if (customId.contains('role_select')) {
             parameters[customId] = await Future.wait(
               values.map(
-                (id) => _dataStore.role.get(guildId, id, false),
+                (id) => _dataStore.role.get(guildId!, id, false),
               ),
             );
           } else if (customId.contains('mentionable_select')) {
             final List<dynamic> mentionables = [];
+            final resolvedMap = resolved as Map<String, dynamic>?;
             for (final id in values) {
-              final isUser = resolved != null &&
-                  resolved['users'] != null &&
-                  resolved['users'][id] != null;
-              final isRole = resolved != null &&
-                  resolved['roles'] != null &&
-                  resolved['roles'][id] != null;
+              final isUser = resolvedMap != null &&
+                  resolvedMap['users'] != null &&
+                  (resolvedMap['users'] as Map<String, dynamic>)[id] != null;
+              final isRole = resolvedMap != null &&
+                  resolvedMap['roles'] != null &&
+                  (resolvedMap['roles'] as Map<String, dynamic>)[id] != null;
 
               if (isUser) {
                 if (guildId != null) {
@@ -114,9 +118,9 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
 
       final ctx = await switch (interactionContext) {
         InteractionContextType.server =>
-          ServerModalContext.fromMap(_dataStore, message.payload),
+          ServerModalContext.fromMap(_dataStore, payload),
         InteractionContextType.privateChannel =>
-          PrivateModalContext.fromMap(_marshaller, message.payload),
+          PrivateModalContext.fromMap(_marshaller, payload),
         _ => null
       };
 

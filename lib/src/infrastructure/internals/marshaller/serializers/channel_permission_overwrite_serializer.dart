@@ -18,7 +18,7 @@ final class ChannelPermissionOverwriteSerializer
     };
 
     final cacheKey = _marshaller.cacheKey
-        .channelPermission(payload['id'], serverId: json['server_id']);
+        .channelPermission(payload['id'] as Object, serverId: json['server_id'] as Object?);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -30,8 +30,8 @@ final class ChannelPermissionOverwriteSerializer
       id: json['id'].toString(),
       type: findInEnum(ChannelPermissionOverwriteType.values, json['type'],
           orElse: ChannelPermissionOverwriteType.unknown),
-      allow: bitfieldToList(Permission.values, int.parse(json['allow'])),
-      deny: bitfieldToList(Permission.values, int.parse(json['deny'])),
+      allow: bitfieldToList(Permission.values, int.parse(json['allow'] as String)),
+      deny: bitfieldToList(Permission.values, int.parse(json['deny'] as String)),
     );
   }
 

@@ -15,7 +15,7 @@ final class MessageReactionRemovePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final raw =
-        await _marshaller.serializers.reaction.normalize(message.payload);
+        await _marshaller.serializers.reaction.normalize(message.payload as Map<String, dynamic>);
     final reaction = await _marshaller.serializers.reaction.serialize(raw);
 
     final serverId = Snowflake.nullable(message.payload['guild_id']);

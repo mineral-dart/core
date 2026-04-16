@@ -41,8 +41,8 @@ final class MessagePart implements MessagePartContract {
     final messages = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => Future.wait(
           List.from(
-            response.body,
-          ).map((e) async => _marshaller.serializers.message.normalize(e)),
+            response.body as Iterable<dynamic>,
+          ).map((e) async => _marshaller.serializers.message.normalize(e as Map<String, dynamic>)),
         ),
       int() when status.isRateLimit(response.statusCode) => throw HttpException(
           response.bodyString,
@@ -98,7 +98,7 @@ final class MessagePart implements MessagePartContract {
 
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body),
+        await _marshaller.serializers.message.normalize(response.body as Map<String, dynamic>),
       int() when status.isRateLimit(response.statusCode) => throw HttpException(
           response.bodyString,
         ),
@@ -145,7 +145,7 @@ final class MessagePart implements MessagePartContract {
 
     final rawMessage = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body),
+        await _marshaller.serializers.message.normalize(response.body as Map<String, dynamic>),
       int() when status.isRateLimit(response.statusCode) => throw HttpException(
           response.bodyString,
         ),
@@ -217,7 +217,7 @@ final class MessagePart implements MessagePartContract {
 
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body),
+        await _marshaller.serializers.message.normalize(response.body as Map<String, dynamic>),
       int() when status.isRateLimit(response.statusCode) => throw HttpException(
           response.bodyString,
         ),
@@ -278,7 +278,7 @@ final class MessagePart implements MessagePartContract {
 
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.message.normalize(response.body),
+        await _marshaller.serializers.message.normalize(response.body as Map<String, dynamic>),
       int() when status.isRateLimit(response.statusCode) => throw HttpException(
           response.bodyString,
         ),
@@ -319,7 +319,7 @@ final class MessagePart implements MessagePartContract {
 
     final answerPayload = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
-        await _marshaller.serializers.pollAnswerVote.normalize(response.body),
+        await _marshaller.serializers.pollAnswerVote.normalize(response.body as Map<String, dynamic>),
       int() when status.isRateLimit(response.statusCode) => throw HttpException(
           response.bodyString,
         ),

@@ -16,5 +16,5 @@ final class GlobalStateManager
   void register<T>(T state) => _providers[T] = state;
 
   @override
-  T read<T extends GlobalState>() => _providers[T];
+  T read<T extends GlobalState>() => _providers[T] as T;
 }

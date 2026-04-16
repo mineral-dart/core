@@ -23,9 +23,9 @@ final class MessageEmbedField {
 
   factory MessageEmbedField.fromJson(Map<String, dynamic> json) {
     return MessageEmbedField(
-      name: json['name'],
-      value: json['value'],
-      inline: json['inline'],
+      name: json['name'] as String,
+      value: json['value'] as String,
+      inline: json['inline'] as bool,
     );
   }
 }

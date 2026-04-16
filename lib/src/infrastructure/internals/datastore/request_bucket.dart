@@ -45,7 +45,7 @@ final class QueueableRequest<T> {
       completer.complete(response.body as T);
     } else if (response.statusCode case final int code
         when _httpStatus.isRateLimit(code)) {
-      bucket.hasGlobalLocked = response.body['global'];
+      bucket.hasGlobalLocked = response.body['global'] as bool;
 
       final retryAfter = response.body['retry_after'];
       final seconds = double.parse(retryAfter.toString());

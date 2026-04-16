@@ -46,23 +46,27 @@ final class Bot {
   @override
   String toString() => '<@$id>';
 
-  factory Bot.fromJson(Map<String, dynamic> json) => Bot._(
-        id: Snowflake.parse(json['user']['id']),
-        discriminator: json['user']['discriminator'],
-        version: json['v'],
-        username: json['user']['username'],
-        hasEnabledMfa: json['user']['mfa_enabled'],
-        globalName: json['user']['global_name'],
-        flags: json['user']['flags'],
-        avatar: json['user']['avatar'],
-        sessionType: json['session_type'],
-        privateChannels: json['private_channels'],
-        presences: json['presences'],
+  factory Bot.fromJson(Map<String, dynamic> json) {
+    final user = json['user'] as Map<String, dynamic>;
+    final application = json['application'] as Map<String, dynamic>;
+    return Bot._(
+        id: Snowflake.parse(user['id']),
+        discriminator: user['discriminator'] as String?,
+        version: json['v'] as int,
+        username: user['username'] as String,
+        hasEnabledMfa: user['mfa_enabled'] as bool,
+        globalName: user['global_name'] as String?,
+        flags: user['flags'] as int,
+        avatar: user['avatar'] as String?,
+        sessionType: json['session_type'] as String,
+        privateChannels: json['private_channels'] as List<dynamic>,
+        presences: json['presences'] as List<dynamic>,
         guildIds: List<String>.from(
-            json['guilds'].map((element) => Snowflake.parse(element['id']))),
+            (json['guilds'] as Iterable<dynamic>).map((element) => Snowflake.parse((element as Map<String, dynamic>)['id']))),
         application: PartialApplication(
-          id: Snowflake.parse(json['application']['id']),
-          flags: json['application']['flags'],
+          id: Snowflake.parse(application['id']),
+          flags: application['flags'] as int,
         ),
-      );
+    );
+  }
 }

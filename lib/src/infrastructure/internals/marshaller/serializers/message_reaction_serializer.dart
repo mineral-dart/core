@@ -29,11 +29,11 @@ final class MessageReactionSerializer<T extends Message>
         userId: Snowflake.parse(json['author_id']),
         messageId: Snowflake.parse(json['message_id']),
         emoji: PartialEmoji(
-            (json['emoji'] as Map<String, dynamic>?)?['id'],
-            (json['emoji'] as Map<String, dynamic>?)?['name'],
-            (json['emoji'] as Map<String, dynamic>?)?['animated'] ?? false),
-        isBurst: json['is_burst'] ?? false,
-        type: MessageReactionType.values[json['type']]);
+            (json['emoji'] as Map<String, dynamic>?)?['id'] as Snowflake?,
+            ((json['emoji'] as Map<String, dynamic>?)?['name'] as String?) ?? '',
+            (json['emoji'] as Map<String, dynamic>?)?['animated'] as bool? ?? false),
+        isBurst: json['is_burst'] as bool? ?? false,
+        type: MessageReactionType.values[json['type'] as int]);
   }
 
   @override

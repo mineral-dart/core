@@ -26,10 +26,10 @@ final class MessageEmbedAuthor {
 
   factory MessageEmbedAuthor.fromJson(Map<String, dynamic> json) {
     return MessageEmbedAuthor(
-      name: json['name'],
-      url: json['url'],
-      iconUrl: json['icon_url'],
-      proxyIconUrl: json['proxy_icon_url'],
+      name: json['name'] as String,
+      url: json['url'] as String?,
+      iconUrl: json['icon_url'] as String?,
+      proxyIconUrl: json['proxy_icon_url'] as String?,
     );
   }
 }

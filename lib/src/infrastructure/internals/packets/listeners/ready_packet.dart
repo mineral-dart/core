@@ -19,7 +19,7 @@ final class ReadyPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final bot = ioc.make<Bot>(() => Bot.fromJson(message.payload));
+    final bot = ioc.make<Bot>(() => Bot.fromJson(message.payload as Map<String, dynamic>));
     final interactionManager = ioc.resolve<CommandInteractionManagerContract>();
 
     if (!isAlreadyUsed) {

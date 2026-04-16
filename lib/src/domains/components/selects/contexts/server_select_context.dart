@@ -57,13 +57,13 @@ final class ServerSelectContext extends ComponentContextBase
   static Future<ServerSelectContext> fromMap(
       DataStoreContract datastore, Map<String, dynamic> payload) async {
     return ServerSelectContext(
-      customId: payload['data']['custom_id'],
+      customId: (payload['data'] as Map<String, dynamic>)['custom_id'] as String,
       id: Snowflake.parse(payload['id']),
       applicationId: Snowflake.parse(payload['application_id']),
-      token: payload['token'],
-      version: payload['version'],
-      messageId: Snowflake.parse(payload['message']['id']),
-      memberId: Snowflake.parse(payload['member']['user']['id']),
+      token: payload['token'] as String,
+      version: payload['version'] as int,
+      messageId: Snowflake.parse((payload['message'] as Map<String, dynamic>)['id']),
+      memberId: Snowflake.parse(((payload['member'] as Map<String, dynamic>)['user'] as Map<String, dynamic>)['id']),
       serverId: Snowflake.parse(payload['guild_id']),
       channelId: Snowflake.parse(payload['channel_id']),
     );

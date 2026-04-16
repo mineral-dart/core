@@ -24,10 +24,10 @@ class Timestamp {
   factory Timestamp.from({required dynamic payload}) {
     return Timestamp(
       start: payload['start'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(payload['start'])
+          ? DateTime.fromMillisecondsSinceEpoch(payload['start'] as int)
           : null,
       end: payload['end'] != null
-          ? DateTime.fromMillisecondsSinceEpoch(payload['end'])
+          ? DateTime.fromMillisecondsSinceEpoch(payload['end'] as int)
           : null,
     );
   }

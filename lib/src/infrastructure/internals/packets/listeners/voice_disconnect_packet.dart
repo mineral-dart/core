@@ -13,10 +13,11 @@ final class VoiceDisconnectPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    if (message.payload['channel_id'] == null) {
+    final payload = message.payload as Map<String, dynamic>;
+    if (payload['channel_id'] == null) {
       final cacheKey = _marshaller.cacheKey.voiceState(
-        message.payload['guild_id'],
-        message.payload['user_id'],
+        payload['guild_id'] as Object,
+        payload['user_id'] as Object,
       );
 
       final beforeRaw = await _marshaller.cache?.get(cacheKey);

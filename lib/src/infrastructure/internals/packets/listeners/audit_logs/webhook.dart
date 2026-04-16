@@ -7,7 +7,7 @@ Future<AuditLog> webhookCreateAuditLogHandler(Map<String, dynamic> json) async {
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     webhookId: Snowflake.parse(json['target_id']),
-    webhookName: json['changes'][0]['new_value'],
+    webhookName: (json['changes'] as List<dynamic>)[0]['new_value'] as String,
     channelId: Snowflake.nullable(json['options']?['channel_id']),
   );
 }
@@ -17,7 +17,7 @@ Future<AuditLog> webhookUpdateAuditLogHandler(Map<String, dynamic> json) async {
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     webhookId: Snowflake.parse(json['target_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -28,7 +28,7 @@ Future<AuditLog> webhookDeleteAuditLogHandler(Map<String, dynamic> json) async {
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     webhookId: Snowflake.parse(json['target_id']),
-    webhookName: json['changes'][0]['old_value'],
+    webhookName: (json['changes'] as List<dynamic>)[0]['old_value'] as String,
     channelId: Snowflake.nullable(json['options']?['channel_id']),
   );
 }

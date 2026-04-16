@@ -7,16 +7,17 @@ Future<AuditLog> memberKickAuditLogHandler(Map<String, dynamic> json) async {
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.nullable(json['user_id']),
     memberId: Snowflake.nullable(json['target_id']),
-    reason: json['reason'],
+    reason: json['reason'] as String?,
   );
 }
 
 Future<AuditLog> memberPruneAuditLogHandler(Map<String, dynamic> json) async {
+  final options = json['options'] as Map<String, dynamic>?;
   return MemberPruneAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.nullable(json['user_id']),
-    deleteMemberDays: json['options']?['delete_member_days'] ?? 0,
-    membersRemoved: json['options']?['members_removed'] ?? 0,
+    deleteMemberDays: options?['delete_member_days'] as int? ?? 0,
+    membersRemoved: options?['members_removed'] as int? ?? 0,
   );
 }
 
@@ -25,7 +26,7 @@ Future<AuditLog> memberBanAddAuditLogHandler(Map<String, dynamic> json) async {
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.nullable(json['user_id']),
     memberId: Snowflake.nullable(json['target_id']),
-    reason: json['reason'],
+    reason: json['reason'] as String?,
   );
 }
 
@@ -43,7 +44,7 @@ Future<AuditLog> memberUpdateAuditLogHandler(Map<String, dynamic> json) async {
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.nullable(json['user_id']),
     memberId: Snowflake.nullable(json['target_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -55,7 +56,7 @@ Future<AuditLog> memberRoleUpdateAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.nullable(json['user_id']),
     memberId: Snowflake.nullable(json['target_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );

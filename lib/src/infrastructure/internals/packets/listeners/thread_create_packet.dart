@@ -15,9 +15,9 @@ final class ThreadCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final payload = message.payload;
+    final payload = message.payload as Map<String, dynamic>;
 
-    final server = await _dataStore.server.get(payload['guild_id'], false);
+    final server = await _dataStore.server.get(payload['guild_id'] as Object, false);
     final threadRaw = await _marshaller.serializers.channels.normalize(payload);
     final thread = await _marshaller.serializers.channels.serialize(threadRaw);
 

@@ -31,7 +31,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   @override
   void identify(Map<String, dynamic> payload) {
     intentionalDisconnect = false;
-    createHeartbeatTimer(payload['heartbeat_interval']);
+    createHeartbeatTimer(payload['heartbeat_interval'] as int);
 
     if (_pendingResume) {
       _pendingResume = false;
@@ -173,7 +173,7 @@ final class ShardAuthentication implements ShardAuthenticationContract {
   @override
   void setupRequirements(Map<String, dynamic> payload) {
     _reconnectAttempts = 0;
-    sessionId = payload['session_id'];
-    resumeUrl = payload['resume_gateway_url'];
+    sessionId = payload['session_id'] as String?;
+    resumeUrl = payload['resume_gateway_url'] as String?;
   }
 }

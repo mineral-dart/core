@@ -13,18 +13,19 @@ final class VoiceJoinPacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final payload = message.payload as Map<String, dynamic>;
     final cacheKey = _marshaller.cacheKey.voiceState(
-      message.payload['guild_id'],
-      message.payload['user_id'],
+      payload['guild_id'] as Object,
+      payload['user_id'] as Object,
     );
     final before = await _marshaller.cache?.get(cacheKey);
 
     // Trigger VoiceJoinEvent whenever a user joins ANY channel (including moves)
-    if (message.payload['channel_id'] != null &&
+    if (payload['channel_id'] != null &&
         (before == null ||
-            before['channel_id'] != message.payload['channel_id'])) {
+            before['channel_id'] != payload['channel_id'])) {
       final rawVoiceState =
-          await _marshaller.serializers.voice.normalize(message.payload);
+          await _marshaller.serializers.voice.normalize(payload);
       final voiceState =
           await _marshaller.serializers.voice.serialize(rawVoiceState);
       dispatch(event: Event.voiceJoin, params: [voiceState]);

@@ -46,8 +46,8 @@ final class InvitePart implements InvitePartContract {
         .run(_dataStore.client.get);
 
     final metadata = InviteMetadata(
-      approximateMemberCount: result['approximate_member_count'],
-      approximatePresenceCount: result['approximate_presence_count'],
+      approximateMemberCount: result['approximate_member_count'] as int,
+      approximatePresenceCount: result['approximate_presence_count'] as int,
     );
 
     return metadata;

@@ -7,27 +7,27 @@ extension YamlFile on File {
   Future<T> readAsYaml<T extends dynamic>(
       {T Function(Map<String, dynamic> payload)? constructor}) async {
     final stringifyContent = await readAsString();
-    final YamlMap yamlContent = loadYaml(stringifyContent);
+    final YamlMap yamlContent = loadYaml(stringifyContent) as YamlMap;
     final Map<String, dynamic> map = {};
 
     for (final entry in yamlContent.entries) {
       map[entry.key.toString()] = entry.value;
     }
 
-    return constructor != null ? constructor(map) : map;
+    return constructor != null ? constructor(map) : map as T;
   }
 
   T readAsYamlSync<T extends dynamic>(
       {T Function(Map<String, dynamic> payload)? constructor}) {
     final stringifyContent = readAsStringSync();
-    final YamlMap yamlContent = loadYaml(stringifyContent);
+    final YamlMap yamlContent = loadYaml(stringifyContent) as YamlMap;
     final Map<String, dynamic> map = {};
 
     for (final entry in yamlContent.entries) {
       map[entry.key.toString()] = entry.value;
     }
 
-    return constructor != null ? constructor(map) : map;
+    return constructor != null ? constructor(map) : map as T;
   }
 }
 
@@ -35,17 +35,17 @@ extension JsonFile on File {
   Future<T> readAsJson<T extends dynamic>(
       {T Function(Map<String, dynamic> payload)? constructor}) async {
     final content = await readAsString();
-    final Map<String, dynamic> map = jsonDecode(content);
+    final Map<String, dynamic> map = jsonDecode(content) as Map<String, dynamic>;
 
-    return constructor != null ? constructor(map) : map;
+    return constructor != null ? constructor(map) : map as T;
   }
 
   T readAsJsonSync<T extends dynamic>(
       {T Function(Map<String, dynamic> payload)? constructor}) {
     final content = readAsStringSync();
-    final Map<String, dynamic> map = jsonDecode(content);
+    final Map<String, dynamic> map = jsonDecode(content) as Map<String, dynamic>;
 
-    return constructor != null ? constructor(map) : map;
+    return constructor != null ? constructor(map) : map as T;
   }
 }
 
@@ -64,7 +64,7 @@ extension YamlWriter<K, V> on Map<K, V> {
 
         writeAsYaml(
             buffer: buffer,
-            payload: (entry.value as dynamic).entries.toList(),
+            payload: ((entry.value as Map<dynamic, dynamic>).entries.toList()),
             spacing: spacing + 2);
       }
     }

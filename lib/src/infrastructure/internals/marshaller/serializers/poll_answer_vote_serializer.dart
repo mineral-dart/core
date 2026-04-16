@@ -27,20 +27,20 @@ final class PollAnswerVoteSerializer
   Future<PollAnswerVote> serialize(Map<String, dynamic> json) async {
     final List<User> voters = [];
     final message = await _datastore.message
-        .get<Message>(json['channel_id'], json['message_id'], false);
+        .get<Message>(json['channel_id'] as Object, json['message_id'] as Object, false);
     Server? server;
-    for (final voter in json['users']) {
-      final payload = await _marshaller.serializers.user.normalize(voter);
+    for (final voter in json['users'] as Iterable<dynamic>) {
+      final payload = await _marshaller.serializers.user.normalize(voter as Map<String, dynamic>);
       final user = await _marshaller.serializers.user.serialize(payload);
       voters.add(user);
     }
 
     if (json['server_id'] != null) {
-      server = await _datastore.server.get(json['server_id'], false);
+      server = await _datastore.server.get(json['server_id'] as Object, false);
     }
 
     return PollAnswerVote(
-      id: json['id'] ?? Snowflake.parse(json['id']),
+      id: json['id'] as int,
       voters: voters,
       message: message!,
       server: server,

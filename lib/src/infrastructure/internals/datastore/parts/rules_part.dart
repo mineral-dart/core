@@ -24,7 +24,7 @@ final class RulesPart implements RulesPartContract {
         .run(_dataStore.client.get);
 
     final rules = await result.map((element) async {
-      final raw = await _marshaller.serializers.rules.normalize(element);
+      final raw = await _marshaller.serializers.rules.normalize(element as Map<String, dynamic>);
       return _marshaller.serializers.rules.serialize(raw);
     }).wait;
 

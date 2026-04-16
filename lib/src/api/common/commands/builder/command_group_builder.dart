@@ -60,16 +60,17 @@ final class CommandGroupBuilder {
     };
   }
 
-  factory CommandGroupBuilder.fromJson(Map json) {
+  factory CommandGroupBuilder.fromJson(Map<String, dynamic> json) {
     final builder = CommandGroupBuilder()
-      ..setName(json['name'])
-      ..setDescription(json['description']);
+      ..setName(json['name'] as String)
+      ..setDescription(json['description'] as String);
 
-    for (final command in json['commands']) {
+    for (final command in json['commands'] as Iterable<dynamic>) {
+      final commandMap = command as Map<String, dynamic>;
       builder.addSubCommand((builder) {
         builder
-          ..setName(command['name'])
-          ..setDescription(command['description']);
+          ..setName(commandMap['name'] as String)
+          ..setDescription(commandMap['description'] as String);
       });
     }
 

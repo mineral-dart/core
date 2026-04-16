@@ -8,7 +8,7 @@ Future<AuditLog> stageInstanceCreateAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     stageInstanceId: Snowflake.parse(json['target_id']),
-    topic: json['changes'][0]['new_value'],
+    topic: (json['changes'] as List<dynamic>)[0]['new_value'] as String,
     channelId: Snowflake.nullable(json['options']?['channel_id']),
   );
 }
@@ -19,7 +19,7 @@ Future<AuditLog> stageInstanceUpdateAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     stageInstanceId: Snowflake.parse(json['target_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -31,7 +31,7 @@ Future<AuditLog> stageInstanceDeleteAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     stageInstanceId: Snowflake.parse(json['target_id']),
-    topic: json['changes'][0]['old_value'],
+    topic: (json['changes'] as List<dynamic>)[0]['old_value'] as String,
     channelId: Snowflake.nullable(json['options']?['channel_id']),
   );
 }

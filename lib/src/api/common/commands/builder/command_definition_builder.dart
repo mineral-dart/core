@@ -23,7 +23,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
 
   String _extractDefaultValue(
       String commandKey, String key, Map<String, dynamic> payload) {
-    final Map<String, dynamic>? elements = payload[key];
+    final Map<String, dynamic>? elements = payload[key] as Map<String, dynamic>?;
     if (elements == null) {
       throw InvalidCommandException('Missing "$key" key under $commandKey');
     }
@@ -38,7 +38,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
 
   Map<Lang, String> _extractTranslations(
       String key, Map<String, dynamic> payload) {
-    final Map<String, dynamic>? elements = payload[key];
+    final Map<String, dynamic>? elements = payload[key] as Map<String, dynamic>?;
     if (elements == null) {
       throw InvalidCommandException('Missing "$key" key');
     }
@@ -47,22 +47,23 @@ final class CommandDefinitionBuilder implements CommandBuilder {
         .whereNot((element) => element.key == _defaultIdentifier)
         .fold({}, (acc, element) {
       final lang = Lang.values.firstWhere((lang) => lang.uid == element.key);
-      return {...acc, lang: element.value};
+      return {...acc, lang: element.value as String};
     });
   }
 
   void _declareGroups(Map<String, dynamic> content) {
-    final Map<String, dynamic> groupList = content['groups'] ?? {};
+    final Map<String, dynamic> groupList = content['groups'] as Map<String, dynamic>? ?? {};
 
     for (final element in groupList.entries) {
+      final elementValue = element.value as Map<String, dynamic>;
       final String defaultName =
-          _extractDefaultValue(element.key, 'name', element.value);
+          _extractDefaultValue(element.key, 'name', elementValue);
       final String defaultDescription =
-          _extractDefaultValue(element.key, 'description', element.value);
+          _extractDefaultValue(element.key, 'description', elementValue);
 
-      final nameTranslations = _extractTranslations('name', element.value);
+      final nameTranslations = _extractTranslations('name', elementValue);
       final descriptionTranslations =
-          _extractTranslations('description', element.value);
+          _extractTranslations('description', elementValue);
 
       command.createGroup((group) {
         return group
@@ -75,14 +76,15 @@ final class CommandDefinitionBuilder implements CommandBuilder {
   }
 
   List<CommandOption> _declareOptions(MapEntry<String, dynamic> element) {
+    final elementValue = element.value as Map<String, dynamic>;
     final options =
-        List<Map<String, dynamic>>.from(element.value['options'] ?? []);
+        List<Map<String, dynamic>>.from(elementValue['options'] as Iterable<dynamic>? ?? []);
 
     return options.fold([], (acc, Map<String, dynamic> element) {
       final String name = _extractDefaultValue('option', 'name', element);
       final String description =
           _extractDefaultValue('option', 'description', element);
-      final bool required = element['required'] ?? false;
+      final bool required = element['required'] as bool? ?? false;
 
       final option = switch (element['type']) {
         final String value when value == 'string' => Option.string(
@@ -105,26 +107,23 @@ final class CommandDefinitionBuilder implements CommandBuilder {
             name: name,
             description: description,
             required: required,
-            choices: List.from(element['choices'] ?? [])
-                .map((element) =>
-                    Choice<String>(element['name'], element['value']))
+            choices: List.from(element['choices'] as Iterable<dynamic>? ?? [])
+                .map((element) => Choice<String>((element as Map<String, dynamic>)['name'] as String, element['value'] as String))
                 .toList()),
         final String value when value == 'choice.integer' =>
           ChoiceOption.integer(
               name: name,
               description: description,
               required: required,
-              choices: List.from(element['choices'] ?? [])
-                  .map((element) =>
-                      Choice(element['name'], int.parse(element['value'])))
+              choices: List.from(element['choices'] as Iterable<dynamic>? ?? [])
+                  .map((element) => Choice((element as Map<String, dynamic>)['name'] as String, int.parse(element['value'] as String)))
                   .toList()),
         final String value when value == 'choice.double' => ChoiceOption.double(
             name: name,
             description: description,
             required: required,
-            choices: List.from(element['choices'] ?? [])
-                .map((element) =>
-                    Choice(element['name'], double.parse(element['value'])))
+            choices: List.from(element['choices'] as Iterable<dynamic>? ?? [])
+                .map((element) => Choice((element as Map<String, dynamic>)['name'] as String, double.parse(element['value'] as String)))
                 .toList()),
         _ => throw InvalidCommandException('Unknown option type')
       };
@@ -134,20 +133,21 @@ final class CommandDefinitionBuilder implements CommandBuilder {
   }
 
   void _declareSubCommands(Map<String, dynamic> content) {
-    final Map<String, dynamic> commandList = content['commands'] ?? {};
+    final Map<String, dynamic> commandList = content['commands'] as Map<String, dynamic>? ?? {};
 
     for (final element in commandList.entries) {
       if (element.key.contains('.')) {
+        final elementValue = element.value as Map<String, dynamic>;
         final String defaultName =
-            _extractDefaultValue(element.key, 'name', element.value);
+            _extractDefaultValue(element.key, 'name', elementValue);
         final String defaultDescription =
-            _extractDefaultValue(element.key, 'description', element.value);
+            _extractDefaultValue(element.key, 'description', elementValue);
 
-        final nameTranslations = _extractTranslations('name', element.value);
+        final nameTranslations = _extractTranslations('name', elementValue);
         final descriptionTranslations =
-            _extractTranslations('description', element.value);
+            _extractTranslations('description', elementValue);
 
-        if (element.value['group'] case final String group) {
+        if (elementValue['group'] case final String group) {
           final currentGroup = command.groups
               .firstWhere((element) => element.name == group)
             ..addSubCommand((command) {
@@ -187,18 +187,19 @@ final class CommandDefinitionBuilder implements CommandBuilder {
   }
 
   void _declareCommand(Map<String, dynamic> content) {
-    final Map<String, dynamic> commandList = content['commands'] ?? {};
+    final Map<String, dynamic> commandList = content['commands'] as Map<String, dynamic>? ?? {};
 
     for (final element in commandList.entries) {
       if (!element.key.contains('.')) {
+        final elementValue = element.value as Map<String, dynamic>;
         final String defaultName =
-            _extractDefaultValue(element.key, 'name', element.value);
+            _extractDefaultValue(element.key, 'name', elementValue);
         final String defaultDescription =
-            _extractDefaultValue(element.key, 'description', element.value);
+            _extractDefaultValue(element.key, 'description', elementValue);
 
-        final nameTranslations = _extractTranslations('name', element.value);
+        final nameTranslations = _extractTranslations('name', elementValue);
         final descriptionTranslations =
-            _extractTranslations('description', element.value);
+            _extractTranslations('description', elementValue);
 
         command
           ..setName(defaultName,
@@ -217,7 +218,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
   void context<T>(String key, Function(T) fn) {
     final command =
         _commandMapper.entries.firstWhere((element) => element.key == key);
-    fn(command.value());
+    fn(command.value() as T);
   }
 
   void setHandler<T extends CommandContext>(String key, CommandHandler<T> fn) {
@@ -240,11 +241,11 @@ final class CommandDefinitionBuilder implements CommandBuilder {
     };
 
     final payload = switch (file.path) {
-      final String path when path.contains('.json') => json.decode(content),
+      final String path when path.contains('.json') => json.decode(content) as Map<String, dynamic>,
       final String path when path.contains('.yaml') =>
-        (loadYaml(content) as YamlMap).toMap(),
+        (loadYaml(content) as YamlMap).toMap() as Map<String, dynamic>,
       final String path when path.contains('.yml') =>
-        (loadYaml(content) as YamlMap).toMap(),
+        (loadYaml(content) as YamlMap).toMap() as Map<String, dynamic>,
       _ => throw InvalidCommandException('File type not supported')
     };
 

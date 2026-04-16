@@ -13,7 +13,7 @@ final class GuildDeletePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    final cacheKey = _marshaller.cacheKey.server(message.payload['id']);
+    final cacheKey = _marshaller.cacheKey.server(message.payload['id'] as Object);
     final rawServer = await _marshaller.cache?.get(cacheKey);
     final server = rawServer != null
         ? await _marshaller.serializers.server.serialize(rawServer)

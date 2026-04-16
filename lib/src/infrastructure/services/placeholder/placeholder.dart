@@ -56,9 +56,9 @@ class Placeholder implements PlaceholderContract {
 
   String _replace(String value, Map<String, dynamic> map) {
     return map.entries.fold(value, (acc, element) {
-      final finalValue = switch (element.value) {
-        String() => element.value,
-        int() => element.value.toString(),
+      final String finalValue = switch (element.value) {
+        final String s => s,
+        final int i => i.toString(),
         _ => throw Exception('Invalid type')
       };
 

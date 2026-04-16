@@ -31,7 +31,7 @@ final class UserSerializer implements SerializerContract<User> {
       },
     };
 
-    final cacheKey = _marshaller.cacheKey.user(json['id']);
+    final cacheKey = _marshaller.cacheKey.user(json['id'] as String);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -39,40 +39,40 @@ final class UserSerializer implements SerializerContract<User> {
 
   @override
   Future<User> serialize(Map<String, dynamic> json) async {
-    final userAssets = Map<String, dynamic>.from(json['assets']);
+    final userAssets = Map<String, dynamic>.from(json['assets'] as Map<dynamic, dynamic>);
     final assets = UserAssets(
       avatar: Helper.createOrNull(
           field: userAssets['avatar'],
-          fn: () => ImageAsset(['avatars', json['id']], userAssets['avatar'])),
+          fn: () => ImageAsset(['avatars', json['id'] as String], userAssets['avatar'] as String)),
       avatarDecoration: Helper.createOrNull(
           field: userAssets['avatar_decoration'],
-          fn: () => ImageAsset(['avatar-decorations', json['id']],
-              userAssets['avatar_decoration'])),
+          fn: () => ImageAsset(['avatar-decorations', json['id'] as String],
+              userAssets['avatar_decoration'] as String)),
       banner: Helper.createOrNull(
           field: userAssets['banner'],
-          fn: () => ImageAsset(['banners', json['id']], userAssets['banner'])),
+          fn: () => ImageAsset(['banners', json['id'] as String], userAssets['banner'] as String)),
     );
 
     return User(
-      id: json['id'],
-      username: json['username'],
-      discriminator: json['discriminator'],
-      avatar: json['avatar'],
-      bot: json['is_bot'],
-      system: json['system'],
-      mfaEnabled: json['mfa_enabled'],
-      locale: json['locale'],
-      verified: json['verified'],
-      email: json['email'],
-      flags: json['flags'],
+      id: json['id'] as Snowflake,
+      username: json['username'] as String,
+      discriminator: json['discriminator'] as String,
+      avatar: json['avatar'] as String?,
+      bot: json['is_bot'] as bool?,
+      system: json['system'] as bool?,
+      mfaEnabled: json['mfa_enabled'] as bool?,
+      locale: json['locale'] as String?,
+      verified: json['verified'] as bool?,
+      email: json['email'] as String?,
+      flags: json['flags'] as int?,
       premiumType: PremiumTier.values.firstWhere(
           (e) => e == json['premium_type'],
           orElse: () => PremiumTier.none),
-      publicFlags: json['public_flags'],
+      publicFlags: json['public_flags'] as int?,
       assets: assets,
       createdAt: Helper.createOrNull(
           field: json['created_at'],
-          fn: () => DateTime.parse(json['created_at'])),
+          fn: () => DateTime.parse(json['created_at'] as String)),
       presence: null,
     );
   }

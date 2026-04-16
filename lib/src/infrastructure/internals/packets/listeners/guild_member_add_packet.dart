@@ -16,11 +16,11 @@ final class GuildMemberAddPacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server =
-        await _dataStore.server.get(message.payload['guild_id'], false);
+        await _dataStore.server.get(message.payload['guild_id'] as Object, false);
 
     final rawMember = await _marshaller.serializers.member.normalize({
       'server_id': server.id,
-      ...message.payload,
+      ...(message.payload as Map<String, dynamic>),
     });
 
     final member = await _marshaller.serializers.member.serialize(rawMember);

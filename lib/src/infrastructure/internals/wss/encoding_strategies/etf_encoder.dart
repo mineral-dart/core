@@ -17,7 +17,7 @@ final class EtfEncoderStrategy implements EncodingStrategy {
   WebsocketMessage decode(WebsocketMessage message) {
     try {
       final content =
-          eterl.unpack<Map<String, dynamic>>(message.originalContent);
+          eterl.unpack<Map<String, dynamic>>(message.originalContent as List<int>);
       return message..content = ShardMessage.of(content);
     } on Exception catch (e) {
       _logger.error('Failed to decode ETF WebSocket message: $e');
@@ -28,7 +28,7 @@ final class EtfEncoderStrategy implements EncodingStrategy {
   @override
   WebsocketRequestedMessage encode(WebsocketRequestedMessage message) {
     try {
-      return message..content = eterl.pack(json.decode(message.content));
+      return message..content = eterl.pack(json.decode(message.content as String));
     } on Exception catch (e) {
       _logger.error('Failed to encode ETF WebSocket message: $e');
       rethrow;

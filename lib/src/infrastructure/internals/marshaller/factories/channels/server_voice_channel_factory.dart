@@ -20,7 +20,7 @@ final class ServerVoiceChannelFactory
       'permission_overwrites': json['permission_overwrites'],
     };
 
-    final cacheKey = marshaller.cacheKey.channel(json['id']);
+    final cacheKey = marshaller.cacheKey.channel(json['id'] as String);
     await marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -37,7 +37,7 @@ final class ServerVoiceChannelFactory
 
     for (final voice in voices.values) {
       if (voice['channel_id'].toString() == properties.id.value) {
-        final voiceState = await marshaller.serializers.voice.serialize(voice);
+        final voiceState = await marshaller.serializers.voice.serialize(voice as Map<String, dynamic>);
         members.add(voiceState);
       }
     }

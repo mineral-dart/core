@@ -16,13 +16,13 @@ final class GuildStickersUpdatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final server =
-        await _dataStore.server.get(message.payload['guild_id'], false);
+        await _dataStore.server.get(message.payload['guild_id'] as Object, false);
 
     final stickers =
-        await List.from(message.payload['stickers']).map((element) async {
+        await List.from(message.payload['stickers'] as Iterable<dynamic>).map((element) async {
       final raw = await _marshaller.serializers.sticker.normalize({
         'server_id': server.id,
-        ...element,
+        ...(element as Map<String, dynamic>),
       });
 
       return _marshaller.serializers.sticker.serialize(raw);

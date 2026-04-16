@@ -27,7 +27,7 @@ final class ServerForumChannelFactory
       'permission_overwrites': json['permission_overwrites'],
     };
 
-    final cacheKey = marshaller.cacheKey.channel(json['id']);
+    final cacheKey = marshaller.cacheKey.channel(json['id'] as String);
     await marshaller.cache?.put(cacheKey, payload);
 
     return payload;

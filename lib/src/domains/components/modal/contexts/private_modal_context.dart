@@ -19,13 +19,14 @@ final class PrivateModalContext extends ComponentContextBase
 
   static Future<PrivateModalContext> fromMap(
       MarshallerContract marshaller, Map<String, dynamic> payload) async {
+    final data = payload['data'] as Map<String, dynamic>;
     return PrivateModalContext(
-      customId: payload['data']['custom_id'],
+      customId: data['custom_id'] as String,
       id: Snowflake.parse(payload['id']),
       applicationId: Snowflake.parse(payload['application_id']),
-      token: payload['token'],
-      version: payload['version'],
-      user: await marshaller.serializers.user.serialize(payload['user']),
+      token: payload['token'] as String,
+      version: payload['version'] as int,
+      user: await marshaller.serializers.user.serialize(payload['user'] as Map<String, dynamic>),
     );
   }
 }

@@ -4,14 +4,15 @@ import 'package:mineral/src/api/server/audit_log/audit_log.dart';
 
 Future<AuditLog> channelOverwriteCreateAuditLogHandler(
     Map<String, dynamic> json) async {
+  final options = json['options'] as Map<String, dynamic>?;
   return ChannelOverwriteCreateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     channelId:
-        Snowflake.parse(json['options']?['channel_id'] ?? json['target_id']),
+        Snowflake.parse(options?['channel_id'] ?? json['target_id']),
     overwriteId: Snowflake.parse(json['target_id']),
-    overwriteType: json['options']?['type'] ?? 'role',
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    overwriteType: options?['type'] as String? ?? 'role',
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -19,14 +20,15 @@ Future<AuditLog> channelOverwriteCreateAuditLogHandler(
 
 Future<AuditLog> channelOverwriteUpdateAuditLogHandler(
     Map<String, dynamic> json) async {
+  final options = json['options'] as Map<String, dynamic>?;
   return ChannelOverwriteUpdateAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     channelId:
-        Snowflake.parse(json['options']?['channel_id'] ?? json['target_id']),
+        Snowflake.parse(options?['channel_id'] ?? json['target_id']),
     overwriteId: Snowflake.parse(json['target_id']),
-    overwriteType: json['options']?['type'] ?? 'role',
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    overwriteType: options?['type'] as String? ?? 'role',
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -34,12 +36,13 @@ Future<AuditLog> channelOverwriteUpdateAuditLogHandler(
 
 Future<AuditLog> channelOverwriteDeleteAuditLogHandler(
     Map<String, dynamic> json) async {
+  final options = json['options'] as Map<String, dynamic>?;
   return ChannelOverwriteDeleteAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     channelId:
-        Snowflake.parse(json['options']?['channel_id'] ?? json['target_id']),
+        Snowflake.parse(options?['channel_id'] ?? json['target_id']),
     overwriteId: Snowflake.parse(json['target_id']),
-    overwriteType: json['options']?['type'] ?? 'role',
+    overwriteType: options?['type'] as String? ?? 'role',
   );
 }

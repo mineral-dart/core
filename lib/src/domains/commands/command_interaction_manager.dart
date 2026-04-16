@@ -99,11 +99,11 @@ final class CommandInteractionManager
 
     final response = await _dataStore.client.put(req);
     if (response.statusCode == 400) {
-      final error = Map<String, dynamic>.from(response.body['errors'])
+      final error = Map<String, dynamic>.from(response.body['errors'] as Map<dynamic, dynamic>)
           .values
           .firstOrNull?['name'];
 
-      final errors = List.from(error?['_errors'] ?? []).firstOrNull;
+      final errors = List.from(error?['_errors'] as Iterable<dynamic>? ?? []).firstOrNull;
 
       throw InvalidCommandException('${errors['code']}: ${errors['message']}');
     }

@@ -8,7 +8,7 @@ Future<AuditLog> integrationCreateAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     integrationId: Snowflake.parse(json['target_id']),
-    integrationType: json['options']?['type'] ?? 'unknown',
+    integrationType: json['options']?['type'] as String? ?? 'unknown',
   );
 }
 
@@ -18,7 +18,7 @@ Future<AuditLog> integrationUpdateAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     integrationId: Snowflake.parse(json['target_id']),
-    changes: List<Map<String, dynamic>>.from(json['changes'])
+    changes: List<Map<String, dynamic>>.from(json['changes'] as Iterable<dynamic>)
         .map(Change.fromJson)
         .toList(),
   );
@@ -30,6 +30,6 @@ Future<AuditLog> integrationDeleteAuditLogHandler(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
     integrationId: Snowflake.parse(json['target_id']),
-    integrationType: json['options']?['type'] ?? 'unknown',
+    integrationType: json['options']?['type'] as String? ?? 'unknown',
   );
 }

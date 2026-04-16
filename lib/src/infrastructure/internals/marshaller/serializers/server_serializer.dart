@@ -34,7 +34,7 @@ final class ServerSerializer implements SerializerContract<Server> {
         'explicit_content_filter': json['explicit_content_filter'],
         'verification_level': json['verification_level'],
         'default_message_notifications': json['default_message_notifications'],
-        'features': List.from(json['features']),
+        'features': List.from(json['features'] as Iterable<dynamic>),
         'mfa_level': json['mfa_level'],
         'system_channel_flags': json['system_channel_flags'],
         'vanity_url_code': json['vanity_url_code'],
@@ -59,7 +59,7 @@ final class ServerSerializer implements SerializerContract<Server> {
       },
     };
 
-    final serverCacheKey = _marshaller.cacheKey.server(json['id']);
+    final serverCacheKey = _marshaller.cacheKey.server(json['id'] as String);
     await _marshaller.cache?.put(serverCacheKey, serverPayload);
 
     return serverPayload;
@@ -68,7 +68,7 @@ final class ServerSerializer implements SerializerContract<Server> {
   @override
   Future<Server> serialize(Map<String, dynamic> payload) async {
     final channelManager =
-        ChannelManager.fromMap(payload['id'], payload['channel_settings']);
+        ChannelManager.fromMap(payload['id'] as String, payload['channel_settings'] as Map<String, dynamic>);
     final threadManager = ThreadsManager(Snowflake.parse(payload['id']), null);
     final roleManager = RoleManager(Snowflake.parse(payload['id']));
     final memberManager = MemberManager(Snowflake.parse(payload['id']));
@@ -80,67 +80,67 @@ final class ServerSerializer implements SerializerContract<Server> {
       icon: Helper.createOrNull(
           field: payload['icon'],
           fn: () =>
-              ImageAsset(['icons', payload['server_id']], payload['icon'])),
+              ImageAsset(['icons', payload['server_id'] as String], payload['icon'] as String)),
       splash: Helper.createOrNull(
           field: payload['splash'],
           fn: () => ImageAsset(
-              ['splashes', payload['server_id']], payload['splash'])),
+              ['splashes', payload['server_id'] as String], payload['splash'] as String)),
       banner: Helper.createOrNull(
           field: payload['banner'],
           fn: () =>
-              ImageAsset(['banners', payload['server_id']], payload['banner'])),
+              ImageAsset(['banners', payload['server_id'] as String], payload['banner'] as String)),
       discoverySplash: Helper.createOrNull(
           field: payload['discovery_splash'],
-          fn: () => ImageAsset(['discovery-splashes', payload['id']],
-              payload['discovery_splash'])),
+          fn: () => ImageAsset(['discovery-splashes', payload['id'] as String],
+              payload['discovery_splash'] as String)),
     );
 
+    final settings = payload['settings'] as Map<String, dynamic>;
     final serverSettings = ServerSettings(
-        bitfieldPermission: payload['permissions'],
-        afkTimeout: payload['afk_timeout'],
-        hasWidgetEnabled: payload['widget_enabled'] ?? false,
+        bitfieldPermission: payload['permissions'] as String?,
+        afkTimeout: payload['afk_timeout'] as int?,
+        hasWidgetEnabled: payload['widget_enabled'] as bool? ?? false,
         explicitContentFilter: findInEnum(
-            ExplicitContentFilter.values, payload['settings']['explicit_content_filter'],
+            ExplicitContentFilter.values, settings['explicit_content_filter'],
             orElse: ExplicitContentFilter.unknown),
         verificationLevel: findInEnum(
-            VerificationLevel.values, payload['settings']['verification_level'],
+            VerificationLevel.values, settings['verification_level'],
             orElse: VerificationLevel.unknown),
         defaultMessageNotifications: findInEnum(
             DefaultMessageNotification.values,
-            payload['settings']['default_message_notifications'],
+            settings['default_message_notifications'],
             orElse: DefaultMessageNotification.unknown),
-        features: List<String>.from(payload['settings']['features']),
-        mfaLevel: findInEnum(MfaLevel.values, payload['settings']['mfa_level'],
+        features: List<String>.from(settings['features'] as Iterable<dynamic>),
+        mfaLevel: findInEnum(MfaLevel.values, settings['mfa_level'],
             orElse: MfaLevel.unknown),
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values,
-            payload['settings']['system_channel_flags']),
-        vanityUrlCode: payload['vanity_url_code'],
+            settings['system_channel_flags'] as int),
+        vanityUrlCode: payload['vanity_url_code'] as String?,
         subscription: ServerSubscription(
           tier: findInEnum(
-              PremiumTier.values, payload['settings']['premium_tier'],
+              PremiumTier.values, settings['premium_tier'],
               orElse: PremiumTier.unknown),
-          subscriptionCount: payload['settings']['premium_subscription_count'],
-          hasEnabledProgressBar: payload['settings']
-              ['premium_progress_bar_enabled'],
+          subscriptionCount: settings['premium_subscription_count'] as int?,
+          hasEnabledProgressBar: settings['premium_progress_bar_enabled'] as bool,
         ),
-        preferredLocale: payload['settings']['preferred_locale'],
-        maxVideoChannelUsers: payload['max_video_channel_users'],
-        nsfwLevel: findInEnum(NsfwLevel.values, payload['settings']['nsfw_level'],
+        preferredLocale: settings['preferred_locale'] as String,
+        maxVideoChannelUsers: payload['max_video_channel_users'] as int?,
+        nsfwLevel: findInEnum(NsfwLevel.values, settings['nsfw_level'],
             orElse: NsfwLevel.unknown),
-        rulesManager: RulesManager(Snowflake.parse(payload['id'])));
+        rulesManager: RulesManager(Snowflake.parse(payload['id'] as String)));
 
     return Server(
-      id: Snowflake.parse(payload['id']),
-      name: payload['name'],
-      description: payload['description'],
-      applicationId: payload['application_id'],
+      id: Snowflake.parse(payload['id'] as String),
+      name: payload['name'] as String,
+      description: payload['description'] as String?,
+      applicationId: payload['application_id'] as String?,
       members: memberManager,
       settings: serverSettings,
       roles: roleManager,
       channels: channelManager,
       assets: serverAssets,
       threads: threadManager,
-      ownerId: Snowflake.parse(payload['owner_id']),
+      ownerId: Snowflake.parse(payload['owner_id'] as String),
     );
   }
 

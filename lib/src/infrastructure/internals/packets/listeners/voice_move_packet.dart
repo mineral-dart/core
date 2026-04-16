@@ -13,12 +13,13 @@ final class VoiceMovePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final payload = message.payload as Map<String, dynamic>;
     final cacheKey = _marshaller.cacheKey
-        .voiceState(message.payload['guild_id'], message.payload['user_id']);
+        .voiceState(payload['guild_id'] as Object, payload['user_id'] as Object);
     final rawBefore = await _marshaller.cache?.get(cacheKey);
 
     final rawVoiceState =
-        await _marshaller.serializers.voice.normalize(message.payload);
+        await _marshaller.serializers.voice.normalize(payload);
     final voiceState =
         await _marshaller.serializers.voice.serialize(rawVoiceState);
 

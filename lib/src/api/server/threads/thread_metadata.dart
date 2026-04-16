@@ -15,11 +15,11 @@ final class ThreadMetadata {
 
   factory ThreadMetadata.fromMap(Map<String, dynamic> json) {
     return ThreadMetadata(
-      archived: bool.parse(json['archived'] ?? 'false'),
-      autoArchiveDuration: json['auto_archive_duration'],
-      locked: bool.parse(json['locked'] ?? 'false'),
+      archived: bool.parse(json['archived'] as String? ?? 'false'),
+      autoArchiveDuration: json['auto_archive_duration'] as int?,
+      locked: bool.parse(json['locked'] as String? ?? 'false'),
       archiveTimestamp: json['archive_timestamp'] != null
-          ? DateTime.parse(json['archive_timestamp'])
+          ? DateTime.parse(json['archive_timestamp'] as String)
           : null,
     );
   }

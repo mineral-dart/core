@@ -14,7 +14,7 @@ final class AutomoderationRuleCreatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final rawRule =
-        await _marshaller.serializers.rules.normalize(message.payload);
+        await _marshaller.serializers.rules.normalize(message.payload as Map<String, dynamic>);
     final rule = await _marshaller.serializers.rules.serialize(rawRule);
 
     dispatch(event: Event.serverRuleCreate, params: [rule]);

@@ -23,19 +23,19 @@ final class Activity {
 
   factory Activity.fromJson(Map<String, dynamic> json) {
     return Activity(
-        name: json['name'],
+        name: json['name'] as String,
         type: ActivityType.values.firstWhere(
             (element) => element.value == json['type'],
             orElse: () => ActivityType.unknown),
-        url: json['url'],
-        createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at']),
-        details: json['details'],
-        state: json['state'],
+        url: json['url'] as String?,
+        createdAt: DateTime.fromMillisecondsSinceEpoch(json['created_at'] as int),
+        details: json['details'] as String?,
+        state: json['state'] as String?,
         emoji: Helper.createOrNull(
             field: json['emoji'],
             fn: () => ActivityEmoji(
-                name: json['name'],
-                id: json['id'],
-                animated: json['animated'] ?? false)));
+                name: json['name'] as String,
+                id: json['id'] as String?,
+                animated: json['animated'] as bool? ?? false)));
   }
 }

@@ -24,7 +24,7 @@ final class MessageSerializer<T extends Message>
     };
 
     final cacheKey =
-        _marshaller.cacheKey.message(json['channel_id'], json['id']);
+        _marshaller.cacheKey.message(json['channel_id'] as Object, json['id'] as Object);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;

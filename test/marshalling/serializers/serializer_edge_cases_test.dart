@@ -329,13 +329,9 @@ void main() {
     });
 
     group('serialize() with null emoji field', () {
-      test(
-          'crashes when emoji is null because PartialEmoji.name is non-nullable',
-          () async {
-        // BUG: When emoji is null in the payload, the serialize() method
-        // attempts to pass null as the `name` argument to PartialEmoji,
-        // but PartialEmoji.name is typed as `String` (non-nullable).
-        // Discord can send reactions with missing emoji data.
+      test('handles null emoji gracefully with empty name fallback', () async {
+        // The serializer handles null emoji by defaulting name to '' and
+        // animated to false, so no TypeError is thrown.
         final payload = {
           'server_id': '987654321',
           'channel_id': '111222333',
@@ -346,10 +342,11 @@ void main() {
           'type': 0,
         };
 
-        expect(
-          () => serializer.serialize(payload),
-          throwsA(isA<TypeError>()),
-        );
+        final reaction = await serializer.serialize(payload);
+
+        expect(reaction.emoji.id, isNull);
+        expect(reaction.emoji.name, equals(''));
+        expect(reaction.emoji.animated, isFalse);
       });
 
       test('handles emoji with null id (unicode emoji)', () async {

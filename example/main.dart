@@ -1,8 +1,10 @@
+import 'dart:isolate';
+
 import 'package:mineral/api.dart';
 
 void main(_, dynamic port) async {
   final client = ClientBuilder()
-      .setHmrDevPort(port)
+      .setHmrDevPort(port as SendPort?)
       .setIntent(Intent.allNonPrivileged)
       .build();
 

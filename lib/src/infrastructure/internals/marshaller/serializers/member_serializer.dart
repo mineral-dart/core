@@ -40,7 +40,7 @@ final class MemberSerializer implements SerializerContract<Member> {
         'banner': json['banner'],
       },
       'flags': json['flags'],
-      'roles': List.from(json['roles'] ?? []),
+      'roles': List.from(json['roles'] as Iterable<dynamic>? ?? []),
       'premium_since': json['premium_since'],
       'public_flags': publicFlags,
       'is_bot': isBot,
@@ -55,7 +55,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       'server_id': json['guild_id'],
     };
 
-    final cacheKey = _marshaller.cacheKey.member(json['guild_id'], userId);
+    final cacheKey = _marshaller.cacheKey.member(json['guild_id'] as String, userId as String);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -63,7 +63,7 @@ final class MemberSerializer implements SerializerContract<Member> {
 
   @override
   Future<Member> serialize(Map<String, dynamic> json) async {
-    final assets = Map<String, dynamic>.from(json['assets']);
+    final assets = Map<String, dynamic>.from(json['assets'] as Map<dynamic, dynamic>);
     final memberAsset = MemberAssets(
       avatar: Helper.createOrNull(
           field: assets['avatar'],
@@ -77,49 +77,49 @@ final class MemberSerializer implements SerializerContract<Member> {
       banner: Helper.createOrNull(
           field: assets['banner'],
           fn: () =>
-              ImageAsset(['banners', assets['member_id']], assets['banner'])),
+              ImageAsset(['banners', assets['member_id'] as String], assets['banner'] as String)),
     );
 
     final memberRoleManager = MemberRoleManager(
-        List.from(json['roles']).map(Snowflake.parse).toList(),
+        List.from(json['roles'] as Iterable<dynamic>).map((e) => Snowflake.parse(e as String)).toList(),
         Snowflake.parse(json['server_id']),
-        Snowflake.parse(json['id']));
+        Snowflake.parse(json['id'] as String));
 
     return Member(
-      id: Snowflake.parse(json['id']),
-      serverId: Snowflake.parse(json['server_id']),
-      username: json['nick'] ?? json['username'],
-      nickname: json['nick'] ?? json['display_name'],
-      globalName: json['global_name'],
-      discriminator: json['discriminator'],
+      id: Snowflake.parse(json['id'] as String),
+      serverId: Snowflake.parse(json['server_id'] as String),
+      username: (json['nick'] ?? json['username']) as String,
+      nickname: (json['nick'] ?? json['display_name']) as String?,
+      globalName: json['global_name'] as String?,
+      discriminator: json['discriminator'] as String?,
       assets: memberAsset,
       flags:
-          MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'])),
+          MemberFlagsManager(bitfieldToList(MemberFlag.values, json['flags'] as int)),
       premiumSince: Helper.createOrNull(
           field: json['premium_since'],
-          fn: () => DateTime.parse(json['premium_since'])),
-      publicFlags: json['public_flags'],
+          fn: () => DateTime.parse(json['premium_since'] as String)),
+      publicFlags: json['public_flags'] as int?,
       roles: memberRoleManager,
-      isBot: json['is_bot'] ?? false,
-      isPending: json['is_pending'] ?? false,
+      isBot: json['is_bot'] as bool? ?? false,
+      isPending: json['is_pending'] as bool? ?? false,
       timeout: MemberTimeout(
           duration: Helper.createOrNull(
               field: json['communication_disabled_until'],
-              fn: () => DateTime.parse(json['communication_disabled_until']))),
-      mfaEnabled: json['mfa_enabled'] ?? false,
-      locale: json['locale'],
+              fn: () => DateTime.parse(json['communication_disabled_until'] as String))),
+      mfaEnabled: json['mfa_enabled'] as bool? ?? false,
+      locale: json['locale'] as String?,
       premiumType: PremiumTier.values.firstWhere(
           (e) => e == json['premium_type'],
           orElse: () => PremiumTier.none),
       joinedAt: Helper.createOrNull(
           field: json['joined_at'],
-          fn: () => DateTime.parse(json['joined_at'])),
+          fn: () => DateTime.parse(json['joined_at'] as String)),
       permissions: switch (json['permissions']) {
-        int() => Permissions.fromInt(json['permissions']),
-        String() => Permissions.fromInt(int.parse(json['permissions'])),
+        int() => Permissions.fromInt(json['permissions'] as int),
+        String() => Permissions.fromInt(int.parse(json['permissions'] as String)),
         _ => Permissions.fromInt(0),
       },
-      accentColor: json['accent_color'],
+      accentColor: json['accent_color'] as int?,
     );
   }
 

@@ -295,7 +295,7 @@ void main() {
         manager.commandsHandler.add(CommandRegistration(
           name: 'greet',
           handler: (ctx, opts) {
-            receivedValue = opts.get<String>('name');
+            receivedValue = (opts as CommandOptions).get<String>('name');
           },
           declaredOptions: [],
         ));
@@ -465,7 +465,7 @@ void main() {
         manager.commandsHandler.add(CommandRegistration(
           name: 'greet',
           handler: (ctx, opts) {
-            receivedValue = opts.get<String>('username');
+            receivedValue = (opts as CommandOptions).get<String>('username');
           },
           declaredOptions: [
             Option.string(

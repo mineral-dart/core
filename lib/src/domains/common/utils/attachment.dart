@@ -51,7 +51,7 @@ http.MultipartFile? _prepareAsset(dynamic payload, int filesLength) {
 
     final multipartFile = http.MultipartFile.fromBytes(
       'files[$filesLength]',
-      payload['bytes'],
+      payload['bytes'] as List<int>,
       filename: filename,
     );
 

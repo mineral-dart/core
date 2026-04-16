@@ -25,7 +25,7 @@ final class InviteSerializer implements SerializerContract<Invite> {
     };
 
     final cacheKey =
-        _marshaller.cacheKey.voiceState(json['guild_id'], inviter?['id']);
+        _marshaller.cacheKey.voiceState(json['guild_id'] as String, inviter?['id'] as String);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -34,18 +34,18 @@ final class InviteSerializer implements SerializerContract<Invite> {
   @override
   Future<Invite> serialize(Map<String, dynamic> json) async {
     return Invite(
-      type: InviteType.of(json['type']),
-      code: json['code'],
+      type: InviteType.of(json['type'] as int),
+      code: json['code'] as String,
       inviterId: Snowflake.parse(json['inviterId']),
-      maxAge: Duration(seconds: json['maxAge']),
-      maxUses: json['maxUses'],
-      isTemporary: json['temporary'],
+      maxAge: Duration(seconds: json['maxAge'] as int),
+      maxUses: json['maxUses'] as int,
+      isTemporary: json['temporary'] as bool,
       channelId: Snowflake.parse(json['channelId']),
       serverId: Snowflake.parse(json['serverId']),
-      createdAt: DateTime.parse(json['createdAt']),
+      createdAt: DateTime.parse(json['createdAt'] as String),
       expiresAt: Helper.createOrNull(
           field: json['expiresAt'],
-          fn: () => DateTime.parse(json['expiresAt'])),
+          fn: () => DateTime.parse(json['expiresAt'] as String)),
     );
   }
 

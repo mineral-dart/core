@@ -16,7 +16,7 @@ Future<AuditLog> messageBulkDeleteAuditLogHandler(
   return MessageBulkDeleteAuditLog(
     serverId: Snowflake.parse(json['guild_id']),
     userId: Snowflake.parse(json['user_id']),
-    count: json['options']?['count'] ?? 0,
+    count: json['options']?['count'] as int? ?? 0,
     channelId: Snowflake.nullable(json['options']?['channel_id']),
   );
 }

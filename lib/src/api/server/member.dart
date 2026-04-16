@@ -15,7 +15,7 @@ final class Member implements UserClient {
   final String username;
   final String? nickname;
   final String? globalName;
-  final String discriminator;
+  final String? discriminator;
   final MemberAssets assets;
   final DateTime? premiumSince;
   final int? publicFlags;

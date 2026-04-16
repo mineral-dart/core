@@ -14,9 +14,10 @@ final class PresenceUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final payload = message.payload as Map<String, dynamic>;
     final member = await _dataStore.member
-        .get(message.payload['guild_id'], message.payload['user']['id'], false);
-    final presence = Presence.fromJson(message.payload);
+        .get(payload['guild_id'] as Object, (payload['user'] as Map<String, dynamic>)['id'] as Object, false);
+    final presence = Presence.fromJson(payload);
 
     dispatch(event: Event.serverPresenceUpdate, params: [member, presence]);
   }

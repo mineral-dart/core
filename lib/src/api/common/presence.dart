@@ -16,12 +16,12 @@ final class Presence {
 
   factory Presence.fromJson(Map<String, dynamic> json) {
     return Presence(
-      since: json['since'] != null ? DateTime.parse(json['since']) : null,
+      since: json['since'] != null ? DateTime.parse(json['since'] as String) : null,
       activities: List<Activity>.from(
-          json['activities'].map((e) => Activity.fromJson(e))),
+          (json['activities'] as Iterable<dynamic>).map((e) => Activity.fromJson(e as Map<String, dynamic>))),
       status: StatusType.values
           .firstWhere((element) => element.value == json['status']),
-      afk: json['afk'] ?? false,
+      afk: json['afk'] as bool? ?? false,
     );
   }
 }

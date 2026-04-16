@@ -27,9 +27,9 @@ final class EnvPlaceholder implements PlaceholderContract {
   @override
   String apply(String value) {
     return values.entries.fold(value, (acc, element) {
-      final finalValue = switch (element.value) {
-        String() => element.value,
-        int() => element.value.toString(),
+      final String finalValue = switch (element.value) {
+        final String s => s,
+        final int i => i.toString(),
         _ => throw Exception('Invalid type')
       };
 

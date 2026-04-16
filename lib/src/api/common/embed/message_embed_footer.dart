@@ -21,9 +21,9 @@ final class MessageEmbedFooter {
 
   factory MessageEmbedFooter.fromJson(Map<String, dynamic> json) {
     return MessageEmbedFooter(
-      text: json['text'],
-      iconUrl: json['icon_url'],
-      proxyIconUrl: json['proxy_icon_url'],
+      text: json['text'] as String,
+      iconUrl: json['icon_url'] as String?,
+      proxyIconUrl: json['proxy_icon_url'] as String?,
     );
   }
 }

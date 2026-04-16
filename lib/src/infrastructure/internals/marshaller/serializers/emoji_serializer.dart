@@ -18,16 +18,16 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
       'available': json['available'] ?? false,
       'animated': json['animated'] ?? false,
       'roles': json['roles'] != null
-          ? List.from(json['roles'])
+          ? List.from(json['roles'] as Iterable<dynamic>)
               .map((element) => _marshaller.cacheKey
-                  .serverEmoji(json['guild_id'], element['id']))
+                  .serverEmoji(json['guild_id'] as String, (element as Map<String, dynamic>)['id'] as String))
               .toList()
           : <String>[],
       'server_id': json['guild_id'],
     };
 
     final cacheKey =
-        _marshaller.cacheKey.serverEmoji(json['guild_id'], json['id']);
+        _marshaller.cacheKey.serverEmoji(json['guild_id'] as String, json['id'] as String);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -35,7 +35,7 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
 
   @override
   Future<Emoji> serialize(Map<String, dynamic> json) async {
-    final rawRoles = await _marshaller.cache?.getMany(json['roles']);
+    final rawRoles = await _marshaller.cache?.getMany(json['roles'] as List<String>);
     final roles = await rawRoles?.nonNulls.map((element) async {
       return _marshaller.serializers.role.serialize(element);
     }).wait;
@@ -43,13 +43,13 @@ final class EmojiSerializer implements SerializerContract<Emoji> {
     return Emoji(
       Snowflake.parse(json['server_id']),
       id: Snowflake.parse(json['id']),
-      name: json['name'],
+      name: json['name'] as String,
       roles: roles?.fold(
               {}, (value, element) => {...?value, element.id: element}) ??
           {},
-      managed: json['managed'],
-      animated: json['animated'],
-      available: json['available'],
+      managed: json['managed'] as bool,
+      animated: json['animated'] as bool,
+      available: json['available'] as bool,
     );
   }
 

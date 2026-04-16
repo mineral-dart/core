@@ -17,7 +17,7 @@ final class CommandInteractionCreatePacket implements ListenablePacket {
         .firstWhereOrNull((e) => e.value == message.payload['type']);
 
     if (type == InteractionType.applicationCommand) {
-      await interactionManager.dispatcher.dispatch(message.payload);
+      await interactionManager.dispatcher.dispatch(message.payload as Map<String, dynamic>);
     }
   }
 }

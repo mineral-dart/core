@@ -24,12 +24,12 @@ final class DefaultRunningStrategy implements RunningStrategy {
 
     if (coreVersion case final YamlMap dep) {
       if (dep['path'] != null) {
-        final location = path.join(Directory.current.path, dep['path']);
+        final location = path.join(Directory.current.path, dep['path'] as String);
         final remoteCorePackage = await readPubspec(location);
-        version = remoteCorePackage['version'];
+        version = remoteCorePackage['version'] as String;
       }
     } else {
-      version = package['dependencies']['mineral'];
+      version = package['dependencies']['mineral'] as String;
     }
 
     ioc.resolve<LoggerContract>().info('Core version: $version');

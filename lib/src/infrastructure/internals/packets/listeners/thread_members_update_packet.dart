@@ -16,19 +16,21 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
+    final payload = message.payload as Map<String, dynamic>;
     final server =
-        await _dataStore.server.get(message.payload['guild_id'], false);
+        await _dataStore.server.get(payload['guild_id'] as String, false);
     final thread = await _dataStore.channel
-        .get<ThreadChannel>(message.payload['id'], false);
+        .get<ThreadChannel>(payload['id'] as String, false);
 
-    await List.from(message.payload['added_members']).map((element) async {
+    await List.from(payload['added_members'] as Iterable<dynamic>).map((element) async {
+      final el = element as Map<String, dynamic>;
       Member? member;
-      if (element['member'] != null) {
+      if (el['member'] != null) {
         member = await _dataStore.member
-            .get(message.payload['guild_id'], element['user_id'], false);
+            .get(payload['guild_id'] as String, el['user_id'] as String, false);
       } else {
         final rawMember =
-            await _marshaller.serializers.member.normalize(element);
+            await _marshaller.serializers.member.normalize(el);
         member = await _marshaller.serializers.member.serialize(rawMember);
       }
 
@@ -36,14 +38,15 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
           event: Event.serverThreadMemberAdd, params: [server, thread, member]);
     }).wait;
 
-    await List.from(message.payload['removed_member_ids']).map((element) async {
+    await List.from(payload['removed_member_ids'] as Iterable<dynamic>).map((element) async {
+      final el = element as Map<String, dynamic>;
       Member? member;
-      if (element['member'] != null) {
+      if (el['member'] != null) {
         member = await _dataStore.member
-            .get(message.payload['guild_id'], element['user_id'], false);
+            .get(payload['guild_id'] as String, el['user_id'] as String, false);
       } else {
         final rawMember =
-            await _marshaller.serializers.member.normalize(element);
+            await _marshaller.serializers.member.normalize(el);
         member = await _marshaller.serializers.member.serialize(rawMember);
       }
 

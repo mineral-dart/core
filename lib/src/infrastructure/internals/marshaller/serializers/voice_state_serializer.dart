@@ -24,7 +24,7 @@ final class VoiceStateSerializer implements SerializerContract<VoiceState> {
     };
 
     final cacheKey =
-        _marshaller.cacheKey.voiceState(json['guild_id'], json['user_id']);
+        _marshaller.cacheKey.voiceState(json['guild_id'] as String, json['user_id'] as String);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -34,19 +34,19 @@ final class VoiceStateSerializer implements SerializerContract<VoiceState> {
   Future<VoiceState> serialize(Map<String, dynamic> json) async {
     return VoiceState(
         serverId: Snowflake.parse(json['server_id']),
-        channelId: Snowflake.nullable(json['channel_id']),
+        channelId: Snowflake.nullable(json['channel_id'] as String?),
         userId: Snowflake.parse(json['user_id']),
-        sessionId: json['session_id'],
-        isDeaf: json['deaf'],
-        isMute: json['mute'],
-        isSelfDeaf: json['self_deaf'],
-        isSelfMute: json['self_mute'],
-        hasSelfVideo: json['self_video'],
-        isSuppress: json['suppress'],
+        sessionId: json['session_id'] as String?,
+        isDeaf: json['deaf'] as bool,
+        isMute: json['mute'] as bool,
+        isSelfDeaf: json['self_deaf'] as bool,
+        isSelfMute: json['self_mute'] as bool,
+        hasSelfVideo: json['self_video'] as bool,
+        isSuppress: json['suppress'] as bool,
         requestToSpeakTimestamp: json['request_to_speak_timestamp'] != null
-            ? DateTime.parse(json['request_to_speak_timestamp'])
+            ? DateTime.parse(json['request_to_speak_timestamp'] as String)
             : null,
-        isDiscoverable: json['discoverable']);
+        isDiscoverable: json['discoverable'] as bool);
   }
 
   @override

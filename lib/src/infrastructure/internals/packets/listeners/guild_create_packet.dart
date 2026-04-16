@@ -15,43 +15,44 @@ final class GuildCreatePacket implements ListenablePacket {
 
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
-    await List.from(message.payload['channels']).map((element) async {
+    final payload = message.payload as Map<String, dynamic>;
+    await List.from(payload['channels'] as Iterable<dynamic>).map((element) async {
       return _marshaller.serializers.channels.normalize({
-        ...element,
-        'guild_id': message.payload['id'],
+        ...(element as Map<String, dynamic>),
+        'guild_id': payload['id'],
       });
     }).wait;
 
-    await List.from(message.payload['members']).map((element) async {
+    await List.from(payload['members'] as Iterable<dynamic>).map((element) async {
       return _marshaller.serializers.member.normalize({
-        ...element,
-        'guild_id': message.payload['id'],
+        ...(element as Map<String, dynamic>),
+        'guild_id': payload['id'],
       });
     }).wait;
 
-    await List.from(message.payload['roles']).map((element) async {
+    await List.from(payload['roles'] as Iterable<dynamic>).map((element) async {
       return _marshaller.serializers.role.normalize({
-        ...element,
-        'guild_id': message.payload['id'],
+        ...(element as Map<String, dynamic>),
+        'guild_id': payload['id'],
       });
     }).wait;
 
-    await List.from(message.payload['stickers']).map((element) async {
+    await List.from(payload['stickers'] as Iterable<dynamic>).map((element) async {
       return _marshaller.serializers.sticker.normalize({
-        ...element,
-        'guild_id': message.payload['id'],
+        ...(element as Map<String, dynamic>),
+        'guild_id': payload['id'],
       });
     }).wait;
 
-    await List.from(message.payload['voice_states']).map((element) async {
+    await List.from(payload['voice_states'] as Iterable<dynamic>).map((element) async {
       return _marshaller.serializers.voice.normalize({
-        ...element,
-        'guild_id': message.payload['id'],
+        ...(element as Map<String, dynamic>),
+        'guild_id': payload['id'],
       });
     }).wait;
 
     final rawServer =
-        await _marshaller.serializers.server.normalize(message.payload);
+        await _marshaller.serializers.server.normalize(payload);
     final server = await _marshaller.serializers.server.serialize(rawServer);
 
     final bot = ioc.resolve<Bot>();

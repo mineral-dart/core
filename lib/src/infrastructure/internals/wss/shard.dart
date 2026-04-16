@@ -72,7 +72,7 @@ final class Shard implements ShardContract {
         onClose: networkError.dispatch,
         onOpen: (message) {
           if (message.content case ShardMessage(:final payload)) {
-            logger.trace(jsonEncode(redactSensitiveFields(payload)));
+            logger.trace(jsonEncode(redactSensitiveFields(payload as Map<String, dynamic>)));
           }
         });
 
@@ -97,7 +97,7 @@ final class Shard implements ShardContract {
         try {
           switch (code) {
             case OpCode.hello:
-              authentication.identify(payload);
+              authentication.identify(payload as Map<String, dynamic>);
             case OpCode.heartbeatAck:
               authentication.ack();
             case OpCode.reconnect:
@@ -112,7 +112,7 @@ final class Shard implements ShardContract {
               if ([PacketType.ready.name, PacketType.guildCreate.name]
                   .contains((message.content as ShardMessage).type)) {
                 final decoded = wss.config.encoding.decode(message);
-                onceEventQueue.add(decoded.content.serialize());
+                onceEventQueue.add((decoded.content as ShardMessage).serialize() as Map<String, dynamic>);
               }
 
               dispatchEvent.dispatch(message);

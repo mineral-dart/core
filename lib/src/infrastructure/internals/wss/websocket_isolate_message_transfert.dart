@@ -36,10 +36,10 @@ final class WebsocketIsolateMessageTransfert {
 
   factory WebsocketIsolateMessageTransfert.fromJson(Map<String, dynamic> json) {
     return WebsocketIsolateMessageTransfert(
-      MessageTransfertType.values[json['type']],
-      json['payload'],
-      json['uid'],
-      json['target_keys'],
+      MessageTransfertType.values[json['type'] as int],
+      json['payload'] as Map<String, dynamic>?,
+      json['uid'] as String?,
+      List<String>.from(json['target_keys'] as Iterable<dynamic>),
       null,
     );
   }

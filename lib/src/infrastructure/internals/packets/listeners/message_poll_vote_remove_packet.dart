@@ -15,7 +15,7 @@ final class MessagePollVoteRemovePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final payload = message.payload as Map<String, dynamic>;
-    final user = await _dataStore.user.get(payload['user_id'], false);
+    final user = await _dataStore.user.get(payload['user_id'] as String, false);
 
     if (payload['guild_id'] != null) {
       await _server(payload, user!, dispatch);
@@ -26,14 +26,14 @@ final class MessagePollVoteRemovePacket implements ListenablePacket {
 
   Future<void> _server(
       Map<String, dynamic> payload, User user, DispatchEvent dispatch) async {
-    final server = await _dataStore.server.get(payload['guild_id'], false);
+    final server = await _dataStore.server.get(payload['guild_id'] as String, false);
     final message = await _dataStore.message.get<ServerMessage>(
-        payload['channel_id'], payload['message_id'], false);
+        payload['channel_id'] as String, payload['message_id'] as String, false);
     final answer = await _dataStore.message.getPollVotes(
         server.id,
         Snowflake.parse(payload['channel_id']),
         message!.id,
-        payload['answer_id']);
+        payload['answer_id'] as int);
 
     dispatch(event: Event.serverPollVoteRemove, params: [answer, user]);
   }
@@ -41,12 +41,12 @@ final class MessagePollVoteRemovePacket implements ListenablePacket {
   Future<void> _private(
       Map<String, dynamic> payload, User user, DispatchEvent dispatch) async {
     final message = await _dataStore.message
-        .get(payload['channel_id'], payload['message_id'], false);
+        .get(payload['channel_id'] as String, payload['message_id'] as String, false);
     final answer = await _dataStore.message.getPollVotes(
         null,
         Snowflake.parse(payload['channel_id']),
         message!.id,
-        payload['answer_id']);
+        payload['answer_id'] as int);
 
     dispatch(event: Event.privatePollVoteRemove, params: [answer, user]);
   }

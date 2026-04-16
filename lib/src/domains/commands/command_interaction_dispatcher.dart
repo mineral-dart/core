@@ -39,33 +39,35 @@ final class CommandInteractionDispatcher
   }
 
   Future<void> _handleCommand(Map<String, dynamic> data) async {
-    if (data['data']['options'] != null) {
-      for (final option in data['data']['options']) {
+    final dataData = data['data'] as Map<String, dynamic>;
+    if (dataData['options'] != null) {
+      for (final option in dataData['options'] as Iterable<dynamic>) {
+        final opt = option as Map<String, dynamic>;
         final type = CommandType.values
-            .firstWhereOrNull((e) => e.value == option['type']);
+            .firstWhereOrNull((e) => e.value == opt['type']);
 
         if (type == null) {
           continue;
         }
 
         return switch (type) {
-          CommandType.subCommand => await _handleSubCommand(data, option),
-          CommandType.subCommandGroup => await _handleGroups(data, option),
+          CommandType.subCommand => await _handleSubCommand(data, opt),
+          CommandType.subCommandGroup => await _handleGroups(data, opt),
           CommandType.unknown => null,
         };
       }
     }
 
     final registration = _interactionManager.commandsHandler
-        .firstWhereOrNull((reg) => reg.name == data['data']['name']);
+        .firstWhereOrNull((reg) => reg.name == dataData['name']);
 
     if (registration == null) {
       _marshaller.logger
-          .warn('Unknown command received: "${data['data']['name']}"');
+          .warn('Unknown command received: "${dataData['name']}"');
       return;
     }
 
-    final serverId = Snowflake.nullable(data['data']['guild_id']);
+    final serverId = Snowflake.nullable(dataData['guild_id'] as String?);
     final commandContext = await switch (serverId) {
       String() => ServerCommandContext.fromMap(_marshaller, _dataStore, data),
       _ => GlobalCommandContext.fromMap(_marshaller, _dataStore, data),
@@ -73,27 +75,28 @@ final class CommandInteractionDispatcher
 
     final Map<String, dynamic> optionValues = {};
 
-    if (data['data']['options'] != null) {
-      for (final option in data['data']['options']) {
+    if (dataData['options'] != null) {
+      for (final option in dataData['options'] as Iterable<dynamic>) {
+        final opt = option as Map<String, dynamic>;
         final type = CommandOptionType.values
-            .firstWhereOrNull((e) => e.value == option['type']);
+            .firstWhereOrNull((e) => e.value == opt['type']);
 
         if (type == null) {
-          _marshaller.logger.warn("Unknown option type: ${option['type']}");
+          _marshaller.logger.warn("Unknown option type: ${opt['type']}");
           continue;
         }
 
-        optionValues[option['name']] = await switch (type) {
+        optionValues[opt['name'] as String] = await switch (type) {
           CommandOptionType.user => switch (commandContext) {
               ServerCommandContext() => _dataStore.member
-                  .get(commandContext.server.id.value, option['value'], false),
-              _ => _dataStore.user.get(option['value'], false),
+                  .get(commandContext.server.id.value, opt['value'] as String, false),
+              _ => _dataStore.user.get(opt['value'] as String, false),
             },
           CommandOptionType.channel =>
-            _dataStore.channel.get(option['value'], false),
+            _dataStore.channel.get(opt['value'] as String, false),
           CommandOptionType.role =>
-            _dataStore.role.get(data['guild_id'], option['value'], false),
-          _ => option['value'],
+            _dataStore.role.get(data['guild_id'] as String, opt['value'] as String, false),
+          _ => opt['value'],
         };
       }
     }

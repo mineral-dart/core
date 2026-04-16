@@ -116,7 +116,7 @@ final class ClientBuilder {
     final logLevel = env.get(AppEnv.logLevel);
     final dartEnv = env.get<DartEnv>(AppEnv.dartEnv);
 
-    _logger = ioc.make<LoggerContract>(() => Logger(logLevel, dartEnv.value));
+    _logger = ioc.make<LoggerContract>(() => Logger(logLevel as LogLevel, dartEnv.value));
 
     _createCache();
 

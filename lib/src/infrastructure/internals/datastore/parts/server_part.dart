@@ -45,7 +45,7 @@ final class ServerPart implements ServerPartContract {
     final response = await _dataStore.client.patch(req);
 
     final rawServer =
-        await _marshaller.serializers.server.normalize(response.body);
+        await _marshaller.serializers.server.normalize(response.body as Map<String, dynamic>);
     return _marshaller.serializers.server.serialize(rawServer);
   }
 

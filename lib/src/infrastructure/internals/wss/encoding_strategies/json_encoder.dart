@@ -16,7 +16,7 @@ final class JsonEncoderStrategy implements EncodingStrategy {
   WebsocketMessage decode(WebsocketMessage message) {
     try {
       return message
-        ..content = ShardMessage.of(json.decode(message.originalContent));
+        ..content = ShardMessage.of(json.decode(message.originalContent as String) as Map<String, dynamic>);
     } on Exception catch (e) {
       _logger.error('Failed to decode JSON WebSocket message: $e');
       rethrow;

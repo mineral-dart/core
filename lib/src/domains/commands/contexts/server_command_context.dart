@@ -38,20 +38,22 @@ final class ServerCommandContext implements CommandContext {
 
   static Future<ServerCommandContext> fromMap(MarshallerContract marshaller,
       DataStoreContract datastore, Map<String, dynamic> payload) async {
+    final memberMap = payload['member'] as Map<String, dynamic>;
+    final memberUser = memberMap['user'] as Map<String, dynamic>;
     final member = await datastore.member.get(
-      payload['guild_id'],
-      payload['member']['user']['id'],
+      payload['guild_id'] as String,
+      memberUser['id'] as String,
       false,
     );
 
     return ServerCommandContext(
       id: Snowflake.parse(payload['id']),
       applicationId: Snowflake.parse(payload['application_id']),
-      token: payload['token'],
-      version: payload['version'],
+      token: payload['token'] as String,
+      version: payload['version'] as int,
       member: member!,
-      server: await datastore.server.get(payload['guild_id'], true),
-      channel: await datastore.channel.get(payload['channel_id'], false),
+      server: await datastore.server.get(payload['guild_id'] as String, true),
+      channel: await datastore.channel.get(payload['channel_id'] as String, false),
     );
   }
 }

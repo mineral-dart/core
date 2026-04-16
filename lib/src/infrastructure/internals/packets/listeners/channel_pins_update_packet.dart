@@ -18,7 +18,7 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final channel =
-        await _dataStore.channel.get(message.payload['channel_id'], false);
+        await _dataStore.channel.get(message.payload['channel_id'] as Object, false);
 
     return switch (channel) {
       ServerChannel() => registerServerChannelPins(channel, dispatch),

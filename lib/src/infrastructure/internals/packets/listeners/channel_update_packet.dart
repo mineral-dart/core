@@ -18,13 +18,13 @@ final class ChannelUpdatePacket implements ListenablePacket {
   @override
   Future<void> listen(ShardMessage message, DispatchEvent dispatch) async {
     final rawBeforeChannel =
-        await _marshaller.cache?.get(message.payload['id']);
+        await _marshaller.cache?.get(message.payload['id'] as String);
     final before = rawBeforeChannel != null
         ? await _marshaller.serializers.channels.serialize(rawBeforeChannel)
         : null;
 
     final rawChannel =
-        await _marshaller.serializers.channels.normalize(message.payload);
+        await _marshaller.serializers.channels.normalize(message.payload as Map<String, dynamic>);
     final channel =
         await _marshaller.serializers.channels.serialize(rawChannel);
 

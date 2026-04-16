@@ -20,7 +20,7 @@ final class MessageCreatePacket implements ListenablePacket {
     }
 
     final payload =
-        await _marshaller.serializers.message.normalize(message.payload);
+        await _marshaller.serializers.message.normalize(message.payload as Map<String, dynamic>);
     final serializedMessage =
         await _marshaller.serializers.message.serialize(payload);
 

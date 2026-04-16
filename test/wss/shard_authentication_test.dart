@@ -159,7 +159,7 @@ Shard _createShard() {
 }
 
 Map<String, dynamic> _decodeMessage(String raw) {
-  return Map<String, dynamic>.from(jsonDecode(raw));
+  return Map<String, dynamic>.from(jsonDecode(raw) as Map<dynamic, dynamic>);
 }
 
 // ── Tests ──────────────────────────────────────────────────────────────────

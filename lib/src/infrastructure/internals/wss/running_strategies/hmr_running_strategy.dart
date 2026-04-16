@@ -55,7 +55,7 @@ final class HmrRunningStrategy implements RunningStrategy {
       await _runner.run();
 
       _runner.listen((message) {
-        _wss.send(WebsocketIsolateMessageTransfert.fromJson(message));
+        _wss.send(WebsocketIsolateMessageTransfert.fromJson(message as Map<String, dynamic>));
       });
 
       await createShards(this);
@@ -64,7 +64,7 @@ final class HmrRunningStrategy implements RunningStrategy {
       final Stream stream = port.asBroadcastStream();
       _devPort!.send(port.sendPort);
 
-      await for (final Map<String, dynamic> message in stream) {
+      await for (final Map<String, dynamic> message in stream.cast<Map<String, dynamic>>()) {
         _packetDispatcher.dispatch(ShardMessage.of(message));
       }
     }
@@ -78,7 +78,7 @@ final class HmrRunningStrategy implements RunningStrategy {
 
     if (messageContent case final Map<String, dynamic> json
         when json['t'] == PacketType.ready.name) {
-      ioc.bind(() => ReadyPacketMessage(decoded.content));
+      ioc.bind(() => ReadyPacketMessage(decoded.content as ShardMessage<dynamic>));
     }
 
     await _runner.send(decoded.content.serialize());

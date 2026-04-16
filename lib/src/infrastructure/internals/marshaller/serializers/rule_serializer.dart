@@ -30,7 +30,7 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
     };
 
     final cacheKey =
-        _marshaller.cacheKey.serverRules(json['guild_id'], json['id']);
+        _marshaller.cacheKey.serverRules(json['guild_id'] as String, json['id'] as String);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;
@@ -41,17 +41,18 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
     return AutoModerationRule(
       id: Snowflake.parse(json['id']),
       serverId: Snowflake.parse(json['serverId']),
-      name: json['name'],
+      name: json['name'] as String,
       creatorId: Snowflake.parse(json['creatorId']),
       eventTypes: findInEnum(AutoModerationEventType.values, json['eventType'],
           orElse: AutoModerationEventType.unknown),
-      triggerMetadata: TriggerMetadata.fromJson(json['triggerMetadata']),
-      action: (json['actions'] as List).map((action) {
-        final type = findInEnum(ActionType.values, action['type'],
+      triggerMetadata: TriggerMetadata.fromJson(json['triggerMetadata'] as Map<String, dynamic>),
+      action: (json['actions'] as List<dynamic>).map((action) {
+        final actionMap = action as Map<String, dynamic>;
+        final type = findInEnum(ActionType.values, actionMap['type'],
             orElse: ActionType.unknown);
         return Action(type: type);
       }).toList(),
-      enabled: json['enabled'] ?? true,
+      enabled: json['enabled'] as bool? ?? true,
       exemptRoles: List<Snowflake>.from(
           (json['exemptRoles'] as List).map(Snowflake.parse)),
       exemptChannels: List<Snowflake>.from(
