@@ -11,5 +11,6 @@ abstract class ServerThreadUpdateEvent implements ListenableEvent {
   @override
   Event get event => Event.serverThreadUpdate;
 
-  FutureOr<void> handle(Server server, ThreadChannel before, ThreadChannel after);
+  FutureOr<void> handle(
+      Server server, ThreadChannel before, ThreadChannel after);
 }

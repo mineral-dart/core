@@ -34,5 +34,6 @@ final class RoleManager {
           bool hoist = false,
           bool mentionable = false,
           String? reason}) =>
-      _datastore.role.create(_serverId.value, name, permissions, color, hoist, mentionable, reason);
+      _datastore.role.create(_serverId.value, name, permissions, color, hoist,
+          mentionable, reason);
 }

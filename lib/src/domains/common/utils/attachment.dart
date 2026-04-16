@@ -1,7 +1,10 @@
 import 'package:http/http.dart' as http;
 import 'package:mineral/api.dart';
 
-typedef AttachmentResult = (List<Map<String, dynamic>>, List<http.MultipartFile>);
+typedef AttachmentResult = (
+  List<Map<String, dynamic>>,
+  List<http.MultipartFile>
+);
 
 AttachmentResult makeAttachmentFromBuilder(MessageBuilder builder) {
   final components = builder.build();
@@ -41,7 +44,9 @@ http.MultipartFile? _prepareAsset(dynamic payload, int filesLength) {
   final media = payload['media'] as Map<String, dynamic>?;
   final url = media?['url'] as String?;
 
-  if (url != null && url.startsWith('attachment://') && payload['bytes'] != null) {
+  if (url != null &&
+      url.startsWith('attachment://') &&
+      payload['bytes'] != null) {
     final filename = url.replaceFirst('attachment://', '');
 
     final multipartFile = http.MultipartFile.fromBytes(

@@ -9,14 +9,16 @@ final class MessageSerializer<T extends Message>
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
+    final author = json['author'] as Map<String, dynamic>?;
+
     final payload = {
       'id': json['id'],
-      'author_id': json['author']['id'],
+      'author_id': author?['id'],
       'content': json['content'],
-      'embeds': json['embeds'],
+      'embeds': json['embeds'] ?? [],
       'channel_id': json['channel_id'],
       'server_id': json['guild_id'],
-      'author_is_bot': json['author']['bot'],
+      'author_is_bot': author?['bot'],
       'timestamp': json['timestamp'],
       'edited_timestamp': json['edited_timestamp'],
     };

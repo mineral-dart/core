@@ -21,7 +21,8 @@ Future<AuditLog> channelUpdateAuditLogHandler(Map<String, dynamic> json) async {
       serverId: Snowflake.parse(json['guild_id']),
       userId: Snowflake.parse(json['user_id']),
       channel: channel!,
-      changes: List<Change>.from(json['changes'].map((e) => Change.fromJson(e))));
+      changes:
+          List<Change>.from(json['changes'].map((e) => Change.fromJson(e))));
 }
 
 Future<AuditLog> channelDeleteAuditLogHandler(Map<String, dynamic> json) async {
@@ -29,5 +30,6 @@ Future<AuditLog> channelDeleteAuditLogHandler(Map<String, dynamic> json) async {
       serverId: Snowflake.parse(json['guild_id']),
       userId: Snowflake.parse(json['user_id']),
       channelId: Snowflake.parse(json['target_id']),
-      changes: List<Change>.from(json['changes'].map((e) => Change.fromJson(e))));
+      changes:
+          List<Change>.from(json['changes'].map((e) => Change.fromJson(e))));
 }

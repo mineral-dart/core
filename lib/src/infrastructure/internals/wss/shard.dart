@@ -94,31 +94,39 @@ final class Shard implements ShardContract {
     client.listen((message) {
       if (message.content
           case ShardMessage(opCode: final code, payload: final payload)) {
-        switch (code) {
-          case OpCode.hello:
-            authentication.identify(payload);
-          case OpCode.heartbeatAck:
-            authentication.ack();
-          case OpCode.reconnect:
-            authentication.reconnect();
-          case OpCode.invalidSession:
-            if (payload == true) {
-              authentication.resume();
-            } else {
+        try {
+          switch (code) {
+            case OpCode.hello:
+              authentication.identify(payload);
+            case OpCode.heartbeatAck:
+              authentication.ack();
+            case OpCode.reconnect:
               authentication.reconnect();
-            }
-          case OpCode.dispatch:
-            if ([PacketType.ready.name, PacketType.guildCreate.name]
-                .contains((message.content as ShardMessage).type)) {
-              final decoded = wss.config.encoding.decode(message);
-              onceEventQueue.add(decoded.content.serialize());
-            }
+            case OpCode.invalidSession:
+              if (payload == true) {
+                authentication.resume();
+              } else {
+                authentication.reconnect();
+              }
+            case OpCode.dispatch:
+              if ([PacketType.ready.name, PacketType.guildCreate.name]
+                  .contains((message.content as ShardMessage).type)) {
+                final decoded = wss.config.encoding.decode(message);
+                onceEventQueue.add(decoded.content.serialize());
+              }
 
-            dispatchEvent.dispatch(message);
-          case OpCode.heartbeat:
-            authentication.heartbeat();
-          default:
-            logger.warn('Unknown op code: $code');
+              dispatchEvent.dispatch(message);
+            case OpCode.heartbeat:
+              authentication.heartbeat();
+            default:
+              logger.warn('Unknown op code: $code');
+          }
+        } on Error catch (e, stackTrace) {
+          logger.error('Fatal error processing opcode $code on $shardName: $e');
+          logger.trace('$stackTrace');
+        } on Exception catch (e, stackTrace) {
+          logger.error('Error processing opcode $code on $shardName: $e');
+          logger.trace('$stackTrace');
         }
       }
     });

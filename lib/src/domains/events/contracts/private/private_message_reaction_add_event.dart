@@ -4,7 +4,8 @@ import 'package:mineral/src/api/common/message_reaction.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef PrivateMessageReactionAddHandler = FutureOr<void> Function(MessageReaction reaction);
+typedef PrivateMessageReactionAddHandler = FutureOr<void> Function(
+    MessageReaction reaction);
 
 abstract class PrivateMessageReactionAddEvent implements ListenableEvent {
   @override

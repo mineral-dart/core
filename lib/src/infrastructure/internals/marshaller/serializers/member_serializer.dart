@@ -18,13 +18,14 @@ final class MemberSerializer implements SerializerContract<Member> {
     final globalName = user?['global_name'] ?? json['global_name'];
     final discriminator = user?['discriminator'] ?? json['discriminator'];
     final avatar = user?['avatar'] ?? json['avatar'];
-    final avatarDecorationData = user?['avatar_decoration_data'] ?? json['avatar_decoration_data'];
+    final avatarDecorationData =
+        user?['avatar_decoration_data'] ?? json['avatar_decoration_data'];
     final publicFlags = user?['public_flags'] ?? json['public_flags'];
     final isBot = user?['bot'] ?? json['bot'] ?? false;
     final mfaEnabled = user?['mfa_enabled'] ?? json['mfa_enabled'] ?? false;
     final locale = user?['locale'] ?? json['locale'];
     final premiumType = user?['premium_type'] ?? json['premium_type'];
-    
+
     final payload = {
       'id': userId,
       'username': username,
@@ -54,8 +55,7 @@ final class MemberSerializer implements SerializerContract<Member> {
       'server_id': json['guild_id'],
     };
 
-    final cacheKey =
-        _marshaller.cacheKey.member(json['guild_id'], userId);
+    final cacheKey = _marshaller.cacheKey.member(json['guild_id'], userId);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;

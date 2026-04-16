@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/invalid_component_exception.dart';
 
 abstract interface class InteractiveComponentService {
   T get<T extends InteractiveComponent>(String customId);
@@ -29,17 +30,20 @@ final class InteractiveComponentManager
     }
 
     switch (component) {
-      case final InteractiveButton button:
+      case final InteractiveButton button when params.isNotEmpty:
         button.handle(params[0] as ButtonContext);
-      case final InteractiveModal modal:
+      case final InteractiveModal modal when params.length >= 2:
         modal.handle(params[0] as ModalContext, params[1]);
-      case final InteractiveSelectMenu select:
+      case final InteractiveSelectMenu select when params.length >= 2:
         select.handle(params[0] as SelectContext, params[1]);
+      default:
+        return;
     }
   }
 
   @override
   T get<T extends InteractiveComponent>(String customId) =>
       _components.values.firstWhere((e) => e.customId == customId,
-          orElse: () => throw Exception('Cannot found component')) as T;
+          orElse: () => throw InvalidComponentException(
+              'Component "$customId" not found')) as T;
 }

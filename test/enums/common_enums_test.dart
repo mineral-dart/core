@@ -99,16 +99,21 @@ void main() {
 
     test('known values resolve correctly', () {
       expect(findInEnum(CommandOptionType.values, 3), CommandOptionType.string);
-      expect(findInEnum(CommandOptionType.values, 4), CommandOptionType.integer);
-      expect(findInEnum(CommandOptionType.values, 5), CommandOptionType.boolean);
+      expect(
+          findInEnum(CommandOptionType.values, 4), CommandOptionType.integer);
+      expect(
+          findInEnum(CommandOptionType.values, 5), CommandOptionType.boolean);
       expect(findInEnum(CommandOptionType.values, 6), CommandOptionType.user);
-      expect(findInEnum(CommandOptionType.values, 7), CommandOptionType.channel);
-      expect(findInEnum(CommandOptionType.values, 11), CommandOptionType.attachment);
+      expect(
+          findInEnum(CommandOptionType.values, 7), CommandOptionType.channel);
+      expect(findInEnum(CommandOptionType.values, 11),
+          CommandOptionType.attachment);
     });
 
     test('unknown value with orElse returns unknown', () {
       expect(
-        findInEnum(CommandOptionType.values, 99, orElse: CommandOptionType.unknown),
+        findInEnum(CommandOptionType.values, 99,
+            orElse: CommandOptionType.unknown),
         CommandOptionType.unknown,
       );
     });
@@ -155,7 +160,8 @@ void main() {
       expect(findInEnum(MessageType.values, 0), MessageType.initial);
       expect(findInEnum(MessageType.values, 7), MessageType.userJoin);
       expect(findInEnum(MessageType.values, 19), MessageType.reply);
-      expect(findInEnum(MessageType.values, 32), MessageType.guildApplicationPremiumSubscription);
+      expect(findInEnum(MessageType.values, 32),
+          MessageType.guildApplicationPremiumSubscription);
     });
 
     test('unknown value with orElse returns unknown', () {

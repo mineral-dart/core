@@ -5,6 +5,7 @@ import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/serialization_exception.dart';
 
 final class ChannelPart implements ChannelPartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
@@ -28,8 +29,12 @@ final class ChannelPart implements ChannelPartContract {
       return _marshaller.serializers.channels.serialize(raw);
     }).wait;
 
-    completer.complete(
-        channels.asMap().map((_, value) => MapEntry(value.id, value as T)));
+    completer.complete(channels.asMap().map((_, value) {
+      if (value is! T)
+        throw SerializationException(
+            'Expected $T but got ${value.runtimeType}');
+      return MapEntry(value.id, value);
+    }));
     return completer.future;
   }
 
@@ -40,8 +45,12 @@ final class ChannelPart implements ChannelPartContract {
     final String key = _marshaller.cacheKey.channel(id);
     final cachedChannel = await _marshaller.cache?.get(key);
     if (!force && cachedChannel != null) {
-      final channel =
-          await _marshaller.serializers.channels.serialize(cachedChannel) as T;
+      final serialized =
+          await _marshaller.serializers.channels.serialize(cachedChannel);
+      if (serialized is! T)
+        throw SerializationException(
+            'Expected $T but got ${serialized.runtimeType}');
+      final channel = serialized;
 
       completer.complete(channel);
       return completer.future;
@@ -53,9 +62,12 @@ final class ChannelPart implements ChannelPartContract {
         .run(_dataStore.client.get);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
-    final channel = await _marshaller.serializers.channels.serialize(raw) as T;
+    final serialized = await _marshaller.serializers.channels.serialize(raw);
+    if (serialized is! T)
+      throw SerializationException(
+          'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(channel);
+    completer.complete(serialized);
     return completer.future;
   }
 
@@ -75,12 +87,15 @@ final class ChannelPart implements ChannelPartContract {
         .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
-    final channel = await _marshaller.serializers.channels.serialize({
+    final serialized = await _marshaller.serializers.channels.serialize({
       ...raw,
       'guild_id': serverId,
-    }) as T;
+    });
+    if (serialized is! T)
+      throw SerializationException(
+          'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(channel);
+    completer.complete(serialized);
     return completer.future;
   }
 
@@ -120,12 +135,15 @@ final class ChannelPart implements ChannelPartContract {
         .run(_dataStore.client.patch);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
-    final channel = await _marshaller.serializers.channels.serialize({
+    final serialized = await _marshaller.serializers.channels.serialize({
       ...raw,
       'guild_id': serverId,
-    }) as T;
+    });
+    if (serialized is! T)
+      throw SerializationException(
+          'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(channel);
+    completer.complete(serialized);
     return completer.future;
   }
 

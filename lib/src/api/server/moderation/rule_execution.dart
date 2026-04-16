@@ -15,7 +15,6 @@ final class RuleExecution {
   final String? matchedContent;
   final String? matchedKeyword;
 
-
   RuleExecution({
     required this.ruleId,
     required this.channelId,

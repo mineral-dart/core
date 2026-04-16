@@ -80,7 +80,8 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       List<BotActivity>? activities, StatusType? status, bool? afk) {
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.presenceUpdate)
-      ..append('since', afk == true ? DateTime.now().millisecondsSinceEpoch : null)
+      ..append(
+          'since', afk == true ? DateTime.now().millisecondsSinceEpoch : null)
       ..append(
           'activities',
           activities != null

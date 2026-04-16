@@ -43,10 +43,12 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
       serverId: Snowflake.parse(json['serverId']),
       name: json['name'],
       creatorId: Snowflake.parse(json['creatorId']),
-      eventTypes: findInEnum(AutoModerationEventType.values, json['eventType'], orElse: AutoModerationEventType.unknown),
+      eventTypes: findInEnum(AutoModerationEventType.values, json['eventType'],
+          orElse: AutoModerationEventType.unknown),
       triggerMetadata: TriggerMetadata.fromJson(json['triggerMetadata']),
       action: (json['actions'] as List).map((action) {
-        final type = findInEnum(ActionType.values, action['type'], orElse: ActionType.unknown);
+        final type = findInEnum(ActionType.values, action['type'],
+            orElse: ActionType.unknown);
         return Action(type: type);
       }).toList(),
       enabled: json['enabled'] ?? true,
@@ -54,7 +56,8 @@ final class RuleSerializer implements SerializerContract<AutoModerationRule> {
           (json['exemptRoles'] as List).map(Snowflake.parse)),
       exemptChannels: List<Snowflake>.from(
           (json['exemptChannels'] as List).map(Snowflake.parse)),
-      triggerTypes: findInEnum(TriggerType.values, json['triggerType'], orElse: TriggerType.unknown),
+      triggerTypes: findInEnum(TriggerType.values, json['triggerType'],
+          orElse: TriggerType.unknown),
     );
   }
 

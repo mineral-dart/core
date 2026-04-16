@@ -5,7 +5,8 @@ import 'package:mineral/src/api/server/member.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef ServerPresenceUpdateEventHandler = FutureOr<void> Function(Member, Presence);
+typedef ServerPresenceUpdateEventHandler = FutureOr<void> Function(
+    Member, Presence);
 
 abstract class ServerPresenceUpdateEvent implements ListenableEvent {
   @override

@@ -99,31 +99,35 @@ final class ServerSerializer implements SerializerContract<Server> {
         bitfieldPermission: payload['permissions'],
         afkTimeout: payload['afk_timeout'],
         hasWidgetEnabled: payload['widget_enabled'] ?? false,
-        explicitContentFilter: findInEnum(ExplicitContentFilter.values,
-            payload['settings']['explicit_content_filter'], orElse: ExplicitContentFilter.unknown),
-        verificationLevel: findInEnum(VerificationLevel.values,
-            payload['settings']['verification_level'], orElse: VerificationLevel.unknown),
+        explicitContentFilter: findInEnum(
+            ExplicitContentFilter.values, payload['settings']['explicit_content_filter'],
+            orElse: ExplicitContentFilter.unknown),
+        verificationLevel: findInEnum(
+            VerificationLevel.values, payload['settings']['verification_level'],
+            orElse: VerificationLevel.unknown),
         defaultMessageNotifications: findInEnum(
             DefaultMessageNotification.values,
-            payload['settings']['default_message_notifications'], orElse: DefaultMessageNotification.unknown),
+            payload['settings']['default_message_notifications'],
+            orElse: DefaultMessageNotification.unknown),
         features: List<String>.from(payload['settings']['features']),
-        mfaLevel: findInEnum(MfaLevel.values, payload['settings']['mfa_level'], orElse: MfaLevel.unknown),
+        mfaLevel: findInEnum(MfaLevel.values, payload['settings']['mfa_level'],
+            orElse: MfaLevel.unknown),
         systemChannelFlags: bitfieldToList(SystemChannelFlag.values,
             payload['settings']['system_channel_flags']),
         vanityUrlCode: payload['vanity_url_code'],
         subscription: ServerSubscription(
           tier: findInEnum(
-              PremiumTier.values, payload['settings']['premium_tier'], orElse: PremiumTier.unknown),
+              PremiumTier.values, payload['settings']['premium_tier'],
+              orElse: PremiumTier.unknown),
           subscriptionCount: payload['settings']['premium_subscription_count'],
           hasEnabledProgressBar: payload['settings']
               ['premium_progress_bar_enabled'],
         ),
         preferredLocale: payload['settings']['preferred_locale'],
         maxVideoChannelUsers: payload['max_video_channel_users'],
-        nsfwLevel:
-            findInEnum(NsfwLevel.values, payload['settings']['nsfw_level'], orElse: NsfwLevel.unknown),
+        nsfwLevel: findInEnum(NsfwLevel.values, payload['settings']['nsfw_level'],
+            orElse: NsfwLevel.unknown),
         rulesManager: RulesManager(Snowflake.parse(payload['id'])));
-
 
     return Server(
       id: Snowflake.parse(payload['id']),

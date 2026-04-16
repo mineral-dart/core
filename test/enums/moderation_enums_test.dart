@@ -12,14 +12,17 @@ void main() {
     });
 
     test('known values resolve correctly', () {
-      expect(findInEnum(KeywordPresetType.values, 1), KeywordPresetType.profanity);
-      expect(findInEnum(KeywordPresetType.values, 2), KeywordPresetType.sexualContent);
+      expect(
+          findInEnum(KeywordPresetType.values, 1), KeywordPresetType.profanity);
+      expect(findInEnum(KeywordPresetType.values, 2),
+          KeywordPresetType.sexualContent);
       expect(findInEnum(KeywordPresetType.values, 3), KeywordPresetType.slurs);
     });
 
     test('unknown value with orElse returns unknown', () {
       expect(
-        findInEnum(KeywordPresetType.values, 99, orElse: KeywordPresetType.unknown),
+        findInEnum(KeywordPresetType.values, 99,
+            orElse: KeywordPresetType.unknown),
         KeywordPresetType.unknown,
       );
     });
@@ -69,7 +72,8 @@ void main() {
       expect(findInEnum(ActionType.values, 1), ActionType.blockMessage);
       expect(findInEnum(ActionType.values, 2), ActionType.sendAlertMessage);
       expect(findInEnum(ActionType.values, 3), ActionType.timeout);
-      expect(findInEnum(ActionType.values, 4), ActionType.blockMemberInteraction);
+      expect(
+          findInEnum(ActionType.values, 4), ActionType.blockMemberInteraction);
     });
 
     test('unknown value with orElse returns unknown', () {
@@ -93,13 +97,16 @@ void main() {
     });
 
     test('known values resolve correctly', () {
-      expect(findInEnum(AutoModerationEventType.values, 1), AutoModerationEventType.messageSend);
-      expect(findInEnum(AutoModerationEventType.values, 2), AutoModerationEventType.memberUpdate);
+      expect(findInEnum(AutoModerationEventType.values, 1),
+          AutoModerationEventType.messageSend);
+      expect(findInEnum(AutoModerationEventType.values, 2),
+          AutoModerationEventType.memberUpdate);
     });
 
     test('unknown value with orElse returns unknown', () {
       expect(
-        findInEnum(AutoModerationEventType.values, 99, orElse: AutoModerationEventType.unknown),
+        findInEnum(AutoModerationEventType.values, 99,
+            orElse: AutoModerationEventType.unknown),
         AutoModerationEventType.unknown,
       );
     });

@@ -55,7 +55,8 @@ void main() {
       expect(result!['custom_id'], equals('my_button'));
     });
 
-    test('returns the first matching component when multiple buttons exist', () {
+    test('returns the first matching component when multiple buttons exist',
+        () {
       final payload = {
         'message': {
           'components': [

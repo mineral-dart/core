@@ -48,9 +48,9 @@ final class ShardAuthentication implements ShardAuthenticationContract {
 
     if (shard.wss.config.compress) {
       ioc.resolve<LoggerContract>().warn(
-        'compress: true is configured but zlib-stream decompression is not implemented. '
-        'Forcing compress: false to prevent unreadable frames.',
-      );
+            'compress: true is configured but zlib-stream decompression is not implemented. '
+            'Forcing compress: false to prevent unreadable frames.',
+          );
     }
 
     final message = ShardMessageBuilder()

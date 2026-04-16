@@ -11,6 +11,7 @@ import 'package:mineral/src/domains/commands/command_interaction_dispatcher.dart
 import 'package:mineral/src/domains/commands/command_registration.dart';
 import 'package:mineral/src/domains/commands/command_result.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/invalid_command_exception.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
 import 'package:mineral/src/infrastructure/services/http/request.dart';
 
@@ -50,13 +51,13 @@ final class CommandInteractionManager
   @override
   void addCommand(CommandBuilder command) {
     if (commands.contains(command)) {
-      throw Exception('Command $command already exists');
+      throw InvalidCommandException('Command $command already exists');
     }
 
     final name = switch (command) {
       final CommandDeclarationBuilder command => command.name,
       final CommandDefinitionBuilder definition => definition.command.name,
-      final _ => throw Exception('Unknown command type')
+      final _ => throw InvalidCommandException('Unknown command type')
     };
 
     if (name == null) {
@@ -68,7 +69,7 @@ final class CommandInteractionManager
         command.reduceHandlers(command.name!),
       final CommandDefinitionBuilder definition =>
         definition.command.reduceHandlers(definition.command.name!),
-      final _ => throw Exception('Unknown command type')
+      final _ => throw InvalidCommandException('Unknown command type')
     };
 
     commands.add(command);
@@ -104,7 +105,7 @@ final class CommandInteractionManager
 
       final errors = List.from(error?['_errors'] ?? []).firstOrNull;
 
-      throw Exception('${errors['code']}: ${errors['message']}');
+      throw InvalidCommandException('${errors['code']}: ${errors['message']}');
     }
   }
 
@@ -113,7 +114,7 @@ final class CommandInteractionManager
       final context = switch (command) {
         final CommandDeclarationBuilder command => command.context,
         final CommandDefinitionBuilder definition => definition.command.context,
-        final _ => throw Exception('Unknown command type')
+        final _ => throw InvalidCommandException('Unknown command type')
       };
 
       return context == contextType;
@@ -126,7 +127,7 @@ final class CommandInteractionManager
         final CommandDeclarationBuilder command => command.toJson(),
         final CommandDefinitionBuilder definition =>
           definition.command.toJson(),
-        final _ => throw Exception('Unknown command type')
+        final _ => throw InvalidCommandException('Unknown command type')
       };
     }).toList();
   }

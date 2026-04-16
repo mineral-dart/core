@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:mineral/src/api/common/lang.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/invalid_command_exception.dart';
 import 'package:yaml/yaml.dart';
 
 final class Translation {
@@ -26,7 +27,7 @@ final class Translation {
         (loadYaml(stringContent) as YamlMap).toMap(),
       File(:final uri) when uri.path.endsWith('.yml') =>
         (loadYaml(stringContent) as YamlMap).toMap(),
-      _ => throw Exception('File type not supported'),
+      _ => throw InvalidCommandException('File type not supported'),
     };
 
     final Map<String, dynamic> translations = content['commands'][key];
@@ -36,8 +37,8 @@ final class Translation {
 
       for (final MapEntry element in translation.value.entries) {
         final lang = Lang.values.firstWhere((lang) => lang.uid == element.key,
-            orElse: () => throw Exception(
-                'Lang "${element.key}" not exists is the available languages'));
+            orElse: () => throw InvalidCommandException(
+                'Lang "${element.key}" does not exist in the available languages'));
 
         map.putIfAbsent(lang, () => element.value);
       }

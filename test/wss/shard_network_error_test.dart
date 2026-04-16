@@ -371,8 +371,8 @@ void main() {
           .map((e) => e.code)
           .toList();
 
-      expect(resumeCodes,
-          containsAll([4000, 4001, 4002, 4003, 4007, 4008, 4009]));
+      expect(
+          resumeCodes, containsAll([4000, 4001, 4002, 4003, 4007, 4008, 4009]));
     });
 
     test('reconnect codes include all expected Discord reconnect codes', () {
@@ -381,7 +381,8 @@ void main() {
           .map((e) => e.code)
           .toList();
 
-      expect(reconnectCodes, containsAll([1000, 1001, 1002, 1003, 1005, 1006, 4005]));
+      expect(reconnectCodes,
+          containsAll([1000, 1001, 1002, 1003, 1005, 1006, 4005]));
     });
 
     test('fatal codes include all expected Discord fatal codes', () {

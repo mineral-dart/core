@@ -1,5 +1,3 @@
-
-
 // final class ServerMessage extends Message<ServerChannel, Member> {
 //   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 //   final MessageProperties<ServerChannel> _properties;

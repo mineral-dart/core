@@ -101,8 +101,8 @@ final class _FakeWss extends WebsocketOrchestratorContract {
   @override
   void send(dynamic message) {}
   @override
-  void setBotPresence(List<BotActivity>? activity, StatusType? status,
-      bool? afk) {}
+  void setBotPresence(
+      List<BotActivity>? activity, StatusType? status, bool? afk) {}
   @override
   Future<Presence> getMemberPresence(String serverId, String id) =>
       throw UnimplementedError();
@@ -138,6 +138,9 @@ final class _FakeEventListener implements EventListenerContract {
           required T handle,
           required String? customId}) =>
       throw UnimplementedError();
+
+  @override
+  void unsubscribe(StreamSubscription subscription) {}
 
   @override
   void dispose() {}
@@ -277,8 +280,7 @@ void main() {
 
         await Future.delayed(const Duration(milliseconds: 20));
         expect(receivedMessage, isNotNull);
-        expect(
-            (receivedMessage!.payload as Map<String, dynamic>)['content'],
+        expect((receivedMessage!.payload as Map<String, dynamic>)['content'],
             equals('hello'));
       });
 

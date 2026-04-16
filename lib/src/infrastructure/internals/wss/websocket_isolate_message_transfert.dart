@@ -28,7 +28,10 @@ final class WebsocketIsolateMessageTransfert {
         completer = null;
 
   const WebsocketIsolateMessageTransfert.request(
-      {required this.uid, this.payload, this.targetKeys = const [], this.completer})
+      {required this.uid,
+      this.payload,
+      this.targetKeys = const [],
+      this.completer})
       : type = MessageTransfertType.request;
 
   factory WebsocketIsolateMessageTransfert.fromJson(Map<String, dynamic> json) {

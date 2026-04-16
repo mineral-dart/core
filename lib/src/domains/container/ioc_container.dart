@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:collection';
 import 'package:mineral/src/domains/common/utils/helper.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/service_not_found_exception.dart';
 
 abstract interface class Disposable {
   FutureOr<void> dispose();
@@ -37,9 +38,8 @@ final class IocContainer {
     return switch (service) {
       final T typed => typed,
       null when _parent != null => _parent.resolve<T>(),
-      null => throw Exception('Service "$T" not found'),
-      _ => throw Exception(
-          'Service "$T" has incompatible type: ${service.runtimeType}'),
+      null => throw ServiceNotFoundException(T),
+      _ => throw ServiceNotFoundException(T),
     };
   }
 
@@ -53,7 +53,7 @@ final class IocContainer {
 
   void override<T>(Constructable<T> clazz) {
     if (!_services.containsKey(T)) {
-      throw Exception('Service "$T" does not exist, cannot override it');
+      throw ServiceNotFoundException(T);
     }
 
     _services[T] = clazz();
@@ -61,7 +61,7 @@ final class IocContainer {
 
   void restore<T>() {
     if (!_services.containsKey(T)) {
-      throw Exception('Service "$T" does not exist, cannot restore it');
+      throw ServiceNotFoundException(T);
     }
 
     _services[T] = _defaults[T];
@@ -75,7 +75,7 @@ final class IocContainer {
     final missing =
         _requiredBindings.where((type) => !_services.containsKey(type));
     if (missing.isNotEmpty) {
-      throw Exception('Missing required services: ${missing.join(', ')}');
+      throw ServiceNotFoundException(missing.first);
     }
   }
 

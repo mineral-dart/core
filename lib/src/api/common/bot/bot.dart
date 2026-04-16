@@ -3,7 +3,8 @@ import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 
 final class Bot {
-  WebsocketOrchestratorContract get _wss => ioc.resolve<WebsocketOrchestratorContract>();
+  WebsocketOrchestratorContract get _wss =>
+      ioc.resolve<WebsocketOrchestratorContract>();
 
   final Snowflake id;
   final String? discriminator;
@@ -38,7 +39,8 @@ final class Bot {
   }
 
   /// Updates presence of this
-  void setPresence({List<BotActivity>? activities, StatusType? status, bool? afk}) =>
+  void setPresence(
+          {List<BotActivity>? activities, StatusType? status, bool? afk}) =>
       _wss.setBotPresence(activities, status, afk);
 
   @override
@@ -56,7 +58,8 @@ final class Bot {
         sessionType: json['session_type'],
         privateChannels: json['private_channels'],
         presences: json['presences'],
-        guildIds: List<String>.from(json['guilds'].map((element) => Snowflake.parse(element['id']))),
+        guildIds: List<String>.from(
+            json['guilds'].map((element) => Snowflake.parse(element['id']))),
         application: PartialApplication(
           id: Snowflake.parse(json['application']['id']),
           flags: json['application']['flags'],

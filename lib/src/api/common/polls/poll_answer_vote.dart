@@ -6,10 +6,9 @@ final class PollAnswerVote<T extends Message> {
   Server? server;
   T message;
 
-  PollAnswerVote({
-    required this.id,
-    required this.voters,
-    required this.message,
-    this.server
-  });
+  PollAnswerVote(
+      {required this.id,
+      required this.voters,
+      required this.message,
+      this.server});
 }

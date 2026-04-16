@@ -12,6 +12,7 @@ import 'package:mineral/src/api/common/lang.dart';
 import 'package:mineral/src/domains/commands/command_builder.dart';
 import 'package:mineral/src/domains/commands/command_context.dart';
 import 'package:mineral/src/domains/commands/command_handler.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/invalid_command_exception.dart';
 import 'package:yaml/yaml.dart';
 
 final class CommandDefinitionBuilder implements CommandBuilder {
@@ -24,14 +25,14 @@ final class CommandDefinitionBuilder implements CommandBuilder {
       String commandKey, String key, Map<String, dynamic> payload) {
     final Map<String, dynamic>? elements = payload[key];
     if (elements == null) {
-      throw Exception('Missing "$key" key under $commandKey');
+      throw InvalidCommandException('Missing "$key" key under $commandKey');
     }
 
     if (elements[_defaultIdentifier] case final String value) {
       return value;
     }
 
-    throw Exception(
+    throw InvalidCommandException(
         'Missing "$key.$_defaultIdentifier" key under $commandKey struct');
   }
 
@@ -39,7 +40,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
       String key, Map<String, dynamic> payload) {
     final Map<String, dynamic>? elements = payload[key];
     if (elements == null) {
-      throw Exception('Missing "$key" key');
+      throw InvalidCommandException('Missing "$key" key');
     }
 
     return elements.entries
@@ -125,7 +126,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
                 .map((element) =>
                     Choice(element['name'], double.parse(element['value'])))
                 .toList()),
-        _ => throw Exception('Unknown option type')
+        _ => throw InvalidCommandException('Unknown option type')
       };
 
       return [...acc, option];
@@ -244,7 +245,7 @@ final class CommandDefinitionBuilder implements CommandBuilder {
         (loadYaml(content) as YamlMap).toMap(),
       final String path when path.contains('.yml') =>
         (loadYaml(content) as YamlMap).toMap(),
-      _ => throw Exception('File type not supported')
+      _ => throw InvalidCommandException('File type not supported')
     };
 
     _declareCommand(payload);

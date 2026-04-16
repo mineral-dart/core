@@ -4,7 +4,8 @@ import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/api/server/member.dart';
 
 final class MemberVoice {
-  MemberPartContract get _memberMethods => ioc.resolve<DataStoreContract>().member;
+  MemberPartContract get _memberMethods =>
+      ioc.resolve<DataStoreContract>().member;
 
   final Member _member;
 

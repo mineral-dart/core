@@ -173,10 +173,8 @@ final class Intent {
   /// Discord Developer Portal. Only use if your bot genuinely needs all events.
   ///
   /// Value: 53608447
-  static const int all = allNonPrivileged |
-      guildMembers |
-      guildPresences |
-      messageContent;
+  static const int all =
+      allNonPrivileged | guildMembers | guildPresences | messageContent;
 
   // ============================================================================
   // Guild Events

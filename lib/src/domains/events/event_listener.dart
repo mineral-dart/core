@@ -12,6 +12,8 @@ abstract interface class EventListenerContract {
   StreamSubscription listen<T extends Function>(
       {required Event event, required T handle, required String? customId});
 
+  void unsubscribe(StreamSubscription subscription);
+
   void dispose();
 }
 
@@ -52,6 +54,12 @@ final class EventListener implements EventListenerContract {
 
     _subscriptions.add(subscription);
     return subscription;
+  }
+
+  @override
+  void unsubscribe(StreamSubscription subscription) {
+    subscription.cancel();
+    _subscriptions.remove(subscription);
   }
 
   @override

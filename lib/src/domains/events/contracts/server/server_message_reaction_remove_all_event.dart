@@ -4,7 +4,8 @@ import 'package:mineral/api.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/types/listenable_event.dart';
 
-typedef ServerMessageReactionRemoveAllHandler = FutureOr<void> Function(Server, ServerTextChannel, Message);
+typedef ServerMessageReactionRemoveAllHandler = FutureOr<void> Function(
+    Server, ServerTextChannel, Message);
 
 abstract class ServerMessageReactionRemoveAllEvent implements ListenableEvent {
   @override
@@ -16,5 +17,6 @@ abstract class ServerMessageReactionRemoveAllEvent implements ListenableEvent {
   @override
   Function get handler => handle;
 
-  FutureOr<void> handle(Server server, ServerTextChannel channel, Message message);
+  FutureOr<void> handle(
+      Server server, ServerTextChannel channel, Message message);
 }

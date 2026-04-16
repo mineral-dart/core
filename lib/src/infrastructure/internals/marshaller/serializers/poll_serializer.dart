@@ -48,7 +48,8 @@ final class PollSerializer implements SerializerContract<Poll> {
             fn: () =>
                 DateTime.parse(json['expiry']).difference(DateTime.now())),
         isAllowMultiple: json['allow_multiselect'],
-        layout: findInEnum(PollLayout.values, json['layout_type'], orElse: PollLayout.unknown));
+        layout: findInEnum(PollLayout.values, json['layout_type'],
+            orElse: PollLayout.unknown));
   }
 
   @override

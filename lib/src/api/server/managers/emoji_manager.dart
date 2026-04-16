@@ -32,7 +32,7 @@ final class EmojiManager {
           required Image image,
           List<Snowflake> roles = const [],
           String? reason}) =>
-      _datastore.emoji.create(
-          _serverId.value, name, image, roles.map((element) => element.value).toList(),
+      _datastore.emoji.create(_serverId.value, name, image,
+          roles.map((element) => element.value).toList(),
           reason: reason);
 }

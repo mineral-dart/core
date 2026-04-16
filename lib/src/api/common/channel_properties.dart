@@ -9,7 +9,8 @@ import 'package:mineral/src/domains/common/utils/helper.dart';
 import 'package:mineral/src/domains/common/utils/utils.dart';
 
 final class ChannelProperties {
-  ChannelPartContract get dataStoreChannel => ioc.resolve<DataStoreContract>().channel;
+  ChannelPartContract get dataStoreChannel =>
+      ioc.resolve<DataStoreContract>().channel;
 
   final Snowflake id;
   final ChannelType type;
@@ -83,8 +84,9 @@ final class ChannelProperties {
         field: element['permission_overwrites'],
         fn: () async => Future.wait(
               List.from(element['permission_overwrites'])
-                  .map((json) async =>
-                      marshaller.serializers.channelPermissionOverwrite.serialize(json))
+                  .map((json) async => marshaller
+                      .serializers.channelPermissionOverwrite
+                      .serialize(json))
                   .toList(),
             ));
 
@@ -99,7 +101,8 @@ final class ChannelProperties {
 
     return ChannelProperties(
         id: Snowflake.parse(element['id']),
-        type: findInEnum(ChannelType.values, element['type'], orElse: ChannelType.unknown),
+        type: findInEnum(ChannelType.values, element['type'],
+            orElse: ChannelType.unknown),
         name: element['name'],
         description: element['description'],
         serverId: Snowflake.nullable(element['server_id']),
@@ -128,7 +131,7 @@ final class ChannelProperties {
         defaultReactions: element['default_reactions'],
         defaultSortOrder: element['default_sort_order'],
         defaultForumLayout: element['default_forum_layout'],
-        threads: ThreadsManager(
-            Snowflake.nullable(element['server_id']), Snowflake.nullable(element['id'])));
+        threads: ThreadsManager(Snowflake.nullable(element['server_id']),
+            Snowflake.nullable(element['id'])));
   }
 }

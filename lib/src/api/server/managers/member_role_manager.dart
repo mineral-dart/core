@@ -19,22 +19,34 @@ final class MemberRoleManager {
   }
 
   Future<void> add(String roleId, {String? reason}) async {
-    return _datastore.role
-        .add(memberId: _memberId.value, serverId: _serverId.value, roleId: roleId, reason: reason);
+    return _datastore.role.add(
+        memberId: _memberId.value,
+        serverId: _serverId.value,
+        roleId: roleId,
+        reason: reason);
   }
 
   Future<void> remove(String roleId, {String? reason}) async {
     return _datastore.role.remove(
-        memberId: _memberId.value, serverId: _serverId.value, roleId: roleId, reason: reason);
+        memberId: _memberId.value,
+        serverId: _serverId.value,
+        roleId: roleId,
+        reason: reason);
   }
 
   Future<void> sync(List<String> roleIds, {String? reason}) async {
     return _datastore.role.sync(
-        memberId: _memberId.value, serverId: _serverId.value, roleIds: roleIds, reason: reason);
+        memberId: _memberId.value,
+        serverId: _serverId.value,
+        roleIds: roleIds,
+        reason: reason);
   }
 
   Future<void> clear({String? reason}) async {
-    return _datastore.role
-        .sync(memberId: _memberId.value, serverId: _serverId.value, roleIds: [], reason: reason);
+    return _datastore.role.sync(
+        memberId: _memberId.value,
+        serverId: _serverId.value,
+        roleIds: [],
+        reason: reason);
   }
 }

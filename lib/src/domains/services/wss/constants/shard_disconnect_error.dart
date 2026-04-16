@@ -25,7 +25,8 @@ enum ShardDisconnectError {
   unknownOpCode(4001, 'Unknown opcode', DisconnectAction.resume),
   decodeError(4002, 'Decode error', DisconnectAction.resume),
   notAuthenticated(4003, 'Not authenticated', DisconnectAction.resume),
-  alreadyAuthenticated(4005, 'Already authenticated', DisconnectAction.reconnect),
+  alreadyAuthenticated(
+      4005, 'Already authenticated', DisconnectAction.reconnect),
   invalidSequence(4007, 'Invalid sequence', DisconnectAction.resume),
   rateLimited(4008, 'Rate limited', DisconnectAction.resume),
   sessionTimeout(4009, 'Session timed out', DisconnectAction.resume),

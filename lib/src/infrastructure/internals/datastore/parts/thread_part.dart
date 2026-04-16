@@ -6,6 +6,7 @@ import 'package:mineral/services.dart';
 import 'package:mineral/src/api/server/channels/private_thread_channel.dart';
 import 'package:mineral/src/api/server/channels/public_thread_channel.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/serialization_exception.dart';
 import 'package:mineral/src/infrastructure/internals/http/discord_header.dart';
 
 final class ThreadPart implements ThreadPartContract {
@@ -95,12 +96,15 @@ final class ThreadPart implements ThreadPartContract {
         .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
-    final channel = await _marshaller.serializers.channels.serialize({
+    final serialized = await _marshaller.serializers.channels.serialize({
       ...raw,
       'guild_id': serverId,
-    }) as T;
+    });
+    if (serialized is! T)
+      throw SerializationException(
+          'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(channel);
+    completer.complete(serialized);
     return completer.future;
   }
 
@@ -120,12 +124,15 @@ final class ThreadPart implements ThreadPartContract {
         .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.channels.normalize(result);
-    final channel = await _marshaller.serializers.channels.serialize({
+    final serialized = await _marshaller.serializers.channels.serialize({
       ...raw,
       'guild_id': serverId,
-    }) as T;
+    });
+    if (serialized is! T)
+      throw SerializationException(
+          'Expected $T but got ${serialized.runtimeType}');
 
-    completer.complete(channel);
+    completer.complete(serialized);
     return completer.future;
   }
 }

@@ -90,7 +90,7 @@ final class WebsocketClientImpl implements WebsocketClient {
       _channelListener = stream!.listen(
         (dynamic message) => _handleMessage(_onMessage, message),
         onDone: () {
-          _onClose!(_channel!.closeCode);
+          _onClose?.call(_channel?.closeCode);
         },
       );
 
@@ -105,7 +105,7 @@ final class WebsocketClientImpl implements WebsocketClient {
       } else {
         io.stderr.writeln('WebSocket connection failed: $err');
       }
-      _onError!({
+      _onError?.call({
         'error': err,
         'code': _channel?.closeCode,
         'reason': _channel?.closeReason
@@ -148,7 +148,7 @@ final class WebsocketClientImpl implements WebsocketClient {
           _sendQueue.add(interceptedMessage.content as String);
         }
       case io.WebSocket.closed when _onClose != null:
-        _onClose(_channel!.closeCode!);
+        _onClose(_channel?.closeCode);
     }
   }
 

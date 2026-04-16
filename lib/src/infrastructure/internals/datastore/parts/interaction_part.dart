@@ -149,6 +149,6 @@ final class InteractionPart implements InteractionPartContract {
       'data': modal.build(),
     });
 
-   await _dataStore.client.post(req);
+    await _dataStore.client.post(req);
   }
 }

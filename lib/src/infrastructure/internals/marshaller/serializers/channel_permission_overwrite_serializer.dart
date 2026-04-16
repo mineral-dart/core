@@ -28,7 +28,8 @@ final class ChannelPermissionOverwriteSerializer
   ChannelPermissionOverwrite serialize(Map<String, dynamic> json) {
     return ChannelPermissionOverwrite(
       id: json['id'].toString(),
-      type: findInEnum(ChannelPermissionOverwriteType.values, json['type'], orElse: ChannelPermissionOverwriteType.unknown),
+      type: findInEnum(ChannelPermissionOverwriteType.values, json['type'],
+          orElse: ChannelPermissionOverwriteType.unknown),
       allow: bitfieldToList(Permission.values, int.parse(json['allow'])),
       deny: bitfieldToList(Permission.values, int.parse(json['deny'])),
     );

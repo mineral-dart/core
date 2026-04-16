@@ -1,4 +1,5 @@
 import 'package:mineral/api.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/invalid_component_exception.dart';
 
 final class SelectMenu<T> implements MessageComponent, ModalComponent {
   final ComponentType _type;
@@ -135,7 +136,8 @@ final class SelectMenu<T> implements MessageComponent, ModalComponent {
                     ComponentType.userSelectMenu => 'user',
                     ComponentType.roleSelectMenu => 'role',
                     ComponentType.channelSelectMenu => 'channel',
-                    _ => throw Exception('Invalid select menu type'),
+                    _ => throw InvalidComponentException(
+                        'Invalid select menu type'),
                   },
                 })
             .toList(),

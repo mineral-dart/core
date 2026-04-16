@@ -41,12 +41,13 @@ final class ServerForumChannelFactory
       properties,
       sortOrder: Helper.createOrNull(
           field: json['default_sort_order'],
-          fn: () =>
-              findInEnum(SortOrderType.values, json['default_sort_order'], orElse: SortOrderType.unknown)),
+          fn: () => findInEnum(SortOrderType.values, json['default_sort_order'],
+              orElse: SortOrderType.unknown)),
       layoutType: Helper.createOrNull(
           field: json['default_forum_layout'],
-          fn: () =>
-              findInEnum(ForumLayoutType.values, json['default_forum_layout'], orElse: ForumLayoutType.unknown)),
+          fn: () => findInEnum(
+              ForumLayoutType.values, json['default_forum_layout'],
+              orElse: ForumLayoutType.unknown)),
     );
   }
 

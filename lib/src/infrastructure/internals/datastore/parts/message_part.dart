@@ -7,6 +7,8 @@ import 'package:mineral/services.dart';
 import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
 import 'package:mineral/src/domains/common/utils/attachment.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/http_status_exception.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/serialization_exception.dart';
 
 final class MessagePart implements MessagePartContract {
   MarshallerContract get _marshaller => ioc.resolve<MarshallerContract>();
@@ -16,11 +18,13 @@ final class MessagePart implements MessagePartContract {
   HttpClientStatus get status => _dataStore.client.status;
 
   @override
-  Future<Map<Snowflake, T>> fetch<T extends BaseMessage>(Object channelId,
-      {Snowflake? around,
-      Snowflake? before,
-      Snowflake? after,
-      int? limit}) async {
+  Future<Map<Snowflake, T>> fetch<T extends BaseMessage>(
+    Object channelId, {
+    Snowflake? around,
+    Snowflake? before,
+    Snowflake? after,
+    int? limit,
+  }) async {
     final completer = Completer<Map<Snowflake, T>>();
 
     final query = {
@@ -31,28 +35,43 @@ final class MessagePart implements MessagePartContract {
     };
 
     final req = Request.json(
-        endpoint: query.isEmpty
-            ? '/channels/$channelId/messages'
-            : '/channels/$channelId/messages?${query.entries.map((e) => '${e.key}=${e.value}').join('&')}');
+      endpoint: query.isEmpty
+          ? '/channels/$channelId/messages'
+          : '/channels/$channelId/messages?${query.entries.map((e) => '${e.key}=${e.value}').join('&')}',
+    );
     final response = await _dataStore.client.get(req);
 
     final messages = await switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) => Future.wait(
-          List.from(response.body)
-              .map((e) async => _marshaller.serializers.message.normalize(e))),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      _ => throw Exception(
-          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+          List.from(
+            response.body,
+          ).map((e) async => _marshaller.serializers.message.normalize(e)),
+        ),
+      int() when status.isRateLimit(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      int() when status.isError(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      _ => throw HttpStatusException(response.statusCode, response.bodyString),
     };
 
-    final serializedMessages = await Future.wait(messages
-        .map((e) => _marshaller.serializers.message.serialize(e) as Future<T>));
+    final serializedMessages = await Future.wait(
+      messages.map((e) async {
+        final msg = await _marshaller.serializers.message.serialize(e);
+        if (msg is! T) {
+          throw SerializationException(
+            'Expected $T but got ${msg.runtimeType}',
+          );
+        }
+        return msg as T;
+      }),
+    );
 
-    final Map<Snowflake, T> results = serializedMessages.fold({},
-        (previousValue, element) => {...previousValue, element.id: element});
+    final Map<Snowflake, T> results = serializedMessages.fold(
+      {},
+      (previousValue, element) => {...previousValue, element.id: element},
+    );
 
     completer.complete(results);
     return completer.future;
@@ -60,14 +79,23 @@ final class MessagePart implements MessagePartContract {
 
   @override
   Future<T?> get<T extends BaseMessage>(
-      Object channelId, Object id, bool force) async {
+    Object channelId,
+    Object id,
+    bool force,
+  ) async {
     final completer = Completer<T>();
 
     final cacheKey = _marshaller.cacheKey.message(channelId, id);
     final cachedMessage = await _marshaller.cache?.get(cacheKey);
     if (!force && cachedMessage != null) {
-      final message =
-          await _marshaller.serializers.message.serialize(cachedMessage);
+      final message = await _marshaller.serializers.message.serialize(
+        cachedMessage,
+      );
+      if (message is! T) {
+        throw SerializationException(
+          'Expected $T but got ${message.runtimeType}',
+        );
+      }
       completer.complete(message as T);
 
       return completer.future;
@@ -79,16 +107,22 @@ final class MessagePart implements MessagePartContract {
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         await _marshaller.serializers.message.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      _ => throw Exception(
-          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+      int() when status.isRateLimit(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      int() when status.isError(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      _ => throw HttpStatusException(response.statusCode, response.bodyString),
     };
 
-    completer.complete(
-        await _marshaller.serializers.message.serialize(message) as T);
+    final serialized = await _marshaller.serializers.message.serialize(message);
+    if (serialized is! T) {
+      throw SerializationException(
+        'Expected $T but got ${serialized.runtimeType}',
+      );
+    }
+    completer.complete(serialized as T);
     return completer.future;
   }
 
@@ -103,15 +137,18 @@ final class MessagePart implements MessagePartContract {
 
     final payload = {
       'flags': MessageFlagType.isComponentV2.value,
-      'components': components
+      'components': components,
     };
     final req = switch (files.isEmpty) {
       true => Request.json(
-          endpoint: '/channels/$channelId/messages/$id', body: payload),
+          endpoint: '/channels/$channelId/messages/$id',
+          body: payload,
+        ),
       false => Request.formData(
           endpoint: '/channels/$channelId/messages/$id',
           body: payload,
-          files: files),
+          files: files,
+        ),
     };
 
     final response = await _dataStore.client.patch(req);
@@ -119,16 +156,21 @@ final class MessagePart implements MessagePartContract {
     final rawMessage = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         await _marshaller.serializers.message.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      _ => throw Exception(
-          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+      int() when status.isRateLimit(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      int() when status.isError(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      _ => throw HttpStatusException(response.statusCode, response.bodyString),
     };
 
     final message = await _marshaller.serializers.message.serialize(rawMessage);
-    completer.complete(message as T);
+    if (message is! T)
+      throw SerializationException(
+        'Expected $T but got ${message.runtimeType}',
+      );
+    completer.complete(message);
 
     return completer.future;
   }
@@ -147,8 +189,9 @@ final class MessagePart implements MessagePartContract {
 
   @override
   Future<void> crosspost(Snowflake channelId, Snowflake id) async {
-    final req =
-        Request.json(endpoint: '/channels/$channelId/messages/$id/crosspost');
+    final req = Request.json(
+      endpoint: '/channels/$channelId/messages/$id/crosspost',
+    );
     await _dataStore.client.post(req);
   }
 
@@ -160,20 +203,26 @@ final class MessagePart implements MessagePartContract {
 
   @override
   Future<T> send<T extends Message>(
-      String? guildId, String channelId, MessageBuilder builder) async {
+    String? guildId,
+    String channelId,
+    MessageBuilder builder,
+  ) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     final payload = {
       'flags': MessageFlagType.isComponentV2.value,
-      'components': components
+      'components': components,
     };
     final req = switch (files.isEmpty) {
-      true =>
-        Request.json(endpoint: '/channels/$channelId/messages', body: payload),
+      true => Request.json(
+          endpoint: '/channels/$channelId/messages',
+          body: payload,
+        ),
       false => Request.formData(
           endpoint: '/channels/$channelId/messages',
           body: payload,
-          files: files),
+          files: files,
+        ),
     };
 
     final response = await _dataStore.client.post(req);
@@ -181,26 +230,35 @@ final class MessagePart implements MessagePartContract {
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         await _marshaller.serializers.message.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      _ => throw Exception(
-          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+      int() when status.isRateLimit(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      int() when status.isError(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      _ => throw HttpStatusException(response.statusCode, response.bodyString),
     };
 
-    return _marshaller.serializers.message.serialize(message) as Future<T>;
+    final serialized = await _marshaller.serializers.message.serialize(message);
+    if (serialized is! T)
+      throw SerializationException(
+        'Expected $T but got ${serialized.runtimeType}',
+      );
+    return serialized;
   }
 
   @override
   Future<R> reply<T extends Channel, R extends Message>(
-      Snowflake id, Snowflake channelId, MessageBuilder builder) async {
+    Snowflake id,
+    Snowflake channelId,
+    MessageBuilder builder,
+  ) async {
     final (components, files) = makeAttachmentFromBuilder(builder);
 
     final payload = {
       'flags': MessageFlagType.isComponentV2.value,
       'components': components,
-      'message_reference': {'message_id': id, 'channel_id': channelId}
+      'message_reference': {'message_id': id, 'channel_id': channelId},
     };
 
     final req = Request.auto(
@@ -214,44 +272,61 @@ final class MessagePart implements MessagePartContract {
         .run(_dataStore.client.post);
 
     final raw = await _marshaller.serializers.message.normalize(result);
-    return _marshaller.serializers.message.serialize(raw) as Future<R>;
+    final serialized = await _marshaller.serializers.message.serialize(raw);
+    if (serialized is! R)
+      throw SerializationException(
+        'Expected $R but got ${serialized.runtimeType}',
+      );
+    return serialized;
   }
 
   @override
   Future<T> sendPoll<T extends Message>(String channelId, Poll poll) async {
     final completer = Completer<T>();
     final req = Request.json(
-        endpoint: '/channels/$channelId/messages',
-        body: {'poll': _marshaller.serializers.poll.deserialize(poll)});
+      endpoint: '/channels/$channelId/messages',
+      body: {'poll': _marshaller.serializers.poll.deserialize(poll)},
+    );
     final response = await _dataStore.client.post(req);
 
     final message = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         await _marshaller.serializers.message.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      _ => throw Exception(
-          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+      int() when status.isRateLimit(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      int() when status.isError(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      _ => throw HttpStatusException(response.statusCode, response.bodyString),
     };
 
-    final serializedMessage =
-        await _marshaller.serializers.message.serialize(message);
+    final serializedMessage = await _marshaller.serializers.message.serialize(
+      message,
+    );
 
-    completer.complete(serializedMessage as T);
+    if (serializedMessage is! T)
+      throw SerializationException(
+        'Expected $T but got ${serializedMessage.runtimeType}',
+      );
+    completer.complete(serializedMessage);
 
     return completer.future;
   }
 
   @override
-  Future<PollAnswerVote> getPollVotes(Snowflake? serverId, Snowflake channelId,
-      Snowflake messageId, int answerId) async {
+  Future<PollAnswerVote> getPollVotes(
+    Snowflake? serverId,
+    Snowflake channelId,
+    Snowflake messageId,
+    int answerId,
+  ) async {
     final completer = Completer<PollAnswerVote>();
 
     final req = Request.json(
-        endpoint:
-            '/channels/${channelId.value}/polls/${messageId.value}/answers/$answerId');
+      endpoint:
+          '/channels/${channelId.value}/polls/${messageId.value}/answers/$answerId',
+    );
     final response = await _dataStore.client.get(req);
 
     response.body['id'] = answerId;
@@ -262,16 +337,18 @@ final class MessagePart implements MessagePartContract {
     final answerPayload = switch (response.statusCode) {
       int() when status.isSuccess(response.statusCode) =>
         await _marshaller.serializers.pollAnswerVote.normalize(response.body),
-      int() when status.isRateLimit(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      int() when status.isError(response.statusCode) =>
-        throw HttpException(response.bodyString),
-      _ => throw Exception(
-          'Unknown status code: ${response.statusCode} ${response.bodyString}')
+      int() when status.isRateLimit(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      int() when status.isError(response.statusCode) => throw HttpException(
+          response.bodyString,
+        ),
+      _ => throw HttpStatusException(response.statusCode, response.bodyString),
     };
 
-    final answer =
-        await _marshaller.serializers.pollAnswerVote.serialize(answerPayload);
+    final answer = await _marshaller.serializers.pollAnswerVote.serialize(
+      answerPayload,
+    );
 
     completer.complete(answer);
     return completer.future;

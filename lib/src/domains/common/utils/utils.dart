@@ -22,7 +22,8 @@ int listToBitfield<T extends EnhancedEnum<int>>(List<T> values) {
       0, (previousValue, element) => previousValue += element.value);
 }
 
-T findInEnum<T extends EnhancedEnum<R>, R>(List<T> values, R? value, {T? orElse}) {
+T findInEnum<T extends EnhancedEnum<R>, R>(List<T> values, R? value,
+    {T? orElse}) {
   if (value == null) {
     if (orElse != null) {
       return orElse;

@@ -139,8 +139,8 @@ final class Role {
   /// ```dart
   /// await role.delete(reason: 'Testing');
   /// ```
-  Future<void> delete({String? reason}) =>
-      _datastore.role.delete(id: id.value, guildId: serverId.value, reason: reason);
+  Future<void> delete({String? reason}) => _datastore.role
+      .delete(id: id.value, guildId: serverId.value, reason: reason);
 
   /// Get the server this role belongs to.
   /// ```dart

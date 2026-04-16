@@ -1,6 +1,6 @@
 import 'package:mineral/api.dart';
 
-enum ActionType implements EnhancedEnum<int>  {
+enum ActionType implements EnhancedEnum<int> {
   blockMessage(1),
   sendAlertMessage(2),
   timeout(3),

@@ -42,7 +42,8 @@ final class EmbedSerializer implements SerializerContract<MessageEmbed> {
       description: json['description'],
       type: Helper.createOrNull(
           field: json['type'],
-          fn: () => findInEnum(MessageEmbedType.values, json['type'], orElse: MessageEmbedType.unknown)),
+          fn: () => findInEnum(MessageEmbedType.values, json['type'],
+              orElse: MessageEmbedType.unknown)),
       url: json['url'],
       timestamp: Helper.createOrNull(
           field: json['timestamp'],

@@ -10,6 +10,7 @@ import 'package:mineral/src/domains/commands/command_builder.dart';
 import 'package:mineral/src/domains/commands/command_context.dart';
 import 'package:mineral/src/domains/commands/command_handler.dart';
 import 'package:mineral/src/domains/commands/command_registration.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/invalid_command_exception.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_method_exception.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/missing_property_exception.dart';
 
@@ -80,7 +81,8 @@ final class CommandDeclarationBuilder implements CommandBuilder {
     final instance = subCommandFactory();
 
     if (instance is! SubCommandDeclaration) {
-      throw Exception('Factory must return a SubCommandDeclaration instance');
+      throw InvalidCommandException(
+          'Factory must return a SubCommandDeclaration instance');
     }
 
     final builder = instance.build();

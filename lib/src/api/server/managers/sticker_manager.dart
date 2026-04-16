@@ -21,5 +21,6 @@ final class StickerManager {
   /// ```dart
   /// final channel = await server.assets.stickers.get('1091121140090535956');
   /// ```
-  Future<Sticker?> get(String id, {bool force = false}) => _datastore.sticker.get(_serverId.value, id, force);
+  Future<Sticker?> get(String id, {bool force = false}) =>
+      _datastore.sticker.get(_serverId.value, id, force);
 }

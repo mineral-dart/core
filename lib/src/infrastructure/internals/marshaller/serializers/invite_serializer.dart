@@ -9,21 +9,23 @@ final class InviteSerializer implements SerializerContract<Invite> {
 
   @override
   Future<Map<String, dynamic>> normalize(Map<String, dynamic> json) async {
+    final inviter = json['inviter'] as Map<String, dynamic>?;
+
     final payload = {
       'channelId': json['channel_id'],
       'code': json['code'],
       'createdAt': json['created_at'],
       'expiresAt': json['expires_at'],
       'serverId': json['guild_id'],
-      'inviterId': json['inviter']['id'],
+      'inviterId': inviter?['id'],
       'maxAge': json['max_age'],
       'maxUses': json['max_uses'],
       'temporary': json['temporary'],
       'type': json['type'],
     };
 
-    final cacheKey = _marshaller.cacheKey
-        .voiceState(json['guild_id'], json['inviter']['id']);
+    final cacheKey =
+        _marshaller.cacheKey.voiceState(json['guild_id'], inviter?['id']);
     await _marshaller.cache?.put(cacheKey, payload);
 
     return payload;

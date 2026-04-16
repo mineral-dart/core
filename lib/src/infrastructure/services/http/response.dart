@@ -48,15 +48,16 @@ final class ResponseImpl<T> implements Response<T> {
       required this.method});
 
   static ResponseImpl<T> fromHttpResponse<T>(http.Response response) {
-    final dynamic decodedBody = response.body.isNotEmpty ? jsonDecode(response.body) : {};
+    final dynamic decodedBody =
+        response.body.isNotEmpty ? jsonDecode(response.body) : {};
     final T body;
-    
+
     if (decodedBody is List) {
       body = decodedBody.cast<Map<String, dynamic>>() as T;
     } else {
       body = decodedBody as T;
     }
-    
+
     return ResponseImpl<T>._(
         statusCode: response.statusCode,
         headers: response.headers.entries
