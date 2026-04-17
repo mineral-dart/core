@@ -15,7 +15,7 @@ abstract interface class CommandOption {
   Map<String, dynamic> toJson();
 }
 
-final class Option<T> implements CommandOption {
+final class Option implements CommandOption {
   @override
   final String name;
 
