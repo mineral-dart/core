@@ -17,9 +17,11 @@ jobs:
       - name: Install dependencies
         run: dart pub get
       - name: Analyze mineral
-        run: dart analyze packages/core --fatal-infos
+        run: dart analyze --fatal-infos
+        working-directory: packages/core
       - name: Analyze mineral_cache
-        run: dart analyze packages/cache --fatal-infos
+        run: dart analyze --fatal-infos
+        working-directory: packages/cache
       - name: Test mineral
         run: dart test
         working-directory: packages/core
