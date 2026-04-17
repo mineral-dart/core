@@ -39,10 +39,21 @@ final class CommandInteractionDispatcher
   }
 
   Future<void> _handleCommand(Map<String, dynamic> data) async {
-    final dataData = data['data'] as Map<String, dynamic>;
+    final rawData = data['data'];
+    if (rawData is! Map<String, dynamic>) {
+      _marshaller.logger
+          .warn('Malformed interaction payload: data.data is not a Map');
+      return;
+    }
+    final dataData = rawData;
+
     if (dataData['options'] != null) {
       for (final option in dataData['options'] as Iterable<dynamic>) {
-        final opt = option as Map<String, dynamic>;
+        if (option is! Map<String, dynamic>) {
+          _marshaller.logger.warn('Unexpected option format: $option');
+          continue;
+        }
+        final opt = option;
         final type = CommandType.values
             .firstWhereOrNull((e) => e.value == opt['type']);
 
@@ -77,7 +88,11 @@ final class CommandInteractionDispatcher
 
     if (dataData['options'] != null) {
       for (final option in dataData['options'] as Iterable<dynamic>) {
-        final opt = option as Map<String, dynamic>;
+        if (option is! Map<String, dynamic>) {
+          _marshaller.logger.warn('Unexpected option format: $option');
+          continue;
+        }
+        final opt = option;
         final type = CommandOptionType.values
             .firstWhereOrNull((e) => e.value == opt['type']);
 
@@ -94,8 +109,11 @@ final class CommandInteractionDispatcher
             },
           CommandOptionType.channel =>
             _dataStore.channel.get(opt['value'] as String, false),
-          CommandOptionType.role =>
-            _dataStore.role.get(data['guild_id'] as String, opt['value'] as String, false),
+          CommandOptionType.role => switch (data['guild_id'] as String?) {
+              final String gid =>
+                _dataStore.role.get(gid, opt['value'] as String, false),
+              null => null,
+            },
           _ => opt['value'],
         };
       }

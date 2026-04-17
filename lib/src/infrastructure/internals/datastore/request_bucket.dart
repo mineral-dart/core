@@ -11,6 +11,8 @@ typedef RequestAction<T> = Future<Response<T>> Function(
 enum QueueableRequestStatus { init, success, error, rateLimit, pending }
 
 final class QueueableRequest<T> {
+  static const int _maxRateLimitRetries = 5;
+
   LoggerContract get _logger => ioc.resolve<LoggerContract>();
 
   DataStoreContract get _dataStore => ioc.resolve<DataStoreContract>();
@@ -33,40 +35,61 @@ final class QueueableRequest<T> {
       this._onError, this._onSuccess, this._onRateLimit);
 
   Future<void> execute() async {
-    status = QueueableRequestStatus.pending;
-    final response = await request(query);
+    for (var attempt = 0; attempt < _maxRateLimitRetries; attempt++) {
+      status = QueueableRequestStatus.pending;
+      final response = await request(query);
 
-    if (response.statusCode case final int code
-        when _httpStatus.isSuccess(code)) {
-      status = QueueableRequestStatus.success;
+      if (_httpStatus.isSuccess(response.statusCode)) {
+        status = QueueableRequestStatus.success;
+        bucket.queue.remove(this);
+        try {
+          _onSuccess?.call(response.body as T);
+          completer.complete(response.body as T);
+        } on TypeError catch (e) {
+          completer.completeError(HttpException(
+            'Response body type mismatch: expected $T, '
+            'got ${response.body.runtimeType}. $e',
+          ));
+        }
+        return;
+      }
 
-      bucket.queue.remove(this);
-      _onSuccess?.call(response.body as T);
-      completer.complete(response.body as T);
-    } else if (response.statusCode case final int code
-        when _httpStatus.isRateLimit(code)) {
-      bucket.hasGlobalLocked = response.body['global'] as bool;
+      if (_httpStatus.isRateLimit(response.statusCode)) {
+        bucket.hasGlobalLocked = response.body['global'] as bool? ?? false;
 
-      final retryAfter = response.body['retry_after'];
-      final seconds = double.parse(retryAfter.toString());
-      final value = seconds.toInt() + 1;
+        final retryAfter = response.body['retry_after'];
+        final seconds = double.tryParse(retryAfter.toString()) ?? 1.0;
+        final delay = Duration(seconds: seconds.toInt() + 1);
 
-      _logger.warn('Rate limit reached. Retrying in $value seconds');
+        _logger.warn(
+          'Rate limit reached (attempt ${attempt + 1}/$_maxRateLimitRetries). '
+          'Retrying in ${delay.inSeconds}s',
+        );
 
-      status = QueueableRequestStatus.rateLimit;
-      retryAt = DateTime.now().add(Duration(seconds: value));
+        status = QueueableRequestStatus.rateLimit;
+        retryAt = DateTime.now().add(delay);
 
-      _onRateLimit?.call(Duration(seconds: value));
-      await Future.delayed(Duration(seconds: value), execute);
-    } else if (response.statusCode case final int code
-        when _httpStatus.isError(code)) {
-      status = QueueableRequestStatus.error;
+        _onRateLimit?.call(delay);
+        await Future<void>.delayed(delay);
+        continue;
+      }
 
-      bucket.queue.remove(this);
-      _onError?.call(response);
-      completer.completeError(
-          _onError?.call(response) ?? HttpException(response.bodyString));
+      if (_httpStatus.isError(response.statusCode)) {
+        status = QueueableRequestStatus.error;
+        bucket.queue.remove(this);
+        final exception =
+            _onError?.call(response) ?? HttpException(response.bodyString);
+        completer.completeError(exception);
+        return;
+      }
     }
+
+    // Rate limit retry cap reached
+    status = QueueableRequestStatus.error;
+    bucket.queue.remove(this);
+    completer.completeError(
+      HttpException('Rate limit retry cap ($_maxRateLimitRetries) reached'),
+    );
   }
 }
 
