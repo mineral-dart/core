@@ -3,7 +3,9 @@ import 'package:mineral/contracts.dart';
 
 import 'fake_logger.dart';
 
-/// Creates a scoped IoC container for testing with a FakeLogger bound.
+export 'package:mineral/container.dart' show runWithIoc;
+
+/// Creates a scoped IoC container for testing with a [FakeLogger] bound.
 ///
 /// Pass a [dataStore] to also bind [DataStoreContract] — required when the
 /// code under test reaches [QueueableRequest] (e.g. DataStore Part methods).

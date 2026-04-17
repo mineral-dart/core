@@ -93,10 +93,38 @@ final class IocContainer {
 
 IocContainer _ioc = IocContainer();
 
-IocContainer get ioc => _ioc;
+/// Returns the active [IocContainer].
+///
+/// Zone-based override takes precedence over the global container, which lets
+/// tests inject a scoped container via [runWithIoc] without mutating shared
+/// state.
+IocContainer get ioc =>
+    Zone.current[#iocContainer] as IocContainer? ?? _ioc;
 
+/// Swaps the global container for [container] and returns a restore function.
+///
+/// Prefer [runWithIoc] in new tests — it is Zone-scoped and safe for parallel
+/// execution. [scopedIoc] is kept for backward compatibility.
 IocContainer Function() scopedIoc(IocContainer container) {
   final previous = _ioc;
   _ioc = container;
   return () => _ioc = previous;
 }
+
+/// Runs [body] inside a Zone where [ioc] resolves to [container].
+///
+/// The Zone is automatically discarded when [body] completes, leaving the
+/// global container untouched — no tearDown required.
+///
+/// ```dart
+/// test('my test', () async {
+///   final container = IocContainer()
+///     ..bind<LoggerContract>(() => MockLogger());
+///
+///   await runWithIoc(container, () async {
+///     // ioc.resolve<LoggerContract>() returns MockLogger here
+///   });
+/// });
+/// ```
+Future<T> runWithIoc<T>(IocContainer container, Future<T> Function() body) =>
+    runZoned(body, zoneValues: {#iocContainer: container});

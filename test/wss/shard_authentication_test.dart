@@ -2,148 +2,15 @@ import 'dart:async';
 import 'dart:convert';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/container.dart';
-import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
-import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
-import 'package:mineral/src/infrastructure/services/wss/interceptor.dart';
-import 'package:mineral/src/infrastructure/services/wss/websocket_client.dart';
-import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:test/test.dart';
 
-// ── Fakes ──────────────────────────────────────────────────────────────────
-
-final class _FakeLogger implements LoggerContract {
-  final List<String> warnings = [];
-  final List<String> errors = [];
-  final List<Object> traces = [];
-
-  @override
-  void trace(Object message) {
-    traces.add(message);
-  }
-
-  @override
-  void fatal(Exception message) {}
-  @override
-  void error(String message) => errors.add(message);
-  @override
-  void warn(String message) => warnings.add(message);
-  @override
-  void info(String message) {}
-}
-
-final class _FakeShardingConfig implements ShardingConfigContract {
-  @override
-  String get token => 'fake-token';
-  @override
-  int get intent => 513;
-  @override
-  bool get compress => false;
-  @override
-  int get version => 10;
-  @override
-  EncodingStrategy get encoding => throw UnimplementedError();
-  @override
-  int get largeThreshold => 50;
-  @override
-  int? get shardCount => 1;
-  @override
-  int get maxReconnectAttempts => 3;
-  @override
-  Duration get maxReconnectDelay => Duration.zero;
-}
-
-final class _FakeWebsocketOrchestrator extends WebsocketOrchestratorContract {
-  @override
-  final List<RequestQueueEntry> requestQueue = [];
-
-  @override
-  void addToRequestQueue(RequestQueueEntry entry) => requestQueue.add(entry);
-
-  @override
-  RequestQueueEntry? findInRequestQueue(String uid) => null;
-
-  @override
-  void removeFromRequestQueue(RequestQueueEntry entry) =>
-      requestQueue.remove(entry);
-
-  @override
-  ShardingConfigContract get config => _FakeShardingConfig();
-
-  @override
-  Map<int, ShardContract> get shards => {};
-
-  @override
-  void send(WebsocketIsolateMessageTransfert message) {}
-
-  @override
-  void setBotPresence(
-      List<BotActivity>? activity, StatusType? status, bool? afk) {}
-
-  @override
-  Future<Map<String, dynamic>> getWebsocketEndpoint() async => {};
-
-  @override
-  Future<void> createShards(RunningStrategy strategy) async {}
-
-  @override
-  Future<Presence> getMemberPresence(String serverId, String id) {
-    throw UnimplementedError();
-  }
-}
-
-final class _FakeRunningStrategy implements RunningStrategy {
-  @override
-  FutureOr<void> init(RunningStrategyFactory createShards) async {}
-
-  @override
-  FutureOr<void> dispatch(WebsocketMessage message) {}
-}
-
-final class _FakeWebsocketClient implements WebsocketClient {
-  bool disconnected = false;
-  bool connected = false;
-  final List<String> sentMessages = [];
-
-  @override
-  String get name => 'fake';
-  @override
-  String get url => 'wss://fake';
-  @override
-  Stream? get stream => null;
-  @override
-  Interceptor get interceptor => _FakeInterceptor();
-  @override
-  Future<void> connect() async {
-    connected = true;
-  }
-
-  int? lastDisconnectCode;
-
-  @override
-  Future<void> disconnect({int? code, String? reason}) async {
-    disconnected = true;
-    lastDisconnectCode = code;
-  }
-
-  @override
-  Future<void> send(String message) async {
-    sentMessages.add(message);
-  }
-
-  @override
-  Future<void> listen(void Function(WebsocketMessage) callback) async {}
-}
-
-final class _FakeInterceptor implements Interceptor {
-  @override
-  final List<MessageInterceptor> message = [];
-  @override
-  final List<RequestInterceptor> request = [];
-}
+import '../helpers/fake_logger.dart';
+import '../helpers/fake_websocket_client.dart';
+import '../helpers/fake_websocket_orchestrator.dart';
+import '../helpers/ioc_test_helper.dart';
+import '../helpers/mocks.dart';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
@@ -153,8 +20,8 @@ Shard _createShard() {
     shardIndex: 0,
     shardCount: 1,
     url: 'wss://fake',
-    wss: _FakeWebsocketOrchestrator(),
-    strategy: _FakeRunningStrategy(),
+    wss: FakeWebsocketOrchestrator(),
+    strategy: FakeRunningStrategy(),
   );
 }
 
@@ -168,17 +35,17 @@ void main() {
   group('ShardAuthentication', () {
     late Shard shard;
     late ShardAuthentication auth;
-    late _FakeWebsocketClient fakeClient;
-    late _FakeLogger logger;
+    late FakeWebsocketClient fakeClient;
+    late FakeLogger logger;
     late void Function() restoreIoc;
 
     setUp(() {
-      logger = _FakeLogger();
-      final scope = IocContainer()..bind<LoggerContract>(() => logger);
-      restoreIoc = scopedIoc(scope);
+      final testIoc = createTestIoc();
+      logger = testIoc.logger;
+      restoreIoc = testIoc.restore;
 
       shard = _createShard();
-      fakeClient = _FakeWebsocketClient();
+      fakeClient = FakeWebsocketClient();
       shard.client = fakeClient;
       auth = shard.authentication;
     });

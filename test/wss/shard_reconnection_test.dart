@@ -1,27 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:mineral/container.dart';
-import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_authentication.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/fatal_gateway_exception.dart';
-import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:test/test.dart';
 
 import '../helpers/fake_logger.dart';
 import '../helpers/fake_websocket_client.dart';
 import '../helpers/fake_websocket_orchestrator.dart';
 import '../helpers/ioc_test_helper.dart';
+import '../helpers/mocks.dart';
 
-final class _FakeRunningStrategy implements RunningStrategy {
-  @override
-  FutureOr<void> init(RunningStrategyFactory createShards) async {}
-
-  @override
-  FutureOr<void> dispatch(WebsocketMessage message) {}
-}
 
 Shard _createShard({int maxReconnectAttempts = 3}) {
   return Shard(
@@ -30,7 +20,7 @@ Shard _createShard({int maxReconnectAttempts = 3}) {
     shardCount: 1,
     url: 'wss://fake',
     wss: FakeWebsocketOrchestrator(maxReconnectAttempts: maxReconnectAttempts),
-    strategy: _FakeRunningStrategy(),
+    strategy: FakeRunningStrategy(),
   );
 }
 

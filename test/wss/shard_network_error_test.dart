@@ -1,157 +1,28 @@
 import 'dart:async';
 
-import 'package:mineral/api.dart';
-import 'package:mineral/container.dart';
-import 'package:mineral/contracts.dart';
 import 'package:mineral/src/domains/services/wss/constants/shard_disconnect_error.dart';
-import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/dispatchers/shard_network_error.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
-import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
-import 'package:mineral/src/infrastructure/services/wss/interceptor.dart';
-import 'package:mineral/src/infrastructure/services/wss/websocket_client.dart';
-import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:test/test.dart';
 
-// ── Fakes ──────────────────────────────────────────────────────────────────
-
-final class _FakeLogger implements LoggerContract {
-  final List<String> warnings = [];
-  final List<String> errors = [];
-  final List<Object> traces = [];
-
-  @override
-  void trace(Object message) {
-    traces.add(message);
-  }
-
-  @override
-  void fatal(Exception message) {}
-  @override
-  void error(String message) => errors.add(message);
-  @override
-  void warn(String message) => warnings.add(message);
-  @override
-  void info(String message) {}
-}
-
-final class _FakeShardingConfig implements ShardingConfigContract {
-  final int _maxReconnect;
-
-  _FakeShardingConfig({int maxReconnect = 0}) : _maxReconnect = maxReconnect;
-
-  @override
-  String get token => 'fake-token';
-  @override
-  int get intent => 0;
-  @override
-  bool get compress => false;
-  @override
-  int get version => 10;
-  @override
-  EncodingStrategy get encoding => throw UnimplementedError();
-  @override
-  int get largeThreshold => 50;
-  @override
-  int? get shardCount => 1;
-  @override
-  int get maxReconnectAttempts => _maxReconnect;
-  @override
-  Duration get maxReconnectDelay => Duration.zero;
-}
-
-final class _FakeWebsocketOrchestrator extends WebsocketOrchestratorContract {
-  final _FakeShardingConfig _config;
-
-  _FakeWebsocketOrchestrator({int maxReconnect = 0})
-      : _config = _FakeShardingConfig(maxReconnect: maxReconnect);
-
-  @override
-  final List<RequestQueueEntry> requestQueue = [];
-  @override
-  void addToRequestQueue(RequestQueueEntry entry) => requestQueue.add(entry);
-  @override
-  RequestQueueEntry? findInRequestQueue(String uid) => null;
-  @override
-  void removeFromRequestQueue(RequestQueueEntry entry) =>
-      requestQueue.remove(entry);
-  @override
-  ShardingConfigContract get config => _config;
-  @override
-  Map<int, ShardContract> get shards => {};
-  @override
-  void send(WebsocketIsolateMessageTransfert message) {}
-  @override
-  void setBotPresence(
-      List<BotActivity>? activity, StatusType? status, bool? afk) {}
-  @override
-  Future<Map<String, dynamic>> getWebsocketEndpoint() async => {};
-  @override
-  Future<void> createShards(RunningStrategy strategy) async {}
-  @override
-  Future<Presence> getMemberPresence(String serverId, String id) {
-    throw UnimplementedError();
-  }
-}
-
-final class _FakeRunningStrategy implements RunningStrategy {
-  @override
-  FutureOr<void> init(RunningStrategyFactory createShards) async {}
-  @override
-  FutureOr<void> dispatch(WebsocketMessage message) {}
-}
-
-final class _FakeWebsocketClient implements WebsocketClient {
-  bool disconnected = false;
-  final List<String> sentMessages = [];
-
-  @override
-  String get name => 'fake';
-  @override
-  String get url => 'wss://fake';
-  @override
-  Stream? get stream => null;
-  @override
-  Interceptor get interceptor => _FakeInterceptor();
-  @override
-  Future<void> connect() async {}
-  int? lastDisconnectCode;
-
-  @override
-  Future<void> disconnect({int? code, String? reason}) async {
-    disconnected = true;
-    lastDisconnectCode = code;
-  }
-
-  @override
-  Future<void> send(String message) async {
-    sentMessages.add(message);
-  }
-
-  @override
-  Future<void> listen(void Function(WebsocketMessage) callback) async {}
-}
-
-final class _FakeInterceptor implements Interceptor {
-  @override
-  final List<MessageInterceptor> message = [];
-  @override
-  final List<RequestInterceptor> request = [];
-}
+import '../helpers/fake_logger.dart';
+import '../helpers/fake_websocket_client.dart';
+import '../helpers/fake_websocket_orchestrator.dart';
+import '../helpers/ioc_test_helper.dart';
+import '../helpers/mocks.dart';
 
 // ── Helpers ────────────────────────────────────────────────────────────────
 
-/// Creates a shard with maxReconnectAttempts=0 so resume/reconnect
-/// throw FatalGatewayException synchronously within the async method
-/// before reaching shard.init().
+/// Creates a shard with configurable maxReconnectAttempts so that
+/// resume/reconnect throw FatalGatewayException when set to 0.
 Shard _createShard({int maxReconnect = 0}) {
   return Shard(
     shardName: 'test-shard-0',
     shardIndex: 0,
     shardCount: 1,
     url: 'wss://fake',
-    wss: _FakeWebsocketOrchestrator(maxReconnect: maxReconnect),
-    strategy: _FakeRunningStrategy(),
+    wss: FakeWebsocketOrchestrator(maxReconnectAttempts: maxReconnect),
+    strategy: FakeRunningStrategy(),
   );
 }
 
@@ -175,13 +46,13 @@ Object? _dispatchSilently(void Function() fn) {
 
 void main() {
   group('ShardNetworkError', () {
-    late _FakeLogger logger;
+    late FakeLogger logger;
     late void Function() restoreIoc;
 
     setUp(() {
-      logger = _FakeLogger();
-      final scope = IocContainer()..bind<LoggerContract>(() => logger);
-      restoreIoc = scopedIoc(scope);
+      final testIoc = createTestIoc();
+      logger = testIoc.logger;
+      restoreIoc = testIoc.restore;
     });
 
     tearDown(() {
@@ -190,19 +61,19 @@ void main() {
 
     test('does nothing when payload is null', () {
       final shard = _createShard();
-      shard.client = _FakeWebsocketClient();
+      shard.client = FakeWebsocketClient();
       final networkError = ShardNetworkError(shard);
 
       networkError.dispatch(null);
 
       expect(logger.warnings, isEmpty);
       expect(logger.errors, isEmpty);
-      expect((shard.client as _FakeWebsocketClient).disconnected, isFalse);
+      expect((shard.client as FakeWebsocketClient).disconnected, isFalse);
     });
 
     test('does nothing when intentionalDisconnect is true', () {
       final shard = _createShard();
-      shard.client = _FakeWebsocketClient();
+      shard.client = FakeWebsocketClient();
       shard.authentication.intentionalDisconnect = true;
       final networkError = ShardNetworkError(shard);
 
@@ -210,13 +81,13 @@ void main() {
 
       expect(logger.warnings, isEmpty);
       expect(logger.errors, isEmpty);
-      expect((shard.client as _FakeWebsocketClient).disconnected, isFalse);
+      expect((shard.client as FakeWebsocketClient).disconnected, isFalse);
     });
 
     group('resume codes', () {
       test('logs warning for code 4000 (unknownError)', () {
         final shard = _createShard();
-        shard.client = _FakeWebsocketClient();
+        shard.client = FakeWebsocketClient();
         final networkError = ShardNetworkError(shard);
 
         _dispatchSilently(() => networkError.dispatch(4000));
@@ -226,7 +97,7 @@ void main() {
 
       test('logs warning for code 4009 (sessionTimeout)', () {
         final shard = _createShard();
-        shard.client = _FakeWebsocketClient();
+        shard.client = FakeWebsocketClient();
         final networkError = ShardNetworkError(shard);
 
         _dispatchSilently(() => networkError.dispatch(4009));
@@ -236,7 +107,7 @@ void main() {
 
       test('disconnects client when resuming', () {
         final shard = _createShard();
-        final fakeClient = _FakeWebsocketClient();
+        final fakeClient = FakeWebsocketClient();
         shard.client = fakeClient;
         final networkError = ShardNetworkError(shard);
 
@@ -249,7 +120,7 @@ void main() {
     group('reconnect codes', () {
       test('logs warning for code 1000 (normal)', () {
         final shard = _createShard();
-        shard.client = _FakeWebsocketClient();
+        shard.client = FakeWebsocketClient();
         final networkError = ShardNetworkError(shard);
 
         _dispatchSilently(() => networkError.dispatch(1000));
@@ -259,7 +130,7 @@ void main() {
 
       test('logs warning for code 1001 (goingAway)', () {
         final shard = _createShard();
-        shard.client = _FakeWebsocketClient();
+        shard.client = FakeWebsocketClient();
         final networkError = ShardNetworkError(shard);
 
         _dispatchSilently(() => networkError.dispatch(1001));
@@ -269,7 +140,7 @@ void main() {
 
       test('logs warning for code 1006 (abnormalClosure)', () {
         final shard = _createShard();
-        shard.client = _FakeWebsocketClient();
+        shard.client = FakeWebsocketClient();
         final networkError = ShardNetworkError(shard);
 
         _dispatchSilently(() => networkError.dispatch(1006));
@@ -279,7 +150,7 @@ void main() {
 
       test('disconnects client when reconnecting', () {
         final shard = _createShard();
-        final fakeClient = _FakeWebsocketClient();
+        final fakeClient = FakeWebsocketClient();
         shard.client = fakeClient;
         final networkError = ShardNetworkError(shard);
 
@@ -290,7 +161,7 @@ void main() {
 
       test('invalidates session before reconnect on code 1000', () {
         final shard = _createShard();
-        shard.client = _FakeWebsocketClient();
+        shard.client = FakeWebsocketClient();
         shard.authentication.setupRequirements({
           'session_id': 'dead-session',
           'resume_gateway_url': 'wss://old-resume',
@@ -307,7 +178,7 @@ void main() {
     group('fatal codes', () {
       test('logs fatal error and disconnects for code 4004', () {
         final shard = _createShard();
-        final fakeClient = _FakeWebsocketClient();
+        final fakeClient = FakeWebsocketClient();
         shard.client = fakeClient;
         final networkError = ShardNetworkError(shard);
 
@@ -321,7 +192,7 @@ void main() {
 
       test('logs fatal error and disconnects for code 4014', () {
         final shard = _createShard();
-        final fakeClient = _FakeWebsocketClient();
+        final fakeClient = FakeWebsocketClient();
         shard.client = fakeClient;
         final networkError = ShardNetworkError(shard);
 
@@ -334,7 +205,7 @@ void main() {
 
       test('logs fatal error and disconnects for code 4010 (invalidShard)', () {
         final shard = _createShard();
-        final fakeClient = _FakeWebsocketClient();
+        final fakeClient = FakeWebsocketClient();
         shard.client = fakeClient;
         final networkError = ShardNetworkError(shard);
 
@@ -349,7 +220,7 @@ void main() {
     group('unknown codes', () {
       test('logs warning about unknown code', () {
         final shard = _createShard();
-        shard.client = _FakeWebsocketClient();
+        shard.client = FakeWebsocketClient();
         final networkError = ShardNetworkError(shard);
 
         _dispatchSilently(() => networkError.dispatch(9999));
@@ -359,7 +230,7 @@ void main() {
 
       test('disconnects client for unknown code', () {
         final shard = _createShard();
-        final fakeClient = _FakeWebsocketClient();
+        final fakeClient = FakeWebsocketClient();
         shard.client = fakeClient;
         final networkError = ShardNetworkError(shard);
 

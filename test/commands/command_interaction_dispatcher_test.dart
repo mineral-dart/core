@@ -1,59 +1,16 @@
-import 'dart:async';
-
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
-import 'package:mineral/src/domains/commands/command_builder.dart' as cmd;
 import 'package:mineral/src/domains/commands/command_interaction_dispatcher.dart';
-import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/parts/thread_part.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/request_bucket.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/cache_key.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/serializer_bucket.dart';
 import 'package:test/test.dart';
 
-// ── Fakes ──────────────────────────────────────────────────────────────────
-
-final class _FakeLogger implements LoggerContract {
-  final List<String> warnings = [];
-  final List<String> errors = [];
-
-  @override
-  void trace(Object message) {}
-  @override
-  void fatal(Exception message) {}
-  @override
-  void error(String message) => errors.add(message);
-  @override
-  void warn(String message) => warnings.add(message);
-  @override
-  void info(String message) {}
-}
-
-final class _FakeMarshaller implements MarshallerContract {
-  @override
-  final _FakeLogger logger;
-  @override
-  final CacheProviderContract? cache = null;
-  @override
-  late final SerializerBucket serializers;
-  @override
-  final CacheKey cacheKey = CacheKey();
-
-  _FakeMarshaller(this.logger) {
-    serializers = SerializerBucket(this);
-  }
-}
-
-final class _FakeInteractionManager extends CommandInteractionManagerContract {
-  @override
-  Future<void> registerGlobal(Bot bot) async {}
-  @override
-  Future<void> registerServer(Bot bot, Server server) async {}
-  @override
-  void addCommand(cmd.CommandBuilder command) {}
-}
+import '../helpers/fake_logger.dart';
+import '../helpers/fake_marshaller.dart';
+import '../helpers/ioc_test_helper.dart';
+import '../helpers/mocks.dart';
 
 final class _FakeUserPart implements UserPartContract {
   @override
@@ -142,13 +99,16 @@ final class _FakeDataStore implements DataStoreContract {
 void main() {
   group('CommandInteractionDispatcher', () {
     late CommandInteractionDispatcher dispatcher;
-    late _FakeInteractionManager manager;
-    late _FakeLogger logger;
+    late FakeCommandInteractionManager manager;
+    late FakeLogger logger;
     late void Function() restoreIoc;
 
     setUp(() {
-      logger = _FakeLogger();
-      manager = _FakeInteractionManager();
+      final testIoc = createTestIoc();
+      logger = testIoc.logger;
+      restoreIoc = testIoc.restore;
+
+      manager = FakeCommandInteractionManager();
       dispatcher = CommandInteractionDispatcher(manager);
 
       final fakeBot = Bot.fromJson({
@@ -169,11 +129,10 @@ void main() {
         'application': {'id': '999999999999999999', 'flags': 0},
       });
 
-      final scope = IocContainer()
-        ..bind<MarshallerContract>(() => _FakeMarshaller(logger))
+      testIoc.container
+        ..bind<MarshallerContract>(() => FakeMarshaller(logger: logger))
         ..bind<DataStoreContract>(_FakeDataStore.new)
         ..bind<Bot>(() => fakeBot);
-      restoreIoc = scopedIoc(scope);
     });
 
     tearDown(() {
