@@ -1,10 +1,5 @@
-final class TokenException implements Exception {
-  final String message;
+import 'package:mineral/src/infrastructure/io/exceptions/mineral_exception.dart';
 
-  TokenException(this.message);
-
-  @override
-  String toString() {
-    return 'TokenException: $message';
-  }
+final class TokenException extends FatalMineralException {
+  TokenException(super.message);
 }

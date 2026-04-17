@@ -1,9 +1,8 @@
-final class FatalGatewayException implements Exception {
-  final String message;
+import 'package:mineral/src/infrastructure/io/exceptions/mineral_exception.dart';
+
+final class FatalGatewayException extends FatalMineralException {
   final int code;
 
-  FatalGatewayException(this.message, this.code);
-
-  @override
-  String toString() => 'FatalGatewayException($code): $message';
+  FatalGatewayException(String message, this.code)
+      : super('Gateway error $code: $message');
 }

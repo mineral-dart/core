@@ -1,10 +1,5 @@
-final class MissingMethodException implements Exception {
-  final String message;
+import 'package:mineral/src/infrastructure/io/exceptions/mineral_exception.dart';
 
-  MissingMethodException(this.message);
-
-  @override
-  String toString() {
-    return 'MissingMethodException: $message';
-  }
+final class MissingMethodException extends RecoverableMineralException {
+  MissingMethodException(super.message);
 }
