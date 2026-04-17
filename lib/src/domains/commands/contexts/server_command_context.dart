@@ -28,12 +28,19 @@ final class ServerCommandContext extends CommandContext {
       false,
     );
 
+    if (member == null) {
+      throw StateError(
+        'Cannot build ServerCommandContext: member ${memberUser['id']} '
+        'not found in guild ${payload['guild_id']}',
+      );
+    }
+
     return ServerCommandContext(
       id: Snowflake.parse(payload['id']),
       applicationId: Snowflake.parse(payload['application_id']),
       token: payload['token'] as String,
       version: payload['version'] as int,
-      member: member!,
+      member: member,
       server: await datastore.server.get(payload['guild_id'] as String, true),
       channel: await datastore.channel.get(payload['channel_id'] as String, false),
     );

@@ -16,5 +16,14 @@ final class GlobalStateManager
   void register<T>(T state) => _providers[T] = state;
 
   @override
-  T read<T extends GlobalState>() => _providers[T] as T;
+  T read<T extends GlobalState>() {
+    final value = _providers[T];
+    if (value == null) {
+      throw StateError(
+        'GlobalState of type $T has not been registered. '
+        'Call register<$T>() before read<$T>().',
+      );
+    }
+    return value as T;
+  }
 }

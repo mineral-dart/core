@@ -24,12 +24,19 @@ final class GlobalCommandContext extends CommandContext {
       datastore.channel.get(payload['channel_id'] as String, false)
     ).wait;
 
+    if (user == null) {
+      throw StateError(
+        'Cannot build GlobalCommandContext: user ${memberUser['id']} '
+        'not found in cache',
+      );
+    }
+
     return GlobalCommandContext(
       id: Snowflake.parse(payload['id']),
       applicationId: Snowflake.parse(payload['application_id']),
       token: payload['token'] as String,
       version: payload['version'] as int,
-      user: user!,
+      user: user,
       channel: channel,
     );
   }
