@@ -2,60 +2,56 @@
 
 Mineral is a Dart framework for building Discord bots. It handles the Discord gateway, REST API, and interaction routing so you can focus on your bot's logic.
 
-Everything is organized around **providers**; isolated modules that register commands, events, and components. Each feature lives in its own class, making bots easy to grow and maintain across a team.
+Everything is organized around **providers** — isolated modules that register commands, events, and components. Each feature lives in its own class, making bots easy to grow and maintain across a team.
 
-[![GitHub](https://img.shields.io/badge/GitHub-100000?style=for-the-badge&logo=github&logoColor=white)](https://github.com/mineral-dart/core)
 [![Discord](https://img.shields.io/badge/Discord-7289DA?style=for-the-badge&logo=discord&logoColor=white)](https://discord.gg/fH9UQDMZSn)
 
 ---
 
-## Install
+## Packages
 
-```yaml
-dependencies:
-  mineral: ^4.2.0
-```
+| Package                         | Description                                                      | Version                                                                                          |
+| ------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| [mineral](packages/core)        | Core framework — gateway, REST API, commands, events, components | [![pub](https://img.shields.io/pub/v/mineral.svg)](https://pub.dev/packages/mineral)             |
+| [mineral_cache](packages/cache) | Cache providers — in-memory and Redis                            | [![pub](https://img.shields.io/pub/v/mineral_cache.svg)](https://pub.dev/packages/mineral_cache) |
 
 ---
 
-## Quick start
+## Examples
 
-**1. Create a provider**
+### Setting up a bot
 
-```dart
-// my_provider.dart
-final class MyProvider extends Provider {
-  final Client _client;
-
-  MyProvider(this._client) {
-    _client
-      ..register<MyCommand>(MyCommand.new)
-      ..register<OnMemberJoin>(OnMemberJoin.new);
-  }
-}
-```
-
-**2. Register and start**
+Register providers and start the bot. Each provider groups related commands, events, and components.
 
 ```dart
-// main.dart
 void main() async {
   final client = ClientBuilder()
     .setIntent(Intent.allNonPrivileged)
-    .registerProvider(MyProvider.new)
+    .registerProvider(WelcomeProvider.new)
+    .registerProvider(FeedbackProvider.new)
     .build();
 
   await client.init();
 }
 ```
 
+```dart
+final class WelcomeProvider extends Provider {
+  final Client _client;
+
+  WelcomeProvider(this._client) {
+    _client
+      ..register<OnMemberJoin>(OnMemberJoin.new)
+      ..register<FeedbackButton>(FeedbackButton.new);
+  }
+}
+```
+
 ---
 
-## Features
+### Welcoming a new member
 
-### Events
-
-React to anything happening on your Discord server — member joins, message creation, voice state changes, and more. Each event is a dedicated class with a typed `handle()` method.
+React to a member joining the server and send a message in the system channel.
 
 ```dart
 final class OnMemberJoin extends ServerMemberAddEvent {
@@ -67,15 +63,17 @@ final class OnMemberJoin extends ServerMemberAddEvent {
 }
 ```
 
-### Commands
+---
 
-Slash commands are declared as classes. Each command defines its name, description, and options via `build()`, and handles the interaction in `handle()`. Sub-commands are supported out of the box.
+### Slash command with an option
+
+Declare a `/say` command that repeats a message back to the user.
 
 ```dart
-final class MyCommand implements CommandDeclaration {
+final class SayCommand implements CommandDeclaration {
   Future<void> handle(ServerCommandContext ctx, CommandOptions options) async {
-    final target = options.require<String>('message');
-    await ctx.interaction.reply(builder: MessageBuilder.text(target));
+    final message = options.require<String>('message');
+    await ctx.interaction.reply(builder: MessageBuilder.text(message));
   }
 
   @override
@@ -89,54 +87,52 @@ final class MyCommand implements CommandDeclaration {
 }
 ```
 
-### Buttons & Modals
+---
 
-Interactive components (buttons, modals, select menus) are bound to a `customId`. Mineral routes the interaction to the right handler automatically — no manual dispatch needed.
+### Button interaction
+
+Bind a button to a handler by its `customId`. Mineral routes the click automatically — no switch statement, no manual dispatch.
 
 ```dart
-final class MyButton extends ServerButtonClickEvent {
+final class FeedbackButton extends ServerButtonClickEvent {
   @override
-  String? get customId => 'my_button';
+  String? get customId => 'open_feedback';
 
   @override
   Future<void> handle(ServerButtonContext ctx) async {
-    await ctx.interaction.reply(builder: MessageBuilder.text('Clicked!'));
+    await ctx.interaction.reply(
+      builder: MessageBuilder.text('Thanks for your feedback!'),
+    );
   }
 }
 ```
 
-### Global State
+---
 
-Share data across your entire bot without passing dependencies manually. Register a state once, read it anywhere via the `State` mixin.
+## Development
 
-```dart
-abstract interface class CounterContract implements GlobalState<int> {
-  void increment();
-}
+This repo uses [Dart workspaces](https://dart.dev/tools/pub/workspaces). All packages share a single dependency resolution from the root.
 
-final class Counter implements CounterContract {
-  int _count = 0;
+```bash
+# Install all dependencies
+dart pub get
 
-  @override
-  int get state => _count;
+# Run tests for a specific package
+dart test packages/core
+dart test packages/cache
 
-  @override
-  void increment() => _count++;
-}
-
-// Register
-client.register<CounterContract>(Counter.new);
-
-// Use (in any handler with the State mixin)
-state.read<CounterContract>().increment();
+# Analyze a specific package
+dart analyze packages/core
+dart analyze packages/cache
 ```
 
 ---
 
-## Examples
+## Publishing
 
-See the [`example/`](example/) directory for complete working bots:
+Each package is published independently, triggered by a git tag.
 
-- **welcome** — member join event + button
-- **feedback** — slash command + button + modal flow
-- **poll** — sub-commands + vote buttons + global state
+```bash
+git tag core-v4.3.0 && git push origin core-v4.3.0      # publishes mineral
+git tag cache-v1.3.0 && git push origin cache-v1.3.0    # publishes mineral_cache
+```
