@@ -4,6 +4,7 @@ import 'package:glob/glob.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
+import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event_listener.dart';
 import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
@@ -88,8 +89,24 @@ final class Kernel {
   }
 
   Future<void> dispose() async {
+    // 1. Stop accepting new incoming events
     packetListener.dispose();
     eventListener.dispose();
+
+    // 2. Close WebSocket connections gracefully
+    for (final shard in wss.shards.values) {
+      shard.authentication.cancelHeartbeat();
+      try {
+        await shard.client.disconnect();
+      } on Exception catch (e) {
+        logger.error('Error disconnecting ${shard.shardName}: $e');
+      }
+    }
+
+    // 3. Dispose user providers
     await providerManager.dispose();
+
+    // 4. Dispose IoC container last
+    await ioc.dispose();
   }
 }
