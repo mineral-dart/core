@@ -1,18 +1,14 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/components/selects/select_context_base.dart';
 
-final class ServerSelectContext extends ComponentContextBase
-    implements SelectContext {
+final class ServerSelectContext extends SelectContextBase {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
   final Snowflake? memberId;
 
   final Snowflake serverId;
-
-  final Snowflake? messageId;
-
-  final Snowflake? channelId;
 
   ServerSelectContext({
     required super.id,
@@ -21,9 +17,9 @@ final class ServerSelectContext extends ComponentContextBase
     required super.version,
     required super.customId,
     required this.serverId,
-    required this.messageId,
+    required super.messageId,
     required this.memberId,
-    required this.channelId,
+    required super.channelId,
   });
 
   Future<Member?> resolveMember({bool force = false}) async {
@@ -34,6 +30,7 @@ final class ServerSelectContext extends ComponentContextBase
     return _datastore.member.get(serverId.value, memberId!.value, force);
   }
 
+  @override
   Future<ServerMessage?> resolveMessage({bool force = false}) async {
     if (messageId == null) {
       return null;
