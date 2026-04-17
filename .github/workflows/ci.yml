@@ -7,8 +7,11 @@ on:
     branches: [main]
 
 jobs:
-  test:
+  analyze-and-test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        package: [core, cache]
     steps:
       - uses: actions/checkout@v4
       - uses: dart-lang/setup-dart@v1
@@ -16,15 +19,9 @@ jobs:
           sdk: stable
       - name: Install dependencies
         run: dart pub get
-      - name: Analyze mineral
+      - name: Analyze
         run: dart analyze --no-fatal-warnings
-        working-directory: packages/core
-      - name: Analyze mineral_cache
-        run: dart analyze --no-fatal-warnings
-        working-directory: packages/cache
-      - name: Test mineral
+        working-directory: packages/${{ matrix.package }}
+      - name: Test
         run: dart test
-        working-directory: packages/core
-      - name: Test mineral_cache
-        run: dart test
-        working-directory: packages/cache
+        working-directory: packages/${{ matrix.package }}
