@@ -11,11 +11,13 @@ final class ResilientHttpClient implements HttpClientContract {
   final HttpClientContract _inner;
   final int maxRetries;
   final Duration initialBackoff;
+  final Duration maxBackoff;
 
   const ResilientHttpClient(
     this._inner, {
     this.maxRetries = 3,
     this.initialBackoff = const Duration(milliseconds: 500),
+    this.maxBackoff = const Duration(seconds: 30),
   });
 
   @override
@@ -71,8 +73,10 @@ final class ResilientHttpClient implements HttpClientContract {
     throw StateError('ResilientHttpClient: retry loop exhausted');
   }
 
-  Duration _backoffFor(int attempt) =>
-      initialBackoff * pow(2, attempt).toInt();
+  Duration _backoffFor(int attempt) {
+    final raw = initialBackoff * pow(2, attempt).toInt();
+    return raw < maxBackoff ? raw : maxBackoff;
+  }
 
   bool _isRetryable(int statusCode) =>
       statusCode == 500 ||

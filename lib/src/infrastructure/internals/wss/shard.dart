@@ -97,7 +97,13 @@ final class Shard implements ShardContract {
         try {
           switch (code) {
             case OpCode.hello:
-              authentication.identify(payload as Map<String, dynamic>);
+              if (payload is! Map<String, dynamic>) {
+                logger.error(
+                  'OpCode.hello: expected Map payload, got ${payload.runtimeType}',
+                );
+                break;
+              }
+              authentication.identify(payload);
             case OpCode.heartbeatAck:
               authentication.ack();
             case OpCode.reconnect:
