@@ -78,7 +78,11 @@ final class Kernel {
       await runningStrategy.init(wss.createShards);
     } on Exception catch (e) {
       logger.error('Failed to initialize WebSocket connection: $e');
-      await providerManager.dispose();
+      try {
+        await providerManager.dispose();
+      } on Exception catch (disposeError) {
+        logger.error('Additionally, providerManager.dispose() failed: $disposeError');
+      }
       rethrow;
     }
   }

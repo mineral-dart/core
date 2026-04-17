@@ -27,11 +27,23 @@ final class PacketDispatcher implements PacketDispatcherContract {
     final controller = _controllerFor(packet.name);
 
     final subscription = controller.stream.listen((ShardMessage message) async {
-      if (message.type == PacketType.ready.name) {
-        ioc.bind(() => ReadyPacketMessage(message));
+      try {
+        if (message.type == PacketType.ready.name) {
+          ioc.bind(() => ReadyPacketMessage(message));
+        }
+        await Function.apply(
+            listener, [message, _kernel.eventListener.dispatcher.dispatch]);
+      } on Exception catch (e, stackTrace) {
+        ioc.resolve<LoggerContract>().error(
+          'PacketDispatcher: error in listener for ${message.type}: $e',
+        );
+        ioc.resolve<LoggerContract>().trace('$stackTrace');
+      } on Error catch (e, stackTrace) {
+        ioc.resolve<LoggerContract>().error(
+          'PacketDispatcher: fatal error in listener for ${message.type}: $e',
+        );
+        ioc.resolve<LoggerContract>().trace('$stackTrace');
       }
-      await Function.apply(
-          listener, [message, _kernel.eventListener.dispatcher.dispatch]);
     });
 
     _subscriptions.add(subscription);
