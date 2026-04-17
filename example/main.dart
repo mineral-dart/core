@@ -2,32 +2,27 @@ import 'dart:isolate';
 
 import 'package:mineral/api.dart';
 
-void main(_, dynamic port) async {
+import 'feedback/feedback_provider.dart';
+import 'global_states/vote_counter.dart';
+import 'poll/poll_provider.dart';
+import 'welcome/welcome_provider.dart';
+
+void main(List<String> _, SendPort? port) async {
   final client = ClientBuilder()
-      .setHmrDevPort(port as SendPort?)
+      .setHmrDevPort(port)
       .setIntent(Intent.allNonPrivileged)
+      .registerProvider(WelcomeProvider.new)
+      .registerProvider(PollProvider.new)
+      .registerProvider(FeedbackProvider.new)
       .build();
 
-  // Simple command - just 4 lines!
-  client.commands.declare((cmd) => cmd
-    ..setName('hello')
-    ..setDescription('Say hello')
-    ..setHandle(
-      (ServerCommandContext ctx, options) {
-        final message = MessageBuilder.text('👋 Hello from Mineral!');
-
-        final mineralLinkButton = Button.link(
-          'https://mineral-dart.dev/',
-          emoji: PartialEmoji.fromUnicode('📘'),
-          label: 'Check our documentation',
-        );
-        message.addButton(mineralLinkButton);
-
-        return ctx.interaction.reply(
-          builder: message,
-        );
-      },
-    ));
+  client
+    ..register<VoteCounterContract>(VoteCounter.new)
+    ..onCommandError = (CommandFailure failure) {
+      client.logger.error(
+        'Command "${failure.commandName}" failed: ${failure.error}',
+      );
+    };
 
   await client.init();
 }
