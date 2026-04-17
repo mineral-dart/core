@@ -1,9 +1,9 @@
 import 'dart:async';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/services.dart';
+
 import 'package:mineral/src/domains/common/kernel.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_dispatcher.dart';
@@ -20,20 +20,10 @@ import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client_config.dart';
 import 'package:test/test.dart';
 
-// ── Fakes ──────────────────────────────────────────────────────────────────
+import '../helpers/fake_websocket_orchestrator.dart';
+import '../helpers/ioc_test_helper.dart';
 
-final class _FakeLogger implements LoggerContract {
-  @override
-  void trace(Object message) {}
-  @override
-  void fatal(Exception message) {}
-  @override
-  void error(String message) {}
-  @override
-  void warn(String message) {}
-  @override
-  void info(String message) {}
-}
+// ── Local fakes ─────────────────────────────────────────────────────────────
 
 final class _FakeHttpClientConfig implements HttpClientConfig {
   @override
@@ -67,55 +57,6 @@ final class _FakeHttpClient implements HttpClientContract {
   @override
   Future<Response<T>> send<T>(RequestContract request) =>
       throw UnimplementedError();
-}
-
-final class _FakeShardingConfig implements ShardingConfigContract {
-  @override
-  String get token => 'fake-token';
-  @override
-  int get intent => 0;
-  @override
-  bool get compress => false;
-  @override
-  int get version => 10;
-  @override
-  EncodingStrategy get encoding => throw UnimplementedError();
-  @override
-  int get largeThreshold => 50;
-  @override
-  int? get shardCount => null;
-  @override
-  int get maxReconnectAttempts => 3;
-  @override
-  Duration get maxReconnectDelay => const Duration(seconds: 1);
-}
-
-final class _FakeWss extends WebsocketOrchestratorContract {
-  @override
-  final ShardingConfigContract config = _FakeShardingConfig();
-  @override
-  List<RequestQueueEntry> get requestQueue => [];
-  @override
-  void addToRequestQueue(RequestQueueEntry entry) {}
-  @override
-  RequestQueueEntry? findInRequestQueue(String uid) => null;
-  @override
-  void removeFromRequestQueue(RequestQueueEntry entry) {}
-  @override
-  Map<int, ShardContract> get shards => {};
-  @override
-  void send(dynamic message) {}
-  @override
-  void setBotPresence(
-      List<BotActivity>? activity, StatusType? status, bool? afk) {}
-  @override
-  Future<Presence> getMemberPresence(String serverId, String id) =>
-      throw UnimplementedError();
-  @override
-  Future<Map<String, dynamic>> getWebsocketEndpoint() =>
-      throw UnimplementedError();
-  @override
-  Future<void> createShards(dynamic strategy) async {}
 }
 
 final class _FakeEventDispatcher implements EventDispatcherContract {
@@ -188,19 +129,19 @@ final class _FakeInteractiveComponentManager
       throw UnimplementedError();
 }
 
-Kernel _buildFakeKernel(_FakeEventListener eventListener) {
+Kernel _buildFakeKernel(_FakeEventListener eventListener, LoggerContract logger) {
   return Kernel(
     false,
     null,
     [],
-    logger: _FakeLogger(),
+    logger: logger,
     httpClient: _FakeHttpClient(),
     packetListener: _FakePacketListener(),
     eventListener: eventListener,
     providerManager: _FakeProviderManager(),
     globalState: GlobalStateManager(),
     interactiveComponent: _FakeInteractiveComponentManager(),
-    wss: _FakeWss(),
+    wss: FakeWebsocketOrchestrator(),
   );
 }
 
@@ -221,13 +162,13 @@ void main() {
     late void Function() restoreIoc;
 
     setUp(() {
+      final testIoc = createTestIoc();
+      restoreIoc = testIoc.restore;
+
       eventListener = _FakeEventListener();
-      kernel = _buildFakeKernel(eventListener);
+      kernel = _buildFakeKernel(eventListener, testIoc.logger);
       eventListener.kernel = kernel;
       dispatcher = PacketDispatcher(kernel);
-
-      final scope = IocContainer()..bind<LoggerContract>(_FakeLogger.new);
-      restoreIoc = scopedIoc(scope);
     });
 
     tearDown(() {

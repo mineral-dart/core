@@ -1,46 +1,10 @@
-import 'package:mineral/contracts.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/datastore.dart';
 import 'package:mineral/src/infrastructure/internals/datastore/request_bucket.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/cache_key.dart';
-import 'package:mineral/src/infrastructure/internals/marshaller/serializer_bucket.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client.dart';
 import 'package:mineral/src/infrastructure/services/http/http_client_config.dart';
 import 'package:test/test.dart';
 
-// ── Fakes ─────────────────────────────────────────────────────────────────────
-
-final class _FakeLogger implements LoggerContract {
-  @override
-  void trace(Object message) {}
-
-  @override
-  void fatal(Exception message) {}
-
-  @override
-  void error(String message) {}
-
-  @override
-  void warn(String message) {}
-
-  @override
-  void info(String message) {}
-}
-
-final class _FakeMarshaller implements MarshallerContract {
-  final _FakeLogger _logger = _FakeLogger();
-
-  @override
-  LoggerContract get logger => _logger;
-
-  @override
-  late final SerializerBucket serializers = SerializerBucket(this);
-
-  @override
-  CacheProviderContract? get cache => null;
-
-  @override
-  CacheKey get cacheKey => CacheKey();
-}
+import '../helpers/fake_marshaller.dart';
 
 // ── Tests ─────────────────────────────────────────────────────────────────────
 
@@ -52,7 +16,7 @@ void main() {
       final config =
           HttpClientConfigImpl(uri: Uri.parse('https://discord.com/api/v10'));
       final client = HttpClient(config: config);
-      dataStore = DataStore(client: client, marshaller: _FakeMarshaller());
+      dataStore = DataStore(client: client, marshaller: FakeMarshaller());
     });
 
     test('stores the HttpClient', () {

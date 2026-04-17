@@ -5,10 +5,13 @@ import 'package:mineral/src/infrastructure/internals/marshaller/serializer_bucke
 import 'fake_logger.dart';
 
 /// A minimal [MarshallerContract] for use in tests.
+///
 /// Has no cache by default; pass a [CacheProviderContract] to enable caching.
+/// Pass a [logger] to share the same [FakeLogger] instance with the test so
+/// that log assertions work correctly.
 final class FakeMarshaller implements MarshallerContract {
   @override
-  final LoggerContract logger = FakeLogger();
+  final LoggerContract logger;
 
   @override
   late final SerializerBucket serializers = SerializerBucket(this);
@@ -19,5 +22,6 @@ final class FakeMarshaller implements MarshallerContract {
   @override
   final CacheKey cacheKey = CacheKey();
 
-  FakeMarshaller({this.cache});
+  FakeMarshaller({LoggerContract? logger, this.cache})
+      : logger = logger ?? FakeLogger();
 }
