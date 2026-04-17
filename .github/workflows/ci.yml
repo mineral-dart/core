@@ -1,0 +1,28 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dart-lang/setup-dart@v1
+        with:
+          sdk: stable
+      - name: Install dependencies
+        run: dart pub get
+      - name: Analyze mineral
+        run: dart analyze packages/core --fatal-infos
+      - name: Analyze mineral_cache
+        run: dart analyze packages/cache --fatal-infos
+      - name: Test mineral
+        run: dart test
+        working-directory: packages/core
+      - name: Test mineral_cache
+        run: dart test
+        working-directory: packages/cache
