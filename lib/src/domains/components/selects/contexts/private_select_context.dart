@@ -3,16 +3,12 @@ import 'dart:async';
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/components/selects/select_context_base.dart';
 
-final class PrivateSelectContext extends ComponentContextBase
-    implements SelectContext {
+final class PrivateSelectContext extends SelectContextBase {
   DataStoreContract get _datastore => ioc.resolve<DataStoreContract>();
 
   final Snowflake userId;
-
-  final Snowflake? messageId;
-
-  final Snowflake? channelId;
 
   PrivateSelectContext({
     required super.id,
@@ -20,14 +16,15 @@ final class PrivateSelectContext extends ComponentContextBase
     required super.token,
     required super.version,
     required super.customId,
-    required this.messageId,
+    required super.messageId,
     required this.userId,
-    required this.channelId,
+    required super.channelId,
   });
 
   Future<User?> resolveUser({bool force = false}) =>
       _datastore.user.get(userId.value, force);
 
+  @override
   FutureOr<PrivateMessage?> resolveMessage({bool force = false}) {
     if ([channelId, messageId].contains(null)) {
       return null;
