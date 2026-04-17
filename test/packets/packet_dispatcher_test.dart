@@ -30,6 +30,8 @@ final class _FakeHttpClientConfig implements HttpClientConfig {
   final Uri uri = Uri.parse('https://discord.com/api/v10');
   @override
   final Set<Header> headers = {};
+  @override
+  final Duration requestTimeout = const Duration(seconds: 30);
 }
 
 final class _FakeHttpClient implements HttpClientContract {
@@ -77,6 +79,9 @@ final class _FakeEventListener implements EventListenerContract {
 
   @override
   EventDispatcherContract get dispatcher => _dispatcher;
+
+  @override
+  void Function(Event event, Object error, StackTrace stackTrace)? onEventError;
 
   @override
   StreamSubscription listen<T extends Function>(

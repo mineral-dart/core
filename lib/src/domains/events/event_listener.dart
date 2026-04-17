@@ -9,6 +9,8 @@ abstract interface class EventListenerContract {
 
   EventDispatcherContract get dispatcher;
 
+  void Function(Event event, Object error, StackTrace stackTrace)? onEventError;
+
   StreamSubscription listen<T extends Function>(
       {required Event event, required T handle, required String? customId});
 
@@ -25,6 +27,9 @@ final class EventListener implements EventListenerContract {
 
   @override
   late final EventDispatcher dispatcher;
+
+  @override
+  void Function(Event event, Object error, StackTrace stackTrace)? onEventError;
 
   EventListener() {
     dispatcher = EventDispatcher();
@@ -46,9 +51,11 @@ final class EventListener implements EventListenerContract {
       } on Exception catch (e, stackTrace) {
         kernel.logger.error('Failed to dispatch event "${event.name}": $e');
         kernel.logger.trace('$stackTrace');
+        onEventError?.call(event, e, stackTrace);
       } on Error catch (e, stackTrace) {
         kernel.logger.error('Failed to dispatch event "${event.name}": $e');
         kernel.logger.trace('$stackTrace');
+        onEventError?.call(event, e, stackTrace);
       }
     });
 

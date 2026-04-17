@@ -76,7 +76,8 @@ class HttpClient implements HttpClientContract {
           ..files.addAll(request.files),
     };
 
-    final http.StreamedResponse streamedResponse = await _client.send(req);
+    final http.StreamedResponse streamedResponse =
+        await _client.send(req).timeout(config.requestTimeout);
     final http.Response res = await http.Response.fromStream(streamedResponse);
 
     Response response = ResponseImpl.fromHttpResponse<T>(res);
