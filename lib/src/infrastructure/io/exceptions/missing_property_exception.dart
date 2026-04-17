@@ -1,10 +1,5 @@
-final class MissingPropertyException implements Exception {
-  final String message;
+import 'package:mineral/src/infrastructure/io/exceptions/mineral_exception.dart';
 
-  MissingPropertyException(this.message);
-
-  @override
-  String toString() {
-    return 'MissingPropertyException: $message';
-  }
+final class MissingPropertyException extends RecoverableMineralException {
+  MissingPropertyException(super.message);
 }

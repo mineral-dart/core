@@ -1,8 +1,11 @@
 import 'package:mineral/src/infrastructure/io/exceptions/mineral_exception.dart';
 
-final class ServiceNotFoundException extends MineralException {
+final class ServiceNotFoundException extends RecoverableMineralException {
   final Type serviceType;
 
   ServiceNotFoundException(this.serviceType)
-      : super('Service "$serviceType" not found in the container');
+      : super(
+            'Service "$serviceType" is not registered in the IoC container. '
+            'Make sure you call container.bind<$serviceType>(...) before '
+            'resolving it.');
 }

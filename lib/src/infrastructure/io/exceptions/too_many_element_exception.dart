@@ -1,10 +1,5 @@
-final class TooManyElementException implements Exception {
-  final String message;
+import 'package:mineral/src/infrastructure/io/exceptions/mineral_exception.dart';
 
-  TooManyElementException(this.message);
-
-  @override
-  String toString() {
-    return 'TooManyElementException: $message';
-  }
+final class TooManyElementException extends RecoverableMineralException {
+  TooManyElementException(super.message);
 }

@@ -1,10 +1,5 @@
-final class CommandNameException implements Exception {
-  final String message;
+import 'package:mineral/src/infrastructure/io/exceptions/mineral_exception.dart';
 
-  CommandNameException(this.message);
-
-  @override
-  String toString() {
-    return 'CommandNameException: $message';
-  }
+final class CommandNameException extends RecoverableMineralException {
+  CommandNameException(super.message);
 }
