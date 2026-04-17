@@ -3,6 +3,7 @@
 .packages
 .idea
 *.iml
+.DS_Store
 
 # Conventional directory for build outputs.
 build/
