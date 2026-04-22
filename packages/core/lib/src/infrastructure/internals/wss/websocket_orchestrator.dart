@@ -13,6 +13,10 @@ import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
 import 'package:mineral/src/domains/common/utils/redact.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/token_exception.dart';
+import 'package:uuid/uuid.dart';
+
+const _uuid = Uuid();
+const _requestQueueTtl = Duration(seconds: 30);
 
 final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   final List<RequestQueueEntry> _requestQueue = [];
@@ -36,6 +40,21 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   @override
   void removeFromRequestQueue(RequestQueueEntry entry) {
     _requestQueue.remove(entry);
+  }
+
+  void _addToRequestQueueWithTtl(RequestQueueEntry entry) {
+    addToRequestQueue(entry);
+    Future.delayed(_requestQueueTtl, () {
+      final stale = findInRequestQueue(entry.uid);
+      if (stale != null) {
+        removeFromRequestQueue(stale);
+        if (!stale.completer.isCompleted) {
+          stale.completer.completeError(
+            TimeoutException('Request queue entry ${stale.uid} timed out', _requestQueueTtl),
+          );
+        }
+      }
+    });
   }
 
   HttpClientContract get _httpClient => ioc.resolve<HttpClientContract>();
@@ -64,7 +83,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       if (message case WebsocketIsolateMessageTransfert(:final type)
           when type == MessageTransfertType.request) {
         _logger.trace('Sending message to all shards ${redactSensitiveFields(message.toJson())}');
-        addToRequestQueue((
+        _addToRequestQueueWithTtl((
           uid: message.uid!,
           targetKeys: message.targetKeys,
           completer: message.completer!
@@ -90,7 +109,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
 
   void _requestMessage(WebsocketIsolateMessageTransfert message) {
     if (_isMainIsolate && env.get(AppEnv.dartEnv) == 'production') {
-      addToRequestQueue((
+      _addToRequestQueueWithTtl((
         uid: message.uid!,
         targetKeys: message.targetKeys,
         completer: message.completer!
@@ -130,21 +149,21 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   @override
   Future<Presence> getMemberPresence(String serverId, String id) {
     final completer = Completer<Presence>();
-    final timestamp = DateTime.now().millisecondsSinceEpoch;
+    final uid = _uuid.v4();
     final message = ShardMessageBuilder()
       ..setOpCode(OpCode.requestGuildMember)
       ..append('guild_id', serverId)
       ..append('user_ids', [id])
       ..append('limit', 0)
       ..append('presences', true)
-      ..append('nonce', timestamp.toString());
+      ..append('nonce', uid);
 
     final targetIndex = _shardForGuild(serverId);
     final targetShard = shards[targetIndex];
 
     if (targetShard != null) {
-      addToRequestQueue((
-        uid: timestamp.toString(),
+      _addToRequestQueueWithTtl((
+        uid: uid,
         targetKeys: ['presences'],
         completer: completer,
       ));
@@ -155,7 +174,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
       );
       send(WebsocketIsolateMessageTransfert.request(
         payload: message.toJson(),
-        uid: timestamp.toString(),
+        uid: uid,
         completer: completer,
         targetKeys: ['presences'],
       ));
@@ -181,8 +200,15 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
   @override
   Future<void> createShards(RunningStrategy strategy) async {
     final response = await getWebsocketEndpoint();
-    final String endpoint = response['url'] as String;
-    final int shardCount = response['shards'] as int;
+
+    final endpoint = response['url'];
+    if (endpoint is! String) {
+      throw StateError('Gateway response missing valid "url" field: $response');
+    }
+    final shardCount = response['shards'];
+    if (shardCount is! int) {
+      throw StateError('Gateway response missing valid "shards" field: $response');
+    }
 
     final sessionLimit =
         response['session_start_limit'] as Map<String, dynamic>?;
