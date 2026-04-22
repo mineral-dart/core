@@ -28,6 +28,10 @@ final class RedisProvider implements CacheProviderContract {
     try {
       await _connection.connect(settings.host, settings.port);
 
+      if (settings.password != null) {
+        await Command(_connection).send_object(['AUTH', settings.password!]);
+      }
+
       final Map<String, dynamic> credentials = {
         'service': 'cache',
         'message': 'redis is connected',
@@ -57,23 +61,46 @@ final class RedisProvider implements CacheProviderContract {
     };
   }
 
+  /// Scans all keys in the current database using the non-blocking SCAN command.
+  Future<List<dynamic>> _scanKeys({String match = '*'}) async {
+    final keys = <dynamic>[];
+    var cursor = '0';
+    do {
+      final result = await Command(_connection)
+          .send_object(['SCAN', cursor, 'MATCH', match, 'COUNT', 100]);
+      cursor = (result as List)[0].toString();
+      keys.addAll(result[1] as List);
+    } while (cursor != '0');
+    return keys;
+  }
+
+  /// Escapes Redis glob special characters in a prefix to avoid unintended matches.
+  String _escapeGlob(String prefix) => prefix
+      .replaceAll('\\', '\\\\')
+      .replaceAll('*', '\\*')
+      .replaceAll('?', '\\?')
+      .replaceAll('[', '\\[');
+
   @override
   Future<Map<String, dynamic>> inspect() async {
-    final keys = await Command(_connection).send_object(['KEYS', '*']);
+    final keys = await _scanKeys();
+    if (keys.isEmpty) return {};
     final values = await Command(_connection).send_object(['MGET', ...keys]);
 
-    return Map.fromIterables(keys, values.map((e) => jsonDecode(e)));
+    return Map.fromIterables(
+        keys.map((k) => k.toString()),
+        (values as List).map((e) => jsonDecode(e as String)));
   }
 
   @override
   Future<Map<String, dynamic>> whereKeyStartsWith(String prefix) async {
-    final keys = await Command(_connection).send_object(['KEYS', '$prefix*']);
+    final keys = await _scanKeys(match: '${_escapeGlob(prefix)}*');
+    if (keys.isEmpty) return {};
 
     final List values =
         await Command(_connection).send_object(['MGET', ...keys]);
-    final results = await values.map((val) async {
-      final index = values.indexOf(val);
-      return {keys[index].toString(): jsonDecode(val)};
+    final results = await List.generate(values.length, (i) async {
+      return {keys[i].toString(): jsonDecode(values[i] as String)};
     }).wait;
 
     final Map<String, dynamic> r = {};
@@ -107,10 +134,10 @@ final class RedisProvider implements CacheProviderContract {
 
   @override
   Future<List<Map<String, dynamic>?>> getMany(List<String> keys) async {
-    final values = Command(_connection).send_object(['MGET', ...keys]);
+    final values = await Command(_connection).send_object(['MGET', ...keys]);
     if (values case final List values) {
       return List<Map<String, dynamic>?>.from(
-          values.map((e) => e == null ? null : jsonDecode(e)).toList());
+          values.map((e) => e == null ? null : jsonDecode(e as String)).toList());
     }
 
     throw Exception('Values are not iterable');
@@ -148,8 +175,8 @@ final class RedisProvider implements CacheProviderContract {
   @override
   Future<void> putMany<T>(Map<String, T> objects) async {
     final values = objects.entries
-        .fold([], (acc, object) => [...acc, object.key, jsonEncode(object)]);
-    await Command(_connection).send_object(['MSET', values.join(' ')]);
+        .fold([], (acc, object) => [...acc, object.key, jsonEncode(object.value)]);
+    await Command(_connection).send_object(['MSET', ...values]);
   }
 
   @override
@@ -164,7 +191,7 @@ final class RedisProvider implements CacheProviderContract {
 
   @override
   Future<void> clear() async {
-    return Command(_connection).send_object(['FLUSHALL']);
+    return Command(_connection).send_object(['FLUSHDB']);
   }
 
   @override
