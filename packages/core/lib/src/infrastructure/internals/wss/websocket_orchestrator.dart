@@ -11,6 +11,7 @@ import 'package:mineral/src/domains/services/wss/running_strategy.dart';
 import 'package:mineral/src/infrastructure/internals/wss/builders/discord_message_builder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard.dart';
 import 'package:mineral/src/infrastructure/internals/wss/websocket_isolate_message_transfert.dart';
+import 'package:mineral/src/domains/common/utils/redact.dart';
 import 'package:mineral/src/infrastructure/io/exceptions/token_exception.dart';
 
 final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
@@ -62,7 +63,7 @@ final class WebsocketOrchestrator implements WebsocketOrchestratorContract {
 
       if (message case WebsocketIsolateMessageTransfert(:final type)
           when type == MessageTransfertType.request) {
-        _logger.trace('Sending message to all shards ${message.toJson()}');
+        _logger.trace('Sending message to all shards ${redactSensitiveFields(message.toJson())}');
         addToRequestQueue((
           uid: message.uid!,
           targetKeys: message.targetKeys,
