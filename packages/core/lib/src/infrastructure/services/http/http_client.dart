@@ -57,7 +57,7 @@ class HttpClient implements HttpClientContract {
     request.url = Uri(
       host: config.uri.host,
       scheme: config.uri.scheme,
-      path: '${config.uri.path}${request.url.path}',
+      path: '${config.uri.path.endsWith('/') ? config.uri.path.substring(0, config.uri.path.length - 1) : config.uri.path}${request.url.path}',
       queryParameters: request.queryParameters,
     );
 
