@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -25,7 +26,7 @@ final class VoiceLeavePacket implements ListenablePacket {
         beforeRaw['channel_id'] != null &&
         beforeRaw['channel_id'] != payload['channel_id']) {
       final before = await _marshaller.serializers.voice.serialize(beforeRaw);
-      dispatch(event: Event.voiceLeave, params: [before]);
+      dispatch<VoiceLeaveArgs>(event: Event.voiceLeave, payload: (state: before));
 
       _marshaller.cache?.remove(cacheKey);
     }

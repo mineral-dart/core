@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -25,11 +26,15 @@ final class MessageCreatePacket implements ListenablePacket {
         await _marshaller.serializers.message.serialize(payload);
 
     final serverId = Snowflake.nullable(message.payload['guild_id']);
-    final event = switch (serverId) {
-      String() => Event.serverMessageCreate,
-      Null() => Event.privateMessageCreate,
-    };
-
-    dispatch(event: event, params: [serializedMessage]);
+    switch (serverId) {
+      case String():
+        dispatch<ServerMessageCreateArgs>(
+            event: Event.serverMessageCreate,
+            payload: (message: serializedMessage as ServerMessage));
+      default:
+        dispatch<PrivateMessageCreateArgs>(
+            event: Event.privateMessageCreate,
+            payload: (message: serializedMessage as PrivateMessage));
+    }
   }
 }

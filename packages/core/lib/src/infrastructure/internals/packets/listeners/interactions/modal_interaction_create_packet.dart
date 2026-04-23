@@ -1,5 +1,6 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/api/common/types/interaction_type.dart';
 import 'package:mineral/src/domains/components/modal/contexts/private_modal_context.dart';
 import 'package:mineral/src/domains/components/modal/contexts/server_modal_context.dart';
@@ -130,9 +131,10 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
         return;
       }
 
+      // dispatch type varies at runtime
       dispatch(
           event: event!,
-          params: [ctx, parameters],
+          payload: (ctx: ctx, data: parameters),
           constraint: (String? customId) => switch (customId) {
                 final String value => value == ctx!.customId,
                 _ => true

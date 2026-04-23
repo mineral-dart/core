@@ -27,13 +27,13 @@ void main() {
           .stream
           .listen((e) => received.add('received'));
 
-      dispatcher.dispatch(event: Event.ready, params: ['bot1']);
+      dispatcher.dispatch(event: Event.ready, payload: 'bot1');
       await Future.delayed(const Duration(milliseconds: 50));
       expect(received, hasLength(1));
 
       await sub.cancel();
 
-      dispatcher.dispatch(event: Event.ready, params: ['bot2']);
+      dispatcher.dispatch(event: Event.ready, payload: 'bot2');
       await Future.delayed(const Duration(milliseconds: 50));
       expect(received, hasLength(1));
     });
@@ -52,14 +52,14 @@ void main() {
           .stream
           .listen((e) => listener2.add('l2'));
 
-      dispatcher.dispatch(event: Event.ready, params: ['bot']);
+      dispatcher.dispatch(event: Event.ready, payload: 'bot');
       await Future.delayed(const Duration(milliseconds: 50));
       expect(listener1, hasLength(1));
       expect(listener2, hasLength(1));
 
       await sub1.cancel();
 
-      dispatcher.dispatch(event: Event.ready, params: ['bot']);
+      dispatcher.dispatch(event: Event.ready, payload: 'bot');
       await Future.delayed(const Duration(milliseconds: 50));
       expect(listener1, hasLength(1));
       expect(listener2, hasLength(2));

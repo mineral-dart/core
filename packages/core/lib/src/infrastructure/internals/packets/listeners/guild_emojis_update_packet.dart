@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -27,9 +28,9 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
       return _marshaller.serializers.emojis.serialize(raw);
     }).wait;
 
-    dispatch(event: Event.serverEmojisUpdate, params: [
-      emojis.asMap().map((_, element) => MapEntry(element.id, element)),
-      server
-    ]);
+    dispatch<ServerEmojisUpdateArgs>(event: Event.serverEmojisUpdate, payload: (
+      emojis: Map.fromEntries(emojis.map((e) => MapEntry(e.id!, e))),
+      server: server,
+    ));
   }
 }

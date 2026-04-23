@@ -1,78 +1,11 @@
 import 'package:mineral/src/api/common/types/enhanced_enum.dart';
-import 'package:mineral/src/domains/events/contracts/common/invite_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/invite_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/ready_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/typing_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/voice_connect_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/voice_disconnect_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/voice_join_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/voice_leave_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/voice_move_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/voice_state_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_button_click_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_channel_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_channel_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_channel_pins_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_channel_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_mentionable_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_all_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_modal_submit_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_audit_log_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_button_click_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_pins_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_chunk_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_mentionable_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_all_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_modal_submit_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_role_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_roles_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_roles_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_rule_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_rule_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_rule_execution_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_rule_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_stickers_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_text_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_list_sync_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_member_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_member_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_member_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_update_event.dart';
-
-import 'contracts/private/private_poll_vote_add_event.dart';
-import 'contracts/server/server_poll_vote_add_event.dart';
+import 'package:mineral/src/domains/events/contracts/common_events.dart';
+import 'package:mineral/src/domains/events/contracts/private_events.dart';
+import 'package:mineral/src/domains/events/contracts/server_events.dart';
 
 interface class EventType {}
 
-enum Event implements EnhancedEnum, EventType {
+enum Event implements EnhancedEnum<Type>, EventType {
   ready(ReadyEvent, [
     ['Bot', 'bot']
   ]),

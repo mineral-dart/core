@@ -4,7 +4,10 @@ import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/internal_event_params.dart';
 
 abstract interface class EventDispatcherContract {
-  void dispatch({required Event event, required List params});
+  void dispatch<T extends Object>(
+      {required Event event,
+      required T payload,
+      bool Function(String?)? constraint});
 
   void dispose();
 }
@@ -18,13 +21,13 @@ final class EventDispatcher implements EventDispatcherContract {
   }
 
   @override
-  void dispatch(
+  void dispatch<T extends Object>(
       {required Event event,
-      required List params,
+      required T payload,
       bool Function(String?)? constraint}) {
     final controller = _controllers[event];
     if (controller != null && controller.hasListener) {
-      controller.add(InternalEventParams(event, params, constraint));
+      controller.add(InternalEventParams(event, payload, constraint));
     }
   }
 

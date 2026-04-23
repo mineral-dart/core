@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -18,6 +19,6 @@ final class GuildMemberRemovePacket implements ListenablePacket {
     final user =
         await _dataStore.user.get((message.payload['user'] as Map<String, dynamic>)['id'] as Object, false);
 
-    dispatch(event: Event.serverMemberRemove, params: [user, server]);
+    dispatch<ServerMemberRemoveArgs>(event: Event.serverMemberRemove, payload: (user: user, server: server));
   }
 }

@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/api/common/snowflake.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
@@ -19,11 +20,15 @@ final class MessageReactionRemovePacket implements ListenablePacket {
     final reaction = await _marshaller.serializers.reaction.serialize(raw);
 
     final serverId = Snowflake.nullable(message.payload['guild_id']);
-    final event = switch (serverId) {
-      String() => Event.serverMessageReactionRemove,
-      null => Event.privateMessageReactionRemove,
-    };
-
-    dispatch(event: event, params: [reaction]);
+    switch (serverId) {
+      case String():
+        dispatch<ServerMessageReactionRemoveArgs>(
+            event: Event.serverMessageReactionRemove,
+            payload: (reaction: reaction));
+      default:
+        dispatch<PrivateMessageReactionRemoveArgs>(
+            event: Event.privateMessageReactionRemove,
+            payload: (reaction: reaction));
+    }
   }
 }

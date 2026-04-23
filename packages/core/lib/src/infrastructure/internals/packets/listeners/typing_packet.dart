@@ -20,6 +20,6 @@ final class TypingPacket implements ListenablePacket {
       timestamp: DateTime.fromMillisecondsSinceEpoch(payload['timestamp'] as int),
     );
 
-    dispatch(event: Event.typing, params: [typing]);
+    dispatch<TypingArgs>(event: Event.typing, payload: (typing: typing));
   }
 }

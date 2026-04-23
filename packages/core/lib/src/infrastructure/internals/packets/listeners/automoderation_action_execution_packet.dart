@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 
 import 'package:mineral/src/api/server/moderation/action_metadata.dart';
 import 'package:mineral/src/api/server/moderation/enums/action_type.dart';
@@ -23,19 +24,21 @@ final class AutomoderationActionExecutionPacket implements ListenablePacket {
     final payload = message.payload as Map<String, dynamic>;
     final server =
         await _dataStore.server.get(payload['guild_id'] as String, false);
-    final member = await _dataStore.member
-        .get(payload['guild_id'] as String, payload['user_id'] as String, false);
+    final member = await _dataStore.member.get(
+        payload['guild_id'] as String, payload['user_id'] as String, false);
 
     final triggerType = findInEnum(
         TriggerType.values, payload['rule_trigger_type'],
         orElse: TriggerType.unknown);
 
     final action = Action(
-        type: findInEnum(ActionType.values, (payload['action'] as Map<String, dynamic>)['type'],
+        type: findInEnum(ActionType.values,
+            (payload['action'] as Map<String, dynamic>)['type'],
             orElse: ActionType.unknown),
         metadata: Helper.createOrNull(
             field: payload['metadata'],
-            fn: () => ActionMetadata.fromJson(payload['metadata'] as Map<String, dynamic>)));
+            fn: () => ActionMetadata.fromJson(
+                payload['metadata'] as Map<String, dynamic>)));
 
     final ruleExecution = RuleExecution(
       ruleId: Snowflake.parse(payload['rule_id']),
@@ -50,6 +53,7 @@ final class AutomoderationActionExecutionPacket implements ListenablePacket {
       matchedKeyword: payload['matched_keyword'] as String?,
     );
 
-    dispatch(event: Event.serverRuleExecution, params: [ruleExecution]);
+    dispatch<ServerRuleExecutionArgs>(
+        event: Event.serverRuleExecution, payload: (execution: ruleExecution));
   }
 }

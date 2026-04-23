@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -17,6 +18,6 @@ final class AutomoderationRuleCreatePacket implements ListenablePacket {
         await _marshaller.serializers.rules.normalize(message.payload as Map<String, dynamic>);
     final rule = await _marshaller.serializers.rules.serialize(rawRule);
 
-    dispatch(event: Event.serverRuleCreate, params: [rule]);
+    dispatch<ServerRuleCreateArgs>(event: Event.serverRuleCreate, payload: (rule: rule));
   }
 }

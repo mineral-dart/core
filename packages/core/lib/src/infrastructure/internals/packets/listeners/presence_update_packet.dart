@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/api/common/presence.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
@@ -19,6 +20,6 @@ final class PresenceUpdatePacket implements ListenablePacket {
         .get(payload['guild_id'] as Object, (payload['user'] as Map<String, dynamic>)['id'] as Object, false);
     final presence = Presence.fromJson(payload);
 
-    dispatch(event: Event.serverPresenceUpdate, params: [member, presence]);
+    dispatch<ServerPresenceUpdateArgs>(event: Event.serverPresenceUpdate, payload: (member: member!, presence: presence));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
 import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
@@ -21,8 +22,8 @@ final class ThreadMemberUpdatePacket implements ListenablePacket {
     final member = await _dataStore.member
         .get(server.id.value, payload['user_id'] as Object, false);
 
-    dispatch(
+    dispatch<ServerThreadMemberArgs>(
         event: Event.serverThreadMemberUpdate,
-        params: [server, thread, member]);
+        payload: (thread: thread! as ThreadChannel, server: server, member: member!));
   }
 }

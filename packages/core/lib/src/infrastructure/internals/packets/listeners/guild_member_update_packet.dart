@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -21,11 +22,11 @@ final class GuildMemberUpdatePacket implements ListenablePacket {
 
     final userMap = payload['user'] as Map<String, dynamic>;
     final before =
-        _dataStore.member.get(serverId, userMap['id'] as String, false);
+        await _dataStore.member.get(serverId, userMap['id'] as String, false);
     final rawMember =
         await _marshaller.serializers.member.normalize(payload);
     final member = await _marshaller.serializers.member.serialize(rawMember);
 
-    dispatch(event: Event.serverMemberUpdate, params: [server, before, member]);
+    dispatch<ServerMemberUpdateArgs>(event: Event.serverMemberUpdate, payload: (server: server, before: before!, after: member));
   }
 }

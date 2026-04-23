@@ -1,15 +1,8 @@
-import 'package:mineral/src/domains/events/contracts/private/private_button_click_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_channel_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_channel_pins_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_all_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_message_reaction_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_modal_submit_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_poll_vote_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_text_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/private/private_user_select_event.dart';
+import 'dart:async';
+
+import 'package:mineral/api.dart';
+import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
+import 'package:mineral/src/domains/events/contracts/private_events.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
 
@@ -18,41 +11,73 @@ final class PrivateBucket {
 
   PrivateBucket(this._events);
 
-  void messageCreate(PrivateMessageCreateEventHandler handle) =>
-      _events.make(Event.privateMessageCreate, handle);
+  void messageCreate(FutureOr<void> Function(PrivateMessage message) handle) =>
+      _events.make(Event.privateMessageCreate,
+          (PrivateMessageCreateArgs p) => handle(p.message));
 
-  void channelCreate(PrivateChannelCreateEventHandler handle) =>
-      _events.make(Event.privateChannelCreate, handle);
+  void channelCreate(FutureOr<void> Function(PrivateChannel channel) handle) =>
+      _events.make(Event.privateChannelCreate,
+          (PrivateChannelCreateArgs p) => handle(p.channel));
 
-  void channelPinsUpdate(PrivateChannelPinsUpdateEventHandler handle) =>
-      _events.make(Event.privateChannelPinsUpdate, handle);
+  void channelPinsUpdate(
+          FutureOr<void> Function(PrivateChannel channel) handle) =>
+      _events.make(Event.privateChannelPinsUpdate,
+          (PrivateChannelPinsUpdateArgs p) => handle(p.channel));
 
-  void buttonClick(PrivateButtonClickEventHandler handle) =>
-      _events.make(Event.privateButtonClick, handle);
+  void buttonClick(FutureOr<void> Function(PrivateButtonContext ctx) handle) =>
+      _events.make(Event.privateButtonClick,
+          (PrivateButtonClickArgs p) => handle(p.ctx));
 
-  void modalSubmit(PrivateModalSubmitEventHandler handle, {String? customId}) =>
-      _events.make(Event.privateModalSubmit, handle, customId: customId);
+  void modalSubmit<T>(
+          FutureOr<void> Function(PrivateModalContext ctx, T data) handle,
+          {String? customId}) =>
+      _events.make(Event.privateModalSubmit,
+          (PrivateModalSubmitArgs<T> p) => handle(p.ctx, p.data),
+          customId: customId);
 
-  void selectUser(PrivateUserSelectEventHandler handle, {String? customId}) =>
-      _events.make(Event.privateUserSelect, handle, customId: customId);
+  void selectUser(
+          FutureOr<void> Function(PrivateSelectContext ctx, List<User> users)
+              handle,
+          {String? customId}) =>
+      _events.make(Event.privateUserSelect,
+          (PrivateUserSelectArgs p) => handle(p.ctx, p.users),
+          customId: customId);
 
-  void selectText(PrivateTextSelectEventHandler handle, {String? customId}) =>
-      _events.make(Event.privateTextSelect, handle, customId: customId);
+  void selectText(
+          FutureOr<void> Function(PrivateSelectContext ctx, List<String> values)
+              handle,
+          {String? customId}) =>
+      _events.make(Event.privateTextSelect,
+          (PrivateTextSelectArgs p) => handle(p.ctx, p.values),
+          customId: customId);
 
-  void privateMessageReactionAdd(PrivateMessageReactionAddHandler handle) =>
-      _events.make(Event.privateMessageReactionAdd, handle);
+  void messageReactionAdd(
+          FutureOr<void> Function(MessageReaction reaction) handle) =>
+      _events.make(Event.privateMessageReactionAdd,
+          (PrivateMessageReactionAddArgs p) => handle(p.reaction));
 
-  void privateMessageReactionRemove(
-          PrivateMessageReactionRemoveHandler handle) =>
-      _events.make(Event.privateMessageReactionRemove, handle);
+  void messageReactionRemove(
+          FutureOr<void> Function(MessageReaction reaction) handle) =>
+      _events.make(Event.privateMessageReactionRemove,
+          (PrivateMessageReactionRemoveArgs p) => handle(p.reaction));
 
   void messageReactionRemoveAll(
-          PrivateMessageReactionRemoveAllHandler handle) =>
-      _events.make(Event.privateMessageReactionRemoveAll, handle);
+          FutureOr<void> Function(PrivateChannel channel, Message message)
+              handle) =>
+      _events.make(
+          Event.privateMessageReactionRemoveAll,
+          (PrivateMessageReactionRemoveAllArgs p) =>
+              handle(p.channel, p.message));
 
-  void pollVoteAdd(PrivatePollVoteAddEventHandler handle) =>
-      _events.make(Event.privatePollVoteAdd, handle);
+  void pollVoteAdd(
+          FutureOr<void> Function(PollAnswerVote<Message> answer, User user)
+              handle) =>
+      _events.make(Event.privatePollVoteAdd,
+          (PrivatePollVoteAddArgs p) => handle(p.answer, p.user));
 
-  void pollVoteRemove(PrivatePollVoteRemoveEventHandler handle) =>
-      _events.make(Event.privatePollVoteRemove, handle);
+  void pollVoteRemove(
+          FutureOr<void> Function(PollAnswerVote<Message> answer, User user)
+              handle) =>
+      _events.make(Event.privatePollVoteRemove,
+          (PrivatePollVoteRemoveArgs p) => handle(p.answer, p.user));
 }

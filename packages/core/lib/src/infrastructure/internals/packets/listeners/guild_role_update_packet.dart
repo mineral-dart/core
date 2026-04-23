@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -32,6 +33,6 @@ final class GuildRoleUpdatePacket implements ListenablePacket {
 
     final role = await _marshaller.serializers.role.serialize(rawRole);
 
-    dispatch(event: Event.serverRoleUpdate, params: [server, before, role]);
+    dispatch<ServerRoleUpdateArgs>(event: Event.serverRoleUpdate, payload: (server: server, before: before, after: role));
   }
 }

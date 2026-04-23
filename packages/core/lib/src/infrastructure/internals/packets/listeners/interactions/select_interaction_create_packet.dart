@@ -1,9 +1,8 @@
 import 'package:collection/collection.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
-import 'package:mineral/src/domains/components/selects/select_context.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
-import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
@@ -28,21 +27,20 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     final type = InteractionType.values
         .firstWhereOrNull((e) => e.value == payload['type']);
 
-    final componentType = ComponentType.values.firstWhereOrNull(
-        (e) => e.value == data['component_type']);
+    final componentType = ComponentType.values
+        .firstWhereOrNull((e) => e.value == data['component_type']);
 
     if (type == InteractionType.messageComponent &&
         ComponentType.selectMenus.contains(componentType)) {
-      final selectMenuType = ComponentType.values.firstWhereOrNull(
-          (e) => e.value == data['component_type']);
+      final selectMenuType = ComponentType.values
+          .firstWhereOrNull((e) => e.value == data['component_type']);
 
       final serverId = Snowflake.nullable(payload['guild_id'] as String?);
       final SelectContext ctx = await switch (serverId) {
         String() => ServerSelectContext.fromMap(_dataStore, payload)
             as Future<SelectContext>,
-        _ =>
-          PrivateSelectContext.fromMap(_marshaller, _dataStore, payload)
-              as Future<SelectContext>,
+        _ => PrivateSelectContext.fromMap(_marshaller, _dataStore, payload)
+            as Future<SelectContext>,
       };
 
       switch (selectMenuType) {
@@ -69,7 +67,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
     final data = payload['data'] as Map<String, dynamic>;
     final resolvedData = data['resolved'] as Map<String, dynamic>;
-    final channelIds = Map.from(resolvedData['channels'] as Map<dynamic, dynamic>).keys;
+    final channelIds =
+        Map.from(resolvedData['channels'] as Map<dynamic, dynamic>).keys;
 
     final channels =
         channelIds.map((id) => serverChannels[id]).whereType<ServerChannel>();
@@ -77,31 +76,36 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     _interactiveComponentManager.dispatch(ctx.customId, [ctx, channels]);
 
     return switch (ctx) {
-      ServerSelectContext() => dispatch(
+      ServerSelectContext() => dispatch<ServerChannelSelectArgs>(
           event: Event.serverChannelSelect,
-          params: [ctx, channels.whereType<ServerChannel>()],
+          payload: (
+            ctx: ctx,
+            channels: channels.whereType<ServerChannel>().toList()
+          ),
           constraint: (String? customId) => customId == ctx.customId),
-      PrivateSelectContext() => dispatch(
-          event: Event.serverChannelSelect,
-          params: [ctx, channels.whereType<Channel>()],
-          constraint: (String? customId) => customId == ctx.customId),
+      PrivateSelectContext() => null,
       _ => _logger.warn('Select context $ctx not found'),
     };
   }
 
   Future<void> _dispatchRoleSelectMenu(SelectContext ctx,
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final serverRoles = await _dataStore.role.fetch(payload['guild_id'] as String, false);
+    final serverRoles =
+        await _dataStore.role.fetch(payload['guild_id'] as String, false);
 
     final data = payload['data'] as Map<String, dynamic>;
     final resolvedData = data['resolved'] as Map<String, dynamic>;
-    final roleIds = Map.from(resolvedData['roles'] as Map<dynamic, dynamic>).keys;
+    final roleIds =
+        Map.from(resolvedData['roles'] as Map<dynamic, dynamic>).keys;
 
     final resolvedRoles = roleIds.map((id) => serverRoles[id]);
 
-    dispatch(
+    dispatch<ServerRoleSelectArgs>(
         event: Event.serverRoleSelect,
-        params: [ctx, resolvedRoles],
+        payload: (
+          ctx: ctx as ServerSelectContext,
+          roles: resolvedRoles.whereType<Role>().toList()
+        ),
         constraint: (String? customId) => customId == ctx.customId);
 
     _interactiveComponentManager.dispatch(ctx.customId, [ctx, resolvedRoles]);
@@ -111,7 +115,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
     final data = payload['data'] as Map<String, dynamic>;
     final resolvedData = data['resolved'] as Map<String, dynamic>;
-    final userIds = Map.from(resolvedData['users'] as Map<dynamic, dynamic>).keys;
+    final userIds =
+        Map.from(resolvedData['users'] as Map<dynamic, dynamic>).keys;
 
     final event = switch (ctx) {
       ServerSelectContext() => Event.serverMemberSelect,
@@ -126,20 +131,34 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
     final resolvedResource = await switch (ctx) {
       ServerSelectContext() => Future.wait(userIds.map((id) {
-          return _dataStore.member.get(payload['guild_id'] as String, id as String, false);
+          return _dataStore.member
+              .get(payload['guild_id'] as String, id as String, false);
         })),
-      PrivateSelectContext() =>
-        Future.wait(userIds.map((id) => _dataStore.user.get(id as String, false))),
+      PrivateSelectContext() => Future.wait(
+          userIds.map((id) => _dataStore.user.get(id as String, false))),
       _ => Future.value([]),
     };
 
     _interactiveComponentManager
         .dispatch(ctx.customId, [ctx, resolvedResource]);
 
-    dispatch(
-        event: event,
-        params: [ctx, resolvedResource],
-        constraint: (String? customId) => customId == ctx.customId);
+    return switch (ctx) {
+      ServerSelectContext() => dispatch(
+          event: event,
+          payload: (
+            ctx: ctx,
+            members: resolvedResource.whereType<Member>().toList()
+          ),
+          constraint: (String? customId) => customId == ctx.customId),
+      PrivateSelectContext() => dispatch(
+          event: event,
+          payload: (
+            ctx: ctx,
+            users: resolvedResource.whereType<User>().toList()
+          ),
+          constraint: (String? customId) => customId == ctx.customId),
+      _ => null,
+    };
   }
 
   Future<void> _dispatchMentionableSelectMenu(
@@ -149,7 +168,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
   ) async {
     final data = payload['data'] as Map<String, dynamic>;
     final resolvedData = data['resolved'] as Map<String, dynamic>;
-    final values = List<String>.from(data['values'] as Iterable<dynamic>? ?? []);
+    final values =
+        List<String>.from(data['values'] as Iterable<dynamic>? ?? []);
     final guildId = payload['guild_id'] as String?;
 
     final List<dynamic> mentionables = [];
@@ -171,28 +191,28 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
     _interactiveComponentManager.dispatch(ctx.customId, [ctx, mentionables]);
 
-    dispatch(
-      event: Event
-          .serverRoleSelect, // Peut-être Event.serverMentionableSelect si défini
-      params: [ctx, mentionables],
+    dispatch<ServerMentionableSelectArgs>(
+      event: Event.serverMentionableSelect,
+      payload: (ctx: ctx as ServerSelectContext, mentionables: mentionables),
       constraint: (String? customId) => customId == ctx.customId,
     );
   }
 
   Future<void> _dispatchTextSelectMenu(SelectContext ctx,
       Map<String, dynamic> payload, DispatchEvent dispatch) async {
-    final List<String> resolvedText = List.from((payload['data'] as Map<String, dynamic>)['values'] as Iterable<dynamic>);
+    final List<String> resolvedText = List.from((payload['data']
+        as Map<String, dynamic>)['values'] as Iterable<dynamic>);
 
     _interactiveComponentManager.dispatch(ctx.customId, [ctx, resolvedText]);
 
     return switch (ctx) {
-      ServerSelectContext() => dispatch(
+      ServerSelectContext() => dispatch<ServerTextSelectArgs>(
           event: Event.serverTextSelect,
-          params: [ctx, resolvedText],
+          payload: (ctx: ctx, values: resolvedText),
           constraint: (String? customId) => customId == ctx.customId),
-      PrivateSelectContext() => dispatch(
+      PrivateSelectContext() => dispatch<PrivateTextSelectArgs>(
           event: Event.privateTextSelect,
-          params: [ctx, resolvedText],
+          payload: (ctx: ctx, values: resolvedText),
           constraint: (String? customId) => customId == ctx.customId),
       _ => _logger.warn('Select context $ctx not found'),
     };

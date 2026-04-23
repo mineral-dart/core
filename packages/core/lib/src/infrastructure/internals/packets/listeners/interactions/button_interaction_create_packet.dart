@@ -2,6 +2,7 @@ import 'package:collection/collection.dart';
 import 'package:mineral/api.dart';
 import 'package:mineral/container.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
@@ -68,9 +69,9 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       messageId: Snowflake.parse((payload['message'] as Map<String, dynamic>)['id']),
     );
 
-    dispatch(
+    dispatch<ServerButtonClickArgs>(
         event: Event.serverButtonClick,
-        params: [ctx],
+        payload: (ctx: ctx),
         constraint: (String? customId) => customId == ctx.customId);
 
     _interactiveComponentManager.dispatch(ctx.customId, [ctx]);
@@ -100,9 +101,9 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
       messageId: Snowflake.parse((payload['message'] as Map<String, dynamic>)['id']),
     );
 
-    dispatch(
-        event: Event.serverButtonClick,
-        params: [ctx],
+    dispatch<PrivateButtonClickArgs>(
+        event: Event.privateButtonClick,
+        payload: (ctx: ctx),
         constraint: (String? customId) => customId == ctx.customId);
   }
 
