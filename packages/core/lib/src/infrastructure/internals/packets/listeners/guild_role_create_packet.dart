@@ -23,6 +23,6 @@ final class GuildRoleCreatePacket implements ListenablePacket {
     });
 
     final role = await _marshaller.serializers.role.serialize(rawRole);
-    dispatch(event: Event.serverRoleCreate, params: [server, role]);
+    dispatch(event: Event.serverRoleCreate, payload: (server: server, role: role));
   }
 }

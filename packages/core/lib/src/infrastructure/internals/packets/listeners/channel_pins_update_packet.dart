@@ -32,11 +32,11 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
       ServerChannel channel, DispatchEvent dispatch) async {
     final server = await _dataStore.server.get(channel.serverId.value, false);
 
-    dispatch(event: Event.serverChannelPinsUpdate, params: [server, channel]);
+    dispatch(event: Event.serverChannelPinsUpdate, payload: (server: server, channel: channel));
   }
 
   Future<void> registerPrivateChannelPins(
       PrivateChannel channel, DispatchEvent dispatch) async {
-    dispatch(event: Event.privateChannelPinsUpdate, params: [channel]);
+    dispatch(event: Event.privateChannelPinsUpdate, payload: (channel: channel));
   }
 }

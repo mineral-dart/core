@@ -17,6 +17,6 @@ final class InviteCreatePacket implements ListenablePacket {
         await _marshaller.serializers.invite.normalize(message.payload as Map<String, dynamic>);
     final invite = await _marshaller.serializers.invite.serialize(normalized);
 
-    dispatch(event: Event.inviteCreate, params: [invite]);
+    dispatch(event: Event.inviteCreate, payload: (invite: invite));
   }
 }

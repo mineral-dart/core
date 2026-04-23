@@ -27,9 +27,9 @@ final class VoiceMovePacket implements ListenablePacket {
         rawBefore['channel_id'] != null &&
         voiceState.channelId != null) {
       final before = await _marshaller.serializers.voice.serialize(rawBefore);
-      dispatch(event: Event.voiceMove, params: [before, voiceState]);
+      dispatch(event: Event.voiceMove, payload: (before: before, after: voiceState));
     }
 
-    dispatch(event: Event.voiceStateUpdate, params: [voiceState]);
+    dispatch(event: Event.voiceStateUpdate, payload: (state: voiceState));
   }
 }

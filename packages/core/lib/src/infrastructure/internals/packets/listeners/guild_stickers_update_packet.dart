@@ -28,9 +28,9 @@ final class GuildStickersUpdatePacket implements ListenablePacket {
       return _marshaller.serializers.sticker.serialize(raw);
     }).wait;
 
-    dispatch(event: Event.serverStickersUpdate, params: [
-      server,
-      stickers.asMap().map((_, value) => MapEntry(value.id, value))
-    ]);
+    dispatch(event: Event.serverStickersUpdate, payload: (
+      server: server,
+      stickers: stickers.asMap().map((_, value) => MapEntry(value.id, value)),
+    ));
   }
 }

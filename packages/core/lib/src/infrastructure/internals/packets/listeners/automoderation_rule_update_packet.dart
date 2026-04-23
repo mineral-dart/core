@@ -28,6 +28,6 @@ final class AutoModerationRuleUpdatePacket implements ListenablePacket {
         await _marshaller.serializers.rules.normalize(message.payload as Map<String, dynamic>);
     final after = await _marshaller.serializers.rules.serialize(rawAfterRule);
 
-    dispatch(event: Event.serverRuleUpdate, params: [before, after]);
+    dispatch(event: Event.serverRuleUpdate, payload: (before: before, after: after));
   }
 }

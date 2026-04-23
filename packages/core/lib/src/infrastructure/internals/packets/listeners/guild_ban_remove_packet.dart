@@ -25,7 +25,7 @@ final class GuildBanRemovePacket implements ListenablePacket {
           _marshaller.cacheKey.member(server.id.value, id.value);
       await _marshaller.cache?.remove(memberCacheKey);
 
-      dispatch(event: Event.serverBanRemove, params: [server, user]);
+      dispatch(event: Event.serverBanRemove, payload: (user: user, server: server));
     }
   }
 }

@@ -79,12 +79,9 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     return switch (ctx) {
       ServerSelectContext() => dispatch(
           event: Event.serverChannelSelect,
-          params: [ctx, channels.whereType<ServerChannel>()],
+          payload: (ctx: ctx as ServerSelectContext, channels: channels.whereType<ServerChannel>().toList()),
           constraint: (String? customId) => customId == ctx.customId),
-      PrivateSelectContext() => dispatch(
-          event: Event.serverChannelSelect,
-          params: [ctx, channels.whereType<Channel>()],
-          constraint: (String? customId) => customId == ctx.customId),
+      PrivateSelectContext() => null,
       _ => _logger.warn('Select context $ctx not found'),
     };
   }
@@ -101,7 +98,7 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
 
     dispatch(
         event: Event.serverRoleSelect,
-        params: [ctx, resolvedRoles],
+        payload: (ctx: ctx as ServerSelectContext, roles: resolvedRoles.whereType<Role>().toList()),
         constraint: (String? customId) => customId == ctx.customId);
 
     _interactiveComponentManager.dispatch(ctx.customId, [ctx, resolvedRoles]);
@@ -136,10 +133,17 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     _interactiveComponentManager
         .dispatch(ctx.customId, [ctx, resolvedResource]);
 
-    dispatch(
-        event: event,
-        params: [ctx, resolvedResource],
-        constraint: (String? customId) => customId == ctx.customId);
+    return switch (ctx) {
+      ServerSelectContext() => dispatch(
+          event: event,
+          payload: (ctx: ctx as ServerSelectContext, members: resolvedResource.whereType<Member>().toList()),
+          constraint: (String? customId) => customId == ctx.customId),
+      PrivateSelectContext() => dispatch(
+          event: event,
+          payload: (ctx: ctx as PrivateSelectContext, users: resolvedResource.whereType<User>().toList()),
+          constraint: (String? customId) => customId == ctx.customId),
+      _ => null,
+    };
   }
 
   Future<void> _dispatchMentionableSelectMenu(
@@ -172,9 +176,8 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     _interactiveComponentManager.dispatch(ctx.customId, [ctx, mentionables]);
 
     dispatch(
-      event: Event
-          .serverRoleSelect, // Peut-être Event.serverMentionableSelect si défini
-      params: [ctx, mentionables],
+      event: Event.serverMentionableSelect,
+      payload: (ctx: ctx as ServerSelectContext, mentionables: mentionables),
       constraint: (String? customId) => customId == ctx.customId,
     );
   }
@@ -188,11 +191,11 @@ final class SelectInteractionCreatePacket implements ListenablePacket {
     return switch (ctx) {
       ServerSelectContext() => dispatch(
           event: Event.serverTextSelect,
-          params: [ctx, resolvedText],
+          payload: (ctx: ctx as ServerSelectContext, values: resolvedText),
           constraint: (String? customId) => customId == ctx.customId),
       PrivateSelectContext() => dispatch(
           event: Event.privateTextSelect,
-          params: [ctx, resolvedText],
+          payload: (ctx: ctx as PrivateSelectContext, values: resolvedText),
           constraint: (String? customId) => customId == ctx.customId),
       _ => _logger.warn('Select context $ctx not found'),
     };

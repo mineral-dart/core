@@ -47,7 +47,7 @@ final class EventListener implements EventListenerContract {
       };
     }).listen((element) async {
       try {
-        await Function.apply(handle, element.params);
+        await (handle as Function)(element.payload);
       } on Exception catch (e, stackTrace) {
         kernel.logger.error('Failed to dispatch event "${event.name}": $e');
         kernel.logger.trace('$stackTrace');

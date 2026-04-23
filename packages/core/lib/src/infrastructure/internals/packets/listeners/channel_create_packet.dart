@@ -24,9 +24,9 @@ final class ChannelCreatePacket implements ListenablePacket {
 
     return switch (channel) {
       ServerChannel() =>
-        dispatch(event: Event.serverChannelCreate, params: [channel]),
+        dispatch(event: Event.serverChannelCreate, payload: (channel: channel)),
       PrivateChannel() =>
-        dispatch(event: Event.privateChannelCreate, params: [channel]),
+        dispatch(event: Event.privateChannelCreate, payload: (channel: channel)),
       _ => _logger
           .warn("Unknown channel type: $channel contact Mineral's core team.")
     };

@@ -61,6 +61,6 @@ final class GuildMemberChunkPacket implements ListenablePacket {
       _wss.removeFromRequestQueue(resolver);
     }
 
-    dispatch(event: Event.serverMemberChunk, params: [server, members]);
+    dispatch(event: Event.serverMemberChunk, payload: (server: server, members: members));
   }
 }

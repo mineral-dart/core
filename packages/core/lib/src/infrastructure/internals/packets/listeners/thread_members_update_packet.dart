@@ -35,7 +35,7 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
       }
 
       dispatch(
-          event: Event.serverThreadMemberAdd, params: [server, thread, member]);
+          event: Event.serverThreadMemberAdd, payload: (thread: thread, server: server, member: member));
     }).wait;
 
     await List.from(payload['removed_member_ids'] as Iterable<dynamic>).map((element) async {
@@ -52,7 +52,7 @@ final class ThreadMembersUpdatePacket implements ListenablePacket {
 
       dispatch(
           event: Event.serverThreadMemberRemove,
-          params: [server, thread, member]);
+          payload: (thread: thread, server: server, member: member));
     }).wait;
   }
 }

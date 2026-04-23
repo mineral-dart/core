@@ -27,6 +27,6 @@ final class ThreadDeletePacket implements ListenablePacket {
 
     await _marshaller.cache?.remove(threadCacheKey);
 
-    dispatch(event: Event.serverThreadDelete, params: [server, thread]);
+    dispatch(event: Event.serverThreadDelete, payload: (thread: thread, server: server));
   }
 }

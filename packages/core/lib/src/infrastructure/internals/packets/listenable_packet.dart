@@ -6,7 +6,7 @@ import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
 
 typedef DispatchEvent = Function(
     {required Event event,
-    required List params,
+    required Object payload,
     bool Function(String?)? constraint});
 
 abstract interface class ListenablePacket<T> {

@@ -35,7 +35,7 @@ final class MessagePollVoteAddPacket implements ListenablePacket {
         message!.id,
         payload['answer_id'] as int);
 
-    dispatch(event: Event.serverPollVoteAdd, params: [answer, user]);
+    dispatch(event: Event.serverPollVoteAdd, payload: (answer: answer, user: user));
   }
 
   Future<void> _private(
@@ -48,6 +48,6 @@ final class MessagePollVoteAddPacket implements ListenablePacket {
         message!.id,
         payload['answer_id'] as int);
 
-    dispatch(event: Event.privatePollVoteAdd, params: [answer, user]);
+    dispatch(event: Event.privatePollVoteAdd, payload: (answer: answer, user: user));
   }
 }

@@ -21,6 +21,6 @@ final class ThreadCreatePacket implements ListenablePacket {
     final threadRaw = await _marshaller.serializers.channels.normalize(payload);
     final thread = await _marshaller.serializers.channels.serialize(threadRaw);
 
-    dispatch(event: Event.serverThreadCreate, params: [server, thread]);
+    dispatch(event: Event.serverThreadCreate, payload: (server: server, channel: thread));
   }
 }

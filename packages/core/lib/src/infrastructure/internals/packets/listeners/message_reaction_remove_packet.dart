@@ -24,6 +24,6 @@ final class MessageReactionRemovePacket implements ListenablePacket {
       null => Event.privateMessageReactionRemove,
     };
 
-    dispatch(event: event, params: [reaction]);
+    dispatch(event: event, payload: (reaction: reaction));
   }
 }

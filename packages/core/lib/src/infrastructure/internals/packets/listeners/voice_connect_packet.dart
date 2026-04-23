@@ -28,7 +28,7 @@ final class VoiceConnectPacket implements ListenablePacket {
     );
 
     if (before == null && payload['channel_id'] != null) {
-      dispatch(event: Event.voiceConnect, params: [voiceState]);
+      dispatch(event: Event.voiceConnect, payload: (state: voiceState));
     }
   }
 }

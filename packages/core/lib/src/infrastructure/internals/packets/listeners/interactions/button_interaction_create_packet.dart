@@ -70,7 +70,7 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
 
     dispatch(
         event: Event.serverButtonClick,
-        params: [ctx],
+        payload: (ctx: ctx),
         constraint: (String? customId) => customId == ctx.customId);
 
     _interactiveComponentManager.dispatch(ctx.customId, [ctx]);
@@ -101,8 +101,8 @@ final class ButtonInteractionCreatePacket implements ListenablePacket {
     );
 
     dispatch(
-        event: Event.serverButtonClick,
-        params: [ctx],
+        event: Event.privateButtonClick,
+        payload: (ctx: ctx),
         constraint: (String? customId) => customId == ctx.customId);
   }
 

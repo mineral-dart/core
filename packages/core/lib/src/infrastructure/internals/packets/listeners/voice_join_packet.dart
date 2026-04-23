@@ -28,7 +28,7 @@ final class VoiceJoinPacket implements ListenablePacket {
           await _marshaller.serializers.voice.normalize(payload);
       final voiceState =
           await _marshaller.serializers.voice.serialize(rawVoiceState);
-      dispatch(event: Event.voiceJoin, params: [voiceState]);
+      dispatch(event: Event.voiceJoin, payload: (state: voiceState));
     }
   }
 }

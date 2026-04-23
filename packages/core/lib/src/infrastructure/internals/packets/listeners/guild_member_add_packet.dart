@@ -25,6 +25,6 @@ final class GuildMemberAddPacket implements ListenablePacket {
 
     final member = await _marshaller.serializers.member.serialize(rawMember);
 
-    dispatch(event: Event.serverMemberAdd, params: [member, server]);
+    dispatch(event: Event.serverMemberAdd, payload: (member: member, server: server));
   }
 }

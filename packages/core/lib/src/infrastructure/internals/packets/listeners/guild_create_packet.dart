@@ -60,6 +60,6 @@ final class GuildCreatePacket implements ListenablePacket {
     final interactionManager = ioc.resolve<CommandInteractionManagerContract>();
     await interactionManager.registerServer(bot, server);
 
-    dispatch(event: Event.serverCreate, params: [server]);
+    dispatch(event: Event.serverCreate, payload: (server: server));
   }
 }

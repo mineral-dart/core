@@ -132,7 +132,7 @@ final class ModalInteractionCreatePacket implements ListenablePacket {
 
       dispatch(
           event: event!,
-          params: [ctx, parameters],
+          payload: (ctx: ctx, data: parameters),
           constraint: (String? customId) => switch (customId) {
                 final String value => value == ctx!.customId,
                 _ => true

@@ -30,6 +30,6 @@ final class MessageCreatePacket implements ListenablePacket {
       Null() => Event.privateMessageCreate,
     };
 
-    dispatch(event: event, params: [serializedMessage]);
+    dispatch(event: event, payload: (message: serializedMessage));
   }
 }

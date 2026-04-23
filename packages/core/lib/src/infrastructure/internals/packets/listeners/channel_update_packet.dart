@@ -30,9 +30,9 @@ final class ChannelUpdatePacket implements ListenablePacket {
 
     return switch (channel) {
       ServerChannel() =>
-        dispatch(event: Event.serverChannelUpdate, params: [before, channel]),
+        dispatch(event: Event.serverChannelUpdate, payload: (before: before, after: channel)),
       PrivateChannel() =>
-        dispatch(event: Event.privateChannelUpdate, params: [before, channel]),
+        dispatch(event: Event.privateChannelUpdate, payload: (before: before, after: channel)),
       _ => _logger
           .warn("Unknown channel type: $channel contact Mineral's core team.")
     };

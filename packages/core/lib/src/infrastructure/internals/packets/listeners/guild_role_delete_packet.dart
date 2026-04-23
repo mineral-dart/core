@@ -29,6 +29,6 @@ final class GuildRoleDeletePacket implements ListenablePacket {
 
     await _marshaller.cache?.remove(roleCacheKey);
 
-    dispatch(event: Event.serverRoleDelete, params: [server, role]);
+    dispatch(event: Event.serverRoleDelete, payload: (server: server, role: role));
   }
 }

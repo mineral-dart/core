@@ -23,6 +23,6 @@ final class GuildUpdatePacket implements ListenablePacket {
         await _marshaller.serializers.server.normalize(message.payload as Map<String, dynamic>);
     final after = await _marshaller.serializers.server.serialize(rawAfter);
 
-    dispatch(event: Event.serverUpdate, params: [before, after]);
+    dispatch(event: Event.serverUpdate, payload: (before: before, after: after));
   }
 }

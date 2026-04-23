@@ -21,6 +21,6 @@ final class GuildDeletePacket implements ListenablePacket {
 
     _marshaller.cache?.remove(cacheKey);
 
-    dispatch(event: Event.serverDelete, params: [server]);
+    dispatch(event: Event.serverDelete, payload: (server: server));
   }
 }

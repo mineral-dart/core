@@ -1,9 +1,14 @@
+import 'dart:async';
+
+import 'package:mineral/api.dart';
 import 'package:mineral/events.dart';
+import 'package:mineral/src/api/common/bot/bot.dart';
+import 'package:mineral/src/api/server/invite.dart';
+import 'package:mineral/src/api/server/voice_state.dart';
 import 'package:mineral/src/domains/common/kernel.dart';
 import 'package:mineral/src/domains/events/buckets/private_bucket.dart';
 import 'package:mineral/src/domains/events/buckets/server_bucket.dart';
-import 'package:mineral/src/domains/events/contracts/common/invite_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/common/invite_delete_event.dart';
+import 'package:mineral/src/domains/events/contracts/common_events.dart';
 
 final class EventBucket {
   final Kernel _kernel;
@@ -19,32 +24,44 @@ final class EventBucket {
   void make<T extends Function>(Event event, T handle, {String? customId}) =>
       _registerEvent<T>(event: event, handle: handle, customId: customId);
 
-  void ready(ReadyEventHandler handle) =>
-      _registerEvent(event: Event.ready, handle: handle);
+  void ready(FutureOr<void> Function(Bot bot) handle) =>
+      _registerEvent(event: Event.ready,
+          handle: (ReadyArgs p) => handle(p.bot));
 
-  void voiceStateUpdate(VoiceStateUpdateEventHandler handle) =>
-      _registerEvent(event: Event.voiceStateUpdate, handle: handle);
+  void voiceStateUpdate(FutureOr<void> Function(VoiceState state) handle) =>
+      _registerEvent(event: Event.voiceStateUpdate,
+          handle: (VoiceStateUpdateArgs p) => handle(p.state));
 
-  void voiceConnect(VoiceConnectEventHandler handle) =>
-      _registerEvent(event: Event.voiceConnect, handle: handle);
+  void voiceConnect(FutureOr<void> Function(VoiceState state) handle) =>
+      _registerEvent(event: Event.voiceConnect,
+          handle: (VoiceConnectArgs p) => handle(p.state));
 
-  void voiceDisconnect(VoiceDisconnectEventHandler handle) =>
-      _registerEvent(event: Event.voiceDisconnect, handle: handle);
+  void voiceDisconnect(FutureOr<void> Function(VoiceState state) handle) =>
+      _registerEvent(event: Event.voiceDisconnect,
+          handle: (VoiceDisconnectArgs p) => handle(p.state));
 
-  void voiceJoin(VoiceJoinEventHandler handle) =>
-      _registerEvent(event: Event.voiceJoin, handle: handle);
+  void voiceJoin(FutureOr<void> Function(VoiceState state) handle) =>
+      _registerEvent(event: Event.voiceJoin,
+          handle: (VoiceJoinArgs p) => handle(p.state));
 
-  void voiceLeave(VoiceLeaveEventHandler handle) =>
-      _registerEvent(event: Event.voiceLeave, handle: handle);
+  void voiceLeave(FutureOr<void> Function(VoiceState state) handle) =>
+      _registerEvent(event: Event.voiceLeave,
+          handle: (VoiceLeaveArgs p) => handle(p.state));
 
-  void voiceMove(VoiceMoveEventHandler handle) =>
-      _registerEvent(event: Event.voiceMove, handle: handle);
+  void voiceMove(
+          FutureOr<void> Function(VoiceState? before, VoiceState after)
+              handle) =>
+      _registerEvent(event: Event.voiceMove,
+          handle: (VoiceMoveArgs p) => handle(p.before, p.after));
 
-  void inviteCreate(InviteCreateEventHandler handle) =>
-      _registerEvent(event: Event.inviteCreate, handle: handle);
+  void inviteCreate(FutureOr<void> Function(Invite invite) handle) =>
+      _registerEvent(event: Event.inviteCreate,
+          handle: (InviteCreateArgs p) => handle(p.invite));
 
-  void inviteDelete(InviteDeleteEventHandler handle) =>
-      _registerEvent(event: Event.inviteDelete, handle: handle);
+  void inviteDelete(
+          FutureOr<void> Function(String code, Channel channel) handle) =>
+      _registerEvent(event: Event.inviteDelete,
+          handle: (InviteDeleteArgs p) => handle(p.code, p.channel));
 
   void _registerEvent<T extends Function>(
           {required Event event, required T handle, String? customId}) =>

@@ -24,6 +24,6 @@ final class MessageReactionAddPacket implements ListenablePacket {
       null => Event.privateMessageReactionAdd,
     };
 
-    dispatch(event: event, params: [reaction]);
+    dispatch(event: event, payload: (reaction: reaction));
   }
 }

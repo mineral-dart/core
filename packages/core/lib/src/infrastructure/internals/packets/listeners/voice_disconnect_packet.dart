@@ -28,7 +28,7 @@ final class VoiceDisconnectPacket implements ListenablePacket {
       await _marshaller.cache?.remove(cacheKey);
 
       if (before != null) {
-        dispatch(event: Event.voiceDisconnect, params: [before]);
+        dispatch(event: Event.voiceDisconnect, payload: (state: before));
       }
     }
   }

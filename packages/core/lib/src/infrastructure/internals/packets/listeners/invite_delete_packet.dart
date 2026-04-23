@@ -17,6 +17,6 @@ final class InviteDeletePacket implements ListenablePacket {
     final channel =
         await _datastore.channel.get(message.payload['channel_id'] as Object, false);
 
-    dispatch(event: Event.inviteDelete, params: [code, channel]);
+    dispatch(event: Event.inviteDelete, payload: (code: code, channel: channel));
   }
 }

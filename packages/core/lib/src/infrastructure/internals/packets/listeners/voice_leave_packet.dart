@@ -25,7 +25,7 @@ final class VoiceLeavePacket implements ListenablePacket {
         beforeRaw['channel_id'] != null &&
         beforeRaw['channel_id'] != payload['channel_id']) {
       final before = await _marshaller.serializers.voice.serialize(beforeRaw);
-      dispatch(event: Event.voiceLeave, params: [before]);
+      dispatch(event: Event.voiceLeave, payload: (state: before));
 
       _marshaller.cache?.remove(cacheKey);
     }

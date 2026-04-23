@@ -1,45 +1,19 @@
-import 'package:mineral/src/domains/events/contracts/server/server_audit_log_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_ban_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_ban_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_button_click_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_pins_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_channel_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_emojis_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_chunk_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_member_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_message_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_all_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_message_reaction_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_modal_submit_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_poll_vote_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_presence_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_role_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_roles_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_roles_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_roles_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_rule_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_rule_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_rule_execution_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_rule_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_stickers_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_text_select_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_create_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_delete_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_member_add_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_member_remove_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_member_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_thread_update_event.dart';
-import 'package:mineral/src/domains/events/contracts/server/server_update_event.dart';
+import 'dart:async';
+
+import 'package:mineral/api.dart';
+import 'package:mineral/src/api/common/message_reaction.dart';
+import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
+import 'package:mineral/src/api/common/presence.dart';
+import 'package:mineral/src/api/private/user.dart';
+import 'package:mineral/src/api/server/audit_log/audit_log.dart';
+import 'package:mineral/src/api/server/channels/server_text_channel.dart';
+import 'package:mineral/src/api/server/managers/emoji_manager.dart';
+import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
+import 'package:mineral/src/api/server/moderation/rule_execution.dart';
+import 'package:mineral/src/domains/components/buttons/contexts/server_button_context.dart';
+import 'package:mineral/src/domains/components/modal/contexts/server_modal_context.dart';
+import 'package:mineral/src/domains/components/selects/contexts/server_select_context.dart';
+import 'package:mineral/src/domains/events/contracts/server_events.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
 
@@ -48,132 +22,249 @@ final class ServerBucket {
 
   ServerBucket(this._events);
 
-  void serverCreate(ServerCreateEventHandler handle) =>
-      _events.make(Event.serverCreate, handle);
+  void serverCreate(FutureOr<void> Function(Server server) handle) =>
+      _events.make(Event.serverCreate,
+          (ServerCreateArgs p) => handle(p.server));
 
-  void serverUpdate(ServerUpdateEventHandler handle) =>
-      _events.make(Event.serverUpdate, handle);
+  void serverUpdate(
+          FutureOr<void> Function(Server before, Server after) handle) =>
+      _events.make(Event.serverUpdate,
+          (ServerUpdateArgs p) => handle(p.before, p.after));
 
-  void serverDelete(ServerDeleteEventHandler handle) =>
-      _events.make(Event.serverDelete, handle);
+  void serverDelete(FutureOr<void> Function(Server? server) handle) =>
+      _events.make(Event.serverDelete,
+          (ServerDeleteArgs p) => handle(p.server));
 
-  void messageCreate(ServerMessageEventHandler handle) =>
-      _events.make(Event.serverMessageCreate, handle);
+  void messageCreate(FutureOr<void> Function(ServerMessage message) handle) =>
+      _events.make(Event.serverMessageCreate,
+          (ServerMessageCreateArgs p) => handle(p.message));
 
-  void channelCreate(ServerChannelCreateEventHandler handle) =>
-      _events.make(Event.serverChannelCreate, handle);
+  void channelCreate(FutureOr<void> Function(ServerChannel channel) handle) =>
+      _events.make(Event.serverChannelCreate,
+          (ServerChannelCreateArgs p) => handle(p.channel));
 
-  void channelUpdate(ServerChannelUpdateEventHandler handle) =>
-      _events.make(Event.serverChannelUpdate, handle);
+  void channelUpdate(
+          FutureOr<void> Function(
+                  ServerChannel before, ServerChannel after)
+              handle) =>
+      _events.make(Event.serverChannelUpdate,
+          (ServerChannelUpdateArgs p) => handle(p.before, p.after));
 
-  void channelDelete(ServerChannelDeleteEventHandler handle) =>
-      _events.make(Event.serverChannelDelete, handle);
+  void channelDelete(FutureOr<void> Function(ServerChannel? channel) handle) =>
+      _events.make(Event.serverChannelDelete,
+          (ServerChannelDeleteArgs p) => handle(p.channel));
 
-  void channelPinsUpdate(ServerChannelPinsUpdateEventHandler handle) =>
-      _events.make(Event.serverChannelPinsUpdate, handle);
+  void channelPinsUpdate(
+          FutureOr<void> Function(Server server, ServerChannel channel)
+              handle) =>
+      _events.make(Event.serverChannelPinsUpdate,
+          (ServerChannelPinsUpdateArgs p) => handle(p.server, p.channel));
 
-  void memberAdd(ServerMemberAddEventHandler handle) =>
-      _events.make(Event.serverMemberAdd, handle);
+  void memberAdd(
+          FutureOr<void> Function(Member member, Server server) handle) =>
+      _events.make(Event.serverMemberAdd,
+          (ServerMemberAddArgs p) => handle(p.member, p.server));
 
-  void memberRemove(ServerMemberRemoveEventHandler handle) =>
-      _events.make(Event.serverMemberRemove, handle);
+  void memberRemove(
+          FutureOr<void> Function(User? user, Server server) handle) =>
+      _events.make(Event.serverMemberRemove,
+          (ServerMemberRemoveArgs p) => handle(p.user, p.server));
 
-  void memberUpdate(ServerMemberUpdateEventHandler handle) =>
-      _events.make(Event.serverMemberUpdate, handle);
+  void memberUpdate(
+          FutureOr<void> Function(
+                  Server server, Member after, Member before)
+              handle) =>
+      _events.make(Event.serverMemberUpdate,
+          (ServerMemberUpdateArgs p) => handle(p.server, p.after, p.before));
 
-  void memberChunk(ServerMemberChunkEventHandler handle) =>
-      _events.make(Event.serverMemberChunk, handle);
+  void memberChunk(
+          FutureOr<void> Function(
+                  Server server, Map<Snowflake, Member> members)
+              handle) =>
+      _events.make(Event.serverMemberChunk,
+          (ServerMemberChunkArgs p) => handle(p.server, p.members));
 
-  void roleCreate(ServerRolesCreateEventHandler handle) =>
-      _events.make(Event.serverRoleCreate, handle);
+  void roleCreate(FutureOr<void> Function(Server server, Role role) handle) =>
+      _events.make(Event.serverRoleCreate,
+          (ServerRoleCreateArgs p) => handle(p.server, p.role));
 
-  void roleUpdate(ServerRolesUpdateEventHandler handle) =>
-      _events.make(Event.serverRoleUpdate, handle);
+  void roleUpdate(
+          FutureOr<void> Function(Server server, Role before, Role after)
+              handle) =>
+      _events.make(Event.serverRoleUpdate,
+          (ServerRoleUpdateArgs p) => handle(p.server, p.before, p.after));
 
-  void roleDelete(ServerRolesDeleteEventHandler handle) =>
-      _events.make(Event.serverRoleDelete, handle);
+  void roleDelete(
+          FutureOr<void> Function(Server server, Role? role) handle) =>
+      _events.make(Event.serverRoleDelete,
+          (ServerRoleDeleteArgs p) => handle(p.server, p.role));
 
-  void presenceUpdate(ServerPresenceUpdateEventHandler handle) =>
-      _events.make(Event.serverPresenceUpdate, handle);
+  void presenceUpdate(
+          FutureOr<void> Function(Member member, Presence presence) handle) =>
+      _events.make(Event.serverPresenceUpdate,
+          (ServerPresenceUpdateArgs p) => handle(p.member, p.presence));
 
-  void banAdd(ServerBanAddEventHandler handle) =>
-      _events.make(Event.serverBanAdd, handle);
+  void banAdd(FutureOr<void> Function(User user, Server server) handle) =>
+      _events.make(Event.serverBanAdd,
+          (ServerBanAddArgs p) => handle(p.user, p.server));
 
-  void banRemove(ServerBanRemoveEventHandler handle) =>
-      _events.make(Event.serverBanRemove, handle);
+  void banRemove(FutureOr<void> Function(User user, Server server) handle) =>
+      _events.make(Event.serverBanRemove,
+          (ServerBanRemoveArgs p) => handle(p.user, p.server));
 
-  void emojisUpdate(ServerEmojisUpdateEventHandler handle) =>
-      _events.make(Event.serverEmojisUpdate, handle);
+  void emojisUpdate(
+          FutureOr<void> Function(EmojiManager emojisManager, Server server)
+              handle) =>
+      _events.make(Event.serverEmojisUpdate,
+          (ServerEmojisUpdateArgs p) => handle(p.emojisManager, p.server));
 
-  void stickersUpdate(ServerStickersUpdateEventHandler handle) =>
-      _events.make(Event.serverStickersUpdate, handle);
+  void stickersUpdate(
+          FutureOr<void> Function(
+                  Server server, Map<Snowflake, Sticker> stickers)
+              handle) =>
+      _events.make(Event.serverStickersUpdate,
+          (ServerStickersUpdateArgs p) => handle(p.server, p.stickers));
 
-  void buttonClick(ServerButtonClickEventHandler handle, {String? customId}) =>
-      _events.make(Event.serverButtonClick, handle, customId: customId);
-
-  void modalSubmit<T>(ServerModalSubmitEventHandler<T> handle,
+  void buttonClick(
+          FutureOr<void> Function(ServerButtonContext ctx) handle,
           {String? customId}) =>
-      _events.make(Event.serverModalSubmit, handle, customId: customId);
+      _events.make(Event.serverButtonClick,
+          (ServerButtonClickArgs p) => handle(p.ctx),
+          customId: customId);
 
-  void selectChannel(ServerChannelSelectEventHandler handle,
+  void modalSubmit<T>(
+          FutureOr<void> Function(ServerModalContext ctx, T data) handle,
           {String? customId}) =>
-      _events.make(Event.serverChannelSelect, handle, customId: customId);
+      _events.make(Event.serverModalSubmit,
+          (ServerModalSubmitArgs<T> p) => handle(p.ctx, p.data),
+          customId: customId);
 
-  void selectRole(ServerRoleSelectEventHandler handle, {String? customId}) =>
-      _events.make(Event.serverRoleSelect, handle, customId: customId);
-
-  void selectMember(ServerMemberSelectEventHandler handle,
+  void selectChannel(
+          FutureOr<void> Function(
+                  ServerSelectContext ctx, List<ServerChannel> channels)
+              handle,
           {String? customId}) =>
-      _events.make(Event.serverMemberSelect, handle, customId: customId);
+      _events.make(Event.serverChannelSelect,
+          (ServerChannelSelectArgs p) => handle(p.ctx, p.channels),
+          customId: customId);
 
-  void selectText(ServerTextSelectEventHandler handle, {String? customId}) =>
-      _events.make(Event.serverTextSelect, handle, customId: customId);
+  void selectRole(
+          FutureOr<void> Function(ServerSelectContext ctx, List<Role> roles)
+              handle,
+          {String? customId}) =>
+      _events.make(Event.serverRoleSelect,
+          (ServerRoleSelectArgs p) => handle(p.ctx, p.roles),
+          customId: customId);
 
-  void threadCreate(ServerThreadCreateEventHandler handle) =>
-      _events.make(Event.serverThreadCreate, handle);
+  void selectMember(
+          FutureOr<void> Function(
+                  ServerSelectContext ctx, List<Member> members)
+              handle,
+          {String? customId}) =>
+      _events.make(Event.serverMemberSelect,
+          (ServerMemberSelectArgs p) => handle(p.ctx, p.members),
+          customId: customId);
 
-  void threadUpdate(ServerThreadUpdateEventHandler handle) =>
-      _events.make(Event.serverThreadUpdate, handle);
+  void selectText(
+          FutureOr<void> Function(ServerSelectContext ctx, List<String> values)
+              handle,
+          {String? customId}) =>
+      _events.make(Event.serverTextSelect,
+          (ServerTextSelectArgs p) => handle(p.ctx, p.values),
+          customId: customId);
 
-  void threadDelete(ServerThreadDeleteEventHandler handle) =>
-      _events.make(Event.serverThreadDelete, handle);
+  void threadCreate(
+          FutureOr<void> Function(Server server, ThreadChannel channel)
+              handle) =>
+      _events.make(Event.serverThreadCreate,
+          (ServerThreadCreateArgs p) => handle(p.server, p.channel));
 
-  void threadMemberUpdate(ServerThreadMemberUpdateEventHandler handle) =>
-      _events.make(Event.serverThreadMemberUpdate, handle);
+  void threadUpdate(
+          FutureOr<void> Function(
+                  Server server, ThreadChannel before, ThreadChannel after)
+              handle) =>
+      _events.make(Event.serverThreadUpdate,
+          (ServerThreadUpdateArgs p) => handle(p.server, p.before, p.after));
 
-  void threadMemberAdd(ServerThreadMemberAddEventHandler handle) =>
-      _events.make(Event.serverThreadMemberAdd, handle);
+  void threadDelete(
+          FutureOr<void> Function(ThreadChannel thread, Server server)
+              handle) =>
+      _events.make(Event.serverThreadDelete,
+          (ServerThreadDeleteArgs p) => handle(p.thread, p.server));
 
-  void threadMemberRemove(ServerThreadMemberRemoveEventHandler handle) =>
-      _events.make(Event.serverThreadMemberRemove, handle);
+  void threadMemberUpdate(
+          FutureOr<void> Function(
+                  ThreadChannel thread, Server server, Member member)
+              handle) =>
+      _events.make(Event.serverThreadMemberUpdate,
+          (ServerThreadMemberArgs p) => handle(p.thread, p.server, p.member));
 
-  void messageReactionAdd(ServerMessageReactionAddHandler handle) =>
-      _events.make(Event.serverMessageReactionAdd, handle);
+  void threadMemberAdd(
+          FutureOr<void> Function(
+                  ThreadChannel thread, Server server, Member member)
+              handle) =>
+      _events.make(Event.serverThreadMemberAdd,
+          (ServerThreadMemberArgs p) => handle(p.thread, p.server, p.member));
 
-  void messageReactionRemove(ServerMessageReactionRemoveHandler handle) =>
-      _events.make(Event.serverMessageReactionRemove, handle);
+  void threadMemberRemove(
+          FutureOr<void> Function(
+                  ThreadChannel thread, Server server, Member member)
+              handle) =>
+      _events.make(Event.serverThreadMemberRemove,
+          (ServerThreadMemberArgs p) => handle(p.thread, p.server, p.member));
 
-  void messageReactionRemoveAll(ServerMessageReactionRemoveAllHandler handle) =>
-      _events.make(Event.serverMessageReactionRemoveAll, handle);
+  void messageReactionAdd(
+          FutureOr<void> Function(MessageReaction reaction) handle) =>
+      _events.make(Event.serverMessageReactionAdd,
+          (ServerMessageReactionAddArgs p) => handle(p.reaction));
 
-  void auditLog(ServerAuditLogEventHandler handle) =>
-      _events.make(Event.serverAuditLog, handle);
+  void messageReactionRemove(
+          FutureOr<void> Function(MessageReaction reaction) handle) =>
+      _events.make(Event.serverMessageReactionRemove,
+          (ServerMessageReactionRemoveArgs p) => handle(p.reaction));
 
-  void pollVoteAdd(ServerPollVoteAddEventHandler handle) =>
-      _events.make(Event.serverPollVoteAdd, handle);
+  void messageReactionRemoveAll(
+          FutureOr<void> Function(
+                  Server server, ServerTextChannel channel, Message message)
+              handle) =>
+      _events.make(Event.serverMessageReactionRemoveAll,
+          (ServerMessageReactionRemoveAllArgs p) =>
+              handle(p.server, p.channel, p.message));
 
-  void pollVoteRemove(ServerPollVoteRemoveEventHandler handle) =>
-      _events.make(Event.serverPollVoteRemove, handle);
+  void auditLog(FutureOr<void> Function(AuditLog audit) handle) =>
+      _events.make(Event.serverAuditLog,
+          (ServerAuditLogArgs p) => handle(p.audit));
 
-  void ruleCreate(ServerRuleCreateEventHandler handle) =>
-      _events.make(Event.serverRuleCreate, handle);
+  void pollVoteAdd(
+          FutureOr<void> Function(
+                  PollAnswerVote<Message> answer, User user)
+              handle) =>
+      _events.make(Event.serverPollVoteAdd,
+          (ServerPollVoteAddArgs p) => handle(p.answer, p.user));
 
-  void ruleUpdate(ServerRuleUpdateEventHandler handle) =>
-      _events.make(Event.serverRuleUpdate, handle);
+  void pollVoteRemove(
+          FutureOr<void> Function(
+                  PollAnswerVote<Message> answer, User user)
+              handle) =>
+      _events.make(Event.serverPollVoteRemove,
+          (ServerPollVoteRemoveArgs p) => handle(p.answer, p.user));
 
-  void ruleDelete(ServerRuleDeleteEventHandler handle) =>
-      _events.make(Event.serverRuleDelete, handle);
+  void ruleCreate(FutureOr<void> Function(AutoModerationRule rule) handle) =>
+      _events.make(Event.serverRuleCreate,
+          (ServerRuleCreateArgs p) => handle(p.rule));
 
-  void ruleExecution(ServerRuleExecutionEventHandler handle) =>
-      _events.make(Event.serverRuleExecution, handle);
+  void ruleUpdate(
+          FutureOr<void> Function(
+                  AutoModerationRule? before, AutoModerationRule after)
+              handle) =>
+      _events.make(Event.serverRuleUpdate,
+          (ServerRuleUpdateArgs p) => handle(p.before, p.after));
+
+  void ruleDelete(FutureOr<void> Function(AutoModerationRule rule) handle) =>
+      _events.make(Event.serverRuleDelete,
+          (ServerRuleDeleteArgs p) => handle(p.rule));
+
+  void ruleExecution(FutureOr<void> Function(RuleExecution execution) handle) =>
+      _events.make(Event.serverRuleExecution,
+          (ServerRuleExecutionArgs p) => handle(p.execution));
 }

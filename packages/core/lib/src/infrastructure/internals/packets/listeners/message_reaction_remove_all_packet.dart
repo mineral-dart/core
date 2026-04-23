@@ -34,7 +34,7 @@ final class MessageReactionRemoveAllPacket implements ListenablePacket {
 
     dispatch(
         event: Event.serverMessageReactionRemoveAll,
-        params: [server, channel, message]);
+        payload: (server: server, channel: channel, message: message));
   }
 
   Future<void> _private(
@@ -45,6 +45,6 @@ final class MessageReactionRemoveAllPacket implements ListenablePacket {
 
     dispatch(
         event: Event.privateMessageReactionRemoveAll,
-        params: [channel, message]);
+        payload: (channel: channel, message: message));
   }
 }

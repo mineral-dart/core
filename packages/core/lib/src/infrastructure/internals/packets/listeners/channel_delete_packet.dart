@@ -21,6 +21,6 @@ final class ChannelDeletePacket implements ListenablePacket {
     final channelCacheKey = _marshaller.cacheKey.channel(channel.id.value);
     await _marshaller.cache?.remove(channelCacheKey);
 
-    dispatch(event: Event.serverChannelDelete, params: [channel]);
+    dispatch(event: Event.serverChannelDelete, payload: (channel: channel));
   }
 }

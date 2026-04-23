@@ -27,6 +27,6 @@ final class ReadyPacket implements ListenablePacket {
       isAlreadyUsed = true;
     }
 
-    dispatch(event: Event.ready, params: [bot]);
+    dispatch(event: Event.ready, payload: (bot: bot));
   }
 }

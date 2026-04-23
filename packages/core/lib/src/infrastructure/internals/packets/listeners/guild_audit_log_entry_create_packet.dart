@@ -190,7 +190,7 @@ final class GuildAuditLogEntryCreatePacket implements ListenablePacket {
 
     dispatch(
       event: Event.serverAuditLog,
-      params: [auditLog],
+      payload: (audit: auditLog),
     );
   }
 }

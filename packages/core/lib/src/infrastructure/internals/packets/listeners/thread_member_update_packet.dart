@@ -23,6 +23,6 @@ final class ThreadMemberUpdatePacket implements ListenablePacket {
 
     dispatch(
         event: Event.serverThreadMemberUpdate,
-        params: [server, thread, member]);
+        payload: (thread: thread, server: server, member: member));
   }
 }

@@ -27,9 +27,9 @@ final class GuildEmojisUpdatePacket implements ListenablePacket {
       return _marshaller.serializers.emojis.serialize(raw);
     }).wait;
 
-    dispatch(event: Event.serverEmojisUpdate, params: [
-      emojis.asMap().map((_, element) => MapEntry(element.id, element)),
-      server
-    ]);
+    dispatch(event: Event.serverEmojisUpdate, payload: (
+      emojisManager: emojis.asMap().map((_, element) => MapEntry(element.id, element)),
+      server: server,
+    ));
   }
 }
