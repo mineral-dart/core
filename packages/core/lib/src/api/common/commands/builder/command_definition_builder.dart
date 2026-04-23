@@ -255,9 +255,9 @@ final class CommandDefinitionBuilder implements CommandBuilder {
       final String path when path.contains('.json') =>
         json.decode(content) as Map<String, dynamic>,
       final String path when path.contains('.yaml') =>
-        (loadYaml(content)).toMap() as Map<String, dynamic>,
+        loadYaml(content).toMap() as Map<String, dynamic>,
       final String path when path.contains('.yml') =>
-        (loadYaml(content)).toMap() as Map<String, dynamic>,
+        loadYaml(content).toMap() as Map<String, dynamic>,
       _ => throw InvalidCommandException('File type not supported')
     };
 
