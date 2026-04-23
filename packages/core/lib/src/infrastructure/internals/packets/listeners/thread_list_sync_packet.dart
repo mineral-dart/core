@@ -1,4 +1,6 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -26,6 +28,6 @@ final class ThreadListSyncPacket implements ListenablePacket {
       return _marshaller.serializers.channels.serialize(threadRaw);
     }).wait;
 
-    dispatch(event: Event.serverThreadListSync, payload: (threads: threads, server: server));
+    dispatch<ServerThreadListSyncArgs>(event: Event.serverThreadListSync, payload: (threads: threads.cast<ThreadChannel>(), server: server));
   }
 }

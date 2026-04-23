@@ -188,7 +188,7 @@ final class GuildAuditLogEntryCreatePacket implements ListenablePacket {
       logger.warn('Audit log action not found ${action.type}');
     }
 
-    dispatch(
+    dispatch<ServerAuditLogArgs>(
       event: Event.serverAuditLog,
       payload: (audit: auditLog),
     );

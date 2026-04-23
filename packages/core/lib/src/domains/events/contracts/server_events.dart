@@ -91,7 +91,7 @@ abstract class ServerChannelPinsUpdateEvent extends BaseListenableEvent {
   FutureOr<void> handle(Server server, ServerChannel channel);
 }
 
-typedef ServerChannelUpdateArgs = ({ServerChannel before, ServerChannel after});
+typedef ServerChannelUpdateArgs = ({ServerChannel? before, ServerChannel after});
 
 abstract class ServerChannelUpdateEvent extends BaseListenableEvent {
   @override
@@ -101,7 +101,7 @@ abstract class ServerChannelUpdateEvent extends BaseListenableEvent {
   Function get handler =>
       (ServerChannelUpdateArgs p) => handle(p.before, p.after);
 
-  FutureOr<void> handle(ServerChannel before, ServerChannel after);
+  FutureOr<void> handle(ServerChannel? before, ServerChannel after);
 }
 
 typedef ServerCreateArgs = ({Server server});
@@ -128,7 +128,7 @@ abstract class ServerDeleteEvent extends BaseListenableEvent {
   FutureOr<void> handle(Server? server);
 }
 
-typedef ServerUpdateArgs = ({Server before, Server after});
+typedef ServerUpdateArgs = ({Server? before, Server after});
 
 abstract class ServerUpdateEvent extends BaseListenableEvent {
   @override
@@ -137,10 +137,10 @@ abstract class ServerUpdateEvent extends BaseListenableEvent {
   @override
   Function get handler => (ServerUpdateArgs p) => handle(p.before, p.after);
 
-  FutureOr<void> handle(Server before, Server after);
+  FutureOr<void> handle(Server? before, Server after);
 }
 
-typedef ServerEmojisUpdateArgs = ({EmojiManager emojisManager, Server server});
+typedef ServerEmojisUpdateArgs = ({Map<Snowflake, Emoji> emojis, Server server});
 
 abstract class ServerEmojisUpdateEvent extends BaseListenableEvent {
   @override
@@ -148,9 +148,9 @@ abstract class ServerEmojisUpdateEvent extends BaseListenableEvent {
 
   @override
   Function get handler =>
-      (ServerEmojisUpdateArgs p) => handle(p.emojisManager, p.server);
+      (ServerEmojisUpdateArgs p) => handle(p.emojis, p.server);
 
-  FutureOr<void> handle(EmojiManager emojisManager, Server server);
+  FutureOr<void> handle(Map<Snowflake, Emoji> emojis, Server server);
 }
 
 typedef ServerStickersUpdateArgs = ({
@@ -181,10 +181,7 @@ abstract class ServerMemberAddEvent extends BaseListenableEvent {
   FutureOr<void> handle(Member member, Server server);
 }
 
-typedef ServerMemberChunkArgs = ({
-  Server server,
-  Map<Snowflake, Member> members
-});
+typedef ServerMemberChunkArgs = ({Server server, List<Member> members});
 
 abstract class ServerMemberChunkEvent extends BaseListenableEvent {
   @override
@@ -194,7 +191,7 @@ abstract class ServerMemberChunkEvent extends BaseListenableEvent {
   Function get handler =>
       (ServerMemberChunkArgs p) => handle(p.server, p.members);
 
-  FutureOr<void> handle(Server server, Map<Snowflake, Member> members);
+  FutureOr<void> handle(Server server, List<Member> members);
 }
 
 typedef ServerMemberRemoveArgs = ({User? user, Server server});
@@ -356,7 +353,7 @@ abstract class ServerRolesDeleteEvent extends BaseListenableEvent {
   FutureOr<void> handle(Server server, Role? role);
 }
 
-typedef ServerRoleUpdateArgs = ({Server server, Role before, Role after});
+typedef ServerRoleUpdateArgs = ({Server server, Role? before, Role after});
 
 abstract class ServerRolesUpdateEvent extends BaseListenableEvent {
   @override
@@ -366,7 +363,7 @@ abstract class ServerRolesUpdateEvent extends BaseListenableEvent {
   Function get handler =>
       (ServerRoleUpdateArgs p) => handle(p.server, p.before, p.after);
 
-  FutureOr<void> handle(Server server, Role before, Role after);
+  FutureOr<void> handle(Server server, Role? before, Role after);
 }
 
 typedef ServerRuleCreateArgs = ({AutoModerationRule rule});
@@ -505,7 +502,7 @@ abstract class ServerThreadCreateEvent extends BaseListenableEvent {
   FutureOr<void> handle(Server server, ThreadChannel channel);
 }
 
-typedef ServerThreadDeleteArgs = ({ThreadChannel thread, Server server});
+typedef ServerThreadDeleteArgs = ({ThreadChannel? thread, Server server});
 
 abstract class ServerThreadDeleteEvent extends BaseListenableEvent {
   @override
@@ -515,7 +512,7 @@ abstract class ServerThreadDeleteEvent extends BaseListenableEvent {
   Function get handler =>
       (ServerThreadDeleteArgs p) => handle(p.thread, p.server);
 
-  FutureOr<void> handle(ThreadChannel thread, Server server);
+  FutureOr<void> handle(ThreadChannel? thread, Server server);
 }
 
 typedef ServerThreadListSyncArgs = ({
@@ -575,7 +572,7 @@ abstract class ServerThreadMemberUpdateEvent extends BaseListenableEvent {
 
 typedef ServerThreadUpdateArgs = ({
   Server server,
-  ThreadChannel before,
+  ThreadChannel? before,
   ThreadChannel after
 });
 
@@ -588,5 +585,5 @@ abstract class ServerThreadUpdateEvent extends BaseListenableEvent {
       (ServerThreadUpdateArgs p) => handle(p.server, p.before, p.after);
 
   FutureOr<void> handle(
-      Server server, ThreadChannel before, ThreadChannel after);
+      Server server, ThreadChannel? before, ThreadChannel after);
 }

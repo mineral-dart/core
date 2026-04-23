@@ -20,13 +20,13 @@ void main() {
 
       dispatcher.controllerFor(Event.ready).stream.listen(received.add);
 
-      dispatcher.dispatch(event: Event.ready, params: ['bot']);
+      dispatcher.dispatch(event: Event.ready, payload: 'bot');
 
       await Future.delayed(Duration(milliseconds: 50));
 
       expect(received, hasLength(1));
       expect(received.first.event, Event.ready);
-      expect(received.first.params, ['bot']);
+      expect(received.first.payload, 'bot');
       expect(received.first.constraint, isNull);
     });
 
@@ -42,7 +42,7 @@ void main() {
 
       dispatcher.dispatch(
         event: Event.serverButtonClick,
-        params: ['ctx'],
+        payload: 'ctx',
         constraint: myConstraint,
       );
 
@@ -71,9 +71,9 @@ void main() {
           .listen((e) => events.add(e.event));
 
       dispatcher
-        ..dispatch(event: Event.ready, params: ['bot'])
-        ..dispatch(event: Event.serverMessageCreate, params: ['msg'])
-        ..dispatch(event: Event.serverMemberAdd, params: ['server', 'member']);
+        ..dispatch(event: Event.ready, payload: 'bot')
+        ..dispatch(event: Event.serverMessageCreate, payload: 'msg')
+        ..dispatch(event: Event.serverMemberAdd, payload: 'member');
 
       await Future.delayed(Duration(milliseconds: 50));
 
@@ -89,17 +89,17 @@ void main() {
       expect(controller.isClosed, isTrue);
     });
 
-    test('dispatch with empty params', () async {
+    test('dispatch with typed record payload', () async {
       final received = <InternalEventParams>[];
 
       dispatcher.controllerFor(Event.ready).stream.listen(received.add);
 
-      dispatcher.dispatch(event: Event.ready, params: []);
+      dispatcher.dispatch(event: Event.ready, payload: (label: 'bot'));
 
       await Future.delayed(Duration(milliseconds: 50));
 
       expect(received, hasLength(1));
-      expect(received.first.params, isEmpty);
+      expect((received.first.payload as ({String label})).label, 'bot');
     });
   });
 }

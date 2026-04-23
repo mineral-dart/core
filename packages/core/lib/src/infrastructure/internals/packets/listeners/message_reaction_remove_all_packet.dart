@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -32,9 +33,9 @@ final class MessageReactionRemoveAllPacket implements ListenablePacket {
     final message = await channel?.messages.get(messageId);
     final server = await _dataStore.server.get(serverId.value, false);
 
-    dispatch(
+    dispatch<ServerMessageReactionRemoveAllArgs>(
         event: Event.serverMessageReactionRemoveAll,
-        payload: (server: server, channel: channel, message: message));
+        payload: (server: server, channel: channel!, message: message! as Message));
   }
 
   Future<void> _private(
@@ -43,8 +44,8 @@ final class MessageReactionRemoveAllPacket implements ListenablePacket {
         await _dataStore.channel.get<PrivateChannel>(channelId.value, false);
     final message = await channel?.messages.get(messageId);
 
-    dispatch(
+    dispatch<PrivateMessageReactionRemoveAllArgs>(
         event: Event.privateMessageReactionRemoveAll,
-        payload: (channel: channel, message: message));
+        payload: (channel: channel!, message: message! as Message));
   }
 }

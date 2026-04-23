@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -28,7 +29,7 @@ final class VoiceDisconnectPacket implements ListenablePacket {
       await _marshaller.cache?.remove(cacheKey);
 
       if (before != null) {
-        dispatch(event: Event.voiceDisconnect, payload: (state: before));
+        dispatch<VoiceDisconnectArgs>(event: Event.voiceDisconnect, payload: (state: before));
       }
     }
   }

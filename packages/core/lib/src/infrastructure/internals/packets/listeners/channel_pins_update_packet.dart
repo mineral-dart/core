@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/api/private/channels/private_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
@@ -32,11 +33,11 @@ final class ChannelPinsUpdatePacket implements ListenablePacket {
       ServerChannel channel, DispatchEvent dispatch) async {
     final server = await _dataStore.server.get(channel.serverId.value, false);
 
-    dispatch(event: Event.serverChannelPinsUpdate, payload: (server: server, channel: channel));
+    dispatch<ServerChannelPinsUpdateArgs>(event: Event.serverChannelPinsUpdate, payload: (server: server, channel: channel));
   }
 
   Future<void> registerPrivateChannelPins(
       PrivateChannel channel, DispatchEvent dispatch) async {
-    dispatch(event: Event.privateChannelPinsUpdate, payload: (channel: channel));
+    dispatch<PrivateChannelPinsUpdateArgs>(event: Event.privateChannelPinsUpdate, payload: (channel: channel));
   }
 }

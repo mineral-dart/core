@@ -4,19 +4,19 @@ import 'package:test/test.dart';
 
 void main() {
   group('InternalEventParams', () {
-    test('stores event, params, and constraint', () {
+    test('stores event, payload, and constraint', () {
       bool constraint(String? id) => id == 'btn-1';
 
       final params = InternalEventParams(
         Event.ready,
-        ['param1', 'param2'],
+        (label: 'param1', value: 'param2'),
         constraint,
       );
 
       expect(params.event, Event.ready);
-      expect(params.params, hasLength(2));
-      expect(params.params[0], 'param1');
-      expect(params.params[1], 'param2');
+      final p = params.payload as ({String label, String value});
+      expect(p.label, 'param1');
+      expect(p.value, 'param2');
       expect(params.constraint, isNotNull);
       expect(params.constraint!('btn-1'), isTrue);
       expect(params.constraint!('btn-2'), isFalse);
@@ -25,29 +25,31 @@ void main() {
     test('constraint can be null', () {
       final params = InternalEventParams(
         Event.serverMessageCreate,
-        ['message'],
+        'message',
         null,
       );
 
       expect(params.constraint, isNull);
     });
 
-    test('params can be empty list', () {
-      final params = InternalEventParams(Event.ready, [], null);
-      expect(params.params, isEmpty);
+    test('payload can be a simple value', () {
+      final params = InternalEventParams(Event.ready, 'bot', null);
+      expect(params.payload, 'bot');
     });
 
     test('works with different event types', () {
-      final readyParams = InternalEventParams(Event.ready, ['bot'], null);
-      final msgParams =
-          InternalEventParams(Event.serverMessageCreate, ['msg'], null);
+      final readyParams = InternalEventParams(Event.ready, (bot: 'bot'), null);
+      final msgParams = InternalEventParams(
+          Event.serverMessageCreate, (message: 'msg'), null);
       final voiceParams = InternalEventParams(
-          Event.voiceStateUpdate, ['before', 'after'], null);
+          Event.voiceStateUpdate, (before: 'before', after: 'after'), null);
 
       expect(readyParams.event, Event.ready);
       expect(msgParams.event, Event.serverMessageCreate);
       expect(voiceParams.event, Event.voiceStateUpdate);
-      expect(voiceParams.params, hasLength(2));
+      final vp = voiceParams.payload as ({String before, String after});
+      expect(vp.before, 'before');
+      expect(vp.after, 'after');
     });
   });
 }

@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -25,6 +26,6 @@ final class GuildMemberAddPacket implements ListenablePacket {
 
     final member = await _marshaller.serializers.member.serialize(rawMember);
 
-    dispatch(event: Event.serverMemberAdd, payload: (member: member, server: server));
+    dispatch<ServerMemberAddArgs>(event: Event.serverMemberAdd, payload: (member: member, server: server));
   }
 }

@@ -1,3 +1,4 @@
+import 'package:mineral/events.dart';
 import 'package:mineral/src/api/common/bot/bot.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
@@ -27,6 +28,6 @@ final class ReadyPacket implements ListenablePacket {
       isAlreadyUsed = true;
     }
 
-    dispatch(event: Event.ready, payload: (bot: bot));
+    dispatch<ReadyArgs>(event: Event.ready, payload: (bot: bot));
   }
 }

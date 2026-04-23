@@ -12,12 +12,10 @@ import 'package:mineral/src/domains/global_states/global_state_manager.dart';
 import 'package:mineral/src/domains/providers/provider.dart';
 import 'package:mineral/src/domains/providers/provider_manager.dart';
 import 'package:mineral/src/domains/services/packets/packet_dispatcher.dart';
+import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
 import 'package:mineral/src/infrastructure/internals/packets/packet_dispatcher.dart';
-import 'package:mineral/src/infrastructure/internals/packets/packet_type.dart';
-import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
-import 'package:mineral/src/infrastructure/services/http/http_client_config.dart';
 import 'package:test/test.dart';
 
 import '../helpers/fake_websocket_orchestrator.dart';
@@ -63,9 +61,10 @@ final class _FakeHttpClient implements HttpClientContract {
 
 final class _FakeEventDispatcher implements EventDispatcherContract {
   @override
-  void dispatch(
+  @override
+  void dispatch<T extends Object>(
       {required Event event,
-      required List params,
+      required T payload,
       bool Function(String?)? constraint}) {}
   @override
   void dispose() {}
@@ -134,7 +133,8 @@ final class _FakeInteractiveComponentManager
       throw UnimplementedError();
 }
 
-Kernel _buildFakeKernel(_FakeEventListener eventListener, LoggerContract logger) {
+Kernel _buildFakeKernel(
+    _FakeEventListener eventListener, LoggerContract logger) {
   return Kernel(
     false,
     null,

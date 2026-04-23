@@ -1,4 +1,3 @@
-import 'package:mineral/container.dart';
 import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/cache_key.dart';
 import 'package:mineral/src/infrastructure/internals/marshaller/serializers/invite_serializer.dart';
@@ -19,8 +18,8 @@ void main() {
     setUp(() {
       final testIoc = createTestIoc();
       cache = FakeCacheProvider();
-      testIoc.container.bind<MarshallerContract>(
-          () => FakeMarshaller(cache: cache));
+      testIoc.container
+          .bind<MarshallerContract>(() => FakeMarshaller(cache: cache));
       restoreIoc = testIoc.restore;
       serializer = MessageSerializer();
     });
@@ -159,8 +158,8 @@ void main() {
     setUp(() {
       final testIoc = createTestIoc();
       cache = FakeCacheProvider();
-      testIoc.container.bind<MarshallerContract>(
-          () => FakeMarshaller(cache: cache));
+      testIoc.container
+          .bind<MarshallerContract>(() => FakeMarshaller(cache: cache));
       restoreIoc = testIoc.restore;
       serializer = InviteSerializer();
     });

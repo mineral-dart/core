@@ -15,7 +15,7 @@ abstract class InviteCreateEvent extends BaseListenableEvent {
   FutureOr<void> handle(Invite invite);
 }
 
-typedef InviteDeleteArgs = ({String code, Channel channel});
+typedef InviteDeleteArgs = ({String code, Channel? channel});
 
 abstract class InviteDeleteEvent extends BaseListenableEvent {
   @override
@@ -24,7 +24,7 @@ abstract class InviteDeleteEvent extends BaseListenableEvent {
   @override
   Function get handler => (InviteDeleteArgs p) => handle(p.code, p.channel);
 
-  FutureOr<void> handle(String code, Channel channel);
+  FutureOr<void> handle(String code, Channel? channel);
 }
 
 typedef ReadyArgs = ({Bot bot});

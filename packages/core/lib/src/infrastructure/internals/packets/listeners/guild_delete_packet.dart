@@ -1,3 +1,4 @@
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/services/marshaller/marshaller.dart';
@@ -21,6 +22,6 @@ final class GuildDeletePacket implements ListenablePacket {
 
     _marshaller.cache?.remove(cacheKey);
 
-    dispatch(event: Event.serverDelete, payload: (server: server));
+    dispatch<ServerDeleteArgs>(event: Event.serverDelete, payload: (server: server));
   }
 }

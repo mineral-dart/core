@@ -1,4 +1,6 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -21,6 +23,6 @@ final class ThreadCreatePacket implements ListenablePacket {
     final threadRaw = await _marshaller.serializers.channels.normalize(payload);
     final thread = await _marshaller.serializers.channels.serialize(threadRaw);
 
-    dispatch(event: Event.serverThreadCreate, payload: (server: server, channel: thread));
+    dispatch<ServerThreadCreateArgs>(event: Event.serverThreadCreate, payload: (server: server, channel: thread as ThreadChannel));
   }
 }

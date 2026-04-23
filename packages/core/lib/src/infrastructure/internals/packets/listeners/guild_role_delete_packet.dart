@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -29,6 +30,6 @@ final class GuildRoleDeletePacket implements ListenablePacket {
 
     await _marshaller.cache?.remove(roleCacheKey);
 
-    dispatch(event: Event.serverRoleDelete, payload: (server: server, role: role));
+    dispatch<ServerRoleDeleteArgs>(event: Event.serverRoleDelete, payload: (server: server, role: role));
   }
 }

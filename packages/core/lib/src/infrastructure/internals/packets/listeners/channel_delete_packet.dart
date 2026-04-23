@@ -1,4 +1,6 @@
+import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -21,6 +23,6 @@ final class ChannelDeletePacket implements ListenablePacket {
     final channelCacheKey = _marshaller.cacheKey.channel(channel.id.value);
     await _marshaller.cache?.remove(channelCacheKey);
 
-    dispatch(event: Event.serverChannelDelete, payload: (channel: channel));
+    dispatch<ServerChannelDeleteArgs>(event: Event.serverChannelDelete, payload: (channel: channel as ServerChannel));
   }
 }

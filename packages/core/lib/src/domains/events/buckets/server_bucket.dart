@@ -1,18 +1,8 @@
 import 'dart:async';
 
 import 'package:mineral/api.dart';
-import 'package:mineral/src/api/common/message_reaction.dart';
 import 'package:mineral/src/api/common/polls/poll_answer_vote.dart';
-import 'package:mineral/src/api/common/presence.dart';
-import 'package:mineral/src/api/private/user.dart';
 import 'package:mineral/src/api/server/audit_log/audit_log.dart';
-import 'package:mineral/src/api/server/channels/server_text_channel.dart';
-import 'package:mineral/src/api/server/managers/emoji_manager.dart';
-import 'package:mineral/src/api/server/moderation/auto_moderation_rule.dart';
-import 'package:mineral/src/api/server/moderation/rule_execution.dart';
-import 'package:mineral/src/domains/components/buttons/contexts/server_button_context.dart';
-import 'package:mineral/src/domains/components/modal/contexts/server_modal_context.dart';
-import 'package:mineral/src/domains/components/selects/contexts/server_select_context.dart';
 import 'package:mineral/src/domains/events/contracts/server_events.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/domains/events/event_bucket.dart';
@@ -22,18 +12,16 @@ final class ServerBucket {
 
   ServerBucket(this._events);
 
-  void serverCreate(FutureOr<void> Function(Server server) handle) =>
-      _events.make(Event.serverCreate,
-          (ServerCreateArgs p) => handle(p.server));
+  void serverCreate(FutureOr<void> Function(Server server) handle) => _events
+      .make(Event.serverCreate, (ServerCreateArgs p) => handle(p.server));
 
   void serverUpdate(
-          FutureOr<void> Function(Server before, Server after) handle) =>
+          FutureOr<void> Function(Server? before, Server after) handle) =>
       _events.make(Event.serverUpdate,
           (ServerUpdateArgs p) => handle(p.before, p.after));
 
-  void serverDelete(FutureOr<void> Function(Server? server) handle) =>
-      _events.make(Event.serverDelete,
-          (ServerDeleteArgs p) => handle(p.server));
+  void serverDelete(FutureOr<void> Function(Server? server) handle) => _events
+      .make(Event.serverDelete, (ServerDeleteArgs p) => handle(p.server));
 
   void messageCreate(FutureOr<void> Function(ServerMessage message) handle) =>
       _events.make(Event.serverMessageCreate,
@@ -44,8 +32,7 @@ final class ServerBucket {
           (ServerChannelCreateArgs p) => handle(p.channel));
 
   void channelUpdate(
-          FutureOr<void> Function(
-                  ServerChannel before, ServerChannel after)
+          FutureOr<void> Function(ServerChannel? before, ServerChannel after)
               handle) =>
       _events.make(Event.serverChannelUpdate,
           (ServerChannelUpdateArgs p) => handle(p.before, p.after));
@@ -71,15 +58,13 @@ final class ServerBucket {
           (ServerMemberRemoveArgs p) => handle(p.user, p.server));
 
   void memberUpdate(
-          FutureOr<void> Function(
-                  Server server, Member after, Member before)
+          FutureOr<void> Function(Server server, Member after, Member before)
               handle) =>
       _events.make(Event.serverMemberUpdate,
           (ServerMemberUpdateArgs p) => handle(p.server, p.after, p.before));
 
   void memberChunk(
-          FutureOr<void> Function(
-                  Server server, Map<Snowflake, Member> members)
+          FutureOr<void> Function(Server server, List<Member> members)
               handle) =>
       _events.make(Event.serverMemberChunk,
           (ServerMemberChunkArgs p) => handle(p.server, p.members));
@@ -89,13 +74,12 @@ final class ServerBucket {
           (ServerRoleCreateArgs p) => handle(p.server, p.role));
 
   void roleUpdate(
-          FutureOr<void> Function(Server server, Role before, Role after)
+          FutureOr<void> Function(Server server, Role? before, Role after)
               handle) =>
       _events.make(Event.serverRoleUpdate,
           (ServerRoleUpdateArgs p) => handle(p.server, p.before, p.after));
 
-  void roleDelete(
-          FutureOr<void> Function(Server server, Role? role) handle) =>
+  void roleDelete(FutureOr<void> Function(Server server, Role? role) handle) =>
       _events.make(Event.serverRoleDelete,
           (ServerRoleDeleteArgs p) => handle(p.server, p.role));
 
@@ -105,18 +89,18 @@ final class ServerBucket {
           (ServerPresenceUpdateArgs p) => handle(p.member, p.presence));
 
   void banAdd(FutureOr<void> Function(User user, Server server) handle) =>
-      _events.make(Event.serverBanAdd,
-          (ServerBanAddArgs p) => handle(p.user, p.server));
+      _events.make(
+          Event.serverBanAdd, (ServerBanAddArgs p) => handle(p.user, p.server));
 
   void banRemove(FutureOr<void> Function(User user, Server server) handle) =>
       _events.make(Event.serverBanRemove,
           (ServerBanRemoveArgs p) => handle(p.user, p.server));
 
   void emojisUpdate(
-          FutureOr<void> Function(EmojiManager emojisManager, Server server)
+          FutureOr<void> Function(Map<Snowflake, Emoji> emojis, Server server)
               handle) =>
       _events.make(Event.serverEmojisUpdate,
-          (ServerEmojisUpdateArgs p) => handle(p.emojisManager, p.server));
+          (ServerEmojisUpdateArgs p) => handle(p.emojis, p.server));
 
   void stickersUpdate(
           FutureOr<void> Function(
@@ -125,11 +109,10 @@ final class ServerBucket {
       _events.make(Event.serverStickersUpdate,
           (ServerStickersUpdateArgs p) => handle(p.server, p.stickers));
 
-  void buttonClick(
-          FutureOr<void> Function(ServerButtonContext ctx) handle,
+  void buttonClick(FutureOr<void> Function(ServerButtonContext ctx) handle,
           {String? customId}) =>
-      _events.make(Event.serverButtonClick,
-          (ServerButtonClickArgs p) => handle(p.ctx),
+      _events.make(
+          Event.serverButtonClick, (ServerButtonClickArgs p) => handle(p.ctx),
           customId: customId);
 
   void modalSubmit<T>(
@@ -157,8 +140,7 @@ final class ServerBucket {
           customId: customId);
 
   void selectMember(
-          FutureOr<void> Function(
-                  ServerSelectContext ctx, List<Member> members)
+          FutureOr<void> Function(ServerSelectContext ctx, List<Member> members)
               handle,
           {String? customId}) =>
       _events.make(Event.serverMemberSelect,
@@ -181,13 +163,13 @@ final class ServerBucket {
 
   void threadUpdate(
           FutureOr<void> Function(
-                  Server server, ThreadChannel before, ThreadChannel after)
+                  Server server, ThreadChannel? before, ThreadChannel after)
               handle) =>
       _events.make(Event.serverThreadUpdate,
           (ServerThreadUpdateArgs p) => handle(p.server, p.before, p.after));
 
   void threadDelete(
-          FutureOr<void> Function(ThreadChannel thread, Server server)
+          FutureOr<void> Function(ThreadChannel? thread, Server server)
               handle) =>
       _events.make(Event.serverThreadDelete,
           (ServerThreadDeleteArgs p) => handle(p.thread, p.server));
@@ -227,31 +209,29 @@ final class ServerBucket {
           FutureOr<void> Function(
                   Server server, ServerTextChannel channel, Message message)
               handle) =>
-      _events.make(Event.serverMessageReactionRemoveAll,
+      _events.make(
+          Event.serverMessageReactionRemoveAll,
           (ServerMessageReactionRemoveAllArgs p) =>
               handle(p.server, p.channel, p.message));
 
-  void auditLog(FutureOr<void> Function(AuditLog audit) handle) =>
-      _events.make(Event.serverAuditLog,
-          (ServerAuditLogArgs p) => handle(p.audit));
+  void auditLog(FutureOr<void> Function(AuditLog audit) handle) => _events.make(
+      Event.serverAuditLog, (ServerAuditLogArgs p) => handle(p.audit));
 
   void pollVoteAdd(
-          FutureOr<void> Function(
-                  PollAnswerVote<Message> answer, User user)
+          FutureOr<void> Function(PollAnswerVote<Message> answer, User user)
               handle) =>
       _events.make(Event.serverPollVoteAdd,
           (ServerPollVoteAddArgs p) => handle(p.answer, p.user));
 
   void pollVoteRemove(
-          FutureOr<void> Function(
-                  PollAnswerVote<Message> answer, User user)
+          FutureOr<void> Function(PollAnswerVote<Message> answer, User user)
               handle) =>
       _events.make(Event.serverPollVoteRemove,
           (ServerPollVoteRemoveArgs p) => handle(p.answer, p.user));
 
   void ruleCreate(FutureOr<void> Function(AutoModerationRule rule) handle) =>
-      _events.make(Event.serverRuleCreate,
-          (ServerRuleCreateArgs p) => handle(p.rule));
+      _events.make(
+          Event.serverRuleCreate, (ServerRuleCreateArgs p) => handle(p.rule));
 
   void ruleUpdate(
           FutureOr<void> Function(
@@ -261,8 +241,8 @@ final class ServerBucket {
           (ServerRuleUpdateArgs p) => handle(p.before, p.after));
 
   void ruleDelete(FutureOr<void> Function(AutoModerationRule rule) handle) =>
-      _events.make(Event.serverRuleDelete,
-          (ServerRuleDeleteArgs p) => handle(p.rule));
+      _events.make(
+          Event.serverRuleDelete, (ServerRuleDeleteArgs p) => handle(p.rule));
 
   void ruleExecution(FutureOr<void> Function(RuleExecution execution) handle) =>
       _events.make(Event.serverRuleExecution,

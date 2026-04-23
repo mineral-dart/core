@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -28,7 +29,7 @@ final class GuildStickersUpdatePacket implements ListenablePacket {
       return _marshaller.serializers.sticker.serialize(raw);
     }).wait;
 
-    dispatch(event: Event.serverStickersUpdate, payload: (
+    dispatch<ServerStickersUpdateArgs>(event: Event.serverStickersUpdate, payload: (
       server: server,
       stickers: stickers.asMap().map((_, value) => MapEntry(value.id, value)),
     ));

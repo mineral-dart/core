@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -35,7 +36,7 @@ final class MessagePollVoteAddPacket implements ListenablePacket {
         message!.id,
         payload['answer_id'] as int);
 
-    dispatch(event: Event.serverPollVoteAdd, payload: (answer: answer, user: user));
+    dispatch<ServerPollVoteAddArgs>(event: Event.serverPollVoteAdd, payload: (answer: answer, user: user));
   }
 
   Future<void> _private(
@@ -48,6 +49,6 @@ final class MessagePollVoteAddPacket implements ListenablePacket {
         message!.id,
         payload['answer_id'] as int);
 
-    dispatch(event: Event.privatePollVoteAdd, payload: (answer: answer, user: user));
+    dispatch<PrivatePollVoteAddArgs>(event: Event.privatePollVoteAdd, payload: (answer: answer, user: user));
   }
 }

@@ -1,4 +1,5 @@
 import 'package:mineral/container.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/api/common/bot/bot.dart';
 import 'package:mineral/src/domains/commands/command_interaction_manager.dart';
 import 'package:mineral/src/domains/events/event.dart';
@@ -60,6 +61,6 @@ final class GuildCreatePacket implements ListenablePacket {
     final interactionManager = ioc.resolve<CommandInteractionManagerContract>();
     await interactionManager.registerServer(bot, server);
 
-    dispatch(event: Event.serverCreate, payload: (server: server));
+    dispatch<ServerCreateArgs>(event: Event.serverCreate, payload: (server: server));
   }
 }

@@ -29,9 +29,9 @@ void main() {
           .listen((e) => received.add(e.event));
 
       dispatcher
-        ..dispatch(event: Event.ready, params: ['bot'])
-        ..dispatch(event: Event.serverMessageCreate, params: ['msg'])
-        ..dispatch(event: Event.ready, params: ['bot2']);
+        ..dispatch(event: Event.ready, payload: 'bot')
+        ..dispatch(event: Event.serverMessageCreate, payload: 'msg')
+        ..dispatch(event: Event.ready, payload: 'bot2');
 
       await Future.delayed(Duration(milliseconds: 50));
 
@@ -39,22 +39,24 @@ void main() {
       expect(received.every((e) => e == Event.ready), isTrue);
     });
 
-    test('dispatches params to handler', () async {
-      final receivedParams = <List>[];
+    test('dispatches payload to handler', () async {
+      final receivedPayloads = <Object>[];
 
       dispatcher
           .controllerFor(Event.serverMemberAdd)
           .stream
-          .listen((e) => receivedParams.add(e.params));
+          .listen((e) => receivedPayloads.add(e.payload));
 
       dispatcher.dispatch(
-          event: Event.serverMemberAdd, params: ['server1', 'member1']);
+          event: Event.serverMemberAdd,
+          payload: (server: 'server1', member: 'member1'));
 
       await Future.delayed(Duration(milliseconds: 50));
 
-      expect(receivedParams, hasLength(1));
-      expect(receivedParams.first[0], 'server1');
-      expect(receivedParams.first[1], 'member1');
+      expect(receivedPayloads, hasLength(1));
+      final p = receivedPayloads.first as ({String server, String member});
+      expect(p.server, 'server1');
+      expect(p.member, 'member1');
     });
 
     test('constraint filters on customId', () async {
@@ -71,26 +73,26 @@ void main() {
       dispatcher
         ..dispatch(
           event: Event.serverButtonClick,
-          params: ['ctx1'],
+          payload: 'ctx1',
           constraint: (id) => id == 'btn-save',
         )
         // This one does NOT match
         ..dispatch(
           event: Event.serverButtonClick,
-          params: ['ctx2'],
+          payload: 'ctx2',
           constraint: (id) => id == 'btn-delete',
         )
         // This one has no constraint (should pass)
         ..dispatch(
           event: Event.serverButtonClick,
-          params: ['ctx3'],
+          payload: 'ctx3',
         );
 
       await Future.delayed(Duration(milliseconds: 50));
 
       expect(received, hasLength(2));
-      expect(received[0].params[0], 'ctx1');
-      expect(received[1].params[0], 'ctx3');
+      expect(received[0].payload, 'ctx1');
+      expect(received[1].payload, 'ctx3');
     });
 
     test('does not receive events after subscription cancel', () async {
@@ -101,12 +103,12 @@ void main() {
           .stream
           .listen((e) => received.add(e.event));
 
-      dispatcher.dispatch(event: Event.ready, params: ['bot']);
+      dispatcher.dispatch(event: Event.ready, payload: 'bot');
       await Future.delayed(Duration(milliseconds: 50));
 
       await sub.cancel();
 
-      dispatcher.dispatch(event: Event.ready, params: ['bot2']);
+      dispatcher.dispatch(event: Event.ready, payload: 'bot2');
       await Future.delayed(Duration(milliseconds: 50));
 
       expect(received, hasLength(1));
@@ -118,7 +120,7 @@ void main() {
       final future1 = controller.stream.first;
       final future2 = controller.stream.first;
 
-      dispatcher.dispatch(event: Event.ready, params: ['bot']);
+      dispatcher.dispatch(event: Event.ready, payload: 'bot');
 
       final results = await Future.wait([future1, future2]);
       expect(results[0].event, Event.ready);
@@ -139,9 +141,9 @@ void main() {
           .first;
 
       dispatcher
-        ..dispatch(event: Event.ready, params: ['bot'])
-        ..dispatch(event: Event.serverMessageCreate, params: ['msg'])
-        ..dispatch(event: Event.ready, params: ['bot']);
+        ..dispatch(event: Event.ready, payload: 'bot')
+        ..dispatch(event: Event.serverMessageCreate, payload: 'msg')
+        ..dispatch(event: Event.ready, payload: 'bot');
 
       final readyEvents = await readyFuture;
       final messageEvent = await messageFuture;

@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -28,7 +29,7 @@ final class VoiceJoinPacket implements ListenablePacket {
           await _marshaller.serializers.voice.normalize(payload);
       final voiceState =
           await _marshaller.serializers.voice.serialize(rawVoiceState);
-      dispatch(event: Event.voiceJoin, payload: (state: voiceState));
+      dispatch<VoiceJoinArgs>(event: Event.voiceJoin, payload: (state: voiceState));
     }
   }
 }

@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 
 import 'package:mineral/src/api/server/moderation/action_metadata.dart';
 import 'package:mineral/src/api/server/moderation/enums/action_type.dart';
@@ -52,7 +53,7 @@ final class AutomoderationActionExecutionPacket implements ListenablePacket {
       matchedKeyword: payload['matched_keyword'] as String?,
     );
 
-    dispatch(
+    dispatch<ServerRuleExecutionArgs>(
         event: Event.serverRuleExecution, payload: (execution: ruleExecution));
   }
 }

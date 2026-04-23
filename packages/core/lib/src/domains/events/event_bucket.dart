@@ -59,7 +59,7 @@ final class EventBucket {
           handle: (InviteCreateArgs p) => handle(p.invite));
 
   void inviteDelete(
-          FutureOr<void> Function(String code, Channel channel) handle) =>
+          FutureOr<void> Function(String code, Channel? channel) handle) =>
       _registerEvent(event: Event.inviteDelete,
           handle: (InviteDeleteArgs p) => handle(p.code, p.channel));
 

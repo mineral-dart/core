@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/api/private/channels/private_channel.dart';
 import 'package:mineral/src/api/server/channels/server_channel.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
@@ -29,10 +30,12 @@ final class ChannelUpdatePacket implements ListenablePacket {
         await _marshaller.serializers.channels.serialize(rawChannel);
 
     return switch (channel) {
-      ServerChannel() =>
-        dispatch(event: Event.serverChannelUpdate, payload: (before: before, after: channel)),
-      PrivateChannel() =>
-        dispatch(event: Event.privateChannelUpdate, payload: (before: before, after: channel)),
+      ServerChannel() => dispatch<ServerChannelUpdateArgs>(
+          event: Event.serverChannelUpdate,
+          payload: (before: before as ServerChannel?, after: channel)),
+      PrivateChannel() => dispatch<PrivateChannelUpdateArgs>(
+          event: Event.privateChannelUpdate,
+          payload: (before: before as PrivateChannel?, after: channel)),
       _ => _logger
           .warn("Unknown channel type: $channel contact Mineral's core team.")
     };

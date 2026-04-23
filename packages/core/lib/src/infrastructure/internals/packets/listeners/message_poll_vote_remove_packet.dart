@@ -1,5 +1,6 @@
 import 'package:mineral/api.dart';
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -35,7 +36,7 @@ final class MessagePollVoteRemovePacket implements ListenablePacket {
         message!.id,
         payload['answer_id'] as int);
 
-    dispatch(event: Event.serverPollVoteRemove, payload: (answer: answer, user: user));
+    dispatch<ServerPollVoteRemoveArgs>(event: Event.serverPollVoteRemove, payload: (answer: answer, user: user));
   }
 
   Future<void> _private(
@@ -48,6 +49,6 @@ final class MessagePollVoteRemovePacket implements ListenablePacket {
         message!.id,
         payload['answer_id'] as int);
 
-    dispatch(event: Event.privatePollVoteRemove, payload: (answer: answer, user: user));
+    dispatch<PrivatePollVoteRemoveArgs>(event: Event.privatePollVoteRemove, payload: (answer: answer, user: user));
   }
 }

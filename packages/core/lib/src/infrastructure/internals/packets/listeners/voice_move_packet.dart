@@ -1,4 +1,5 @@
 import 'package:mineral/contracts.dart';
+import 'package:mineral/events.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/domains/events/event.dart';
 import 'package:mineral/src/infrastructure/internals/packets/listenable_packet.dart';
@@ -27,9 +28,9 @@ final class VoiceMovePacket implements ListenablePacket {
         rawBefore['channel_id'] != null &&
         voiceState.channelId != null) {
       final before = await _marshaller.serializers.voice.serialize(rawBefore);
-      dispatch(event: Event.voiceMove, payload: (before: before, after: voiceState));
+      dispatch<VoiceMoveArgs>(event: Event.voiceMove, payload: (before: before, after: voiceState));
     }
 
-    dispatch(event: Event.voiceStateUpdate, payload: (state: voiceState));
+    dispatch<VoiceStateUpdateArgs>(event: Event.voiceStateUpdate, payload: (state: voiceState));
   }
 }
