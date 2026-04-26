@@ -1,8 +1,10 @@
 import 'dart:convert';
 
 import 'package:mineral/contracts.dart';
+import 'package:mineral/src/domains/common/utils/safe_cast.dart';
 import 'package:mineral/src/domains/container/ioc_container.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/serialization_exception.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_requested_message.dart';
 
@@ -15,11 +17,16 @@ final class JsonEncoderStrategy implements EncodingStrategy {
   @override
   WebsocketMessage decode(WebsocketMessage message) {
     try {
-      return message
-        ..content = ShardMessage.of(json.decode(message.originalContent as String) as Map<String, dynamic>);
+      final raw = safeCast<String>(message.originalContent,
+          context: 'json frame body');
+      final decoded = safeCast<Map<String, dynamic>>(json.decode(raw),
+          context: 'json frame payload');
+      return message..content = ShardMessage.of(decoded);
+    } on SerializationException {
+      rethrow;
     } on Exception catch (e) {
       _logger.error('Failed to decode JSON WebSocket message: $e');
-      rethrow;
+      throw SerializationException('Failed to decode JSON WebSocket message: $e');
     }
   }
 
