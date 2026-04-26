@@ -7,3 +7,4 @@ environment:
 workspace:
   - packages/core
   - packages/cache
+  - packages/test
