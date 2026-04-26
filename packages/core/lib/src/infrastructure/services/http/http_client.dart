@@ -16,7 +16,15 @@ class HttpClient implements HttpClientContract {
   @override
   final HttpClientConfig config;
 
-  HttpClient({required this.config});
+  HttpClient({required this.config}) {
+    if (config.uri.scheme != 'https') {
+      throw ArgumentError.value(
+        config.uri,
+        'config.uri',
+        'HttpClient requires an https:// URI to protect bearer tokens in transit',
+      );
+    }
+  }
 
   @override
   Future<Response<T>> get<T>(RequestContract request) async {
