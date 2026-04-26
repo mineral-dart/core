@@ -50,7 +50,8 @@ final class CommandInteractionDispatcher
     if (dataData['options'] != null) {
       for (final option in dataData['options'] as Iterable<dynamic>) {
         if (option is! Map<String, dynamic>) {
-          _marshaller.logger.warn('Unexpected option format: $option');
+          _marshaller.logger.warn(
+              'Unexpected option format: expected Map, got ${option.runtimeType}');
           continue;
         }
         final opt = option;
@@ -89,7 +90,8 @@ final class CommandInteractionDispatcher
     if (dataData['options'] != null) {
       for (final option in dataData['options'] as Iterable<dynamic>) {
         if (option is! Map<String, dynamic>) {
-          _marshaller.logger.warn('Unexpected option format: $option');
+          _marshaller.logger.warn(
+              'Unexpected option format: expected Map, got ${option.runtimeType}');
           continue;
         }
         final opt = option;
