@@ -1,7 +1,7 @@
 final class RedisSettings {
   final String host;
   final int port;
-  final String? password;
+  final bool hasPassword;
 
-  RedisSettings(this.host, this.port, this.password);
+  RedisSettings(this.host, this.port, {this.hasPassword = false});
 }

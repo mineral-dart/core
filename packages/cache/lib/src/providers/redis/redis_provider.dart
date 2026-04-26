@@ -14,10 +14,13 @@ final class RedisProvider implements CacheProviderContract {
 
   late final RedisSettings settings;
 
+  String? _password;
+
   LoggerContract get logger => ioc.resolve<LoggerContract>();
 
-  RedisProvider({required String host, required int port, String? password}) {
-    settings = RedisSettings(host, port, password);
+  RedisProvider({required String host, required int port, String? password})
+      : _password = password {
+    settings = RedisSettings(host, port, hasPassword: password != null);
   }
 
   @override
@@ -28,8 +31,9 @@ final class RedisProvider implements CacheProviderContract {
     try {
       await _connection.connect(settings.host, settings.port);
 
-      if (settings.password != null) {
-        await Command(_connection).send_object(['AUTH', settings.password!]);
+      if (_password != null) {
+        await Command(_connection).send_object(['AUTH', _password!]);
+        _password = null;
       }
 
       final Map<String, dynamic> credentials = {
@@ -38,9 +42,7 @@ final class RedisProvider implements CacheProviderContract {
         'payload': {
           'host': settings.host,
           'port': settings.port,
-          'password': settings.password != null
-              ? '*' * settings.password!.length
-              : 'NO PASSWORD',
+          'password': settings.hasPassword ? 'REDACTED' : 'NO PASSWORD',
         },
       };
 
