@@ -12,7 +12,9 @@ void main() {
     setUp(() async {
       bot = await TestBot.create();
       guild = GuildBuilder().withName('Auto-Role Server').build();
+
       memberRole = RoleBuilder().withName('Member').ofGuild(guild).build();
+
       AutoRoleConfig.roleIdsByGuild[guild.id] = memberRole.id;
 
       bot.dataStore.seed(guilds: [guild], roles: [memberRole]);
@@ -26,7 +28,9 @@ void main() {
 
     test('assigns the configured role to a newcomer', () async {
       final user = UserBuilder().withUsername('newbie').build();
+
       final member = MemberBuilder().ofGuild(guild).withUser(user).build();
+
       bot.dataStore.seed(members: [member]);
 
       await bot.simulateMemberJoin(member: member, guild: guild);
@@ -45,7 +49,9 @@ void main() {
     test('logs a warning and does nothing if no role is configured', () async {
       AutoRoleConfig.roleIdsByGuild.clear();
       final user = UserBuilder().withUsername('orphan').build();
+
       final member = MemberBuilder().ofGuild(guild).withUser(user).build();
+
       bot.dataStore.seed(members: [member]);
 
       await bot.simulateMemberJoin(member: member, guild: guild);
