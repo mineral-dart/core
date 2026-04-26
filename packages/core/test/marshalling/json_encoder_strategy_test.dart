@@ -5,6 +5,7 @@ import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/encoding_strategies/json_encoder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/serialization_exception.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_requested_message.dart';
 import 'package:test/test.dart';
@@ -90,7 +91,7 @@ void main() {
         expect(content.payload['heartbeat_interval'], 41250);
       });
 
-      test('throws on invalid JSON', () {
+      test('throws SerializationException on invalid JSON', () {
         final wsMessage = WebsocketMessageImpl<ShardMessage>(
           channelName: 'shard-0',
           originalContent: 'not-valid-json{{{',
@@ -101,7 +102,38 @@ void main() {
               payload: null),
         );
 
-        expect(() => strategy.decode(wsMessage), throwsException);
+        expect(() => strategy.decode(wsMessage),
+            throwsA(isA<SerializationException>()));
+      });
+
+      test('throws SerializationException when original content is not a string', () {
+        final wsMessage = WebsocketMessageImpl<ShardMessage>(
+          channelName: 'shard-0',
+          originalContent: <int>[1, 2, 3],
+          content: ShardMessage(
+              type: null,
+              opCode: OpCode.unknown,
+              sequence: null,
+              payload: null),
+        );
+
+        expect(() => strategy.decode(wsMessage),
+            throwsA(isA<SerializationException>()));
+      });
+
+      test('throws SerializationException when JSON root is not an object', () {
+        final wsMessage = WebsocketMessageImpl<ShardMessage>(
+          channelName: 'shard-0',
+          originalContent: '[1, 2, 3]',
+          content: ShardMessage(
+              type: null,
+              opCode: OpCode.unknown,
+              sequence: null,
+              payload: null),
+        );
+
+        expect(() => strategy.decode(wsMessage),
+            throwsA(isA<SerializationException>()));
       });
     });
 

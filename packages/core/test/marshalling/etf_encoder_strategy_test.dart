@@ -6,6 +6,7 @@ import 'package:mineral/src/domains/services/logger/logger_contract.dart';
 import 'package:mineral/src/domains/services/wss/constants/op_code.dart';
 import 'package:mineral/src/infrastructure/internals/wss/encoding_strategies/etf_encoder.dart';
 import 'package:mineral/src/infrastructure/internals/wss/shard_message.dart';
+import 'package:mineral/src/infrastructure/io/exceptions/serialization_exception.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_message.dart';
 import 'package:mineral/src/infrastructure/services/wss/websocket_requested_message.dart';
 import 'package:test/test.dart';
@@ -66,6 +67,21 @@ void main() {
         expect(content.type, 'MESSAGE_CREATE');
         expect(content.sequence, 1);
         expect(content.payload['content'], 'hello');
+      });
+
+      test('throws SerializationException when original content is not bytes', () {
+        final wsMessage = WebsocketMessageImpl<ShardMessage>(
+          channelName: 'shard-0',
+          originalContent: 'a plain string is not etf bytes',
+          content: ShardMessage(
+              type: null,
+              opCode: OpCode.unknown,
+              sequence: null,
+              payload: null),
+        );
+
+        expect(() => strategy.decode(wsMessage),
+            throwsA(isA<SerializationException>()));
       });
 
       test('decodes HELLO ETF message', () {
